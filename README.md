@@ -19,3 +19,5 @@ The build script copies the production pages and approved brand assets into `dis
 - Community: [t.me/madgerburrow](https://t.me/madgerburrow)
 
 No official token contract has been announced.
+
+GitHub deployment connected to MADGER production.
