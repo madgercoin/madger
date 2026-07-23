@@ -1,0 +1,34 @@
+MADGER IMPLEMENTATION CHECKLIST
+
+TODAY
+[ ] Wait for Cloudflare domain status to become Active.
+[ ] Upload Website v2 package to the existing Worker.
+[ ] Verify workers.dev URL loads.
+[ ] Verify madgercoin.com loads after activation.
+[ ] Confirm HTTPS lock appears.
+[ ] Create official Telegram group and announcement channel.
+[ ] Reserve @madgercoin or closest consistent Telegram username.
+[ ] Add X and Telegram links to the website.
+[ ] Pin a safety message: no contract exists until published on madgercoin.com and @madgercoin.
+
+NEXT 48 HOURS
+[ ] Publish X profile image and banner from assets.
+[ ] Post the first three messages: introduction, manifesto, safety notice.
+[ ] Publish the litepaper link.
+[ ] Begin one Daily Dig post per day.
+[ ] Create a public launch-status post and keep it pinned.
+
+BEFORE TOKEN DEPLOYMENT
+[ ] Decide launch method: fair-launch platform vs. independent liquidity pool.
+[ ] Document total supply, founder allocation, treasury allocation, liquidity allocation, and vesting.
+[ ] Create separate creator, treasury, and operations wallets.
+[ ] Back up seed phrases offline; never place them in cloud notes, email, or chat.
+[ ] Verify token name, symbol, decimals, metadata URI, website, and social links.
+[ ] Conduct a small test transaction before committing launch funds.
+[ ] Publish contract address simultaneously on website and official X.
+[ ] Never privately send a “different” contract address.
+
+FIRST X POSTS
+1. “Nobody remembers why Madger is mad. He doesn’t either. He just keeps digging. Welcome to The Burrow. #MADGER #KeepDigging”
+2. “Markets go up. Markets go down. Madger digs anyway. No token yet. No fake contract. Official updates only from madgercoin.com and @madgercoin.”
+3. “The Burrow Code: Build. Learn. Laugh. Help new diggers. Never fake hype. Keep digging.”

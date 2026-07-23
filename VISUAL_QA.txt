@@ -1,0 +1,11 @@
+MADGER Website v2.1 visual QA fixes
+
+- Rebuilt the full logo from a clean crop with equal safe margins on all four sides.
+- Removed the neighboring logo fragment and the “FULL LOGO” label from the source image.
+- Rebuilt the round profile icon and favicon with centered artwork and border-safe padding.
+- Changed website logo rendering from object-fit: cover to object-fit: contain so no edge is cropped.
+- Gave the large logo card a square aspect ratio, centered containment, and internal padding.
+- Re-cropped the hero to remove stray cut-off elements along the top border.
+- Rebuilt the X banner with a 1500×500 safe layout and no edge-critical artwork.
+
+Tested target layouts: desktop hero, mobile hero, navigation icon, Meet Madger logo card, footer icon, favicon, and social banner.
