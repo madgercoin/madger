@@ -14,13 +14,15 @@ done
 
 echo
 echo "JSON validation:"
-find . -name "*.json" | while read file; do
-    if python -m json.tool "$file" >/dev/null 2>&1; then
-        echo "✓ $file"
-    else
-        echo "✗ $file"
-    fi
-done
+find . \
+    -path "./node_modules" -prune -o \
+    -name "*.json" -type f -print | while IFS= read -r file; do
+        if node -e "JSON.parse(require('fs').readFileSync(process.argv[1], 'utf8'))" "$file" >/dev/null 2>&1; then
+            echo "✓ $file"
+        else
+            echo "✗ $file"
+        fi
+    done
 
 echo
 echo "Done."
