@@ -1,23 +1,27 @@
-# MADGER Website
+# MADGER
 
-Official source for [madgercoin.com](https://madgercoin.com).
+MADGER is a Solana-based community token project built around transparent documentation, fixed-supply tokenomics, and a structured launch process.
 
-## Deployment
+## Token Summary
 
-Cloudflare Workers Builds deploys the `main` branch automatically:
+- Network: Solana
+- Standard: SPL Token
+- Name: MADGER
+- Symbol: MADGER
+- Total supply: 1,000,000,000
+- Decimals: 6
+- Transaction taxes: None
+- Mint authority: Planned for revocation after launch verification
+- Freeze authority: Planned for revocation after launch verification
 
-- Build command: `npm run build`
-- Deploy command: `npx wrangler deploy`
-- Output directory: `dist`
+## Repository Structure
 
-The build script copies the production pages and approved brand assets into `dist/assets`. The obsolete Astro starter directories are not part of the deployed output.
+```text
+token/
+  Token specification, tokenomics, authorities, wallets, metadata, and distribution.
 
-## Official channels
+launch/
+  Pre-launch, launch-day, and post-launch operational documents.
 
-- X: [@madgercoin](https://x.com/madgercoin)
-- Announcements: [t.me/madgercoin](https://t.me/madgercoin)
-- Community: [t.me/madgerburrow](https://t.me/madgerburrow)
-
-No official token contract has been announced.
-
-GitHub deployment connected to MADGER production.
+docs/
+  Public-facing litepaper, roadmap, and FAQ.//
