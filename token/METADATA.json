@@ -1,0 +1,34 @@
+{
+  "name": "MADGER",
+  "symbol": "MADGER",
+  "description": "MADGER is a community-driven Solana token built around resilience, independence, and attitude. The Badger. The Attitude. The Coin.",
+  "image": "https://madgercoin.com/madger_round_icon.png",
+  "external_url": "https://madgercoin.com",
+  "attributes": [
+    {
+      "trait_type": "Blockchain",
+      "value": "Solana"
+    },
+    {
+      "trait_type": "Supply",
+      "value": "1000000000"
+    },
+    {
+      "trait_type": "Decimals",
+      "value": "6"
+    },
+    {
+      "trait_type": "Transfer Tax",
+      "value": "0%"
+    }
+  ],
+  "properties": {
+    "category": "image",
+    "files": [
+      {
+        "uri": "https://madgercoin.com/madger_round_icon.png",
+        "type": "image/png"
+      }
+    ]
+  }
+}
