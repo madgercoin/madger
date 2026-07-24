@@ -1,0 +1,29 @@
+name: Validate Repository
+
+on:
+  push:
+    branches:
+      - "**"
+  pull_request:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Validate JSON
+        run: |
+          find . -name "*.json" -print0 | while IFS= read -r -d '' file; do
+            python -m json.tool "$file" > /dev/null
+          done
+
+      - name: List Markdown Files
+        run: find . -name "*.md"
+
+      - name: Repository Structure
+        run: |
+          test -d token
+          test -d launch
+          test -d docs
