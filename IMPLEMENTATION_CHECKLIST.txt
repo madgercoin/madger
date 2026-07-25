@@ -22,9 +22,9 @@ Use this checklist for every production change. Mark only applicable items in th
 
 ## 3. Token and financial safety
 
-- [ ] Pre-launch content continues to state that no official contract has been announced unless an authorized launch decision replaces that status everywhere.
+- [ ] Pre-public-launch content states that MADGER has been minted on Solana at `BHauMX8akk2umqkQqnJwpYkCRkZmefGnEBFByeFXRKqv` but has not yet launched for public trading; no launch date, liquidity pool, exchange listing, or payment utility is implied unless authorized and updated everywhere.
 - [ ] Any token values are explicitly labeled proposed until formally approved; launch method, supply, allocation, vesting, authority, liquidity, and treasury claims have an auditable source.
-- [ ] A contract address is never accepted from a direct message or unverified contributor and is checked character by character by multiple authorized reviewers.
+- [ ] The official mint address remains exactly `BHauMX8akk2umqkQqnJwpYkCRkZmefGnEBFByeFXRKqv`; any proposed change is rejected unless independently verified character by character by multiple authorized reviewers and approved through the project's controlled release process.
 - [ ] If launched, the exact address and final disclosures are prepared for simultaneous publication on the website, official X account, and Telegram announcement channel.
 - [ ] Risk language remains visible and avoids financial, legal, or tax advice.
 - [ ] No secret, seed phrase, private key, wallet credential, API token, personal data, or private operational address is present in source, history, build output, screenshots, or logs.
