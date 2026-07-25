@@ -1,0 +1,101 @@
+name: Publish social campaign
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "social/outbox/*.json"
+  workflow_dispatch:
+    inputs:
+      campaign_path:
+        description: "Path to one campaign JSON file"
+        required: true
+        type: string
+      dry_run:
+        description: "Validate without publishing"
+        required: true
+        default: true
+        type: boolean
+
+permissions:
+  contents: write
+
+concurrency:
+  group: madger-social-publisher
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    env:
+      TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+      TELEGRAM_ANNOUNCEMENT_CHAT_ID: ${{ secrets.TELEGRAM_ANNOUNCEMENT_CHAT_ID }}
+      TELEGRAM_COMMUNITY_CHAT_ID: ${{ secrets.TELEGRAM_COMMUNITY_CHAT_ID }}
+      DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+      X_API_KEY: ${{ secrets.X_API_KEY }}
+      X_API_SECRET: ${{ secrets.X_API_SECRET }}
+      X_ACCESS_TOKEN: ${{ secrets.X_ACCESS_TOKEN }}
+      X_ACCESS_TOKEN_SECRET: ${{ secrets.X_ACCESS_TOKEN_SECRET }}
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Select campaign files
+        id: campaigns
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+            path="${{ inputs.campaign_path }}"
+            if [[ "$path" != social/outbox/*.json ]]; then
+              echo "Campaign must be inside social/outbox and end in .json" >&2
+              exit 1
+            fi
+            printf '%s\n' "$path" > /tmp/madger-campaigns.txt
+            echo "dry_run=${{ inputs.dry_run }}" >> "$GITHUB_OUTPUT"
+          else
+            git diff-tree --no-commit-id --name-only -r "$GITHUB_SHA" \
+              | grep '^social/outbox/.*\.json$' \
+              > /tmp/madger-campaigns.txt
+            echo "dry_run=false" >> "$GITHUB_OUTPUT"
+          fi
+          test -s /tmp/madger-campaigns.txt
+
+      - name: Validate campaign files
+        shell: bash
+        env:
+          SOCIAL_DRY_RUN: "true"
+        run: |
+          set -euo pipefail
+          while IFS= read -r campaign; do
+            node social/publish.mjs "$campaign"
+          done < /tmp/madger-campaigns.txt
+
+      - name: Publish campaign files
+        if: steps.campaigns.outputs.dry_run != 'true'
+        shell: bash
+        env:
+          SOCIAL_DRY_RUN: "false"
+        run: |
+          set -euo pipefail
+          while IFS= read -r campaign; do
+            node social/publish.mjs "$campaign"
+          done < /tmp/madger-campaigns.txt
+
+      - name: Archive published campaigns
+        if: steps.campaigns.outputs.dry_run != 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p social/sent
+          while IFS= read -r campaign; do
+            git mv "$campaign" "social/sent/$(basename "$campaign")"
+          done < /tmp/madger-campaigns.txt
+          git config user.name "madger-social-bot"
+          git config user.email "madgercoin@gmail.com"
+          git commit -m "social: archive published campaign"
+          git push
