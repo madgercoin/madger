@@ -2,9 +2,9 @@
 
 This repository is the production source for [madgercoin.com](https://madgercoin.com), the official home of MADGER: a professional, community-driven Solana memecoin represented by the Honey Badger.
 
-MADGER's character is resilient, confident, determined, and attentive to detail. The product standard follows the character: quality before speed, facts before hype, and durable systems before short-lived trends. The long-term direction is to grow from a memecoin and character brand into a cryptocurrency ecosystem with practical utility, including real-world crypto payments when the project can support them responsibly. That direction is a vision—not a promise that payment functionality or other utility currently exists.
+MADGER's character is resilient, confident, determined, and attentive to detail. The product standard follows the character: quality before speed, facts before hype, and durable systems before short-lived trends. The long-term direction is to grow from a memecoin and character brand into a cryptocurrency ecosystem with practical utility, including real-world crypto payments when the project can support them responsibly. That direction is a vision—not a promise that a product, token, or utility currently exists.
 
-> **Current verified status:** MADGER has been minted on Solana but has not yet been publicly launched for trading. The official mint address is `BHauMX8akk2umqkQqnJwpYkCRkZmefGnEBFByeFXRKqv`. No public launch date, liquidity pool, exchange listing, or payment utility has been announced. Verify this address against the official channels listed below before relying on it.
+> **Current verified status:** MADGER has been minted on Solana but has not yet been publicly launched for trading. The official mint is `BHauMX8akk2umqkQqnJwpYkCRkZmefGnEBFByeFXRKqv`. Its existence is not evidence of public trading, liquidity, or a listing; verify it through the official channels below.
 
 ## Documentation map
 
@@ -14,7 +14,11 @@ These files are the contributor source of truth. When implementation and documen
 - [`README_DEPLOY.txt`](README_DEPLOY.txt) — reproducible build, Cloudflare Workers deployment, rollback, and operations runbook.
 - [`IMPLEMENTATION_CHECKLIST.txt`](IMPLEMENTATION_CHECKLIST.txt) — release gates for content, engineering, security, launch, and future utility.
 - [`VISUAL_QA.txt`](VISUAL_QA.txt) — brand asset inventory and visual/accessibility review procedure.
-- [`litepaper.html`](litepaper.html) — public-facing pre-launch project summary and risk disclosure; it is a deployed page, not internal engineering documentation.
+- [`litepaper.html`](litepaper.html) — public-facing project status, verified mint, roadmap, and risk disclosure; it is a deployed page, not internal engineering documentation.
+- [`PROJECT_CONTEXT.md`](PROJECT_CONTEXT.md), [`PRODUCT_REQUIREMENTS.md`](PRODUCT_REQUIREMENTS.md), and [`ROADMAP.md`](ROADMAP.md) — authoritative context, present requirements, and explicitly non-promissory direction.
+- [`BRAND_GUIDELINES.md`](BRAND_GUIDELINES.md), [`DESIGN_SYSTEM.md`](DESIGN_SYSTEM.md), and [`UI_UX_GUIDELINES.md`](UI_UX_GUIDELINES.md) — brand and interface rules grounded in the current implementation.
+- [`SYSTEM_ARCHITECTURE.md`](SYSTEM_ARCHITECTURE.md), [`ASSET_MANIFEST.md`](ASSET_MANIFEST.md), [`SEO_STRATEGY.md`](SEO_STRATEGY.md), [`ACCESSIBILITY.md`](ACCESSIBILITY.md), and [`SECURITY.md`](SECURITY.md) — technical and quality reference material.
+- [`AI_INSTRUCTIONS.md`](AI_INSTRUCTIONS.md), [`CONTRIBUTING.md`](CONTRIBUTING.md), [`DEPLOYMENT.md`](DEPLOYMENT.md), and [`CHANGELOG.md`](CHANGELOG.md) — execution rules, contribution/release guidance, and change history.
 
 ## Production architecture
 
@@ -107,7 +111,7 @@ Only these endpoints are verified by the current repository:
 
 The repository does not yet verify the following. Contributors and AI assistants must not invent answers:
 
-- Public launch method and date, confirmed supply and decimals, allocations, vesting, mint/freeze authority status, liquidity structure, and treasury/operations wallet controls.
+- Public-launch method and date, supply confirmation, decimals, allocations, vesting, authorities, liquidity structure, trading venue, and treasury/operations wallet controls.
 - Project ownership, maintainer approval policy, community governance, contribution licensing, code license, brand-asset usage rights, and a vulnerability-reporting contact/process.
 - Analytics, monitoring, automated tests, CI requirements, release environments, custom-domain ownership procedures, and formal availability targets.
 - The scope, sequencing, compliance requirements, custody model, supported assets/regions, vendors, and security architecture for real-world crypto payments or any other utility.

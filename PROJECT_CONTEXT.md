@@ -1,1 +1,33 @@
-# Project Context
+# Project context
+
+## Identity and current status
+
+MADGER is a professional, community-driven Solana memecoin represented by the Honey Badger: resilient, confident, determined, and attentive to detail. The community is The Burrow. The proposed ticker is `$MADGER`.
+
+MADGER is minted but is **not publicly launched for trading**. The official Solana mint is:
+
+```text
+BHauMX8akk2umqkQqnJwpYkCRkZmefGnEBFByeFXRKqv
+```
+
+This is an identity and verification fact, not a purchase instruction. No launch date, liquidity pool, exchange listing, price expectation, guaranteed return, partnership, or completed utility is verified.
+
+## Product today
+
+The deployed product is a dependency-free static website at `madgercoin.com`, built from root HTML/CSS/JavaScript by `build.mjs` and hosted with Cloudflare Workers Static Assets. It communicates brand, status, official channels, mint safety, roadmap, community links, and risk disclosures. Root files are production; the Astro starter in `src/` and `public/` is excluded.
+
+## Direction
+
+Quality, transparency, safety, accessibility, performance, maintainability, and long-term sustainability take priority over speed. The long-term vision includes practical cryptocurrency payments for ordinary activities, but payments are not a present capability or promise.
+
+## Official channels
+
+- Website: https://madgercoin.com
+- X: https://x.com/madgercoin
+- Announcements: https://t.me/madgercoin
+- Community: https://t.me/madgerburrow
+- Email: madgercoin@gmail.com
+
+## Future Decisions
+
+Token supply confirmation, decimals, authorities, allocation, vesting, liquidity, launch timing/method/venue, governance, legal structure, custody, payment scope, and utility architecture remain unverified.

@@ -26,3 +26,15 @@ nav.addEventListener("click", event => {
     menuButton.setAttribute("aria-expanded", "false");
   }
 });
+
+const copyButton = document.querySelector("[data-copy-target]");
+const copyStatus = document.querySelector(".copy-status");
+copyButton.addEventListener("click", async () => {
+  const address = document.querySelector(`#${copyButton.dataset.copyTarget}`).textContent;
+  try {
+    await navigator.clipboard.writeText(address);
+    copyStatus.textContent = "Official mint address copied.";
+  } catch {
+    copyStatus.textContent = "Copy unavailable. Select and copy the address above.";
+  }
+});
