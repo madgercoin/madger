@@ -14,7 +14,7 @@
 | `madger_brand_board.jpg` | `/assets/madger_brand_board.jpg` | reference; not rendered |
 | `madger_brand_guide.png` | `/assets/madger_brand_guide.png` | reference; not rendered |
 
-`build.mjs` is authoritative for publication. Assets below `public/` belong to the excluded Astro starter and are not production.
+`site-config.mjs` is authoritative for publication. The obsolete Astro `public/` assets were removed because they had no production purpose.
 
 ## Handling rules
 

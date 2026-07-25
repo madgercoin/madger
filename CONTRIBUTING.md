@@ -5,11 +5,11 @@ MADGER welcomes careful community contribution. Professionalism, factual accurac
 ## Workflow
 
 1. Read `PROJECT_CONTEXT.md`, `README.md`, `AI_INSTRUCTIONS.md`, and domain-specific docs.
-2. Work in root production files; do not use the excluded Astro starter.
+2. Work in root production files; the obsolete Astro starter has been removed.
 3. Keep changes focused and preserve branding. Put unknown product facts under **Future Decisions**.
 4. For public status content, reproduce the exact mint `BHauMX8akk2umqkQqnJwpYkCRkZmefGnEBFByeFXRKqv` and say “minted but not publicly launched for trading.”
 5. Update tests/checklists and `CHANGELOG.md` with the implementation.
-6. Run `npm ci`, `git diff --check`, `npm run build`, `npm run check`, link/reference checks, visual/accessibility QA as applicable, and inspect `dist/`.
+6. Run `npm ci`, `git diff --check`, `npm run build`, `npm run check`, `npm run validate`, and `npm audit --omit=dev`; complete visual/accessibility QA as applicable.
 7. Submit a reviewable commit/PR describing exact files, user impact, tests, warnings, unresolved decisions, and mint verification.
 
 ## Content and code standards

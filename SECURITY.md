@@ -9,7 +9,9 @@
 
 ## Current controls
 
-The application is static and collects no user data. `_headers` sets `nosniff`, strict-origin referrer policy, denies framing, and disables camera/microphone/geolocation. New-tab links use `noopener noreferrer`. The build publishes an allowlist and excludes internal docs, `.env*`, legacy source, and package files. Clipboard enhancement writes only the fixed visible mint and handles denial without hiding the address.
+The application is static and collects no user data. `_headers` sets CSP, HSTS, `nosniff`, strict-origin referrer policy, denies framing, and disables camera/microphone/geolocation. New-tab links use `noopener noreferrer`. The build publishes an allowlist and excludes internal docs, `.env*`, starter source, and package files. Clipboard enhancement writes only the fixed visible mint and handles denial without hiding the address.
+
+CI scans high-confidence secret patterns, validates the production artifact and mint, and runs a production-only dependency audit. Wrangler is pinned at `4.114.0`; upgrading from `4.88.0` resolved six findings inherited through its development-only `esbuild`/Miniflare toolchain (`sharp`, `undici`, and `ws`) without a forced major upgrade. `npm audit` now reports zero findings.
 
 ## Contributor rules
 
@@ -25,4 +27,4 @@ No dedicated vulnerability channel or response SLA is verified. The public proje
 
 ## Future Decisions
 
-Security contact/SLA, maintainer access controls, branch protection, signed releases, secret scanning, dependency scanning, CSP/HSTS policy, Cloudflare token scopes, wallet custody, audits, and payment threat models remain open.
+Security contact/SLA, maintainer access controls, branch protection, signed releases, Cloudflare token scopes, wallet custody, independent audits, and payment threat models remain open.

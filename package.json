@@ -7,10 +7,16 @@
   "scripts": {
     "build": "node build.mjs",
     "deploy": "wrangler deploy",
-    "check": "npm run build && wrangler deploy --dry-run"
+    "check": "npm run build && wrangler deploy --dry-run",
+    "validate:js": "node --check build.mjs && node --check script.js && node --check site-config.mjs && node --check scripts/validate-site.mjs && node --check scripts/validate-dist.mjs && node --check scripts/scan-secrets.mjs && node --check scripts/check-deployment.mjs",
+    "validate:site": "node scripts/validate-site.mjs",
+    "validate:dist": "node scripts/validate-dist.mjs",
+    "scan:secrets": "node scripts/scan-secrets.mjs",
+    "validate": "npm run validate:js && npm run validate:site && npm run validate:dist && npm run scan:secrets",
+    "check:deployment": "node scripts/check-deployment.mjs"
   },
   "devDependencies": {
-    "wrangler": "4.88.0"
+    "wrangler": "4.114.0"
   },
   "engines": {
     "node": ">=22"

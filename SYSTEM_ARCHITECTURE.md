@@ -12,7 +12,7 @@ root sources -> node build.mjs -> dist/ allowlist -> Cloudflare Worker -> madger
 
 ## Build boundary
 
-`build.mjs` deletes `dist/` and copies nine root resources plus nine approved assets. Anything not explicitly listed is private to the repository and not deployed. `src/`, `public/`, internal documentation, package metadata, TypeScript declarations, and source maps are excluded.
+`build.mjs` deletes `dist/` and copies the nine root resources plus nine approved assets centralized in `site-config.mjs`. Anything not explicitly listed is private to the repository and not deployed. Internal documentation, package metadata, tests, validation scripts, and source maps are excluded. The obsolete Astro starter and declarations were removed rather than retained as misleading dead source.
 
 ## Deployment
 
@@ -24,4 +24,4 @@ The architecture minimizes attack surface and network dependencies. No personal 
 
 ## Future Decisions
 
-The legacy Astro removal, shared auxiliary styles, content tooling, CI, staging, monitoring, APIs, wallets, payments, data retention, and trust boundaries for any dynamic service remain undecided.
+Shared auxiliary styles, content tooling, staging, monitoring, APIs, wallets, payments, data retention, and trust boundaries for any dynamic service remain undecided.

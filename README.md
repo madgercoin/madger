@@ -31,14 +31,15 @@ The production application is deliberately small and static:
 | Behavior | `script.js` | UTC-based Daily Dig copy, current footer year, and accessible mobile-navigation state |
 | Brand assets | Root-level `madger_*` images and `favicon.png` | Approved production imagery copied to `/assets/` at build time |
 | Web metadata | `manifest.webmanifest`, `robots.txt`, `sitemap.xml`, `_headers` | Install metadata, crawler discovery, canonical URLs, security headers, and cache policy |
-| Build | `build.mjs` | Clears `dist/`, copies an explicit allowlist of pages and assets, and performs no transformation |
+| Build | `build.mjs`, `site-config.mjs` | Clears `dist/` and copies the centralized explicit allowlist without transformation |
+| Validation | `scripts/`, `.github/workflows/ci.yml` | Maintained content, artifact, syntax, secret, dependency, and Cloudflare checks run on every PR to `main` and push to `main` |
 | Hosting | `wrangler.json` | Cloudflare Workers Static Assets configuration, trailing-slash handling, and the custom 404 page |
 
-`dist/` is generated and ignored. Do not edit it. The explicit arrays in `build.mjs` are a deployment boundary: adding a source file does **not** publish it unless it is also added to the appropriate allowlist.
+`dist/` is generated and ignored. Do not edit it. The explicit arrays in `site-config.mjs` are a deployment boundary: adding a source file does **not** publish it unless it is also added to the appropriate allowlist.
 
-### Legacy Astro material
+### Removed Astro starter
 
-`src/`, `public/`, `tsconfig.json`, and `worker-configuration.d.ts` are remnants of an earlier Astro starter. Astro is not declared in `package.json`, there is no Astro configuration, and none of those files are copied by `build.mjs`. They are therefore **not part of the current production site**. Do not implement production features there. Any decision to remove or revive this material must be a deliberate, separately reviewed migration.
+The unused `src/`, `public/`, Astro-based `tsconfig.json`, and generated Worker declaration were removed after confirming that Astro was not installed, configured, built, or published. Production work belongs in the root static files. Do not reintroduce a framework without an explicit architecture review.
 
 ## Local development
 
@@ -66,7 +67,7 @@ Then open the local URL printed by Wrangler. For a production-shaped validation 
 npm run check
 ```
 
-`npm run check` rebuilds and runs `wrangler deploy --dry-run`. A warning that `tsconfig.json` cannot resolve `astro/tsconfigs/strict` is caused by the excluded legacy Astro material described above; it does not alter the static artifact. It should be removed only as part of the explicit legacy-code decision.
+`npm run check` rebuilds and runs `wrangler deploy --dry-run`. Run `npm run validate` for syntax, internal-link, unique-ID, JSON-LD, mint, dist-allowlist, and secret-pattern checks. Only environment-injected proxy notices are expected locally.
 
 ## Making a change
 
@@ -94,7 +95,7 @@ Every change should optimize for long-term ownership rather than fastest deliver
 - **Accessibility:** preserve landmarks, heading order, keyboard operation, meaningful alternatives for informative images, intentionally empty alternatives for decorative images, adequate contrast, touch targets, and `prefers-reduced-motion` behavior.
 - **Performance:** keep the site static and dependency-light; resize/compress imagery appropriately; avoid render-blocking third-party scripts and layout shift.
 - **Security and privacy:** minimize collection and external code; retain `_headers` protections; use `rel="noopener noreferrer"` for new-tab links; never commit secrets, private keys, seed phrases, wallet credentials, or unapproved contract data.
-- **Reliability:** use pinned dependencies, deterministic builds, preview before production, validate official links and claims, and retain a known-good deployment for rollback.
+- **Reliability:** use pinned dependencies, deterministic builds, preview before production, validate official links and claims, and retain a known-good deployment for rollback. CI is required on PRs to and pushes on `main`.
 - **Sustainability:** adopt a framework, service, wallet integration, analytics product, or payment provider only when its ongoing operational burden and user benefit are understood.
 
 ## Official channels
@@ -113,6 +114,6 @@ The repository does not yet verify the following. Contributors and AI assistants
 
 - Public-launch method and date, supply confirmation, decimals, allocations, vesting, authorities, liquidity structure, trading venue, and treasury/operations wallet controls.
 - Project ownership, maintainer approval policy, community governance, contribution licensing, code license, brand-asset usage rights, and a vulnerability-reporting contact/process.
-- Analytics, monitoring, automated tests, CI requirements, release environments, custom-domain ownership procedures, and formal availability targets.
+- Analytics, monitoring, release environments, custom-domain ownership procedures, and formal availability targets.
 - The scope, sequencing, compliance requirements, custody model, supported assets/regions, vendors, and security architecture for real-world crypto payments or any other utility.
-- Whether to remove the excluded Astro starter or adopt a maintained application/content architecture when the static site no longer meets project needs.
+- Whether to adopt a maintained application/content architecture when the static site no longer meets project needs.

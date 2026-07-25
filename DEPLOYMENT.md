@@ -5,17 +5,17 @@ The detailed operational runbook is `README_DEPLOY.txt`. Production uses Node.js
 ## Release sequence
 
 1. Review source and authoritative status/mint changes.
-2. Run `npm ci`, `git diff --check`, `npm run build`, and `npm run check`.
-3. Inspect `dist/` against `build.mjs`; confirm no documentation, secrets, package files, or legacy Astro files.
+2. Run `npm ci`, `git diff --check`, `npm run build`, `npm run check`, `npm run validate`, and `npm audit --omit=dev`.
+3. Inspect `dist/` against `site-config.mjs`; confirm no documentation, secrets, package files, or starter content.
 4. Preview with Wrangler and complete visual/accessibility/link checks.
 5. Record the commit and known-good deployment; deploy once through the authorized automated or manual path.
-6. Verify critical URLs, exact mint, status, official links, metadata, headers, caches, console, mobile/desktop, keyboard, and 404 behavior.
+6. Run `npm run check:deployment` to verify critical URLs, exact mint, retired language, official links, headers, and 404 behavior; then check metadata, caches, console, mobile/desktop, and keyboard behavior.
 7. Roll back rather than rushing a critical production repair.
 
 ## Public artifact boundary
 
-Only files listed in `build.mjs` are intended for publication. Internal Markdown and TXT files must never be added merely to make them web-readable.
+Only files listed in `site-config.mjs` are intended for publication. `npm run validate:dist` enforces the exact built set. Internal Markdown and TXT files must never be added merely to make them web-readable.
 
 ## Future Decisions
 
-Deployment owners/approvals, staging, CI enforcement, domain/account custody, monitoring, alerts, release signing, and dynamic-service deployments are not defined.
+Deployment owners/approvals, staging, branch-protection enforcement, domain/account custody, monitoring, alerts, release signing, and dynamic-service deployments are not defined.

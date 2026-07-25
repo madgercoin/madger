@@ -14,7 +14,7 @@ This is an identity and verification fact, not a purchase instruction. No launch
 
 ## Product today
 
-The deployed product is a dependency-free static website at `madgercoin.com`, built from root HTML/CSS/JavaScript by `build.mjs` and hosted with Cloudflare Workers Static Assets. It communicates brand, status, official channels, mint safety, roadmap, community links, and risk disclosures. Root files are production; the Astro starter in `src/` and `public/` is excluded.
+The deployed product is a dependency-free static website at `madgercoin.com`, built from root HTML/CSS/JavaScript by `build.mjs` and hosted with Cloudflare Workers Static Assets. It communicates brand, status, official channels, mint safety, roadmap, community links, and risk disclosures. Root files are production; obsolete Astro starter content has been removed.
 
 ## Direction
 
