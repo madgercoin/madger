@@ -70,6 +70,10 @@ Use this checklist for every production change. Mark only applicable items in th
 
 ## 8. Token launch gate (not yet satisfied)
 
+- [ ] `launch-state.js` remains `MINTED_NOT_TRADING` until finalized liquidity and public availability are independently verified; no trading link exists before that gate.
+- [ ] All founder decisions in `LAUNCH_DECISIONS.md` have named approval evidence, and every applicable T−7 through go/no-go item in `docs/launch-runbook.md` is signed.
+- [ ] The exact five-wallet movement schedule is authorized, simulated, independently verified, finalized, and reconciled using `docs/wallet-operations.md`; launch docs and operational addresses remain excluded from `dist/`.
+
 - [ ] Final launch method, network details, token name/ticker/supply/decimals, allocations, vesting, authorities, liquidity, and material risks are approved and published.
 - [ ] Creator, treasury, and operations responsibilities are separated with reviewed custody, backup, access, and incident-recovery procedures.
 - [ ] Contract and metadata are independently verified; a small test transaction and launch rehearsal have completed safely.
@@ -89,6 +93,6 @@ Before adding wallets, commerce, or real-world crypto payments:
 ## Future Decisions
 
 - Required reviewers, merge/release authority, branch protections, CI checks, browser/device support matrix, and formal definition of done.
-- Token launch facts and governance/custody controls listed above.
+- The founder-controlled launch method, budget, valuation, LP policy, date/time, authority timing, allocation authorization, and emergency owners listed in `LAUNCH_DECISIONS.md`.
 - Legal entity, project jurisdictions, contributor/code/asset licensing, privacy terms, and security contact/disclosure policy.
 - Scope and architecture for analytics, community submissions, wallet features, payments, merchant tooling, APIs, or other ecosystem utility.

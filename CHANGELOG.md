@@ -6,6 +6,10 @@ Notable repository changes are recorded here. Dates use UTC. This project does n
 
 ### Changed
 
+- Added the authoritative launch plan plus T−7-to-T+72 runbook, liquidity-method comparison, five-wallet custody controls, embargoed communications, post-launch listing preparation, and a founder-only decision register.
+- Added a four-value public launch-state controller with `MINTED_NOT_TRADING` active on every page and no trading/purchase links.
+- Added automated gates for exact mint integrity, consistent public state, pre-launch trading-link prohibition, launch-document exclusion, and operational-wallet/private-material exclusion from `dist/`.
+
 - Added CI for pull requests to and pushes on `main`, covering deterministic install, whitespace, build, Cloudflare dry-run, JavaScript syntax, links/IDs, JSON-LD, exact mint, dist allowlist, secret patterns, and production dependency audit.
 - Added maintained repository validators and a post-deployment HTTPS/content/route/social-link/security-header smoke check.
 - Centralized the production allowlist in `site-config.mjs` and removed unused Astro starter files after confirming they were outside the production build.

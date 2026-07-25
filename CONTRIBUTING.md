@@ -8,9 +8,10 @@ MADGER welcomes careful community contribution. Professionalism, factual accurac
 2. Work in root production files; the obsolete Astro starter has been removed.
 3. Keep changes focused and preserve branding. Put unknown product facts under **Future Decisions**.
 4. For public status content, reproduce the exact mint `BHauMX8akk2umqkQqnJwpYkCRkZmefGnEBFByeFXRKqv` and say “minted but not publicly launched for trading.”
-5. Update tests/checklists and `CHANGELOG.md` with the implementation.
-6. Run `npm ci`, `git diff --check`, `npm run build`, `npm run check`, `npm run validate`, and `npm audit --omit=dev`; complete visual/accessibility QA as applicable.
-7. Submit a reviewable commit/PR describing exact files, user impact, tests, warnings, unresolved decisions, and mint verification.
+5. Treat `LAUNCH_PLAN.md` as the launch-control index. Do not change `launch-state.js`, expose an embargoed draft, add a trading link, move funds, or represent a founder decision without its recorded authorization and required reviews.
+6. Update tests/checklists and `CHANGELOG.md` with the implementation.
+7. Run `npm ci`, `git diff --check`, `npm run build`, `npm run check`, `npm run validate`, and `npm audit --omit=dev`; complete visual/accessibility QA as applicable.
+8. Submit a reviewable commit/PR describing exact files, user impact, tests, warnings, unresolved decisions, and mint verification.
 
 ## Content and code standards
 

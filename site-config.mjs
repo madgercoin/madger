@@ -4,6 +4,7 @@ export const rootFiles = [
   "404.html",
   "styles.css",
   "script.js",
+  "launch-state.js",
   "robots.txt",
   "sitemap.xml",
   "manifest.webmanifest",

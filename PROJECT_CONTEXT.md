@@ -30,4 +30,4 @@ Quality, transparency, safety, accessibility, performance, maintainability, and 
 
 ## Future Decisions
 
-Token supply confirmation, decimals, authorities, allocation, vesting, liquidity, launch timing/method/venue, governance, legal structure, custody, payment scope, and utility architecture remain unverified.
+Authority settings, allocation-transfer authorization, vesting, liquidity, launch timing/method/venue, governance, legal structure, custody implementation, payment scope, and utility architecture remain unresolved. The verified supply is 1,000,000,000, decimals are 6, and transfer tax is 0%.
