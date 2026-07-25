@@ -1,11 +1,141 @@
-MADGER Website v2.1 visual QA fixes
+# MADGER visual and accessibility QA guide
 
-- Rebuilt the full logo from a clean crop with equal safe margins on all four sides.
-- Removed the neighboring logo fragment and the “FULL LOGO” label from the source image.
-- Rebuilt the round profile icon and favicon with centered artwork and border-safe padding.
-- Changed website logo rendering from object-fit: cover to object-fit: contain so no edge is cropped.
-- Gave the large logo card a square aspect ratio, centered containment, and internal padding.
-- Re-cropped the hero to remove stray cut-off elements along the top border.
-- Rebuilt the X banner with a 1500×500 safe layout and no edge-critical artwork.
+This is the repeatable visual review standard for the production static site. It preserves the established MADGER identity while allowing careful evolution. A previous v2.1 pass corrected unsafe logo crops, centered icon artwork, changed logo rendering from cover to contain, gave the logo card equal internal space, cleaned the hero crop, and rebuilt the X banner around a safe 1500×500 composition. Those are ongoing constraints, not a completed one-time checklist.
 
-Tested target layouts: desktop hero, mobile hero, navigation icon, Meet Madger logo card, footer icon, favicon, and social banner.
+## Verified visual system
+
+The production design is defined in `styles.css` and the root brand assets.
+
+### Palette
+
+| Token | Value | Use |
+| --- | --- | --- |
+| `--ink` | `#0d0d0c` | Primary background and manifest theme/background color |
+| `--ink2` | `#171714` | Navigation and secondary dark surfaces |
+| `--panel` | `#22221e` | Raised cards/panels |
+| `--bone` | `#f2ead9` | Primary text |
+| `--sand` | `#c8ad7b` | Secondary labels and warm detail |
+| `--gold` | `#d4af37` | Primary accent, headings, focus/interaction emphasis |
+| `--gold2` | `#b8860b` | Reserved darker gold |
+| `--moss` | `#69764d` | Reserved natural accent |
+
+Typography uses an Impact/Arial Black-style condensed display stack for high-impact uppercase headings and a system UI sans-serif stack for body/interface text. The overall language is dark, grounded, tactile, and bold—not glossy casino styling. Gold is an accent, not a substitute for hierarchy or readable body text.
+
+### Production asset roles
+
+| Source asset | Built URL | Approved role |
+| --- | --- | --- |
+| `madger_hero.jpg` | `/assets/madger_hero.jpg` | Full-bleed homepage hero behind directional dark gradients |
+| `madger_full_logo.png` | `/assets/madger_full_logo.png` | Full mascot/wordmark in the square Meet Madger card; use containment and equal padding |
+| `madger_profile.png` | `/assets/madger_profile.png` | Compact navigation/footer brand avatar and 404 mascot |
+| `madger_round_icon.png` | `/assets/madger_round_icon.png` | Circular community icon with border-safe artwork |
+| `favicon.png` | `/assets/favicon.png` | Browser/manifest icon |
+| `madger_x_banner.png` | `/assets/madger_x_banner.png` | Open Graph/X large-image card and official banner source |
+| `madger_wallet_icon.png` | `/assets/madger_wallet_icon.png` | Reserved wallet-related brand asset; not currently rendered by production pages |
+| `madger_brand_board.jpg` | `/assets/madger_brand_board.jpg` | Reference board; not currently rendered by production pages |
+| `madger_brand_guide.png` | `/assets/madger_brand_guide.png` | Reference guide; not currently rendered by production pages |
+
+All listed assets are currently copied to production, including reference/reserved files. Do not assume public availability grants reuse rights; formal asset licensing remains a Future Decision.
+
+## Brand integrity rules
+
+- Preserve original aspect ratios, colors, expressions, linework, and legibility. Do not stretch, mirror, casually redraw, recolor, or place effects over the Honey Badger.
+- Keep complete artwork inside safe margins at every crop. Neighboring fragments, source-board labels, and unintended edge elements must never appear.
+- Use `object-fit: contain` for the full logo. Avatar/profile artwork may use `cover` only when the approved circular composition remains safely centered.
+- Keep important banner content away from edges and likely avatar/overlay zones. Recheck the actual destination preview after any crop.
+- Use the established root assets rather than legacy `public/blog-placeholder-*` imagery, which is excluded from production.
+- New visual assets require provenance, usage-rights confirmation, optimized exports, descriptive naming, and review at their actual rendered sizes.
+
+## Review setup
+
+1. Run `npm ci && npm run build`.
+2. Serve the built application with `npx wrangler dev`; do not review root-relative assets via `file://`.
+3. Clear/bypass cache or use newly named assets. `/assets/*` is configured as immutable for one year.
+4. Compare against the current reviewed production baseline, not excluded Astro starter pages.
+5. Capture the viewport size, browser, operating system, zoom, color/motion preferences, commit SHA, and reviewed URL with screenshots.
+
+## Required view matrix
+
+Test at minimum:
+
+- Narrow phone around 320 CSS px wide (reflow stress case).
+- Representative phone around 390 CSS px wide.
+- Tablet/narrow desktop around the 900 px navigation breakpoint.
+- Desktop at 1440×900 or larger.
+- Browser zoom at 200% on a desktop viewport.
+- `prefers-reduced-motion: reduce`.
+- Keyboard-only navigation; use a screen reader for changed structure or control labeling.
+- Litepaper print preview when litepaper content/styles change.
+
+Exact supported browser versions are not yet defined. At minimum, use a current Chromium browser and add another browser engine when layout, media, scrolling, focus, or form/control behavior changes.
+
+## Page and component checks
+
+### Global/navigation
+
+- [ ] Skip link becomes visible on focus and moves focus/navigation to main content.
+- [ ] Fixed navigation does not cover anchored headings; brand avatar is round, crisp, centered, and not clipped.
+- [ ] At ≤900 px the menu button is visible, operable by keyboard/touch, reports `aria-expanded` accurately, and closes after selecting a link.
+- [ ] Focus indicators and hover states are visible against every background; no content is reachable only by hover.
+- [ ] No horizontal overflow, accidental text clipping, unreadably long line, or overlapping fixed content occurs at target widths/zoom.
+
+### Homepage hero and brand surfaces
+
+- [ ] Hero subject remains intentional on desktop (`center 35%`) and mobile (`62% center`), with no stray source fragments at an edge.
+- [ ] Gradient maintains readable bone/gold text without erasing the mascot; headline and calls to action wrap cleanly.
+- [ ] Full logo is square, centered, contained, and padded inside the light logo card.
+- [ ] Trust strip, token grid, roadmap cards, Daily Dig stamp, social grid, FAQ, and footer follow their responsive column changes without border anomalies.
+- [ ] Daily Dig text is readable for every entry in `script.js`, not just the current day.
+
+### Litepaper and 404
+
+- [ ] Litepaper body measure, heading wraps, gold links, note/blockquote borders, and back link remain legible on small screens and in print.
+- [ ] 404 content is vertically centered; mascot is not distorted; return link has clear focus and sufficient target size.
+
+### Icons and external previews
+
+- [ ] Favicon is recognizable at common small sizes and manifest icon has no clipped edge.
+- [ ] Open Graph/X banner preview is legible at wide-card and cropped/mobile previews with no edge-critical content.
+- [ ] Decorative images remain ignored by assistive technology; informative imagery retains useful alternative text.
+
+## Accessibility and motion acceptance
+
+- Text and meaningful UI boundaries must meet WCAG 2.2 AA contrast targets (4.5:1 normal text, 3:1 large text and non-text UI). Verify with a contrast tool after changing any color or overlay.
+- Page structure must retain one clear `h1`, logical headings, landmarks, link purpose, and native controls.
+- Do not use color alone for status. The launch dot accompanies text; future statuses need the same redundancy.
+- At 200% zoom and 320 CSS px, content must reflow without two-dimensional scrolling except where intrinsically necessary.
+- The existing reduced-motion query disables the entrance animation, smooth scrolling, and interactive transitions. New motion must join that behavior and must not flash or autoplay distractingly.
+- Touch controls should remain comfortably operable; the existing mobile menu is 44×44 CSS px and establishes the minimum target pattern.
+
+## Performance acceptance
+
+- Review intrinsic file size and rendered size for every changed raster asset; avoid downloading a reference-scale image for a small icon.
+- Confirm no broken request, unexpected third-party request, console error, layout shift, or invisible text during load.
+- Preserve the dependency-free production client unless a measured requirement justifies additional code.
+- Because production images currently lack responsive variants and explicit HTML dimensions in several locations, test loading behavior carefully; remediation is a Future Decision rather than assumed completed work.
+
+## Recording results
+
+For a perceptible web change, attach before/after screenshots for affected matrix entries and record:
+
+```text
+Commit / preview URL:
+Reviewer and date:
+Browsers / OS:
+Viewports and zoom:
+Keyboard / screen reader / reduced motion:
+Pages and states checked:
+Console/network result:
+Known differences or follow-up:
+Decision: pass / blocked
+```
+
+Do not approve with unexplained clipping, contrast failures, broken assets, misleading content, or console errors. Roll back or continue iterating—the MADGER standard is quality over speed.
+
+## Future Decisions
+
+- Formal source files, asset ownership/license, third-party usage rules, and an approval owner for brand changes.
+- Exact logo clear-space/minimum-size rules, complete color roles, typography licensing/fallback policy, and downloadable brand kit.
+- Supported browser/device matrix and automated screenshot, accessibility, HTML, performance-budget, and link checks.
+- Responsive image formats/sizes, explicit intrinsic dimensions, asset fingerprinting, and measurable performance budgets.
+- Visual patterns for wallets, transactions, merchant/payment flows, error/recovery states, and trust/safety messaging if practical utility is approved.
