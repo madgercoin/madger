@@ -31,7 +31,7 @@ Use this checklist for every production change. Mark only applicable items in th
 
 ## 4. Implementation quality
 
-- [ ] Production work targets the root static files, not excluded legacy `src/` or `public/` content.
+- [ ] Production work targets the root static files; no obsolete starter content is reintroduced.
 - [ ] New/renamed/removed production files are reflected in `build.mjs`; public URLs, canonical tags, navigation, sitemap, manifest, and 404 behavior are reviewed where relevant.
 - [ ] HTML remains semantic with logical landmarks/headings, unique IDs, correct labels, and safe external-link attributes.
 - [ ] All functionality works with keyboard only; focus is visible; controls expose state; decorative images are hidden and informative images have useful alternatives.
@@ -49,7 +49,7 @@ Use this checklist for every production change. Mark only applicable items in th
 - [ ] Cloudflare dry run succeeds: `npm run check`.
 - [ ] Internal root-relative references resolve in the built artifact.
 - [ ] Changed HTML, CSS, JavaScript, JSON, XML, and headers have been syntax/format checked with an appropriate validator.
-- [ ] Any warning is understood and recorded; a known legacy Astro warning is not used to dismiss unrelated output.
+- [ ] Any warning is understood and recorded; only unavoidable environment-only proxy notices are accepted.
 
 ## 6. Visual and interaction QA
 

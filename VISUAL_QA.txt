@@ -43,7 +43,7 @@ All listed assets are currently copied to production, including reference/reserv
 - Keep complete artwork inside safe margins at every crop. Neighboring fragments, source-board labels, and unintended edge elements must never appear.
 - Use `object-fit: contain` for the full logo. Avatar/profile artwork may use `cover` only when the approved circular composition remains safely centered.
 - Keep important banner content away from edges and likely avatar/overlay zones. Recheck the actual destination preview after any crop.
-- Use the established root assets rather than legacy `public/blog-placeholder-*` imagery, which is excluded from production.
+- Use the established approved root assets; do not reintroduce removed starter imagery.
 - New visual assets require provenance, usage-rights confirmation, optimized exports, descriptive naming, and review at their actual rendered sizes.
 
 ## Review setup
@@ -51,7 +51,7 @@ All listed assets are currently copied to production, including reference/reserv
 1. Run `npm ci && npm run build`.
 2. Serve the built application with `npx wrangler dev`; do not review root-relative assets via `file://`.
 3. Clear/bypass cache or use newly named assets. `/assets/*` is configured as immutable for one year.
-4. Compare against the current reviewed production baseline, not excluded Astro starter pages.
+4. Compare against the current reviewed production baseline, not unrelated starter templates.
 5. Capture the viewport size, browser, operating system, zoom, color/motion preferences, commit SHA, and reviewed URL with screenshots.
 
 ## Required view matrix

@@ -15,7 +15,7 @@ Read `PROJECT_CONTEXT.md`, `README.md`, `PRODUCT_REQUIREMENTS.md`, `SYSTEM_ARCHI
 
 ## Working rules
 
-1. Modify root static files for production. Do not implement production work in excluded `src/` or `public/` Astro starter files.
+1. Modify root static files for production. Do not reintroduce the removed Astro starter without an approved architecture migration.
 2. Keep internal Markdown/TXT documentation out of `build.mjs`.
 3. Preserve the approved brand assets and ink/bone/gold system. Prefer semantic HTML, native controls, progressive enhancement, and zero new client dependencies.
 4. Reproduce the mint by copy/paste and verify exact equality after edits. Never shorten it in safety-critical text.

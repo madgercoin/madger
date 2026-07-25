@@ -38,7 +38,7 @@ madger_round_icon.png   madger_wallet_icon.png
 madger_x_banner.png
 ```
 
-No file in `src/` or `public/` is published. A build log should report 18 copied source files; Wrangler may report 19 files because it reads the generated asset directory representation. Treat an unexpected count as a reason to inspect `dist/`, not as permission to deploy.
+No repository documentation, validation script, package file, or other unlisted source is published. A build log should report 18 copied source files; Wrangler may report 19 files because it reads the generated asset directory representation. Treat an unexpected count as a reason to inspect `dist/`, not as permission to deploy.
 
 ## First-time workstation setup
 
@@ -61,6 +61,8 @@ Cloudflare authentication is intentionally not stored here. Use the organization
    ```sh
    npm ci
    npm run check
+   npm run validate
+   npm audit --omit=dev
    ```
 
 4. Inspect `dist/` and confirm it contains only the allowlisted production files.
@@ -68,7 +70,7 @@ Cloudflare authentication is intentionally not stored here. Use the organization
 6. Verify `robots.txt`, `sitemap.xml`, canonical URLs, manifest paths, and social preview paths use `madgercoin.com` and resolve as intended.
 7. Record the commit SHA and identify the previous known-good Cloudflare deployment before publishing.
 
-Wrangler currently detects the legacy `tsconfig.json` and can warn that `astro/tsconfigs/strict` is unavailable. The current build does not compile Astro and does not ship that file. This is a known repository-cleanup item, not a reason to ignore new errors or warnings.
+Wrangler is maintained and pinned, and obsolete Astro configuration has been removed. `npm run check` should complete without repository warnings; proxy notices caused by an injected local/CI environment are not application defects.
 
 ## Preview and production
 
@@ -94,6 +96,8 @@ For an automated `main` deployment, observe the Cloudflare build rather than als
 
 ## Post-deployment verification
 
+Run `npm run check:deployment` (or set `SITE_URL` to a Workers preview origin) for repeatable HTTP checks, then complete the browser-oriented checks below.
+
 Test the Workers preview URL first when one is available, then `https://madgercoin.com` after the custom domain reports active:
 
 - `/`, `/litepaper.html`, a known missing path, `/styles.css`, `/script.js`, `/manifest.webmanifest`, `/robots.txt`, `/sitemap.xml`, and representative `/assets/*` URLs return the expected content/status.
@@ -106,7 +110,7 @@ Test the Workers preview URL first when one is available, then `https://madgerco
 
 ## Cache and content updates
 
-`_headers` currently gives `/assets/*` a one-year immutable cache policy and `/*.html` a five-minute cache policy. Asset filenames are not content-hashed. Therefore **never replace a production image in place and assume returning visitors will see it immediately**. For time-sensitive asset changes, use a new filename, update all references and the `build.mjs` allowlist, then decide when the old asset can be removed. CSS, JavaScript, manifest, sitemap, and robots caching is not explicitly declared in `_headers`; verify Cloudflare's effective headers after deployment.
+`_headers` currently gives `/assets/*` a one-year immutable cache policy and `/*.html` a five-minute cache policy. Asset filenames are not content-hashed. Therefore **never replace a production image in place and assume returning visitors will see it immediately**. For time-sensitive asset changes, use a new filename, update all references and the `site-config.mjs` allowlist, then decide when the old asset can be removed. CSS, JavaScript, manifest, sitemap, and robots caching is not explicitly declared in `_headers`; verify Cloudflare's effective headers after deployment.
 
 ## Rollback
 

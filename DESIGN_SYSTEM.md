@@ -2,7 +2,7 @@
 
 ## Source of truth
 
-`styles.css` is the implemented source. `VISUAL_QA.txt` defines review criteria. Root image assets are production assets; `public/blog-placeholder-*` files are excluded legacy material.
+`styles.css` is the implemented source. `VISUAL_QA.txt` defines review criteria. Root image assets are production assets; unused Astro placeholder images have been removed.
 
 ## Foundations
 
