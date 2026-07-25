@@ -11,6 +11,8 @@ MADGER's character is resilient, confident, determined, and attentive to detail.
 These files are the contributor source of truth. When implementation and documentation disagree, verify the implementation, correct the documentation in the same change, and call out any unresolved product decision.
 
 - [`README.md`](README.md) — project purpose, repository architecture, contributor standards, and verified status.
+- [`LAUNCH_PLAN.md`](LAUNCH_PLAN.md) — authoritative launch control index; its linked runbooks are internal source documents excluded from `dist/`.
+- [`LAUNCH_DECISIONS.md`](LAUNCH_DECISIONS.md) — the eight founder approvals that remain required before launch actions.
 - [`README_DEPLOY.txt`](README_DEPLOY.txt) — reproducible build, Cloudflare Workers deployment, rollback, and operations runbook.
 - [`IMPLEMENTATION_CHECKLIST.txt`](IMPLEMENTATION_CHECKLIST.txt) — release gates for content, engineering, security, launch, and future utility.
 - [`VISUAL_QA.txt`](VISUAL_QA.txt) — brand asset inventory and visual/accessibility review procedure.
@@ -32,6 +34,7 @@ The production application is deliberately small and static:
 | Brand assets | Root-level `madger_*` images and `favicon.png` | Approved production imagery copied to `/assets/` at build time |
 | Web metadata | `manifest.webmanifest`, `robots.txt`, `sitemap.xml`, `_headers` | Install metadata, crawler discovery, canonical URLs, security headers, and cache policy |
 | Build | `build.mjs`, `site-config.mjs` | Clears `dist/` and copies the centralized explicit allowlist without transformation |
+| Launch state | `launch-state.js` | Defines the four allowed public states and keeps `MINTED_NOT_TRADING` active across every public page |
 | Validation | `scripts/`, `.github/workflows/ci.yml` | Maintained content, artifact, syntax, secret, dependency, and Cloudflare checks run on every PR to `main` and push to `main` |
 | Hosting | `wrangler.json` | Cloudflare Workers Static Assets configuration, trailing-slash handling, and the custom 404 page |
 
@@ -72,7 +75,7 @@ npm run check
 ## Making a change
 
 1. Start from a clean branch and read all four documentation files.
-2. Confirm the statement or behavior in current production files; do not infer token, treasury, liquidity, legal, payment, or governance details.
+2. Confirm the statement or behavior in current production files. Launch work must follow `LAUNCH_PLAN.md`; do not infer treasury, liquidity, legal, payment, or governance decisions.
 3. Make the smallest maintainable change. Preserve semantic HTML, keyboard access, visible focus, reduced-motion support, responsive layouts, and the existing visual language.
 4. If a deployable file or asset is added or removed, update `build.mjs`; if a public page changes location, also review `sitemap.xml`, canonical metadata, navigation, and redirects/404 behavior.
 5. Run the build and release checks in `IMPLEMENTATION_CHECKLIST.txt`, including the visual procedure when presentation changes.
@@ -112,7 +115,7 @@ Only these endpoints are verified by the current repository:
 
 The repository does not yet verify the following. Contributors and AI assistants must not invent answers:
 
-- Public-launch method and date, supply confirmation, decimals, allocations, vesting, authorities, liquidity structure, trading venue, and treasury/operations wallet controls.
+- Founder approvals enumerated in `LAUNCH_DECISIONS.md`; no allocation transfer or launch action is authorized by the documentation package.
 - Project ownership, maintainer approval policy, community governance, contribution licensing, code license, brand-asset usage rights, and a vulnerability-reporting contact/process.
 - Analytics, monitoring, release environments, custom-domain ownership procedures, and formal availability targets.
 - The scope, sequencing, compliance requirements, custody model, supported assets/regions, vendors, and security architecture for real-world crypto payments or any other utility.

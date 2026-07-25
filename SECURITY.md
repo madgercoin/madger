@@ -13,9 +13,11 @@ The application is static and collects no user data. `_headers` sets CSP, HSTS, 
 
 CI scans high-confidence secret patterns, validates the production artifact and mint, and runs a production-only dependency audit. Wrangler is pinned at `4.114.0`; upgrading from `4.88.0` resolved six findings inherited through its development-only `esbuild`/Miniflare toolchain (`sharp`, `undici`, and `ws`) without a forced major upgrade. `npm audit` now reports zero findings.
 
+The launch-state validator requires all public pages to load the same controller, keeps `MINTED_NOT_TRADING` active, and rejects known trading hosts before launch. Artifact validation proves launch-control documents and the five operational wallet addresses remain outside `dist/`. Public mint verification remains available; custody records and signing material never are.
+
 ## Contributor rules
 
-Never commit seed phrases, keys, tokens, private wallet details, personal data, or unapproved addresses. Verify mint changes character by character and across official channels with multiple authorized reviewers. Avoid remote scripts, trackers, forms, wallet adapters, and dependencies unless threat-modeled and approved. Review generated `dist/` and Git diff for disclosure before release.
+Never commit seed phrases, keys, tokens, private wallet details, personal data, or unapproved addresses. Public operational addresses may appear only in the internal wallet runbook and transaction records, never the deployed artifact. Verify mint changes character by character and across official channels with multiple authorized reviewers. Avoid remote scripts, trackers, forms, wallet adapters, and dependencies unless threat-modeled and approved. Review generated `dist/` and Git diff for disclosure before release.
 
 ## Incident handling
 

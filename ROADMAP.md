@@ -4,11 +4,11 @@ Roadmap items are directions, not promises, dates, investment expectations, or p
 
 ## Phase 1 — Build The Burrow (in progress)
 
-Maintain the approved brand, production website, litepaper, official mint verification, safety language, community channels, original content, contributor standards, and public-launch readiness. MADGER is already minted; this phase does not imply trading availability.
+Maintain the approved brand, production website, litepaper, official mint verification, safety language, community channels, original content, contributor standards, and the reviewed launch control package. The centrally controlled state remains `MINTED_NOT_TRADING`; readiness documentation does not imply trading availability or authorize a transaction.
 
 ## Phase 2 — Public launch readiness
 
-If and when authorized, disclose final verified token facts, material risks, launch method/timing, authority and liquidity information, and safe official-channel verification. No date, liquidity pool, listing, venue, or availability is currently announced.
+Resolve the founder approvals in `LAUNCH_DECISIONS.md`, pass the runbook go/no-go gates, and—if and when authorized—disclose final verified method/timing, authority and liquidity facts, material risks, and official-channel verification. No date, liquidity pool, listing, venue, or availability is currently announced.
 
 ## Phase 3 — Sustainable community growth
 
