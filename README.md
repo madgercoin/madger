@@ -2,9 +2,9 @@
 
 This repository is the production source for [madgercoin.com](https://madgercoin.com), the official home of MADGER: a professional, community-driven Solana memecoin represented by the Honey Badger.
 
-MADGER's character is resilient, confident, determined, and attentive to detail. The product standard follows the character: quality before speed, facts before hype, and durable systems before short-lived trends. The long-term direction is to grow from a memecoin and character brand into a cryptocurrency ecosystem with practical utility, including real-world crypto payments when the project can support them responsibly. That direction is a vision—not a promise that a product, token, or utility currently exists.
+MADGER's character is resilient, confident, determined, and attentive to detail. The product standard follows the character: quality before speed, facts before hype, and durable systems before short-lived trends. The long-term direction is to grow from a memecoin and character brand into a cryptocurrency ecosystem with practical utility, including real-world crypto payments when the project can support them responsibly. That direction is a vision—not a promise that payment functionality or other utility currently exists.
 
-> **Current verified status:** the site and litepaper describe MADGER as pre-launch. No official token contract has been announced. Never add or circulate a contract address until it has been approved and published through the official channels listed below.
+> **Current verified status:** MADGER has been minted on Solana but has not yet been publicly launched for trading. The official mint address is `BHauMX8akk2umqkQqnJwpYkCRkZmefGnEBFByeFXRKqv`. No public launch date, liquidity pool, exchange listing, or payment utility has been announced. Verify this address against the official channels listed below before relying on it.
 
 ## Documentation map
 
@@ -107,7 +107,7 @@ Only these endpoints are verified by the current repository:
 
 The repository does not yet verify the following. Contributors and AI assistants must not invent answers:
 
-- Final token contract, launch method and date, supply confirmation, allocations, vesting, authorities, liquidity structure, and treasury/operations wallet controls.
+- Public launch method and date, confirmed supply and decimals, allocations, vesting, mint/freeze authority status, liquidity structure, and treasury/operations wallet controls.
 - Project ownership, maintainer approval policy, community governance, contribution licensing, code license, brand-asset usage rights, and a vulnerability-reporting contact/process.
 - Analytics, monitoring, automated tests, CI requirements, release environments, custom-domain ownership procedures, and formal availability targets.
 - The scope, sequencing, compliance requirements, custody model, supported assets/regions, vendors, and security architecture for real-world crypto payments or any other utility.
