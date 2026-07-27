@@ -13,7 +13,7 @@
     TRADING_LIVE: "Public trading is live — verify the mint and official venue before acting.",
     PAUSED_OR_DELAYED: "Public launch is paused or delayed — do not follow trading instructions."
   });
-  document.documentElement.dataset.launchState = current;
   document.querySelectorAll("[data-launch-state]").forEach(node => { node.textContent = labels[current]; });
+  document.documentElement.dataset.launchState = current;
   window.MADGER_LAUNCH_STATE = Object.freeze({ STATES, current });
 })();
