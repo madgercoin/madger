@@ -1,6 +1,6 @@
 # MADGER asset manifest
 
-All published files below belong to the final approved black, charcoal, cream, bronze, and gold MADGER identity. They supersede the rejected green concept and all chain/sunglasses mascot artwork.
+All published files below use the single approved black, charcoal, cream, bronze, and gold MADGER identity.
 
 | Source | Public path | Approved use |
 | --- | --- | --- |

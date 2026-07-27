@@ -17,7 +17,6 @@ The production design is defined in `styles.css` and the root brand assets.
 | `--sand` | `#c8ad7b` | Secondary labels and warm detail |
 | `--gold` | `#d4af37` | Primary accent, headings, focus/interaction emphasis |
 | `--gold2` | `#b8860b` | Reserved darker gold |
-| `--moss` | `#69764d` | Reserved natural accent |
 
 Typography uses an Impact/Arial Black-style condensed display stack for high-impact uppercase headings and a system UI sans-serif stack for body/interface text. The overall language is dark, grounded, tactile, and bold—not glossy casino styling. Gold is an accent, not a substitute for hierarchy or readable body text.
 

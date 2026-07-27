@@ -47,17 +47,6 @@ The approved identity is dark, warm, tactile, and premium:
 
 Use the approved gold-edged circular coin emblem, the crossed-arms 3D mascot, and the distressed brush-style MADGER wordmark. Preserve the original expression, white forehead stripe, proportions, safe margins, and warm black/cream/gold balance.
 
-## Rejected concepts
-
-Never reintroduce:
-
-- the green-accented “We don’t follow. We lead the Burrow” identity;
-- leaf-heavy or bright-green layouts;
-- the Cuban-chain “thug” mascot;
-- sunglasses, clothing, chains, medallions, or an open-arms pose;
-- an aggressive monster treatment that loses the cute, trustworthy character; or
-- alternate mascot anatomy that removes the round eyes, puffier cheeks, short arms, tiny fang, or distinctive forehead stripe.
-
 ## Asset usage
 
 - `madger_full_logo.png` is the approved master circular emblem.
