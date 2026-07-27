@@ -10,12 +10,11 @@ The approved mascot has:
 - a bold white lightning/zigzag forehead stripe;
 - large round eyes and slightly softened eyebrows;
 - puffier cheeks, round ears, and a fluffy texture;
-- short, thick arms and reduced claws;
-- a crossed-arms pose for the full character;
+- a face-forward composition contained inside the gold coin border;
 - a small visible fang; and
 - a confident, skeptical expression.
 
-The mascot wears no clothing, sunglasses, jewelry, chain, or medallion.
+Only the approved face-forward gold coin emblem may be used as the canonical mascot.
 
 ## Naming and messaging
 
@@ -45,7 +44,7 @@ The approved identity is dark, warm, tactile, and premium:
 | Bronze | `#8b5e34` |
 | Gold | `#d4af37` |
 
-Use the approved gold-edged circular coin emblem, the crossed-arms 3D mascot, and the distressed brush-style MADGER wordmark. Preserve the original expression, white forehead stripe, proportions, safe margins, and warm black/cream/gold balance.
+Use the approved face-forward gold-edged circular coin emblem and the distressed brush-style MADGER wordmark. Preserve the original expression, white forehead stripe, proportions, safe margins, and warm black/cream/gold balance.
 
 ## Asset usage
 
@@ -53,7 +52,7 @@ Use the approved gold-edged circular coin emblem, the crossed-arms 3D mascot, an
 - `madger_profile.png`, `madger_round_icon.png`, `madger_wallet_icon.png`, and `favicon.png` are size-specific derivatives of the same emblem.
 - `madger_x_banner.png` uses the approved dark/gold social composition and primary tagline.
 - `madger_hero.jpg` uses the approved emblem and “Small Badger. Big Mood.” message.
-- `madger_brand_guide.png` and `madger_brand_board.jpg` document the final identity, character poses, colors, wordmark, and social applications.
+- `madger_brand_guide.png` and `madger_brand_board.jpg` document the single approved identity, colors, wordmark, and social applications.
 
 Do not stretch, mirror, recolor, redraw, or crop through the emblem. Keep the full coin border, ears, forehead stripe, eyes, and fang visible.
 
