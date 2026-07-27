@@ -12,15 +12,11 @@ export const rootFiles = [
 ];
 
 export const assetFiles = [
-  "favicon.png",
-  "madger_brand_board.jpg",
-  "madger_brand_guide.png",
-  "madger_full_logo.png",
-  "madger_hero.jpg",
-  "madger_profile.png",
-  "madger_round_icon.png",
-  "madger_wallet_icon.png",
-  "madger_x_banner.png"
+  "madger_v5_graphics.webp",
+  "madger_v5_hero.webp",
+  "madger_v5_icon.png",
+  "madger_v5_mascot.webp",
+  "madger_v5_profile.webp"
 ];
 
 export const distAllowlist = [

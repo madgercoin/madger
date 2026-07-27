@@ -1,6 +1,6 @@
 const baseUrl = (process.env.SITE_URL ?? "https://madgercoin.com").replace(/\/$/, "");
 const officialMint = "BHauMX8akk2umqkQqnJwpYkCRkZmefGnEBFByeFXRKqv";
-const checks = [["/", 200], ["/litepaper.html", 200], ["/__deployment-check-missing-page__", 404], ["/styles.css", 200], ["/script.js", 200], ["/manifest.webmanifest", 200], ["/robots.txt", 200], ["/sitemap.xml", 200], ["/assets/madger_hero.jpg", 200], ["/assets/favicon.png", 200]];
+const checks = [["/", 200], ["/litepaper.html", 200], ["/__deployment-check-missing-page__", 404], ["/styles.css", 200], ["/script.js", 200], ["/manifest.webmanifest", 200], ["/robots.txt", 200], ["/sitemap.xml", 200], ["/assets/madger_v5_hero.webp", 200], ["/assets/madger_v5_icon.png", 200]];
 const failures = [];
 let homepage;
 
