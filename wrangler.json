@@ -9,5 +9,5 @@
     "binding": "ASSETS",
     "run_worker_first": true
   },
-  "main": "./worker.js"
+  "main": "./worker.generated.js"
 }
