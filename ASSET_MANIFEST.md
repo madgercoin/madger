@@ -1,29 +1,30 @@
-# Asset manifest
+# MADGER asset manifest
 
-## Published brand assets
+All published files below belong to the final approved black, charcoal, cream, bronze, and gold MADGER identity. They supersede the rejected green concept and all chain/sunglasses mascot artwork.
 
-| Source | Public path | Current use |
+| Source | Public path | Approved use |
 | --- | --- | --- |
-| `favicon.png` | `/assets/favicon.png` | favicon and web manifest |
-| `madger_hero.jpg` | `/assets/madger_hero.jpg` | homepage hero |
-| `madger_full_logo.png` | `/assets/madger_full_logo.png` | Meet MADGER card |
-| `madger_profile.png` | `/assets/madger_profile.png` | header, footer, 404 |
-| `madger_round_icon.png` | `/assets/madger_round_icon.png` | community card |
-| `madger_x_banner.png` | `/assets/madger_x_banner.png` | Open Graph/X image |
-| `madger_wallet_icon.png` | `/assets/madger_wallet_icon.png` | reserved; not rendered |
-| `madger_brand_board.jpg` | `/assets/madger_brand_board.jpg` | reference; not rendered |
-| `madger_brand_guide.png` | `/assets/madger_brand_guide.png` | reference; not rendered |
+| `favicon.png` | `/assets/favicon.png` | Browser and manifest icon |
+| `madger_hero.jpg` | `/assets/madger_hero.jpg` | Homepage hero with “Small Badger. Big Mood.” |
+| `madger_full_logo.png` | `/assets/madger_full_logo.png` | Master circular gold-edged MADGER emblem |
+| `madger_profile.png` | `/assets/madger_profile.png` | Header, footer, social avatar, and 404 |
+| `madger_round_icon.png` | `/assets/madger_round_icon.png` | Telegram/community icon |
+| `madger_x_banner.png` | `/assets/madger_x_banner.png` | X banner and Open Graph image |
+| `madger_wallet_icon.png` | `/assets/madger_wallet_icon.png` | Wallet/token-listing icon |
+| `madger_brand_board.jpg` | `/assets/madger_brand_board.jpg` | Compressed final brand reference |
+| `madger_brand_guide.png` | `/assets/madger_brand_guide.png` | Full-resolution final brand guide |
 
-`site-config.mjs` is authoritative for publication. The obsolete Astro `public/` assets were removed because they had no production purpose.
+## Canonical mascot
 
-## Handling rules
+The canonical mascot is a cute, trustworthy, permanently unimpressed 3D Honey Badger with black-and-white fur, warm cream details, a white lightning/zigzag forehead stripe, large round eyes, puffier cheeks, short thick arms, reduced claws, crossed arms, and a tiny fang. It has no clothes, sunglasses, chain, or medallion.
 
-Preserve aspect ratio and safe margins. Optimize additions, use descriptive filenames, verify rights/provenance, add them to `build.mjs` only if public, and update references/documentation together. Because `/assets/*` is cached immutable for one year and filenames are not hashed, use a new filename for time-sensitive revisions.
+## Handling
+
+Preserve aspect ratio, full coin borders, safe margins, original expression, and color. Do not use source-board fragments as standalone production artwork. New variants must derive from the approved master and remain recognizable at their actual rendered size.
+
+`site-config.mjs` is authoritative for publication. Because `/assets/*` uses long-lived caching, verify the production deployment after every approved asset replacement.
 
 ## Security
 
-Never store QR codes, screenshots, or artwork that embeds an unapproved address, credential, private wallet information, personal data, or misleading purchase instruction.
+Never embed seed phrases, private keys, private wallet information, unapproved addresses, QR codes, misleading purchase instructions, price guarantees, or fabricated partnerships in brand artwork.
 
-## Future Decisions
-
-Asset ownership/licensing, canonical master files, checksums/dimensions, automated optimization, responsive variants, and removal of public reference/reserved assets require approval.

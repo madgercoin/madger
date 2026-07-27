@@ -1,23 +1,74 @@
 # MADGER brand guidelines
 
-## Brand foundation
+## Final approved identity
 
-MADGER's Honey Badger embodies resilience, confidence, determination, and attention to detail. The Burrow is community-driven. The voice is direct, dry, capable, and calm under pressure: “No hype. No panic. Just dig.” Quality outranks speed.
+MADGER is a cute, trustworthy, permanently unimpressed 3D Honey Badger. The character is grumpy, fearless, relentless, sarcastic, and loyal to The Burrow. MADGER never panics and never quits.
 
-## Naming and voice
+The approved mascot has:
 
-Use **MADGER** for the project and **$MADGER** only for the proposed ticker. Use **The Burrow** for the community. Bold humor is welcome; hostility, deception, artificial urgency, financial promotion, and claims beyond verified facts are not.
+- black-and-white fur with warm cream details;
+- a bold white lightning/zigzag forehead stripe;
+- large round eyes and slightly softened eyebrows;
+- puffier cheeks, round ears, and a fluffy texture;
+- short, thick arms and reduced claws;
+- a crossed-arms pose for the full character;
+- a small visible fang; and
+- a confident, skeptical expression.
 
-Describe status precisely: **“Minted on Solana; not yet publicly launched for trading.”** Never substitute “no token,” “contract not announced,” “available now,” or similar inaccurate language.
+The mascot wears no clothing, sunglasses, jewelry, chain, or medallion.
 
-## Visual identity
+## Naming and messaging
 
-Use the approved root `madger_*` assets. The core palette is ink `#0d0d0c`, secondary ink `#171714`, panel `#22221e`, bone `#f2ead9`, sand `#c8ad7b`, and gold `#d4af37`. Display typography is condensed and forceful; body typography is a readable system sans serif. Preserve asset proportions, safe margins, original color, and mascot expression.
+- Project name: **MADGER**
+- Ticker: **$MADGER**
+- Blockchain: **Solana**
+- Community: **The Burrow**
+- Primary tagline: **Small Badger. Big Mood.**
+- Supporting slogans: **Stay Mad.**, **Keep Digging.**, and **The Burrow Never Sleeps.**
+- Approved identity line: **The Badger. The Attitude. The Coin.**
+
+Use **MADGER** for the project and **$MADGER** when referring specifically to the ticker. The voice is direct, dry, sarcastic, capable, and calm under pressure. Bold humor is welcome; hostility, deception, artificial urgency, financial promotion, and claims beyond verified facts are not.
+
+Describe the current status precisely: **“Minted on Solana; not yet publicly launched for trading.”**
+
+## Final visual system
+
+The approved identity is dark, warm, tactile, and premium:
+
+| Role | Color |
+| --- | --- |
+| Black | `#0d0d0d` |
+| Charcoal | `#2b2b2b` |
+| Bone | `#f2ead9` |
+| Cream | `#e8dec9` |
+| Sand | `#c8ad7b` |
+| Bronze | `#8b5e34` |
+| Gold | `#d4af37` |
+
+Use the approved gold-edged circular coin emblem, the crossed-arms 3D mascot, and the distressed brush-style MADGER wordmark. Preserve the original expression, white forehead stripe, proportions, safe margins, and warm black/cream/gold balance.
+
+## Rejected concepts
+
+Never reintroduce:
+
+- the green-accented “We don’t follow. We lead the Burrow” identity;
+- leaf-heavy or bright-green layouts;
+- the Cuban-chain “thug” mascot;
+- sunglasses, clothing, chains, medallions, or an open-arms pose;
+- an aggressive monster treatment that loses the cute, trustworthy character; or
+- alternate mascot anatomy that removes the round eyes, puffier cheeks, short arms, tiny fang, or distinctive forehead stripe.
+
+## Asset usage
+
+- `madger_full_logo.png` is the approved master circular emblem.
+- `madger_profile.png`, `madger_round_icon.png`, `madger_wallet_icon.png`, and `favicon.png` are size-specific derivatives of the same emblem.
+- `madger_x_banner.png` uses the approved dark/gold social composition and primary tagline.
+- `madger_hero.jpg` uses the approved emblem and “Small Badger. Big Mood.” message.
+- `madger_brand_guide.png` and `madger_brand_board.jpg` document the final identity, character poses, colors, wordmark, and social applications.
+
+Do not stretch, mirror, recolor, redraw, or crop through the emblem. Keep the full coin border, ears, forehead stripe, eyes, and fang visible.
 
 ## Safety expression
 
-The full mint should be legible, selectable, and paired with trading-status and verification warnings. Safety copy should be plain rather than playful. Do not use urgency, countdowns, “buy” language, price charts, or exchange-like visual cues before an approved public launch.
+The full mint must remain legible, selectable, and paired with trading-status and verification warnings. Do not use urgency, countdowns, “buy” language, price charts, exchange-like visual cues, profit promises, or purchase instructions before an approved public launch.
 
-## Future Decisions
-
-Formal trademark/asset licenses, clear-space measurements, minimum sizes, downloadable kit governance, merchandise rules, and brand approval ownership are not established.
