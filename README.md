@@ -107,6 +107,8 @@ Only these endpoints are verified by the current repository:
 
 - Website: [madgercoin.com](https://madgercoin.com)
 - X: [@madgercoin](https://x.com/madgercoin)
+- Instagram: [@madgercoin](https://www.instagram.com/madgercoin/)
+- Facebook: [Madger Coin](https://www.facebook.com/share/1LEM9iUfP2/)
 - Announcements: [t.me/madgercoin](https://t.me/madgercoin)
 - Community: [t.me/madgerburrow](https://t.me/madgerburrow)
 - Contact: [madgercoin@gmail.com](mailto:madgercoin@gmail.com)
