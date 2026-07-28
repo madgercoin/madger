@@ -1,0 +1,114 @@
+{
+  "generatedAt": "2026-07-28T09:32:38.549Z",
+  "window": {
+    "start": "2026-06-28T09:32:38.549Z",
+    "end": "2026-07-28T09:32:38.549Z"
+  },
+  "organization": {
+    "id": "6a67aceacff325d8d2d231e9",
+    "name": "My Organization"
+  },
+  "channels": [
+    {
+      "channelId": "6a67ecc14b2d03035f50dbad",
+      "channel": "Madger Coin",
+      "service": "facebook",
+      "externalLink": "https://facebook.com/1279493098576451",
+      "healthy": true,
+      "queuePaused": false,
+      "metricsUpdatedAt": "2026-07-27T23:41:58.233Z",
+      "metrics": {
+        "postCount": 4,
+        "reactions": 0,
+        "comments": 0,
+        "engagementRate": 6.67,
+        "impressions": 15,
+        "shares": 1,
+        "clicks": 0
+      },
+      "requiresCommunityReview": false
+    },
+    {
+      "channelId": "6a67af404b2d03035f4e8e79",
+      "channel": "Madger",
+      "service": "youtube",
+      "externalLink": "https://www.youtube.com/channel/UCqbAvD8zi6psByKRk50qCkg",
+      "healthy": true,
+      "queuePaused": false,
+      "metricsUpdatedAt": "2026-07-27T23:32:39.038Z",
+      "metrics": {
+        "postCount": 1,
+        "reactions": 0,
+        "comments": 0,
+        "engagementRate": 0,
+        "views": 0
+      },
+      "requiresCommunityReview": false
+    },
+    {
+      "channelId": "6a67af8a4b2d03035f4e91f4",
+      "channel": "MadgerCoin",
+      "service": "twitter",
+      "externalLink": "https://twitter.com/MadgerCoin",
+      "healthy": true,
+      "queuePaused": false,
+      "metricsUpdatedAt": null,
+      "metrics": {
+        "postCount": 0,
+        "reactions": 0,
+        "comments": 0,
+        "engagementRate": 0,
+        "reposts": 0,
+        "impressions": 0,
+        "clicks": 0
+      },
+      "requiresCommunityReview": false
+    },
+    {
+      "channelId": "6a67aebb4b2d03035f4e8b45",
+      "channel": "madgercoin",
+      "service": "instagram",
+      "externalLink": "https://instagram.com/madgercoin",
+      "healthy": true,
+      "queuePaused": false,
+      "metricsUpdatedAt": "2026-07-27T19:19:57.565Z",
+      "metrics": {
+        "postCount": 3,
+        "reactions": 0,
+        "comments": 0,
+        "engagementRate": 0,
+        "impressions": 0,
+        "views": 0,
+        "shares": 0,
+        "saves": 0,
+        "follows": 0,
+        "reach": 0
+      },
+      "requiresCommunityReview": false
+    },
+    {
+      "channelId": "6a67b0034b2d03035f4e9477",
+      "channel": "themadgercoin",
+      "service": "tiktok",
+      "externalLink": "https://tiktok.com/@themadgercoin",
+      "healthy": true,
+      "queuePaused": false,
+      "metricsUpdatedAt": null,
+      "metrics": {
+        "postCount": 0,
+        "reactions": 0,
+        "comments": 0,
+        "engagementRate": 0,
+        "views": 0,
+        "shares": 0,
+        "reach": 0
+      },
+      "requiresCommunityReview": false
+    }
+  ],
+  "limitations": [
+    "Buffer metrics refresh approximately daily.",
+    "A comment count identifies engagement but does not expose message text through the documented public API.",
+    "Individual replies must use Buffer Community or the native social network until a supported reply endpoint exists."
+  ]
+}
