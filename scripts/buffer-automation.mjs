@@ -73,7 +73,7 @@ function metadataFor(entry) {
     case 'instagram':
       return { instagram: { shouldShareToFeed: true, isAiGenerated: true, text: entry.text } };
     case 'facebook':
-      return { facebook: { type: 'reel', title: entry.title } };
+      return { facebook: { type: 'reel' } };
     case 'tiktok':
       return { tiktok: { isAiGenerated: true } };
     case 'youtube':
