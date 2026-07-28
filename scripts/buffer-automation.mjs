@@ -77,7 +77,7 @@ function metadataFor(entry) {
     case 'tiktok':
       return { tiktok: { isAiGenerated: true } };
     case 'youtube':
-      return { youtube: { title: entry.title, privacy: 'public', madeForKids: false, embeddable: true, notifySubscribers: true, isAiGenerated: true } };
+      return { youtube: { title: entry.title, categoryId: '24', privacy: 'public', madeForKids: false, embeddable: true, notifySubscribers: true, isAiGenerated: true } };
     case 'twitter':
       return { twitter: { isAiGenerated: true } };
     default:
