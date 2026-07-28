@@ -40,6 +40,23 @@ function linkHref(html, rel) {
   return tag?.match(/\bhref=["']([^"']*)["']/i)?.[1] ?? null;
 }
 
+function visibleText(html) {
+  return html
+    .replace(/<script[\s\S]*?<\/script>/gi, " ")
+    .replace(/<style[\s\S]*?<\/style>/gi, " ")
+    .replace(/<[^>]+>/g, " ")
+    .replace(/&(?:mdash|ndash|middot);/g, " ")
+    .replace(/&amp;/g, " and ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function visibleBlocks(html) {
+  return [...html.matchAll(/<(?:p|summary|h[1-3]|blockquote)\b[^>]*>([\s\S]*?)<\/(?:p|summary|h[1-3]|blockquote)>/gi)]
+    .map(match => visibleText(match[1]).toLowerCase())
+    .filter(text => text.length >= 50);
+}
+
 const manifest = JSON.parse(await readFile("manifest.webmanifest", "utf8"));
 for (const icon of manifest.icons ?? []) {
   const source = icon.src.replace(/^\/assets\//, "");
@@ -126,6 +143,25 @@ for (const [file, expectedCanonical] of indexablePages) {
 
 if (!metaContent(pages.get("404.html"), "name", "robots")?.includes("noindex")) {
   failures.push("404.html: missing noindex directive");
+}
+
+const visiblePages = new Map([...pages].map(([file, html]) => [file, visibleText(html).toLowerCase()]));
+const obsoleteStatus = "minted on solana — not yet publicly launched for trading";
+for (const [file, text] of visiblePages) {
+  if (text.includes(obsoleteStatus)) failures.push(`${file}: repetitive legacy status sentence is present`);
+}
+const statusPatterns = /public(?:ly)? (?:launched for )?trading|public market|market launch|trading status/g;
+for (const file of indexablePages.keys()) {
+  const count = visiblePages.get(file).match(statusPatterns)?.length ?? 0;
+  if (count > 1) failures.push(`${file}: visible trading-status language appears ${count} times; keep one purposeful status surface`);
+}
+if (/mint|trading|launch|financial advice|crypto assets/i.test(visiblePages.get("404.html"))) {
+  failures.push("404.html: error-page copy must stay navigational rather than repeat project disclosures");
+}
+const homepageBlocks = new Set(visibleBlocks(pages.get("index.html")));
+const crossPageDuplicates = visibleBlocks(pages.get("litepaper.html")).filter(block => homepageBlocks.has(block));
+if (crossPageDuplicates.length) {
+  failures.push(`index.html/litepaper.html: repeated visible block(s): ${crossPageDuplicates.join(" | ")}`);
 }
 
 const sitemap = await readFile("sitemap.xml", "utf8");
