@@ -1,9 +1,12 @@
+import { createHash } from "node:crypto";
 import { readFile } from "node:fs/promises";
 
 const statePages = ["index.html", "litepaper.html"];
 const informationalPages = ["index.html", "litepaper.html", "404.html"];
 const mint = "BHauMX8akk2umqkQqnJwpYkCRkZmefGnEBFByeFXRKqv";
 const stateSource = await readFile("launch-state.js", "utf8");
+const stateBlobHeader = `blob ${Buffer.byteLength(stateSource)}\0`;
+const stateCacheKey = createHash("sha1").update(stateBlobHeader).update(stateSource).digest("hex").slice(0, 8);
 const failures = [];
 if (!/const current = STATES\.MINTED_NOT_TRADING;/.test(stateSource)) failures.push("MINTED_NOT_TRADING is not the active launch state");
 for (const state of ["MINTED_NOT_TRADING", "LAUNCH_SCHEDULED", "TRADING_LIVE", "PAUSED_OR_DELAYED"]) {
@@ -16,7 +19,7 @@ const tradingHosts = /(?:raydium\.io|jup\.ag|birdeye\.so|dexscreener\.com|orca\.
 for (const page of statePages) {
   const html = await readFile(page, "utf8");
   if (!html.includes("data-launch-state")) failures.push(`${page}: no centralized launch-state surface`);
-  if (!html.includes("/launch-state.js")) failures.push(`${page}: launch-state controller absent`);
+  if (!html.includes(`/launch-state.js?v=${stateCacheKey}`)) failures.push(`${page}: launch-state controller must use cache key ${stateCacheKey}`);
 }
 for (const page of informationalPages) {
   const html = await readFile(page, "utf8");

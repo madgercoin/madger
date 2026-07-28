@@ -1,4 +1,5 @@
 import fs from 'node:fs/promises';
+import { evaluateScheduledEntry } from './buffer-automation-core.mjs';
 
 const API_URL = 'https://api.buffer.com';
 const token = process.env.BUFFER_API_TOKEN;
@@ -129,17 +130,12 @@ async function publish() {
     }
   `;
   for (const { entry, channel } of resolved) {
-    if (!entry.mediaUrl?.startsWith('https://')) {
-      throw new Error(`Public HTTPS mediaUrl missing for ${entry.id}`);
-    }
-    const dueAt = new Date(entry.dueAt);
-    if (!Number.isFinite(dueAt.getTime())) throw new Error(`Invalid dueAt for ${entry.id}`);
-    if (dueAt.getTime() <= Date.now()) throw new Error(`Expired dueAt for ${entry.id}`);
-    const duplicate = existing.find((post) =>
-      post.channelId === channel.id &&
-      post.text === entry.text &&
-      new Date(post.dueAt).toISOString() === dueAt.toISOString()
-    );
+    const { dueAt, duplicate } = evaluateScheduledEntry({
+      entry,
+      channelId: channel.id,
+      existingPosts: existing,
+      now: Date.now(),
+    });
     if (duplicate) {
       console.log(`Skipping existing post ${entry.id}: ${duplicate.id}`);
       continue;
