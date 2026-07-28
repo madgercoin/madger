@@ -1,6 +1,11 @@
 name: MADGER Buffer Automation
 
 on:
+  push:
+    branches:
+      - main
+    paths:
+      - ".github/workflows/buffer-automation.yml"
   workflow_dispatch:
     inputs:
       operation:
@@ -38,7 +43,7 @@ jobs:
   buffer:
     name: Run Buffer operation
     needs: validate
-    if: github.event_name == 'workflow_dispatch' || vars.BUFFER_AUTOMATION_ENABLED == 'true'
+    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch' || vars.BUFFER_AUTOMATION_ENABLED == 'true'
     runs-on: ubuntu-latest
     environment: production
     steps:
@@ -51,7 +56,7 @@ jobs:
           BUFFER_API_TOKEN: ${{ secrets.BUFFER_API_TOKEN }}
         run: test -n "$BUFFER_API_TOKEN"
       - name: Discover connected Buffer channels
-        if: github.event_name == 'workflow_dispatch' && inputs.operation == 'discover'
+        if: github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && inputs.operation == 'discover')
         env:
           BUFFER_API_TOKEN: ${{ secrets.BUFFER_API_TOKEN }}
           BUFFER_ORGANIZATION_ID: ${{ vars.BUFFER_ORGANIZATION_ID }}
