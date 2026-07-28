@@ -71,7 +71,7 @@ function findChannel(channels, target) {
 function metadataFor(entry) {
   switch (entry.service) {
     case 'instagram':
-      return { instagram: { shouldShareToFeed: true, isAiGenerated: true, text: entry.text } };
+      return { instagram: { type: 'reel', shouldShareToFeed: true, isAiGenerated: true } };
     case 'facebook':
       return { facebook: { type: 'reel' } };
     case 'tiktok':
