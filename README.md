@@ -34,7 +34,7 @@ The production application is deliberately small and static:
 | Brand assets | Root-level `madger_*` images and `favicon.png` | Approved production imagery copied to `/assets/` at build time |
 | Web metadata | `manifest.webmanifest`, `robots.txt`, `sitemap.xml`, `_headers` | Install metadata, crawler discovery, canonical URLs, security headers, and cache policy |
 | Build | `build.mjs`, `site-config.mjs` | Clears `dist/` and copies the centralized explicit allowlist without transformation |
-| Launch state | `launch-state.js` | Defines the four allowed public states and keeps `MINTED_NOT_TRADING` active across every public page |
+| Launch state | `launch-state.js` | Defines the four allowed public states for indexable project pages; the navigational 404 intentionally carries no launch disclosure |
 | Validation | `scripts/`, `.github/workflows/ci.yml` | Maintained content, artifact, syntax, secret, dependency, and Cloudflare checks run on every PR to `main` and push to `main` |
 | Hosting | `wrangler.json` | Cloudflare Workers Static Assets configuration, trailing-slash handling, and the custom 404 page |
 
@@ -77,7 +77,7 @@ npm run check
 1. Start from a clean branch and read all four documentation files.
 2. Confirm the statement or behavior in current production files. Launch work must follow `LAUNCH_PLAN.md`; do not infer treasury, liquidity, legal, payment, or governance decisions.
 3. Make the smallest maintainable change. Preserve semantic HTML, keyboard access, visible focus, reduced-motion support, responsive layouts, and the existing visual language.
-4. If a deployable file or asset is added or removed, update `build.mjs`; if a public page changes location, also review `sitemap.xml`, canonical metadata, navigation, and redirects/404 behavior.
+4. If a deployable file or asset is added or removed, update `build.mjs`; if a public page changes location, also review `sitemap.xml`, canonical metadata, navigation, and redirects/404 behavior. When `launch-state.js` changes, update its versioned reference on every indexable page; validation derives the required cache key from the script content.
 5. Run the build and release checks in `IMPLEMENTATION_CHECKLIST.txt`, including the visual procedure when presentation changes.
 6. Update relevant documentation in the same commit. Describe verified facts as facts and place unresolved matters under **Future Decisions**.
 
