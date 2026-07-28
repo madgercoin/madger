@@ -86,17 +86,27 @@ function metadataFor(entry) {
 }
 
 async function scheduledPosts(organizationId, channelIds) {
-  const data = await graphql(`
-    query ExistingPosts($organizationId: OrganizationId!, $channelIds: [ChannelId!]) {
-      posts(first: 100, input: {
-        organizationId: $organizationId,
-        filter: { channelIds: $channelIds }
-      }) {
-        edges { node { id text dueAt channelId } }
+  const posts = [];
+  let after = null;
+  do {
+    const data = await graphql(`
+      query ExistingPosts($organizationId: OrganizationId!, $channelIds: [ChannelId!], $after: String) {
+        posts(first: 100, after: $after, input: {
+          organizationId: $organizationId,
+          filter: { channelIds: $channelIds }
+        }) {
+          edges { node { id text dueAt channelId } }
+          pageInfo { hasNextPage endCursor }
+        }
       }
+    `, { organizationId, channelIds, after });
+    posts.push(...data.posts.edges.map(({ node }) => node));
+    after = data.posts.pageInfo.hasNextPage ? data.posts.pageInfo.endCursor : null;
+    if (data.posts.pageInfo.hasNextPage && !after) {
+      throw new Error('Buffer returned another posts page without an end cursor');
     }
-  `, { organizationId, channelIds });
-  return data.posts.edges.map(({ node }) => node);
+  } while (after);
+  return posts;
 }
 
 async function publish() {
@@ -124,6 +134,7 @@ async function publish() {
     }
     const dueAt = new Date(entry.dueAt);
     if (!Number.isFinite(dueAt.getTime())) throw new Error(`Invalid dueAt for ${entry.id}`);
+    if (dueAt.getTime() <= Date.now()) throw new Error(`Expired dueAt for ${entry.id}`);
     const duplicate = existing.find((post) =>
       post.channelId === channel.id &&
       post.text === entry.text &&
