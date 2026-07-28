@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
-import { evaluateScheduledEntry } from "../scripts/buffer-automation-core.mjs";
+import { evaluateScheduledEntry, metadataFor } from "../scripts/buffer-automation-core.mjs";
 
 const future = "2030-01-01T15:00:00.000Z";
 const past = "2020-01-01T15:00:00.000Z";
@@ -73,4 +73,12 @@ test("does not treat a different channel, caption, or time as a duplicate", () =
     now: Date.parse("2029-01-01T00:00:00.000Z")
   });
   assert.equal(result.duplicate, null);
+});
+
+test("YouTube metadata always includes Buffer's required category and title", () => {
+  const metadata = metadataFor({ service: "youtube", title: "MADGER 002 — Keep Digging" });
+  assert.equal(metadata.youtube.categoryId, "24");
+  assert.equal(metadata.youtube.title, "MADGER 002 — Keep Digging");
+  assert.equal(metadata.youtube.privacy, "public");
+  assert.equal(metadata.youtube.madeForKids, false);
 });

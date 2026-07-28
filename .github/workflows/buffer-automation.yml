@@ -35,9 +35,11 @@ jobs:
       - uses: actions/setup-node@v5
         with:
           node-version: 22
-      - name: Validate JavaScript and schedule JSON
+      - name: Validate JavaScript, scheduling behavior, and schedule JSON
         run: |
           node --check scripts/buffer-automation.mjs
+          node --check scripts/buffer-automation-core.mjs
+          node --test test/buffer-automation.test.mjs
           node -e "JSON.parse(require('fs').readFileSync('content/buffer-schedule.json','utf8'))"
 
   buffer:

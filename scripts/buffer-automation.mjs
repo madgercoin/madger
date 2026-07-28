@@ -1,5 +1,5 @@
 import fs from 'node:fs/promises';
-import { evaluateScheduledEntry } from './buffer-automation-core.mjs';
+import { evaluateScheduledEntry, metadataFor } from './buffer-automation-core.mjs';
 
 const API_URL = 'https://api.buffer.com';
 const token = process.env.BUFFER_API_TOKEN;
@@ -67,23 +67,6 @@ function findChannel(channels, target) {
     throw new Error(`Channel ${channel.name} is unavailable`);
   }
   return channel;
-}
-
-function metadataFor(entry) {
-  switch (entry.service) {
-    case 'instagram':
-      return { instagram: { type: 'reel', shouldShareToFeed: true, isAiGenerated: true } };
-    case 'facebook':
-      return { facebook: { type: 'reel' } };
-    case 'tiktok':
-      return { tiktok: { isAiGenerated: true } };
-    case 'youtube':
-      return { youtube: { title: entry.title, categoryId: '24', privacy: 'public', madeForKids: false, embeddable: true, notifySubscribers: true, isAiGenerated: true } };
-    case 'twitter':
-      return { twitter: { isAiGenerated: true } };
-    default:
-      return undefined;
-  }
 }
 
 async function scheduledPosts(organizationId, channelIds) {

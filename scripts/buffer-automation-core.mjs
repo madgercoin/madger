@@ -22,3 +22,30 @@ export function evaluateScheduledEntry({ entry, channelId, existingPosts, now = 
 
   return { dueAt, duplicate: null };
 }
+
+export function metadataFor(entry) {
+  switch (entry.service) {
+    case "instagram":
+      return { instagram: { type: "reel", shouldShareToFeed: true, isAiGenerated: true } };
+    case "facebook":
+      return { facebook: { type: "reel" } };
+    case "tiktok":
+      return { tiktok: { isAiGenerated: true } };
+    case "youtube":
+      return {
+        youtube: {
+          title: entry.title,
+          categoryId: "24",
+          privacy: "public",
+          madeForKids: false,
+          embeddable: true,
+          notifySubscribers: true,
+          isAiGenerated: true
+        }
+      };
+    case "twitter":
+      return { twitter: { isAiGenerated: true } };
+    default:
+      return undefined;
+  }
+}
