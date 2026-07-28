@@ -15,17 +15,25 @@ const [home, litepaper, notFound] = await Promise.all([
 const workerSource = `/** Generated at build time. HTML is bundled to prevent stale or corrupted edge assets. */
 const pages = ${JSON.stringify({ home, litepaper, notFound })};
 const html = { headers: { "content-type": "text/html; charset=UTF-8", "cache-control": "no-cache" } };
+const permanentRedirect = location => new Response(null, {
+  status: 301,
+  headers: { location, "cache-control": "public, max-age=3600" }
+});
+const notFound = {
+  status: 404,
+  headers: { ...html.headers, "x-robots-tag": "noindex, follow" }
+};
 
 export default {
   async fetch(request, env) {
     const { pathname } = new URL(request.url);
-    if (pathname === "/" || pathname === "/index.html") return new Response(pages.home, html);
-    if (pathname === "/litepaper" || pathname === "/litepaper/" || pathname === "/litepaper.html") {
-      return new Response(pages.litepaper, html);
-    }
+    if (pathname === "/index.html") return permanentRedirect("/");
+    if (pathname === "/litepaper" || pathname === "/litepaper/") return permanentRedirect("/litepaper.html");
+    if (pathname === "/") return new Response(pages.home, html);
+    if (pathname === "/litepaper.html") return new Response(pages.litepaper, html);
     const asset = await env.ASSETS.fetch(request);
     if (asset.status !== 404) return asset;
-    return new Response(pages.notFound, { status: 404, ...html });
+    return new Response(pages.notFound, notFound);
   }
 };
 `;
