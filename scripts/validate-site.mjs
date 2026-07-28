@@ -164,6 +164,20 @@ if (crossPageDuplicates.length) {
   failures.push(`index.html/litepaper.html: repeated visible block(s): ${crossPageDuplicates.join(" | ")}`);
 }
 
+const lowValuePhraseBudgets = new Map([
+  ["stay mad keep digging", 1],
+  ["small badger big mood", 1],
+  ["build the burrow", 1],
+  ["community campaigns partnerships", 1],
+  ["games collectibles licensing", 1],
+  ["financial legal or tax advice", 1]
+]);
+const combinedIndexableCopy = [...indexablePages.keys()].map(file => visiblePages.get(file)).join(" ");
+for (const [phrase, budget] of lowValuePhraseBudgets) {
+  const count = combinedIndexableCopy.split(phrase).length - 1;
+  if (count > budget) failures.push(`indexable pages: low-value phrase "${phrase}" appears ${count} times; budget is ${budget}`);
+}
+
 const sitemap = await readFile("sitemap.xml", "utf8");
 const sitemapUrls = [...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map(match => match[1]);
 const expectedSitemapUrls = [...indexablePages.values()];
