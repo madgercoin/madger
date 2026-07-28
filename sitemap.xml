@@ -1,5 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url><loc>https://madgercoin.com/</loc><changefreq>weekly</changefreq><priority>1.0</priority></url>
-  <url><loc>https://madgercoin.com/litepaper.html</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+  <url>
+    <loc>https://madgercoin.com/</loc>
+    <lastmod>2026-07-28</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+    <image:image>
+      <image:loc>https://madgercoin.com/assets/madger_v5_hero.webp</image:loc>
+      <image:title>MADGER Honey Badger mascot entering The Burrow</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://madgercoin.com/litepaper.html</loc>
+    <lastmod>2026-07-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <image:image>
+      <image:loc>https://madgercoin.com/assets/madger_v5_hero.webp</image:loc>
+      <image:title>MADGER official litepaper</image:title>
+    </image:image>
+  </url>
 </urlset>
