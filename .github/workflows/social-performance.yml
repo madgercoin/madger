@@ -1,0 +1,52 @@
+name: MADGER Social Performance
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - ".github/workflows/social-performance.yml"
+      - "scripts/buffer-performance.mjs"
+  workflow_dispatch:
+  schedule:
+    - cron: "30 8 * * *"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: madger-social-performance
+  cancel-in-progress: false
+
+jobs:
+  report:
+    name: Refresh Buffer performance report
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Validate monitor
+        run: node --check scripts/buffer-performance.mjs
+      - name: Confirm Buffer secret
+        env:
+          BUFFER_API_TOKEN: ${{ secrets.BUFFER_API_TOKEN }}
+        run: test -n "$BUFFER_API_TOKEN"
+      - name: Generate report
+        env:
+          BUFFER_API_TOKEN: ${{ secrets.BUFFER_API_TOKEN }}
+          BUFFER_ORGANIZATION_ID: ${{ vars.BUFFER_ORGANIZATION_ID }}
+        run: node scripts/buffer-performance.mjs
+      - name: Commit changed report
+        run: |
+          if git diff --quiet -- reports/social/latest.md reports/social/latest.json; then
+            echo "No report changes."
+            exit 0
+          fi
+          git config user.name "madger-automation"
+          git config user.email "actions@users.noreply.github.com"
+          git add reports/social/latest.md reports/social/latest.json
+          git commit -m "Refresh social performance report"
+          git push
