@@ -12,7 +12,10 @@ Status: **minted; public trading not launched**. This document separates verifie
 | Official mint | `BHauMX8akk2umqkQqnJwpYkCRkZmefGnEBFByeFXRKqv` |
 | Total supply | 1,000,000,000 MADGER |
 | Decimals | 6 |
-| Transfer tax | 0% |
+| Token program | Classic SPL Token |
+| Mint authority | Revoked |
+| Freeze authority | Revoked |
+| Transfer tax | 0%; no Token-2022 transfer-fee extension |
 | Trading status | Not publicly launched |
 
 Before launch, independently verify supply, decimals, metadata, authority state, token accounts, and balances from two trusted sources or RPCs. The website and official announcement accounts remain the canonical public verification chain.
