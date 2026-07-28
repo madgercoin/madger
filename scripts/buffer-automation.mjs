@@ -49,13 +49,15 @@ async function discover() {
 }
 
 function findChannel(channels, target) {
-  const matches = channels.filter((channel) => {
-    if (channel.service !== target.service) return false;
-    if (!target.channelName) return true;
-    const wanted = target.channelName.toLowerCase();
-    return [channel.name, channel.displayName].filter(Boolean)
-      .some((value) => value.toLowerCase().includes(wanted));
-  });
+  const matches = target.channelId
+    ? channels.filter((channel) => channel.id === target.channelId && channel.service === target.service)
+    : channels.filter((channel) => {
+        if (channel.service !== target.service) return false;
+        if (!target.channelName) return true;
+        const wanted = target.channelName.toLowerCase();
+        return [channel.name, channel.displayName].filter(Boolean)
+          .some((value) => value.toLowerCase().includes(wanted));
+      });
   if (matches.length !== 1) {
     throw new Error(`Expected one ${target.service} channel for ${target.id}; found ${matches.length}`);
   }
