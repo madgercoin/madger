@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "timezone": "America/New_York",
-  "notes": "Posts remain disabled until each public HTTPS media URL is verified. Enabling an entry authorizes the workflow to schedule it in Buffer.",
+  "notes": "Exact Buffer channel IDs were verified by read-only discovery on 2026-07-28. Posts remain disabled until all public HTTPS MP4 URLs return HTTP 200 with video content.",
   "posts": [
     {
       "id": "madger-002-x",
@@ -10,9 +10,10 @@
       "channelName": "madgercoin",
       "title": "MADGER 002 — Keep Digging",
       "dueAt": "2026-07-29T14:00:00.000Z",
-      "mediaUrl": "",
+      "mediaUrl": "https://raw.githubusercontent.com/madgercoin/madger/main/media/MADGER_002_KEEP_DIGGING_VERTICAL.mp4",
       "thumbnailOffsetMs": 1000,
-      "text": "The market gets loud. MADGER digs deeper. 🦡⛏️\n\nStay Mad. Keep Digging.\n\nhttps://madgercoin.com\n\n#MADGER #TheBurrow #Solana"
+      "text": "The market gets loud. MADGER digs deeper. 🦡⛏️\n\nStay Mad. Keep Digging.\n\nhttps://madgercoin.com\n\n#MADGER #TheBurrow #Solana",
+      "channelId": "6a67af8a4b2d03035f4e91f4"
     },
     {
       "id": "madger-002-facebook",
@@ -21,9 +22,10 @@
       "channelName": "Madger Coin",
       "title": "MADGER 002 — Keep Digging",
       "dueAt": "2026-07-29T14:00:00.000Z",
-      "mediaUrl": "",
+      "mediaUrl": "https://raw.githubusercontent.com/madgercoin/madger/main/media/MADGER_002_KEEP_DIGGING_VERTICAL.mp4",
       "thumbnailOffsetMs": 1000,
-      "text": "The market gets loud. MADGER digs deeper. 🦡⛏️\n\nStay Mad. Keep Digging.\n\nhttps://madgercoin.com\n\n#MADGER #TheBurrow #Solana #CryptoCommunity"
+      "text": "The market gets loud. MADGER digs deeper. 🦡⛏️\n\nStay Mad. Keep Digging.\n\nhttps://madgercoin.com\n\n#MADGER #TheBurrow #Solana #CryptoCommunity",
+      "channelId": "6a67ecc14b2d03035f50dbad"
     },
     {
       "id": "madger-002-instagram",
@@ -32,9 +34,10 @@
       "channelName": "madgercoin",
       "title": "MADGER 002 — Keep Digging",
       "dueAt": "2026-07-29T22:00:00.000Z",
-      "mediaUrl": "",
+      "mediaUrl": "https://raw.githubusercontent.com/madgercoin/madger/main/media/MADGER_002_KEEP_DIGGING_VERTICAL.mp4",
       "thumbnailOffsetMs": 1000,
-      "text": "The market gets loud. MADGER digs deeper. 🦡⛏️\n\nStay Mad. Keep Digging.\n\n#MADGER #TheBurrow #KeepDigging #Solana #CryptoCommunity"
+      "text": "The market gets loud. MADGER digs deeper. 🦡⛏️\n\nStay Mad. Keep Digging.\n\n#MADGER #TheBurrow #KeepDigging #Solana #CryptoCommunity",
+      "channelId": "6a67aebb4b2d03035f4e8b45"
     },
     {
       "id": "madger-002-youtube",
@@ -43,9 +46,10 @@
       "channelName": "Madgercoin",
       "title": "MADGER 002 — Keep Digging",
       "dueAt": "2026-07-29T23:00:00.000Z",
-      "mediaUrl": "",
+      "mediaUrl": "https://raw.githubusercontent.com/madgercoin/madger/main/media/MADGER_002_KEEP_DIGGING_VERTICAL.mp4",
       "thumbnailOffsetMs": 1000,
-      "text": "The market gets loud. MADGER digs deeper. Stay Mad. Keep Digging. 🦡⛏️ #MADGER #TheBurrow #Solana"
+      "text": "The market gets loud. MADGER digs deeper. Stay Mad. Keep Digging. 🦡⛏️ #MADGER #TheBurrow #Solana",
+      "channelId": "6a67af404b2d03035f4e8e79"
     },
     {
       "id": "madger-002-tiktok",
@@ -54,9 +58,10 @@
       "channelName": "themadgercoin",
       "title": "MADGER 002 — Keep Digging",
       "dueAt": "2026-07-30T02:00:00.000Z",
-      "mediaUrl": "",
+      "mediaUrl": "https://raw.githubusercontent.com/madgercoin/madger/main/media/MADGER_002_KEEP_DIGGING_VERTICAL.mp4",
       "thumbnailOffsetMs": 1000,
-      "text": "The market gets loud. MADGER digs deeper. 🦡⛏️ #MADGER #TheBurrow #CryptoTok #Solana"
+      "text": "The market gets loud. MADGER digs deeper. 🦡⛏️ #MADGER #TheBurrow #CryptoTok #Solana",
+      "channelId": "6a67b0034b2d03035f4e9477"
     },
     {
       "id": "madger-003-x",
@@ -65,9 +70,10 @@
       "channelName": "madgercoin",
       "title": "MADGER 003 — No Slowing Down",
       "dueAt": "2026-07-30T13:00:00.000Z",
-      "mediaUrl": "",
+      "mediaUrl": "https://raw.githubusercontent.com/madgercoin/madger/main/media/MADGER_003_NO_SLOWING_DOWN_VERTICAL.mp4",
       "thumbnailOffsetMs": 1000,
-      "text": "No slowing down. No shortcuts underground. 🦡\n\nThe Burrow keeps moving.\n\nhttps://madgercoin.com\n\n#MADGER #KeepDigging #Solana"
+      "text": "No slowing down. No shortcuts underground. 🦡\n\nThe Burrow keeps moving.\n\nhttps://madgercoin.com\n\n#MADGER #KeepDigging #Solana",
+      "channelId": "6a67af8a4b2d03035f4e91f4"
     },
     {
       "id": "madger-003-facebook",
@@ -76,9 +82,10 @@
       "channelName": "Madger Coin",
       "title": "MADGER 003 — No Slowing Down",
       "dueAt": "2026-07-30T13:00:00.000Z",
-      "mediaUrl": "",
+      "mediaUrl": "https://raw.githubusercontent.com/madgercoin/madger/main/media/MADGER_003_NO_SLOWING_DOWN_VERTICAL.mp4",
       "thumbnailOffsetMs": 1000,
-      "text": "No slowing down. No shortcuts underground. 🦡\n\nThe Burrow keeps moving.\n\nhttps://madgercoin.com\n\n#MADGER #KeepDigging #Solana #TheBurrow"
+      "text": "No slowing down. No shortcuts underground. 🦡\n\nThe Burrow keeps moving.\n\nhttps://madgercoin.com\n\n#MADGER #KeepDigging #Solana #TheBurrow",
+      "channelId": "6a67ecc14b2d03035f50dbad"
     },
     {
       "id": "madger-003-instagram",
@@ -87,9 +94,10 @@
       "channelName": "madgercoin",
       "title": "MADGER 003 — No Slowing Down",
       "dueAt": "2026-07-30T13:00:00.000Z",
-      "mediaUrl": "",
+      "mediaUrl": "https://raw.githubusercontent.com/madgercoin/madger/main/media/MADGER_003_NO_SLOWING_DOWN_VERTICAL.mp4",
       "thumbnailOffsetMs": 1000,
-      "text": "No slowing down. No shortcuts underground. 🦡\n\nThe Burrow keeps moving.\n\n#MADGER #KeepDigging #Solana #TheBurrow #CryptoCommunity"
+      "text": "No slowing down. No shortcuts underground. 🦡\n\nThe Burrow keeps moving.\n\n#MADGER #KeepDigging #Solana #TheBurrow #CryptoCommunity",
+      "channelId": "6a67aebb4b2d03035f4e8b45"
     },
     {
       "id": "madger-003-youtube",
@@ -98,9 +106,10 @@
       "channelName": "Madgercoin",
       "title": "MADGER 003 — No Slowing Down",
       "dueAt": "2026-07-31T20:00:00.000Z",
-      "mediaUrl": "",
+      "mediaUrl": "https://raw.githubusercontent.com/madgercoin/madger/main/media/MADGER_003_NO_SLOWING_DOWN_VERTICAL.mp4",
       "thumbnailOffsetMs": 1000,
-      "text": "No slowing down. No shortcuts underground. The Burrow keeps moving. 🦡 #MADGER #KeepDigging #Solana"
+      "text": "No slowing down. No shortcuts underground. The Burrow keeps moving. 🦡 #MADGER #KeepDigging #Solana",
+      "channelId": "6a67af404b2d03035f4e8e79"
     },
     {
       "id": "madger-003-tiktok",
@@ -109,9 +118,10 @@
       "channelName": "themadgercoin",
       "title": "MADGER 003 — No Slowing Down",
       "dueAt": "2026-07-31T22:00:00.000Z",
-      "mediaUrl": "",
+      "mediaUrl": "https://raw.githubusercontent.com/madgercoin/madger/main/media/MADGER_003_NO_SLOWING_DOWN_VERTICAL.mp4",
       "thumbnailOffsetMs": 1000,
-      "text": "No slowing down. No shortcuts underground. 🦡 #MADGER #KeepDigging #CryptoTok #Solana"
+      "text": "No slowing down. No shortcuts underground. 🦡 #MADGER #KeepDigging #CryptoTok #Solana",
+      "channelId": "6a67b0034b2d03035f4e9477"
     },
     {
       "id": "madger-004-youtube",
@@ -120,9 +130,10 @@
       "channelName": "Madgercoin",
       "title": "MADGER 004 — Join the Burrow",
       "dueAt": "2026-08-01T22:00:00.000Z",
-      "mediaUrl": "",
+      "mediaUrl": "https://raw.githubusercontent.com/madgercoin/madger/main/media/MADGER_004_JOIN_THE_BURROW_VERTICAL.mp4",
       "thumbnailOffsetMs": 1000,
-      "text": "The signal is up. The Burrow is open. Join MADGER. 🦡 #MADGER #TheBurrow #Solana"
+      "text": "The signal is up. The Burrow is open. Join MADGER. 🦡 #MADGER #TheBurrow #Solana",
+      "channelId": "6a67af404b2d03035f4e8e79"
     },
     {
       "id": "madger-004-tiktok",
@@ -131,9 +142,10 @@
       "channelName": "themadgercoin",
       "title": "MADGER 004 — Join the Burrow",
       "dueAt": "2026-08-02T13:00:00.000Z",
-      "mediaUrl": "",
+      "mediaUrl": "https://raw.githubusercontent.com/madgercoin/madger/main/media/MADGER_004_JOIN_THE_BURROW_VERTICAL.mp4",
       "thumbnailOffsetMs": 1000,
-      "text": "The signal is up. The Burrow is open. Join MADGER. 🦡 #MADGER #TheBurrow #CryptoTok #Solana"
+      "text": "The signal is up. The Burrow is open. Join MADGER. 🦡 #MADGER #TheBurrow #CryptoTok #Solana",
+      "channelId": "6a67b0034b2d03035f4e9477"
     },
     {
       "id": "madger-004-facebook",
@@ -142,9 +154,10 @@
       "channelName": "Madger Coin",
       "title": "MADGER 004 — Join the Burrow",
       "dueAt": "2026-08-03T13:00:00.000Z",
-      "mediaUrl": "",
+      "mediaUrl": "https://raw.githubusercontent.com/madgercoin/madger/main/media/MADGER_004_JOIN_THE_BURROW_VERTICAL.mp4",
       "thumbnailOffsetMs": 1000,
-      "text": "The signal is up. The Burrow is open. Join MADGER. 🦡\n\nhttps://madgercoin.com\n\n#MADGER #TheBurrow #Solana #CryptoCommunity"
+      "text": "The signal is up. The Burrow is open. Join MADGER. 🦡\n\nhttps://madgercoin.com\n\n#MADGER #TheBurrow #Solana #CryptoCommunity",
+      "channelId": "6a67ecc14b2d03035f50dbad"
     },
     {
       "id": "madger-004-instagram",
@@ -153,9 +166,10 @@
       "channelName": "madgercoin",
       "title": "MADGER 004 — Join the Burrow",
       "dueAt": "2026-08-03T22:00:00.000Z",
-      "mediaUrl": "",
+      "mediaUrl": "https://raw.githubusercontent.com/madgercoin/madger/main/media/MADGER_004_JOIN_THE_BURROW_VERTICAL.mp4",
       "thumbnailOffsetMs": 1000,
-      "text": "The signal is up. The Burrow is open. Join MADGER. 🦡\n\n#MADGER #TheBurrow #Solana #CryptoCommunity #KeepDigging"
+      "text": "The signal is up. The Burrow is open. Join MADGER. 🦡\n\n#MADGER #TheBurrow #Solana #CryptoCommunity #KeepDigging",
+      "channelId": "6a67aebb4b2d03035f4e8b45"
     },
     {
       "id": "madger-004-x",
@@ -164,9 +178,10 @@
       "channelName": "madgercoin",
       "title": "MADGER 004 — Join the Burrow",
       "dueAt": "2026-08-04T13:00:00.000Z",
-      "mediaUrl": "",
+      "mediaUrl": "https://raw.githubusercontent.com/madgercoin/madger/main/media/MADGER_004_JOIN_THE_BURROW_VERTICAL.mp4",
       "thumbnailOffsetMs": 1000,
-      "text": "The signal is up. The Burrow is open. Join MADGER. 🦡\n\nhttps://madgercoin.com\n\n#MADGER #TheBurrow #Solana"
+      "text": "The signal is up. The Burrow is open. Join MADGER. 🦡\n\nhttps://madgercoin.com\n\n#MADGER #TheBurrow #Solana",
+      "channelId": "6a67af8a4b2d03035f4e91f4"
     }
   ]
 }
