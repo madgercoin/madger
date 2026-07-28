@@ -37,7 +37,8 @@ for (const [file, html] of pages) {
   const references = [...html.matchAll(/\b(?:href|src)=["']([^"']+)["']/gi)].map(match => match[1]);
   for (const reference of references) {
     if (/^(?:https?:|mailto:|tel:|data:)/i.test(reference)) continue;
-    const [pathname, fragment] = reference.split("#", 2);
+    const [beforeFragment, fragment] = reference.split("#", 2);
+    const pathname = beforeFragment.split("?", 1)[0];
     let target = pathname
       ? path.normalize(path.join(path.dirname(file), pathname.replace(/^\//, "")))
       : file;
