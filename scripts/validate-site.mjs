@@ -57,6 +57,15 @@ function visibleBlocks(html) {
     .filter(text => text.length >= 50);
 }
 
+function normalizePhraseText(text) {
+  return text
+    .normalize("NFKC")
+    .replace(/[^\p{L}\p{N}$]+/gu, " ")
+    .toLowerCase()
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
 const manifest = JSON.parse(await readFile("manifest.webmanifest", "utf8"));
 for (const icon of manifest.icons ?? []) {
   const source = icon.src.replace(/^\/assets\//, "");
@@ -145,6 +154,14 @@ if (!metaContent(pages.get("404.html"), "name", "robots")?.includes("noindex")) 
   failures.push("404.html: missing noindex directive");
 }
 
+const litepaper = pages.get("litepaper.html");
+if (metaContent(litepaper, "property", "article:published_time") !== "2026-07-23T00:00:00-04:00") {
+  failures.push("litepaper.html: article:published_time must preserve the original July 23, 2026 publication date");
+}
+if (!litepaper.includes('"datePublished": "2026-07-23"')) {
+  failures.push("litepaper.html: Article JSON-LD must preserve the original July 23, 2026 publication date");
+}
+
 const visiblePages = new Map([...pages].map(([file, html]) => [file, visibleText(html).toLowerCase()]));
 const obsoleteStatus = "minted on solana — not yet publicly launched for trading";
 for (const [file, text] of visiblePages) {
@@ -172,7 +189,7 @@ const lowValuePhraseBudgets = new Map([
   ["games collectibles licensing", 1],
   ["financial legal or tax advice", 1]
 ]);
-const combinedIndexableCopy = [...indexablePages.keys()].map(file => visiblePages.get(file)).join(" ");
+const combinedIndexableCopy = [...indexablePages.keys()].map(file => normalizePhraseText(visiblePages.get(file))).join(" ");
 for (const [phrase, budget] of lowValuePhraseBudgets) {
   const count = combinedIndexableCopy.split(phrase).length - 1;
   if (count > budget) failures.push(`indexable pages: low-value phrase "${phrase}" appears ${count} times; budget is ${budget}`);
