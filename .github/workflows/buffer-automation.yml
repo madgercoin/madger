@@ -1,0 +1,64 @@
+name: MADGER Buffer Automation
+
+on:
+  workflow_dispatch:
+    inputs:
+      operation:
+        description: Buffer operation
+        required: true
+        type: choice
+        default: discover
+        options:
+          - discover
+          - publish
+  schedule:
+    - cron: "17 * * * *"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: madger-buffer-automation
+  cancel-in-progress: false
+
+jobs:
+  validate:
+    name: Validate automation files
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Validate JavaScript and schedule JSON
+        run: |
+          node --check scripts/buffer-automation.mjs
+          node -e "JSON.parse(require('fs').readFileSync('content/buffer-schedule.json','utf8'))"
+
+  buffer:
+    name: Run Buffer operation
+    needs: validate
+    if: github.event_name == 'workflow_dispatch' || vars.BUFFER_AUTOMATION_ENABLED == 'true'
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Confirm secret is configured
+        env:
+          BUFFER_API_TOKEN: ${{ secrets.BUFFER_API_TOKEN }}
+        run: test -n "$BUFFER_API_TOKEN"
+      - name: Discover connected Buffer channels
+        if: github.event_name == 'workflow_dispatch' && inputs.operation == 'discover'
+        env:
+          BUFFER_API_TOKEN: ${{ secrets.BUFFER_API_TOKEN }}
+          BUFFER_ORGANIZATION_ID: ${{ vars.BUFFER_ORGANIZATION_ID }}
+        run: node scripts/buffer-automation.mjs discover
+      - name: Schedule enabled posts
+        if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.operation == 'publish')
+        env:
+          BUFFER_API_TOKEN: ${{ secrets.BUFFER_API_TOKEN }}
+          BUFFER_ORGANIZATION_ID: ${{ vars.BUFFER_ORGANIZATION_ID }}
+        run: node scripts/buffer-automation.mjs publish content/buffer-schedule.json
