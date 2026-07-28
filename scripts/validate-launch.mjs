@@ -5,8 +5,9 @@ const statePages = ["index.html", "litepaper.html"];
 const informationalPages = ["index.html", "litepaper.html", "404.html"];
 const mint = "BHauMX8akk2umqkQqnJwpYkCRkZmefGnEBFByeFXRKqv";
 const stateSource = await readFile("launch-state.js", "utf8");
-const stateBlobHeader = `blob ${Buffer.byteLength(stateSource)}\0`;
-const stateCacheKey = createHash("sha1").update(stateBlobHeader).update(stateSource).digest("hex").slice(0, 8);
+const normalizedStateSource = stateSource.replace(/\r\n?/g, "\n");
+const stateBlobHeader = `blob ${Buffer.byteLength(normalizedStateSource)}\0`;
+const stateCacheKey = createHash("sha1").update(stateBlobHeader).update(normalizedStateSource).digest("hex").slice(0, 8);
 const failures = [];
 if (!/const current = STATES\.MINTED_NOT_TRADING;/.test(stateSource)) failures.push("MINTED_NOT_TRADING is not the active launch state");
 for (const state of ["MINTED_NOT_TRADING", "LAUNCH_SCHEDULED", "TRADING_LIVE", "PAUSED_OR_DELAYED"]) {
