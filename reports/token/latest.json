@@ -1,0 +1,29 @@
+{
+  "generatedAt": "2026-07-28T09:35:26.949Z",
+  "commitment": "finalized",
+  "mint": "BHauMX8akk2umqkQqnJwpYkCRkZmefGnEBFByeFXRKqv",
+  "healthy": true,
+  "checks": {
+    "supply": true,
+    "decimals": true,
+    "program": true,
+    "owner": true,
+    "mintAuthorityRevoked": true,
+    "freezeAuthorityRevoked": true,
+    "initialized": true
+  },
+  "actual": {
+    "amount": "1000000000000000",
+    "decimals": 6,
+    "uiAmountString": "1000000000",
+    "program": "spl-token",
+    "owner": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+    "mintAuthority": null,
+    "freezeAuthority": null,
+    "initialized": true,
+    "accountSpace": 82,
+    "supplySlot": 435718487,
+    "accountSlot": 435718487
+  },
+  "inference": "Classic SPL Token mint; Token-2022 transfer-fee extensions do not apply."
+}
