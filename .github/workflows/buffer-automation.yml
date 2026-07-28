@@ -5,7 +5,7 @@ on:
     branches:
       - main
     paths:
-      - ".github/workflows/buffer-automation.yml"
+      - "content/buffer-schedule.json"
   workflow_dispatch:
     inputs:
       operation:
@@ -56,13 +56,13 @@ jobs:
           BUFFER_API_TOKEN: ${{ secrets.BUFFER_API_TOKEN }}
         run: test -n "$BUFFER_API_TOKEN"
       - name: Discover connected Buffer channels
-        if: github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && inputs.operation == 'discover')
+        if: github.event_name == 'workflow_dispatch' && inputs.operation == 'discover'
         env:
           BUFFER_API_TOKEN: ${{ secrets.BUFFER_API_TOKEN }}
           BUFFER_ORGANIZATION_ID: ${{ vars.BUFFER_ORGANIZATION_ID }}
         run: node scripts/buffer-automation.mjs discover
       - name: Schedule enabled posts
-        if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.operation == 'publish')
+        if: github.event_name == 'push' || github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.operation == 'publish')
         env:
           BUFFER_API_TOKEN: ${{ secrets.BUFFER_API_TOKEN }}
           BUFFER_ORGANIZATION_ID: ${{ vars.BUFFER_ORGANIZATION_ID }}
