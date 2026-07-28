@@ -41,7 +41,7 @@ jobs:
         run: node scripts/buffer-performance.mjs
       - name: Commit changed report
         run: |
-          if git diff --quiet -- reports/social/latest.md reports/social/latest.json; then
+          if [ -z "$(git status --porcelain -- reports/social/latest.md reports/social/latest.json)" ]; then
             echo "No report changes."
             exit 0
           fi
