@@ -7,6 +7,9 @@ on:
     paths:
       - ".github/workflows/social-performance.yml"
       - "scripts/buffer-performance.mjs"
+      - "scripts/buffer-performance-core.mjs"
+      - "test/buffer-performance.test.mjs"
+      - "content/buffer-schedule.json"
   workflow_dispatch:
   schedule:
     - cron: "30 8 * * *"
@@ -24,12 +27,15 @@ jobs:
     runs-on: ubuntu-latest
     environment: production
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
         with:
           node-version: 22
-      - name: Validate monitor
-        run: node --check scripts/buffer-performance.mjs
+      - name: Validate monitor and report calculations
+        run: |
+          node --check scripts/buffer-performance.mjs
+          node --check scripts/buffer-performance-core.mjs
+          node --test test/buffer-performance.test.mjs
       - name: Confirm Buffer secret
         env:
           BUFFER_API_TOKEN: ${{ secrets.BUFFER_API_TOKEN }}
@@ -49,4 +55,5 @@ jobs:
           git config user.email "actions@users.noreply.github.com"
           git add reports/social/latest.md reports/social/latest.json
           git commit -m "Refresh social performance report"
+          git pull --rebase origin main
           git push
