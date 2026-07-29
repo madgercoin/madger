@@ -55,7 +55,7 @@ test("flags overdue, errored, disconnected, and locked campaign posts with reaso
   const summary = summarizeCampaign([
     { id: "late", status: "scheduled", dueAt: "2026-07-29T14:00:00Z", channelState: "connected", metrics: {} },
     { id: "failed", status: "error", dueAt: "2026-07-30T14:00:00Z", channelState: "connected", metrics: {} },
-    { id: "disconnected", channelId: "x", status: "scheduled", dueAt: "2026-08-02T14:00:00Z", channelState: "disconnected", metrics: {} },
+    { id: "disconnected", channelId: "x", status: "monitor_error", dueAt: "2026-08-02T14:00:00Z", channelState: "disconnected", metrics: {} },
     { id: "locked", channelId: "y", status: "scheduled", dueAt: "2026-08-03T14:00:00Z", channelState: "locked", metrics: {} },
     { id: "missing", channelId: "z", status: "scheduled", dueAt: "2026-08-03T15:00:00Z", channelState: "unknown", metrics: {} },
     { id: "future", status: "scheduled", dueAt: "2026-08-04T14:00:00Z", channelState: "connected", metrics: {} }
@@ -63,12 +63,12 @@ test("flags overdue, errored, disconnected, and locked campaign posts with reaso
   assert.deepEqual(summary.needsAttention, ["late", "failed", "disconnected", "locked", "missing"]);
   assert.deepEqual(summary.attentionReasons.late, ["overdue"]);
   assert.deepEqual(summary.attentionReasons.failed, ["publishing_error", "overdue"]);
-  assert.deepEqual(summary.attentionReasons.disconnected, ["channel_disconnected"]);
+  assert.deepEqual(summary.attentionReasons.disconnected, ["monitor_error", "channel_disconnected"]);
   assert.deepEqual(summary.attentionReasons.locked, ["channel_locked"]);
   assert.deepEqual(summary.attentionReasons.missing, ["channel_missing"]);
   assert.deepEqual(summary.atRiskPosts, ["disconnected", "locked", "missing"]);
   assert.deepEqual(summary.unhealthyChannelIds, ["x", "y", "z"]);
-  assert.equal(summary.errors, 1);
+  assert.equal(summary.errors, 2);
 });
 
 test("campaign deltas ignore missing queries, new posts, and newly available metrics", () => {
