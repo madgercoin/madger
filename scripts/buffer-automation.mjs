@@ -96,12 +96,12 @@ async function scheduledPosts(organizationId, channelIds) {
 async function publish() {
   const manifest = JSON.parse(await fs.readFile(manifestPath, 'utf8'));
   if (manifest.schemaVersion !== 1) throw new Error('Unsupported manifest schemaVersion');
-  const { organization, channels } = await discover();
   const active = manifest.posts.filter((entry) => entry.enabled === true);
   if (!active.length) {
-    console.log('No enabled posts. Automation is safely idle.');
+    console.log('No enabled posts. Automation is safely idle without calling Buffer.');
     return;
   }
+  const { organization, channels } = await discover();
   const resolved = active.map((entry) => ({ entry, channel: findChannel(channels, entry) }));
   const existing = await scheduledPosts(organization.id, [...new Set(resolved.map(({ channel }) => channel.id))]);
   const mutation = `
