@@ -1,8 +1,9 @@
 {
-  "generatedAt": "2026-07-28T09:32:38.549Z",
+  "generatedAt": "2026-07-29T00:09:37.465Z",
+  "previousGeneratedAt": "2026-07-28T09:32:38.549Z",
   "window": {
-    "start": "2026-06-28T09:32:38.549Z",
-    "end": "2026-07-28T09:32:38.549Z"
+    "start": "2026-06-29T00:09:37.465Z",
+    "end": "2026-07-29T00:09:37.465Z"
   },
   "organization": {
     "id": "6a67aceacff325d8d2d231e9",
@@ -16,15 +17,15 @@
       "externalLink": "https://facebook.com/1279493098576451",
       "healthy": true,
       "queuePaused": false,
-      "metricsUpdatedAt": "2026-07-27T23:41:58.233Z",
+      "metricsUpdatedAt": "2026-07-28T22:42:08.902Z",
       "metrics": {
-        "postCount": 4,
-        "reactions": 0,
+        "postCount": 5,
+        "reactions": 2,
         "comments": 0,
-        "engagementRate": 6.67,
-        "impressions": 15,
-        "shares": 1,
-        "clicks": 0
+        "engagementRate": 0.63,
+        "impressions": 477,
+        "shares": 0,
+        "clicks": 1
       },
       "requiresCommunityReview": false
     },
@@ -50,7 +51,7 @@
       "channel": "MadgerCoin",
       "service": "twitter",
       "externalLink": "https://twitter.com/MadgerCoin",
-      "healthy": true,
+      "healthy": false,
       "queuePaused": false,
       "metricsUpdatedAt": null,
       "metrics": {
@@ -71,18 +72,18 @@
       "externalLink": "https://instagram.com/madgercoin",
       "healthy": true,
       "queuePaused": false,
-      "metricsUpdatedAt": "2026-07-27T19:19:57.565Z",
+      "metricsUpdatedAt": "2026-07-28T18:17:27.648Z",
       "metrics": {
-        "postCount": 3,
-        "reactions": 0,
+        "postCount": 4,
+        "reactions": 4,
         "comments": 0,
-        "engagementRate": 0,
+        "engagementRate": 2.2,
         "impressions": 0,
-        "views": 0,
+        "views": 235,
         "shares": 0,
-        "saves": 0,
+        "saves": 1,
         "follows": 0,
-        "reach": 0
+        "reach": 182
       },
       "requiresCommunityReview": false
     },
@@ -106,9 +107,349 @@
       "requiresCommunityReview": false
     }
   ],
+  "campaign": {
+    "source": "content/buffer-schedule.json",
+    "summary": {
+      "totalPosts": 15,
+      "sent": 0,
+      "scheduled": 15,
+      "sending": 0,
+      "errors": 0,
+      "needsAttention": [],
+      "totals": {
+        "reactions": 0,
+        "comments": 0,
+        "shares": 0,
+        "reposts": 0,
+        "reach": 0,
+        "impressions": 0,
+        "views": 0,
+        "clicks": 0,
+        "saves": null,
+        "follows": null
+      },
+      "deltas": {
+        "reactions": null,
+        "comments": null,
+        "shares": null,
+        "reposts": null,
+        "reach": null,
+        "impressions": null,
+        "views": null,
+        "clicks": null,
+        "saves": null,
+        "follows": null
+      },
+      "deltaCohorts": {
+        "reactions": 0,
+        "comments": 0,
+        "shares": 0,
+        "reposts": 0,
+        "reach": 0,
+        "impressions": 0,
+        "views": 0,
+        "clicks": 0,
+        "saves": 0,
+        "follows": 0
+      },
+      "averageEngagementRate": 0,
+      "priorSnapshotAvailable": false
+    },
+    "posts": [
+      {
+        "id": "madger-002-x",
+        "bufferPostId": "6a6872fa7c69e407413f994b",
+        "title": "MADGER 002 — Keep Digging",
+        "service": "twitter",
+        "dueAt": "2026-07-29T14:00:00.000Z",
+        "sentAt": null,
+        "status": "scheduled",
+        "externalLink": null,
+        "publishingError": null,
+        "metricsUpdatedAt": "2026-07-28T09:14:34.271Z",
+        "metrics": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "reposts": 0,
+          "impressions": 0,
+          "clicks": 0
+        },
+        "metricDeltas": {}
+      },
+      {
+        "id": "madger-002-facebook",
+        "bufferPostId": "6a6873562dcd5a840df33d2e",
+        "title": "MADGER 002 — Keep Digging",
+        "service": "facebook",
+        "dueAt": "2026-07-29T14:00:00.000Z",
+        "sentAt": null,
+        "status": "scheduled",
+        "externalLink": null,
+        "publishingError": null,
+        "metricsUpdatedAt": "2026-07-28T09:16:06.207Z",
+        "metrics": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "impressions": 0,
+          "shares": 0,
+          "clicks": 0
+        },
+        "metricDeltas": {}
+      },
+      {
+        "id": "madger-002-instagram",
+        "bufferPostId": "6a6874352dcd5a840df345cf",
+        "title": "MADGER 002 — Keep Digging",
+        "service": "instagram",
+        "dueAt": "2026-07-29T22:00:00.000Z",
+        "sentAt": null,
+        "status": "scheduled",
+        "externalLink": null,
+        "publishingError": null,
+        "metricsUpdatedAt": "2026-07-28T09:19:49.060Z",
+        "metrics": {},
+        "metricDeltas": {}
+      },
+      {
+        "id": "madger-002-youtube",
+        "bufferPostId": "6a68748f602e6f9b41464e23",
+        "title": "MADGER 002 — Keep Digging",
+        "service": "youtube",
+        "dueAt": "2026-07-29T23:00:00.000Z",
+        "sentAt": null,
+        "status": "scheduled",
+        "externalLink": null,
+        "publishingError": null,
+        "metricsUpdatedAt": "2026-07-28T09:21:19.151Z",
+        "metrics": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "views": 0
+        },
+        "metricDeltas": {}
+      },
+      {
+        "id": "madger-002-tiktok",
+        "bufferPostId": "6a68748f836a12294a367ad4",
+        "title": "MADGER 002 — Keep Digging",
+        "service": "tiktok",
+        "dueAt": "2026-07-30T02:00:00.000Z",
+        "sentAt": null,
+        "status": "scheduled",
+        "externalLink": null,
+        "publishingError": null,
+        "metricsUpdatedAt": "2026-07-28T09:21:19.571Z",
+        "metrics": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "views": 0,
+          "shares": 0,
+          "reach": 0
+        },
+        "metricDeltas": {}
+      },
+      {
+        "id": "madger-003-x",
+        "bufferPostId": "6a687491197e3612e830cb59",
+        "title": "MADGER 003 — No Slowing Down",
+        "service": "twitter",
+        "dueAt": "2026-07-30T13:00:00.000Z",
+        "sentAt": null,
+        "status": "scheduled",
+        "externalLink": null,
+        "publishingError": null,
+        "metricsUpdatedAt": "2026-07-28T09:21:21.206Z",
+        "metrics": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "reposts": 0,
+          "impressions": 0,
+          "clicks": 0
+        },
+        "metricDeltas": {}
+      },
+      {
+        "id": "madger-003-facebook",
+        "bufferPostId": "6a6874917e8cbcebb3b539a4",
+        "title": "MADGER 003 — No Slowing Down",
+        "service": "facebook",
+        "dueAt": "2026-07-30T13:00:00.000Z",
+        "sentAt": null,
+        "status": "scheduled",
+        "externalLink": null,
+        "publishingError": null,
+        "metricsUpdatedAt": "2026-07-28T09:21:21.651Z",
+        "metrics": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "impressions": 0,
+          "shares": 0,
+          "clicks": 0
+        },
+        "metricDeltas": {}
+      },
+      {
+        "id": "madger-003-instagram",
+        "bufferPostId": "6a6874922dcd5a840df34863",
+        "title": "MADGER 003 — No Slowing Down",
+        "service": "instagram",
+        "dueAt": "2026-07-30T13:00:00.000Z",
+        "sentAt": null,
+        "status": "scheduled",
+        "externalLink": null,
+        "publishingError": null,
+        "metricsUpdatedAt": "2026-07-28T09:21:22.063Z",
+        "metrics": {},
+        "metricDeltas": {}
+      },
+      {
+        "id": "madger-003-youtube",
+        "bufferPostId": "6a6874927e8cbcebb3b539c7",
+        "title": "MADGER 003 — No Slowing Down",
+        "service": "youtube",
+        "dueAt": "2026-07-31T20:00:00.000Z",
+        "sentAt": null,
+        "status": "scheduled",
+        "externalLink": null,
+        "publishingError": null,
+        "metricsUpdatedAt": "2026-07-28T09:21:22.448Z",
+        "metrics": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "views": 0
+        },
+        "metricDeltas": {}
+      },
+      {
+        "id": "madger-003-tiktok",
+        "bufferPostId": "6a6874922dcd5a840df34888",
+        "title": "MADGER 003 — No Slowing Down",
+        "service": "tiktok",
+        "dueAt": "2026-07-31T22:00:00.000Z",
+        "sentAt": null,
+        "status": "scheduled",
+        "externalLink": null,
+        "publishingError": null,
+        "metricsUpdatedAt": "2026-07-28T09:21:22.871Z",
+        "metrics": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "views": 0,
+          "shares": 0,
+          "reach": 0
+        },
+        "metricDeltas": {}
+      },
+      {
+        "id": "madger-004-youtube",
+        "bufferPostId": "6a687493602e6f9b41464e56",
+        "title": "MADGER 004 — Join the Burrow",
+        "service": "youtube",
+        "dueAt": "2026-08-01T22:00:00.000Z",
+        "sentAt": null,
+        "status": "scheduled",
+        "externalLink": null,
+        "publishingError": null,
+        "metricsUpdatedAt": "2026-07-28T09:21:23.455Z",
+        "metrics": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "views": 0
+        },
+        "metricDeltas": {}
+      },
+      {
+        "id": "madger-004-tiktok",
+        "bufferPostId": "6a687493836a12294a367b07",
+        "title": "MADGER 004 — Join the Burrow",
+        "service": "tiktok",
+        "dueAt": "2026-08-02T13:00:00.000Z",
+        "sentAt": null,
+        "status": "scheduled",
+        "externalLink": null,
+        "publishingError": null,
+        "metricsUpdatedAt": "2026-07-28T09:21:23.995Z",
+        "metrics": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "views": 0,
+          "shares": 0,
+          "reach": 0
+        },
+        "metricDeltas": {}
+      },
+      {
+        "id": "madger-004-facebook",
+        "bufferPostId": "6a687494197e3612e830cb87",
+        "title": "MADGER 004 — Join the Burrow",
+        "service": "facebook",
+        "dueAt": "2026-08-03T13:00:00.000Z",
+        "sentAt": null,
+        "status": "scheduled",
+        "externalLink": null,
+        "publishingError": null,
+        "metricsUpdatedAt": "2026-07-28T09:21:24.422Z",
+        "metrics": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "impressions": 0,
+          "shares": 0,
+          "clicks": 0
+        },
+        "metricDeltas": {}
+      },
+      {
+        "id": "madger-004-instagram",
+        "bufferPostId": "6a6874947c69e407413fa928",
+        "title": "MADGER 004 — Join the Burrow",
+        "service": "instagram",
+        "dueAt": "2026-08-03T22:00:00.000Z",
+        "sentAt": null,
+        "status": "scheduled",
+        "externalLink": null,
+        "publishingError": null,
+        "metricsUpdatedAt": "2026-07-28T09:21:24.920Z",
+        "metrics": {},
+        "metricDeltas": {}
+      },
+      {
+        "id": "madger-004-x",
+        "bufferPostId": "6a6874957e8cbcebb3b53a21",
+        "title": "MADGER 004 — Join the Burrow",
+        "service": "twitter",
+        "dueAt": "2026-08-04T13:00:00.000Z",
+        "sentAt": null,
+        "status": "scheduled",
+        "externalLink": null,
+        "publishingError": null,
+        "metricsUpdatedAt": "2026-07-28T09:21:25.500Z",
+        "metrics": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "reposts": 0,
+          "impressions": 0,
+          "clicks": 0
+        },
+        "metricDeltas": {}
+      }
+    ]
+  },
   "limitations": [
-    "Buffer metrics refresh approximately daily.",
-    "A comment count identifies engagement but does not expose message text through the documented public API.",
-    "Individual replies must use Buffer Community or the native social network until a supported reply endpoint exists."
+    "Buffer refreshes social metrics approximately daily, so values can lag source networks by about 24 hours.",
+    "The follows metric is Instagram followers attributed to a post, not total account followers.",
+    "Website visitor analytics are not included in Buffer data.",
+    "A comment count identifies engagement but does not expose message text through the documented public API."
   ]
 }
