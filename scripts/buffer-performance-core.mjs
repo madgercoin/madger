@@ -25,9 +25,28 @@ export function metricDeltas(current = {}, previous = {}) {
   return deltas;
 }
 
+export function channelState(channel) {
+  if (channel?.isLocked) return "locked";
+  if (channel?.isDisconnected) return "disconnected";
+  return "connected";
+}
+
 function aggregateMetric(posts, key) {
   const values = posts.map((post) => post.metrics?.[key]).filter(Number.isFinite);
   return values.length ? values.reduce((sum, value) => sum + value, 0) : null;
+}
+
+function reasonsFor(post, now) {
+  const reasons = [];
+  if (post.status === "error") reasons.push("publishing_error");
+  if (post.status === "monitor_error") reasons.push("monitor_error");
+  if (post.channelState === "disconnected") reasons.push("channel_disconnected");
+  if (post.channelState === "locked") reasons.push("channel_locked");
+  const dueAt = Date.parse(post.dueAt);
+  if (Number.isFinite(dueAt) && dueAt + 3 * 60 * 60 * 1000 < now && post.status !== "sent") {
+    reasons.push("overdue");
+  }
+  return reasons;
 }
 
 export function summarizeCampaign(posts, previousPosts = [], now = Date.now()) {
@@ -57,11 +76,22 @@ export function summarizeCampaign(posts, previousPosts = [], now = Date.now()) {
     ? engagementRates.reduce((sum, value) => sum + value, 0) / engagementRates.length
     : null;
 
-  const needsAttention = posts.filter((post) => {
-    if (post.status === "error" || post.status === "monitor_error") return true;
-    const dueAt = Date.parse(post.dueAt);
-    return Number.isFinite(dueAt) && dueAt + 3 * 60 * 60 * 1000 < now && post.status !== "sent";
-  }).map((post) => post.id);
+  const attentionReasons = {};
+  for (const post of posts) {
+    const reasons = reasonsFor(post, now);
+    if (reasons.length) attentionReasons[post.id] = reasons;
+  }
+  const needsAttention = Object.keys(attentionReasons);
+  const atRiskPosts = posts
+    .filter((post) => ["scheduled", "sending"].includes(post.status))
+    .filter((post) => ["disconnected", "locked"].includes(post.channelState))
+    .map((post) => post.id);
+  const unhealthyChannelIds = [...new Set(
+    posts
+      .filter((post) => ["disconnected", "locked"].includes(post.channelState))
+      .map((post) => post.channelId)
+      .filter(Boolean)
+  )];
 
   return {
     totalPosts: posts.length,
@@ -70,6 +100,9 @@ export function summarizeCampaign(posts, previousPosts = [], now = Date.now()) {
     sending: posts.filter((post) => post.status === "sending").length,
     errors: posts.filter((post) => post.status === "error" || post.status === "monitor_error").length,
     needsAttention,
+    attentionReasons,
+    atRiskPosts,
+    unhealthyChannelIds,
     totals,
     deltas,
     deltaCohorts,
