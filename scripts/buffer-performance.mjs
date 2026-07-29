@@ -1,27 +1,41 @@
-import fs from 'node:fs/promises';
+import fs from "node:fs/promises";
+import { metricsToObject, metricDeltas, summarizeCampaign } from "./buffer-performance-core.mjs";
 
-const API_URL = 'https://api.buffer.com';
+const API_URL = "https://api.buffer.com";
 const token = process.env.BUFFER_API_TOKEN;
-if (!token) throw new Error('BUFFER_API_TOKEN is not configured');
+if (!token) throw new Error("BUFFER_API_TOKEN is not configured");
 
 async function graphql(query, variables = {}) {
   const response = await fetch(API_URL, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-    body: JSON.stringify({ query, variables }),
+    method: "POST",
+    headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+    body: JSON.stringify({ query, variables })
   });
   const payload = await response.json();
-  if (!response.ok || payload.errors?.length) throw new Error(JSON.stringify(payload.errors || payload));
+  if (!response.ok || payload.errors?.length) {
+    throw new Error(`Buffer API error: ${JSON.stringify(payload.errors || payload)}`);
+  }
   return payload.data;
 }
 
+async function readJson(path, fallback) {
+  try {
+    return JSON.parse(await fs.readFile(path, "utf8"));
+  } catch (error) {
+    if (error.code === "ENOENT") return fallback;
+    throw error;
+  }
+}
+
+const priorReport = await readJson("reports/social/latest.json", null);
+const manifest = await readJson("content/buffer-schedule.json", { posts: [] });
 const account = await graphql(`query { account { organizations { id name } } }`);
 const organizations = account.account.organizations;
 const requestedId = process.env.BUFFER_ORGANIZATION_ID;
 const organization = requestedId
   ? organizations.find((item) => item.id === requestedId)
   : organizations.length === 1 ? organizations[0] : null;
-if (!organization) throw new Error('Unable to resolve one Buffer organization');
+if (!organization) throw new Error("Unable to resolve one Buffer organization");
 
 const channelData = await graphql(`
   query Channels($organizationId: OrganizationId!) {
@@ -33,7 +47,7 @@ const channelData = await graphql(`
 
 const end = new Date();
 const start = new Date(end.getTime() - 30 * 24 * 60 * 60 * 1000);
-const rows = [];
+const channelRows = [];
 for (const channel of channelData.channels) {
   try {
     const data = await graphql(`
@@ -47,10 +61,10 @@ for (const channel of channelData.channels) {
       organizationId: organization.id,
       startDateTime: start.toISOString(),
       endDateTime: end.toISOString(),
-      channelIds: [channel.id],
+      channelIds: [channel.id]
     } });
-    const values = Object.fromEntries(data.aggregatedPostMetrics.metrics.map((m) => [m.type, m.value]));
-    rows.push({
+    const values = metricsToObject(data.aggregatedPostMetrics.metrics);
+    channelRows.push({
       channelId: channel.id,
       channel: channel.displayName || channel.name,
       service: channel.service,
@@ -59,52 +73,135 @@ for (const channel of channelData.channels) {
       queuePaused: channel.isQueuePaused,
       metricsUpdatedAt: data.aggregatedPostMetrics.metricsUpdatedAt,
       metrics: values,
-      requiresCommunityReview: (values.comments || 0) > 0,
+      requiresCommunityReview: (values.comments || 0) > 0
     });
   } catch (error) {
-    rows.push({
+    channelRows.push({
       channelId: channel.id,
       channel: channel.displayName || channel.name,
       service: channel.service,
       externalLink: channel.externalLink,
       healthy: !channel.isDisconnected && !channel.isLocked,
       queuePaused: channel.isQueuePaused,
-      error: error.message,
+      error: error.message
     });
   }
 }
 
+const previousCampaignPosts = priorReport?.campaign?.posts ?? [];
+const previousCampaignById = new Map(previousCampaignPosts.map((post) => [post.id, post]));
+const campaignPosts = [];
+for (const entry of manifest.posts.filter((post) => post.bufferPostId)) {
+  try {
+    const data = await graphql(`
+      query CampaignPost($postId: PostId!) {
+        post(input: { id: $postId }) {
+          id status dueAt sentAt externalLink
+          error { message supportUrl }
+          metrics { type name value unit }
+          metricsUpdatedAt
+        }
+      }
+    `, { postId: entry.bufferPostId });
+    const post = data.post;
+    const metrics = metricsToObject(post.metrics);
+    campaignPosts.push({
+      id: entry.id,
+      bufferPostId: entry.bufferPostId,
+      title: entry.title,
+      service: entry.service,
+      dueAt: post.dueAt || entry.dueAt,
+      sentAt: post.sentAt,
+      status: post.status,
+      externalLink: post.externalLink,
+      publishingError: post.error,
+      metricsUpdatedAt: post.metricsUpdatedAt,
+      metrics,
+      metricDeltas: metricDeltas(metrics, previousCampaignById.get(entry.id)?.metrics)
+    });
+  } catch (error) {
+    campaignPosts.push({
+      id: entry.id,
+      bufferPostId: entry.bufferPostId,
+      title: entry.title,
+      service: entry.service,
+      dueAt: entry.dueAt,
+      status: "monitor_error",
+      metrics: {},
+      metricDeltas: {},
+      monitorError: error.message
+    });
+  }
+}
+
+const campaignSummary = summarizeCampaign(campaignPosts, previousCampaignPosts, end.getTime());
 const report = {
   generatedAt: end.toISOString(),
+  previousGeneratedAt: priorReport?.generatedAt ?? null,
   window: { start: start.toISOString(), end: end.toISOString() },
   organization,
-  channels: rows,
+  channels: channelRows,
+  campaign: {
+    source: "content/buffer-schedule.json",
+    summary: campaignSummary,
+    posts: campaignPosts
+  },
   limitations: [
-    'Buffer metrics refresh approximately daily.',
-    'A comment count identifies engagement but does not expose message text through the documented public API.',
-    'Individual replies must use Buffer Community or the native social network until a supported reply endpoint exists.'
+    "Buffer refreshes social metrics approximately daily, so values can lag source networks by about 24 hours.",
+    "The follows metric is Instagram followers attributed to a post, not total account followers.",
+    "Website visitor analytics are not included in Buffer data.",
+    "A comment count identifies engagement but does not expose message text through the documented public API."
   ]
 };
-await fs.mkdir('reports/social', { recursive: true });
-await fs.writeFile('reports/social/latest.json', JSON.stringify(report, null, 2) + '\n');
 
-const metric = (row, key) => row.metrics?.[key] ?? '—';
+await fs.mkdir("reports/social", { recursive: true });
+await fs.writeFile("reports/social/latest.json", JSON.stringify(report, null, 2) + "\n");
+
+const metric = (row, key) => Number.isFinite(row.metrics?.[key]) ? row.metrics[key] : "—";
+const format = (value, delta = null, suffix = "") => {
+  if (!Number.isFinite(value)) return "—";
+  const base = Number.isInteger(value) ? String(value) : value.toFixed(2);
+  if (!Number.isFinite(delta) || delta === 0) return `${base}${suffix}`;
+  const change = Number.isInteger(delta) ? String(delta) : delta.toFixed(2);
+  return `${base}${suffix} (${delta > 0 ? "+" : ""}${change})`;
+};
+const statusLabel = (post) => campaignSummary.needsAttention.includes(post.id) ? `⚠ ${post.status}` : post.status;
+const link = (url) => url ? `[Open](${url})` : "—";
 const lines = [
-  '# MADGER social performance',
-  '',
+  "# MADGER social performance",
+  "",
   `Generated: ${report.generatedAt}`,
-  `Window: ${report.window.start} to ${report.window.end}`,
-  '',
-  '| Channel | Health | Posts | Reactions | Comments | Shares | Views | Review |',
-  '|---|---|---:|---:|---:|---:|---:|---|',
-  ...rows.map((row) => `| ${row.service}: ${row.channel} | ${row.healthy ? 'Connected' : 'Attention'} | ${metric(row, 'postCount')} | ${metric(row, 'reactions')} | ${metric(row, 'comments')} | ${metric(row, 'shares')} | ${metric(row, 'views')} | ${row.requiresCommunityReview ? 'Check Buffer Community' : 'None flagged'} |`),
-  '',
-  '## Interpretation',
-  '',
-  '- Metrics can lag network activity by roughly 24 hours.',
-  '- A missing metric is not treated as zero unless Buffer returns the metric explicitly.',
-  '- Comment counts trigger a human-readable review flag; no automated public reply is sent without message text and context.',
-  ''
+  `Previous snapshot: ${report.previousGeneratedAt || "none"}`,
+  "",
+  "## 30-day channel rollup",
+  "",
+  "| Channel | Health | Posts | Impressions | Reach | Views | Eng. rate | Clicks | Follows | Review |",
+  "|---|---|---:|---:|---:|---:|---:|---:|---:|---|",
+  ...channelRows.map((row) => `| ${row.service}: ${row.channel} | ${row.healthy ? "Connected" : "Attention"} | ${metric(row, "postCount")} | ${metric(row, "impressions")} | ${metric(row, "reach")} | ${metric(row, "views")} | ${Number.isFinite(row.metrics?.engagementRate) ? `${row.metrics.engagementRate.toFixed(2)}%` : "—"} | ${metric(row, "clicks")} | ${metric(row, "follows")} | ${row.requiresCommunityReview ? "Check Buffer Community" : "None flagged"} |`),
+  "",
+  "## Scheduled campaign",
+  "",
+  `Sent: ${campaignSummary.sent}/${campaignSummary.totalPosts} · Scheduled: ${campaignSummary.scheduled} · Errors: ${campaignSummary.errors} · Attention: ${campaignSummary.needsAttention.length}`,
+  "",
+  "| Metric | Current | Change since prior report |",
+  "|---|---:|---:|",
+  ...Object.keys(campaignSummary.totals).map((key) => `| ${key} | ${format(campaignSummary.totals[key])} | ${format(campaignSummary.deltas[key])} |`),
+  `| averageEngagementRate | ${format(campaignSummary.averageEngagementRate, null, "%")} | — |`,
+  "",
+  "## Per-post performance",
+  "",
+  "| Post | Network | Due (UTC) | Status | Views | Impressions | Reach | Reactions | Comments | Shares | Clicks | Follows | Link |",
+  "|---|---|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---|",
+  ...campaignPosts.map((post) => `| ${post.title} | ${post.service} | ${post.dueAt || "—"} | ${statusLabel(post)} | ${format(post.metrics.views, post.metricDeltas.views)} | ${format(post.metrics.impressions, post.metricDeltas.impressions)} | ${format(post.metrics.reach, post.metricDeltas.reach)} | ${format(post.metrics.reactions, post.metricDeltas.reactions)} | ${format(post.metrics.comments, post.metricDeltas.comments)} | ${format(post.metrics.shares, post.metricDeltas.shares)} | ${format(post.metrics.clicks, post.metricDeltas.clicks)} | ${format(post.metrics.follows, post.metricDeltas.follows)} | ${link(post.externalLink)} |`),
+  "",
+  "## Interpretation",
+  "",
+  "- Parentheses show movement since the prior daily report; unavailable metrics remain — rather than being treated as zero.",
+  "- Buffer metrics refresh approximately daily and may lag native network activity by about 24 hours.",
+  "- Follows means Instagram followers attributed to a post; it is not the account's total follower count.",
+  "- Any errored post or post still unsent three hours after its due time is flagged for attention.",
+  "- Website visitors require a separate first-party analytics source and are not inferred from social impressions or clicks.",
+  ""
 ];
-await fs.writeFile('reports/social/latest.md', lines.join('\n'));
+await fs.writeFile("reports/social/latest.md", lines.join("\n"));
 console.log(JSON.stringify(report, null, 2));
