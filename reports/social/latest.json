@@ -1,9 +1,9 @@
 {
-  "generatedAt": "2026-07-29T00:09:37.465Z",
-  "previousGeneratedAt": "2026-07-28T09:32:38.549Z",
+  "generatedAt": "2026-07-29T00:23:47.750Z",
+  "previousGeneratedAt": "2026-07-29T00:09:37.465Z",
   "window": {
-    "start": "2026-06-29T00:09:37.465Z",
-    "end": "2026-07-29T00:09:37.465Z"
+    "start": "2026-06-29T00:23:47.750Z",
+    "end": "2026-07-29T00:23:47.750Z"
   },
   "organization": {
     "id": "6a67aceacff325d8d2d231e9",
@@ -15,6 +15,9 @@
       "channel": "Madger Coin",
       "service": "facebook",
       "externalLink": "https://facebook.com/1279493098576451",
+      "disconnected": false,
+      "locked": false,
+      "state": "connected",
       "healthy": true,
       "queuePaused": false,
       "metricsUpdatedAt": "2026-07-28T22:42:08.902Z",
@@ -34,6 +37,9 @@
       "channel": "Madger",
       "service": "youtube",
       "externalLink": "https://www.youtube.com/channel/UCqbAvD8zi6psByKRk50qCkg",
+      "disconnected": false,
+      "locked": false,
+      "state": "connected",
       "healthy": true,
       "queuePaused": false,
       "metricsUpdatedAt": "2026-07-27T23:32:39.038Z",
@@ -51,6 +57,9 @@
       "channel": "MadgerCoin",
       "service": "twitter",
       "externalLink": "https://twitter.com/MadgerCoin",
+      "disconnected": true,
+      "locked": false,
+      "state": "disconnected",
       "healthy": false,
       "queuePaused": false,
       "metricsUpdatedAt": null,
@@ -70,6 +79,9 @@
       "channel": "madgercoin",
       "service": "instagram",
       "externalLink": "https://instagram.com/madgercoin",
+      "disconnected": false,
+      "locked": false,
+      "state": "connected",
       "healthy": true,
       "queuePaused": false,
       "metricsUpdatedAt": "2026-07-28T18:17:27.648Z",
@@ -92,6 +104,9 @@
       "channel": "themadgercoin",
       "service": "tiktok",
       "externalLink": "https://tiktok.com/@themadgercoin",
+      "disconnected": false,
+      "locked": false,
+      "state": "connected",
       "healthy": true,
       "queuePaused": false,
       "metricsUpdatedAt": null,
@@ -115,7 +130,30 @@
       "scheduled": 15,
       "sending": 0,
       "errors": 0,
-      "needsAttention": [],
+      "needsAttention": [
+        "madger-002-x",
+        "madger-003-x",
+        "madger-004-x"
+      ],
+      "attentionReasons": {
+        "madger-002-x": [
+          "channel_disconnected"
+        ],
+        "madger-003-x": [
+          "channel_disconnected"
+        ],
+        "madger-004-x": [
+          "channel_disconnected"
+        ]
+      },
+      "atRiskPosts": [
+        "madger-002-x",
+        "madger-003-x",
+        "madger-004-x"
+      ],
+      "unhealthyChannelIds": [
+        "6a67af8a4b2d03035f4e91f4"
+      ],
       "totals": {
         "reactions": 0,
         "comments": 0,
@@ -129,18 +167,6 @@
         "follows": null
       },
       "deltas": {
-        "reactions": null,
-        "comments": null,
-        "shares": null,
-        "reposts": null,
-        "reach": null,
-        "impressions": null,
-        "views": null,
-        "clicks": null,
-        "saves": null,
-        "follows": null
-      },
-      "deltaCohorts": {
         "reactions": 0,
         "comments": 0,
         "shares": 0,
@@ -149,11 +175,23 @@
         "impressions": 0,
         "views": 0,
         "clicks": 0,
+        "saves": null,
+        "follows": null
+      },
+      "deltaCohorts": {
+        "reactions": 12,
+        "comments": 12,
+        "shares": 6,
+        "reposts": 3,
+        "reach": 3,
+        "impressions": 6,
+        "views": 6,
+        "clicks": 6,
         "saves": 0,
         "follows": 0
       },
       "averageEngagementRate": 0,
-      "priorSnapshotAvailable": false
+      "priorSnapshotAvailable": true
     },
     "posts": [
       {
@@ -161,6 +199,8 @@
         "bufferPostId": "6a6872fa7c69e407413f994b",
         "title": "MADGER 002 — Keep Digging",
         "service": "twitter",
+        "channelId": "6a67af8a4b2d03035f4e91f4",
+        "channelState": "disconnected",
         "dueAt": "2026-07-29T14:00:00.000Z",
         "sentAt": null,
         "status": "scheduled",
@@ -175,13 +215,22 @@
           "impressions": 0,
           "clicks": 0
         },
-        "metricDeltas": {}
+        "metricDeltas": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "reposts": 0,
+          "impressions": 0,
+          "clicks": 0
+        }
       },
       {
         "id": "madger-002-facebook",
         "bufferPostId": "6a6873562dcd5a840df33d2e",
         "title": "MADGER 002 — Keep Digging",
         "service": "facebook",
+        "channelId": "6a67ecc14b2d03035f50dbad",
+        "channelState": "connected",
         "dueAt": "2026-07-29T14:00:00.000Z",
         "sentAt": null,
         "status": "scheduled",
@@ -196,13 +245,22 @@
           "shares": 0,
           "clicks": 0
         },
-        "metricDeltas": {}
+        "metricDeltas": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "impressions": 0,
+          "shares": 0,
+          "clicks": 0
+        }
       },
       {
         "id": "madger-002-instagram",
         "bufferPostId": "6a6874352dcd5a840df345cf",
         "title": "MADGER 002 — Keep Digging",
         "service": "instagram",
+        "channelId": "6a67aebb4b2d03035f4e8b45",
+        "channelState": "connected",
         "dueAt": "2026-07-29T22:00:00.000Z",
         "sentAt": null,
         "status": "scheduled",
@@ -217,6 +275,8 @@
         "bufferPostId": "6a68748f602e6f9b41464e23",
         "title": "MADGER 002 — Keep Digging",
         "service": "youtube",
+        "channelId": "6a67af404b2d03035f4e8e79",
+        "channelState": "connected",
         "dueAt": "2026-07-29T23:00:00.000Z",
         "sentAt": null,
         "status": "scheduled",
@@ -229,13 +289,20 @@
           "engagementRate": 0,
           "views": 0
         },
-        "metricDeltas": {}
+        "metricDeltas": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "views": 0
+        }
       },
       {
         "id": "madger-002-tiktok",
         "bufferPostId": "6a68748f836a12294a367ad4",
         "title": "MADGER 002 — Keep Digging",
         "service": "tiktok",
+        "channelId": "6a67b0034b2d03035f4e9477",
+        "channelState": "connected",
         "dueAt": "2026-07-30T02:00:00.000Z",
         "sentAt": null,
         "status": "scheduled",
@@ -250,13 +317,22 @@
           "shares": 0,
           "reach": 0
         },
-        "metricDeltas": {}
+        "metricDeltas": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "views": 0,
+          "shares": 0,
+          "reach": 0
+        }
       },
       {
         "id": "madger-003-x",
         "bufferPostId": "6a687491197e3612e830cb59",
         "title": "MADGER 003 — No Slowing Down",
         "service": "twitter",
+        "channelId": "6a67af8a4b2d03035f4e91f4",
+        "channelState": "disconnected",
         "dueAt": "2026-07-30T13:00:00.000Z",
         "sentAt": null,
         "status": "scheduled",
@@ -271,13 +347,22 @@
           "impressions": 0,
           "clicks": 0
         },
-        "metricDeltas": {}
+        "metricDeltas": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "reposts": 0,
+          "impressions": 0,
+          "clicks": 0
+        }
       },
       {
         "id": "madger-003-facebook",
         "bufferPostId": "6a6874917e8cbcebb3b539a4",
         "title": "MADGER 003 — No Slowing Down",
         "service": "facebook",
+        "channelId": "6a67ecc14b2d03035f50dbad",
+        "channelState": "connected",
         "dueAt": "2026-07-30T13:00:00.000Z",
         "sentAt": null,
         "status": "scheduled",
@@ -292,13 +377,22 @@
           "shares": 0,
           "clicks": 0
         },
-        "metricDeltas": {}
+        "metricDeltas": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "impressions": 0,
+          "shares": 0,
+          "clicks": 0
+        }
       },
       {
         "id": "madger-003-instagram",
         "bufferPostId": "6a6874922dcd5a840df34863",
         "title": "MADGER 003 — No Slowing Down",
         "service": "instagram",
+        "channelId": "6a67aebb4b2d03035f4e8b45",
+        "channelState": "connected",
         "dueAt": "2026-07-30T13:00:00.000Z",
         "sentAt": null,
         "status": "scheduled",
@@ -313,6 +407,8 @@
         "bufferPostId": "6a6874927e8cbcebb3b539c7",
         "title": "MADGER 003 — No Slowing Down",
         "service": "youtube",
+        "channelId": "6a67af404b2d03035f4e8e79",
+        "channelState": "connected",
         "dueAt": "2026-07-31T20:00:00.000Z",
         "sentAt": null,
         "status": "scheduled",
@@ -325,13 +421,20 @@
           "engagementRate": 0,
           "views": 0
         },
-        "metricDeltas": {}
+        "metricDeltas": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "views": 0
+        }
       },
       {
         "id": "madger-003-tiktok",
         "bufferPostId": "6a6874922dcd5a840df34888",
         "title": "MADGER 003 — No Slowing Down",
         "service": "tiktok",
+        "channelId": "6a67b0034b2d03035f4e9477",
+        "channelState": "connected",
         "dueAt": "2026-07-31T22:00:00.000Z",
         "sentAt": null,
         "status": "scheduled",
@@ -346,13 +449,22 @@
           "shares": 0,
           "reach": 0
         },
-        "metricDeltas": {}
+        "metricDeltas": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "views": 0,
+          "shares": 0,
+          "reach": 0
+        }
       },
       {
         "id": "madger-004-youtube",
         "bufferPostId": "6a687493602e6f9b41464e56",
         "title": "MADGER 004 — Join the Burrow",
         "service": "youtube",
+        "channelId": "6a67af404b2d03035f4e8e79",
+        "channelState": "connected",
         "dueAt": "2026-08-01T22:00:00.000Z",
         "sentAt": null,
         "status": "scheduled",
@@ -365,13 +477,20 @@
           "engagementRate": 0,
           "views": 0
         },
-        "metricDeltas": {}
+        "metricDeltas": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "views": 0
+        }
       },
       {
         "id": "madger-004-tiktok",
         "bufferPostId": "6a687493836a12294a367b07",
         "title": "MADGER 004 — Join the Burrow",
         "service": "tiktok",
+        "channelId": "6a67b0034b2d03035f4e9477",
+        "channelState": "connected",
         "dueAt": "2026-08-02T13:00:00.000Z",
         "sentAt": null,
         "status": "scheduled",
@@ -386,13 +505,22 @@
           "shares": 0,
           "reach": 0
         },
-        "metricDeltas": {}
+        "metricDeltas": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "views": 0,
+          "shares": 0,
+          "reach": 0
+        }
       },
       {
         "id": "madger-004-facebook",
         "bufferPostId": "6a687494197e3612e830cb87",
         "title": "MADGER 004 — Join the Burrow",
         "service": "facebook",
+        "channelId": "6a67ecc14b2d03035f50dbad",
+        "channelState": "connected",
         "dueAt": "2026-08-03T13:00:00.000Z",
         "sentAt": null,
         "status": "scheduled",
@@ -407,13 +535,22 @@
           "shares": 0,
           "clicks": 0
         },
-        "metricDeltas": {}
+        "metricDeltas": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "impressions": 0,
+          "shares": 0,
+          "clicks": 0
+        }
       },
       {
         "id": "madger-004-instagram",
         "bufferPostId": "6a6874947c69e407413fa928",
         "title": "MADGER 004 — Join the Burrow",
         "service": "instagram",
+        "channelId": "6a67aebb4b2d03035f4e8b45",
+        "channelState": "connected",
         "dueAt": "2026-08-03T22:00:00.000Z",
         "sentAt": null,
         "status": "scheduled",
@@ -428,6 +565,8 @@
         "bufferPostId": "6a6874957e8cbcebb3b53a21",
         "title": "MADGER 004 — Join the Burrow",
         "service": "twitter",
+        "channelId": "6a67af8a4b2d03035f4e91f4",
+        "channelState": "disconnected",
         "dueAt": "2026-08-04T13:00:00.000Z",
         "sentAt": null,
         "status": "scheduled",
@@ -442,7 +581,14 @@
           "impressions": 0,
           "clicks": 0
         },
-        "metricDeltas": {}
+        "metricDeltas": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "reposts": 0,
+          "impressions": 0,
+          "clicks": 0
+        }
       }
     ]
   },
