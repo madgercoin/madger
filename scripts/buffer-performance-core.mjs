@@ -85,7 +85,7 @@ export function summarizeCampaign(posts, previousPosts = [], now = Date.now()) {
   }
   const needsAttention = Object.keys(attentionReasons);
   const atRiskPosts = posts
-    .filter((post) => ["scheduled", "sending"].includes(post.status))
+    .filter((post) => ["scheduled", "sending", "monitor_error"].includes(post.status))
     .filter((post) => ["disconnected", "locked", "unknown"].includes(post.channelState))
     .map((post) => post.id);
   const unhealthyChannelIds = [...new Set(
