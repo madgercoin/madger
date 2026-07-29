@@ -26,6 +26,7 @@ export function metricDeltas(current = {}, previous = {}) {
 }
 
 export function channelState(channel) {
+  if (!channel) return "unknown";
   if (channel?.isLocked) return "locked";
   if (channel?.isDisconnected) return "disconnected";
   return "connected";
@@ -42,6 +43,7 @@ function reasonsFor(post, now) {
   if (post.status === "monitor_error") reasons.push("monitor_error");
   if (post.channelState === "disconnected") reasons.push("channel_disconnected");
   if (post.channelState === "locked") reasons.push("channel_locked");
+  if (post.channelState === "unknown") reasons.push("channel_missing");
   const dueAt = Date.parse(post.dueAt);
   if (Number.isFinite(dueAt) && dueAt + 3 * 60 * 60 * 1000 < now && post.status !== "sent") {
     reasons.push("overdue");
@@ -84,11 +86,11 @@ export function summarizeCampaign(posts, previousPosts = [], now = Date.now()) {
   const needsAttention = Object.keys(attentionReasons);
   const atRiskPosts = posts
     .filter((post) => ["scheduled", "sending"].includes(post.status))
-    .filter((post) => ["disconnected", "locked"].includes(post.channelState))
+    .filter((post) => ["disconnected", "locked", "unknown"].includes(post.channelState))
     .map((post) => post.id);
   const unhealthyChannelIds = [...new Set(
     posts
-      .filter((post) => ["disconnected", "locked"].includes(post.channelState))
+      .filter((post) => ["disconnected", "locked", "unknown"].includes(post.channelState))
       .map((post) => post.channelId)
       .filter(Boolean)
   )];
