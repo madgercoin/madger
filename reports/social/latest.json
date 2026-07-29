@@ -1,9 +1,9 @@
 {
-  "generatedAt": "2026-07-29T00:23:47.750Z",
-  "previousGeneratedAt": "2026-07-29T00:09:37.465Z",
+  "generatedAt": "2026-07-29T15:35:37.124Z",
+  "previousGeneratedAt": "2026-07-29T00:23:47.750Z",
   "window": {
-    "start": "2026-06-29T00:23:47.750Z",
-    "end": "2026-07-29T00:23:47.750Z"
+    "start": "2026-06-29T15:35:37.124Z",
+    "end": "2026-07-29T15:35:37.124Z"
   },
   "organization": {
     "id": "6a67aceacff325d8d2d231e9",
@@ -20,9 +20,9 @@
       "state": "connected",
       "healthy": true,
       "queuePaused": false,
-      "metricsUpdatedAt": "2026-07-28T22:42:08.902Z",
+      "metricsUpdatedAt": "2026-07-29T14:09:27.047Z",
       "metrics": {
-        "postCount": 5,
+        "postCount": 6,
         "reactions": 2,
         "comments": 0,
         "engagementRate": 0.63,
@@ -42,7 +42,7 @@
       "state": "connected",
       "healthy": true,
       "queuePaused": false,
-      "metricsUpdatedAt": "2026-07-27T23:32:39.038Z",
+      "metricsUpdatedAt": "2026-07-29T02:50:11.864Z",
       "metrics": {
         "postCount": 1,
         "reactions": 0,
@@ -109,13 +109,13 @@
       "state": "connected",
       "healthy": true,
       "queuePaused": false,
-      "metricsUpdatedAt": null,
+      "metricsUpdatedAt": "2026-07-29T04:47:23.936Z",
       "metrics": {
-        "postCount": 0,
-        "reactions": 0,
+        "postCount": 1,
+        "reactions": 1,
         "comments": 0,
-        "engagementRate": 0,
-        "views": 0,
+        "engagementRate": 1.23,
+        "views": 81,
         "shares": 0,
         "reach": 0
       },
@@ -126,10 +126,10 @@
     "source": "content/buffer-schedule.json",
     "summary": {
       "totalPosts": 15,
-      "sent": 0,
-      "scheduled": 15,
+      "sent": 1,
+      "scheduled": 13,
       "sending": 0,
-      "errors": 0,
+      "errors": 1,
       "needsAttention": [
         "madger-002-x",
         "madger-003-x",
@@ -137,6 +137,7 @@
       ],
       "attentionReasons": {
         "madger-002-x": [
+          "publishing_error",
           "channel_disconnected"
         ],
         "madger-003-x": [
@@ -147,7 +148,6 @@
         ]
       },
       "atRiskPosts": [
-        "madger-002-x",
         "madger-003-x",
         "madger-004-x"
       ],
@@ -203,9 +203,12 @@
         "channelState": "disconnected",
         "dueAt": "2026-07-29T14:00:00.000Z",
         "sentAt": null,
-        "status": "scheduled",
+        "status": "error",
         "externalLink": null,
-        "publishingError": null,
+        "publishingError": {
+          "message": "It looks like Buffer has lost authorization to post on your behalf. Please refresh your channel to resume scheduling.",
+          "supportUrl": null
+        },
         "metricsUpdatedAt": "2026-07-28T09:14:34.271Z",
         "metrics": {
           "reactions": 0,
@@ -232,11 +235,11 @@
         "channelId": "6a67ecc14b2d03035f50dbad",
         "channelState": "connected",
         "dueAt": "2026-07-29T14:00:00.000Z",
-        "sentAt": null,
-        "status": "scheduled",
-        "externalLink": null,
+        "sentAt": "2026-07-29T14:02:30.646Z",
+        "status": "sent",
+        "externalLink": "https://www.facebook.com/reel/2497262497453092/",
         "publishingError": null,
-        "metricsUpdatedAt": "2026-07-28T09:16:06.207Z",
+        "metricsUpdatedAt": "2026-07-29T14:09:27.047Z",
         "metrics": {
           "reactions": 0,
           "comments": 0,

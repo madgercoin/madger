@@ -1,21 +1,21 @@
 # MADGER social performance
 
-Generated: 2026-07-29T00:23:47.750Z
-Previous snapshot: 2026-07-29T00:09:37.465Z
+Generated: 2026-07-29T15:35:37.124Z
+Previous snapshot: 2026-07-29T00:23:47.750Z
 
 ## 30-day channel rollup
 
 | Channel | Health | Posts | Impressions | Reach | Views | Eng. rate | Clicks | Follows | Review |
 |---|---|---:|---:|---:|---:|---:|---:|---:|---|
-| facebook: Madger Coin | Connected | 5 | 477 | — | — | 0.63% | 1 | — | None flagged |
+| facebook: Madger Coin | Connected | 6 | 477 | — | — | 0.63% | 1 | — | None flagged |
 | youtube: Madger | Connected | 1 | — | — | 0 | 0.00% | — | — | None flagged |
 | twitter: MadgerCoin | Disconnected | 0 | 0 | — | — | 0.00% | 0 | — | None flagged |
 | instagram: madgercoin | Connected | 4 | 0 | 182 | 235 | 2.20% | — | 0 | None flagged |
-| tiktok: themadgercoin | Connected | 0 | — | 0 | 0 | 0.00% | — | — | None flagged |
+| tiktok: themadgercoin | Connected | 1 | — | 0 | 81 | 1.23% | — | — | None flagged |
 
 ## Scheduled campaign
 
-Sent: 0/15 · Scheduled: 15 · Errors: 0 · Attention: 3 · At risk: 3
+Sent: 1/15 · Scheduled: 13 · Errors: 1 · Attention: 3 · At risk: 2
 
 | Metric | Current | Change since prior report |
 |---|---:|---:|
@@ -35,8 +35,8 @@ Sent: 0/15 · Scheduled: 15 · Errors: 0 · Attention: 3 · At risk: 3
 
 | Post | Network | Connection | Due (UTC) | Status | Views | Impressions | Reach | Reactions | Comments | Shares | Clicks | Follows | Link |
 |---|---|---|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---|
-| MADGER 002 — Keep Digging | twitter | disconnected | 2026-07-29T14:00:00.000Z | ⚠ scheduled (channel disconnected) | — | 0 | — | 0 | 0 | — | 0 | — | — |
-| MADGER 002 — Keep Digging | facebook | connected | 2026-07-29T14:00:00.000Z | scheduled | — | 0 | — | 0 | 0 | 0 | 0 | — | — |
+| MADGER 002 — Keep Digging | twitter | disconnected | 2026-07-29T14:00:00.000Z | ⚠ error (publishing error, channel disconnected) | — | 0 | — | 0 | 0 | — | 0 | — | — |
+| MADGER 002 — Keep Digging | facebook | connected | 2026-07-29T14:00:00.000Z | sent | — | 0 | — | 0 | 0 | 0 | 0 | — | [Open](https://www.facebook.com/reel/2497262497453092/) |
 | MADGER 002 — Keep Digging | instagram | connected | 2026-07-29T22:00:00.000Z | scheduled | — | — | — | — | — | — | — | — | — |
 | MADGER 002 — Keep Digging | youtube | connected | 2026-07-29T23:00:00.000Z | scheduled | 0 | — | — | 0 | 0 | — | — | — | — |
 | MADGER 002 — Keep Digging | tiktok | connected | 2026-07-30T02:00:00.000Z | scheduled | 0 | — | 0 | 0 | 0 | 0 | — | — | — |
