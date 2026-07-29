@@ -1,5 +1,5 @@
 import fs from "node:fs/promises";
-import { metricsToObject, metricDeltas, summarizeCampaign } from "./buffer-performance-core.mjs";
+import { channelState, metricsToObject, metricDeltas, summarizeCampaign } from "./buffer-performance-core.mjs";
 
 const API_URL = "https://api.buffer.com";
 const token = process.env.BUFFER_API_TOKEN;
@@ -49,6 +49,7 @@ const end = new Date();
 const start = new Date(end.getTime() - 30 * 24 * 60 * 60 * 1000);
 const channelRows = [];
 for (const channel of channelData.channels) {
+  const state = channelState(channel);
   try {
     const data = await graphql(`
       query Metrics($input: AggregatedPostMetricsInput!) {
@@ -69,7 +70,10 @@ for (const channel of channelData.channels) {
       channel: channel.displayName || channel.name,
       service: channel.service,
       externalLink: channel.externalLink,
-      healthy: !channel.isDisconnected && !channel.isLocked,
+      disconnected: channel.isDisconnected,
+      locked: channel.isLocked,
+      state,
+      healthy: state === "connected",
       queuePaused: channel.isQueuePaused,
       metricsUpdatedAt: data.aggregatedPostMetrics.metricsUpdatedAt,
       metrics: values,
@@ -81,17 +85,23 @@ for (const channel of channelData.channels) {
       channel: channel.displayName || channel.name,
       service: channel.service,
       externalLink: channel.externalLink,
-      healthy: !channel.isDisconnected && !channel.isLocked,
+      disconnected: channel.isDisconnected,
+      locked: channel.isLocked,
+      state,
+      healthy: state === "connected",
       queuePaused: channel.isQueuePaused,
       error: error.message
     });
   }
 }
 
+const channelsById = new Map(channelRows.map((channel) => [channel.channelId, channel]));
 const previousCampaignPosts = priorReport?.campaign?.posts ?? [];
 const previousCampaignById = new Map(previousCampaignPosts.map((post) => [post.id, post]));
 const campaignPosts = [];
 for (const entry of manifest.posts.filter((post) => post.bufferPostId)) {
+  const campaignChannel = channelsById.get(entry.channelId);
+  const connectionState = campaignChannel?.state ?? "unknown";
   try {
     const data = await graphql(`
       query CampaignPost($postId: PostId!) {
@@ -110,6 +120,8 @@ for (const entry of manifest.posts.filter((post) => post.bufferPostId)) {
       bufferPostId: entry.bufferPostId,
       title: entry.title,
       service: entry.service,
+      channelId: entry.channelId,
+      channelState: connectionState,
       dueAt: post.dueAt || entry.dueAt,
       sentAt: post.sentAt,
       status: post.status,
@@ -125,6 +137,8 @@ for (const entry of manifest.posts.filter((post) => post.bufferPostId)) {
       bufferPostId: entry.bufferPostId,
       title: entry.title,
       service: entry.service,
+      channelId: entry.channelId,
+      channelState: connectionState,
       dueAt: entry.dueAt,
       status: "monitor_error",
       metrics: {},
@@ -165,7 +179,13 @@ const format = (value, delta = null, suffix = "") => {
   const change = Number.isInteger(delta) ? String(delta) : delta.toFixed(2);
   return `${base}${suffix} (${delta > 0 ? "+" : ""}${change})`;
 };
-const statusLabel = (post) => campaignSummary.needsAttention.includes(post.id) ? `⚠ ${post.status}` : post.status;
+const statusLabel = (post) => {
+  const reasons = campaignSummary.attentionReasons[post.id];
+  return reasons ? `⚠ ${post.status} (${reasons.join(", ").replaceAll("_", " ")})` : post.status;
+};
+const healthLabel = (row) => row.state === "connected"
+  ? "Connected"
+  : row.state === "locked" ? "Locked" : row.state === "disconnected" ? "Disconnected" : "Unknown";
 const link = (url) => url ? `[Open](${url})` : "—";
 const lines = [
   "# MADGER social performance",
@@ -177,11 +197,11 @@ const lines = [
   "",
   "| Channel | Health | Posts | Impressions | Reach | Views | Eng. rate | Clicks | Follows | Review |",
   "|---|---|---:|---:|---:|---:|---:|---:|---:|---|",
-  ...channelRows.map((row) => `| ${row.service}: ${row.channel} | ${row.healthy ? "Connected" : "Attention"} | ${metric(row, "postCount")} | ${metric(row, "impressions")} | ${metric(row, "reach")} | ${metric(row, "views")} | ${Number.isFinite(row.metrics?.engagementRate) ? `${row.metrics.engagementRate.toFixed(2)}%` : "—"} | ${metric(row, "clicks")} | ${metric(row, "follows")} | ${row.requiresCommunityReview ? "Check Buffer Community" : "None flagged"} |`),
+  ...channelRows.map((row) => `| ${row.service}: ${row.channel} | ${healthLabel(row)} | ${metric(row, "postCount")} | ${metric(row, "impressions")} | ${metric(row, "reach")} | ${metric(row, "views")} | ${Number.isFinite(row.metrics?.engagementRate) ? `${row.metrics.engagementRate.toFixed(2)}%` : "—"} | ${metric(row, "clicks")} | ${metric(row, "follows")} | ${row.requiresCommunityReview ? "Check Buffer Community" : "None flagged"} |`),
   "",
   "## Scheduled campaign",
   "",
-  `Sent: ${campaignSummary.sent}/${campaignSummary.totalPosts} · Scheduled: ${campaignSummary.scheduled} · Errors: ${campaignSummary.errors} · Attention: ${campaignSummary.needsAttention.length}`,
+  `Sent: ${campaignSummary.sent}/${campaignSummary.totalPosts} · Scheduled: ${campaignSummary.scheduled} · Errors: ${campaignSummary.errors} · Attention: ${campaignSummary.needsAttention.length} · At risk: ${campaignSummary.atRiskPosts.length}`,
   "",
   "| Metric | Current | Change since prior report |",
   "|---|---:|---:|",
@@ -190,18 +210,22 @@ const lines = [
   "",
   "## Per-post performance",
   "",
-  "| Post | Network | Due (UTC) | Status | Views | Impressions | Reach | Reactions | Comments | Shares | Clicks | Follows | Link |",
-  "|---|---|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---|",
-  ...campaignPosts.map((post) => `| ${post.title} | ${post.service} | ${post.dueAt || "—"} | ${statusLabel(post)} | ${format(post.metrics.views, post.metricDeltas.views)} | ${format(post.metrics.impressions, post.metricDeltas.impressions)} | ${format(post.metrics.reach, post.metricDeltas.reach)} | ${format(post.metrics.reactions, post.metricDeltas.reactions)} | ${format(post.metrics.comments, post.metricDeltas.comments)} | ${format(post.metrics.shares, post.metricDeltas.shares)} | ${format(post.metrics.clicks, post.metricDeltas.clicks)} | ${format(post.metrics.follows, post.metricDeltas.follows)} | ${link(post.externalLink)} |`),
+  "| Post | Network | Connection | Due (UTC) | Status | Views | Impressions | Reach | Reactions | Comments | Shares | Clicks | Follows | Link |",
+  "|---|---|---|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---|",
+  ...campaignPosts.map((post) => `| ${post.title} | ${post.service} | ${post.channelState} | ${post.dueAt || "—"} | ${statusLabel(post)} | ${format(post.metrics.views, post.metricDeltas.views)} | ${format(post.metrics.impressions, post.metricDeltas.impressions)} | ${format(post.metrics.reach, post.metricDeltas.reach)} | ${format(post.metrics.reactions, post.metricDeltas.reactions)} | ${format(post.metrics.comments, post.metricDeltas.comments)} | ${format(post.metrics.shares, post.metricDeltas.shares)} | ${format(post.metrics.clicks, post.metricDeltas.clicks)} | ${format(post.metrics.follows, post.metricDeltas.follows)} | ${link(post.externalLink)} |`),
   "",
   "## Interpretation",
   "",
   "- Parentheses show movement since the prior daily report; unavailable metrics remain — rather than being treated as zero.",
   "- Buffer metrics refresh approximately daily and may lag native network activity by about 24 hours.",
   "- Follows means Instagram followers attributed to a post; it is not the account's total follower count.",
+  "- Disconnected, locked, or missing campaign channels are flagged before scheduled posts are lost.",
   "- Any errored post or post still unsent three hours after its due time is flagged for attention.",
   "- Website visitors require a separate first-party analytics source and are not inferred from social impressions or clicks.",
   ""
 ];
 await fs.writeFile("reports/social/latest.md", lines.join("\n"));
+if (campaignSummary.atRiskPosts.length) {
+  console.error(`::warning title=Buffer campaign channel at risk::${campaignSummary.atRiskPosts.length} scheduled post(s) depend on a disconnected, locked, or missing channel: ${campaignSummary.atRiskPosts.join(", ")}`);
+}
 console.log(JSON.stringify(report, null, 2));

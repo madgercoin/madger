@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import test from "node:test";
 
 import {
+  channelState,
   metricsToObject,
   metricDeltas,
   summarizeCampaign
@@ -19,6 +20,13 @@ test("calculates only comparable per-post metric deltas", () => {
     metricDeltas({ views: 125, reactions: 9, follows: 2 }, { views: 100, reactions: 4 }),
     { views: 25, reactions: 5 }
   );
+});
+
+test("classifies Buffer channel connection state with locked taking precedence", () => {
+  assert.equal(channelState(null), "unknown");
+  assert.equal(channelState({ isDisconnected: false, isLocked: false }), "connected");
+  assert.equal(channelState({ isDisconnected: true, isLocked: false }), "disconnected");
+  assert.equal(channelState({ isDisconnected: true, isLocked: true }), "locked");
 });
 
 test("summarizes campaign totals without treating unavailable metrics as zero", () => {
@@ -43,14 +51,24 @@ test("calculates campaign-level growth against the prior snapshot", () => {
   assert.equal(summary.priorSnapshotAvailable, true);
 });
 
-test("flags overdue or errored campaign posts", () => {
+test("flags overdue, errored, disconnected, and locked campaign posts with reasons", () => {
   const summary = summarizeCampaign([
-    { id: "late", status: "scheduled", dueAt: "2026-07-29T14:00:00Z", metrics: {} },
-    { id: "failed", status: "error", dueAt: "2026-07-30T14:00:00Z", metrics: {} },
-    { id: "future", status: "scheduled", dueAt: "2026-08-02T14:00:00Z", metrics: {} }
+    { id: "late", status: "scheduled", dueAt: "2026-07-29T14:00:00Z", channelState: "connected", metrics: {} },
+    { id: "failed", status: "error", dueAt: "2026-07-30T14:00:00Z", channelState: "connected", metrics: {} },
+    { id: "disconnected", channelId: "x", status: "monitor_error", dueAt: "2026-08-02T14:00:00Z", channelState: "disconnected", metrics: {} },
+    { id: "locked", channelId: "y", status: "scheduled", dueAt: "2026-08-03T14:00:00Z", channelState: "locked", metrics: {} },
+    { id: "missing", channelId: "z", status: "scheduled", dueAt: "2026-08-03T15:00:00Z", channelState: "unknown", metrics: {} },
+    { id: "future", status: "scheduled", dueAt: "2026-08-04T14:00:00Z", channelState: "connected", metrics: {} }
   ], [], Date.parse("2026-07-31T00:00:00Z"));
-  assert.deepEqual(summary.needsAttention, ["late", "failed"]);
-  assert.equal(summary.errors, 1);
+  assert.deepEqual(summary.needsAttention, ["late", "failed", "disconnected", "locked", "missing"]);
+  assert.deepEqual(summary.attentionReasons.late, ["overdue"]);
+  assert.deepEqual(summary.attentionReasons.failed, ["publishing_error", "overdue"]);
+  assert.deepEqual(summary.attentionReasons.disconnected, ["monitor_error", "channel_disconnected"]);
+  assert.deepEqual(summary.attentionReasons.locked, ["channel_locked"]);
+  assert.deepEqual(summary.attentionReasons.missing, ["channel_missing"]);
+  assert.deepEqual(summary.atRiskPosts, ["disconnected", "locked", "missing"]);
+  assert.deepEqual(summary.unhealthyChannelIds, ["x", "y", "z"]);
+  assert.equal(summary.errors, 2);
 });
 
 test("campaign deltas ignore missing queries, new posts, and newly available metrics", () => {
