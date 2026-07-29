@@ -33,11 +33,24 @@ function aggregateMetric(posts, key) {
 export function summarizeCampaign(posts, previousPosts = [], now = Date.now()) {
   const previousById = new Map(previousPosts.map((post) => [post.id, post]));
   const totals = Object.fromEntries(CAMPAIGN_METRICS.map((key) => [key, aggregateMetric(posts, key)]));
-  const previousTotals = Object.fromEntries(CAMPAIGN_METRICS.map((key) => [key, aggregateMetric(previousPosts, key)]));
-  const deltas = Object.fromEntries(CAMPAIGN_METRICS.map((key) => [
-    key,
-    Number.isFinite(totals[key]) && Number.isFinite(previousTotals[key]) ? totals[key] - previousTotals[key] : null
-  ]));
+  const deltas = {};
+  const deltaCohorts = {};
+  for (const key of CAMPAIGN_METRICS) {
+    let currentTotal = 0;
+    let previousTotal = 0;
+    let cohortSize = 0;
+    for (const post of posts) {
+      const previous = previousById.get(post.id);
+      const currentValue = post.metrics?.[key];
+      const previousValue = previous?.metrics?.[key];
+      if (!Number.isFinite(currentValue) || !Number.isFinite(previousValue)) continue;
+      currentTotal += currentValue;
+      previousTotal += previousValue;
+      cohortSize += 1;
+    }
+    deltas[key] = cohortSize ? currentTotal - previousTotal : null;
+    deltaCohorts[key] = cohortSize;
+  }
 
   const engagementRates = posts.map((post) => post.metrics?.engagementRate).filter(Number.isFinite);
   const averageEngagementRate = engagementRates.length
@@ -59,6 +72,7 @@ export function summarizeCampaign(posts, previousPosts = [], now = Date.now()) {
     needsAttention,
     totals,
     deltas,
+    deltaCohorts,
     averageEngagementRate,
     priorSnapshotAvailable: previousById.size > 0
   };
