@@ -58,4 +58,5 @@ jobs:
           git pull --rebase origin main
           git push
       - name: Enforce campaign channel health
-        run: node --input-type=module -e 'import fs from "node:fs"; const report = JSON.parse(fs.readFileSync("reports/social/latest.json", "utf8")); const atRisk = report.campaign?.summary?.atRiskPosts ?? []; if (atRisk.length) { console.error(`Scheduled posts depend on an unhealthy Buffer channel: ${atRisk.join(", ")}`); process.exit(1); }'
+        run: |
+          node --input-type=module -e 'import fs from "node:fs"; const report = JSON.parse(fs.readFileSync("reports/social/latest.json", "utf8")); const atRisk = report.campaign?.summary?.atRiskPosts ?? []; if (atRisk.length) { console.error(`Scheduled posts depend on an unhealthy Buffer channel: ${atRisk.join(", ")}`); process.exit(1); }'
