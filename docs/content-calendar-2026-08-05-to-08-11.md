@@ -58,7 +58,7 @@ Primary metrics: 3-second/video views where available, completion proxy, reactio
 
 **Hook:** “Everyone wants the shortcut.”  
 **Visual:** Madger reaches a flashy false shortcut sign, gives it an unimpressed look, knocks it aside, and keeps digging through solid rock.  
-**End card:** “NO SHORTCUTS UNDERGROUND.” / “STAY MAD. KEEP DIGGING.”  
+**End card:** “NO SHORTCUTS UNDERGROUND.” / “STAY BOLD. KEEP DIGGING.”
 **Sound:** Pick strike, falling sign, low burrow rumble; no copyrighted music.  
 **Caption:** Everyone wants the shortcut. MADGER keeps digging. 🦡⛏️ #MADGER #TheBurrow #KeepDigging #Solana
 
@@ -96,7 +96,7 @@ Primary metrics: 3-second/video views where available, completion proxy, reactio
 ### Monday persistence meme
 
 > New week. Same tunnel.  
-> Stay Mad. Keep Digging. 🦡⛏️
+> Stay Bold. Keep Digging. 🦡⛏️
 
 ### Build update
 

@@ -34,7 +34,7 @@ Status: **pre-launch preparation only**. Do not submit until public trading is a
 
 ### Short
 
-MADGER is a community-driven Solana memecoin built around a relentlessly unimpressed honey badger: Stay Mad. Keep Digging.
+MADGER is a community-driven Solana memecoin built around a relentlessly unimpressed honey badger: Stay Bold. Keep Digging.
 
 ### Standard
 

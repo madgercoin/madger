@@ -34,6 +34,7 @@ const officialChannelLinks = [
 const officialMint = "BHauMX8akk2umqkQqnJwpYkCRkZmefGnEBFByeFXRKqv";
 const failures = [];
 const pages = new Map();
+const stylesheet = await readFile("styles.css", "utf8");
 
 function escapeRegExp(value) {
   return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
@@ -106,6 +107,10 @@ for (const file of htmlFiles) {
       failures.push(`${file}: image is missing explicit width/height: ${image[0]}`);
     }
   }
+}
+
+if (!/\.portrait-card img\{[^}]*\bheight:auto\b/.test(stylesheet)) {
+  failures.push("styles.css: the responsive MADGER portrait must override its intrinsic HTML height");
 }
 
 for (const [file, html] of pages) {
@@ -194,7 +199,7 @@ if (crossPageDuplicates.length) {
 }
 
 const lowValuePhraseBudgets = new Map([
-  ["stay mad keep digging", 1],
+  ["stay bold keep digging", 1],
   ["small badger big mood", 1],
   ["build the burrow", 1],
   ["community campaigns partnerships", 1],

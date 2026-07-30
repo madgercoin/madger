@@ -6,6 +6,7 @@ Notable repository changes are recorded here. Dates use UTC. This project does n
 
 ### Changed
 
+- Corrected the responsive MADGER portrait sizing, tightened the mobile “Meet Madger” layout, and replaced the negative “Stay Mad” slogan with “Stay Bold” in current brand and content guidance.
 - Replaced the opaque inline Buffer health gate with tested, actionable diagnostics that identify at-risk posts, due times, affected channels, and related publishing failures.
 - Hardened Buffer publishing against malformed or duplicate manifest IDs and same-run duplicate creation, while preserving a deliberate zero-second thumbnail offset.
 - Removed a duplicate CI build, restored the aggregate launch-state validation to CI, audited the complete dependency tree, and made token-report pushes rebase safely over concurrent automation updates.

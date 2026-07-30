@@ -52,7 +52,7 @@ Verify: https://madgercoin.com
 Community: https://t.me/madgerburrow  
 Announcements: https://t.me/madgercoin
 
-Stay Mad. Keep Digging.
+Stay Bold. Keep Digging.
 
 ---
 
@@ -76,7 +76,7 @@ Announcements: https://t.me/madgercoin
 
 MADGER admins will never contact you first, ask for your seed phrase, or send a secret purchase link. Verify every announcement through the website and this channel.
 
-**Stay Mad. Keep Digging.**
+**Stay Bold. Keep Digging.**
 
 ---
 
@@ -421,7 +421,7 @@ t.me/madgerburrow
 1. MARKETS PANIC.
 2. TIMELINES SCREAM.
 3. MADGER DIGS.
-4. STAY MAD. KEEP DIGGING.
+4. STAY BOLD. KEEP DIGGING.
 5. MADGERCOIN.COM
 
 **Caption**
@@ -531,7 +531,7 @@ Protect The Burrow. Verify first.
 
 13. The market asked for a prediction. MADGER handed it a shovel.
 
-14. Stay Mad. Keep Digging.
+14. Stay Bold. Keep Digging.
 
 15. The Burrow is open: https://t.me/madgerburrow
 
@@ -570,7 +570,7 @@ Protect The Burrow. Verify first.
 ## Instagram
 
 The grumpiest badger on Solana. 🦡  
-Stay Mad. Keep Digging.  
+Stay Bold. Keep Digging.
 Minted • Public trading not launched  
 👇 Enter The Burrow
 
