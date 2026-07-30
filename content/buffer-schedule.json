@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "timezone": "America/New_York",
-  "notes": "The original 15 posts were scheduled in Buffer on 2026-07-28 and disabled afterward to prevent resubmission. A refreshed X recovery post was enabled on 2026-07-30 after channel reauthorization; recorded Buffer post IDs remain authoritative for the original campaign.",
+  "notes": "The original 15 posts were scheduled in Buffer on 2026-07-28 and disabled afterward to prevent resubmission. The refreshed X recovery post is enabled for the active hourly scheduler; recorded Buffer post IDs remain authoritative for the original campaign.",
   "posts": [
     {
       "id": "madger-002-x",
@@ -224,7 +224,7 @@
       "thumbnailOffsetMs": 1000,
       "text": "Everybody wants the shortcut. Madger keeps digging. 🦡⛏️\n\nWhat are you building while everyone else waits?\n\n#MADGER #KeepDigging #Solana",
       "channelId": "6a67af8a4b2d03035f4e91f4",
-      "status": "ready"
+      "status": "activation_pending"
     }
   ],
   "lastSuccessfulActivation": "2026-07-28T09:21:25Z"
