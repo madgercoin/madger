@@ -1,5 +1,14 @@
 const baseUrl = (process.env.SITE_URL ?? "https://madgercoin.com").replace(/\/$/, "");
 const officialMint = "BHauMX8akk2umqkQqnJwpYkCRkZmefGnEBFByeFXRKqv";
+const officialChannelLinks = [
+  ["https://x.com/madgercoin", "X"],
+  ["https://www.instagram.com/madgercoin/", "Instagram"],
+  ["https://www.facebook.com/1279493098576451", "Facebook"],
+  ["https://www.youtube.com/channel/UCqbAvD8zi6psByKRk50qCkg", "YouTube"],
+  ["https://www.tiktok.com/@themadgercoin", "TikTok"],
+  ["https://t.me/madgercoin", "Telegram announcements"],
+  ["https://t.me/madgerburrow", "Telegram community"]
+];
 const checks = [
   ["/", 200],
   ["/litepaper.html", 200],
@@ -19,13 +28,18 @@ const redirects = [
 ];
 const failures = [];
 const responses = new Map();
+const htmlPaths = new Set(["/", "/litepaper.html", "/__deployment-check-missing-page__"]);
 
 for (const [pathname, expectedStatus] of checks) {
   try {
     const response = await fetch(`${baseUrl}${pathname}`, { redirect: "manual" });
-    const body = response.headers.get("content-type")?.includes("text/html") ? await response.text() : null;
+    const contentType = response.headers.get("content-type") ?? "";
+    const body = htmlPaths.has(pathname) ? await response.text() : null;
     responses.set(pathname, { response, body });
     if (response.status !== expectedStatus) failures.push(`${pathname}: expected ${expectedStatus}, received ${response.status}`);
+    if (htmlPaths.has(pathname) && !contentType.includes("text/html")) {
+      failures.push(`${pathname}: expected an HTML content type, received ${contentType || "none"}`);
+    }
     console.log(`${response.status === expectedStatus ? "PASS" : "FAIL"} ${pathname} (${response.status})`);
   } catch (error) {
     failures.push(`${pathname}: ${error.message}`);
@@ -52,9 +66,7 @@ if (homepage) {
   const contentChecks = [
     [body.includes(officialMint), "exact official mint"],
     [!/no official token contract/i.test(body), "obsolete no-contract language absent"],
-    [body.includes('href="https://x.com/madgercoin"'), "official X link"],
-    [body.includes('href="https://t.me/madgercoin"'), "official Telegram announcement link"],
-    [body.includes('href="https://t.me/madgerburrow"'), "official Telegram community link"],
+    ...officialChannelLinks.map(([url, channel]) => [body.includes(`href="${url}"`), `official ${channel} link`]),
     [body.includes('<link rel="canonical" href="https://madgercoin.com/">'), "homepage canonical"],
     [body.includes('rel="preload" as="image" href="/assets/madger_v5_hero.webp"'), "hero image preload"],
     [body.includes('"@type": "Organization"'), "Organization structured data"],
@@ -76,7 +88,8 @@ if (litepaper) {
   const contentChecks = [
     [litepaper.body.includes('<link rel="canonical" href="https://madgercoin.com/litepaper.html">'), "litepaper canonical"],
     [litepaper.body.includes('"@type": "Article"'), "litepaper Article structured data"],
-    [litepaper.body.includes('name="twitter:card" content="summary_large_image"'), "litepaper social card"]
+    [litepaper.body.includes('name="twitter:card" content="summary_large_image"'), "litepaper social card"],
+    ...officialChannelLinks.map(([url, channel]) => [litepaper.body.includes(`href="${url}"`), `official ${channel} link`])
   ];
   for (const [passed, label] of contentChecks) {
     console.log(`${passed ? "PASS" : "FAIL"} ${label}`);

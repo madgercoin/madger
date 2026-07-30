@@ -11,7 +11,7 @@
 
 The application is static and collects no user data. `_headers` sets CSP, HSTS, `nosniff`, strict-origin referrer policy, denies framing, and disables camera/microphone/geolocation. New-tab links use `noopener noreferrer`. The build publishes an allowlist and excludes internal docs, `.env*`, starter source, and package files. Clipboard enhancement writes only the fixed visible mint and handles denial without hiding the address.
 
-CI scans high-confidence secret patterns, validates the production artifact and mint, and runs a production-only dependency audit. Wrangler is pinned at `4.114.0`; upgrading from `4.88.0` resolved six findings inherited through its development-only `esbuild`/Miniflare toolchain (`sharp`, `undici`, and `ws`) without a forced major upgrade. `npm audit` now reports zero findings.
+CI scans high-confidence secret patterns, validates the production artifact and mint, and audits the complete locked dependency tree. Wrangler is pinned at `4.114.0`; upgrading from `4.88.0` resolved six findings inherited through its `esbuild`/Miniflare toolchain (`sharp`, `undici`, and `ws`) without a forced major upgrade. `npm audit` reports zero findings.
 
 The launch-state validator requires every indexable project page to load the same content-versioned controller, keeps `MINTED_NOT_TRADING` active, and rejects known trading hosts before launch. The no-index 404 is intentionally navigation-only and must not load the controller or repeat launch disclosures. Artifact validation proves launch-control documents and the five operational wallet addresses remain outside `dist/`. Public mint verification remains available; custody records and signing material never are.
 

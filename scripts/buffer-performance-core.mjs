@@ -112,3 +112,37 @@ export function summarizeCampaign(posts, previousPosts = [], now = Date.now()) {
     priorSnapshotAvailable: previousById.size > 0
   };
 }
+
+export function campaignHealthDetails(report) {
+  const posts = report?.campaign?.posts;
+  const atRiskIds = report?.campaign?.summary?.atRiskPosts;
+  if (!Array.isArray(posts) || !Array.isArray(atRiskIds)) {
+    throw new TypeError("Buffer report is missing campaign posts or the at-risk summary");
+  }
+
+  const channels = Array.isArray(report.channels) ? report.channels : [];
+  const postsById = new Map(posts.map((post) => [post.id, post]));
+  const channelsById = new Map(channels.map((channel) => [channel.channelId, channel]));
+  const describe = (id) => {
+    const post = postsById.get(id);
+    const channel = channelsById.get(post?.channelId);
+    return {
+      id,
+      title: post?.title ?? id,
+      service: post?.service ?? channel?.service ?? "unknown",
+      channel: channel?.channel ?? "unknown",
+      channelId: post?.channelId ?? null,
+      channelState: post?.channelState ?? channel?.state ?? "unknown",
+      dueAt: post?.dueAt ?? null,
+      status: post?.status ?? "unknown"
+    };
+  };
+
+  const atRisk = [...new Set(atRiskIds)].map(describe);
+  const affectedChannelIds = new Set(atRisk.map((post) => post.channelId).filter(Boolean));
+  const failed = posts
+    .filter((post) => post.status === "error" && affectedChannelIds.has(post.channelId))
+    .map((post) => describe(post.id));
+
+  return { atRisk, failed };
+}

@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "botUsername": "madger_publisher_bot",
+  "targets": {
+    "channel": "@madgercoin",
+    "group": "@madgerburrow"
+  },
+  "maxLatenessMinutes": 90,
+  "notes": "Enable only reviewed posts with an exact UTC dueAt and a verified public HTTPS media URL. Publication state prevents automatic duplicate retries.",
+  "posts": [
+    {
+      "id": "madger-telegram-safety-001-group",
+      "enabled": true,
+      "target": "group",
+      "dueAt": "2026-07-30T22:00:00.000Z",
+      "text": "Official MADGER updates are now live in the Burrow. 🦡\n\nVerify every link through https://madgercoin.com. Admins will never DM first or ask for a seed phrase, private key, or payment.\n\n#MADGER #TheBurrow #CryptoSafety"
+    }
+  ]
+}

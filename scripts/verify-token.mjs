@@ -5,7 +5,6 @@ const MINT = 'BHauMX8akk2umqkQqnJwpYkCRkZmefGnEBFByeFXRKqv';
 const EXPECTED = {
   amount: '1000000000000000',
   decimals: 6,
-  uiAmountString: '1000000000',
   program: 'spl-token',
   owner: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
   mintAuthority: null,

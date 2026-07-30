@@ -1,6 +1,24 @@
 # MADGER content calendar — August 5–11, 2026
 
-Timezone: America/New_York. Status: production plan; nothing in this file authorizes publication.
+Timezone: America/New_York. Status: production assets prepared; scheduling is
+not yet activated and nothing in this file authorizes publication.
+
+## Completed production assets
+
+| Asset | Deliverable |
+|---|---|
+| Character model/pose reference | `media/source/MADGER_CHARACTER_PLATE_V2.webp` |
+| MADGER 005 master frame | `media/source/MADGER_005_NO_SHORTCUT_UNDERGROUND_MASTER.webp` |
+| MADGER 005 vertical video | `media/MADGER_005_NO_SHORTCUT_UNDERGROUND_VERTICAL.mp4` |
+| MADGER 006 master frame | `media/source/MADGER_006_VERIFY_BEFORE_YOU_TRUST_MASTER.webp` |
+| MADGER 006 vertical video | `media/MADGER_006_VERIFY_BEFORE_YOU_TRUST_VERTICAL.mp4` |
+| MADGER 007 master frame | `media/source/MADGER_007_SIGNAL_FROM_THE_BURROW_MASTER.webp` |
+| MADGER 007 vertical video | `media/MADGER_007_SIGNAL_FROM_THE_BURROW_VERTICAL.mp4` |
+
+The corresponding video entries are staged as disabled records in
+`content/buffer-schedule.json`. They must remain disabled until the files are
+available from the production branch and the final channel schedule passes a
+fresh duplicate and connection check.
 
 ## Analytical approach
 
@@ -40,7 +58,7 @@ Primary metrics: 3-second/video views where available, completion proxy, reactio
 
 **Hook:** “Everyone wants the shortcut.”  
 **Visual:** Madger reaches a flashy false shortcut sign, gives it an unimpressed look, knocks it aside, and keeps digging through solid rock.  
-**End card:** “NO SHORTCUTS UNDERGROUND.” / “STAY MAD. KEEP DIGGING.”  
+**End card:** “NO SHORTCUTS UNDERGROUND.” / “STAY BOLD. KEEP DIGGING.”
 **Sound:** Pick strike, falling sign, low burrow rumble; no copyrighted music.  
 **Caption:** Everyone wants the shortcut. MADGER keeps digging. 🦡⛏️ #MADGER #TheBurrow #KeepDigging #Solana
 
@@ -78,7 +96,7 @@ Primary metrics: 3-second/video views where available, completion proxy, reactio
 ### Monday persistence meme
 
 > New week. Same tunnel.  
-> Stay Mad. Keep Digging. 🦡⛏️
+> Stay Bold. Keep Digging. 🦡⛏️
 
 ### Build update
 

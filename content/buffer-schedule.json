@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "timezone": "America/New_York",
-  "notes": "All 15 posts scheduled successfully in Buffer on 2026-07-28. Entries were disabled immediately afterward to prevent resubmission; recorded Buffer post IDs are authoritative.",
+  "notes": "The original 15 posts were accepted by Buffer on 2026-07-28 and disabled immediately afterward to prevent resubmission. The 2026-07-30 refresh verified all five channels healthy but found madger-002-x errored and overdue after X was disconnected during its original slot. MADGER 005-007 entries are staged disabled until the source branch is merged, public media URLs resolve, and scheduling is explicitly activated.",
   "posts": [
     {
       "id": "madger-002-x",
@@ -14,7 +14,12 @@
       "thumbnailOffsetMs": 1000,
       "text": "The market gets loud. MADGER digs deeper. 🦡⛏️\n\nStay Mad. Keep Digging.\n\nhttps://madgercoin.com\n\n#MADGER #TheBurrow #Solana",
       "channelId": "6a67af8a4b2d03035f4e91f4",
-      "status": "scheduled",
+      "status": "error",
+      "lastObservedAt": "2026-07-30T00:39:13.429Z",
+      "attentionReasons": [
+        "publishing_error",
+        "overdue"
+      ],
       "bufferPostId": "6a6872fa7c69e407413f994b"
     },
     {
@@ -212,6 +217,110 @@
       "channelId": "6a67af8a4b2d03035f4e91f4",
       "status": "scheduled",
       "bufferPostId": "6a6874957e8cbcebb3b53a21"
+    },
+    {
+      "id": "madger-005-youtube",
+      "enabled": false,
+      "service": "youtube",
+      "channelName": "Madgercoin",
+      "title": "MADGER 005 — No Shortcut Underground",
+      "dueAt": "2026-08-06T22:00:00.000Z",
+      "mediaUrl": "https://raw.githubusercontent.com/madgercoin/madger/main/media/MADGER_005_NO_SHORTCUT_UNDERGROUND_VERTICAL.mp4",
+      "thumbnailOffsetMs": 1000,
+      "text": "Everyone wants the shortcut. MADGER keeps digging. 🦡⛏️ Stay Bold. Keep Digging. #MADGER #TheBurrow #KeepDigging #Solana",
+      "channelId": "6a67af404b2d03035f4e8e79",
+      "status": "planned"
+    },
+    {
+      "id": "madger-005-instagram",
+      "enabled": false,
+      "service": "instagram",
+      "channelName": "madgercoin",
+      "title": "MADGER 005 — No Shortcut Underground",
+      "dueAt": "2026-08-06T22:00:00.000Z",
+      "mediaUrl": "https://raw.githubusercontent.com/madgercoin/madger/main/media/MADGER_005_NO_SHORTCUT_UNDERGROUND_VERTICAL.mp4",
+      "thumbnailOffsetMs": 1000,
+      "text": "Everyone wants the shortcut. MADGER keeps digging. 🦡⛏️\n\n#MADGER #TheBurrow #KeepDigging #Solana",
+      "channelId": "6a67aebb4b2d03035f4e8b45",
+      "status": "planned"
+    },
+    {
+      "id": "madger-005-tiktok",
+      "enabled": false,
+      "service": "tiktok",
+      "channelName": "themadgercoin",
+      "title": "MADGER 005 — No Shortcut Underground",
+      "dueAt": "2026-08-07T01:30:00.000Z",
+      "mediaUrl": "https://raw.githubusercontent.com/madgercoin/madger/main/media/MADGER_005_NO_SHORTCUT_UNDERGROUND_VERTICAL.mp4",
+      "thumbnailOffsetMs": 1000,
+      "text": "Everyone wants the shortcut. MADGER keeps digging. 🦡⛏️ #MADGER #TheBurrow #KeepDigging #CryptoTok",
+      "channelId": "6a67b0034b2d03035f4e9477",
+      "status": "planned"
+    },
+    {
+      "id": "madger-006-tiktok",
+      "enabled": false,
+      "service": "tiktok",
+      "channelName": "themadgercoin",
+      "title": "MADGER 006 — Verify Before You Trust",
+      "dueAt": "2026-08-08T15:00:00.000Z",
+      "mediaUrl": "https://raw.githubusercontent.com/madgercoin/madger/main/media/MADGER_006_VERIFY_BEFORE_YOU_TRUST_VERTICAL.mp4",
+      "thumbnailOffsetMs": 1000,
+      "text": "Same name. Wrong mint. Verify every character through madgercoin.com. Admins never DM first. #MADGER #CryptoSafety #Solana",
+      "channelId": "6a67b0034b2d03035f4e9477",
+      "status": "planned"
+    },
+    {
+      "id": "madger-006-youtube",
+      "enabled": false,
+      "service": "youtube",
+      "channelName": "Madgercoin",
+      "title": "MADGER 006 — Verify Before You Trust",
+      "dueAt": "2026-08-08T15:00:00.000Z",
+      "mediaUrl": "https://raw.githubusercontent.com/madgercoin/madger/main/media/MADGER_006_VERIFY_BEFORE_YOU_TRUST_VERTICAL.mp4",
+      "thumbnailOffsetMs": 1000,
+      "text": "A matching name or logo proves nothing. Verify every character through madgercoin.com. Admins never DM first. #MADGER #CryptoSafety #Solana",
+      "channelId": "6a67af404b2d03035f4e8e79",
+      "status": "planned"
+    },
+    {
+      "id": "madger-007-tiktok",
+      "enabled": false,
+      "service": "tiktok",
+      "channelName": "themadgercoin",
+      "title": "MADGER 007 — Signal From the Burrow",
+      "dueAt": "2026-08-09T23:00:00.000Z",
+      "mediaUrl": "https://raw.githubusercontent.com/madgercoin/madger/main/media/MADGER_007_SIGNAL_FROM_THE_BURROW_VERTICAL.mp4",
+      "thumbnailOffsetMs": 1000,
+      "text": "The signal is up. The Burrow is open. 🦡📱 #MADGER #TheBurrow #SolanaCommunity #CryptoTok",
+      "channelId": "6a67b0034b2d03035f4e9477",
+      "status": "planned"
+    },
+    {
+      "id": "madger-007-youtube",
+      "enabled": false,
+      "service": "youtube",
+      "channelName": "Madgercoin",
+      "title": "MADGER 007 — Signal From the Burrow",
+      "dueAt": "2026-08-10T23:00:00.000Z",
+      "mediaUrl": "https://raw.githubusercontent.com/madgercoin/madger/main/media/MADGER_007_SIGNAL_FROM_THE_BURROW_VERTICAL.mp4",
+      "thumbnailOffsetMs": 1000,
+      "text": "The signal is up. The Burrow is open. Join the community through madgercoin.com. 🦡📱 #MADGER #TheBurrow #SolanaCommunity",
+      "channelId": "6a67af404b2d03035f4e8e79",
+      "status": "planned"
+    },
+    {
+      "id": "madger-007-instagram",
+      "enabled": false,
+      "service": "instagram",
+      "channelName": "madgercoin",
+      "title": "MADGER 007 — Signal From the Burrow",
+      "dueAt": "2026-08-10T23:00:00.000Z",
+      "mediaUrl": "https://raw.githubusercontent.com/madgercoin/madger/main/media/MADGER_007_SIGNAL_FROM_THE_BURROW_VERTICAL.mp4",
+      "thumbnailOffsetMs": 1000,
+      "text": "The signal is up. The Burrow is open. 🦡📱\n\n#MADGER #TheBurrow #SolanaCommunity",
+      "channelId": "6a67aebb4b2d03035f4e8b45",
+      "status": "planned"
     }
   ],
   "lastSuccessfulActivation": "2026-07-28T09:21:25Z"

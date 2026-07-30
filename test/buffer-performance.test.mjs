@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import test from "node:test";
 
 import {
+  campaignHealthDetails,
   channelState,
   metricsToObject,
   metricDeltas,
@@ -86,4 +87,60 @@ test("campaign deltas ignore missing queries, new posts, and newly available met
   assert.equal(summary.deltaCohorts.views, 1);
   assert.equal(summary.deltas.follows, null);
   assert.equal(summary.deltaCohorts.follows, 0);
+});
+
+test("describes at-risk posts and prior failures on the same Buffer channel", () => {
+  const report = {
+    channels: [
+      { channelId: "channel-x", service: "twitter", channel: "MadgerCoin", state: "disconnected" }
+    ],
+    campaign: {
+      summary: { atRiskPosts: ["future-x", "future-x"] },
+      posts: [
+        {
+          id: "failed-x",
+          title: "Failed X post",
+          service: "twitter",
+          channelId: "channel-x",
+          channelState: "disconnected",
+          status: "error",
+          dueAt: "2026-07-29T14:00:00.000Z"
+        },
+        {
+          id: "future-x",
+          title: "Future X post",
+          service: "twitter",
+          channelId: "channel-x",
+          channelState: "disconnected",
+          status: "scheduled",
+          dueAt: "2026-07-30T13:00:00.000Z"
+        },
+        {
+          id: "healthy-instagram",
+          service: "instagram",
+          channelId: "channel-instagram",
+          channelState: "connected",
+          status: "scheduled"
+        }
+      ]
+    }
+  };
+
+  const details = campaignHealthDetails(report);
+  assert.equal(details.atRisk.length, 1);
+  assert.deepEqual(details.atRisk[0], {
+    id: "future-x",
+    title: "Future X post",
+    service: "twitter",
+    channel: "MadgerCoin",
+    channelId: "channel-x",
+    channelState: "disconnected",
+    dueAt: "2026-07-30T13:00:00.000Z",
+    status: "scheduled"
+  });
+  assert.deepEqual(details.failed.map((post) => post.id), ["failed-x"]);
+  assert.throws(
+    () => campaignHealthDetails({ campaign: { summary: { atRiskPosts: [] } } }),
+    /missing campaign posts/
+  );
 });

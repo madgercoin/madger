@@ -1,6 +1,6 @@
 # MADGER launch-readiness status
 
-Updated: 2026-07-28 UTC  
+Updated: 2026-07-30 UTC
 Current state: **MINTED_NOT_TRADING**  
 Recommendation: **NO-GO for public trading until the blocked controls below are resolved.**
 
@@ -16,13 +16,13 @@ Recommendation: **NO-GO for public trading until the blocked controls below are 
 | Official website | PASS | Live at https://madgercoin.com |
 | Website social verification | PASS | X, Instagram, Facebook, YouTube, TikTok, and both Telegram destinations published |
 | Social publishing access | PASS | Five Buffer channels connected and healthy |
-| Seven-day content batch | PASS | 15 posts scheduled with exact channel IDs and recorded Buffer post IDs |
+| Initial content batch | ATTENTION | 3 sent, 11 scheduled, and 1 errored at the 2026-07-30 00:39 UTC refresh; `madger-002-x` missed its expired slot while X was disconnected |
 | Duplicate prevention | PASS | Channel/text/time duplicate checks and closed activation flags |
-| Performance reporting | PASS | Daily Buffer metrics report committed automatically |
+| Performance reporting | FIX READY | Report generation is operational; the repository-hardening change prevents concurrent report refreshes from failing during rebase |
 | Scam-protection playbook | PASS | Removal, evidence, escalation, and approved reply matrix documented |
 | Launch communications | PREPARED | Website, X, Telegram, delay, cancellation, scam, and T+72 drafts embargoed |
 | Listing packet | PREPARED | Canonical provider-ready identity, artwork, descriptions, and checks documented |
-| Next content week | PREPARED | August 5–11 analytical testing calendar and MADGER 005–007 briefs complete |
+| Next content week | ASSETS READY | August 5–11 calendar, V2 character plate, three master frames, and validated MADGER 005–007 vertical MP4s complete; scheduling remains disabled |
 | CI and deployment checks | PASS | Repository CI and live website verification passing |
 
 ## Blocked founder/custody decisions

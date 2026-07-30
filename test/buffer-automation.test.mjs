@@ -1,7 +1,11 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
-import { evaluateScheduledEntry, metadataFor } from "../scripts/buffer-automation-core.mjs";
+import {
+  evaluateScheduledEntry,
+  metadataFor,
+  validateScheduleManifest
+} from "../scripts/buffer-automation-core.mjs";
 
 const future = "2030-01-01T15:00:00.000Z";
 const past = "2020-01-01T15:00:00.000Z";
@@ -81,4 +85,28 @@ test("YouTube metadata always includes Buffer's required category and title", ()
   assert.equal(metadata.youtube.title, "MADGER 002 — Keep Digging");
   assert.equal(metadata.youtube.privacy, "public");
   assert.equal(metadata.youtube.madeForKids, false);
+});
+
+test("validates the schedule manifest schema and unique entry IDs", () => {
+  const posts = validateScheduleManifest({
+    schemaVersion: 1,
+    posts: [{ id: "madger-001" }, { id: "madger-002" }]
+  });
+  assert.equal(posts.length, 2);
+  assert.throws(
+    () => validateScheduleManifest({ schemaVersion: 2, posts: [] }),
+    /Unsupported manifest schemaVersion/
+  );
+  assert.throws(
+    () => validateScheduleManifest({ schemaVersion: 1 }),
+    /posts must be an array/
+  );
+  assert.throws(
+    () => validateScheduleManifest({ schemaVersion: 1, posts: [{ id: "same" }, { id: " same " }] }),
+    /Duplicate schedule entry id/
+  );
+  assert.throws(
+    () => validateScheduleManifest({ schemaVersion: 1, posts: [{ id: " " }] }),
+    /non-empty id/
+  );
 });

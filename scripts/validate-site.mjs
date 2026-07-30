@@ -22,9 +22,19 @@ const requiredSocialProperties = [
   'name="twitter:image"',
   'name="twitter:image:alt"'
 ];
+const officialChannelLinks = [
+  ["https://x.com/madgercoin", "X"],
+  ["https://www.instagram.com/madgercoin/", "Instagram"],
+  ["https://www.facebook.com/1279493098576451", "Facebook"],
+  ["https://www.youtube.com/channel/UCqbAvD8zi6psByKRk50qCkg", "YouTube"],
+  ["https://www.tiktok.com/@themadgercoin", "TikTok"],
+  ["https://t.me/madgercoin", "Telegram announcements"],
+  ["https://t.me/madgerburrow", "Telegram community"]
+];
 const officialMint = "BHauMX8akk2umqkQqnJwpYkCRkZmefGnEBFByeFXRKqv";
 const failures = [];
 const pages = new Map();
+const stylesheet = await readFile("styles.css", "utf8");
 
 function escapeRegExp(value) {
   return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
@@ -99,6 +109,10 @@ for (const file of htmlFiles) {
   }
 }
 
+if (!/\.portrait-card img\{[^}]*\bheight:auto\b/.test(stylesheet)) {
+  failures.push("styles.css: the responsive MADGER portrait must override its intrinsic HTML height");
+}
+
 for (const [file, html] of pages) {
   const references = [...html.matchAll(/\b(?:href|src)=["']([^"']+)["']/gi)].map(match => match[1]);
   for (const reference of references) {
@@ -147,6 +161,9 @@ for (const [file, expectedCanonical] of indexablePages) {
   for (const property of requiredSocialProperties) {
     if (!html.includes(property)) failures.push(`${file}: missing social metadata ${property}`);
   }
+  for (const [url, channel] of officialChannelLinks) {
+    if (!html.includes(`href="${url}"`)) failures.push(`${file}: missing official ${channel} link`);
+  }
   if (!html.includes('type="application/ld+json"')) failures.push(`${file}: missing JSON-LD`);
 }
 
@@ -182,7 +199,7 @@ if (crossPageDuplicates.length) {
 }
 
 const lowValuePhraseBudgets = new Map([
-  ["stay mad keep digging", 1],
+  ["stay bold keep digging", 1],
   ["small badger big mood", 1],
   ["build the burrow", 1],
   ["community campaigns partnerships", 1],
@@ -218,4 +235,4 @@ if (failures.length) {
   console.error(failures.map(failure => `- ${failure}`).join("\n"));
   process.exit(1);
 }
-console.log(`Validated ${htmlFiles.length} HTML files: SEO metadata, links, IDs, image dimensions, JSON-LD, sitemap parity, and official mint are correct.`);
+console.log(`Validated ${htmlFiles.length} HTML files: SEO metadata, official channels, links, IDs, image dimensions, JSON-LD, sitemap parity, and official mint are correct.`);

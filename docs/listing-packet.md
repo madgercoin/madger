@@ -24,7 +24,7 @@ Status: **pre-launch preparation only**. Do not submit until public trading is a
 
 - X: https://x.com/madgercoin
 - Instagram: https://instagram.com/madgercoin
-- Facebook: https://facebook.com/1279493098576451
+- Facebook: https://www.facebook.com/1279493098576451
 - YouTube: https://www.youtube.com/channel/UCqbAvD8zi6psByKRk50qCkg
 - TikTok: https://tiktok.com/@themadgercoin
 - Telegram announcements: https://t.me/madgercoin
@@ -34,7 +34,7 @@ Status: **pre-launch preparation only**. Do not submit until public trading is a
 
 ### Short
 
-MADGER is a community-driven Solana memecoin built around a relentlessly unimpressed honey badger: Stay Mad. Keep Digging.
+MADGER is a community-driven Solana memecoin built around a relentlessly unimpressed honey badger: Stay Bold. Keep Digging.
 
 ### Standard
 

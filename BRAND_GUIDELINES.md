@@ -23,7 +23,7 @@ Only the approved face-forward gold coin emblem may be used as the canonical mas
 - Blockchain: **Solana**
 - Community: **The Burrow**
 - Primary tagline: **Small Badger. Big Mood.**
-- Supporting slogans: **Stay Mad.**, **Keep Digging.**, and **The Burrow Never Sleeps.**
+- Supporting slogans: **Stay Bold.**, **Keep Digging.**, and **The Burrow Never Sleeps.**
 - Approved identity line: **The Badger. The Attitude. The Coin.**
 
 Use **MADGER** for the project and **$MADGER** when referring specifically to the ticker. The voice is direct, dry, sarcastic, capable, and calm under pressure. Bold humor is welcome; hostility, deception, artificial urgency, financial promotion, and claims beyond verified facts are not.
@@ -48,15 +48,15 @@ Use the approved face-forward gold-edged circular coin emblem and the distressed
 
 ## Asset usage
 
-- `madger_full_logo.png` is the approved master circular emblem.
-- `madger_profile.png`, `madger_round_icon.png`, `madger_wallet_icon.png`, and `favicon.png` are size-specific derivatives of the same emblem.
-- `madger_x_banner.png` uses the approved dark/gold social composition and primary tagline.
-- `madger_hero.jpg` uses the approved emblem and “Small Badger. Big Mood.” message.
-- `madger_brand_guide.png` and `madger_brand_board.jpg` document the single approved identity, colors, wordmark, and social applications.
+- `madger_v5_official_logo.webp` is the canonical circular coin emblem.
+- `madger_v5_icon.png` and `madger_v5_profile.webp` are the approved small-format character assets.
+- `madger_v5_mascot.webp` is the approved full-body character.
+- `madger_v5_hero.webp` is the homepage and social-preview composition.
+- `madger_v5_graphics.webp` is the approved multi-pose character reference.
+- Older root-level JPG/PNG collateral is not part of the production website allowlist. Review it against the v5 identity before external reuse.
 
 Do not stretch, mirror, recolor, redraw, or crop through the emblem. Keep the full coin border, ears, forehead stripe, eyes, and fang visible.
 
 ## Safety expression
 
 The full mint must remain legible, selectable, and paired with trading-status and verification warnings. Do not use urgency, countdowns, “buy” language, price charts, exchange-like visual cues, profit promises, or purchase instructions before an approved public launch.
-
