@@ -8,6 +8,7 @@ on:
       - ".github/workflows/social-performance.yml"
       - "scripts/buffer-performance.mjs"
       - "scripts/buffer-performance-core.mjs"
+      - "scripts/enforce-buffer-health.mjs"
       - "test/buffer-performance.test.mjs"
       - "content/buffer-schedule.json"
   workflow_dispatch:
@@ -35,6 +36,7 @@ jobs:
         run: |
           node --check scripts/buffer-performance.mjs
           node --check scripts/buffer-performance-core.mjs
+          node --check scripts/enforce-buffer-health.mjs
           node --test test/buffer-performance.test.mjs
       - name: Confirm Buffer secret
         env:
@@ -58,5 +60,4 @@ jobs:
           git pull --rebase origin main
           git push
       - name: Enforce campaign channel health
-        run: |
-          node --input-type=module -e 'import fs from "node:fs"; const report = JSON.parse(fs.readFileSync("reports/social/latest.json", "utf8")); const atRisk = report.campaign?.summary?.atRiskPosts ?? []; if (atRisk.length) { console.error(`Scheduled posts depend on an unhealthy Buffer channel: ${atRisk.join(", ")}`); process.exit(1); }'
+        run: node scripts/enforce-buffer-health.mjs

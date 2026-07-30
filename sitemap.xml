@@ -3,7 +3,7 @@
         xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
   <url>
     <loc>https://madgercoin.com/</loc>
-    <lastmod>2026-07-28</lastmod>
+    <lastmod>2026-07-29</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
     <image:image>
@@ -13,7 +13,7 @@
   </url>
   <url>
     <loc>https://madgercoin.com/litepaper.html</loc>
-    <lastmod>2026-07-28</lastmod>
+    <lastmod>2026-07-29</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
     <image:image>

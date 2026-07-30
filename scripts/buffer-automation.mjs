@@ -1,5 +1,5 @@
 import fs from 'node:fs/promises';
-import { evaluateScheduledEntry, metadataFor } from './buffer-automation-core.mjs';
+import { evaluateScheduledEntry, metadataFor, validateScheduleManifest } from './buffer-automation-core.mjs';
 
 const API_URL = 'https://api.buffer.com';
 const token = process.env.BUFFER_API_TOKEN;
@@ -95,8 +95,7 @@ async function scheduledPosts(organizationId, channelIds) {
 
 async function publish() {
   const manifest = JSON.parse(await fs.readFile(manifestPath, 'utf8'));
-  if (manifest.schemaVersion !== 1) throw new Error('Unsupported manifest schemaVersion');
-  const active = manifest.posts.filter((entry) => entry.enabled === true);
+  const active = validateScheduleManifest(manifest).filter((entry) => entry.enabled === true);
   if (!active.length) {
     console.log('No enabled posts. Automation is safely idle without calling Buffer.');
     return;
@@ -129,15 +128,18 @@ async function publish() {
       schedulingType: 'automatic',
       mode: 'customScheduled',
       dueAt: dueAt.toISOString(),
-      assets: [{ video: { url: entry.mediaUrl, metadata: { thumbnailOffset: entry.thumbnailOffsetMs || 1000, title: entry.title } } }],
+      assets: [{ video: { url: entry.mediaUrl, metadata: { thumbnailOffset: entry.thumbnailOffsetMs ?? 1000, title: entry.title } } }],
       aiAssisted: true,
       source: 'madger-github-automation',
     };
     const metadata = metadataFor(entry);
     if (metadata) input.metadata = metadata;
     const result = await graphql(mutation, { input });
-    if (result.createPost.message) throw new Error(`${entry.id}: ${result.createPost.message}`);
-    console.log(`Scheduled ${entry.id}: ${result.createPost.post.id}`);
+    if (result.createPost?.message) throw new Error(`${entry.id}: ${result.createPost.message}`);
+    const created = result.createPost?.post;
+    if (!created) throw new Error(`${entry.id}: Buffer did not return the scheduled post`);
+    existing.push(created);
+    console.log(`Scheduled ${entry.id}: ${created.id}`);
   }
 }
 

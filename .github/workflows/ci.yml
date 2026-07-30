@@ -19,14 +19,13 @@ jobs:
         with:
           node-version: 22
           cache: npm
-      - run: npm ci
-      - run: git diff --check
-      - run: npm run build
-      - run: npm run check
-      - run: npm run validate:js
-      - run: npm run test:buffer
-      - run: npm run test:performance
-      - run: npm run validate:site
-      - run: npm run validate:dist
-      - run: npm run scan:secrets
-      - run: npm audit --omit=dev
+      - name: Install locked dependencies
+        run: npm ci
+      - name: Check patch formatting
+        run: git diff --check
+      - name: Build and validate Cloudflare package
+        run: npm run check
+      - name: Run repository validation
+        run: npm run validate
+      - name: Audit the complete dependency tree
+        run: npm audit

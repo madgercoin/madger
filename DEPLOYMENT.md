@@ -5,7 +5,7 @@ The detailed operational runbook is `README_DEPLOY.txt`. Production uses Node.js
 ## Release sequence
 
 1. Review source and authoritative status/mint changes.
-2. Run `npm ci`, `git diff --check`, `npm run build`, `npm run check`, `npm run validate`, and `npm audit --omit=dev`.
+2. Run `npm ci`, `git diff --check`, `npm run check`, `npm run validate`, and `npm audit`. (`npm run check` performs the build before the Cloudflare dry run.)
 3. Inspect `dist/` against `site-config.mjs`; confirm no documentation, secrets, package files, or starter content.
 4. Preview with Wrangler and complete visual/accessibility/link checks.
 5. Record the commit and known-good deployment; deploy once through the authorized automated or manual path.

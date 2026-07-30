@@ -6,6 +6,11 @@ Notable repository changes are recorded here. Dates use UTC. This project does n
 
 ### Changed
 
+- Replaced the opaque inline Buffer health gate with tested, actionable diagnostics that identify at-risk posts, due times, affected channels, and related publishing failures.
+- Hardened Buffer publishing against malformed or duplicate manifest IDs and same-run duplicate creation, while preserving a deliberate zero-second thumbnail offset.
+- Removed a duplicate CI build, restored the aggregate launch-state validation to CI, audited the complete dependency tree, and made token-report pushes rebase safely over concurrent automation updates.
+- Aligned production asset and deployment documentation with the 16-file v5 allowlist; removed an unused Worker source, five empty documentation stubs, three corrupted superseded PNG exports, unrelated framework/tool entries from `.gitignore`, and binary media from the text secret scan.
+- Completed and validated the official channel directory across the homepage, litepaper, contributor documentation, and deployment smoke checks.
 - Added the authoritative launch plan plus T−7-to-T+72 runbook, liquidity-method comparison, five-wallet custody controls, embargoed communications, post-launch listing preparation, and a founder-only decision register.
 - Added a four-value public launch-state controller with `MINTED_NOT_TRADING` active on every page and no trading/purchase links.
 - Added automated gates for exact mint integrity, consistent public state, pre-launch trading-link prohibition, launch-document exclusion, and operational-wallet/private-material exclusion from `dist/`.

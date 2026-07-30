@@ -1,10 +1,10 @@
 # MADGER visual and accessibility QA guide
 
-This is the repeatable visual review standard for the production static site. It preserves the established MADGER identity while allowing careful evolution. A previous v2.1 pass corrected unsafe logo crops, centered icon artwork, changed logo rendering from cover to contain, gave the logo card equal internal space, cleaned the hero crop, and rebuilt the X banner around a safe 1500×500 composition. Those are ongoing constraints, not a completed one-time checklist.
+This is the repeatable visual review standard for the production static site. It preserves the established v5 MADGER identity while allowing careful evolution. Safe logo crops, centered artwork, contained logo rendering, intentional hero framing, and edge-safe social compositions are ongoing constraints.
 
 ## Verified visual system
 
-The production design is defined in `styles.css` and the root brand assets.
+The production design is defined in `styles.css` and the v5 assets allowlisted by `site-config.mjs`.
 
 ### Palette
 
@@ -24,17 +24,14 @@ Typography uses an Impact/Arial Black-style condensed display stack for high-imp
 
 | Source asset | Built URL | Approved role |
 | --- | --- | --- |
-| `madger_hero.jpg` | `/assets/madger_hero.jpg` | Full-bleed homepage hero behind directional dark gradients |
-| `madger_full_logo.png` | `/assets/madger_full_logo.png` | Full mascot/wordmark in the square Meet Madger card; use containment and equal padding |
-| `madger_profile.png` | `/assets/madger_profile.png` | Compact navigation/footer brand avatar and 404 mascot |
-| `madger_round_icon.png` | `/assets/madger_round_icon.png` | Circular community icon with border-safe artwork |
-| `favicon.png` | `/assets/favicon.png` | Browser/manifest icon |
-| `madger_x_banner.png` | `/assets/madger_x_banner.png` | Open Graph/X large-image card and official banner source |
-| `madger_wallet_icon.png` | `/assets/madger_wallet_icon.png` | Reserved wallet-related brand asset; not currently rendered by production pages |
-| `madger_brand_board.jpg` | `/assets/madger_brand_board.jpg` | Reference board; not currently rendered by production pages |
-| `madger_brand_guide.png` | `/assets/madger_brand_guide.png` | Reference guide; not currently rendered by production pages |
+| `madger_v5_hero.webp` | `/assets/madger_v5_hero.webp` | Full-bleed homepage hero and large social preview |
+| `madger_v5_official_logo.webp` | `/assets/madger_v5_official_logo.webp` | Compact navigation logo and canonical coin emblem |
+| `madger_v5_mascot.webp` | `/assets/madger_v5_mascot.webp` | Contained full-body artwork in the Meet MADGER card |
+| `madger_v5_profile.webp` | `/assets/madger_v5_profile.webp` | Community/footer avatar and 404 mascot |
+| `madger_v5_icon.png` | `/assets/madger_v5_icon.png` | Browser and manifest icon |
+| `madger_v5_graphics.webp` | `/assets/madger_v5_graphics.webp` | Public character-pose reference; not currently rendered by a page |
 
-All listed assets are currently copied to production, including reference/reserved files. Do not assume public availability grants reuse rights; formal asset licensing remains a Future Decision.
+Only these assets are copied to production. Do not assume public availability grants reuse rights; formal asset licensing remains a Future Decision.
 
 ## Brand integrity rules
 
@@ -42,7 +39,7 @@ All listed assets are currently copied to production, including reference/reserv
 - Keep complete artwork inside safe margins at every crop. Neighboring fragments, source-board labels, and unintended edge elements must never appear.
 - Use `object-fit: contain` for the full logo. Avatar/profile artwork may use `cover` only when the approved circular composition remains safely centered.
 - Keep important banner content away from edges and likely avatar/overlay zones. Recheck the actual destination preview after any crop.
-- Use the established approved root assets; do not reintroduce removed starter imagery.
+- Use the allowlisted v5 assets; do not substitute retained collateral or reintroduce removed starter imagery.
 - New visual assets require provenance, usage-rights confirmation, optimized exports, descriptive naming, and review at their actual rendered sizes.
 
 ## Review setup
@@ -111,7 +108,7 @@ Exact supported browser versions are not yet defined. At minimum, use a current 
 - Review intrinsic file size and rendered size for every changed raster asset; avoid downloading a reference-scale image for a small icon.
 - Confirm no broken request, unexpected third-party request, console error, layout shift, or invisible text during load.
 - Preserve the dependency-free production client unless a measured requirement justifies additional code.
-- Because production images currently lack responsive variants and explicit HTML dimensions in several locations, test loading behavior carefully; remediation is a Future Decision rather than assumed completed work.
+- Production images do not yet use responsive `srcset` variants, and the hero is a CSS background. Test loading behavior carefully; responsive-image work remains a Future Decision.
 
 ## Recording results
 

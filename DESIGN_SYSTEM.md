@@ -2,7 +2,7 @@
 
 ## Source of truth
 
-`styles.css` is the implemented source. `VISUAL_QA.txt` defines review criteria. Root image assets are production assets; unused Astro placeholder images have been removed.
+`styles.css` is the implemented source. `VISUAL_QA.txt` defines review criteria. Only the v5 image files listed in `site-config.mjs` are production website assets; other root images are non-published collateral.
 
 ## Foundations
 

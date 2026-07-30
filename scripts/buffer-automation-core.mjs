@@ -23,6 +23,28 @@ export function evaluateScheduledEntry({ entry, channelId, existingPosts, now = 
   return { dueAt, duplicate: null };
 }
 
+export function validateScheduleManifest(manifest) {
+  if (manifest?.schemaVersion !== 1) {
+    throw new Error("Unsupported manifest schemaVersion");
+  }
+  if (!Array.isArray(manifest.posts)) {
+    throw new Error("Schedule manifest posts must be an array");
+  }
+
+  const ids = new Set();
+  for (const entry of manifest.posts) {
+    if (typeof entry?.id !== "string" || !entry.id.trim()) {
+      throw new Error("Every schedule entry must have a non-empty id");
+    }
+    const id = entry.id.trim();
+    if (ids.has(id)) {
+      throw new Error(`Duplicate schedule entry id: ${id}`);
+    }
+    ids.add(id);
+  }
+  return manifest.posts;
+}
+
 export function metadataFor(entry) {
   switch (entry.service) {
     case "instagram":

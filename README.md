@@ -31,7 +31,7 @@ The production application is deliberately small and static:
 | Pages | `index.html`, `litepaper.html`, `404.html` | Semantic content, metadata, navigation, disclosures, and official links |
 | Presentation | `styles.css` | Brand tokens, responsive layout, focus states, reduced-motion behavior, and component styling |
 | Behavior | `script.js` | UTC-based Daily Dig copy, current footer year, and accessible mobile-navigation state |
-| Brand assets | Root-level `madger_*` images and `favicon.png` | Approved production imagery copied to `/assets/` at build time |
+| Brand assets | Allowlisted `madger_v5_*` images | Approved production imagery copied to `/assets/` at build time |
 | Web metadata | `manifest.webmanifest`, `robots.txt`, `sitemap.xml`, `_headers` | Install metadata, crawler discovery, canonical URLs, security headers, and cache policy |
 | Build | `build.mjs`, `site-config.mjs` | Clears `dist/` and copies the centralized explicit allowlist without transformation |
 | Launch state | `launch-state.js` | Defines the four allowed public states for indexable project pages; the navigational 404 intentionally carries no launch disclosure |
@@ -108,7 +108,9 @@ Only these endpoints are verified by the current repository:
 - Website: [madgercoin.com](https://madgercoin.com)
 - X: [@madgercoin](https://x.com/madgercoin)
 - Instagram: [@madgercoin](https://www.instagram.com/madgercoin/)
-- Facebook: [Madger Coin](https://www.facebook.com/share/1LEM9iUfP2/)
+- Facebook: [Madger Coin](https://www.facebook.com/1279493098576451)
+- YouTube: [Madger](https://www.youtube.com/channel/UCqbAvD8zi6psByKRk50qCkg)
+- TikTok: [@themadgercoin](https://www.tiktok.com/@themadgercoin)
 - Announcements: [t.me/madgercoin](https://t.me/madgercoin)
 - Community: [t.me/madgerburrow](https://t.me/madgerburrow)
 - Contact: [madgercoin@gmail.com](mailto:madgercoin@gmail.com)
