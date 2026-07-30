@@ -1,9 +1,9 @@
 {
-  "generatedAt": "2026-07-29T15:35:37.124Z",
-  "previousGeneratedAt": "2026-07-29T00:23:47.750Z",
+  "generatedAt": "2026-07-30T15:35:07.655Z",
+  "previousGeneratedAt": "2026-07-29T15:35:37.124Z",
   "window": {
-    "start": "2026-06-29T15:35:37.124Z",
-    "end": "2026-07-29T15:35:37.124Z"
+    "start": "2026-06-30T15:35:07.655Z",
+    "end": "2026-07-30T15:35:07.655Z"
   },
   "organization": {
     "id": "6a67aceacff325d8d2d231e9",
@@ -20,13 +20,13 @@
       "state": "connected",
       "healthy": true,
       "queuePaused": false,
-      "metricsUpdatedAt": "2026-07-29T14:09:27.047Z",
+      "metricsUpdatedAt": "2026-07-30T13:07:51.394Z",
       "metrics": {
-        "postCount": 6,
+        "postCount": 7,
         "reactions": 2,
         "comments": 0,
-        "engagementRate": 0.63,
-        "impressions": 477,
+        "engagementRate": 0.62,
+        "impressions": 487,
         "shares": 0,
         "clicks": 1
       },
@@ -42,9 +42,9 @@
       "state": "connected",
       "healthy": true,
       "queuePaused": false,
-      "metricsUpdatedAt": "2026-07-29T02:50:11.864Z",
+      "metricsUpdatedAt": "2026-07-30T01:52:15.858Z",
       "metrics": {
-        "postCount": 1,
+        "postCount": 2,
         "reactions": 0,
         "comments": 0,
         "engagementRate": 0,
@@ -57,19 +57,19 @@
       "channel": "MadgerCoin",
       "service": "twitter",
       "externalLink": "https://twitter.com/MadgerCoin",
-      "disconnected": true,
+      "disconnected": false,
       "locked": false,
-      "state": "disconnected",
-      "healthy": false,
+      "state": "connected",
+      "healthy": true,
       "queuePaused": false,
-      "metricsUpdatedAt": null,
+      "metricsUpdatedAt": "2026-07-30T13:01:43.918Z",
       "metrics": {
-        "postCount": 0,
+        "postCount": 5,
         "reactions": 0,
         "comments": 0,
         "engagementRate": 0,
         "reposts": 0,
-        "impressions": 0,
+        "impressions": 41,
         "clicks": 0
       },
       "requiresCommunityReview": false
@@ -84,7 +84,7 @@
       "state": "connected",
       "healthy": true,
       "queuePaused": false,
-      "metricsUpdatedAt": "2026-07-28T18:17:27.648Z",
+      "metricsUpdatedAt": "2026-07-29T17:17:36.845Z",
       "metrics": {
         "postCount": 4,
         "reactions": 4,
@@ -109,15 +109,15 @@
       "state": "connected",
       "healthy": true,
       "queuePaused": false,
-      "metricsUpdatedAt": "2026-07-29T04:47:23.936Z",
+      "metricsUpdatedAt": "2026-07-30T03:53:21.189Z",
       "metrics": {
-        "postCount": 1,
+        "postCount": 2,
         "reactions": 1,
         "comments": 0,
-        "engagementRate": 1.23,
-        "views": 81,
+        "engagementRate": 0.88,
+        "views": 114,
         "shares": 0,
-        "reach": 0
+        "reach": 76
       },
       "requiresCommunityReview": false
     }
@@ -126,42 +126,29 @@
     "source": "content/buffer-schedule.json",
     "summary": {
       "totalPosts": 15,
-      "sent": 1,
-      "scheduled": 13,
+      "sent": 7,
+      "scheduled": 7,
       "sending": 0,
       "errors": 1,
       "needsAttention": [
-        "madger-002-x",
-        "madger-003-x",
-        "madger-004-x"
+        "madger-002-x"
       ],
       "attentionReasons": {
         "madger-002-x": [
           "publishing_error",
-          "channel_disconnected"
-        ],
-        "madger-003-x": [
-          "channel_disconnected"
-        ],
-        "madger-004-x": [
-          "channel_disconnected"
+          "overdue"
         ]
       },
-      "atRiskPosts": [
-        "madger-003-x",
-        "madger-004-x"
-      ],
-      "unhealthyChannelIds": [
-        "6a67af8a4b2d03035f4e91f4"
-      ],
+      "atRiskPosts": [],
+      "unhealthyChannelIds": [],
       "totals": {
         "reactions": 0,
         "comments": 0,
         "shares": 0,
         "reposts": 0,
         "reach": 0,
-        "impressions": 0,
-        "views": 0,
+        "impressions": 1,
+        "views": 31,
         "clicks": 0,
         "saves": null,
         "follows": null
@@ -172,8 +159,8 @@
         "shares": 0,
         "reposts": 0,
         "reach": 0,
-        "impressions": 0,
-        "views": 0,
+        "impressions": 1,
+        "views": 31,
         "clicks": 0,
         "saves": null,
         "follows": null
@@ -200,7 +187,7 @@
         "title": "MADGER 002 — Keep Digging",
         "service": "twitter",
         "channelId": "6a67af8a4b2d03035f4e91f4",
-        "channelState": "disconnected",
+        "channelState": "connected",
         "dueAt": "2026-07-29T14:00:00.000Z",
         "sentAt": null,
         "status": "error",
@@ -239,12 +226,12 @@
         "status": "sent",
         "externalLink": "https://www.facebook.com/reel/2497262497453092/",
         "publishingError": null,
-        "metricsUpdatedAt": "2026-07-29T14:09:27.047Z",
+        "metricsUpdatedAt": "2026-07-29T21:42:20.314Z",
         "metrics": {
           "reactions": 0,
           "comments": 0,
           "engagementRate": 0,
-          "impressions": 0,
+          "impressions": 1,
           "shares": 0,
           "clicks": 0
         },
@@ -252,7 +239,7 @@
           "reactions": 0,
           "comments": 0,
           "engagementRate": 0,
-          "impressions": 0,
+          "impressions": 1,
           "shares": 0,
           "clicks": 0
         }
@@ -265,9 +252,9 @@
         "channelId": "6a67aebb4b2d03035f4e8b45",
         "channelState": "connected",
         "dueAt": "2026-07-29T22:00:00.000Z",
-        "sentAt": null,
-        "status": "scheduled",
-        "externalLink": null,
+        "sentAt": "2026-07-29T22:02:25.372Z",
+        "status": "sent",
+        "externalLink": "https://www.instagram.com/reel/DbZI9zEAUs3/",
         "publishingError": null,
         "metricsUpdatedAt": "2026-07-28T09:19:49.060Z",
         "metrics": {},
@@ -281,11 +268,11 @@
         "channelId": "6a67af404b2d03035f4e8e79",
         "channelState": "connected",
         "dueAt": "2026-07-29T23:00:00.000Z",
-        "sentAt": null,
-        "status": "scheduled",
-        "externalLink": null,
+        "sentAt": "2026-07-29T23:01:09.223Z",
+        "status": "sent",
+        "externalLink": "https://www.youtube.com/shorts/YHTDZSMYGhM",
         "publishingError": null,
-        "metricsUpdatedAt": "2026-07-28T09:21:19.151Z",
+        "metricsUpdatedAt": "2026-07-30T01:52:15.857Z",
         "metrics": {
           "reactions": 0,
           "comments": 0,
@@ -307,16 +294,16 @@
         "channelId": "6a67b0034b2d03035f4e9477",
         "channelState": "connected",
         "dueAt": "2026-07-30T02:00:00.000Z",
-        "sentAt": null,
-        "status": "scheduled",
-        "externalLink": null,
+        "sentAt": "2026-07-30T02:50:54.275Z",
+        "status": "sent",
+        "externalLink": "https://tiktok.com/@themadgercoin/video/7668135131676216589",
         "publishingError": null,
-        "metricsUpdatedAt": "2026-07-28T09:21:19.571Z",
+        "metricsUpdatedAt": "2026-07-30T03:53:21.189Z",
         "metrics": {
           "reactions": 0,
           "comments": 0,
           "engagementRate": 0,
-          "views": 0,
+          "views": 31,
           "shares": 0,
           "reach": 0
         },
@@ -324,7 +311,7 @@
           "reactions": 0,
           "comments": 0,
           "engagementRate": 0,
-          "views": 0,
+          "views": 31,
           "shares": 0,
           "reach": 0
         }
@@ -335,13 +322,13 @@
         "title": "MADGER 003 — No Slowing Down",
         "service": "twitter",
         "channelId": "6a67af8a4b2d03035f4e91f4",
-        "channelState": "disconnected",
+        "channelState": "connected",
         "dueAt": "2026-07-30T13:00:00.000Z",
-        "sentAt": null,
-        "status": "scheduled",
-        "externalLink": null,
+        "sentAt": "2026-07-30T13:01:33.267Z",
+        "status": "sent",
+        "externalLink": "https://x.com/2080142722153816065/status/2082813848843657418",
         "publishingError": null,
-        "metricsUpdatedAt": "2026-07-28T09:21:21.206Z",
+        "metricsUpdatedAt": "2026-07-30T13:01:43.918Z",
         "metrics": {
           "reactions": 0,
           "comments": 0,
@@ -367,11 +354,11 @@
         "channelId": "6a67ecc14b2d03035f50dbad",
         "channelState": "connected",
         "dueAt": "2026-07-30T13:00:00.000Z",
-        "sentAt": null,
-        "status": "scheduled",
-        "externalLink": null,
+        "sentAt": "2026-07-30T13:02:43.149Z",
+        "status": "sent",
+        "externalLink": "https://www.facebook.com/reel/1047690247843003/",
         "publishingError": null,
-        "metricsUpdatedAt": "2026-07-28T09:21:21.651Z",
+        "metricsUpdatedAt": "2026-07-30T13:07:51.394Z",
         "metrics": {
           "reactions": 0,
           "comments": 0,
@@ -397,9 +384,9 @@
         "channelId": "6a67aebb4b2d03035f4e8b45",
         "channelState": "connected",
         "dueAt": "2026-07-30T13:00:00.000Z",
-        "sentAt": null,
-        "status": "scheduled",
-        "externalLink": null,
+        "sentAt": "2026-07-30T13:05:05.612Z",
+        "status": "sent",
+        "externalLink": "https://www.instagram.com/reel/DbawDMtmlki/",
         "publishingError": null,
         "metricsUpdatedAt": "2026-07-28T09:21:22.063Z",
         "metrics": {},
@@ -569,7 +556,7 @@
         "title": "MADGER 004 — Join the Burrow",
         "service": "twitter",
         "channelId": "6a67af8a4b2d03035f4e91f4",
-        "channelState": "disconnected",
+        "channelState": "connected",
         "dueAt": "2026-08-04T13:00:00.000Z",
         "sentAt": null,
         "status": "scheduled",
