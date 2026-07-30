@@ -13,7 +13,7 @@ The workflow reads the repository secret `BUFFER_API_TOKEN`. Never paste the key
 - Scheduled posts are checked for an existing channel/text/time match before creation, preventing normal retry duplicates.
 - A disconnected or locked channel stops the run.
 - Ambiguous channel matching stops the run.
-- The scheduled GitHub workflow remains inactive unless the repository variable `BUFFER_AUTOMATION_ENABLED` equals `true`.
+- The hourly workflow is active. When no manifest entries are enabled, it exits safely without creating a Buffer post.
 - `workflow_dispatch` supports a read-only `discover` operation and a deliberate `publish` operation.
 
 ## Media requirement
@@ -34,7 +34,7 @@ Buffer fetches API media from a public URL; it does not accept a file upload in 
 
 ## Operations
 
-- To pause all automatic runs, set `BUFFER_AUTOMATION_ENABLED` to `false` or remove the variable.
+- To pause all automatic runs, disable the workflow in GitHub Actions. Disabling every manifest entry keeps the active workflow safely idle.
 - To stop one post, set that manifest entry's `enabled` value to `false` before it is submitted.
 - To rotate authorization, regenerate the Buffer key and replace the `BUFFER_API_TOKEN` repository secret.
 - Do not change a scheduled post's caption or time solely to defeat duplicate detection. Verify the Buffer queue before resubmitting altered content.
