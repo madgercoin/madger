@@ -16,14 +16,14 @@ The verification operation checks the token's bot username and these required pe
 ## Safety model
 
 - The expected bot identity is fixed in `content/telegram-schedule.json`.
-- Every schedule entry defaults to `enabled: false`.
+- Only entries explicitly marked `enabled: true` are eligible to publish.
 - IDs must be unique; targets must be either `channel` or `group`.
 - Media must use a public HTTPS URL.
 - Captions and text are rejected when they exceed Telegram limits.
 - Due posts are claimed and committed before sending, preventing automatic retries from publishing duplicates.
 - Posts more than 90 minutes late expire instead of being published at an unsuitable time.
 - Failed sends are recorded and are not retried automatically.
-- Scheduled and push-triggered publication remain inactive unless `TELEGRAM_AUTOMATION_ENABLED` equals `true`.
+- Each run verifies the exact bot identity and both destination permission sets before it can claim or publish a post.
 
 ## Activation
 
@@ -34,7 +34,4 @@ The verification operation checks the token's bot username and these required pe
 5. Add reviewed entries to `content/telegram-schedule.json`.
 6. Run `publish` manually with a single low-risk test entry.
 7. Confirm the post and state record.
-8. Set the repository variable `TELEGRAM_AUTOMATION_ENABLED` to `true`.
-
-To pause automatic publication, set `TELEGRAM_AUTOMATION_ENABLED` to `false` or remove it.
-
+To pause automatic publication, set every pending schedule entry to `enabled: false` or disable the Telegram workflow in GitHub Actions.

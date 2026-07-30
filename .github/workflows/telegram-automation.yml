@@ -50,7 +50,6 @@ jobs:
   telegram:
     name: Run Telegram operation
     needs: validate
-    if: github.event_name == 'workflow_dispatch' || ((github.event_name == 'push' || github.event_name == 'schedule') && vars.TELEGRAM_AUTOMATION_ENABLED == 'true')
     runs-on: ubuntu-latest
     environment: production
     steps:
