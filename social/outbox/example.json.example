@@ -1,0 +1,10 @@
+{
+  "id": "example-campaign",
+  "approved": true,
+  "messages": {
+    "x": "A channel-specific X post of no more than 280 characters.",
+    "telegram_announcement": "A detailed Telegram announcement.",
+    "telegram_community": "A community-oriented Telegram message.",
+    "discord": "A Discord update written for the MADGER server."
+  }
+}
