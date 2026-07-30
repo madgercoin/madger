@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "timezone": "America/New_York",
-  "notes": "The original 15 posts were scheduled in Buffer on 2026-07-28 and disabled afterward to prevent resubmission. The refreshed X recovery post is enabled for the active hourly scheduler; recorded Buffer post IDs remain authoritative for the original campaign.",
+  "notes": "The original 15 posts were scheduled in Buffer on 2026-07-28 and disabled afterward to prevent resubmission. The refreshed X recovery post was scheduled successfully on 2026-07-30 and disabled after its Buffer ID was recorded.",
   "posts": [
     {
       "id": "madger-002-x",
@@ -215,7 +215,7 @@
     },
     {
       "id": "madger-002-x-recovery-2026-07-31",
-      "enabled": true,
+      "enabled": false,
       "service": "twitter",
       "channelName": "madgercoin",
       "title": "MADGER 002 — Keep Digging (X Recovery)",
@@ -224,8 +224,9 @@
       "thumbnailOffsetMs": 1000,
       "text": "Everybody wants the shortcut. Madger keeps digging. 🦡⛏️\n\nWhat are you building while everyone else waits?\n\n#MADGER #KeepDigging #Solana",
       "channelId": "6a67af8a4b2d03035f4e91f4",
-      "status": "activation_pending"
+      "status": "scheduled",
+      "bufferPostId": "6a6be2d4369d7a6b6a31aafa"
     }
   ],
-  "lastSuccessfulActivation": "2026-07-28T09:21:25Z"
+  "lastSuccessfulActivation": "2026-07-30T23:48:36Z"
 }
