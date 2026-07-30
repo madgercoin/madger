@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "timezone": "America/New_York",
-  "notes": "All 15 posts scheduled successfully in Buffer on 2026-07-28. Entries were disabled immediately afterward to prevent resubmission; recorded Buffer post IDs are authoritative.",
+  "notes": "The original 15 posts were scheduled in Buffer on 2026-07-28 and disabled afterward to prevent resubmission. A refreshed X recovery post was enabled on 2026-07-30 after channel reauthorization; recorded Buffer post IDs remain authoritative for the original campaign.",
   "posts": [
     {
       "id": "madger-002-x",
@@ -212,6 +212,19 @@
       "channelId": "6a67af8a4b2d03035f4e91f4",
       "status": "scheduled",
       "bufferPostId": "6a6874957e8cbcebb3b53a21"
+    },
+    {
+      "id": "madger-002-x-recovery-2026-07-31",
+      "enabled": true,
+      "service": "twitter",
+      "channelName": "madgercoin",
+      "title": "MADGER 002 — Keep Digging (X Recovery)",
+      "dueAt": "2026-07-31T13:15:00.000Z",
+      "mediaUrl": "https://raw.githubusercontent.com/madgercoin/madger/main/media/MADGER_002_KEEP_DIGGING_VERTICAL-1.mp4",
+      "thumbnailOffsetMs": 1000,
+      "text": "Everybody wants the shortcut. Madger keeps digging. 🦡⛏️\n\nWhat are you building while everyone else waits?\n\n#MADGER #KeepDigging #Solana",
+      "channelId": "6a67af8a4b2d03035f4e91f4",
+      "status": "ready"
     }
   ],
   "lastSuccessfulActivation": "2026-07-28T09:21:25Z"
