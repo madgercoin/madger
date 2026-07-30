@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "botUsername": "madger_publisher_bot",
+  "targets": {
+    "channel": "@madgercoin",
+    "group": "@madgerburrow"
+  },
+  "maxLatenessMinutes": 90,
+  "notes": "Every Telegram entry defaults to disabled. Enable only reviewed posts with an exact UTC dueAt and a verified public HTTPS media URL.",
+  "posts": []
+}
+

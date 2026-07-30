@@ -1,0 +1,109 @@
+name: MADGER Telegram Automation
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - ".github/workflows/telegram-automation.yml"
+      - "content/telegram-schedule.json"
+      - "scripts/telegram-automation.mjs"
+      - "scripts/telegram-automation-core.mjs"
+      - "test/telegram-automation.test.mjs"
+  workflow_dispatch:
+    inputs:
+      operation:
+        description: Telegram operation
+        required: true
+        type: choice
+        default: verify
+        options:
+          - verify
+          - publish
+  schedule:
+    - cron: "11 * * * *"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: madger-telegram-automation
+  cancel-in-progress: false
+
+jobs:
+  validate:
+    name: Validate Telegram automation
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+      - name: Validate scripts, tests, and schedule
+        run: |
+          node --check scripts/telegram-automation.mjs
+          node --check scripts/telegram-automation-core.mjs
+          node --test test/telegram-automation.test.mjs
+          node -e "JSON.parse(require('fs').readFileSync('content/telegram-schedule.json','utf8'))"
+          node -e "JSON.parse(require('fs').readFileSync('reports/telegram/state.json','utf8'))"
+
+  telegram:
+    name: Run Telegram operation
+    needs: validate
+    if: github.event_name == 'workflow_dispatch' || ((github.event_name == 'push' || github.event_name == 'schedule') && vars.TELEGRAM_AUTOMATION_ENABLED == 'true')
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: main
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+      - name: Confirm Telegram secret
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+        run: test -n "$TELEGRAM_BOT_TOKEN"
+      - name: Verify bot identity and administrator permissions
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+        run: node scripts/telegram-automation.mjs verify
+      - name: Claim due posts before publication
+        if: github.event_name != 'workflow_dispatch' || inputs.operation == 'publish'
+        run: node scripts/telegram-automation.mjs claim
+      - name: Commit publication claims
+        if: github.event_name != 'workflow_dispatch' || inputs.operation == 'publish'
+        run: |
+          if [ -z "$(git status --porcelain -- reports/telegram/state.json)" ]; then
+            echo "No Telegram claims to commit."
+            exit 0
+          fi
+          git config user.name "madger-automation"
+          git config user.email "actions@users.noreply.github.com"
+          git add reports/telegram/state.json
+          git commit -m "Claim due Telegram posts"
+          git pull --rebase origin main
+          git push
+      - name: Publish claimed posts
+        id: publish
+        if: github.event_name != 'workflow_dispatch' || inputs.operation == 'publish'
+        continue-on-error: true
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+        run: node scripts/telegram-automation.mjs publish
+      - name: Commit Telegram publication results
+        if: always() && (github.event_name != 'workflow_dispatch' || inputs.operation == 'publish')
+        run: |
+          if [ -z "$(git status --porcelain -- reports/telegram/state.json)" ]; then
+            echo "No Telegram publication results to commit."
+            exit 0
+          fi
+          git config user.name "madger-automation"
+          git config user.email "actions@users.noreply.github.com"
+          git add reports/telegram/state.json
+          git commit -m "Record Telegram publication results"
+          git pull --rebase origin main
+          git push
+      - name: Fail when Telegram publication failed
+        if: steps.publish.outcome == 'failure'
+        run: exit 1
