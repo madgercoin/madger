@@ -1,9 +1,9 @@
 {
-  "generatedAt": "2026-07-30T23:46:45.092Z",
-  "previousGeneratedAt": "2026-07-30T15:35:07.655Z",
+  "generatedAt": "2026-07-30T23:48:16.378Z",
+  "previousGeneratedAt": "2026-07-30T23:46:45.092Z",
   "window": {
-    "start": "2026-06-30T23:46:45.092Z",
-    "end": "2026-07-30T23:46:45.092Z"
+    "start": "2026-06-30T23:48:16.378Z",
+    "end": "2026-07-30T23:48:16.378Z"
   },
   "organization": {
     "id": "6a67aceacff325d8d2d231e9",
@@ -159,23 +159,23 @@
         "shares": 0,
         "reposts": 0,
         "reach": 0,
-        "impressions": 3,
+        "impressions": 0,
         "views": 0,
         "clicks": 0,
-        "saves": null,
-        "follows": null
-      },
-      "deltaCohorts": {
-        "reactions": 12,
-        "comments": 12,
-        "shares": 6,
-        "reposts": 3,
-        "reach": 3,
-        "impressions": 6,
-        "views": 6,
-        "clicks": 6,
         "saves": 0,
         "follows": 0
+      },
+      "deltaCohorts": {
+        "reactions": 14,
+        "comments": 14,
+        "shares": 8,
+        "reposts": 3,
+        "reach": 5,
+        "impressions": 6,
+        "views": 8,
+        "clicks": 6,
+        "saves": 2,
+        "follows": 2
       },
       "averageEngagementRate": 0.15698587127158556,
       "priorSnapshotAvailable": true
@@ -239,7 +239,7 @@
           "reactions": 0,
           "comments": 0,
           "engagementRate": 0,
-          "impressions": 2,
+          "impressions": 0,
           "shares": 0,
           "clicks": 0
         }
@@ -267,7 +267,16 @@
           "follows": 0,
           "reach": 91
         },
-        "metricDeltas": {}
+        "metricDeltas": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "views": 0,
+          "shares": 0,
+          "saves": 0,
+          "follows": 0,
+          "reach": 0
+        }
       },
       {
         "id": "madger-002-youtube",
@@ -351,7 +360,7 @@
           "comments": 0,
           "engagementRate": 0,
           "reposts": 0,
-          "impressions": 1,
+          "impressions": 0,
           "clicks": 0
         }
       },
@@ -408,7 +417,16 @@
           "follows": 0,
           "reach": 8
         },
-        "metricDeltas": {}
+        "metricDeltas": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "views": 0,
+          "shares": 0,
+          "saves": 0,
+          "follows": 0,
+          "reach": 0
+        }
       },
       {
         "id": "madger-003-youtube",
