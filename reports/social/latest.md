@@ -1,7 +1,7 @@
 # MADGER social performance
 
-Generated: 2026-07-30T23:48:16.378Z
-Previous snapshot: 2026-07-30T23:46:45.092Z
+Generated: 2026-07-30T23:49:28.257Z
+Previous snapshot: 2026-07-30T23:48:16.378Z
 
 ## 30-day channel rollup
 
@@ -15,7 +15,7 @@ Previous snapshot: 2026-07-30T23:46:45.092Z
 
 ## Scheduled campaign
 
-Sent: 7/15 · Scheduled: 7 · Errors: 1 · Attention: 1 · At risk: 0
+Sent: 7/16 · Scheduled: 8 · Errors: 1 · Attention: 1 · At risk: 0
 
 | Metric | Current | Change since prior report |
 |---|---:|---:|
@@ -29,7 +29,7 @@ Sent: 7/15 · Scheduled: 7 · Errors: 1 · Attention: 1 · At risk: 0
 | clicks | 0 | 0 |
 | saves | 0 | 0 |
 | follows | 0 | 0 |
-| averageEngagementRate | 0.16% | — |
+| averageEngagementRate | 0.15% | — |
 
 ## Per-post performance
 
@@ -50,6 +50,7 @@ Sent: 7/15 · Scheduled: 7 · Errors: 1 · Attention: 1 · At risk: 0
 | MADGER 004 — Join the Burrow | facebook | connected | 2026-08-03T13:00:00.000Z | scheduled | — | 0 | — | 0 | 0 | 0 | 0 | — | — |
 | MADGER 004 — Join the Burrow | instagram | connected | 2026-08-03T22:00:00.000Z | scheduled | — | — | — | — | — | — | — | — | — |
 | MADGER 004 — Join the Burrow | twitter | connected | 2026-08-04T13:00:00.000Z | scheduled | — | 0 | — | 0 | 0 | — | 0 | — | — |
+| MADGER 002 — Keep Digging (X Recovery) | twitter | connected | 2026-07-31T13:15:00.000Z | scheduled | — | 0 | — | 0 | 0 | — | 0 | — | — |
 
 ## Interpretation
 

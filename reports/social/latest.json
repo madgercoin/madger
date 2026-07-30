@@ -1,9 +1,9 @@
 {
-  "generatedAt": "2026-07-30T23:48:16.378Z",
-  "previousGeneratedAt": "2026-07-30T23:46:45.092Z",
+  "generatedAt": "2026-07-30T23:49:28.257Z",
+  "previousGeneratedAt": "2026-07-30T23:48:16.378Z",
   "window": {
-    "start": "2026-06-30T23:48:16.378Z",
-    "end": "2026-07-30T23:48:16.378Z"
+    "start": "2026-06-30T23:49:28.257Z",
+    "end": "2026-07-30T23:49:28.257Z"
   },
   "organization": {
     "id": "6a67aceacff325d8d2d231e9",
@@ -125,9 +125,9 @@
   "campaign": {
     "source": "content/buffer-schedule.json",
     "summary": {
-      "totalPosts": 15,
+      "totalPosts": 16,
       "sent": 7,
-      "scheduled": 7,
+      "scheduled": 8,
       "sending": 0,
       "errors": 1,
       "needsAttention": [
@@ -177,7 +177,7 @@
         "saves": 2,
         "follows": 2
       },
-      "averageEngagementRate": 0.15698587127158556,
+      "averageEngagementRate": 0.14652014652014653,
       "priorSnapshotAvailable": true
     },
     "posts": [
@@ -615,6 +615,29 @@
           "impressions": 0,
           "clicks": 0
         }
+      },
+      {
+        "id": "madger-002-x-recovery-2026-07-31",
+        "bufferPostId": "6a6be2d4369d7a6b6a31aafa",
+        "title": "MADGER 002 — Keep Digging (X Recovery)",
+        "service": "twitter",
+        "channelId": "6a67af8a4b2d03035f4e91f4",
+        "channelState": "connected",
+        "dueAt": "2026-07-31T13:15:00.000Z",
+        "sentAt": null,
+        "status": "scheduled",
+        "externalLink": null,
+        "publishingError": null,
+        "metricsUpdatedAt": "2026-07-30T23:48:36.488Z",
+        "metrics": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "reposts": 0,
+          "impressions": 0,
+          "clicks": 0
+        },
+        "metricDeltas": {}
       }
     ]
   },
