@@ -6,6 +6,8 @@ Notable repository changes are recorded here. Dates use UTC. This project does n
 
 ### Changed
 
+- Activated safe hourly Buffer publishing with disabled-by-default entries, duplicate detection, and an idle no-post path.
+- Scheduled and instrumented a refreshed X community post after channel reauthorization, replacing the failed campaign entry with new “Keep Digging” copy.
 - Added the authoritative launch plan plus T−7-to-T+72 runbook, liquidity-method comparison, five-wallet custody controls, embargoed communications, post-launch listing preparation, and a founder-only decision register.
 - Added a four-value public launch-state controller with `MINTED_NOT_TRADING` active on every page and no trading/purchase links.
 - Added automated gates for exact mint integrity, consistent public state, pre-launch trading-link prohibition, launch-document exclusion, and operational-wallet/private-material exclusion from `dist/`.
