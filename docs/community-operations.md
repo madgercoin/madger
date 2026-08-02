@@ -93,8 +93,32 @@ Run one-variable tests. Change only the hook, prompt, format, or posting windowâ
 | Facebook | community question or native Reel context | comments and shares, not raw impressions |
 | YouTube Shorts | searchable title plus immediate visual hook | viewed vs. swiped away and retention |
 | Telegram | one specific discussion prompt with active follow-up | distinct participants and returning participants |
+| Reddit | useful discussion, build note, original art, or open question with full context | thoughtful comments, saves, and repeat contributors |
+| Discord | hosted conversation, contributor workroom, or office-hour prompt | activated newcomers, returning participants, and resolved questions |
 
 Use `reports/social/latest.md` for the automated Buffer view and native analytics when the connector omits retention, profile visits, or comment content. Do not infer unavailable values as zero.
+
+## Reddit operating standard
+
+The verified account is `u/Madgercoin`. Until `r/madgercoin` is visibly created in the authenticated account, link the profile only; never pre-publish a subreddit URL or imply that an unrelated community is official.
+
+- Build account history by contributing useful, non-promotional comments in communities whose rules allow project participation. Read the full rules and recent moderator precedent before every first contribution.
+- Keep at least nine of every ten external contributions useful without requiring a MADGER click. Mention MADGER only when it directly answers the thread.
+- Do not ask for upvotes, coordinate voting, mass-invite users, cross-post into unrelated communities, or paste the community link into every comment.
+- Seed an owned community with durable material before promoting it: a welcome thread, safety/verification thread, weekly build log, creative prompt, and one genuinely discussable artifact.
+- Distinguish official moderator statements when the platform supports it, preserve removed-content evidence, and publish clear rules before growth outreach.
+
+Use weekly anchors rather than daily filler: **Monday Build Log**, **Wednesday Burrow Workshop**, and **Friday Unimpressed Review**. Each thread needs an owner who returns to replies and a closing note that captures what changed.
+
+## Discord operating standard
+
+Publish no server invite until an authenticated administrator verifies the server, permanent-invite behavior, destination channel, role permissions, safety controls, and a second recovery owner. After verification, follow the architecture and onboarding controls in `docs/community-platforms.md`.
+
+- Discord is the high-context collaboration room, not an announcement mirror or support ticket graveyard.
+- Keep the default channel list short. New members should understand where to start, what is official, how to report a scam, and where normal conversation belongs within one minute.
+- Use least-privilege roles. No community or contractor role receives Administrator, Manage Server, Manage Roles, webhook, bot, or billing permissions by default.
+- Turn vague hype into a concrete contribution: a caption, sketch, clip, research note, event concept, FAQ improvement, or moderation assist.
+- Moderate coordinated buying, brigading, harassment, impersonation, wallet solicitation, and unsolicited promotions as safety incidents, not engagement.
 
 ## Escalation and stop conditions
 

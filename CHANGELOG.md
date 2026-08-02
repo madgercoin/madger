@@ -6,6 +6,10 @@ Notable repository changes are recorded here. Dates use UTC. This project does n
 
 ### Changed
 
+- Added the verified `u/Madgercoin` Reddit identity to the homepage social directory and Organization structured data, with automated regression protection against an uncreated subreddit or unverified Discord invite.
+- Added a contribution-first Reddit/Discord operating model, channel architecture, moderation controls, launch communication adaptations, and release gates while keeping Discord publication blocked until the authenticated server and durable invite are verified.
+- Made local asset-link validation path-separator independent so the same source checks run correctly on Windows and Linux.
+
 - Tightened the homepage mascot composition with a crop-only, cache-safe 900×1184 portrait derivative and responsive natural-ratio layout.
 - Added a broadly compatible 1200×630 JPEG social card, wired it into Open Graph/X metadata, and strengthened regression checks for preview dimensions, portrait framing, the community anchor, and the canonical Facebook URL.
 - Reconciled the V5 asset manifest, brand guidance, visual QA, deployment inventory, architecture counts, and SEO documentation with the production allowlist.

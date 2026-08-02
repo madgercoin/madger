@@ -17,7 +17,7 @@ Use this checklist for every production change. Mark only applicable items in th
 - [ ] Tone communicates resilience, confidence, determination, attention to detail, dry humor, and community without hostility or manufactured hype.
 - [ ] Existing approved imagery and the ink/bone/gold visual system are preserved; any new asset has documented provenance and usage rights.
 - [ ] Text is concise, proofread, and understandable without crypto jargon.
-- [ ] Official links match the repository: `madgercoin.com`, `x.com/madgercoin`, `t.me/madgercoin`, and `t.me/madgerburrow`.
+- [ ] Official links match the repository, including the verified Reddit profile `reddit.com/user/Madgercoin/`; no uncreated subreddit, guessed Discord invite, or personal Discord invite is published.
 - [ ] Homepage, litepaper, metadata, FAQ, safety copy, roadmap, and social announcements do not contradict one another.
 
 ## 3. Token and financial safety
@@ -67,6 +67,7 @@ Use this checklist for every production change. Mark only applicable items in th
 - [ ] Production HTTPS, critical URLs, official outbound links, response headers, cache behavior, desktop/mobile layout, and accessibility interactions pass smoke testing.
 - [ ] Rollback is performed instead of improvising a rushed fix if a critical check fails.
 - [ ] Security/content incidents are corrected through official channels and documented without leaking sensitive information.
+- [ ] Reddit and Discord changes preserve moderator evidence, least privilege, a second recovery owner, anti-impersonation copy, and a tested escalation path; raw member counts are not treated as engagement quality.
 
 ## 8. Token launch gate (not yet satisfied)
 

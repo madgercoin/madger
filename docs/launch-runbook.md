@@ -19,7 +19,7 @@ All times are UTC relative to the founder-approved launch time (`T`). Names, app
 
 ### T−24 hours to T−1 hour — preflight
 
-- Reconfirm official-account access through independent channels; restrict posting rights and remove stale sessions. Check domain/DNS/hosting health.
+- Reconfirm official-account access through independent channels; restrict posting rights and remove stale sessions. This includes the website, X, Telegram, Instagram, Facebook, YouTube, TikTok, the verified Reddit identity/community, and the verified Discord server if active. Check domain/DNS/hosting health.
 - Compare full addresses and instruction data against the approved record. Recheck balances, priority-fee conditions, Solana health, venue availability, clock sync, and simulations.
 - Prepare but do not sign transactions until their authorized window. The launch commander records preliminary GO/NO-GO; any stop condition is NO-GO.
 
@@ -33,11 +33,11 @@ Each owner verbally and in writing reports: approvals complete; facts match; sig
 2. Proposer submits only the approved instruction; verifier and required approvers independently inspect it. Record signature immediately.
 3. Wait for finalized confirmation using independent RPCs. Reconcile pre/post balances and pool vault/position ownership. Do not retry an ambiguous transaction until its signature/account state is resolved.
 4. Verify the genuine pool, opening parameters, tradability, observed quote/slippage, LP ownership, authorities, metadata, and explorer visibility. A tiny approved verification action may occur only if separately authorized.
-5. Only after verification, deploy `TRADING_LIVE`, smoke-test production, then publish simultaneous official-channel copy containing the exact mint and verified links. Record URLs/times.
+5. Only after verification, deploy `TRADING_LIVE`, smoke-test production, then publish simultaneous primary official-channel copy containing the exact mint and verified links. Record URLs/times. Adapt the same signed facts for Reddit and Discord only through their verified moderator/announcement surfaces; never paste a venue link into general chat before the website source is live.
 
 ### T+0 to T+6 hours
 
-- Monitor confirmations, pool reserves/depth, price impact (not price targets), routes, LP custody, wallet balances, authorities, website uptime, impersonation, support reports, and official account access continuously.
+- Monitor confirmations, pool reserves/depth, price impact (not price targets), routes, LP custody, wallet balances, authorities, website uptime, impersonation, support reports, official account access, Reddit moderation queues, and Discord safety/moderation alerts continuously.
 - Reconcile hourly and issue factual milestone/incident updates. Never promise listing, returns, or stability. Pin the safety warning and remove scams.
 
 ### T+6 to T+24 hours
