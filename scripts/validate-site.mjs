@@ -188,8 +188,11 @@ if (!homepage.includes('id="community" class="section community"')) failures.pus
 if (!homepage.includes('src="/assets/madger_v5_mascot_portrait.webp" width="900" height="1184"')) failures.push("index.html: homepage portrait must use the tight approved derivative with exact intrinsic dimensions");
 if (!stylesheet.includes(".portrait-card img{width:100%;height:auto;aspect-ratio:900/1184;")) failures.push("styles.css: portrait must preserve its natural ratio and responsive height");
 if (!homepage.includes(officialFacebook) || homepage.includes("facebook.com/share/")) failures.push("index.html: Facebook links must use the canonical page URL");
-if (!homepage.includes(officialReddit) || homepage.includes("reddit.com/r/madgercoin")) failures.push("index.html: Reddit must use the verified u/Madgercoin profile until the subreddit exists");
-if (/https:\/\/(?:discord\.gg|discord\.com\/invite)\//i.test(homepage)) failures.push("index.html: Discord invite must not be published before the authenticated server and durable invite are verified");
+if (!homepage.includes(officialReddit)) failures.push("index.html: Reddit must use the verified u/Madgercoin profile");
+for (const [file, html] of pages) {
+  if (html.includes("reddit.com/r/madgercoin")) failures.push(`${file}: unverified r/madgercoin link must not be published before the subreddit exists`);
+  if (/https:\/\/(?:discord\.gg|discord\.com\/invite)\//i.test(html)) failures.push(`${file}: Discord invite must not be published before the authenticated server and durable invite are verified`);
+}
 const homepageBlocks = new Set(visibleBlocks(homepage));
 const crossPageDuplicates = visibleBlocks(pages.get("litepaper.html")).filter(block => homepageBlocks.has(block));
 if (crossPageDuplicates.length) {
