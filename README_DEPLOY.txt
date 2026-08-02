@@ -31,14 +31,13 @@ sitemap.xml             manifest.webmanifest _headers
 Published below `/assets/`:
 
 ```text
-favicon.png             madger_brand_board.jpg
-madger_brand_guide.png  madger_full_logo.png
-madger_hero.jpg         madger_profile.png
-madger_round_icon.png   madger_wallet_icon.png
-madger_x_banner.png
+madger_v5_graphics.webp          madger_v5_hero.webp
+madger_v5_icon.png               madger_v5_mascot.webp
+madger_v5_mascot_portrait.webp   madger_v5_official_logo.webp
+madger_v5_profile.webp           madger_v5_social.jpg
 ```
 
-No repository documentation, validation script, package file, or other unlisted source is published. A build log should report 18 copied source files; Wrangler may report 19 files because it reads the generated asset directory representation. Treat an unexpected count as a reason to inspect `dist/`, not as permission to deploy.
+No repository documentation, validation script, package file, or other unlisted source is published. A build log should report 18 copied source files; treat any unexpected count as a reason to inspect `dist/`, not as permission to deploy.
 
 ## First-time workstation setup
 

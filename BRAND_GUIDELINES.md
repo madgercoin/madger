@@ -14,7 +14,7 @@ The approved mascot has:
 - a small visible fang; and
 - a confident, skeptical expression.
 
-Only the approved face-forward gold coin emblem may be used as the canonical mascot.
+The approved face-forward gold coin emblem is the canonical compact mark. The approved full-body V5 render may be used for editorial and portrait compositions when the complete character and expression remain intact.
 
 ## Naming and messaging
 
@@ -48,13 +48,14 @@ Use the approved face-forward gold-edged circular coin emblem and the distressed
 
 ## Asset usage
 
-- `madger_full_logo.png` is the approved master circular emblem.
-- `madger_profile.png`, `madger_round_icon.png`, `madger_wallet_icon.png`, and `favicon.png` are size-specific derivatives of the same emblem.
-- `madger_x_banner.png` uses the approved dark/gold social composition and primary tagline.
-- `madger_hero.jpg` uses the approved emblem and “Small Badger. Big Mood.” message.
-- `madger_brand_guide.png` and `madger_brand_board.jpg` document the single approved identity, colors, wordmark, and social applications.
+- `madger_v5_official_logo.webp` is the approved navigation/footer wordmark.
+- `madger_v5_icon.png` and `madger_v5_profile.webp` are compact identity derivatives.
+- `madger_v5_hero.webp` is the approved 1920×1080 homepage composition.
+- `madger_v5_mascot.webp` is the square full-body source; `madger_v5_mascot_portrait.webp` is its crop-only homepage derivative.
+- `madger_v5_social.jpg` is the 1200×630 compatibility export for link previews.
+- `madger_v5_graphics.webp` is supporting editorial artwork.
 
-Do not stretch, mirror, recolor, redraw, or crop through the emblem. Keep the full coin border, ears, forehead stripe, eyes, and fang visible.
+Do not stretch, mirror, recolor, redraw, or crop through the character or compact emblem. Keep the relevant coin border or the complete ears, forehead stripe, expression, fang, feet, and tail visible.
 
 ## Safety expression
 
