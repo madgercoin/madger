@@ -35,7 +35,9 @@ Use “MADGER,” “Solana,” “official mint,” “Honey Badger,” “The 
 
 Structured data must match visible content and verified facts. Do not add Product, Offer, FinancialProduct, review, rating, event, or token-market markup without corresponding public facts and a dedicated review.
 
-Official identity must remain consistent across the website, X, Instagram, Facebook, YouTube, TikTok, Telegram, listing submissions, and press materials. The official mint is `BHauMX8akk2umqkQqnJwpYkCRkZmefGnEBFByeFXRKqv`.
+Official identity must remain consistent across the website, X, Instagram, Facebook, YouTube, TikTok, Reddit, Telegram, listing submissions, and press materials. The verified Reddit identity is `u/Madgercoin` at `https://www.reddit.com/user/Madgercoin/`. The official mint is `BHauMX8akk2umqkQqnJwpYkCRkZmefGnEBFByeFXRKqv`.
+
+Add a Discord URL to visible pages or structured data only after an authenticated administrator verifies the live server, durable invite, destination channel, invite permissions, moderation settings, and recovery owners. A guessed, expired, or personal-user invite is worse than no link because it creates an impersonation surface.
 
 ## Performance and media
 
@@ -68,5 +70,6 @@ Repository changes cannot establish search-engine ownership. The operational fol
 4. Establish privacy-conscious first-party or Cloudflare analytics.
 5. Record weekly branded impressions, non-branded impressions, indexed pages, clicks, click-through rate, average position, crawl errors, Core Web Vitals, and referrals from official social channels.
 6. Annotate launch-state changes and major content releases so discovery changes can be interpreted correctly.
+7. Track Reddit profile/community referrals separately from Discord invite joins; do not treat subscribers, members, or raw joins as proof of healthy participation.
 
 Search Console, Bing ownership, analytics tokens, and platform preview-cache refreshes remain external account operations and must not be fabricated in source code.

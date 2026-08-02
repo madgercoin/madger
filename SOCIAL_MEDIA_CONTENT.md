@@ -602,6 +602,24 @@ MADGER is a community-driven Solana character brand built around persistence, sh
 
 The official MADGER community. Talk, create, meme, and help build The Burrow. Never share seed phrases or trust unsolicited DMs. Verify announcements at t.me/madgercoin and madgercoin.com.
 
+## Reddit
+
+**Display name:** MADGER | Official Solana Community
+
+**Profile bio:** Official MADGER community account. Honey-badger culture on Solana—built in public, curious by default. Minted, not trading. Verify the mint and every official link at madgercoin.com.
+
+**Community description, after `r/madgercoin` is created and verified:** The official discussion home for MADGER: original art, lore, memes, build notes, sharp questions, and transparent progress. Minted on Solana; not publicly trading. No raids, price promises, referral spam, or wallet solicitation. Verify at madgercoin.com.
+
+**First discussion prompt:** What should make someone recognize a MADGER post before they even see the name—the stare, the shovel, the line, or something we have not made yet? Explain your pick like you are directing a seven-second scene.
+
+## Discord, after server and invite verification
+
+**Server description:** The working room for The Burrow—MADGER art, lore, clips, build notes, questions, and community projects. Minted on Solana; not publicly trading. Verify everything at madgercoin.com.
+
+**Welcome message:** Welcome to The Burrow. Pick a lane—build, draw, write lore, make something funny, or ask a sharp question. MADGER is minted on Solana but is not publicly trading. Mods never DM first for funds, wallet access, seed phrases, or “verification.” What are you here to make better?
+
+**Weekly prompt:** Burrow Briefing: what shipped, what changed, and what deserves a sharper second pass? Drop one artifact or one specific question. We will close the thread with the decisions and next digs.
+
 ---
 
 # Hashtag Sets

@@ -22,6 +22,8 @@ These files are the contributor source of truth. When implementation and documen
 - [`SYSTEM_ARCHITECTURE.md`](SYSTEM_ARCHITECTURE.md), [`ASSET_MANIFEST.md`](ASSET_MANIFEST.md), [`SEO_STRATEGY.md`](SEO_STRATEGY.md), [`ACCESSIBILITY.md`](ACCESSIBILITY.md), and [`SECURITY.md`](SECURITY.md) — technical and quality reference material.
 - [`AI_INSTRUCTIONS.md`](AI_INSTRUCTIONS.md), [`CONTRIBUTING.md`](CONTRIBUTING.md), [`DEPLOYMENT.md`](DEPLOYMENT.md), and [`CHANGELOG.md`](CHANGELOG.md) — execution rules, contribution/release guidance, and change history.
 
+Community operations are defined in [`docs/social-media.md`](docs/social-media.md), [`docs/community-operations.md`](docs/community-operations.md), and [`docs/community-platforms.md`](docs/community-platforms.md): the verified channel registry, engagement system, and Reddit/Discord controls.
+
 ## Production architecture
 
 The production application is deliberately small and static:
@@ -109,6 +111,9 @@ Only these endpoints are verified by the current repository:
 - X: [@madgercoin](https://x.com/madgercoin)
 - Instagram: [@madgercoin](https://www.instagram.com/madgercoin/)
 - Facebook: [Madger Coin](https://www.facebook.com/1279493098576451)
+- YouTube: [MADGER](https://www.youtube.com/channel/UCqbAvD8zi6psByKRk50qCkg)
+- TikTok: [@themadgercoin](https://www.tiktok.com/@themadgercoin)
+- Reddit: [u/Madgercoin](https://www.reddit.com/user/Madgercoin/)
 - Announcements: [t.me/madgercoin](https://t.me/madgercoin)
 - Community: [t.me/madgerburrow](https://t.me/madgerburrow)
 - Contact: [madgercoin@gmail.com](mailto:madgercoin@gmail.com)
@@ -122,3 +127,4 @@ The repository does not yet verify the following. Contributors and AI assistants
 - Analytics, monitoring, release environments, custom-domain ownership procedures, and formal availability targets.
 - The scope, sequencing, compliance requirements, custody model, supported assets/regions, vendors, and security architecture for real-world crypto payments or any other utility.
 - Whether to adopt a maintained application/content architecture when the static site no longer meets project needs.
+- The canonical Discord server invite. Do not publish or embed a Discord URL until the authenticated server, invite permissions, safety settings, and destination are independently verified.

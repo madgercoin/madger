@@ -27,6 +27,26 @@ Replace bracketed fields only from the signed launch record. Every draft remains
 > [APPROVED LP/AUTHORITY DISCLOSURE]  
 > Check every character. Admins never DM first and never request a seed phrase, private key, remote access, or a “verification” transfer. Trading is volatile, liquidity can change, and total loss is possible.
 
+## Reddit launch announcement
+
+> **DO NOT PUBLISH BEFORE AUTHORIZED PUBLIC LAUNCH.**
+>
+> **MADGER public trading is verified live on Solana as of [UTC TIME].**
+> Official mint: `BHauMX8akk2umqkQqnJwpYkCRkZmefGnEBFByeFXRKqv`
+> Full verification, risk disclosure, and the only authorized venue/pool link: [WEBSITE LINK]
+> [APPROVED LP/AUTHORITY DISCLOSURE]
+> This thread is for factual questions and incident reports—not price targets, coordinated buying, referral links, or raids. Matching branding does not prove a contract is genuine. Mods never DM first for funds, secrets, wallet access, or a verification transfer.
+
+## Discord launch announcement
+
+> **DO NOT PUBLISH BEFORE AUTHORIZED PUBLIC LAUNCH.**
+>
+> **VERIFIED MADGER LAUNCH UPDATE — [UTC TIME]**
+> Public trading status: **verified live**
+> Network: Solana
+> Official mint: `BHauMX8akk2umqkQqnJwpYkCRkZmefGnEBFByeFXRKqv`
+> Use only the venue/pool link published on [WEBSITE LINK]. [APPROVED LP/AUTHORITY DISCLOSURE] Do not trust links in replies or DMs. Staff never request seed phrases, private keys, remote access, or verification transfers. Crypto is volatile and total loss is possible. Keep market discussion factual; coordinated buying and raids are prohibited.
+
 ## Pinned safety message
 
 > **DO NOT PUBLISH BEFORE AUTHORIZED PUBLIC LAUNCH.**
