@@ -3,17 +3,21 @@
         xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
   <url>
     <loc>https://madgercoin.com/</loc>
-    <lastmod>2026-07-28</lastmod>
+    <lastmod>2026-08-02</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
     <image:image>
       <image:loc>https://madgercoin.com/assets/madger_v5_hero.webp</image:loc>
       <image:title>MADGER Honey Badger mascot entering The Burrow</image:title>
     </image:image>
+    <image:image>
+      <image:loc>https://madgercoin.com/assets/madger_v5_mascot_portrait.webp</image:loc>
+      <image:title>Full-body MADGER Honey Badger mascot</image:title>
+    </image:image>
   </url>
   <url>
     <loc>https://madgercoin.com/litepaper.html</loc>
-    <lastmod>2026-07-28</lastmod>
+    <lastmod>2026-08-02</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
     <image:image>

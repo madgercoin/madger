@@ -23,6 +23,8 @@ const requiredSocialProperties = [
   'name="twitter:image:alt"'
 ];
 const officialMint = "BHauMX8akk2umqkQqnJwpYkCRkZmefGnEBFByeFXRKqv";
+const officialFacebook = "https://www.facebook.com/1279493098576451";
+const socialPreview = "https://madgercoin.com/assets/madger_v5_social.jpg";
 const failures = [];
 const pages = new Map();
 
@@ -148,6 +150,10 @@ for (const [file, expectedCanonical] of indexablePages) {
     if (!html.includes(property)) failures.push(`${file}: missing social metadata ${property}`);
   }
   if (!html.includes('type="application/ld+json"')) failures.push(`${file}: missing JSON-LD`);
+  if (metaContent(html, "property", "og:image") !== socialPreview) failures.push(`${file}: Open Graph image must use the 1200x630 JPEG share card`);
+  if (metaContent(html, "property", "og:image:type") !== "image/jpeg") failures.push(`${file}: Open Graph image type must be image/jpeg`);
+  if (metaContent(html, "property", "og:image:width") !== "1200" || metaContent(html, "property", "og:image:height") !== "630") failures.push(`${file}: Open Graph image dimensions must be 1200x630`);
+  if (metaContent(html, "name", "twitter:image") !== socialPreview) failures.push(`${file}: X card must use the canonical share card`);
 }
 
 if (!metaContent(pages.get("404.html"), "name", "robots")?.includes("noindex")) {
@@ -175,7 +181,13 @@ for (const file of indexablePages.keys()) {
 if (/mint|trading|launch|financial advice|crypto assets/i.test(visiblePages.get("404.html"))) {
   failures.push("404.html: error-page copy must stay navigational rather than repeat project disclosures");
 }
-const homepageBlocks = new Set(visibleBlocks(pages.get("index.html")));
+const homepage = pages.get("index.html");
+const stylesheet = await readFile("styles.css", "utf8");
+if (!homepage.includes('id="community" class="section community"')) failures.push("index.html: community section must expose the canonical #community anchor");
+if (!homepage.includes('src="/assets/madger_v5_mascot_portrait.webp" width="900" height="1184"')) failures.push("index.html: homepage portrait must use the tight approved derivative with exact intrinsic dimensions");
+if (!stylesheet.includes(".portrait-card img{width:100%;height:auto;aspect-ratio:900/1184;")) failures.push("styles.css: portrait must preserve its natural ratio and responsive height");
+if (!homepage.includes(officialFacebook) || homepage.includes("facebook.com/share/")) failures.push("index.html: Facebook links must use the canonical page URL");
+const homepageBlocks = new Set(visibleBlocks(homepage));
 const crossPageDuplicates = visibleBlocks(pages.get("litepaper.html")).filter(block => homepageBlocks.has(block));
 if (crossPageDuplicates.length) {
   failures.push(`index.html/litepaper.html: repeated visible block(s): ${crossPageDuplicates.join(" | ")}`);

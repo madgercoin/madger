@@ -6,6 +6,9 @@ Notable repository changes are recorded here. Dates use UTC. This project does n
 
 ### Changed
 
+- Tightened the homepage mascot composition with a crop-only, cache-safe 900×1184 portrait derivative and responsive natural-ratio layout.
+- Added a broadly compatible 1200×630 JPEG social card, wired it into Open Graph/X metadata, and strengthened regression checks for preview dimensions, portrait framing, the community anchor, and the canonical Facebook URL.
+- Reconciled the V5 asset manifest, brand guidance, visual QA, deployment inventory, architecture counts, and SEO documentation with the production allowlist.
 - Activated safe hourly Buffer publishing with disabled-by-default entries, duplicate detection, and an idle no-post path.
 - Scheduled and instrumented a refreshed X community post after channel reauthorization, replacing the failed campaign entry with new “Keep Digging” copy.
 - Added the authoritative launch plan plus T−7-to-T+72 runbook, liquidity-method comparison, five-wallet custody controls, embargoed communications, post-launch listing preparation, and a founder-only decision register.

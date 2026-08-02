@@ -1,30 +1,26 @@
 # MADGER asset manifest
 
-All published files below use the single approved black, charcoal, cream, bronze, and gold MADGER identity.
+All published files below use the approved black, charcoal, cream, bronze, and gold MADGER identity. `site-config.mjs` is the deployment source of truth.
 
 | Source | Public path | Approved use |
 | --- | --- | --- |
-| `favicon.png` | `/assets/favicon.png` | Browser and manifest icon |
-| `madger_hero.jpg` | `/assets/madger_hero.jpg` | Homepage hero with “Small Badger. Big Mood.” |
-| `madger_full_logo.png` | `/assets/madger_full_logo.png` | Master circular gold-edged MADGER emblem |
-| `madger_profile.png` | `/assets/madger_profile.png` | Header, footer, social avatar, and 404 |
-| `madger_round_icon.png` | `/assets/madger_round_icon.png` | Telegram/community icon |
-| `madger_x_banner.png` | `/assets/madger_x_banner.png` | X banner and Open Graph image |
-| `madger_wallet_icon.png` | `/assets/madger_wallet_icon.png` | Wallet/token-listing icon |
-| `madger_brand_board.jpg` | `/assets/madger_brand_board.jpg` | Compressed final brand reference |
-| `madger_brand_guide.png` | `/assets/madger_brand_guide.png` | Full-resolution final brand guide |
+| `madger_v5_graphics.webp` | `/assets/madger_v5_graphics.webp` | Supporting editorial/brand composition |
+| `madger_v5_hero.webp` | `/assets/madger_v5_hero.webp` | 1920×1080 full-bleed homepage hero |
+| `madger_v5_icon.png` | `/assets/madger_v5_icon.png` | Browser, manifest, and compact identity icon |
+| `madger_v5_mascot.webp` | `/assets/madger_v5_mascot.webp` | Approved square full-body source composition |
+| `madger_v5_mascot_portrait.webp` | `/assets/madger_v5_mascot_portrait.webp` | 900×1184 tight homepage portrait derived only by safe cropping |
+| `madger_v5_official_logo.webp` | `/assets/madger_v5_official_logo.webp` | Navigation/footer wordmark and official logo |
+| `madger_v5_profile.webp` | `/assets/madger_v5_profile.webp` | Round profile/avatar treatment |
+| `madger_v5_social.jpg` | `/assets/madger_v5_social.jpg` | 1200×630 JPEG link-preview card for Open Graph and X |
 
 ## Canonical mascot
 
-The canonical mascot is a cute, trustworthy, permanently unimpressed 3D Honey Badger with black-and-white fur, warm cream details, a white lightning/zigzag forehead stripe, large round eyes, puffier cheeks, short thick arms, reduced claws, crossed arms, and a tiny fang. It has no clothes, sunglasses, chain, or medallion.
+The approved character is a cute, trustworthy, permanently unimpressed 3D Honey Badger with black-and-cream fur, a lightning-shaped forehead stripe, large round eyes, crossed arms, and a tiny fang. The gold-edged face emblem is the canonical compact mark; the approved full-body render may be used for editorial and portrait layouts.
 
-## Handling
+## Derivative policy
 
-Preserve aspect ratio, full coin borders, safe margins, original expression, and color. Do not use source-board fragments as standalone production artwork. New variants must derive from the approved master and remain recognizable at their actual rendered size.
-
-`site-config.mjs` is authoritative for publication. Because `/assets/*` uses long-lived caching, verify the production deployment after every approved asset replacement.
+Cropping and resizing are allowed only when the complete character, expression, stripe, ears, fang, feet, tail, glow, and intended safe area remain intact. Do not stretch, mirror, recolor, redraw, generate look-alikes, or introduce source-board fragments. Use new filenames for changed derivatives because production assets are cached immutably for one year.
 
 ## Security
 
 Never embed seed phrases, private keys, private wallet information, unapproved addresses, QR codes, misleading purchase instructions, price guarantees, or fabricated partnerships in brand artwork.
-

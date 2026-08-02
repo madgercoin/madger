@@ -12,6 +12,16 @@
 
 ---
 
+## 2026 platform execution standard
+
+The current performance baseline shows Instagram generating the strongest early engagement while X and YouTube need more native, conversational experiments. Do not solve that by copying the same caption everywhere.
+
+- **X:** keep most posts concise and conversational; use zero to two relevant hashtags, ask a real question when it earns a response, and prioritize thoughtful replies in existing Solana/builder conversations.
+- **Instagram:** lead with the character or a recognizable visual beat, use a small rotating set of relevant discovery terms, and end with one easy prompt rather than several calls to action.
+- **TikTok/Reels/Shorts:** design vertically, hook in the opening seconds, caption for sound-off viewing, and adapt trends only when MADGER has a natural angle.
+- **Telegram:** reward useful participation, remember context, and ask specific follow-up questions. Do not turn the room into an announcement mirror.
+- **Across channels:** write naturally, verify current facts, monitor indirect mentions, and record the post hypothesis before publishing so the next iteration is evidence-led.
+
 ## Pinned Instagram / Facebook Post
 
 MADGER has entered the Burrow. 🦡⛏️

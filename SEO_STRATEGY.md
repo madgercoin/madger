@@ -41,7 +41,7 @@ Official identity must remain consistent across the website, X, Instagram, Faceb
 
 Keep the site static and dependency-light. Do not add render-blocking third-party scripts solely for SEO. Preserve compressed WebP imagery, intrinsic image dimensions, the hero preload, immutable versioned asset caching, reduced-motion support, and mobile-first layout behavior.
 
-The current social preview uses the 1920×1080 official hero artwork with explicit dimensions and alternative text. Re-evaluate a dedicated 1200×630 PNG/JPEG only if platform preview testing shows inconsistent WebP rendering or poor crops.
+Social previews use the dedicated 1200×630 `madger_v5_social.jpg` compatibility export with explicit dimensions and alternative text. The homepage also exposes the descriptive, tightly framed mascot portrait through a standard `<img>` element and image sitemap entry.
 
 ## Release checks
 

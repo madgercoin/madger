@@ -16,7 +16,9 @@ export const assetFiles = [
   "madger_v5_hero.webp",
   "madger_v5_icon.png",
   "madger_v5_mascot.webp",
+  "madger_v5_mascot_portrait.webp",
   "madger_v5_official_logo.webp",
+  "madger_v5_social.jpg",
   "madger_v5_profile.webp"
 ];
 

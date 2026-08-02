@@ -13,7 +13,7 @@ CSS custom properties define ink, panel, bone, sand, gold, moss, line, muted tex
 - Fixed header with brand, desktop navigation/CTA, and a native mobile menu button.
 - Gold primary and bordered ghost pill actions.
 - Full-height hero with approved artwork and contrast gradients.
-- Responsive trust, token, roadmap, social, FAQ, and footer patterns.
+- Responsive trust, portrait, token, roadmap, social, FAQ, and footer patterns. The Meet Madger portrait uses a crop-only V5 derivative at its natural 900×1184 ratio.
 - Official mint safety panel with selectable `code`, native copy button, visible status, and non-JavaScript-readable address.
 - Litepaper and 404 pages use standalone inline styles and the same palette.
 

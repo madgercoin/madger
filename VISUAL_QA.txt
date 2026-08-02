@@ -24,23 +24,22 @@ Typography uses an Impact/Arial Black-style condensed display stack for high-imp
 
 | Source asset | Built URL | Approved role |
 | --- | --- | --- |
-| `madger_hero.jpg` | `/assets/madger_hero.jpg` | Full-bleed homepage hero behind directional dark gradients |
-| `madger_full_logo.png` | `/assets/madger_full_logo.png` | Full mascot/wordmark in the square Meet Madger card; use containment and equal padding |
-| `madger_profile.png` | `/assets/madger_profile.png` | Compact navigation/footer brand avatar and 404 mascot |
-| `madger_round_icon.png` | `/assets/madger_round_icon.png` | Circular community icon with border-safe artwork |
-| `favicon.png` | `/assets/favicon.png` | Browser/manifest icon |
-| `madger_x_banner.png` | `/assets/madger_x_banner.png` | Open Graph/X large-image card and official banner source |
-| `madger_wallet_icon.png` | `/assets/madger_wallet_icon.png` | Reserved wallet-related brand asset; not currently rendered by production pages |
-| `madger_brand_board.jpg` | `/assets/madger_brand_board.jpg` | Reference board; not currently rendered by production pages |
-| `madger_brand_guide.png` | `/assets/madger_brand_guide.png` | Reference guide; not currently rendered by production pages |
+| `madger_v5_hero.webp` | `/assets/madger_v5_hero.webp` | 1920×1080 full-bleed homepage hero behind directional dark gradients |
+| `madger_v5_mascot.webp` | `/assets/madger_v5_mascot.webp` | Approved square full-body source composition |
+| `madger_v5_mascot_portrait.webp` | `/assets/madger_v5_mascot_portrait.webp` | 900×1184 tight, crop-only Meet Madger portrait |
+| `madger_v5_official_logo.webp` | `/assets/madger_v5_official_logo.webp` | Navigation/footer wordmark |
+| `madger_v5_profile.webp` | `/assets/madger_v5_profile.webp` | Round profile/avatar treatment |
+| `madger_v5_icon.png` | `/assets/madger_v5_icon.png` | Browser and manifest icon |
+| `madger_v5_social.jpg` | `/assets/madger_v5_social.jpg` | 1200×630 Open Graph/X compatibility card |
+| `madger_v5_graphics.webp` | `/assets/madger_v5_graphics.webp` | Supporting editorial/brand composition |
 
-All listed assets are currently copied to production, including reference/reserved files. Do not assume public availability grants reuse rights; formal asset licensing remains a Future Decision.
+Only files listed in `site-config.mjs` are copied to production. Do not assume public availability grants reuse rights; formal asset licensing remains a Future Decision.
 
 ## Brand integrity rules
 
 - Preserve original aspect ratios, colors, expressions, linework, and legibility. Do not stretch, mirror, casually redraw, recolor, or place effects over the Honey Badger.
 - Keep complete artwork inside safe margins at every crop. Neighboring fragments, source-board labels, and unintended edge elements must never appear.
-- Use `object-fit: contain` for the full logo. Avatar/profile artwork may use `cover` only when the approved circular composition remains safely centered.
+- Use `object-fit: contain` and natural height for the full-body portrait. Avatar/profile artwork may use `cover` only when the approved circular composition remains safely centered.
 - Keep important banner content away from edges and likely avatar/overlay zones. Recheck the actual destination preview after any crop.
 - Use the established approved root assets; do not reintroduce removed starter imagery.
 - New visual assets require provenance, usage-rights confirmation, optimized exports, descriptive naming, and review at their actual rendered sizes.
@@ -82,7 +81,7 @@ Exact supported browser versions are not yet defined. At minimum, use a current 
 
 - [ ] Hero subject remains intentional on desktop (`center 35%`) and mobile (`62% center`), with no stray source fragments at an edge.
 - [ ] Gradient maintains readable bone/gold text without erasing the mascot; headline and calls to action wrap cleanly.
-- [ ] Full logo is square, centered, contained, and padded inside the light logo card.
+- [ ] Full-body portrait preserves its 900×1184 ratio, keeps the complete ears/fang/feet/tail visible, and does not regain the unused square perimeter.
 - [ ] Trust strip, token grid, roadmap cards, Daily Dig stamp, social grid, FAQ, and footer follow their responsive column changes without border anomalies.
 - [ ] Daily Dig text is readable for every entry in `script.js`, not just the current day.
 
@@ -111,7 +110,7 @@ Exact supported browser versions are not yet defined. At minimum, use a current 
 - Review intrinsic file size and rendered size for every changed raster asset; avoid downloading a reference-scale image for a small icon.
 - Confirm no broken request, unexpected third-party request, console error, layout shift, or invisible text during load.
 - Preserve the dependency-free production client unless a measured requirement justifies additional code.
-- Because production images currently lack responsive variants and explicit HTML dimensions in several locations, test loading behavior carefully; remediation is a Future Decision rather than assumed completed work.
+- Production HTML images carry intrinsic dimensions. Test loading behavior and responsive containment carefully; additional `srcset` variants remain a Future Decision.
 
 ## Recording results
 
