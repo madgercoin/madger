@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-08T08:21:37.776Z",
+  "generatedAt": "2026-08-08T14:09:43.133Z",
   "commitment": "finalized",
   "mint": "BHauMX8akk2umqkQqnJwpYkCRkZmefGnEBFByeFXRKqv",
   "healthy": true,
@@ -22,8 +22,8 @@
     "freezeAuthority": null,
     "initialized": true,
     "accountSpace": 82,
-    "supplySlot": 437957673,
-    "accountSlot": 437957673
+    "supplySlot": 438007249,
+    "accountSlot": 438007249
   },
   "inference": "Classic SPL Token mint; Token-2022 transfer-fee extensions do not apply."
 }
