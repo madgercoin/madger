@@ -1,17 +1,17 @@
 # MADGER social performance
 
-Generated: 2026-08-08T10:05:05.429Z
-Previous snapshot: 2026-08-07T11:27:26.124Z
+Generated: 2026-08-09T10:07:33.331Z
+Previous snapshot: 2026-08-08T10:05:05.429Z
 
 ## 30-day channel rollup
 
 | Channel | Health | Posts | Impressions | Reach | Views | Eng. rate | Clicks | Follows | Review |
 |---|---|---:|---:|---:|---:|---:|---:|---:|---|
-| facebook: Madger Coin | Connected | 13 | 1550 | — | — | 0.52% | 2 | — | None flagged |
-| youtube: Madger | Connected | 8 | — | — | 321 | 1.87% | — | — | None flagged |
-| twitter: MadgerCoin | Connected | 16 | 154 | — | — | 14.94% | 2 | — | Check Buffer Community |
-| instagram: madgercoin | Connected | 11 | 0 | 866 | 1091 | 2.77% | — | 0 | None flagged |
-| tiktok: themadgercoin | Connected | 8 | — | 300 | 448 | 1.12% | — | — | None flagged |
+| facebook: Madger Coin | Connected | 14 | 1555 | — | — | 0.51% | 2 | — | None flagged |
+| youtube: Madger | Connected | 9 | — | — | 327 | 1.83% | — | — | None flagged |
+| twitter: MadgerCoin | Connected | 17 | 157 | — | — | 15.29% | 2 | — | Check Buffer Community |
+| instagram: madgercoin | Connected | 12 | 0 | 879 | 1101 | 2.16% | — | 0 | None flagged |
+| tiktok: themadgercoin | Connected | 8 | — | 399 | 462 | 1.08% | — | — | None flagged |
 
 ## Scheduled campaign
 
@@ -19,7 +19,7 @@ Sent: 15/16 · Scheduled: 0 · Errors: 1 · Attention: 1 · At risk: 0
 
 | Metric | Current | Change since prior report |
 |---|---:|---:|
-| reactions | 14 | 0 |
+| reactions | 12 | -2 |
 | comments | 0 | 0 |
 | shares | 0 | 0 |
 | reposts | 0 | 0 |
@@ -37,12 +37,12 @@ Sent: 15/16 · Scheduled: 0 · Errors: 1 · Attention: 1 · At risk: 0
 |---|---|---|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---|
 | MADGER 002 — Keep Digging | twitter | connected | 2026-07-29T14:00:00.000Z | ⚠ error (publishing error, overdue) | — | 0 | — | 0 | 0 | — | 0 | — | — |
 | MADGER 002 — Keep Digging | facebook | connected | 2026-07-29T14:00:00.000Z | sent | — | 11 | — | 0 | 0 | 0 | 0 | — | [Open](https://www.facebook.com/reel/2497262497453092/) |
-| MADGER 002 — Keep Digging | instagram | connected | 2026-07-29T22:00:00.000Z | sent | 139 | — | 93 | 4 | 0 | 0 | — | 0 | [Open](https://www.instagram.com/reel/DbZI9zEAUs3/) |
+| MADGER 002 — Keep Digging | instagram | connected | 2026-07-29T22:00:00.000Z | sent | 139 | — | 93 | 3 (-1) | 0 | 0 | — | 0 | [Open](https://www.instagram.com/reel/DbZI9zEAUs3/) |
 | MADGER 002 — Keep Digging | youtube | connected | 2026-07-29T23:00:00.000Z | sent | 2 | — | — | 0 | 0 | — | — | — | [Open](https://www.youtube.com/shorts/YHTDZSMYGhM) |
 | MADGER 002 — Keep Digging | tiktok | connected | 2026-07-30T02:00:00.000Z | sent | 79 | — | 78 | 0 | 0 | 0 | — | — | [Open](https://www.tiktok.com/@themadgercoin/video/7668135131676216589?utm_campaign=tt4d_open_api&utm_source=7103819247981182978) |
 | MADGER 003 — No Slowing Down | twitter | connected | 2026-07-30T13:00:00.000Z | sent | — | 9 | — | 1 | 0 | — | 0 | — | [Open](https://x.com/2080142722153816065/status/2082813848843657418) |
 | MADGER 003 — No Slowing Down | facebook | connected | 2026-07-30T13:00:00.000Z | sent | — | 10 | — | 0 | 0 | 0 | 0 | — | [Open](https://www.facebook.com/reel/1047690247843003/) |
-| MADGER 003 — No Slowing Down | instagram | connected | 2026-07-30T13:00:00.000Z | sent | 123 | — | 101 | 3 | 0 | 0 | — | 0 | [Open](https://www.instagram.com/reel/DbawDMtmlki/) |
+| MADGER 003 — No Slowing Down | instagram | connected | 2026-07-30T13:00:00.000Z | sent | 123 | — | 101 | 2 (-1) | 0 | 0 | — | 0 | [Open](https://www.instagram.com/reel/DbawDMtmlki/) |
 | MADGER 003 — No Slowing Down | youtube | connected | 2026-07-31T20:00:00.000Z | sent | 2 | — | — | 0 | 0 | — | — | — | [Open](https://www.youtube.com/shorts/yDeRT1XJgsA) |
 | MADGER 003 — No Slowing Down | tiktok | connected | 2026-07-31T22:00:00.000Z | sent | 28 | — | 25 | 1 | 0 | 0 | — | — | [Open](https://www.tiktok.com/@themadgercoin/video/7668815697367076109?utm_campaign=tt4d_open_api&utm_source=7103819247981182978) |
 | MADGER 004 — Join the Burrow | youtube | connected | 2026-08-01T22:00:00.000Z | sent | 0 | — | — | 0 | 0 | — | — | — | [Open](https://www.youtube.com/shorts/cD9BiH569oI) |
