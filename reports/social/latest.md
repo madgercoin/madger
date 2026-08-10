@@ -1,17 +1,17 @@
 # MADGER social performance
 
-Generated: 2026-08-09T10:07:33.331Z
-Previous snapshot: 2026-08-08T10:05:05.429Z
+Generated: 2026-08-10T11:33:18.174Z
+Previous snapshot: 2026-08-09T10:07:33.331Z
 
 ## 30-day channel rollup
 
 | Channel | Health | Posts | Impressions | Reach | Views | Eng. rate | Clicks | Follows | Review |
 |---|---|---:|---:|---:|---:|---:|---:|---:|---|
-| facebook: Madger Coin | Connected | 14 | 1555 | — | — | 0.51% | 2 | — | None flagged |
+| facebook: Madger Coin | Connected | 14 | 1766 | — | — | 0.62% | 3 | — | None flagged |
 | youtube: Madger | Connected | 9 | — | — | 327 | 1.83% | — | — | None flagged |
-| twitter: MadgerCoin | Connected | 17 | 157 | — | — | 15.29% | 2 | — | Check Buffer Community |
-| instagram: madgercoin | Connected | 12 | 0 | 879 | 1101 | 2.16% | — | 0 | None flagged |
-| tiktok: themadgercoin | Connected | 8 | — | 399 | 462 | 1.08% | — | — | None flagged |
+| twitter: MadgerCoin | Connected | 19 | 175 | — | — | 10.86% | 2 | — | Check Buffer Community |
+| instagram: madgercoin | Connected | 12 | 0 | 965 | 1197 | 2.18% | — | 0 | None flagged |
+| tiktok: themadgercoin | Connected | 9 | — | 427 | 703 | 1.28% | — | — | None flagged |
 
 ## Scheduled campaign
 
@@ -19,34 +19,34 @@ Sent: 15/16 · Scheduled: 0 · Errors: 1 · Attention: 1 · At risk: 0
 
 | Metric | Current | Change since prior report |
 |---|---:|---:|
-| reactions | 12 | -2 |
+| reactions | 12 | 0 |
 | comments | 0 | 0 |
 | shares | 0 | 0 |
 | reposts | 0 | 0 |
 | reach | 503 | 0 |
 | impressions | 42 | 0 |
-| views | 615 | 0 |
+| views | 623 | 8 |
 | clicks | 0 | 0 |
 | saves | 0 | 0 |
 | follows | 0 | 0 |
-| averageEngagementRate | 1.88% | — |
+| averageEngagementRate | 2.00% | — |
 
 ## Per-post performance
 
 | Post | Network | Connection | Due (UTC) | Status | Views | Impressions | Reach | Reactions | Comments | Shares | Clicks | Follows | Link |
 |---|---|---|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---|
-| MADGER 002 — Keep Digging | twitter | connected | 2026-07-29T14:00:00.000Z | ⚠ error (publishing error, overdue) | — | 0 | — | 0 | 0 | — | 0 | — | — |
+| MADGER 002 — Keep Digging | twitter | connected | 2026-07-29T14:00:00.000Z | ⚠ monitor_error (monitor error, overdue) | — | — | — | — | — | — | — | — | — |
 | MADGER 002 — Keep Digging | facebook | connected | 2026-07-29T14:00:00.000Z | sent | — | 11 | — | 0 | 0 | 0 | 0 | — | [Open](https://www.facebook.com/reel/2497262497453092/) |
-| MADGER 002 — Keep Digging | instagram | connected | 2026-07-29T22:00:00.000Z | sent | 139 | — | 93 | 3 (-1) | 0 | 0 | — | 0 | [Open](https://www.instagram.com/reel/DbZI9zEAUs3/) |
-| MADGER 002 — Keep Digging | youtube | connected | 2026-07-29T23:00:00.000Z | sent | 2 | — | — | 0 | 0 | — | — | — | [Open](https://www.youtube.com/shorts/YHTDZSMYGhM) |
+| MADGER 002 — Keep Digging | instagram | connected | 2026-07-29T22:00:00.000Z | sent | 139 | — | 93 | 3 | 0 | 0 | — | 0 | [Open](https://www.instagram.com/reel/DbZI9zEAUs3/) |
+| MADGER 002 — Keep Digging | youtube | connected | 2026-07-29T23:00:00.000Z | sent | 5 (+3) | — | — | 0 | 0 | — | — | — | [Open](https://www.youtube.com/shorts/YHTDZSMYGhM) |
 | MADGER 002 — Keep Digging | tiktok | connected | 2026-07-30T02:00:00.000Z | sent | 79 | — | 78 | 0 | 0 | 0 | — | — | [Open](https://www.tiktok.com/@themadgercoin/video/7668135131676216589?utm_campaign=tt4d_open_api&utm_source=7103819247981182978) |
 | MADGER 003 — No Slowing Down | twitter | connected | 2026-07-30T13:00:00.000Z | sent | — | 9 | — | 1 | 0 | — | 0 | — | [Open](https://x.com/2080142722153816065/status/2082813848843657418) |
 | MADGER 003 — No Slowing Down | facebook | connected | 2026-07-30T13:00:00.000Z | sent | — | 10 | — | 0 | 0 | 0 | 0 | — | [Open](https://www.facebook.com/reel/1047690247843003/) |
-| MADGER 003 — No Slowing Down | instagram | connected | 2026-07-30T13:00:00.000Z | sent | 123 | — | 101 | 2 (-1) | 0 | 0 | — | 0 | [Open](https://www.instagram.com/reel/DbawDMtmlki/) |
-| MADGER 003 — No Slowing Down | youtube | connected | 2026-07-31T20:00:00.000Z | sent | 2 | — | — | 0 | 0 | — | — | — | [Open](https://www.youtube.com/shorts/yDeRT1XJgsA) |
+| MADGER 003 — No Slowing Down | instagram | connected | 2026-07-30T13:00:00.000Z | sent | 123 | — | 101 | 2 | 0 | 0 | — | 0 | [Open](https://www.instagram.com/reel/DbawDMtmlki/) |
+| MADGER 003 — No Slowing Down | youtube | connected | 2026-07-31T20:00:00.000Z | sent | 4 (+2) | — | — | 0 | 0 | — | — | — | [Open](https://www.youtube.com/shorts/yDeRT1XJgsA) |
 | MADGER 003 — No Slowing Down | tiktok | connected | 2026-07-31T22:00:00.000Z | sent | 28 | — | 25 | 1 | 0 | 0 | — | — | [Open](https://www.tiktok.com/@themadgercoin/video/7668815697367076109?utm_campaign=tt4d_open_api&utm_source=7103819247981182978) |
-| MADGER 004 — Join the Burrow | youtube | connected | 2026-08-01T22:00:00.000Z | sent | 0 | — | — | 0 | 0 | — | — | — | [Open](https://www.youtube.com/shorts/cD9BiH569oI) |
-| MADGER 004 — Join the Burrow | tiktok | connected | 2026-08-02T13:00:00.000Z | sent | 107 | — | 97 | 3 | 0 | 0 | — | — | [Open](https://www.tiktok.com/@themadgercoin/video/7669418973116632333?utm_campaign=tt4d_open_api&utm_source=7103819247981182978) |
+| MADGER 004 — Join the Burrow | youtube | connected | 2026-08-01T22:00:00.000Z | sent | 2 (+2) | — | — | 0 | 0 | — | — | — | [Open](https://www.youtube.com/shorts/cD9BiH569oI) |
+| MADGER 004 — Join the Burrow | tiktok | connected | 2026-08-02T13:00:00.000Z | sent | 108 (+1) | — | 97 | 3 | 0 | 0 | — | — | [Open](https://www.tiktok.com/@themadgercoin/video/7669418973116632333?utm_campaign=tt4d_open_api&utm_source=7103819247981182978) |
 | MADGER 004 — Join the Burrow | facebook | connected | 2026-08-03T13:00:00.000Z | sent | — | 0 | — | 0 | 0 | 0 | 0 | — | [Open](https://www.facebook.com/reel/1732520327655007/) |
 | MADGER 004 — Join the Burrow | instagram | connected | 2026-08-03T22:00:00.000Z | sent | 135 | — | 109 | 1 | 0 | 0 | — | 0 | [Open](https://www.instagram.com/reel/DbmBD6Gk3yf/) |
 | MADGER 004 — Join the Burrow | twitter | connected | 2026-08-04T13:00:00.000Z | sent | — | 4 | — | 0 | 0 | — | 0 | — | [Open](https://x.com/2080142722153816065/status/2084625915720437828) |
