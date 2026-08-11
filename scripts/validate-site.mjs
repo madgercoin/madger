@@ -25,6 +25,7 @@ const requiredSocialProperties = [
 const officialMint = "BHauMX8akk2umqkQqnJwpYkCRkZmefGnEBFByeFXRKqv";
 const officialFacebook = "https://www.facebook.com/1279493098576451";
 const officialReddit = "https://www.reddit.com/user/Madgercoin/";
+const officialDiscord = "https://discord.gg/NcuPzSNz9e";
 const socialPreview = "https://madgercoin.com/assets/madger_v5_social.jpg";
 const failures = [];
 const pages = new Map();
@@ -189,9 +190,12 @@ if (!homepage.includes('src="/assets/madger_v5_mascot_portrait.webp" width="900"
 if (!stylesheet.includes(".portrait-card img{width:100%;height:auto;aspect-ratio:900/1184;")) failures.push("styles.css: portrait must preserve its natural ratio and responsive height");
 if (!homepage.includes(officialFacebook) || homepage.includes("facebook.com/share/")) failures.push("index.html: Facebook links must use the canonical page URL");
 if (!homepage.includes(officialReddit)) failures.push("index.html: Reddit must use the verified u/Madgercoin profile");
+if (!homepage.includes(officialDiscord)) failures.push("index.html: Discord must use the verified permanent MADGER invite");
 for (const [file, html] of pages) {
   if (html.includes("reddit.com/r/madgercoin")) failures.push(`${file}: unverified r/madgercoin link must not be published before the subreddit exists`);
-  if (/https:\/\/(?:discord\.gg|discord\.com\/invite)\//i.test(html)) failures.push(`${file}: Discord invite must not be published before the authenticated server and durable invite are verified`);
+  for (const match of html.matchAll(/https:\/\/(?:discord\.gg|discord\.com\/invite)\/[A-Za-z0-9-]+/gi)) {
+    if (match[0] !== officialDiscord) failures.push(`${file}: Discord must use the verified permanent MADGER invite`);
+  }
 }
 const homepageBlocks = new Set(visibleBlocks(homepage));
 const crossPageDuplicates = visibleBlocks(pages.get("litepaper.html")).filter(block => homepageBlocks.has(block));
