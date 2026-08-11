@@ -1,0 +1,32 @@
+name: Website or repository bug
+description: Report a reproducible defect without sensitive information.
+title: "bug: "
+labels:
+  - bug
+body:
+  - type: textarea
+    id: summary
+    attributes:
+      label: Summary
+      description: What happened, and what should have happened?
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Reproduction
+      description: Include the URL, browser/device if relevant, and minimal steps.
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Safe evidence
+      description: Screenshots or logs with credentials, personal data, and wallet secrets removed.
+  - type: checkboxes
+    id: safety
+    attributes:
+      label: Safety confirmation
+      options:
+        - label: I removed credentials, private data, seed phrases, and unsafe exploit details.
+          required: true

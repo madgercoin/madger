@@ -24,4 +24,6 @@ The repository does not verify issue templates, a public tracker, contributor ag
 
 ## Future Decisions
 
-Code/asset/contribution licensing, contributor agreement, review owners, branch rules, issue/PR templates, code of conduct, release authority, and security reporting process remain undefined.
+Code/asset/contribution licensing, contributor agreement, release authority, and a dedicated
+security-reporting system remain undefined. Review ownership, branch safeguards, issue/PR intake,
+and community conduct are now defined in the repository and GitHub settings.

@@ -193,6 +193,7 @@ dist
 
 ### Wrangler ###
 .wrangler/
+worker.generated.js
 .env*
 !.env.example
 .dev.vars*

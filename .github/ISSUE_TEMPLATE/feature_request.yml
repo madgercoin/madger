@@ -1,0 +1,27 @@
+name: Improvement proposal
+description: Propose a focused, brand-safe MADGER improvement.
+title: "proposal: "
+labels:
+  - enhancement
+body:
+  - type: textarea
+    id: outcome
+    attributes:
+      label: Desired outcome
+      description: What visitor, community, contributor, or operational outcome improves?
+    validations:
+      required: true
+  - type: textarea
+    id: approach
+    attributes:
+      label: Proposed approach
+      description: Describe scope, alternatives, and ongoing maintenance cost.
+    validations:
+      required: true
+  - type: textarea
+    id: safety
+    attributes:
+      label: Brand and launch safety
+      description: Explain effects on claims, mint integrity, official links, privacy, accessibility, and launch controls.
+    validations:
+      required: true
