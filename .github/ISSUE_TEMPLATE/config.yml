@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Private security report
+    url: https://github.com/madgercoin/madger/security/policy
+    about: Follow SECURITY.md and do not publish credentials, exploit details, wallet secrets, or private information.
+  - name: Official MADGER website
+    url: https://madgercoin.com
+    about: Verify current project status, mint, and official channels.

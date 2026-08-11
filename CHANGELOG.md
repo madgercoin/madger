@@ -4,6 +4,14 @@ Notable repository changes are recorded here. Dates use UTC. This project does n
 
 ## Unreleased
 
+### Repository operations
+
+- Added dependency maintenance, pinned GitHub Actions, CODEOWNERS, structured issue and pull-request
+  intake, stale-CI cancellation, and a public code of conduct.
+- Added weekly CodeQL analysis and high-severity dependency-diff enforcement for pull requests.
+- Updated pinned Wrangler from 4.114.0 to 4.120.1, clearing a newly disclosed high-severity
+  development-tree `undici` advisory without a major-version change.
+
 ### Changed
 
 - Added the verified `u/Madgercoin` Reddit identity to the homepage social directory and Organization structured data, with automated regression protection against an uncreated subreddit or unverified Discord invite.
