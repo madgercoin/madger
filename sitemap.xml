@@ -25,4 +25,14 @@
       <image:title>MADGER official litepaper</image:title>
     </image:image>
   </url>
+  <url>
+    <loc>https://madgercoin.com/meme-contest.html</loc>
+    <lastmod>2026-08-16</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.9</priority>
+    <image:image>
+      <image:loc>https://madgercoin.com/assets/media/meme-contest/madger-meme-contest-square.jpg</image:loc>
+      <image:title>The Great Burrow Meme Contest</image:title>
+    </image:image>
+  </url>
 </urlset>

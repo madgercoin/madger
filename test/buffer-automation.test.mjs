@@ -119,7 +119,7 @@ test("uses static-post metadata for Facebook and Instagram images", () => {
   });
 });
 
-test("meme contest launch covers every Buffer channel and remains approval-gated", () => {
+test("approved meme contest launch covers every Buffer channel", () => {
   const manifest = JSON.parse(fs.readFileSync(new URL(
     "../content/buffer-schedule.json",
     import.meta.url
@@ -130,7 +130,7 @@ test("meme contest launch covers every Buffer channel and remains approval-gated
   assert.deepEqual(new Set(posts.map(({ service }) => service)), new Set([
     "twitter", "facebook", "instagram", "tiktok", "youtube"
   ]));
-  assert.ok(posts.every(({ enabled }) => enabled === false));
+  assert.ok(posts.every(({ enabled }) => enabled === true));
   assert.ok(posts.every(({ mediaUrl }) => mediaUrl.startsWith("https://")));
   assert.equal(posts.find(({ service }) => service === "twitter").text.length <= 280, true);
   assert.ok(posts.filter(({ service }) => ["tiktok", "youtube"].includes(service))
@@ -145,4 +145,5 @@ test("meme contest launch covers every Buffer channel and remains approval-gated
   assert.match(rules, /Silver Shovel — August 2026/);
   assert.match(rules, /Bronze Claw — August 2026/);
   assert.ok(posts.every(({ text }) => /\$20|\$35/.test(text)));
+  assert.ok(posts.every(({ text }) => text.includes("madgercoin.com/meme-contest.html")));
 });

@@ -1,10 +1,15 @@
 import { cp, mkdir, readFile, rm, writeFile } from "node:fs/promises";
+import path from "node:path";
 import { assetFiles, rootFiles } from "./site-config.mjs";
 
 await rm("dist", { recursive: true, force: true });
 await mkdir("dist/assets", { recursive: true });
 await Promise.all(rootFiles.map(file => cp(file, `dist/${file}`)));
-await Promise.all(assetFiles.map(file => cp(file, `dist/assets/${file}`)));
+await Promise.all(assetFiles.map(async file => {
+  const destination = `dist/assets/${file}`;
+  await mkdir(path.dirname(destination), { recursive: true });
+  await cp(file, destination);
+}));
 
 const [home, litepaper, notFound] = await Promise.all([
   readFile("index.html", "utf8"),
