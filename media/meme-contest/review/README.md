@@ -9,3 +9,5 @@ These five platform-native poster candidates replace the previously scheduled ge
 - YouTube Shorts: `madger-meme-contest-youtube-shorts-1080x1920.jpg` and matching 8-second MP4 (9:16)
 
 Status: awaiting owner artwork approval. These files are not referenced by the Buffer manifest.
+
+Download all seven review files together from `../madger-meme-contest-artwork-review.zip`.
