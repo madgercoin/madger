@@ -132,6 +132,7 @@ test("approved meme contest launch covers every Buffer channel", () => {
   ]));
   assert.ok(posts.every(({ enabled }) => enabled === true));
   assert.ok(posts.every(({ mediaUrl }) => mediaUrl.startsWith("https://")));
+  assert.ok(posts.every(({ channelId }) => typeof channelId === "string" && channelId.length > 0));
   assert.equal(posts.find(({ service }) => service === "twitter").text.length <= 280, true);
   assert.ok(posts.filter(({ service }) => ["tiktok", "youtube"].includes(service))
     .every(({ mediaType }) => mediaType === "video"));
