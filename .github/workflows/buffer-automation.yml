@@ -16,6 +16,7 @@ on:
         options:
           - discover
           - publish
+          - publish-now
   schedule:
     - cron: "17 * * * *"
 
@@ -69,3 +70,9 @@ jobs:
           BUFFER_API_TOKEN: ${{ secrets.BUFFER_API_TOKEN }}
           BUFFER_ORGANIZATION_ID: ${{ vars.BUFFER_ORGANIZATION_ID }}
         run: node scripts/buffer-automation.mjs publish content/buffer-schedule.json
+      - name: Publish flagged posts now
+        if: github.event_name == 'workflow_dispatch' && inputs.operation == 'publish-now'
+        env:
+          BUFFER_API_TOKEN: ${{ secrets.BUFFER_API_TOKEN }}
+          BUFFER_ORGANIZATION_ID: ${{ vars.BUFFER_ORGANIZATION_ID }}
+        run: node scripts/buffer-automation.mjs publish-now content/buffer-schedule.json

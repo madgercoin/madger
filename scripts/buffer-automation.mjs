@@ -141,11 +141,48 @@ async function publish() {
   }
 }
 
+async function publishNow() {
+  const manifest = JSON.parse(await fs.readFile(manifestPath, 'utf8'));
+  if (manifest.schemaVersion !== 1) throw new Error('Unsupported manifest schemaVersion');
+  const active = manifest.posts.filter((entry) => entry.publishNow === true);
+  if (!active.length) {
+    console.log('No posts flagged for immediate publishing. Automation is safely idle.');
+    return;
+  }
+  const mutation = `
+    mutation PublishPostNow($input: EditPostInput!) {
+      editPost(input: $input) {
+        ... on PostActionSuccess { post { id text dueAt channelId } }
+        ... on MutationError { message }
+      }
+    }
+  `;
+  for (const entry of active) {
+    if (!entry.bufferPostId) throw new Error(`Buffer post ID missing for ${entry.id}`);
+    const input = {
+      id: entry.bufferPostId,
+      text: entry.text,
+      schedulingType: 'automatic',
+      mode: 'shareNow',
+      assets: [assetFor(entry)],
+      aiAssisted: true,
+      source: 'madger-github-automation',
+    };
+    const metadata = metadataFor(entry);
+    if (metadata) input.metadata = metadata;
+    const result = await graphql(mutation, { input });
+    if (result.editPost.message) throw new Error(`${entry.id}: ${result.editPost.message}`);
+    console.log(`Published ${entry.id} now: ${result.editPost.post.id}`);
+  }
+}
+
 if (mode === 'discover') {
   const result = await discover();
   console.log(JSON.stringify(result, null, 2));
 } else if (mode === 'publish') {
   await publish();
+} else if (mode === 'publish-now') {
+  await publishNow();
 } else {
   throw new Error(`Unknown mode: ${mode}`);
 }
