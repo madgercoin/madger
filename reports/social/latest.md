@@ -1,7 +1,7 @@
 # MADGER social performance
 
-Generated: 2026-08-16T02:45:50.238Z
-Previous snapshot: 2026-08-16T02:27:12.720Z
+Generated: 2026-08-16T02:47:24.940Z
+Previous snapshot: 2026-08-16T02:45:50.238Z
 
 ## 30-day channel rollup
 
@@ -9,13 +9,13 @@ Previous snapshot: 2026-08-16T02:27:12.720Z
 |---|---|---:|---:|---:|---:|---:|---:|---:|---|
 | facebook: Madger Coin | Connected | 21 | 2021 | — | — | 0.59% | 3 | — | None flagged |
 | youtube: Madger | Connected | 13 | — | — | 333 | 1.80% | — | — | None flagged |
-| twitter: MadgerCoin | Connected | 31 | 8327 | — | — | 14.25% | 121 | — | Check Buffer Community |
+| twitter: MadgerCoin | Connected | 32 | 8327 | — | — | 14.25% | 121 | — | Check Buffer Community |
 | instagram: madgercoin | Connected | 21 | 0 | 1119 | 1389 | 2.50% | — | 0 | None flagged |
 | tiktok: themadgercoin | Connected | 14 | — | 999 | 1419 | 1.20% | — | — | Check Buffer Community |
 
 ## Scheduled campaign
 
-Sent: 15/19 · Scheduled: 3 · Errors: 1 · Attention: 4 · At risk: 3
+Sent: 18/19 · Scheduled: 0 · Errors: 1 · Attention: 4 · At risk: 0
 
 | Metric | Current | Change since prior report |
 |---|---:|---:|
@@ -51,9 +51,9 @@ Sent: 15/19 · Scheduled: 3 · Errors: 1 · Attention: 4 · At risk: 3
 | MADGER 004 — Join the Burrow | instagram | connected | 2026-08-03T22:00:00.000Z | sent | 136 | — | 110 | 1 | 0 | 0 | — | 0 | [Open](https://www.instagram.com/reel/DbmBD6Gk3yf/) |
 | MADGER 004 — Join the Burrow | twitter | connected | 2026-08-04T13:00:00.000Z | sent | — | 17 | — | 0 | 0 | — | 0 | — | [Open](https://x.com/2080142722153816065/status/2084625915720437828) |
 | MADGER 002 — Keep Digging (X Recovery) | twitter | connected | 2026-07-31T13:15:00.000Z | sent | — | 17 | — | 1 | 0 | — | 0 | — | [Open](https://x.com/2080142722153816065/status/2083179674784411732) |
-| The Burrow hits 200 Telegram members | twitter | unknown | 2026-08-16T04:00:00.000Z | ⚠ scheduled (channel missing) | — | 0 | — | 0 | 0 | — | 0 | — | — |
-| The Burrow hits 200 Telegram members | facebook | unknown | 2026-08-16T04:05:00.000Z | ⚠ scheduled (channel missing) | — | 0 | — | 0 | 0 | 0 | 0 | — | — |
-| The Burrow hits 200 Telegram members | instagram | unknown | 2026-08-16T04:10:00.000Z | ⚠ scheduled (channel missing) | — | — | — | — | — | — | — | — | — |
+| The Burrow hits 200 Telegram members | twitter | unknown | 2026-08-16T02:46:25.753Z | ⚠ sent (channel missing) | — | 0 | — | 0 | 0 | — | 0 | — | [Open](https://x.com/2080142722153816065/status/2088819648166813808) |
+| The Burrow hits 200 Telegram members | facebook | unknown | 2026-08-16T02:46:27.988Z | ⚠ sent (channel missing) | — | 0 | — | 0 | 0 | 0 | 0 | — | [Open](https://facebook.com/1279493098576451_122108036793423166) |
+| The Burrow hits 200 Telegram members | instagram | unknown | 2026-08-16T02:46:33.258Z | ⚠ sent (channel missing) | — | — | — | — | — | — | — | — | [Open](https://www.instagram.com/p/DcFbFJPlFqB/) |
 
 ## Interpretation
 

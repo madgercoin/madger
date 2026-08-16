@@ -1,9 +1,9 @@
 {
-  "generatedAt": "2026-08-16T02:45:50.238Z",
-  "previousGeneratedAt": "2026-08-16T02:27:12.720Z",
+  "generatedAt": "2026-08-16T02:47:24.940Z",
+  "previousGeneratedAt": "2026-08-16T02:45:50.238Z",
   "window": {
-    "start": "2026-07-17T02:45:50.238Z",
-    "end": "2026-08-16T02:45:50.238Z"
+    "start": "2026-07-17T02:47:24.940Z",
+    "end": "2026-08-16T02:47:24.940Z"
   },
   "organization": {
     "id": "6a67aceacff325d8d2d231e9",
@@ -62,9 +62,9 @@
       "state": "connected",
       "healthy": true,
       "queuePaused": false,
-      "metricsUpdatedAt": "2026-08-16T01:46:01.243Z",
+      "metricsUpdatedAt": "2026-08-16T02:46:36.443Z",
       "metrics": {
-        "postCount": 31,
+        "postCount": 32,
         "reactions": 336,
         "comments": 228,
         "engagementRate": 14.25,
@@ -126,8 +126,8 @@
     "source": "content/buffer-schedule.json",
     "summary": {
       "totalPosts": 19,
-      "sent": 15,
-      "scheduled": 3,
+      "sent": 18,
+      "scheduled": 0,
       "sending": 0,
       "errors": 1,
       "needsAttention": [
@@ -151,11 +151,7 @@
           "channel_missing"
         ]
       },
-      "atRiskPosts": [
-        "telegram-200-x-2026-08-16",
-        "telegram-200-facebook-2026-08-16",
-        "telegram-200-instagram-2026-08-16"
-      ],
+      "atRiskPosts": [],
       "unhealthyChannelIds": [],
       "totals": {
         "reactions": 13,
@@ -666,12 +662,12 @@
         "title": "The Burrow hits 200 Telegram members",
         "service": "twitter",
         "channelState": "unknown",
-        "dueAt": "2026-08-16T04:00:00.000Z",
-        "sentAt": null,
-        "status": "scheduled",
-        "externalLink": null,
+        "dueAt": "2026-08-16T02:46:25.753Z",
+        "sentAt": "2026-08-16T02:46:27.438Z",
+        "status": "sent",
+        "externalLink": "https://x.com/2080142722153816065/status/2088819648166813808",
         "publishingError": null,
-        "metricsUpdatedAt": "2026-08-16T02:25:06.985Z",
+        "metricsUpdatedAt": "2026-08-16T02:46:36.443Z",
         "metrics": {
           "reactions": 0,
           "comments": 0,
@@ -695,10 +691,10 @@
         "title": "The Burrow hits 200 Telegram members",
         "service": "facebook",
         "channelState": "unknown",
-        "dueAt": "2026-08-16T04:05:00.000Z",
-        "sentAt": null,
-        "status": "scheduled",
-        "externalLink": null,
+        "dueAt": "2026-08-16T02:46:27.988Z",
+        "sentAt": "2026-08-16T02:46:32.366Z",
+        "status": "sent",
+        "externalLink": "https://facebook.com/1279493098576451_122108036793423166",
         "publishingError": null,
         "metricsUpdatedAt": "2026-08-16T02:25:07.330Z",
         "metrics": {
@@ -724,10 +720,10 @@
         "title": "The Burrow hits 200 Telegram members",
         "service": "instagram",
         "channelState": "unknown",
-        "dueAt": "2026-08-16T04:10:00.000Z",
-        "sentAt": null,
-        "status": "scheduled",
-        "externalLink": null,
+        "dueAt": "2026-08-16T02:46:33.258Z",
+        "sentAt": "2026-08-16T02:46:40.235Z",
+        "status": "sent",
+        "externalLink": "https://www.instagram.com/p/DcFbFJPlFqB/",
         "publishingError": null,
         "metricsUpdatedAt": "2026-08-16T02:26:22.740Z",
         "metrics": {},
