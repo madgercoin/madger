@@ -176,6 +176,30 @@ async function publishNow() {
   }
 }
 
+async function cancel() {
+  const manifest = JSON.parse(await fs.readFile(manifestPath, 'utf8'));
+  if (manifest.schemaVersion !== 1) throw new Error('Unsupported manifest schemaVersion');
+  const active = manifest.posts.filter((entry) => entry.cancel === true);
+  if (!active.length) {
+    console.log('No posts flagged for cancellation. Automation is safely idle.');
+    return;
+  }
+  const mutation = `
+    mutation CancelPost($input: DeletePostInput!) {
+      deletePost(input: $input) {
+        ... on DeletePostSuccess { id }
+        ... on VoidMutationError { message }
+      }
+    }
+  `;
+  for (const entry of active) {
+    if (!entry.bufferPostId) throw new Error(`Buffer post ID missing for ${entry.id}`);
+    const result = await graphql(mutation, { input: { id: entry.bufferPostId } });
+    if (result.deletePost.message) throw new Error(`${entry.id}: ${result.deletePost.message}`);
+    console.log(`Cancelled ${entry.id}: ${result.deletePost.id}`);
+  }
+}
+
 if (mode === 'discover') {
   const result = await discover();
   console.log(JSON.stringify(result, null, 2));
@@ -183,6 +207,8 @@ if (mode === 'discover') {
   await publish();
 } else if (mode === 'publish-now') {
   await publishNow();
+} else if (mode === 'cancel') {
+  await cancel();
 } else {
   throw new Error(`Unknown mode: ${mode}`);
 }

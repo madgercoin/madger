@@ -16,6 +16,7 @@ The workflow reads the repository secret `BUFFER_API_TOKEN`. Never paste the key
 - The hourly workflow is active. When no manifest entries are enabled, it exits safely without creating a Buffer post.
 - `workflow_dispatch` supports a read-only `discover` operation and a deliberate `publish` operation.
 - `workflow_dispatch` also supports `publish-now`, which immediately publishes only previously scheduled posts explicitly marked `publishNow: true` and identified by `bufferPostId`.
+- `workflow_dispatch` supports `cancel`, which deletes only scheduled posts explicitly marked `cancel: true` and identified by `bufferPostId`.
 
 ## Media requirement
 
@@ -40,6 +41,7 @@ Set `mediaType` to `image` for a static image or `video` for a video. Legacy ent
 - To pause all automatic runs, disable the workflow in GitHub Actions. Disabling every manifest entry keeps the active workflow safely idle.
 - To stop one post, set that manifest entry's `enabled` value to `false` before it is submitted.
 - To publish an existing scheduled post immediately, set its `publishNow` value to `true`, run `publish-now`, then reset the flag after verifying success.
+- To withdraw an existing scheduled post, set its `cancel` value to `true`, run `cancel`, then record the cancellation and reset the flag.
 - To rotate authorization, regenerate the Buffer key and replace the `BUFFER_API_TOKEN` repository secret.
 - Do not change a scheduled post's caption or time solely to defeat duplicate detection. Verify the Buffer queue before resubmitting altered content.
 

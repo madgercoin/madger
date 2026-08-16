@@ -134,6 +134,8 @@ test("scheduled meme contest launch covers every Buffer channel", () => {
   assert.ok(posts.every(({ mediaUrl }) => mediaUrl.startsWith("https://")));
   assert.ok(posts.every(({ channelId }) => typeof channelId === "string" && channelId.length > 0));
   assert.ok(posts.every(({ status, bufferPostId }) => status === "scheduled" && bufferPostId));
+  assert.ok(posts.every(({ cancel }) => cancel === true));
+  assert.equal(posts.find(({ service }) => service === "youtube").channelName, "Madger");
   assert.equal(posts.find(({ service }) => service === "twitter").text.length <= 280, true);
   assert.ok(posts.filter(({ service }) => ["tiktok", "youtube"].includes(service))
     .every(({ mediaType }) => mediaType === "video"));
