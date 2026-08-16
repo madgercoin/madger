@@ -26,9 +26,11 @@ export function evaluateScheduledEntry({ entry, channelId, existingPosts, now = 
 export function metadataFor(entry) {
   switch (entry.service) {
     case "instagram":
-      return { instagram: { type: "reel", shouldShareToFeed: true, isAiGenerated: true } };
+      return entry.mediaType === "image"
+        ? { instagram: { type: "post", isAiGenerated: true } }
+        : { instagram: { type: "reel", shouldShareToFeed: true, isAiGenerated: true } };
     case "facebook":
-      return { facebook: { type: "reel" } };
+      return { facebook: { type: entry.mediaType === "image" ? "post" : "reel" } };
     case "tiktok":
       return { tiktok: { isAiGenerated: true } };
     case "youtube":
@@ -48,4 +50,16 @@ export function metadataFor(entry) {
     default:
       return undefined;
   }
+}
+
+export function assetFor(entry) {
+  if (entry.mediaType === "image") {
+    return { image: { url: entry.mediaUrl } };
+  }
+  return {
+    video: {
+      url: entry.mediaUrl,
+      metadata: { thumbnailOffset: entry.thumbnailOffsetMs || 1000, title: entry.title }
+    }
+  };
 }

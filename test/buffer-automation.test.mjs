@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
-import { evaluateScheduledEntry, metadataFor } from "../scripts/buffer-automation-core.mjs";
+import { assetFor, evaluateScheduledEntry, metadataFor } from "../scripts/buffer-automation-core.mjs";
 
 const future = "2030-01-01T15:00:00.000Z";
 const past = "2020-01-01T15:00:00.000Z";
@@ -81,4 +81,31 @@ test("YouTube metadata always includes Buffer's required category and title", ()
   assert.equal(metadata.youtube.title, "MADGER 002 — Keep Digging");
   assert.equal(metadata.youtube.privacy, "public");
   assert.equal(metadata.youtube.madeForKids, false);
+});
+
+test("creates an image asset without video-only metadata", () => {
+  assert.deepEqual(assetFor({
+    mediaType: "image",
+    mediaUrl: "https://media.example/celebration.jpg"
+  }), { image: { url: "https://media.example/celebration.jpg" } });
+});
+
+test("retains video asset metadata by default", () => {
+  assert.deepEqual(assetFor({
+    mediaUrl: "https://media.example/madger.mp4",
+    title: "Keep Digging",
+    thumbnailOffsetMs: 2000
+  }), { video: {
+    url: "https://media.example/madger.mp4",
+    metadata: { thumbnailOffset: 2000, title: "Keep Digging" }
+  } });
+});
+
+test("uses static-post metadata for Facebook and Instagram images", () => {
+  assert.deepEqual(metadataFor({ service: "facebook", mediaType: "image" }), {
+    facebook: { type: "post" }
+  });
+  assert.deepEqual(metadataFor({ service: "instagram", mediaType: "image" }), {
+    instagram: { type: "post", isAiGenerated: true }
+  });
 });
