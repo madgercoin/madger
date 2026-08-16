@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "timezone": "America/New_York",
-  "notes": "The original 15 posts were scheduled in Buffer on 2026-07-28 and disabled afterward to prevent resubmission. The refreshed X recovery post was scheduled successfully on 2026-07-30 and disabled after its Buffer ID was recorded. The Telegram 200-member campaign was scheduled in Buffer on 2026-08-16, disabled after its Buffer IDs were recorded, and published immediately at the owner’s request.",
+  "notes": "The original 15 posts were scheduled in Buffer on 2026-07-28 and disabled afterward to prevent resubmission. The refreshed X recovery post was scheduled successfully on 2026-07-30 and disabled after its Buffer ID was recorded. The Telegram 200-member campaign was scheduled in Buffer on 2026-08-16, disabled after its Buffer IDs were recorded, and published immediately at the owner’s request. The Great Burrow Meme Contest launch set is prepared across all five Buffer channels and remains disabled pending owner approval.",
   "posts": [
     {
       "id": "madger-002-x",
@@ -271,6 +271,63 @@
       "bufferPostId": "6a811fce13afe87ec8a9f5bb",
       "publishNow": false,
       "publishedAt": "2026-08-16T02:46:40Z"
+    },
+    {
+      "id": "meme-contest-launch-x-2026-08-17",
+      "enabled": false,
+      "service": "twitter",
+      "channelName": "madgercoin",
+      "title": "The Great Burrow Meme Contest",
+      "dueAt": "2026-08-17T13:00:00.000Z",
+      "mediaType": "image",
+      "mediaUrl": "https://raw.githubusercontent.com/madgercoin/madger/main/media/meme-contest/madger-meme-contest-square.jpg",
+      "text": "Burrow Meme Contest is open. 🦡\n\nMake an original MADGER meme. Submit in The Burrow with #MadgerMemeContest.\n\nAug 17–23. No purchase or wallet. Recognition only; no cash prize.\n\nEnter + rules: https://github.com/madgercoin/madger/blob/main/docs/meme-contest-2026-08.md"
+    },
+    {
+      "id": "meme-contest-launch-facebook-2026-08-17",
+      "enabled": false,
+      "service": "facebook",
+      "channelName": "Madger Coin",
+      "title": "The Great Burrow Meme Contest",
+      "dueAt": "2026-08-17T13:05:00.000Z",
+      "mediaType": "image",
+      "mediaUrl": "https://raw.githubusercontent.com/madgercoin/madger/main/media/meme-contest/madger-meme-contest-square.jpg",
+      "text": "The Great Burrow Meme Contest is open! 🦡\n\nCreate an original MADGER or honey-badger meme, post it in The Burrow on Telegram, and include #MadgerMemeContest. Up to three entries per person.\n\nEntries close August 23 at 11:59 p.m. EDT. No purchase, token ownership, or wallet connection. Recognition only; no monetary prize.\n\nEnter: https://t.me/madgerburrow\nOfficial rules: https://github.com/madgercoin/madger/blob/main/docs/meme-contest-2026-08.md\n\nThis contest is not sponsored, endorsed, administered by, or associated with Facebook or Meta."
+    },
+    {
+      "id": "meme-contest-launch-instagram-2026-08-17",
+      "enabled": false,
+      "service": "instagram",
+      "channelName": "madgercoin",
+      "title": "The Great Burrow Meme Contest",
+      "dueAt": "2026-08-17T13:10:00.000Z",
+      "mediaType": "image",
+      "mediaUrl": "https://raw.githubusercontent.com/madgercoin/madger/main/media/meme-contest/madger-meme-contest-square.jpg",
+      "text": "THE GREAT BURROW MEME CONTEST 🦡\n\nCreate an original MADGER meme. Submit it in The Burrow on Telegram with #MadgerMemeContest. Up to three entries per person.\n\nAugust 17–23. No purchase. No token required. No wallet connection. Recognition only; no monetary prize.\n\nEntry link and official rules are in bio.\n\n#MADGER #TheBurrow #MemeContest #CryptoMemes\n\nNot sponsored, endorsed, administered by, or associated with Instagram or Meta."
+    },
+    {
+      "id": "meme-contest-launch-tiktok-2026-08-17",
+      "enabled": false,
+      "service": "tiktok",
+      "channelName": "themadgercoin",
+      "title": "The Great Burrow Meme Contest",
+      "dueAt": "2026-08-17T13:15:00.000Z",
+      "mediaType": "video",
+      "mediaUrl": "https://raw.githubusercontent.com/madgercoin/madger/main/media/meme-contest/madger-meme-contest-vertical.mp4",
+      "thumbnailOffsetMs": 1000,
+      "text": "The Great Burrow Meme Contest is open 🦡 Create an original MADGER meme and submit it in our Telegram with #MadgerMemeContest. August 17–23. No purchase, token, wallet connection, or monetary prize. Rules and entry link in bio. #MADGER #MemeContest #CryptoMemes"
+    },
+    {
+      "id": "meme-contest-launch-youtube-2026-08-17",
+      "enabled": false,
+      "service": "youtube",
+      "channelName": "Madgercoin",
+      "title": "The Great Burrow Meme Contest | Enter Aug 17–23",
+      "dueAt": "2026-08-17T13:20:00.000Z",
+      "mediaType": "video",
+      "mediaUrl": "https://raw.githubusercontent.com/madgercoin/madger/main/media/meme-contest/madger-meme-contest-vertical.mp4",
+      "thumbnailOffsetMs": 1000,
+      "text": "The Great Burrow Meme Contest is open. Create an original MADGER or honey-badger meme and submit it in The Burrow with #MadgerMemeContest. Entries run August 17–23, 2026. No purchase, token ownership, wallet connection, or monetary prize. Enter: https://t.me/madgerburrow Official rules: https://github.com/madgercoin/madger/blob/main/docs/meme-contest-2026-08.md #MADGER #MemeContest #Shorts"
     }
   ],
   "lastSuccessfulActivation": "2026-08-16T02:46:40Z"

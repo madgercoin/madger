@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import fs from "node:fs";
 import test from "node:test";
 
 import { assetFor, evaluateScheduledEntry, metadataFor } from "../scripts/buffer-automation-core.mjs";
@@ -116,4 +117,24 @@ test("uses static-post metadata for Facebook and Instagram images", () => {
   assert.deepEqual(metadataFor({ service: "instagram", mediaType: "image" }), {
     instagram: { type: "post", shouldShareToFeed: true, isAiGenerated: true }
   });
+});
+
+test("meme contest launch covers every Buffer channel and remains approval-gated", () => {
+  const manifest = JSON.parse(fs.readFileSync(new URL(
+    "../content/buffer-schedule.json",
+    import.meta.url
+  )));
+  const posts = manifest.posts.filter(({ id }) => id.startsWith("meme-contest-launch-"));
+
+  assert.equal(posts.length, 5);
+  assert.deepEqual(new Set(posts.map(({ service }) => service)), new Set([
+    "twitter", "facebook", "instagram", "tiktok", "youtube"
+  ]));
+  assert.ok(posts.every(({ enabled }) => enabled === false));
+  assert.ok(posts.every(({ mediaUrl }) => mediaUrl.startsWith("https://")));
+  assert.equal(posts.find(({ service }) => service === "twitter").text.length <= 280, true);
+  assert.ok(posts.filter(({ service }) => ["tiktok", "youtube"].includes(service))
+    .every(({ mediaType }) => mediaType === "video"));
+  assert.ok(posts.filter(({ service }) => ["twitter", "facebook", "instagram"].includes(service))
+    .every(({ mediaType }) => mediaType === "image"));
 });
