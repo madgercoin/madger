@@ -1,7 +1,7 @@
 # MADGER social performance
 
-Generated: 2026-08-16T04:15:43.021Z
-Previous snapshot: 2026-08-16T04:02:17.446Z
+Generated: 2026-08-16T04:37:30.228Z
+Previous snapshot: 2026-08-16T04:15:43.021Z
 
 ## 30-day channel rollup
 
