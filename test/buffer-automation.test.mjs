@@ -114,6 +114,6 @@ test("uses static-post metadata for Facebook and Instagram images", () => {
     facebook: { type: "post" }
   });
   assert.deepEqual(metadataFor({ service: "instagram", mediaType: "image" }), {
-    instagram: { type: "post", isAiGenerated: true }
+    instagram: { type: "post", shouldShareToFeed: true, isAiGenerated: true }
   });
 });

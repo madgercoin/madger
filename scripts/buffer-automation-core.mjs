@@ -27,7 +27,7 @@ export function metadataFor(entry) {
   switch (entry.service) {
     case "instagram":
       return entry.mediaType === "image"
-        ? { instagram: { type: "post", isAiGenerated: true } }
+        ? { instagram: { type: "post", shouldShareToFeed: true, isAiGenerated: true } }
         : { instagram: { type: "reel", shouldShareToFeed: true, isAiGenerated: true } };
     case "facebook":
       return { facebook: { type: entry.mediaType === "image" ? "post" : "reel" } };
