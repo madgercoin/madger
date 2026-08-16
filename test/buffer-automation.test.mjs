@@ -119,7 +119,7 @@ test("uses static-post metadata for Facebook and Instagram images", () => {
   });
 });
 
-test("approved meme contest launch covers every Buffer channel", () => {
+test("scheduled meme contest launch covers every Buffer channel", () => {
   const manifest = JSON.parse(fs.readFileSync(new URL(
     "../content/buffer-schedule.json",
     import.meta.url
@@ -130,9 +130,10 @@ test("approved meme contest launch covers every Buffer channel", () => {
   assert.deepEqual(new Set(posts.map(({ service }) => service)), new Set([
     "twitter", "facebook", "instagram", "tiktok", "youtube"
   ]));
-  assert.ok(posts.every(({ enabled }) => enabled === true));
+  assert.ok(posts.every(({ enabled }) => enabled === false));
   assert.ok(posts.every(({ mediaUrl }) => mediaUrl.startsWith("https://")));
   assert.ok(posts.every(({ channelId }) => typeof channelId === "string" && channelId.length > 0));
+  assert.ok(posts.every(({ status, bufferPostId }) => status === "scheduled" && bufferPostId));
   assert.equal(posts.find(({ service }) => service === "twitter").text.length <= 280, true);
   assert.ok(posts.filter(({ service }) => ["tiktok", "youtube"].includes(service))
     .every(({ mediaType }) => mediaType === "video"));
