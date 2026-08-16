@@ -8,7 +8,7 @@ The Great Burrow Meme Contest (the “Contest”) is a skill-based community cre
 
 ## 2. Contest period
 
-The Contest opens **August 17, 2026 at 12:00 a.m. Eastern Daylight Time** and closes **August 23, 2026 at 11:59 p.m. Eastern Daylight Time** (the “Contest Period”). MADGER will announce the selected entry through its official Telegram announcement channel and social accounts by **August 26, 2026 at 8:00 p.m. Eastern Daylight Time**, subject to eligibility verification.
+The Contest opens **August 17, 2026 at 9:00 a.m. Eastern Daylight Time** and closes **August 23, 2026 at 11:59 p.m. Eastern Daylight Time** (the “Contest Period”). MADGER will announce the selected entry through its official Telegram announcement channel and social accounts by **August 26, 2026 at 8:00 p.m. Eastern Daylight Time**, subject to eligibility verification.
 
 ## 3. Eligibility
 
