@@ -1,10 +1,11 @@
 import { access, readFile } from "node:fs/promises";
 import path from "node:path";
 
-const htmlFiles = ["index.html", "litepaper.html", "404.html"];
+const htmlFiles = ["index.html", "litepaper.html", "meme-contest.html", "404.html"];
 const indexablePages = new Map([
   ["index.html", "https://madgercoin.com/"],
-  ["litepaper.html", "https://madgercoin.com/litepaper.html"]
+  ["litepaper.html", "https://madgercoin.com/litepaper.html"],
+  ["meme-contest.html", "https://madgercoin.com/meme-contest.html"]
 ]);
 const requiredSocialProperties = [
   'property="og:type"',
@@ -112,7 +113,7 @@ for (const [file, html] of pages) {
     let target = pathname
       ? path.normalize(path.join(path.dirname(file), pathname.replace(/^\//, "")))
       : file;
-    if (/^assets[\\/]/.test(target)) target = path.basename(target);
+    if (/^assets[\\/]/.test(target)) target = target.replace(/^assets[\\/]/, "");
     const resolved = target === "." || target === "" ? "index.html" : target;
     try {
       await access(resolved);
