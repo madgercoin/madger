@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "timezone": "America/New_York",
-  "notes": "The original 15 posts were scheduled in Buffer on 2026-07-28 and disabled afterward to prevent resubmission. The refreshed X recovery post was scheduled successfully on 2026-07-30 and disabled after its Buffer ID was recorded. The Telegram 200-member campaign was scheduled in Buffer on 2026-08-16, disabled after its Buffer IDs were recorded, and then flagged for immediate publishing at the owner’s request.",
+  "notes": "The original 15 posts were scheduled in Buffer on 2026-07-28 and disabled afterward to prevent resubmission. The refreshed X recovery post was scheduled successfully on 2026-07-30 and disabled after its Buffer ID was recorded. The Telegram 200-member campaign was scheduled in Buffer on 2026-08-16, disabled after its Buffer IDs were recorded, and published immediately at the owner’s request.",
   "posts": [
     {
       "id": "madger-002-x",
@@ -237,9 +237,10 @@
       "mediaType": "image",
       "mediaUrl": "https://raw.githubusercontent.com/madgercoin/madger/main/media/madger-telegram-200.jpg",
       "text": "The Burrow just hit 200 Telegram members! 🦡⚡\n\nThank you to every builder, believer, and community member digging with us. One Burrow. One family. We’re only getting started.\n\nJoin us: https://t.me/madgerburrow\n\n#MADGER #TheBurrow #Solana",
-      "status": "scheduled",
+      "status": "published",
       "bufferPostId": "6a811f82b989c1db86ebf516",
-      "publishNow": true
+      "publishNow": false,
+      "publishedAt": "2026-08-16T02:46:40Z"
     },
     {
       "id": "telegram-200-facebook-2026-08-16",
@@ -251,9 +252,10 @@
       "mediaType": "image",
       "mediaUrl": "https://raw.githubusercontent.com/madgercoin/madger/main/media/madger-telegram-200.jpg",
       "text": "The Burrow just hit 200 Telegram members! 🦡⚡\n\nThank you to every builder, believer, and community member digging with us. One Burrow. One family. We’re only getting started.\n\nJoin the Burrow: https://t.me/madgerburrow\n\n#MADGER #TheBurrow #Solana #CryptoCommunity",
-      "status": "scheduled",
+      "status": "published",
       "bufferPostId": "6a811f831dbfebd7710d6363",
-      "publishNow": true
+      "publishNow": false,
+      "publishedAt": "2026-08-16T02:46:40Z"
     },
     {
       "id": "telegram-200-instagram-2026-08-16",
@@ -265,10 +267,11 @@
       "mediaType": "image",
       "mediaUrl": "https://raw.githubusercontent.com/madgercoin/madger/main/media/madger-telegram-200.jpg",
       "text": "The Burrow just hit 200 Telegram members! 🦡⚡\n\nThank you to every builder, believer, and community member digging with us. One Burrow. One family. We’re only getting started.\n\nJoin the Burrow — link in bio.\n\n#MADGER #TheBurrow #Solana #CryptoCommunity",
-      "status": "scheduled",
+      "status": "published",
       "bufferPostId": "6a811fce13afe87ec8a9f5bb",
-      "publishNow": true
+      "publishNow": false,
+      "publishedAt": "2026-08-16T02:46:40Z"
     }
   ],
-  "lastSuccessfulActivation": "2026-08-16T02:26:22Z"
+  "lastSuccessfulActivation": "2026-08-16T02:46:40Z"
 }
