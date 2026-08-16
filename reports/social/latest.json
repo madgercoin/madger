@@ -1,9 +1,9 @@
 {
-  "generatedAt": "2026-08-16T02:24:50.355Z",
-  "previousGeneratedAt": "2026-08-15T09:45:11.773Z",
+  "generatedAt": "2026-08-16T02:27:12.720Z",
+  "previousGeneratedAt": "2026-08-16T02:24:50.355Z",
   "window": {
-    "start": "2026-07-17T02:24:50.355Z",
-    "end": "2026-08-16T02:24:50.355Z"
+    "start": "2026-07-17T02:27:12.720Z",
+    "end": "2026-08-16T02:27:12.720Z"
   },
   "organization": {
     "id": "6a67aceacff325d8d2d231e9",
@@ -125,21 +125,37 @@
   "campaign": {
     "source": "content/buffer-schedule.json",
     "summary": {
-      "totalPosts": 16,
+      "totalPosts": 19,
       "sent": 15,
-      "scheduled": 0,
+      "scheduled": 3,
       "sending": 0,
       "errors": 1,
       "needsAttention": [
-        "madger-002-x"
+        "madger-002-x",
+        "telegram-200-x-2026-08-16",
+        "telegram-200-facebook-2026-08-16",
+        "telegram-200-instagram-2026-08-16"
       ],
       "attentionReasons": {
         "madger-002-x": [
           "monitor_error",
           "overdue"
+        ],
+        "telegram-200-x-2026-08-16": [
+          "channel_missing"
+        ],
+        "telegram-200-facebook-2026-08-16": [
+          "channel_missing"
+        ],
+        "telegram-200-instagram-2026-08-16": [
+          "channel_missing"
         ]
       },
-      "atRiskPosts": [],
+      "atRiskPosts": [
+        "telegram-200-x-2026-08-16",
+        "telegram-200-facebook-2026-08-16",
+        "telegram-200-instagram-2026-08-16"
+      ],
       "unhealthyChannelIds": [],
       "totals": {
         "reactions": 13,
@@ -160,7 +176,7 @@
         "reposts": 0,
         "reach": 0,
         "impressions": 0,
-        "views": 1,
+        "views": 0,
         "clicks": 0,
         "saves": 0,
         "follows": 0
@@ -177,7 +193,7 @@
         "saves": 3,
         "follows": 3
       },
-      "averageEngagementRate": 1.6346666666666667,
+      "averageEngagementRate": 1.4423529411764706,
       "priorSnapshotAvailable": true
     },
     "posts": [
@@ -514,8 +530,8 @@
         "metricDeltas": {
           "reactions": 0,
           "comments": 0,
-          "engagementRate": -0.029999999999999805,
-          "views": 1,
+          "engagementRate": 0,
+          "views": 0,
           "shares": 0,
           "reach": 0
         }
@@ -643,6 +659,65 @@
           "impressions": 0,
           "clicks": 0
         }
+      },
+      {
+        "id": "telegram-200-x-2026-08-16",
+        "bufferPostId": "6a811f82b989c1db86ebf516",
+        "title": "The Burrow hits 200 Telegram members",
+        "service": "twitter",
+        "channelState": "unknown",
+        "dueAt": "2026-08-16T04:00:00.000Z",
+        "sentAt": null,
+        "status": "scheduled",
+        "externalLink": null,
+        "publishingError": null,
+        "metricsUpdatedAt": "2026-08-16T02:25:06.985Z",
+        "metrics": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "reposts": 0,
+          "impressions": 0,
+          "clicks": 0
+        },
+        "metricDeltas": {}
+      },
+      {
+        "id": "telegram-200-facebook-2026-08-16",
+        "bufferPostId": "6a811f831dbfebd7710d6363",
+        "title": "The Burrow hits 200 Telegram members",
+        "service": "facebook",
+        "channelState": "unknown",
+        "dueAt": "2026-08-16T04:05:00.000Z",
+        "sentAt": null,
+        "status": "scheduled",
+        "externalLink": null,
+        "publishingError": null,
+        "metricsUpdatedAt": "2026-08-16T02:25:07.330Z",
+        "metrics": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "impressions": 0,
+          "shares": 0,
+          "clicks": 0
+        },
+        "metricDeltas": {}
+      },
+      {
+        "id": "telegram-200-instagram-2026-08-16",
+        "bufferPostId": "6a811fce13afe87ec8a9f5bb",
+        "title": "The Burrow hits 200 Telegram members",
+        "service": "instagram",
+        "channelState": "unknown",
+        "dueAt": "2026-08-16T04:10:00.000Z",
+        "sentAt": null,
+        "status": "scheduled",
+        "externalLink": null,
+        "publishingError": null,
+        "metricsUpdatedAt": "2026-08-16T02:26:22.740Z",
+        "metrics": {},
+        "metricDeltas": {}
       }
     ]
   },
