@@ -45,6 +45,20 @@ Set `mediaType` to `image` for a static image or `video` for a video. Legacy ent
 - To rotate authorization, regenerate the Buffer key and replace the `BUFFER_API_TOKEN` repository secret.
 - Do not change a scheduled post's caption or time solely to defeat duplicate detection. Verify the Buffer queue before resubmitting altered content.
 
+## Verified production channel registry
+
+The successful discovery run at `2026-08-16T01:17:51Z` returned the following values. Publishing entries should use the immutable `channelId`; `channelName` is descriptive only.
+
+| Service | Buffer name/displayName | Channel ID |
+| --- | --- | --- |
+| Facebook | `Madger Coin` | `6a67ecc14b2d03035f50dbad` |
+| YouTube | `Madger` | `6a67af404b2d03035f4e8e79` |
+| X | `MadgerCoin` | `6a67af8a4b2d03035f4e91f4` |
+| Instagram | `madgercoin` | `6a67aebb4b2d03035f4e8b45` |
+| TikTok | `themadgercoin` | `6a67b0034b2d03035f4e9477` |
+
+The YouTube channel did **not** change names during this campaign. The failed contest entry inherited the stale descriptive value `Madgercoin` from older manifest copy, while Buffer correctly reported `Madger`. Pinning all posts to the discovered channel IDs prevents a display-name mismatch from blocking future runs.
+
 ## Official references
 
 - Buffer API: https://developers.buffer.com/
