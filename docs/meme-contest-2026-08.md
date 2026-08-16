@@ -25,9 +25,10 @@ During the Contest Period:
 1. Create an original MADGER or honey-badger meme that you have the right to submit.
 2. Post it publicly on X during the Contest Period.
 3. Tag **@madgercoin** and include the exact hashtag **#MadgerMemeContest** in the same post.
-4. Keep the X post public and visible through the winner announcement.
+4. Send the link to that X post in the official Telegram community at **https://t.me/madgerburrow**.
+5. Keep both the X post and Telegram link message visible through the winner announcement.
 
-Each person may submit up to three entries, with one meme per X post. Image, GIF, and short-video memes are accepted. Posting elsewhere is welcome but does not replace the public X submission. Entries are received when the public X post tagging @madgercoin and using #MadgerMemeContest is visible; failed, removed, late, private, inaccessible, or incorrectly tagged posts are not entries.
+Each person may submit up to three entries, with one meme per X post and one corresponding Telegram link message per entry. Image, GIF, and short-video memes are accepted. An X post is officially received as an entry only when its link is posted in the official Telegram community during the Contest Period. Failed, removed, late, private, inaccessible, incorrectly tagged, or unlinked X posts are not entries.
 
 ## 5. Content rules
 
@@ -62,7 +63,7 @@ Each provisional winner must respond publicly within 72 hours to accept the plac
 
 ## 8. Administration, privacy, and platform notice
 
-MADGER may pause, modify, or cancel the Contest if fraud, abuse, platform failure, security risk, or circumstances outside reasonable control prevent fair administration. Decisions will be documented and applied consistently. Public X usernames, submitted content, and public replies are used only to administer, credit, moderate, and report the Contest. Do not include private personal information in an entry.
+MADGER may pause, modify, or cancel the Contest if fraud, abuse, platform failure, security risk, or circumstances outside reasonable control prevent fair administration. Decisions will be documented and applied consistently. Public X and Telegram usernames, submitted content, X post links, Telegram link messages, and public replies are used only to administer, credit, moderate, and report the Contest. Do not include private personal information in an entry.
 
 The Contest is not sponsored, endorsed, administered by, or associated with Telegram, X, Meta, Facebook, Instagram, TikTok, YouTube, Google, Reddit, Discord, Solana, or Buffer. Entrants release those platforms from responsibility for Contest administration to the extent permitted by law. Platform terms continue to apply.
 
