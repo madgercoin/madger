@@ -5,7 +5,7 @@
 - Owner approval: confirmed August 16, 2026.
 - Prize funding: owner confirmed US$35 worth of SOL plus fees is ready; recheck immediately before launch.
 - Public rules: `https://madgercoin.com/meme-contest.html`.
-- Entry channel: `https://t.me/madgerburrow` with `#MadgerMemeContest`.
+- Entry channel: public X posts tagging `@madgercoin` and including `#MadgerMemeContest`.
 - Entry window: August 17, 2026 at 9:00 a.m. EDT through August 23, 2026 at 11:59 p.m. EDT.
 - Winner announcement deadline: August 26, 2026 at 8:00 p.m. EDT.
 
@@ -21,17 +21,17 @@ Record the individuals filling these roles in the private contest record before 
 
 ## Entry ledger
 
-Record one row per submission with: sequential entry ID; Telegram username; Telegram message URL; UTC receipt time; media type; exact hashtag present; entrant entry count; originality/rights attestation; content-safety result; participation eligibility; SOL eligibility; four criterion scores from each judge; average total; rank; exception; and final disposition.
+Record one row per submission with: sequential entry ID; X username; public X post URL; UTC receipt time; media type; @madgercoin tag present; exact hashtag present; entrant entry count; originality/rights attestation; content-safety result; participation eligibility; SOL eligibility; four criterion scores from each judge; average total; rank; exception; and final disposition.
 
 Do not collect seed phrases, private keys, wallet connections, signatures, payments, government IDs, home addresses, or unnecessary personal data. A public Solana address is collected only from a provisional winner who is legally eligible for the SOL portion.
 
-## Telegram launch and moderation copy
+## X launch and moderation copy
 
 Pin this message when the first social announcement publishes:
 
-> **The Great Burrow Meme Contest is open.** Create an original MADGER or honey-badger meme and post it here with **#MadgerMemeContest** by August 23 at 11:59 p.m. EDT. Up to three entries per person. First, second, and third receive $20, $10, and $5 in SOL when lawful, plus Burrow titles and credited features. No purchase, token ownership, wallet connection, signature, or payment is required to enter. Full rules: https://madgercoin.com/meme-contest.html
+> **The Great Burrow Meme Contest is open.** Create an original MADGER or honey-badger meme, post it publicly on X, tag **@madgercoin**, and include **#MadgerMemeContest** by August 23 at 11:59 p.m. EDT. Up to three entries per person. First, second, and third receive $20, $10, and $5 in SOL when lawful, plus Burrow titles and credited features. No purchase, token ownership, wallet connection, signature, or payment is required to enter. Full rules: https://madgercoin.com/meme-contest.html
 
-Moderators should acknowledge valid entries with one neutral reaction, preserve the message URL in the entry ledger, and avoid judging in public. Remove scams, wallet solicitations, impersonation, stolen work, prohibited content, and posts without the required hashtag only under the published rules. Preserve evidence and record the moderation reason.
+Operators should acknowledge valid entries with one neutral reply or reaction when practical, preserve the X post URL in the entry ledger, and avoid judging in public. Remove scams, wallet solicitations, impersonation, stolen work, prohibited content, and posts without the required hashtag only under the published rules. Preserve evidence and record the moderation reason.
 
 ## Winner and payout procedure
 
