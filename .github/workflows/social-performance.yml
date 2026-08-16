@@ -1,15 +1,9 @@
 name: MADGER Social Performance
 
 on:
-  push:
-    branches:
-      - main
-    paths:
-      - ".github/workflows/social-performance.yml"
-      - "scripts/buffer-performance.mjs"
-      - "scripts/buffer-performance-core.mjs"
-      - "test/buffer-performance.test.mjs"
-      - "content/buffer-schedule.json"
+  # Buffer exposes a bounded daily API budget. Keep external metric reads to
+  # the daily refresh or an explicit manual dispatch; ordinary repository and
+  # campaign-manifest pushes are validated by CI without consuming Buffer calls.
   workflow_dispatch:
   schedule:
     - cron: "30 8 * * *"
