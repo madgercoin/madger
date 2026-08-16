@@ -23,11 +23,11 @@ No purchase, payment, token ownership, wallet connection, wallet signature, soci
 During the Contest Period:
 
 1. Create an original MADGER or honey-badger meme that you have the right to submit.
-2. Post it in the official Telegram community at **https://t.me/madgerburrow**.
-3. Include the exact hashtag **#MadgerMemeContest** in the same message.
-4. Keep the message visible through the winner announcement.
+2. Post it publicly on X during the Contest Period.
+3. Tag **@madgercoin** and include the exact hashtag **#MadgerMemeContest** in the same post.
+4. Keep the X post public and visible through the winner announcement.
 
-Each person may submit up to three entries. Image, GIF, and short-video memes are accepted. Posting elsewhere is welcome but does not replace the Telegram submission. Entries are received when visible in the official Telegram community; failed, removed, late, inaccessible, or incorrectly tagged messages are not entries.
+Each person may submit up to three entries, with one meme per X post. Image, GIF, and short-video memes are accepted. Posting elsewhere is welcome but does not replace the public X submission. Entries are received when the public X post tagging @madgercoin and using #MadgerMemeContest is visible; failed, removed, late, private, inaccessible, or incorrectly tagged posts are not entries.
 
 ## 5. Content rules
 
@@ -56,13 +56,13 @@ The SOL amount for each SOL-eligible prize will be calculated using the displaye
 
 ## 7. Selection and verification
 
-MADGER will announce the three provisional winners publicly through **https://t.me/madgercoin** and reply to each original Telegram entry. MADGER administrators do not initiate private messages and will never request a seed phrase, private key, wallet connection, wallet signature, payment, or “verification” transfer.
+MADGER will announce the three provisional winners publicly through **https://t.me/madgercoin** and **https://x.com/madgercoin**, and reply to each original X entry. MADGER administrators do not initiate private messages and will never request a seed phrase, private key, wallet connection, wallet signature, payment, or “verification” transfer.
 
 Each provisional winner must respond publicly within 72 hours to accept the placement. A SOL-eligible winner must also post a valid Solana public address from an account they control. A public address and its transactions are visible on the blockchain; entrants should use an address they are comfortable disclosing. MADGER never needs a seed phrase, private key, wallet connection, signature, or payment to deliver a prize. After verification, MADGER will send each lawful SOL prize within seven days and publish the transaction signature through an official channel. An entrant is responsible for the accuracy and compatibility of the supplied address. If eligibility or authorship cannot be verified, or an entrant does not respond on time, that entrant forfeits the placement and the next highest-scoring eligible entrant may advance. Inability to receive SOL because of the country or jurisdiction restriction above does not forfeit the placement or non-monetary recognition.
 
 ## 8. Administration, privacy, and platform notice
 
-MADGER may pause, modify, or cancel the Contest if fraud, abuse, platform failure, security risk, or circumstances outside reasonable control prevent fair administration. Decisions will be documented and applied consistently. Public Telegram usernames, submitted content, and public replies are used only to administer, credit, moderate, and report the Contest. Do not include private personal information in an entry.
+MADGER may pause, modify, or cancel the Contest if fraud, abuse, platform failure, security risk, or circumstances outside reasonable control prevent fair administration. Decisions will be documented and applied consistently. Public X usernames, submitted content, and public replies are used only to administer, credit, moderate, and report the Contest. Do not include private personal information in an entry.
 
 The Contest is not sponsored, endorsed, administered by, or associated with Telegram, X, Meta, Facebook, Instagram, TikTok, YouTube, Google, Reddit, Discord, Solana, or Buffer. Entrants release those platforms from responsibility for Contest administration to the extent permitted by law. Platform terms continue to apply.
 
