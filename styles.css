@@ -4,3 +4,28 @@
 .mint-safety{margin-top:28px;padding:28px;border:1px solid rgba(212,175,55,.55);border-radius:20px;background:linear-gradient(145deg,rgba(212,175,55,.09),rgba(255,255,255,.02))}.mint-safety h3{margin:.25rem 0 1rem;font-size:1.35rem;letter-spacing:.05em}.mint-status{max-width:760px}.address-row{display:flex;align-items:center;gap:12px;margin-top:20px}.address-row code{display:block;min-width:0;padding:14px 16px;border:1px solid var(--line);border-radius:10px;background:var(--ink);color:var(--bone);font-size:.86rem;overflow-wrap:anywhere}.copy-button{flex:0 0 auto;min-height:46px;padding:0 18px;border:1px solid var(--gold);border-radius:999px;background:var(--gold);color:#111;font:inherit;font-size:.72rem;font-weight:950;letter-spacing:.08em;text-transform:uppercase;cursor:pointer}.copy-button:hover,.copy-button:focus-visible{filter:brightness(1.1)}.copy-status{min-height:1.5em;margin:.5rem 0 0;color:var(--sand);font-size:.8rem}.mint-safety .warning{margin-bottom:0}.faq code{overflow-wrap:anywhere;color:var(--bone)}
 @media(max-width:600px){.mint-safety{padding:22px 18px}.address-row{align-items:stretch;flex-direction:column}.copy-button{align-self:flex-start}.address-row code{font-size:.78rem}}
 @media(max-width:360px){.section h2{font-size:2.85rem}.daily-card{flex-direction:column}.stamp{align-self:flex-end}}
+
+
+/* Full homepage meme contest */
+.homepage-contest{border-top:1px solid var(--line);scroll-margin-top:76px}
+.homepage-contest .contest-hero{display:grid;grid-template-columns:minmax(0,1fr) minmax(280px,520px);gap:clamp(28px,6vw,80px);align-items:center}
+.homepage-contest .contest-poster-link{display:block;border-radius:28px;line-height:0;transition:transform .2s ease,box-shadow .2s ease}
+.homepage-contest .contest-poster-link:hover{transform:translateY(-3px);box-shadow:0 34px 90px rgba(0,0,0,.5)}
+.homepage-contest .contest-poster-link:focus-visible{outline:3px solid var(--gold);outline-offset:6px}
+.homepage-contest .contest-poster{display:block;width:100%;height:auto;object-fit:contain;border:1px solid rgba(212,175,55,.35);border-radius:28px;box-shadow:0 28px 80px rgba(0,0,0,.42)}
+.homepage-contest .contest-kicker{color:var(--gold);font-weight:900;letter-spacing:.14em;text-transform:uppercase}
+.homepage-contest .contest-title{font-family:Impact,Haettenschweiler,"Arial Narrow Bold",sans-serif;text-transform:uppercase;font-size:clamp(3rem,7vw,6.8rem);line-height:.88;margin:.15em 0}
+.homepage-contest .contest-lede{font-size:clamp(1.05rem,2vw,1.35rem);max-width:680px}
+.homepage-contest .contest-actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:26px}
+.homepage-contest .contest-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
+.homepage-contest .contest-card,.homepage-contest .rules-card{background:linear-gradient(145deg,rgba(255,255,255,.055),rgba(255,255,255,.018));border:1px solid rgba(212,175,55,.24);border-radius:22px;padding:24px}
+.homepage-contest .contest-card strong{display:block;color:var(--gold);font-size:2rem}
+.homepage-contest .rules-layout{display:grid;grid-template-columns:minmax(220px,.4fr) minmax(0,1fr);gap:28px}
+.homepage-contest .rules-nav{position:sticky;top:96px;align-self:start}
+.homepage-contest .rules-nav a{display:block;padding:8px 0;color:var(--sand)}
+.homepage-contest .rules-card h3{margin-top:1.7em}
+.homepage-contest .rules-card h3:first-child{margin-top:0}
+.homepage-contest .rules-card a,.homepage-contest .safety-note a{color:var(--gold)}
+.homepage-contest .safety-note{border-left:4px solid var(--gold);padding:16px 20px;background:rgba(212,175,55,.08)}
+@media(prefers-reduced-motion:reduce){.homepage-contest .contest-poster-link{transition:none}}
+@media(max-width:820px){.homepage-contest .contest-hero,.homepage-contest .rules-layout{grid-template-columns:1fr}.homepage-contest .contest-grid{grid-template-columns:1fr}.homepage-contest .rules-nav{position:static}}
