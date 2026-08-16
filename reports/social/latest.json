@@ -1,9 +1,9 @@
 {
-  "generatedAt": "2026-08-16T02:27:12.720Z",
-  "previousGeneratedAt": "2026-08-16T02:24:50.355Z",
+  "generatedAt": "2026-08-16T02:45:50.238Z",
+  "previousGeneratedAt": "2026-08-16T02:27:12.720Z",
   "window": {
-    "start": "2026-07-17T02:27:12.720Z",
-    "end": "2026-08-16T02:27:12.720Z"
+    "start": "2026-07-17T02:45:50.238Z",
+    "end": "2026-08-16T02:45:50.238Z"
   },
   "organization": {
     "id": "6a67aceacff325d8d2d231e9",
@@ -182,14 +182,14 @@
         "follows": 0
       },
       "deltaCohorts": {
-        "reactions": 15,
-        "comments": 15,
-        "shares": 9,
-        "reposts": 3,
+        "reactions": 17,
+        "comments": 17,
+        "shares": 10,
+        "reposts": 4,
         "reach": 6,
-        "impressions": 6,
+        "impressions": 8,
         "views": 9,
-        "clicks": 6,
+        "clicks": 8,
         "saves": 3,
         "follows": 3
       },
@@ -680,7 +680,14 @@
           "impressions": 0,
           "clicks": 0
         },
-        "metricDeltas": {}
+        "metricDeltas": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "reposts": 0,
+          "impressions": 0,
+          "clicks": 0
+        }
       },
       {
         "id": "telegram-200-facebook-2026-08-16",
@@ -702,7 +709,14 @@
           "shares": 0,
           "clicks": 0
         },
-        "metricDeltas": {}
+        "metricDeltas": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "impressions": 0,
+          "shares": 0,
+          "clicks": 0
+        }
       },
       {
         "id": "telegram-200-instagram-2026-08-16",
