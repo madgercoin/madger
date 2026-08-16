@@ -137,4 +137,12 @@ test("meme contest launch covers every Buffer channel and remains approval-gated
     .every(({ mediaType }) => mediaType === "video"));
   assert.ok(posts.filter(({ service }) => ["twitter", "facebook", "instagram"].includes(service))
     .every(({ mediaType }) => mediaType === "image"));
+
+  const rules = fs.readFileSync(new URL("../docs/meme-contest-2026-08.md", import.meta.url), "utf8");
+  assert.match(rules, /First place — US\$20 in SOL/);
+  assert.match(rules, /Second place — US\$10 in SOL/);
+  assert.match(rules, /Third place — US\$5 in SOL/);
+  assert.match(rules, /Silver Shovel — August 2026/);
+  assert.match(rules, /Bronze Claw — August 2026/);
+  assert.ok(posts.every(({ text }) => /\$20|\$35/.test(text)));
 });

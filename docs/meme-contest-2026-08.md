@@ -35,20 +35,28 @@ Entrants retain ownership of their work. By entering, an entrant grants MADGER a
 
 ## 6. Judging and recognition
 
-This is a judged skill contest; likes, reactions, reposts, referrals, purchases, and token holdings do not determine the result. Eligible entries will be scored by the MADGER content team using:
+This is a judged skill contest; likes, reactions, reposts, referrals, purchases, and token holdings do not determine the result. Eligible entries will be ranked by the MADGER content team using:
 
 - originality and comedic idea — 40%;
 - fit with MADGER’s persistent, sharp, community-first character — 30%;
 - clarity and execution — 20%;
 - community-safe humor — 10%.
 
-The highest-scoring eligible entry will be selected. A tie is decided by the higher originality score, then the higher brand-fit score, then a documented judging vote.
+The three highest-scoring eligible entries will place first, second, and third. A tie is decided by the higher originality score, then the higher brand-fit score, then a documented judging vote. A person may receive only one prize; if multiple entries by the same person place in the top three, only that person’s highest-ranked entry remains and the next highest-ranked eligible entrant advances.
 
-The selected creator receives the honorary title **Burrow Meme Champion — August 2026**, a credited feature across available MADGER social channels, and a seven-day pinned feature in the Telegram community when platform controls permit. **There is no cash, token, cryptocurrency, merchandise, or other item of monetary value.** Recognition is personal, non-transferable, and has no cash equivalent.
+The prizes have a total approximate retail value of **US$35**, paid in Solana’s native asset, SOL:
+
+1. **First place — US$20 in SOL**, the honorary title **Burrow Meme Champion — August 2026**, a credited feature across available MADGER social channels, and a seven-day pinned feature in the Telegram community when platform controls permit.
+2. **Second place — US$10 in SOL**, the honorary title **Silver Shovel — August 2026**, a credited runner-up spotlight across available MADGER social channels, and a three-day pinned feature in the Telegram community when platform controls permit.
+3. **Third place — US$5 in SOL**, the honorary title **Bronze Claw — August 2026**, a credited community-showcase feature across available MADGER social channels, and a place in the August Burrow honor roll.
+
+The SOL amount for each prize will be calculated using the displayed SOL/USD spot price on Coinbase at the time MADGER initiates that prize transaction. MADGER pays the network fee without deducting it from the stated prize value. The recipient bears any price movement after the transaction is initiated. Prizes are personal, non-transferable, have no substitution or cash-redemption right, and are subject to applicable law. Winners are responsible for taxes, reporting, wallet security, and confirming that receiving SOL is lawful where they live. MADGER will not send a prize where doing so would violate applicable law or sanctions.
 
 ## 7. Selection and verification
 
-MADGER will announce the provisional winner publicly through **https://t.me/madgercoin** and reply to the original Telegram entry. MADGER administrators do not initiate private messages and will never request a seed phrase, private key, wallet connection, wallet signature, payment, or “verification” transfer. The provisional winner must respond publicly within 72 hours to accept creator credit. If eligibility or authorship cannot be verified, or the entrant does not respond, MADGER may select the next highest-scoring eligible entry.
+MADGER will announce the three provisional winners publicly through **https://t.me/madgercoin** and reply to each original Telegram entry. MADGER administrators do not initiate private messages and will never request a seed phrase, private key, wallet connection, wallet signature, payment, or “verification” transfer.
+
+Each provisional winner must respond publicly within 72 hours to accept the placement and post a valid Solana public address from an account they control. A public address and its transactions are visible on the blockchain; entrants should use an address they are comfortable disclosing. MADGER never needs a seed phrase, private key, wallet connection, signature, or payment to deliver a prize. After verification, MADGER will send the applicable SOL prize within seven days and publish the transaction signature through an official channel. An entrant is responsible for the accuracy and compatibility of the supplied address. If eligibility, authorship, or the ability to lawfully receive SOL cannot be verified, or an entrant does not respond on time, that entrant forfeits the placement and the next highest-scoring eligible entrant may advance.
 
 ## 8. Administration, privacy, and platform notice
 
@@ -57,3 +65,9 @@ MADGER may pause, modify, or cancel the Contest if fraud, abuse, platform failur
 The Contest is not sponsored, endorsed, administered by, or associated with Telegram, X, Meta, Facebook, Instagram, TikTok, YouTube, Google, Reddit, Discord, Solana, or Buffer. Entrants release those platforms from responsibility for Contest administration to the extent permitted by law. Platform terms continue to apply.
 
 Questions and rule clarifications must be posted in the official Telegram community. Trust only links published at **https://madgercoin.com**.
+
+## 9. Sponsor launch and payout checklist
+
+Before opening the Contest, the sponsor must record owner approval, confirm that the designated community-rewards wallet holds at least US$35 worth of SOL plus estimated network fees, and assign judges who are ineligible to win. If prize funding or lawful administration is not confirmed, do not launch.
+
+For each payout, two operators must independently verify the winner, placement, public address, Coinbase SOL/USD spot price, USD-to-SOL calculation, destination, transaction instructions, and available fee reserve. Record the price source and UTC time, calculated SOL amount, public destination, transaction signature, and final confirmation. Never store a seed phrase, private key, recovery code, or unsigned wallet export in the repository or Contest record.
