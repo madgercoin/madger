@@ -348,6 +348,71 @@
       "status": "scheduled",
       "bufferPostId": "6a813ecb5afed12f716b7c00",
       "cancel": true
+    },
+    {
+      "id": "community-before-launch-x-2026-08-16",
+      "enabled": true,
+      "service": "twitter",
+      "channelName": "madgercoin",
+      "title": "Community Before Launch",
+      "dueAt": "2026-08-16T19:55:00.000Z",
+      "mediaType": "image",
+      "mediaUrl": "https://raw.githubusercontent.com/madgercoin/madger/main/media/community-before-launch/community-before-launch-madger.jpg",
+      "text": "A meme coin launch can create attention. Only community turns attention into momentum.\n\nBuild trust, culture, distribution, resilience, and real participation before opening the market.\n\nBuild the people. Then build the market.\n\n#MADGER #CryptoEducation",
+      "channelId": "6a67af8a4b2d03035f4e91f4",
+      "status": "approved"
+    },
+    {
+      "id": "community-before-launch-facebook-2026-08-16",
+      "enabled": true,
+      "service": "facebook",
+      "channelName": "Madger Coin",
+      "title": "Community Before Launch",
+      "dueAt": "2026-08-16T19:56:00.000Z",
+      "mediaType": "image",
+      "mediaUrl": "https://raw.githubusercontent.com/madgercoin/madger/main/media/community-before-launch/community-before-launch-madger.jpg",
+      "text": "COMMUNITY BEFORE LAUNCH\n\nLiquidity can open a market—but it cannot create belief, culture, or loyalty.\n\nBuilding community first gives a meme coin:\n\n🤝 Trust — People understand the mission.\n🎭 Culture — Memes, language, and shared experiences create identity.\n📣 Distribution — Real supporters carry the story beyond paid promotion.\n🛡 Resilience — An invested community is more likely to keep creating through volatility.\n📈 Momentum — When the market opens, demand already has a network through which it can grow.\n\nLaunching before developing these foundations can produce temporary attention without durable participation.\n\nThe strongest meme coins are not merely tokens with audiences. They are communities with tokens.\n\nBuild the people. Then build the market.\n\n#MADGER #TheBurrow #CommunityBeforeLaunch #MemecoinCommunity #CryptoEducation #SolanaCommunity",
+      "channelId": "6a67ecc14b2d03035f50dbad",
+      "status": "approved"
+    },
+    {
+      "id": "community-before-launch-instagram-2026-08-16",
+      "enabled": true,
+      "service": "instagram",
+      "channelName": "madgercoin",
+      "title": "Community Before Launch",
+      "dueAt": "2026-08-16T19:57:00.000Z",
+      "mediaType": "image",
+      "mediaUrl": "https://raw.githubusercontent.com/madgercoin/madger/main/media/community-before-launch/community-before-launch-madger.jpg",
+      "text": "COMMUNITY BEFORE LAUNCH\n\nLiquidity can open a market—but it cannot create belief, culture, or loyalty.\n\nBuilding community first gives a meme coin:\n\n🤝 Trust — People understand the mission.\n🎭 Culture — Memes, language, and shared experiences create identity.\n📣 Distribution — Real supporters carry the story beyond paid promotion.\n🛡 Resilience — An invested community is more likely to keep creating through volatility.\n📈 Momentum — When the market opens, demand already has a network through which it can grow.\n\nLaunching before developing these foundations can produce temporary attention without durable participation.\n\nThe strongest meme coins are not merely tokens with audiences. They are communities with tokens.\n\nBuild the people. Then build the market.\n\n#MADGER #TheBurrow #CommunityBeforeLaunch #MemecoinCommunity #CryptoEducation #SolanaCommunity",
+      "channelId": "6a67aebb4b2d03035f4e8b45",
+      "status": "approved"
+    },
+    {
+      "id": "community-before-launch-tiktok-2026-08-16",
+      "enabled": true,
+      "service": "tiktok",
+      "channelName": "themadgercoin",
+      "title": "Community Before Launch",
+      "dueAt": "2026-08-16T19:58:00.000Z",
+      "mediaType": "image",
+      "mediaUrl": "https://raw.githubusercontent.com/madgercoin/madger/main/media/community-before-launch/community-before-launch-madger.jpg",
+      "text": "Why build community before launching a meme coin? Because liquidity creates a market—but community creates trust, culture, distribution, resilience, and lasting momentum. A token can launch overnight. A real community has to be earned. Build the people. Then build the market. #MADGER #Memecoin #CryptoEducation #CommunityFirst #TheBurrow",
+      "channelId": "6a67b0034b2d03035f4e9477",
+      "status": "approved"
+    },
+    {
+      "id": "community-before-launch-youtube-2026-08-16",
+      "enabled": true,
+      "service": "youtube",
+      "channelName": "Madger",
+      "title": "Why Community Comes Before a Meme Coin Launch",
+      "dueAt": "2026-08-16T19:59:00.000Z",
+      "mediaType": "image",
+      "mediaUrl": "https://raw.githubusercontent.com/madgercoin/madger/main/media/community-before-launch/community-before-launch-madger.jpg",
+      "text": "Why build community before launching a meme coin?\n\nBecause liquidity creates a market—but community creates trust, culture, distribution, resilience, and lasting momentum.\n\nA token can launch overnight. A real community has to be earned.\n\nBuild the people. Then build the market.\n\n#MADGER #Memecoin #CryptoEducation #CommunityFirst #TheBurrow",
+      "channelId": "6a67af404b2d03035f4e8e79",
+      "status": "approved"
     }
   ],
   "lastSuccessfulActivation": "2026-08-16T04:38:35Z"
