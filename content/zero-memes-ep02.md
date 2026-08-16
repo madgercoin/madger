@@ -64,7 +64,7 @@ Visual: smash-cut or match-cut from Pixel's purple fragments to the ancient gold
 
 Dialogue:
 
-MADGER: `If I find it, I'll know who I'm supposed to be.`
+MADGER: `Maybe it has my answer.`
 
 On-screen text:
 
