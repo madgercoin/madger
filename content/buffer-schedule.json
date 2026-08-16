@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "timezone": "America/New_York",
-  "notes": "The original 15 posts were scheduled in Buffer on 2026-07-28 and disabled afterward to prevent resubmission. The refreshed X recovery post was scheduled successfully on 2026-07-30 and disabled after its Buffer ID was recorded. The Telegram 200-member campaign was scheduled in Buffer on 2026-08-16, disabled after its Buffer IDs were recorded, and published immediately at the owner’s request. The Great Burrow Meme Contest launch set is prepared across all five Buffer channels and was owner-approved, scheduled after prize funding confirmation, and disabled after recording its Buffer IDs.",
+  "notes": "The original 15 posts were scheduled in Buffer on 2026-07-28 and disabled afterward to prevent resubmission. The refreshed X recovery post was scheduled successfully on 2026-07-30 and disabled after its Buffer ID was recorded. The Telegram 200-member campaign was scheduled in Buffer on 2026-08-16, disabled after its Buffer IDs were recorded, and published immediately at the owner’s request. The Great Burrow Meme Contest launch set is prepared across all five Buffer channels and was owner-approved, scheduled after prize funding confirmation, and disabled after recording its Buffer IDs. The scheduled meme-contest launch is flagged for cancellation while replacement artwork awaits owner approval.",
   "posts": [
     {
       "id": "madger-002-x",
@@ -284,7 +284,8 @@
       "text": "Burrow Meme Contest is open. 🦡\n\nMake an original MADGER meme. Submit in The Burrow with #MadgerMemeContest.\n\nAug 17–23. $20/$10/$5 in SOL. No purchase or wallet connection to enter.\n\nEnter + rules: https://madgercoin.com/meme-contest.html",
       "channelId": "6a67af8a4b2d03035f4e91f4",
       "status": "scheduled",
-      "bufferPostId": "6a813ec913afe87ec8ab2fbc"
+      "bufferPostId": "6a813ec913afe87ec8ab2fbc",
+      "cancel": true
     },
     {
       "id": "meme-contest-launch-facebook-2026-08-17",
@@ -298,7 +299,8 @@
       "text": "The Great Burrow Meme Contest is open! 🦡\n\nCreate an original MADGER or honey-badger meme, post it in The Burrow on Telegram, and include #MadgerMemeContest. Up to three entries per person.\n\nPrizes: $20 in SOL for first, $10 in SOL for second, and $5 in SOL for third—plus creator titles and credited community spotlights. Entries close August 23 at 11:59 p.m. EDT. No purchase, token ownership, or wallet connection required to enter.\n\nEnter: https://t.me/madgerburrow\nOfficial rules: https://madgercoin.com/meme-contest.html\n\nThis contest is not sponsored, endorsed, administered by, or associated with Facebook or Meta.",
       "channelId": "6a67ecc14b2d03035f50dbad",
       "status": "scheduled",
-      "bufferPostId": "6a813ec95afed12f716b7bde"
+      "bufferPostId": "6a813ec95afed12f716b7bde",
+      "cancel": true
     },
     {
       "id": "meme-contest-launch-instagram-2026-08-17",
@@ -312,7 +314,8 @@
       "text": "THE GREAT BURROW MEME CONTEST 🦡\n\nCreate an original MADGER meme. Submit it in The Burrow on Telegram with #MadgerMemeContest. Up to three entries per person.\n\n🥇 $20 in SOL + Burrow Meme Champion\n🥈 $10 in SOL + Silver Shovel\n🥉 $5 in SOL + Bronze Claw\n\nAugust 17–23. No purchase, token ownership, or wallet connection required to enter. Enter and read the rules at madgercoin.com/meme-contest.html.\n\n#MADGER #TheBurrow #MemeContest #CryptoMemes\n\nNot sponsored, endorsed, administered by, or associated with Instagram or Meta.",
       "channelId": "6a67aebb4b2d03035f4e8b45",
       "status": "scheduled",
-      "bufferPostId": "6a813eca211938b6e64825a5"
+      "bufferPostId": "6a813eca211938b6e64825a5",
+      "cancel": true
     },
     {
       "id": "meme-contest-launch-tiktok-2026-08-17",
@@ -327,13 +330,14 @@
       "text": "The Great Burrow Meme Contest is open 🦡 Win $20, $10, or $5 in SOL plus Burrow titles and creator spotlights. Submit an original MADGER meme in our Telegram with #MadgerMemeContest. August 17–23. No purchase or wallet connection required to enter. Enter and read the rules at madgercoin.com/meme-contest.html. #MADGER #MemeContest #CryptoMemes",
       "channelId": "6a67b0034b2d03035f4e9477",
       "status": "scheduled",
-      "bufferPostId": "6a813eca7a8d0e804d5ec164"
+      "bufferPostId": "6a813eca7a8d0e804d5ec164",
+      "cancel": true
     },
     {
       "id": "meme-contest-launch-youtube-2026-08-17",
       "enabled": false,
       "service": "youtube",
-      "channelName": "Madgercoin",
+      "channelName": "Madger",
       "title": "The Great Burrow Meme Contest | Enter Aug 17–23",
       "dueAt": "2026-08-17T13:20:00.000Z",
       "mediaType": "video",
@@ -342,7 +346,8 @@
       "text": "The Great Burrow Meme Contest is open. Submit an original MADGER or honey-badger meme in The Burrow with #MadgerMemeContest. Prizes: $20 in SOL for first, $10 in SOL for second, and $5 in SOL for third, plus creator titles and credited spotlights. Entries run August 17–23, 2026. No purchase or wallet connection required to enter. Enter: https://t.me/madgerburrow Official rules: https://madgercoin.com/meme-contest.html #MADGER #MemeContest #Shorts",
       "channelId": "6a67af404b2d03035f4e8e79",
       "status": "scheduled",
-      "bufferPostId": "6a813ecb5afed12f716b7c00"
+      "bufferPostId": "6a813ecb5afed12f716b7c00",
+      "cancel": true
     }
   ],
   "lastSuccessfulActivation": "2026-08-16T04:38:35Z"

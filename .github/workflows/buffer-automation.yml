@@ -17,6 +17,7 @@ on:
           - discover
           - publish
           - publish-now
+          - cancel
   schedule:
     - cron: "17 * * * *"
 
@@ -76,3 +77,8 @@ jobs:
           BUFFER_API_TOKEN: ${{ secrets.BUFFER_API_TOKEN }}
           BUFFER_ORGANIZATION_ID: ${{ vars.BUFFER_ORGANIZATION_ID }}
         run: node scripts/buffer-automation.mjs publish-now content/buffer-schedule.json
+      - name: Cancel flagged posts
+        if: github.event_name == 'workflow_dispatch' && inputs.operation == 'cancel'
+        env:
+          BUFFER_API_TOKEN: ${{ secrets.BUFFER_API_TOKEN }}
+        run: node scripts/buffer-automation.mjs cancel content/buffer-schedule.json
