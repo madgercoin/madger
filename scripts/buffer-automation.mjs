@@ -1,5 +1,5 @@
 import fs from 'node:fs/promises';
-import { evaluateScheduledEntry, metadataFor } from './buffer-automation-core.mjs';
+import { assetFor, evaluateScheduledEntry, metadataFor } from './buffer-automation-core.mjs';
 
 const API_URL = 'https://api.buffer.com';
 const token = process.env.BUFFER_API_TOKEN;
@@ -129,7 +129,7 @@ async function publish() {
       schedulingType: 'automatic',
       mode: 'customScheduled',
       dueAt: dueAt.toISOString(),
-      assets: [{ video: { url: entry.mediaUrl, metadata: { thumbnailOffset: entry.thumbnailOffsetMs || 1000, title: entry.title } } }],
+      assets: [assetFor(entry)],
       aiAssisted: true,
       source: 'madger-github-automation',
     };
