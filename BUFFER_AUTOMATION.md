@@ -20,12 +20,14 @@ The workflow reads the repository secret `BUFFER_API_TOKEN`. Never paste the key
 
 Buffer fetches API media from a public URL; it does not accept a file upload in the GraphQL request. The media must remain publicly accessible until the post publishes. Cloudflare R2 is the intended MADGER media host. Google Drive sharing links are not suitable for this workflow.
 
+Set `mediaType` to `image` for a static image or `video` for a video. Legacy entries without `mediaType` remain videos. The automation rejects unsupported values before it calls Buffer.
+
 ## Initial activation sequence
 
 1. Merge the automation pull request.
 2. Run **Actions → MADGER Buffer Automation → Run workflow → discover**.
 3. Confirm the expected Facebook, Instagram, TikTok, X, and YouTube channels are present, connected, unlocked, and unpaused.
-4. Upload approved videos to the public media host and verify each URL in a private browser.
+4. Upload approved images or videos to the public media host and verify each URL in a private browser.
 5. Add the verified URLs to `content/buffer-schedule.json`.
 6. Review captions, UTC timestamps, platform metadata, and launch-state compliance.
 7. Change only approved entries to `enabled: true`.

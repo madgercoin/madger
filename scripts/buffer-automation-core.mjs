@@ -56,6 +56,9 @@ export function assetFor(entry) {
   if (entry.mediaType === "image") {
     return { image: { url: entry.mediaUrl } };
   }
+  if (entry.mediaType && entry.mediaType !== "video") {
+    throw new Error(`Unsupported mediaType for ${entry.id || "entry"}: ${entry.mediaType}`);
+  }
   return {
     video: {
       url: entry.mediaUrl,

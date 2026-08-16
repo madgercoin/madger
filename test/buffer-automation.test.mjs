@@ -101,6 +101,14 @@ test("retains video asset metadata by default", () => {
   } });
 });
 
+test("rejects unknown media types instead of sending a malformed asset", () => {
+  assert.throws(() => assetFor({
+    id: "bad-media",
+    mediaType: "document",
+    mediaUrl: "https://media.example/file.pdf"
+  }), /Unsupported mediaType for bad-media: document/);
+});
+
 test("uses static-post metadata for Facebook and Instagram images", () => {
   assert.deepEqual(metadataFor({ service: "facebook", mediaType: "image" }), {
     facebook: { type: "post" }
