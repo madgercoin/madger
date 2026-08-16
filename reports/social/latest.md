@@ -1,17 +1,17 @@
 # MADGER social performance
 
-Generated: 2026-08-15T09:45:11.773Z
-Previous snapshot: 2026-08-14T11:12:58.650Z
+Generated: 2026-08-16T02:24:50.355Z
+Previous snapshot: 2026-08-15T09:45:11.773Z
 
 ## 30-day channel rollup
 
 | Channel | Health | Posts | Impressions | Reach | Views | Eng. rate | Clicks | Follows | Review |
 |---|---|---:|---:|---:|---:|---:|---:|---:|---|
-| facebook: Madger Coin | Connected | 21 | 2020 | — | — | 0.59% | 3 | — | None flagged |
+| facebook: Madger Coin | Connected | 21 | 2021 | — | — | 0.59% | 3 | — | None flagged |
 | youtube: Madger | Connected | 13 | — | — | 333 | 1.80% | — | — | None flagged |
-| twitter: MadgerCoin | Connected | 30 | 8327 | — | — | 14.25% | 121 | — | Check Buffer Community |
-| instagram: madgercoin | Connected | 21 | 0 | 1117 | 1389 | 2.51% | — | 0 | None flagged |
-| tiktok: themadgercoin | Connected | 14 | — | 810 | 1284 | 1.25% | — | — | Check Buffer Community |
+| twitter: MadgerCoin | Connected | 31 | 8327 | — | — | 14.25% | 121 | — | Check Buffer Community |
+| instagram: madgercoin | Connected | 21 | 0 | 1119 | 1389 | 2.50% | — | 0 | None flagged |
+| tiktok: themadgercoin | Connected | 14 | — | 999 | 1419 | 1.20% | — | — | Check Buffer Community |
 
 ## Scheduled campaign
 
@@ -24,12 +24,12 @@ Sent: 15/16 · Scheduled: 0 · Errors: 1 · Attention: 1 · At risk: 0
 | shares | 0 | 0 |
 | reposts | 0 | 0 |
 | reach | 508 | 0 |
-| impressions | 73 | 1 |
-| views | 632 | 0 |
+| impressions | 73 | 0 |
+| views | 633 | 1 |
 | clicks | 0 | 0 |
 | saves | 0 | 0 |
 | follows | 0 | 0 |
-| averageEngagementRate | 1.64% | — |
+| averageEngagementRate | 1.63% | — |
 
 ## Per-post performance
 
@@ -46,10 +46,10 @@ Sent: 15/16 · Scheduled: 0 · Errors: 1 · Attention: 1 · At risk: 0
 | MADGER 003 — No Slowing Down | youtube | connected | 2026-07-31T20:00:00.000Z | sent | 4 | — | — | 0 | 0 | — | — | — | [Open](https://www.youtube.com/shorts/yDeRT1XJgsA) |
 | MADGER 003 — No Slowing Down | tiktok | connected | 2026-07-31T22:00:00.000Z | sent | 28 | — | 25 | 1 | 0 | 0 | — | — | [Open](https://www.tiktok.com/@themadgercoin/video/7668815697367076109?utm_campaign=tt4d_open_api&utm_source=7103819247981182978) |
 | MADGER 004 — Join the Burrow | youtube | connected | 2026-08-01T22:00:00.000Z | sent | 2 | — | — | 0 | 0 | — | — | — | [Open](https://www.youtube.com/shorts/cD9BiH569oI) |
-| MADGER 004 — Join the Burrow | tiktok | connected | 2026-08-02T13:00:00.000Z | sent | 114 | — | 98 | 4 | 0 | 0 | — | — | [Open](https://www.tiktok.com/@themadgercoin/video/7669418973116632333?utm_campaign=tt4d_open_api&utm_source=7103819247981182978) |
+| MADGER 004 — Join the Burrow | tiktok | connected | 2026-08-02T13:00:00.000Z | sent | 115 (+1) | — | 98 | 4 | 0 | 0 | — | — | [Open](https://www.tiktok.com/@themadgercoin/video/7669418973116632333?utm_campaign=tt4d_open_api&utm_source=7103819247981182978) |
 | MADGER 004 — Join the Burrow | facebook | connected | 2026-08-03T13:00:00.000Z | sent | — | 0 | — | 0 | 0 | 0 | 0 | — | [Open](https://www.facebook.com/reel/1732520327655007/) |
 | MADGER 004 — Join the Burrow | instagram | connected | 2026-08-03T22:00:00.000Z | sent | 136 | — | 110 | 1 | 0 | 0 | — | 0 | [Open](https://www.instagram.com/reel/DbmBD6Gk3yf/) |
-| MADGER 004 — Join the Burrow | twitter | connected | 2026-08-04T13:00:00.000Z | sent | — | 17 (+1) | — | 0 | 0 | — | 0 | — | [Open](https://x.com/2080142722153816065/status/2084625915720437828) |
+| MADGER 004 — Join the Burrow | twitter | connected | 2026-08-04T13:00:00.000Z | sent | — | 17 | — | 0 | 0 | — | 0 | — | [Open](https://x.com/2080142722153816065/status/2084625915720437828) |
 | MADGER 002 — Keep Digging (X Recovery) | twitter | connected | 2026-07-31T13:15:00.000Z | sent | — | 17 | — | 1 | 0 | — | 0 | — | [Open](https://x.com/2080142722153816065/status/2083179674784411732) |
 
 ## Interpretation
