@@ -1,7 +1,7 @@
 # MADGER social performance
 
-Generated: 2026-08-16T04:38:21.187Z
-Previous snapshot: 2026-08-16T04:37:30.228Z
+Generated: 2026-08-16T04:39:58.452Z
+Previous snapshot: 2026-08-16T04:38:21.187Z
 
 ## 30-day channel rollup
 
@@ -15,21 +15,21 @@ Previous snapshot: 2026-08-16T04:37:30.228Z
 
 ## Scheduled campaign
 
-Sent: 18/19 · Scheduled: 0 · Errors: 1 · Attention: 4 · At risk: 0
+Sent: 11/24 · Scheduled: 0 · Errors: 13 · Attention: 13 · At risk: 3
 
 | Metric | Current | Change since prior report |
 |---|---:|---:|
-| reactions | 13 | 0 |
+| reactions | 11 | 0 |
 | comments | 0 | 0 |
 | shares | 0 | 0 |
 | reposts | 0 | 0 |
-| reach | 508 | 0 |
-| impressions | 73 | 0 |
-| views | 633 | 0 |
+| reach | 398 | 0 |
+| impressions | 39 | 0 |
+| views | 497 | 0 |
 | clicks | 0 | 0 |
 | saves | 0 | 0 |
 | follows | 0 | 0 |
-| averageEngagementRate | 1.44% | — |
+| averageEngagementRate | 1.61% | — |
 
 ## Per-post performance
 
@@ -47,13 +47,18 @@ Sent: 18/19 · Scheduled: 0 · Errors: 1 · Attention: 4 · At risk: 0
 | MADGER 003 — No Slowing Down | tiktok | connected | 2026-07-31T22:00:00.000Z | sent | 28 | — | 25 | 1 | 0 | 0 | — | — | [Open](https://www.tiktok.com/@themadgercoin/video/7668815697367076109?utm_campaign=tt4d_open_api&utm_source=7103819247981182978) |
 | MADGER 004 — Join the Burrow | youtube | connected | 2026-08-01T22:00:00.000Z | sent | 2 | — | — | 0 | 0 | — | — | — | [Open](https://www.youtube.com/shorts/cD9BiH569oI) |
 | MADGER 004 — Join the Burrow | tiktok | connected | 2026-08-02T13:00:00.000Z | sent | 115 | — | 98 | 4 | 0 | 0 | — | — | [Open](https://www.tiktok.com/@themadgercoin/video/7669418973116632333?utm_campaign=tt4d_open_api&utm_source=7103819247981182978) |
-| MADGER 004 — Join the Burrow | facebook | connected | 2026-08-03T13:00:00.000Z | sent | — | 0 | — | 0 | 0 | 0 | 0 | — | [Open](https://www.facebook.com/reel/1732520327655007/) |
-| MADGER 004 — Join the Burrow | instagram | connected | 2026-08-03T22:00:00.000Z | sent | 136 | — | 110 | 1 | 0 | 0 | — | 0 | [Open](https://www.instagram.com/reel/DbmBD6Gk3yf/) |
-| MADGER 004 — Join the Burrow | twitter | connected | 2026-08-04T13:00:00.000Z | sent | — | 17 | — | 0 | 0 | — | 0 | — | [Open](https://x.com/2080142722153816065/status/2084625915720437828) |
-| MADGER 002 — Keep Digging (X Recovery) | twitter | connected | 2026-07-31T13:15:00.000Z | sent | — | 17 | — | 1 | 0 | — | 0 | — | [Open](https://x.com/2080142722153816065/status/2083179674784411732) |
-| The Burrow hits 200 Telegram members | twitter | unknown | 2026-08-16T02:46:25.753Z | ⚠ sent (channel missing) | — | 0 | — | 0 | 0 | — | 0 | — | [Open](https://x.com/2080142722153816065/status/2088819648166813808) |
-| The Burrow hits 200 Telegram members | facebook | unknown | 2026-08-16T02:46:27.988Z | ⚠ sent (channel missing) | — | 0 | — | 0 | 0 | 0 | 0 | — | [Open](https://facebook.com/1279493098576451_122108036793423166) |
-| The Burrow hits 200 Telegram members | instagram | unknown | 2026-08-16T02:46:33.258Z | ⚠ sent (channel missing) | — | — | — | — | — | — | — | — | [Open](https://www.instagram.com/p/DcFbFJPlFqB/) |
+| MADGER 004 — Join the Burrow | facebook | connected | 2026-08-03T13:00:00.000Z | ⚠ monitor_error (monitor error, overdue) | — | — | — | — | — | — | — | — | — |
+| MADGER 004 — Join the Burrow | instagram | connected | 2026-08-03T22:00:00.000Z | ⚠ monitor_error (monitor error, overdue) | — | — | — | — | — | — | — | — | — |
+| MADGER 004 — Join the Burrow | twitter | connected | 2026-08-04T13:00:00.000Z | ⚠ monitor_error (monitor error, overdue) | — | — | — | — | — | — | — | — | — |
+| MADGER 002 — Keep Digging (X Recovery) | twitter | connected | 2026-07-31T13:15:00.000Z | ⚠ monitor_error (monitor error, overdue) | — | — | — | — | — | — | — | — | — |
+| The Burrow hits 200 Telegram members | twitter | unknown | 2026-08-16T04:00:00.000Z | ⚠ monitor_error (monitor error, channel missing) | — | — | — | — | — | — | — | — | — |
+| The Burrow hits 200 Telegram members | facebook | unknown | 2026-08-16T04:05:00.000Z | ⚠ monitor_error (monitor error, channel missing) | — | — | — | — | — | — | — | — | — |
+| The Burrow hits 200 Telegram members | instagram | unknown | 2026-08-16T04:10:00.000Z | ⚠ monitor_error (monitor error, channel missing) | — | — | — | — | — | — | — | — | — |
+| The Great Burrow Meme Contest | twitter | connected | 2026-08-17T13:00:00.000Z | ⚠ monitor_error (monitor error) | — | — | — | — | — | — | — | — | — |
+| The Great Burrow Meme Contest | facebook | connected | 2026-08-17T13:05:00.000Z | ⚠ monitor_error (monitor error) | — | — | — | — | — | — | — | — | — |
+| The Great Burrow Meme Contest | instagram | connected | 2026-08-17T13:10:00.000Z | ⚠ monitor_error (monitor error) | — | — | — | — | — | — | — | — | — |
+| The Great Burrow Meme Contest | tiktok | connected | 2026-08-17T13:15:00.000Z | ⚠ monitor_error (monitor error) | — | — | — | — | — | — | — | — | — |
+| The Great Burrow Meme Contest | Enter Aug 17–23 | youtube | connected | 2026-08-17T13:20:00.000Z | ⚠ monitor_error (monitor error) | — | — | — | — | — | — | — | — | — |
 
 ## Interpretation
 

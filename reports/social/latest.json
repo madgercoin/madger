@@ -1,9 +1,9 @@
 {
-  "generatedAt": "2026-08-16T04:38:21.187Z",
-  "previousGeneratedAt": "2026-08-16T04:37:30.228Z",
+  "generatedAt": "2026-08-16T04:39:58.452Z",
+  "previousGeneratedAt": "2026-08-16T04:38:21.187Z",
   "window": {
-    "start": "2026-07-17T04:38:21.187Z",
-    "end": "2026-08-16T04:38:21.187Z"
+    "start": "2026-07-17T04:39:58.452Z",
+    "end": "2026-08-16T04:39:58.452Z"
   },
   "organization": {
     "id": "6a67aceacff325d8d2d231e9",
@@ -125,42 +125,89 @@
   "campaign": {
     "source": "content/buffer-schedule.json",
     "summary": {
-      "totalPosts": 19,
-      "sent": 18,
+      "totalPosts": 24,
+      "sent": 11,
       "scheduled": 0,
       "sending": 0,
-      "errors": 1,
+      "errors": 13,
       "needsAttention": [
         "madger-002-x",
+        "madger-004-facebook",
+        "madger-004-instagram",
+        "madger-004-x",
+        "madger-002-x-recovery-2026-07-31",
         "telegram-200-x-2026-08-16",
         "telegram-200-facebook-2026-08-16",
-        "telegram-200-instagram-2026-08-16"
+        "telegram-200-instagram-2026-08-16",
+        "meme-contest-launch-x-2026-08-17",
+        "meme-contest-launch-facebook-2026-08-17",
+        "meme-contest-launch-instagram-2026-08-17",
+        "meme-contest-launch-tiktok-2026-08-17",
+        "meme-contest-launch-youtube-2026-08-17"
       ],
       "attentionReasons": {
         "madger-002-x": [
           "monitor_error",
           "overdue"
         ],
+        "madger-004-facebook": [
+          "monitor_error",
+          "overdue"
+        ],
+        "madger-004-instagram": [
+          "monitor_error",
+          "overdue"
+        ],
+        "madger-004-x": [
+          "monitor_error",
+          "overdue"
+        ],
+        "madger-002-x-recovery-2026-07-31": [
+          "monitor_error",
+          "overdue"
+        ],
         "telegram-200-x-2026-08-16": [
+          "monitor_error",
           "channel_missing"
         ],
         "telegram-200-facebook-2026-08-16": [
+          "monitor_error",
           "channel_missing"
         ],
         "telegram-200-instagram-2026-08-16": [
+          "monitor_error",
           "channel_missing"
+        ],
+        "meme-contest-launch-x-2026-08-17": [
+          "monitor_error"
+        ],
+        "meme-contest-launch-facebook-2026-08-17": [
+          "monitor_error"
+        ],
+        "meme-contest-launch-instagram-2026-08-17": [
+          "monitor_error"
+        ],
+        "meme-contest-launch-tiktok-2026-08-17": [
+          "monitor_error"
+        ],
+        "meme-contest-launch-youtube-2026-08-17": [
+          "monitor_error"
         ]
       },
-      "atRiskPosts": [],
+      "atRiskPosts": [
+        "telegram-200-x-2026-08-16",
+        "telegram-200-facebook-2026-08-16",
+        "telegram-200-instagram-2026-08-16"
+      ],
       "unhealthyChannelIds": [],
       "totals": {
-        "reactions": 13,
+        "reactions": 11,
         "comments": 0,
         "shares": 0,
         "reposts": 0,
-        "reach": 508,
-        "impressions": 73,
-        "views": 633,
+        "reach": 398,
+        "impressions": 39,
+        "views": 497,
         "clicks": 0,
         "saves": 0,
         "follows": 0
@@ -178,18 +225,18 @@
         "follows": 0
       },
       "deltaCohorts": {
-        "reactions": 17,
-        "comments": 17,
-        "shares": 10,
-        "reposts": 4,
-        "reach": 6,
-        "impressions": 8,
-        "views": 9,
-        "clicks": 8,
-        "saves": 3,
-        "follows": 3
+        "reactions": 11,
+        "comments": 11,
+        "shares": 7,
+        "reposts": 1,
+        "reach": 5,
+        "impressions": 3,
+        "views": 8,
+        "clicks": 3,
+        "saves": 2,
+        "follows": 2
       },
-      "averageEngagementRate": 1.4423529411764706,
+      "averageEngagementRate": 1.6118181818181818,
       "priorSnapshotAvailable": true
     },
     "posts": [
@@ -540,27 +587,10 @@
         "channelId": "6a67ecc14b2d03035f50dbad",
         "channelState": "connected",
         "dueAt": "2026-08-03T13:00:00.000Z",
-        "sentAt": "2026-08-03T13:03:19.838Z",
-        "status": "sent",
-        "externalLink": "https://www.facebook.com/reel/1732520327655007/",
-        "publishingError": null,
-        "metricsUpdatedAt": "2026-08-15T11:52:38.180Z",
-        "metrics": {
-          "reactions": 0,
-          "comments": 0,
-          "engagementRate": 0,
-          "impressions": 0,
-          "shares": 0,
-          "clicks": 0
-        },
-        "metricDeltas": {
-          "reactions": 0,
-          "comments": 0,
-          "engagementRate": 0,
-          "impressions": 0,
-          "shares": 0,
-          "clicks": 0
-        }
+        "status": "monitor_error",
+        "metrics": {},
+        "metricDeltas": {},
+        "monitorError": "Buffer API error: [{\"message\":\"Too many requests from this client. Please try again later.\",\"extensions\":{\"code\":\"RATE_LIMIT_EXCEEDED\",\"window\":\"24h\"}}]"
       },
       {
         "id": "madger-004-instagram",
@@ -570,31 +600,10 @@
         "channelId": "6a67aebb4b2d03035f4e8b45",
         "channelState": "connected",
         "dueAt": "2026-08-03T22:00:00.000Z",
-        "sentAt": "2026-08-03T22:03:39.507Z",
-        "status": "sent",
-        "externalLink": "https://www.instagram.com/reel/DbmBD6Gk3yf/",
-        "publishingError": null,
-        "metricsUpdatedAt": "2026-08-16T01:46:37.161Z",
-        "metrics": {
-          "reactions": 1,
-          "comments": 0,
-          "engagementRate": 0.91,
-          "views": 136,
-          "shares": 0,
-          "saves": 0,
-          "follows": 0,
-          "reach": 110
-        },
-        "metricDeltas": {
-          "reactions": 0,
-          "comments": 0,
-          "engagementRate": 0,
-          "views": 0,
-          "shares": 0,
-          "saves": 0,
-          "follows": 0,
-          "reach": 0
-        }
+        "status": "monitor_error",
+        "metrics": {},
+        "metricDeltas": {},
+        "monitorError": "Buffer API error: [{\"message\":\"Too many requests from this client. Please try again later.\",\"extensions\":{\"code\":\"RATE_LIMIT_EXCEEDED\",\"window\":\"24h\"}}]"
       },
       {
         "id": "madger-004-x",
@@ -604,27 +613,10 @@
         "channelId": "6a67af8a4b2d03035f4e91f4",
         "channelState": "connected",
         "dueAt": "2026-08-04T13:00:00.000Z",
-        "sentAt": "2026-08-04T13:02:03.668Z",
-        "status": "sent",
-        "externalLink": "https://x.com/2080142722153816065/status/2084625915720437828",
-        "publishingError": null,
-        "metricsUpdatedAt": "2026-08-15T07:30:50.739Z",
-        "metrics": {
-          "reactions": 0,
-          "comments": 0,
-          "engagementRate": 0,
-          "reposts": 0,
-          "impressions": 17,
-          "clicks": 0
-        },
-        "metricDeltas": {
-          "reactions": 0,
-          "comments": 0,
-          "engagementRate": 0,
-          "reposts": 0,
-          "impressions": 0,
-          "clicks": 0
-        }
+        "status": "monitor_error",
+        "metrics": {},
+        "metricDeltas": {},
+        "monitorError": "Buffer API error: [{\"message\":\"Too many requests from this client. Please try again later.\",\"extensions\":{\"code\":\"RATE_LIMIT_EXCEEDED\",\"window\":\"24h\"}}]"
       },
       {
         "id": "madger-002-x-recovery-2026-07-31",
@@ -634,27 +626,10 @@
         "channelId": "6a67af8a4b2d03035f4e91f4",
         "channelState": "connected",
         "dueAt": "2026-07-31T13:15:00.000Z",
-        "sentAt": "2026-07-31T13:15:13.024Z",
-        "status": "sent",
-        "externalLink": "https://x.com/2080142722153816065/status/2083179674784411732",
-        "publishingError": null,
-        "metricsUpdatedAt": "2026-08-15T07:30:50.739Z",
-        "metrics": {
-          "reactions": 1,
-          "comments": 0,
-          "engagementRate": 5.88,
-          "reposts": 0,
-          "impressions": 17,
-          "clicks": 0
-        },
-        "metricDeltas": {
-          "reactions": 0,
-          "comments": 0,
-          "engagementRate": 0,
-          "reposts": 0,
-          "impressions": 0,
-          "clicks": 0
-        }
+        "status": "monitor_error",
+        "metrics": {},
+        "metricDeltas": {},
+        "monitorError": "Buffer API error: [{\"message\":\"Too many requests from this client. Please try again later.\",\"extensions\":{\"code\":\"RATE_LIMIT_EXCEEDED\",\"window\":\"24h\"}}]"
       },
       {
         "id": "telegram-200-x-2026-08-16",
@@ -662,28 +637,11 @@
         "title": "The Burrow hits 200 Telegram members",
         "service": "twitter",
         "channelState": "unknown",
-        "dueAt": "2026-08-16T02:46:25.753Z",
-        "sentAt": "2026-08-16T02:46:27.438Z",
-        "status": "sent",
-        "externalLink": "https://x.com/2080142722153816065/status/2088819648166813808",
-        "publishingError": null,
-        "metricsUpdatedAt": "2026-08-16T02:46:36.443Z",
-        "metrics": {
-          "reactions": 0,
-          "comments": 0,
-          "engagementRate": 0,
-          "reposts": 0,
-          "impressions": 0,
-          "clicks": 0
-        },
-        "metricDeltas": {
-          "reactions": 0,
-          "comments": 0,
-          "engagementRate": 0,
-          "reposts": 0,
-          "impressions": 0,
-          "clicks": 0
-        }
+        "dueAt": "2026-08-16T04:00:00.000Z",
+        "status": "monitor_error",
+        "metrics": {},
+        "metricDeltas": {},
+        "monitorError": "Buffer API error: [{\"message\":\"Too many requests from this client. Please try again later.\",\"extensions\":{\"code\":\"RATE_LIMIT_EXCEEDED\",\"window\":\"24h\"}}]"
       },
       {
         "id": "telegram-200-facebook-2026-08-16",
@@ -691,28 +649,11 @@
         "title": "The Burrow hits 200 Telegram members",
         "service": "facebook",
         "channelState": "unknown",
-        "dueAt": "2026-08-16T02:46:27.988Z",
-        "sentAt": "2026-08-16T02:46:32.366Z",
-        "status": "sent",
-        "externalLink": "https://facebook.com/1279493098576451_122108036793423166",
-        "publishingError": null,
-        "metricsUpdatedAt": "2026-08-16T02:25:07.330Z",
-        "metrics": {
-          "reactions": 0,
-          "comments": 0,
-          "engagementRate": 0,
-          "impressions": 0,
-          "shares": 0,
-          "clicks": 0
-        },
-        "metricDeltas": {
-          "reactions": 0,
-          "comments": 0,
-          "engagementRate": 0,
-          "impressions": 0,
-          "shares": 0,
-          "clicks": 0
-        }
+        "dueAt": "2026-08-16T04:05:00.000Z",
+        "status": "monitor_error",
+        "metrics": {},
+        "metricDeltas": {},
+        "monitorError": "Buffer API error: [{\"message\":\"Too many requests from this client. Please try again later.\",\"extensions\":{\"code\":\"RATE_LIMIT_EXCEEDED\",\"window\":\"24h\"}}]"
       },
       {
         "id": "telegram-200-instagram-2026-08-16",
@@ -720,14 +661,76 @@
         "title": "The Burrow hits 200 Telegram members",
         "service": "instagram",
         "channelState": "unknown",
-        "dueAt": "2026-08-16T02:46:33.258Z",
-        "sentAt": "2026-08-16T02:46:40.235Z",
-        "status": "sent",
-        "externalLink": "https://www.instagram.com/p/DcFbFJPlFqB/",
-        "publishingError": null,
-        "metricsUpdatedAt": "2026-08-16T02:26:22.740Z",
+        "dueAt": "2026-08-16T04:10:00.000Z",
+        "status": "monitor_error",
         "metrics": {},
-        "metricDeltas": {}
+        "metricDeltas": {},
+        "monitorError": "Buffer API error: [{\"message\":\"Too many requests from this client. Please try again later.\",\"extensions\":{\"code\":\"RATE_LIMIT_EXCEEDED\",\"window\":\"24h\"}}]"
+      },
+      {
+        "id": "meme-contest-launch-x-2026-08-17",
+        "bufferPostId": "6a813ec913afe87ec8ab2fbc",
+        "title": "The Great Burrow Meme Contest",
+        "service": "twitter",
+        "channelId": "6a67af8a4b2d03035f4e91f4",
+        "channelState": "connected",
+        "dueAt": "2026-08-17T13:00:00.000Z",
+        "status": "monitor_error",
+        "metrics": {},
+        "metricDeltas": {},
+        "monitorError": "Buffer API error: [{\"message\":\"Too many requests from this client. Please try again later.\",\"extensions\":{\"code\":\"RATE_LIMIT_EXCEEDED\",\"window\":\"24h\"}}]"
+      },
+      {
+        "id": "meme-contest-launch-facebook-2026-08-17",
+        "bufferPostId": "6a813ec95afed12f716b7bde",
+        "title": "The Great Burrow Meme Contest",
+        "service": "facebook",
+        "channelId": "6a67ecc14b2d03035f50dbad",
+        "channelState": "connected",
+        "dueAt": "2026-08-17T13:05:00.000Z",
+        "status": "monitor_error",
+        "metrics": {},
+        "metricDeltas": {},
+        "monitorError": "Buffer API error: [{\"message\":\"Too many requests from this client. Please try again later.\",\"extensions\":{\"code\":\"RATE_LIMIT_EXCEEDED\",\"window\":\"24h\"}}]"
+      },
+      {
+        "id": "meme-contest-launch-instagram-2026-08-17",
+        "bufferPostId": "6a813eca211938b6e64825a5",
+        "title": "The Great Burrow Meme Contest",
+        "service": "instagram",
+        "channelId": "6a67aebb4b2d03035f4e8b45",
+        "channelState": "connected",
+        "dueAt": "2026-08-17T13:10:00.000Z",
+        "status": "monitor_error",
+        "metrics": {},
+        "metricDeltas": {},
+        "monitorError": "Buffer API error: [{\"message\":\"Too many requests from this client. Please try again later.\",\"extensions\":{\"code\":\"RATE_LIMIT_EXCEEDED\",\"window\":\"24h\"}}]"
+      },
+      {
+        "id": "meme-contest-launch-tiktok-2026-08-17",
+        "bufferPostId": "6a813eca7a8d0e804d5ec164",
+        "title": "The Great Burrow Meme Contest",
+        "service": "tiktok",
+        "channelId": "6a67b0034b2d03035f4e9477",
+        "channelState": "connected",
+        "dueAt": "2026-08-17T13:15:00.000Z",
+        "status": "monitor_error",
+        "metrics": {},
+        "metricDeltas": {},
+        "monitorError": "Buffer API error: [{\"message\":\"Too many requests from this client. Please try again later.\",\"extensions\":{\"code\":\"RATE_LIMIT_EXCEEDED\",\"window\":\"24h\"}}]"
+      },
+      {
+        "id": "meme-contest-launch-youtube-2026-08-17",
+        "bufferPostId": "6a813ecb5afed12f716b7c00",
+        "title": "The Great Burrow Meme Contest | Enter Aug 17–23",
+        "service": "youtube",
+        "channelId": "6a67af404b2d03035f4e8e79",
+        "channelState": "connected",
+        "dueAt": "2026-08-17T13:20:00.000Z",
+        "status": "monitor_error",
+        "metrics": {},
+        "metricDeltas": {},
+        "monitorError": "Buffer API error: [{\"message\":\"Too many requests from this client. Please try again later.\",\"extensions\":{\"code\":\"RATE_LIMIT_EXCEEDED\",\"window\":\"24h\"}}]"
       }
     ]
   },
