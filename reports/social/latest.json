@@ -1,9 +1,9 @@
 {
-  "generatedAt": "2026-08-16T04:39:58.452Z",
-  "previousGeneratedAt": "2026-08-16T04:38:21.187Z",
+  "generatedAt": "2026-08-17T10:07:33.587Z",
+  "previousGeneratedAt": "2026-08-16T04:39:58.452Z",
   "window": {
-    "start": "2026-07-17T04:39:58.452Z",
-    "end": "2026-08-16T04:39:58.452Z"
+    "start": "2026-07-18T10:07:33.587Z",
+    "end": "2026-08-17T10:07:33.587Z"
   },
   "organization": {
     "id": "6a67aceacff325d8d2d231e9",
@@ -20,17 +20,17 @@
       "state": "connected",
       "healthy": true,
       "queuePaused": false,
-      "metricsUpdatedAt": "2026-08-15T11:52:38.183Z",
+      "metricsUpdatedAt": "2026-08-17T09:53:03.972Z",
       "metrics": {
-        "postCount": 21,
-        "reactions": 9,
-        "comments": 0,
-        "engagementRate": 0.59,
-        "impressions": 2021,
-        "shares": 0,
-        "clicks": 3
+        "postCount": 28,
+        "reactions": 40,
+        "comments": 12,
+        "engagementRate": 2.88,
+        "impressions": 2083,
+        "shares": 1,
+        "clicks": 13
       },
-      "requiresCommunityReview": false
+      "requiresCommunityReview": true
     },
     {
       "channelId": "6a67af404b2d03035f4e8e79",
@@ -42,13 +42,13 @@
       "state": "connected",
       "healthy": true,
       "queuePaused": false,
-      "metricsUpdatedAt": "2026-08-15T09:50:02.366Z",
+      "metricsUpdatedAt": "2026-08-17T07:55:19.197Z",
       "metrics": {
-        "postCount": 13,
+        "postCount": 14,
         "reactions": 6,
         "comments": 0,
-        "engagementRate": 1.8,
-        "views": 333
+        "engagementRate": 1.81,
+        "views": 332
       },
       "requiresCommunityReview": false
     },
@@ -62,15 +62,15 @@
       "state": "connected",
       "healthy": true,
       "queuePaused": false,
-      "metricsUpdatedAt": "2026-08-16T02:46:36.443Z",
+      "metricsUpdatedAt": "2026-08-17T06:30:41.046Z",
       "metrics": {
-        "postCount": 32,
-        "reactions": 336,
-        "comments": 228,
-        "engagementRate": 14.25,
-        "reposts": 134,
-        "impressions": 8327,
-        "clicks": 121
+        "postCount": 37,
+        "reactions": 538,
+        "comments": 357,
+        "engagementRate": 12.1,
+        "reposts": 177,
+        "impressions": 15106,
+        "clicks": 167
       },
       "requiresCommunityReview": true
     },
@@ -84,20 +84,20 @@
       "state": "connected",
       "healthy": true,
       "queuePaused": false,
-      "metricsUpdatedAt": "2026-08-16T01:46:37.161Z",
+      "metricsUpdatedAt": "2026-08-17T00:46:46.125Z",
       "metrics": {
-        "postCount": 21,
+        "postCount": 25,
         "reactions": 26,
-        "comments": 0,
-        "engagementRate": 2.5,
+        "comments": 1,
+        "engagementRate": 2.58,
         "impressions": 0,
-        "views": 1389,
+        "views": 1404,
         "shares": 0,
         "saves": 2,
         "follows": 0,
-        "reach": 1119
+        "reach": 1125
       },
-      "requiresCommunityReview": false
+      "requiresCommunityReview": true
     },
     {
       "channelId": "6a67b0034b2d03035f4e9477",
@@ -109,15 +109,15 @@
       "state": "connected",
       "healthy": true,
       "queuePaused": false,
-      "metricsUpdatedAt": "2026-08-15T11:47:19.524Z",
+      "metricsUpdatedAt": "2026-08-17T09:57:22.782Z",
       "metrics": {
-        "postCount": 14,
-        "reactions": 16,
-        "comments": 1,
-        "engagementRate": 1.2,
-        "views": 1419,
+        "postCount": 17,
+        "reactions": 45,
+        "comments": 2,
+        "engagementRate": 2.26,
+        "views": 2080,
         "shares": 0,
-        "reach": 999
+        "reach": 1300
       },
       "requiresCommunityReview": true
     }
@@ -126,23 +126,15 @@
     "source": "content/buffer-schedule.json",
     "summary": {
       "totalPosts": 24,
-      "sent": 11,
+      "sent": 22,
       "scheduled": 0,
       "sending": 0,
-      "errors": 13,
+      "errors": 2,
       "needsAttention": [
         "madger-002-x",
-        "madger-004-facebook",
-        "madger-004-instagram",
-        "madger-004-x",
-        "madger-002-x-recovery-2026-07-31",
         "telegram-200-x-2026-08-16",
         "telegram-200-facebook-2026-08-16",
         "telegram-200-instagram-2026-08-16",
-        "meme-contest-launch-x-2026-08-17",
-        "meme-contest-launch-facebook-2026-08-17",
-        "meme-contest-launch-instagram-2026-08-17",
-        "meme-contest-launch-tiktok-2026-08-17",
         "meme-contest-launch-youtube-2026-08-17"
       ],
       "attentionReasons": {
@@ -150,76 +142,41 @@
           "monitor_error",
           "overdue"
         ],
-        "madger-004-facebook": [
-          "monitor_error",
-          "overdue"
-        ],
-        "madger-004-instagram": [
-          "monitor_error",
-          "overdue"
-        ],
-        "madger-004-x": [
-          "monitor_error",
-          "overdue"
-        ],
-        "madger-002-x-recovery-2026-07-31": [
-          "monitor_error",
-          "overdue"
-        ],
         "telegram-200-x-2026-08-16": [
-          "monitor_error",
           "channel_missing"
         ],
         "telegram-200-facebook-2026-08-16": [
-          "monitor_error",
           "channel_missing"
         ],
         "telegram-200-instagram-2026-08-16": [
-          "monitor_error",
           "channel_missing"
-        ],
-        "meme-contest-launch-x-2026-08-17": [
-          "monitor_error"
-        ],
-        "meme-contest-launch-facebook-2026-08-17": [
-          "monitor_error"
-        ],
-        "meme-contest-launch-instagram-2026-08-17": [
-          "monitor_error"
-        ],
-        "meme-contest-launch-tiktok-2026-08-17": [
-          "monitor_error"
         ],
         "meme-contest-launch-youtube-2026-08-17": [
           "monitor_error"
         ]
       },
-      "atRiskPosts": [
-        "telegram-200-x-2026-08-16",
-        "telegram-200-facebook-2026-08-16",
-        "telegram-200-instagram-2026-08-16"
-      ],
+      "atRiskPosts": [],
       "unhealthyChannelIds": [],
       "totals": {
-        "reactions": 11,
-        "comments": 0,
+        "reactions": 76,
+        "comments": 28,
         "shares": 0,
-        "reposts": 0,
-        "reach": 398,
-        "impressions": 39,
-        "views": 497,
-        "clicks": 0,
+        "reposts": 1,
+        "reach": 514,
+        "impressions": 1218,
+        "views": 861,
+        "clicks": 16,
         "saves": 0,
         "follows": 0
       },
       "deltas": {
-        "reactions": 0,
+        "reactions": 9,
         "comments": 0,
         "shares": 0,
         "reposts": 0,
-        "reach": 0,
-        "impressions": 0,
-        "views": 0,
+        "reach": 1,
+        "impressions": 2,
+        "views": 12,
         "clicks": 0,
         "saves": 0,
         "follows": 0
@@ -236,7 +193,7 @@
         "saves": 2,
         "follows": 2
       },
-      "averageEngagementRate": 1.6118181818181818,
+      "averageEngagementRate": 11.079545454545455,
       "priorSnapshotAvailable": true
     },
     "posts": [
@@ -265,19 +222,19 @@
         "status": "sent",
         "externalLink": "https://www.facebook.com/reel/2497262497453092/",
         "publishingError": null,
-        "metricsUpdatedAt": "2026-08-15T11:52:38.180Z",
+        "metricsUpdatedAt": "2026-08-17T09:53:03.972Z",
         "metrics": {
-          "reactions": 0,
+          "reactions": 1,
           "comments": 0,
-          "engagementRate": 0,
+          "engagementRate": 9.09,
           "impressions": 11,
           "shares": 0,
           "clicks": 0
         },
         "metricDeltas": {
-          "reactions": 0,
+          "reactions": 1,
           "comments": 0,
-          "engagementRate": 0,
+          "engagementRate": 9.09,
           "impressions": 0,
           "shares": 0,
           "clicks": 0
@@ -295,7 +252,7 @@
         "status": "sent",
         "externalLink": "https://www.instagram.com/reel/DbZI9zEAUs3/",
         "publishingError": null,
-        "metricsUpdatedAt": "2026-08-16T01:46:37.161Z",
+        "metricsUpdatedAt": "2026-08-17T00:46:46.125Z",
         "metrics": {
           "reactions": 3,
           "comments": 0,
@@ -329,7 +286,7 @@
         "status": "sent",
         "externalLink": "https://www.youtube.com/shorts/YHTDZSMYGhM",
         "publishingError": null,
-        "metricsUpdatedAt": "2026-08-15T09:50:02.366Z",
+        "metricsUpdatedAt": "2026-08-17T07:55:19.197Z",
         "metrics": {
           "reactions": 0,
           "comments": 0,
@@ -355,20 +312,20 @@
         "status": "sent",
         "externalLink": "https://www.tiktok.com/@themadgercoin/video/7668135131676216589?utm_campaign=tt4d_open_api&utm_source=7103819247981182978",
         "publishingError": null,
-        "metricsUpdatedAt": "2026-08-15T11:47:19.524Z",
+        "metricsUpdatedAt": "2026-08-17T09:57:22.782Z",
         "metrics": {
-          "reactions": 0,
+          "reactions": 2,
           "comments": 0,
-          "engagementRate": 0,
-          "views": 79,
+          "engagementRate": 2.47,
+          "views": 81,
           "shares": 0,
           "reach": 78
         },
         "metricDeltas": {
-          "reactions": 0,
+          "reactions": 2,
           "comments": 0,
-          "engagementRate": 0,
-          "views": 0,
+          "engagementRate": 2.47,
+          "views": 2,
           "shares": 0,
           "reach": 0
         }
@@ -385,21 +342,21 @@
         "status": "sent",
         "externalLink": "https://x.com/2080142722153816065/status/2082813848843657418",
         "publishingError": null,
-        "metricsUpdatedAt": "2026-08-15T07:30:50.739Z",
+        "metricsUpdatedAt": "2026-08-17T05:31:10.805Z",
         "metrics": {
           "reactions": 1,
           "comments": 0,
-          "engagementRate": 5.56,
+          "engagementRate": 5,
           "reposts": 0,
-          "impressions": 18,
+          "impressions": 20,
           "clicks": 0
         },
         "metricDeltas": {
           "reactions": 0,
           "comments": 0,
-          "engagementRate": 0,
+          "engagementRate": -0.5599999999999996,
           "reposts": 0,
-          "impressions": 0,
+          "impressions": 2,
           "clicks": 0
         }
       },
@@ -415,19 +372,19 @@
         "status": "sent",
         "externalLink": "https://www.facebook.com/reel/1047690247843003/",
         "publishingError": null,
-        "metricsUpdatedAt": "2026-08-15T11:52:38.180Z",
+        "metricsUpdatedAt": "2026-08-17T09:53:03.972Z",
         "metrics": {
-          "reactions": 0,
+          "reactions": 1,
           "comments": 0,
-          "engagementRate": 0,
+          "engagementRate": 10,
           "impressions": 10,
           "shares": 0,
           "clicks": 0
         },
         "metricDeltas": {
-          "reactions": 0,
+          "reactions": 1,
           "comments": 0,
-          "engagementRate": 0,
+          "engagementRate": 10,
           "impressions": 0,
           "shares": 0,
           "clicks": 0
@@ -445,7 +402,7 @@
         "status": "sent",
         "externalLink": "https://www.instagram.com/reel/DbawDMtmlki/",
         "publishingError": null,
-        "metricsUpdatedAt": "2026-08-16T01:46:37.161Z",
+        "metricsUpdatedAt": "2026-08-17T00:46:46.125Z",
         "metrics": {
           "reactions": 2,
           "comments": 0,
@@ -479,7 +436,7 @@
         "status": "sent",
         "externalLink": "https://www.youtube.com/shorts/yDeRT1XJgsA",
         "publishingError": null,
-        "metricsUpdatedAt": "2026-08-15T09:50:02.366Z",
+        "metricsUpdatedAt": "2026-08-17T07:55:19.197Z",
         "metrics": {
           "reactions": 0,
           "comments": 0,
@@ -505,20 +462,20 @@
         "status": "sent",
         "externalLink": "https://www.tiktok.com/@themadgercoin/video/7668815697367076109?utm_campaign=tt4d_open_api&utm_source=7103819247981182978",
         "publishingError": null,
-        "metricsUpdatedAt": "2026-08-15T11:47:19.524Z",
+        "metricsUpdatedAt": "2026-08-17T09:57:22.782Z",
         "metrics": {
-          "reactions": 1,
+          "reactions": 3,
           "comments": 0,
-          "engagementRate": 3.57,
-          "views": 28,
+          "engagementRate": 10,
+          "views": 30,
           "shares": 0,
           "reach": 25
         },
         "metricDeltas": {
-          "reactions": 0,
+          "reactions": 2,
           "comments": 0,
-          "engagementRate": 0,
-          "views": 0,
+          "engagementRate": 6.43,
+          "views": 2,
           "shares": 0,
           "reach": 0
         }
@@ -535,7 +492,7 @@
         "status": "sent",
         "externalLink": "https://www.youtube.com/shorts/cD9BiH569oI",
         "publishingError": null,
-        "metricsUpdatedAt": "2026-08-15T09:50:02.366Z",
+        "metricsUpdatedAt": "2026-08-17T07:55:19.197Z",
         "metrics": {
           "reactions": 0,
           "comments": 0,
@@ -561,22 +518,22 @@
         "status": "sent",
         "externalLink": "https://www.tiktok.com/@themadgercoin/video/7669418973116632333?utm_campaign=tt4d_open_api&utm_source=7103819247981182978",
         "publishingError": null,
-        "metricsUpdatedAt": "2026-08-15T11:47:19.524Z",
+        "metricsUpdatedAt": "2026-08-17T09:57:22.782Z",
         "metrics": {
-          "reactions": 4,
+          "reactions": 7,
           "comments": 0,
-          "engagementRate": 3.48,
-          "views": 115,
+          "engagementRate": 5.69,
+          "views": 123,
           "shares": 0,
-          "reach": 98
+          "reach": 99
         },
         "metricDeltas": {
-          "reactions": 0,
+          "reactions": 3,
           "comments": 0,
-          "engagementRate": 0,
-          "views": 0,
+          "engagementRate": 2.2100000000000004,
+          "views": 8,
           "shares": 0,
-          "reach": 0
+          "reach": 1
         }
       },
       {
@@ -587,10 +544,20 @@
         "channelId": "6a67ecc14b2d03035f50dbad",
         "channelState": "connected",
         "dueAt": "2026-08-03T13:00:00.000Z",
-        "status": "monitor_error",
-        "metrics": {},
-        "metricDeltas": {},
-        "monitorError": "Buffer API error: [{\"message\":\"Too many requests from this client. Please try again later.\",\"extensions\":{\"code\":\"RATE_LIMIT_EXCEEDED\",\"window\":\"24h\"}}]"
+        "sentAt": "2026-08-03T13:03:19.838Z",
+        "status": "sent",
+        "externalLink": "https://www.facebook.com/reel/1732520327655007/",
+        "publishingError": null,
+        "metricsUpdatedAt": "2026-08-17T09:53:03.972Z",
+        "metrics": {
+          "reactions": 1,
+          "comments": 0,
+          "engagementRate": 0,
+          "impressions": 0,
+          "shares": 0,
+          "clicks": 0
+        },
+        "metricDeltas": {}
       },
       {
         "id": "madger-004-instagram",
@@ -600,10 +567,22 @@
         "channelId": "6a67aebb4b2d03035f4e8b45",
         "channelState": "connected",
         "dueAt": "2026-08-03T22:00:00.000Z",
-        "status": "monitor_error",
-        "metrics": {},
-        "metricDeltas": {},
-        "monitorError": "Buffer API error: [{\"message\":\"Too many requests from this client. Please try again later.\",\"extensions\":{\"code\":\"RATE_LIMIT_EXCEEDED\",\"window\":\"24h\"}}]"
+        "sentAt": "2026-08-03T22:03:39.507Z",
+        "status": "sent",
+        "externalLink": "https://www.instagram.com/reel/DbmBD6Gk3yf/",
+        "publishingError": null,
+        "metricsUpdatedAt": "2026-08-17T00:46:46.125Z",
+        "metrics": {
+          "reactions": 1,
+          "comments": 0,
+          "engagementRate": 0.91,
+          "views": 136,
+          "shares": 0,
+          "saves": 0,
+          "follows": 0,
+          "reach": 110
+        },
+        "metricDeltas": {}
       },
       {
         "id": "madger-004-x",
@@ -613,10 +592,20 @@
         "channelId": "6a67af8a4b2d03035f4e91f4",
         "channelState": "connected",
         "dueAt": "2026-08-04T13:00:00.000Z",
-        "status": "monitor_error",
-        "metrics": {},
-        "metricDeltas": {},
-        "monitorError": "Buffer API error: [{\"message\":\"Too many requests from this client. Please try again later.\",\"extensions\":{\"code\":\"RATE_LIMIT_EXCEEDED\",\"window\":\"24h\"}}]"
+        "sentAt": "2026-08-04T13:02:03.668Z",
+        "status": "sent",
+        "externalLink": "https://x.com/2080142722153816065/status/2084625915720437828",
+        "publishingError": null,
+        "metricsUpdatedAt": "2026-08-17T05:31:10.805Z",
+        "metrics": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "reposts": 0,
+          "impressions": 19,
+          "clicks": 0
+        },
+        "metricDeltas": {}
       },
       {
         "id": "madger-002-x-recovery-2026-07-31",
@@ -626,10 +615,20 @@
         "channelId": "6a67af8a4b2d03035f4e91f4",
         "channelState": "connected",
         "dueAt": "2026-07-31T13:15:00.000Z",
-        "status": "monitor_error",
-        "metrics": {},
-        "metricDeltas": {},
-        "monitorError": "Buffer API error: [{\"message\":\"Too many requests from this client. Please try again later.\",\"extensions\":{\"code\":\"RATE_LIMIT_EXCEEDED\",\"window\":\"24h\"}}]"
+        "sentAt": "2026-07-31T13:15:13.024Z",
+        "status": "sent",
+        "externalLink": "https://x.com/2080142722153816065/status/2083179674784411732",
+        "publishingError": null,
+        "metricsUpdatedAt": "2026-08-17T05:31:10.805Z",
+        "metrics": {
+          "reactions": 1,
+          "comments": 0,
+          "engagementRate": 5.26,
+          "reposts": 0,
+          "impressions": 19,
+          "clicks": 0
+        },
+        "metricDeltas": {}
       },
       {
         "id": "telegram-200-x-2026-08-16",
@@ -637,11 +636,21 @@
         "title": "The Burrow hits 200 Telegram members",
         "service": "twitter",
         "channelState": "unknown",
-        "dueAt": "2026-08-16T04:00:00.000Z",
-        "status": "monitor_error",
-        "metrics": {},
-        "metricDeltas": {},
-        "monitorError": "Buffer API error: [{\"message\":\"Too many requests from this client. Please try again later.\",\"extensions\":{\"code\":\"RATE_LIMIT_EXCEEDED\",\"window\":\"24h\"}}]"
+        "dueAt": "2026-08-16T02:46:25.753Z",
+        "sentAt": "2026-08-16T02:46:27.438Z",
+        "status": "sent",
+        "externalLink": "https://x.com/2080142722153816065/status/2088819648166813808",
+        "publishingError": null,
+        "metricsUpdatedAt": "2026-08-16T02:46:36.443Z",
+        "metrics": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "reposts": 0,
+          "impressions": 0,
+          "clicks": 0
+        },
+        "metricDeltas": {}
       },
       {
         "id": "telegram-200-facebook-2026-08-16",
@@ -649,11 +658,21 @@
         "title": "The Burrow hits 200 Telegram members",
         "service": "facebook",
         "channelState": "unknown",
-        "dueAt": "2026-08-16T04:05:00.000Z",
-        "status": "monitor_error",
-        "metrics": {},
-        "metricDeltas": {},
-        "monitorError": "Buffer API error: [{\"message\":\"Too many requests from this client. Please try again later.\",\"extensions\":{\"code\":\"RATE_LIMIT_EXCEEDED\",\"window\":\"24h\"}}]"
+        "dueAt": "2026-08-16T02:46:27.988Z",
+        "sentAt": "2026-08-16T02:46:32.366Z",
+        "status": "sent",
+        "externalLink": "https://facebook.com/1279493098576451_122108036793423166",
+        "publishingError": null,
+        "metricsUpdatedAt": "2026-08-17T09:53:03.971Z",
+        "metrics": {
+          "reactions": 3,
+          "comments": 0,
+          "engagementRate": 100,
+          "impressions": 4,
+          "shares": 0,
+          "clicks": 1
+        },
+        "metricDeltas": {}
       },
       {
         "id": "telegram-200-instagram-2026-08-16",
@@ -661,11 +680,23 @@
         "title": "The Burrow hits 200 Telegram members",
         "service": "instagram",
         "channelState": "unknown",
-        "dueAt": "2026-08-16T04:10:00.000Z",
-        "status": "monitor_error",
-        "metrics": {},
-        "metricDeltas": {},
-        "monitorError": "Buffer API error: [{\"message\":\"Too many requests from this client. Please try again later.\",\"extensions\":{\"code\":\"RATE_LIMIT_EXCEEDED\",\"window\":\"24h\"}}]"
+        "dueAt": "2026-08-16T02:46:33.258Z",
+        "sentAt": "2026-08-16T02:46:40.235Z",
+        "status": "sent",
+        "externalLink": "https://www.instagram.com/p/DcFbFJPlFqB/",
+        "publishingError": null,
+        "metricsUpdatedAt": "2026-08-17T00:46:46.124Z",
+        "metrics": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "views": 5,
+          "shares": 0,
+          "saves": 0,
+          "follows": 0,
+          "reach": 3
+        },
+        "metricDeltas": {}
       },
       {
         "id": "meme-contest-launch-x-2026-08-17",
@@ -674,11 +705,21 @@
         "service": "twitter",
         "channelId": "6a67af8a4b2d03035f4e91f4",
         "channelState": "connected",
-        "dueAt": "2026-08-17T13:00:00.000Z",
-        "status": "monitor_error",
-        "metrics": {},
-        "metricDeltas": {},
-        "monitorError": "Buffer API error: [{\"message\":\"Too many requests from this client. Please try again later.\",\"extensions\":{\"code\":\"RATE_LIMIT_EXCEEDED\",\"window\":\"24h\"}}]"
+        "dueAt": "2026-08-16T10:09:33.282Z",
+        "sentAt": "2026-08-16T10:09:34.738Z",
+        "status": "sent",
+        "externalLink": "https://x.com/2080142722153816065/status/2088931163230376000",
+        "publishingError": null,
+        "metricsUpdatedAt": "2026-08-17T05:31:10.804Z",
+        "metrics": {
+          "reactions": 48,
+          "comments": 28,
+          "engagementRate": 15.21,
+          "reposts": 1,
+          "impressions": 1131,
+          "clicks": 14
+        },
+        "metricDeltas": {}
       },
       {
         "id": "meme-contest-launch-facebook-2026-08-17",
@@ -687,11 +728,21 @@
         "service": "facebook",
         "channelId": "6a67ecc14b2d03035f50dbad",
         "channelState": "connected",
-        "dueAt": "2026-08-17T13:05:00.000Z",
-        "status": "monitor_error",
-        "metrics": {},
-        "metricDeltas": {},
-        "monitorError": "Buffer API error: [{\"message\":\"Too many requests from this client. Please try again later.\",\"extensions\":{\"code\":\"RATE_LIMIT_EXCEEDED\",\"window\":\"24h\"}}]"
+        "dueAt": "2026-08-16T10:10:22.882Z",
+        "sentAt": "2026-08-16T10:10:28.715Z",
+        "status": "sent",
+        "externalLink": "https://facebook.com/1279493098576451_122108134587423166",
+        "publishingError": null,
+        "metricsUpdatedAt": "2026-08-17T09:53:03.971Z",
+        "metrics": {
+          "reactions": 2,
+          "comments": 0,
+          "engagementRate": 75,
+          "impressions": 4,
+          "shares": 0,
+          "clicks": 1
+        },
+        "metricDeltas": {}
       },
       {
         "id": "meme-contest-launch-instagram-2026-08-17",
@@ -700,11 +751,23 @@
         "service": "instagram",
         "channelId": "6a67aebb4b2d03035f4e8b45",
         "channelState": "connected",
-        "dueAt": "2026-08-17T13:10:00.000Z",
-        "status": "monitor_error",
-        "metrics": {},
-        "metricDeltas": {},
-        "monitorError": "Buffer API error: [{\"message\":\"Too many requests from this client. Please try again later.\",\"extensions\":{\"code\":\"RATE_LIMIT_EXCEEDED\",\"window\":\"24h\"}}]"
+        "dueAt": "2026-08-16T10:11:18.541Z",
+        "sentAt": "2026-08-16T10:16:36.393Z",
+        "status": "sent",
+        "externalLink": "https://www.instagram.com/p/DcGOkg5ltva/",
+        "publishingError": null,
+        "metricsUpdatedAt": "2026-08-17T00:46:46.124Z",
+        "metrics": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "views": 2,
+          "shares": 0,
+          "saves": 0,
+          "follows": 0,
+          "reach": 2
+        },
+        "metricDeltas": {}
       },
       {
         "id": "meme-contest-launch-tiktok-2026-08-17",
@@ -713,11 +776,21 @@
         "service": "tiktok",
         "channelId": "6a67b0034b2d03035f4e9477",
         "channelState": "connected",
-        "dueAt": "2026-08-17T13:15:00.000Z",
-        "status": "monitor_error",
-        "metrics": {},
-        "metricDeltas": {},
-        "monitorError": "Buffer API error: [{\"message\":\"Too many requests from this client. Please try again later.\",\"extensions\":{\"code\":\"RATE_LIMIT_EXCEEDED\",\"window\":\"24h\"}}]"
+        "dueAt": "2026-08-16T10:11:37.451Z",
+        "sentAt": "2026-08-16T10:12:19.184Z",
+        "status": "sent",
+        "externalLink": "https://tiktok.com/@themadgercoin/video/7674570062266666254",
+        "publishingError": null,
+        "metricsUpdatedAt": "2026-08-17T09:57:22.781Z",
+        "metrics": {
+          "reactions": 0,
+          "comments": 0,
+          "engagementRate": 0,
+          "views": 209,
+          "shares": 0,
+          "reach": 0
+        },
+        "metricDeltas": {}
       },
       {
         "id": "meme-contest-launch-youtube-2026-08-17",
@@ -730,7 +803,7 @@
         "status": "monitor_error",
         "metrics": {},
         "metricDeltas": {},
-        "monitorError": "Buffer API error: [{\"message\":\"Too many requests from this client. Please try again later.\",\"extensions\":{\"code\":\"RATE_LIMIT_EXCEEDED\",\"window\":\"24h\"}}]"
+        "monitorError": "Buffer API error: [{\"message\":\"Post not found\",\"path\":[\"post\"],\"extensions\":{\"code\":\"NOT_FOUND\"}}]"
       }
     ]
   },
