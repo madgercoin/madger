@@ -14,6 +14,8 @@ Notable repository changes are recorded here. Dates use UTC. This project does n
 
 ### Changed
 
+- Replaced Telegram contest-entry routing with the official Google Form on madgercoin.com, updated the contest rules and operations record, and made the homepage contest poster open the contest page.
+
 - Added the verified `u/Madgercoin` Reddit identity to the homepage social directory and Organization structured data, with automated regression protection against an uncreated subreddit or unverified Discord invite.
 - Added a contribution-first Reddit/Discord operating model, channel architecture, moderation controls, launch communication adaptations, and release gates while keeping Discord publication blocked until the authenticated server and durable invite are verified.
 - Made local asset-link validation path-separator independent so the same source checks run correctly on Windows and Linux.
