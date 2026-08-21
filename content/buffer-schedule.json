@@ -464,7 +464,7 @@
       "mediaUrl": "https://raw.githubusercontent.com/madgercoin/madger/main/media/aura-unmeasurable/aura-unmeasurable.png",
       "text": "Some things can be counted. Aura can’t. 🦡⚡ $MADGER takes the prow and sets the pace. The momentum is real. The identity is undeniable. AURA: UNMEASURABLE. #MADGER #TheBurrow #Solana #CryptoTok",
       "channelId": "6a67b0034b2d03035f4e9477",
-      "status": "ready_for_buffer"
+      "status": "retrying_after_tiktok_photo_metadata_fix"
     },
     {
       "id": "aura-unmeasurable-youtube-2026-08-21",
@@ -477,7 +477,7 @@
       "mediaUrl": "https://raw.githubusercontent.com/madgercoin/madger/main/media/aura-unmeasurable/aura-unmeasurable.png",
       "text": "Some things can be counted. Aura can’t. $MADGER doesn’t enter the race to disappear in the pack. He takes the prow and sets the pace. The momentum is real. The identity is undeniable. AURA: UNMEASURABLE. https://madgercoin.com #MADGER #TheBurrow #Solana",
       "channelId": "6a67af404b2d03035f4e8e79",
-      "status": "ready_for_buffer"
+      "status": "retrying_after_tiktok_photo_metadata_fix"
     }
   ],
   "lastSuccessfulActivation": "2026-08-16T04:38:35Z"
