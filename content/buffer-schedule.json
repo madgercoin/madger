@@ -416,7 +416,7 @@
     },
     {
       "id": "aura-unmeasurable-x-2026-08-21",
-      "enabled": true,
+      "enabled": false,
       "service": "twitter",
       "channelName": "madgercoin",
       "title": "Aura: Unmeasurable",
@@ -425,11 +425,12 @@
       "mediaUrl": "https://raw.githubusercontent.com/madgercoin/madger/main/media/aura-unmeasurable/aura-unmeasurable.png",
       "text": "Some things can be counted. Aura can’t. 🦡⚡\n\n$MADGER doesn’t enter the race to disappear in the pack. He takes the prow and sets the pace.\n\nThe momentum is real. The identity is undeniable.\n\nAURA: UNMEASURABLE.\n\nhttps://madgercoin.com\n\n#MADGER #TheBurrow #Solana",
       "channelId": "6a67af8a4b2d03035f4e91f4",
-      "status": "ready_for_buffer"
+      "status": "scheduled",
+      "bufferPostId": "6a88b45c5b4a6e681b30c6a4"
     },
     {
       "id": "aura-unmeasurable-facebook-2026-08-21",
-      "enabled": true,
+      "enabled": false,
       "service": "facebook",
       "channelName": "Madger Coin",
       "title": "Aura: Unmeasurable",
@@ -438,11 +439,12 @@
       "mediaUrl": "https://raw.githubusercontent.com/madgercoin/madger/main/media/aura-unmeasurable/aura-unmeasurable.png",
       "text": "Some things can be counted. Aura can’t. 🦡⚡\n\n$MADGER doesn’t enter the race to disappear in the pack. He takes the prow, sets the pace, and gives the Burrow something unmistakable to rally behind.\n\nThe momentum is real.\nThe identity is undeniable.\nThe aura is unmeasurable.\n\nThe Burrow is moving. Are you in?\n\nhttps://madgercoin.com\n\n#MADGER #MadgerCoin #TheBurrow #Solana #CryptoCommunity",
       "channelId": "6a67ecc14b2d03035f50dbad",
-      "status": "ready_for_buffer"
+      "status": "scheduled",
+      "bufferPostId": "6a88b45c5b4a6e681b30c6c8"
     },
     {
       "id": "aura-unmeasurable-instagram-2026-08-21",
-      "enabled": true,
+      "enabled": false,
       "service": "instagram",
       "channelName": "madgercoin",
       "title": "Aura: Unmeasurable",
@@ -451,11 +453,12 @@
       "mediaUrl": "https://raw.githubusercontent.com/madgercoin/madger/main/media/aura-unmeasurable/aura-unmeasurable.png",
       "text": "Some things can be counted. Aura can’t. 🦡⚡\n\n$MADGER doesn’t enter the race to disappear in the pack. He takes the prow, sets the pace, and gives the Burrow something unmistakable to rally behind.\n\nThe momentum is real.\nThe identity is undeniable.\nThe aura is unmeasurable.\n\nThe Burrow is moving. Are you in?\n\nLink in bio.\n\n#MADGER #MadgerCoin #TheBurrow #Solana #Memecoin #CryptoCommunity",
       "channelId": "6a67aebb4b2d03035f4e8b45",
-      "status": "ready_for_buffer"
+      "status": "scheduled",
+      "bufferPostId": "6a88b45d3869cf665896912c"
     },
     {
       "id": "aura-unmeasurable-tiktok-2026-08-21",
-      "enabled": true,
+      "enabled": false,
       "service": "tiktok",
       "channelName": "themadgercoin",
       "title": "Aura: Unmeasurable",
@@ -464,11 +467,12 @@
       "mediaUrl": "https://raw.githubusercontent.com/madgercoin/madger/main/media/aura-unmeasurable/aura-unmeasurable.png",
       "text": "Some things can be counted. Aura can’t. 🦡⚡ $MADGER takes the prow and sets the pace. The momentum is real. The identity is undeniable. AURA: UNMEASURABLE. #MADGER #TheBurrow #Solana #CryptoTok",
       "channelId": "6a67b0034b2d03035f4e9477",
-      "status": "retrying_after_tiktok_photo_metadata_fix"
+      "status": "scheduled",
+      "bufferPostId": "6a88b5b61b38003a90d3a6b8"
     },
     {
       "id": "aura-unmeasurable-youtube-2026-08-21",
-      "enabled": true,
+      "enabled": false,
       "service": "youtube",
       "channelName": "Madger",
       "title": "Aura: Unmeasurable | $MADGER",
@@ -477,7 +481,7 @@
       "mediaUrl": "https://raw.githubusercontent.com/madgercoin/madger/main/media/aura-unmeasurable/aura-unmeasurable.png",
       "text": "Some things can be counted. Aura can’t. $MADGER doesn’t enter the race to disappear in the pack. He takes the prow and sets the pace. The momentum is real. The identity is undeniable. AURA: UNMEASURABLE. https://madgercoin.com #MADGER #TheBurrow #Solana",
       "channelId": "6a67af404b2d03035f4e8e79",
-      "status": "retrying_after_tiktok_photo_metadata_fix"
+      "status": "unsupported_requires_video"
     }
   ],
   "lastSuccessfulActivation": "2026-08-16T04:38:35Z"
