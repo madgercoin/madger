@@ -119,6 +119,13 @@ test("uses static-post metadata for Facebook and Instagram images", () => {
   });
 });
 
+test("omits unsupported AI disclosure metadata for TikTok photo posts", () => {
+  assert.equal(metadataFor({ service: "tiktok", mediaType: "image" }), undefined);
+  assert.deepEqual(metadataFor({ service: "tiktok", mediaType: "video" }), {
+    tiktok: { isAiGenerated: true }
+  });
+});
+
 test("scheduled meme contest launch covers every Buffer channel", () => {
   const manifest = JSON.parse(fs.readFileSync(new URL(
     "../content/buffer-schedule.json",

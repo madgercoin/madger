@@ -32,7 +32,7 @@ export function metadataFor(entry) {
     case "facebook":
       return { facebook: { type: entry.mediaType === "image" ? "post" : "reel" } };
     case "tiktok":
-      return { tiktok: { isAiGenerated: true } };
+      return entry.mediaType === "image" ? undefined : { tiktok: { isAiGenerated: true } };
     case "youtube":
       return {
         youtube: {
