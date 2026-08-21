@@ -413,6 +413,45 @@
       "text": "Why build community before launching a meme coin?\n\nBecause liquidity creates a market—but community creates trust, culture, distribution, resilience, and lasting momentum.\n\nA token can launch overnight. A real community has to be earned.\n\nBuild the people. Then build the market.\n\n#MADGER #Memecoin #CryptoEducation #CommunityFirst #TheBurrow",
       "channelId": "6a67af404b2d03035f4e8e79",
       "status": "blocked_buffer_rate_limit"
+    },
+    {
+      "id": "aura-unmeasurable-x-2026-08-21",
+      "enabled": true,
+      "service": "twitter",
+      "channelName": "madgercoin",
+      "title": "Aura: Unmeasurable",
+      "dueAt": "2026-08-21T20:45:00.000Z",
+      "mediaType": "image",
+      "mediaUrl": "https://raw.githubusercontent.com/madgercoin/madger/main/media/aura-unmeasurable/aura-unmeasurable.png",
+      "text": "Some things can be counted. Aura can’t. 🦡⚡\n\n$MADGER doesn’t enter the race to disappear in the pack. He takes the prow and sets the pace.\n\nThe momentum is real. The identity is undeniable.\n\nAURA: UNMEASURABLE.\n\nhttps://madgercoin.com\n\n#MADGER #TheBurrow #Solana",
+      "channelId": "6a67af8a4b2d03035f4e91f4",
+      "status": "ready_for_buffer"
+    },
+    {
+      "id": "aura-unmeasurable-facebook-2026-08-21",
+      "enabled": true,
+      "service": "facebook",
+      "channelName": "Madger Coin",
+      "title": "Aura: Unmeasurable",
+      "dueAt": "2026-08-21T20:47:00.000Z",
+      "mediaType": "image",
+      "mediaUrl": "https://raw.githubusercontent.com/madgercoin/madger/main/media/aura-unmeasurable/aura-unmeasurable.png",
+      "text": "Some things can be counted. Aura can’t. 🦡⚡\n\n$MADGER doesn’t enter the race to disappear in the pack. He takes the prow, sets the pace, and gives the Burrow something unmistakable to rally behind.\n\nThe momentum is real.\nThe identity is undeniable.\nThe aura is unmeasurable.\n\nThe Burrow is moving. Are you in?\n\nhttps://madgercoin.com\n\n#MADGER #MadgerCoin #TheBurrow #Solana #CryptoCommunity",
+      "channelId": "6a67ecc14b2d03035f50dbad",
+      "status": "ready_for_buffer"
+    },
+    {
+      "id": "aura-unmeasurable-instagram-2026-08-21",
+      "enabled": true,
+      "service": "instagram",
+      "channelName": "madgercoin",
+      "title": "Aura: Unmeasurable",
+      "dueAt": "2026-08-21T20:49:00.000Z",
+      "mediaType": "image",
+      "mediaUrl": "https://raw.githubusercontent.com/madgercoin/madger/main/media/aura-unmeasurable/aura-unmeasurable.png",
+      "text": "Some things can be counted. Aura can’t. 🦡⚡\n\n$MADGER doesn’t enter the race to disappear in the pack. He takes the prow, sets the pace, and gives the Burrow something unmistakable to rally behind.\n\nThe momentum is real.\nThe identity is undeniable.\nThe aura is unmeasurable.\n\nThe Burrow is moving. Are you in?\n\nLink in bio.\n\n#MADGER #MadgerCoin #TheBurrow #Solana #Memecoin #CryptoCommunity",
+      "channelId": "6a67aebb4b2d03035f4e8b45",
+      "status": "ready_for_buffer"
     }
   ],
   "lastSuccessfulActivation": "2026-08-16T04:38:35Z"
