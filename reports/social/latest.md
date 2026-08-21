@@ -1,17 +1,17 @@
 # MADGER social performance
 
-Generated: 2026-08-20T10:02:44.666Z
-Previous snapshot: 2026-08-19T10:00:19.265Z
+Generated: 2026-08-21T10:03:22.181Z
+Previous snapshot: 2026-08-20T10:02:44.666Z
 
 ## 30-day channel rollup
 
 | Channel | Health | Posts | Impressions | Reach | Views | Eng. rate | Clicks | Follows | Review |
 |---|---|---:|---:|---:|---:|---:|---:|---:|---|
-| facebook: Madger Coin | Connected | 33 | 2353 | — | — | 3.70% | 27 | — | Check Buffer Community |
+| facebook: Madger Coin | Connected | 34 | 2366 | — | — | 3.76% | 28 | — | Check Buffer Community |
 | youtube: Madger | Connected | 16 | — | — | 336 | 1.79% | — | — | None flagged |
-| twitter: MadgerCoin | Connected | 42 | 31873 | — | — | 12.05% | 347 | — | Check Buffer Community |
-| instagram: madgercoin | Connected | 32 | 0 | 1160 | 1463 | 3.53% | — | 0 | Check Buffer Community |
-| tiktok: themadgercoin | Connected | 22 | — | 2589 | 2929 | 1.71% | — | — | Check Buffer Community |
+| twitter: MadgerCoin | Connected | 43 | 33549 | — | — | 12.03% | 371 | — | Check Buffer Community |
+| instagram: madgercoin | Connected | 32 | 0 | 1163 | 1466 | 3.53% | — | 0 | Check Buffer Community |
+| tiktok: themadgercoin | Connected | 23 | — | 2667 | 3131 | 1.66% | — | — | Check Buffer Community |
 
 ## Scheduled campaign
 
@@ -19,17 +19,17 @@ Sent: 22/24 · Scheduled: 0 · Errors: 2 · Attention: 5 · At risk: 0
 
 | Metric | Current | Change since prior report |
 |---|---:|---:|
-| reactions | 161 | 10 |
-| comments | 59 | 2 |
+| reactions | 169 | 8 |
+| comments | 71 | 12 |
 | shares | 0 | 0 |
-| reposts | 26 | 4 |
-| reach | 721 | 3 |
-| impressions | 3718 | 339 |
+| reposts | 28 | 2 |
+| reach | 721 | 0 |
+| impressions | 3985 | 267 |
 | views | 869 | 0 |
-| clicks | 117 | 18 |
+| clicks | 125 | 8 |
 | saves | 0 | 0 |
 | follows | 0 | 0 |
-| averageEngagementRate | 10.29% | — |
+| averageEngagementRate | 10.28% | — |
 
 ## Per-post performance
 
@@ -46,18 +46,18 @@ Sent: 22/24 · Scheduled: 0 · Errors: 2 · Attention: 5 · At risk: 0
 | MADGER 003 — No Slowing Down | youtube | connected | 2026-07-31T20:00:00.000Z | sent | 4 | — | — | 0 | 0 | — | — | — | [Open](https://www.youtube.com/shorts/yDeRT1XJgsA) |
 | MADGER 003 — No Slowing Down | tiktok | connected | 2026-07-31T22:00:00.000Z | sent | 32 | — | 25 | 3 | 0 | 0 | — | — | [Open](https://www.tiktok.com/@themadgercoin/video/7668815697367076109?utm_campaign=tt4d_open_api&utm_source=7103819247981182978) |
 | MADGER 004 — Join the Burrow | youtube | connected | 2026-08-01T22:00:00.000Z | sent | 2 | — | — | 0 | 0 | — | — | — | [Open](https://www.youtube.com/shorts/cD9BiH569oI) |
-| MADGER 004 — Join the Burrow | tiktok | connected | 2026-08-02T13:00:00.000Z | sent | 124 | — | 100 (+1) | 7 | 0 | 0 | — | — | [Open](https://www.tiktok.com/@themadgercoin/video/7669418973116632333?utm_campaign=tt4d_open_api&utm_source=7103819247981182978) |
+| MADGER 004 — Join the Burrow | tiktok | connected | 2026-08-02T13:00:00.000Z | sent | 124 | — | 100 | 7 | 0 | 0 | — | — | [Open](https://www.tiktok.com/@themadgercoin/video/7669418973116632333?utm_campaign=tt4d_open_api&utm_source=7103819247981182978) |
 | MADGER 004 — Join the Burrow | facebook | connected | 2026-08-03T13:00:00.000Z | sent | — | 0 | — | 1 | 0 | 0 | 0 | — | [Open](https://www.facebook.com/reel/1732520327655007/) |
 | MADGER 004 — Join the Burrow | instagram | connected | 2026-08-03T22:00:00.000Z | sent | 136 | — | 110 | 1 | 0 | 0 | — | 0 | [Open](https://www.instagram.com/reel/DbmBD6Gk3yf/) |
-| MADGER 004 — Join the Burrow | twitter | connected | 2026-08-04T13:00:00.000Z | sent | — | 28 (+1) | — | 1 | 0 | — | 0 | — | [Open](https://x.com/2080142722153816065/status/2084625915720437828) |
-| MADGER 002 — Keep Digging (X Recovery) | twitter | connected | 2026-07-31T13:15:00.000Z | sent | — | 28 (+1) | — | 2 | 0 | — | 0 | — | [Open](https://x.com/2080142722153816065/status/2083179674784411732) |
+| MADGER 004 — Join the Burrow | twitter | connected | 2026-08-04T13:00:00.000Z | sent | — | 29 (+1) | — | 1 | 0 | — | 0 | — | [Open](https://x.com/2080142722153816065/status/2084625915720437828) |
+| MADGER 002 — Keep Digging (X Recovery) | twitter | connected | 2026-07-31T13:15:00.000Z | sent | — | 28 | — | 2 | 0 | — | 0 | — | [Open](https://x.com/2080142722153816065/status/2083179674784411732) |
 | The Burrow hits 200 Telegram members | twitter | unknown | 2026-08-16T02:46:25.753Z | ⚠ sent (channel missing) | — | 0 | — | 0 | 0 | — | 0 | — | [Open](https://x.com/2080142722153816065/status/2088819648166813808) |
 | The Burrow hits 200 Telegram members | facebook | unknown | 2026-08-16T02:46:27.988Z | ⚠ sent (channel missing) | — | 4 | — | 3 | 0 | 0 | 1 | — | [Open](https://facebook.com/1279493098576451_122108036793423166) |
 | The Burrow hits 200 Telegram members | instagram | unknown | 2026-08-16T02:46:33.258Z | ⚠ sent (channel missing) | 5 | — | 3 | 0 | 0 | 0 | — | 0 | [Open](https://www.instagram.com/p/DcFbFJPlFqB/) |
-| The Great Burrow Meme Contest | twitter | connected | 2026-08-16T10:09:33.282Z | sent | — | 3602 (+336) | — | 130 (+10) | 59 (+2) | — | 115 (+18) | — | [Open](https://x.com/2080142722153816065/status/2088931163230376000) |
-| The Great Burrow Meme Contest | facebook | connected | 2026-08-16T10:10:22.882Z | sent | — | 7 (+1) | — | 2 | 0 | 0 | 1 | — | [Open](https://facebook.com/1279493098576451_122108134587423166) |
+| The Great Burrow Meme Contest | twitter | connected | 2026-08-16T10:09:33.282Z | sent | — | 3868 (+266) | — | 138 (+8) | 71 (+12) | — | 123 (+8) | — | [Open](https://x.com/2080142722153816065/status/2088931163230376000) |
+| The Great Burrow Meme Contest | facebook | connected | 2026-08-16T10:10:22.882Z | sent | — | 7 | — | 2 | 0 | 0 | 1 | — | [Open](https://facebook.com/1279493098576451_122108134587423166) |
 | The Great Burrow Meme Contest | instagram | connected | 2026-08-16T10:11:18.541Z | sent | 2 | — | 2 | 0 | 0 | 0 | — | 0 | [Open](https://www.instagram.com/p/DcGOkg5ltva/) |
-| The Great Burrow Meme Contest | tiktok | connected | 2026-08-16T10:11:37.451Z | sent | 213 | — | 206 (+2) | 0 | 0 | 0 | — | — | [Open](https://www.tiktok.com/@themadgercoin/video/7674570062266666254?utm_campaign=tt4d_open_api&utm_source=7103819247981182978) |
+| The Great Burrow Meme Contest | tiktok | connected | 2026-08-16T10:11:37.451Z | sent | 213 | — | 206 | 0 | 0 | 0 | — | — | [Open](https://www.tiktok.com/@themadgercoin/video/7674570062266666254?utm_campaign=tt4d_open_api&utm_source=7103819247981182978) |
 | The Great Burrow Meme Contest | Enter Aug 17–23 | youtube | connected | 2026-08-17T13:20:00.000Z | ⚠ monitor_error (monitor error, overdue) | — | — | — | — | — | — | — | — | — |
 
 ## Interpretation
