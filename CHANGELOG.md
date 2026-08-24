@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026-08-24
+
+- Staged a conditional August 27 launch-status section ahead of the closed contest, while preserving
+  the authoritative minted-not-trading state and post-finalization link rule.
+- Replaced entry calls to action with closed-contest judging and announcement guidance.
+- Included the deployed official-links page in canonical site validation so the sitemap and public
+  allowlist are checked consistently.
+
 Notable repository changes are recorded here. Dates use UTC. This project does not currently define semantic-release or version-tag policy.
 
 ## Unreleased

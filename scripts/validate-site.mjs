@@ -1,11 +1,12 @@
 import { access, readFile } from "node:fs/promises";
 import path from "node:path";
 
-const htmlFiles = ["index.html", "litepaper.html", "meme-contest.html", "404.html"];
+const htmlFiles = ["index.html", "litepaper.html", "meme-contest.html", "official-links.html", "404.html"];
 const indexablePages = new Map([
   ["index.html", "https://madgercoin.com/"],
   ["litepaper.html", "https://madgercoin.com/litepaper.html"],
-  ["meme-contest.html", "https://madgercoin.com/meme-contest.html"]
+  ["meme-contest.html", "https://madgercoin.com/meme-contest.html"],
+  ["official-links.html", "https://madgercoin.com/official-links.html"]
 ]);
 const requiredSocialProperties = [
   'property="og:type"',
