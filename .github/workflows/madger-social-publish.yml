@@ -1,6 +1,9 @@
 name: Publish MADGER social campaign
 
 on:
+  push:
+    paths:
+      - social/outbox/*.json
   workflow_dispatch:
     inputs:
       campaign_file:
@@ -41,7 +44,8 @@ permissions:
   contents: read
 
 jobs:
-  publish:
+  publish-manual:
+    if: github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     timeout-minutes: 10
     env:
@@ -59,3 +63,29 @@ jobs:
 
       - name: Validate and publish through Buffer
         run: node scripts/buffer_publish.mjs
+
+  publish-outbox:
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      BUFFER_API_KEY: ${{ secrets.BUFFER_API_KEY }}
+      BUFFER_ORGANIZATION_ID: ${{ vars.BUFFER_ORGANIZATION_ID }}
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Publish newly added outbox campaigns
+        shell: bash
+        run: |
+          mapfile -t outbox_files < <(git diff-tree --no-commit-id --name-only --diff-filter=A -r "$GITHUB_SHA" -- 'social/outbox/*.json')
+          if (( ${#outbox_files[@]} == 0 )); then
+            echo "No newly added outbox campaign files."
+            exit 0
+          fi
+          for outbox_file in "${outbox_files[@]}"; do
+            echo "Processing ${outbox_file}"
+            OUTBOX_FILE="$outbox_file" node scripts/buffer_publish.mjs
+          done
