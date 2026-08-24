@@ -6,14 +6,17 @@ import path from "node:path";
 const API_URL = "https://api.buffer.com";
 const root = process.cwd();
 
+const outbox = process.env.OUTBOX_FILE ? await readJson(process.env.OUTBOX_FILE) : null;
+if (outbox && outbox.publish !== true) fail("Outbox file must contain publish: true.");
+
 const settings = {
-  campaignFile: process.env.CAMPAIGN_FILE || "social/campaigns/2026-08-24-today.json",
+  campaignFile: outbox?.campaignFile || process.env.CAMPAIGN_FILE || "social/campaigns/2026-08-24-today.json",
   channelsFile: process.env.CHANNELS_FILE || "config/social-channels.json",
-  assetUrl: process.env.ASSET_URL || "",
-  assetKind: process.env.ASSET_KIND || "video",
-  mode: process.env.PUBLISH_MODE || "shareNow",
-  dueAt: process.env.DUE_AT || "",
-  dryRun: /^(1|true|yes)$/i.test(process.env.DRY_RUN || "false"),
+  assetUrl: outbox?.assetUrl || process.env.ASSET_URL || "",
+  assetKind: outbox?.assetKind || process.env.ASSET_KIND || "video",
+  mode: outbox?.publishMode || process.env.PUBLISH_MODE || "shareNow",
+  dueAt: outbox?.dueAt || process.env.DUE_AT || "",
+  dryRun: outbox ? outbox.dryRun === true : /^(1|true|yes)$/i.test(process.env.DRY_RUN || "false"),
 };
 
 const allowedModes = new Set(["shareNow", "addToQueue", "shareNext", "customScheduled"]);
