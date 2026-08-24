@@ -268,7 +268,7 @@ Before production launch, test end-to-end submission, admin approval, gallery pu
 2. Telegram remains separate: publish to the `Madgercoin` announcement channel, then forward into the `Madgerburrow` community group.
 3. Reddit and Discord remain intended distribution channels, but no current autonomous account authorization is recorded.
 
-The repository now includes a dependency-free Buffer GraphQL publisher, guarded channel selectors, campaign JSON, and a GitHub Actions workflow. It requires one encrypted GitHub Actions secret named `BUFFER_API_KEY` and a public HTTPS media URL. It rejects personal Facebook profiles, disconnected/locked channels, and ambiguous account matches.
+The repository now includes a dependency-free Buffer GraphQL publisher, guarded channel selectors, campaign JSON, and a GitHub Actions workflow. After one-time setup, a new JSON instruction committed to `social/outbox/` automatically triggers publishing. The system requires one encrypted GitHub Actions secret named `BUFFER_API_KEY` and a public HTTPS media URL. It rejects personal Facebook profiles, disconnected/locked channels, and ambiguous account matches.
 
 One contest deployment package used this full map: Instagram feed, Facebook feed, TikTok photo post, YouTube Community, X, Telegram announcement and community, Discord announcement, and Reddit.
 
