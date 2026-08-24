@@ -20,6 +20,10 @@ The personal Facebook profile is explicitly excluded. Telegram is separate: publ
 
 After this, GitHub Actions can publish without logging in to every social network again. Individual social networks can still require occasional reconnection when their own authorization expires or their policies change.
 
+## Autonomous outbox
+
+After the one-time setup and first dry run, add a uniquely named JSON instruction to `social/outbox/`. The commit automatically triggers the publishing workflow; no Buffer or social-network login is needed for each campaign. The outbox file points to an approved campaign JSON and public media URL. See `social/outbox/README.md` for the exact format and rerun guardrails.
+
 ## Publish or validate a campaign
 
 Open **Actions → Publish MADGER social campaign → Run workflow**.
