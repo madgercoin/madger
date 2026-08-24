@@ -1,0 +1,61 @@
+name: Publish MADGER social campaign
+
+on:
+  workflow_dispatch:
+    inputs:
+      campaign_file:
+        description: Campaign JSON in this repository
+        required: true
+        default: social/campaigns/2026-08-24-today.json
+      asset_url:
+        description: Public HTTPS URL of the image or video
+        required: true
+      asset_kind:
+        description: Media type
+        required: true
+        type: choice
+        options:
+          - video
+          - image
+        default: video
+      publish_mode:
+        description: Buffer publishing mode
+        required: true
+        type: choice
+        options:
+          - shareNow
+          - addToQueue
+          - shareNext
+          - customScheduled
+        default: shareNow
+      due_at:
+        description: ISO-8601 UTC time; required only for customScheduled
+        required: false
+      dry_run:
+        description: Validate credentials and destinations without posting
+        required: true
+        type: boolean
+        default: true
+
+permissions:
+  contents: read
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      BUFFER_API_KEY: ${{ secrets.BUFFER_API_KEY }}
+      BUFFER_ORGANIZATION_ID: ${{ vars.BUFFER_ORGANIZATION_ID }}
+      CAMPAIGN_FILE: ${{ inputs.campaign_file }}
+      ASSET_URL: ${{ inputs.asset_url }}
+      ASSET_KIND: ${{ inputs.asset_kind }}
+      PUBLISH_MODE: ${{ inputs.publish_mode }}
+      DUE_AT: ${{ inputs.due_at }}
+      DRY_RUN: ${{ inputs.dry_run }}
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Validate and publish through Buffer
+        run: node scripts/buffer_publish.mjs
