@@ -1,0 +1,46 @@
+{
+  "buffer": [
+    {
+      "service": "twitter",
+      "label": "X @madgercoin",
+      "selectors": ["madgercoin"],
+      "expectedType": "profile"
+    },
+    {
+      "service": "instagram",
+      "label": "Instagram @madgercoin",
+      "selectors": ["madgercoin"],
+      "expectedType": "business"
+    },
+    {
+      "service": "tiktok",
+      "label": "TikTok @themadgercoin",
+      "selectors": ["themadgercoin"],
+      "expectedType": "profile"
+    },
+    {
+      "service": "youtube",
+      "label": "YouTube @Madgercoin",
+      "selectors": ["@madgercoin", "madgercoin"],
+      "expectedType": "channel"
+    },
+    {
+      "service": "facebook",
+      "label": "MADGER Facebook Page",
+      "selectors": ["madger"],
+      "expectedType": "page"
+    }
+  ],
+  "telegram": {
+    "managedByBuffer": false,
+    "announcementChannel": "Madgercoin",
+    "communityGroup": "Madgerburrow",
+    "flow": "Publish to the announcement channel, then forward to the community group."
+  },
+  "guardrails": {
+    "neverUsePersonalFacebookProfile": true,
+    "rejectDisconnectedChannels": true,
+    "rejectLockedChannels": true,
+    "rejectAmbiguousMatches": true
+  }
+}
