@@ -1,5 +1,22 @@
 # Changelog
 
+## 2026-08-25 — Pre-launch countdown hub
+
+- Removed the concluded meme contest from the production homepage, navigation, sitemap, and build.
+- Added a responsive live countdown to the conditional August 27, 2026 at 14:00 UTC launch target.
+- Replaced the homepage contest artwork with the approved two-day pre-launch poster.
+- Reconciled the shared public state to `LAUNCH_SCHEDULED` while preserving the explicit no-market-live warning.
+- Added a last-updated timestamp, launch-status cards, verification rules, launch-gate checklist, risk disclosure, and launch safety FAQs.
+- Refreshed search/social metadata and the official-links navigation for the pre-launch campaign.
+
+## 2026-08-24
+
+- Staged a conditional August 27 launch-status section ahead of the closed contest, while preserving
+  the authoritative minted-not-trading state and post-finalization link rule.
+- Replaced entry calls to action with closed-contest judging and announcement guidance.
+- Included the deployed official-links page in canonical site validation so the sitemap and public
+  allowlist are checked consistently.
+
 Notable repository changes are recorded here. Dates use UTC. This project does not currently define semantic-release or version-tag policy.
 
 ## Unreleased

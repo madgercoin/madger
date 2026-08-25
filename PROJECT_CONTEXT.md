@@ -10,7 +10,7 @@ MADGER is minted but is **not publicly launched for trading**. The official Sola
 BHauMX8akk2umqkQqnJwpYkCRkZmefGnEBFByeFXRKqv
 ```
 
-This is an identity and verification fact, not a purchase instruction. No launch date, liquidity pool, exchange listing, price expectation, guaranteed return, partnership, or completed utility is verified.
+This is an identity and verification fact, not a purchase instruction. The founder-directed campaign targets Thursday, August 27, 2026 at 14:00 GMT through Raydium LaunchLab. MADGER is still not publicly launched for trading, and the target does not verify a live market, pool, price, return, partnership, or completed utility. Public trading instructions remain blocked until the launch transaction and destination are final and independently verified.
 
 ## Product today
 
