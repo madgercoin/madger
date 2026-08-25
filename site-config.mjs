@@ -1,7 +1,6 @@
 export const rootFiles = [
   "index.html",
   "litepaper.html",
-  "meme-contest.html",
   "official-links.html",
   "404.html",
   "styles.css",
@@ -22,9 +21,7 @@ export const assetFiles = [
   "madger_v5_official_logo.webp",
   "madger_v5_social.jpg",
   "madger_v5_profile.webp",
-  "media/meme-contest/madger-meme-contest-square.jpg",
-  "media/meme-contest/madger-meme-contest-vertical.jpg",
-  "media/meme-contest/madger-meme-contest-vertical-v2.jpg"
+  "media/madger-prelaunch-2-days.png"
 ];
 
 export const distAllowlist = [

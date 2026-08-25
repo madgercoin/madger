@@ -9,7 +9,7 @@ const normalizedStateSource = stateSource.replace(/\r\n?/g, "\n");
 const stateBlobHeader = `blob ${Buffer.byteLength(normalizedStateSource)}\0`;
 const stateCacheKey = createHash("sha1").update(stateBlobHeader).update(normalizedStateSource).digest("hex").slice(0, 8);
 const failures = [];
-if (!/const current = STATES\.MINTED_NOT_TRADING;/.test(stateSource)) failures.push("MINTED_NOT_TRADING is not the active launch state");
+if (!/const current = STATES\.LAUNCH_SCHEDULED;/.test(stateSource)) failures.push("LAUNCH_SCHEDULED is not the active launch state");
 for (const state of ["MINTED_NOT_TRADING", "LAUNCH_SCHEDULED", "TRADING_LIVE", "PAUSED_OR_DELAYED"]) {
   if (!stateSource.includes(`${state}: "${state}"`)) failures.push(`missing supported state ${state}`);
 }
@@ -22,6 +22,10 @@ for (const page of statePages) {
   if (!html.includes("data-launch-state")) failures.push(`${page}: no centralized launch-state surface`);
   if (!html.includes(`/launch-state.js?v=${stateCacheKey}`)) failures.push(`${page}: launch-state controller must use cache key ${stateCacheKey}`);
 }
+const homepage = await readFile("index.html", "utf8");
+if (!homepage.includes('data-launch-at="2026-08-27T14:00:00Z"')) failures.push("index.html: exact UTC countdown target is absent");
+if (!homepage.includes('src="/assets/media/madger-prelaunch-2-days.png" width="1254" height="1254"')) failures.push("index.html: approved pre-launch poster is absent");
+if (homepage.includes("meme-contest")) failures.push("index.html: retired meme contest remains on the homepage");
 for (const page of informationalPages) {
   const html = await readFile(page, "utf8");
   if (tradingHosts.test(html)) failures.push(`${page}: trading link present before launch`);
