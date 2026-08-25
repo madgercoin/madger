@@ -19,10 +19,18 @@ const [home, litepaper, notFound] = await Promise.all([
 
 const workerSource = `/** Generated at build time. HTML is bundled to prevent stale or corrupted edge assets. */
 const pages = ${JSON.stringify({ home, litepaper, notFound })};
-const html = { headers: { "content-type": "text/html; charset=UTF-8", "cache-control": "no-cache" } };
+const securityHeaders = Object.freeze({
+  "content-security-policy": "default-src 'self'; base-uri 'self'; connect-src 'self'; font-src 'self'; form-action 'none'; frame-ancestors 'none'; frame-src https://docs.google.com; img-src 'self' data:; object-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; upgrade-insecure-requests",
+  "permissions-policy": "camera=(), microphone=(), geolocation=()",
+  "referrer-policy": "strict-origin-when-cross-origin",
+  "strict-transport-security": "max-age=31536000; includeSubDomains",
+  "x-content-type-options": "nosniff",
+  "x-frame-options": "DENY"
+});
+const html = { headers: { ...securityHeaders, "content-type": "text/html; charset=UTF-8", "cache-control": "no-cache" } };
 const permanentRedirect = location => new Response(null, {
   status: 301,
-  headers: { location, "cache-control": "public, max-age=3600" }
+  headers: { ...securityHeaders, location, "cache-control": "public, max-age=3600" }
 });
 const notFound = {
   status: 404,

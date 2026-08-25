@@ -8,6 +8,7 @@
 - Reconciled the shared public state to `LAUNCH_SCHEDULED` while preserving the explicit no-market-live warning.
 - Added a last-updated timestamp, launch-status cards, verification rules, launch-gate checklist, risk disclosure, and launch safety FAQs.
 - Refreshed search/social metadata and the official-links navigation for the pre-launch campaign.
+- Applied the complete production security-header policy to Worker-generated HTML, redirects, and error responses.
 
 ## 2026-08-24
 
