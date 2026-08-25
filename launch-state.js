@@ -6,7 +6,7 @@
     TRADING_LIVE: "TRADING_LIVE",
     PAUSED_OR_DELAYED: "PAUSED_OR_DELAYED"
   });
-  const current = STATES.MINTED_NOT_TRADING;
+  const current = STATES.LAUNCH_SCHEDULED;
   const labels = Object.freeze({
     MINTED_NOT_TRADING: Object.freeze({
       default: "Minted on Solana — public trading is not open.",
@@ -14,9 +14,9 @@
       research: "On-chain token created; market launch remains pending."
     }),
     LAUNCH_SCHEDULED: Object.freeze({
-      default: "Launch timing has been published through official channels.",
-      safety: "A launch window is approved; confirm its details before acting.",
-      research: "Launch phase scheduled; venue and timing disclosures are active."
+      default: "Launch scheduled for August 27, 2026 at 14:00 GMT through Raydium LaunchLab.",
+      safety: "Launch is scheduled for August 27 at 14:00 GMT. Verify the mint and venue through madgercoin.com.",
+      research: "Launch scheduled for August 27, 2026 at 14:00 GMT through Raydium LaunchLab on Solana."
     }),
     TRADING_LIVE: Object.freeze({
       default: "MADGER trading is live through the published official venue.",

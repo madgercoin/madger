@@ -9,7 +9,7 @@ const normalizedStateSource = stateSource.replace(/\r\n?/g, "\n");
 const stateBlobHeader = `blob ${Buffer.byteLength(normalizedStateSource)}\0`;
 const stateCacheKey = createHash("sha1").update(stateBlobHeader).update(normalizedStateSource).digest("hex").slice(0, 8);
 const failures = [];
-if (!/const current = STATES\.MINTED_NOT_TRADING;/.test(stateSource)) failures.push("MINTED_NOT_TRADING is not the active launch state");
+if (!/const current = STATES\.LAUNCH_SCHEDULED;/.test(stateSource)) failures.push("LAUNCH_SCHEDULED is not the active launch state");
 for (const state of ["MINTED_NOT_TRADING", "LAUNCH_SCHEDULED", "TRADING_LIVE", "PAUSED_OR_DELAYED"]) {
   if (!stateSource.includes(`${state}: "${state}"`)) failures.push(`missing supported state ${state}`);
 }
@@ -24,7 +24,7 @@ for (const page of statePages) {
 }
 for (const page of informationalPages) {
   const html = await readFile(page, "utf8");
-  if (tradingHosts.test(html)) failures.push(`${page}: trading link present before launch`);
+  if (tradingHosts.test(html)) failures.push(`${page}: trading link present before trading is live`);
 }
 const notFound = await readFile("404.html", "utf8");
 if (notFound.includes("data-launch-state") || notFound.includes("/launch-state.js")) {
@@ -34,4 +34,4 @@ for (const file of statePages) {
   if (!(await readFile(file, "utf8")).includes(mint)) failures.push(`${file}: exact official mint absent`);
 }
 if (failures.length) { console.error(failures.map(x => `- ${x}`).join("\n")); process.exit(1); }
-console.log(`Validated exact mint, ${statePages.length} distinct launch-state surfaces, all states and voices, focused 404 copy, and pre-launch trading-link prohibition.`);
+console.log(`Validated exact mint, ${statePages.length} distinct launch-state surfaces, all states and voices, focused 404 copy, and pre-trading link prohibition.`);

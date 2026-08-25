@@ -29,3 +29,11 @@
 .homepage-contest .safety-note{border-left:4px solid var(--gold);padding:16px 20px;background:rgba(212,175,55,.08)}
 @media(prefers-reduced-motion:reduce){.homepage-contest .contest-poster-link{transition:none}}
 @media(max-width:820px){.homepage-contest .contest-hero,.homepage-contest .rules-layout{grid-template-columns:1fr}.homepage-contest .contest-grid{grid-template-columns:1fr}.homepage-contest .rules-nav{position:static}}
+.launch-countdown{display:grid;grid-template-columns:minmax(0,.85fr) minmax(320px,1.15fr);gap:clamp(2rem,5vw,5rem);align-items:center;background:linear-gradient(135deg,rgba(234,179,8,.08),rgba(0,0,0,0) 55%)}
+.launch-countdown h2{margin:.35rem 0 1rem}.launch-countdown .big-copy{max-width:42rem}
+.launch-poster{margin:0;border:1px solid rgba(234,179,8,.45);box-shadow:0 24px 70px rgba(0,0,0,.45);overflow:hidden}
+.launch-poster img{display:block;width:100%;height:auto}
+.launch-facts{list-style:none;margin:1.75rem 0;padding:0;border-top:1px solid rgba(255,255,255,.14)}
+.launch-facts li{display:flex;justify-content:space-between;gap:1rem;padding:.85rem 0;border-bottom:1px solid rgba(255,255,255,.14)}
+.launch-facts strong{color:var(--gold,#eab308);text-transform:uppercase;letter-spacing:.08em}.launch-facts span{text-align:right}
+@media (max-width:800px){.launch-countdown{grid-template-columns:1fr}.launch-poster{order:-1}.launch-facts li{align-items:flex-start}}

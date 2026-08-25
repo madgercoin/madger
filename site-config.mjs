@@ -24,7 +24,9 @@ export const assetFiles = [
   "madger_v5_profile.webp",
   "media/meme-contest/madger-meme-contest-square.jpg",
   "media/meme-contest/madger-meme-contest-vertical.jpg",
-  "media/meme-contest/madger-meme-contest-vertical-v2.jpg"
+  "media/meme-contest/madger-meme-contest-vertical-v2.jpg",
+  "media/launch/madger-2-days-launch.png",
+  "media/launch/madger-2-days-launch-motion.mp4"
 ];
 
 export const distAllowlist = [
