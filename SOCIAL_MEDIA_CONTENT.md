@@ -62,7 +62,7 @@ Verify: https://madgercoin.com
 Community: https://t.me/madgerburrow  
 Announcements: https://t.me/madgercoin
 
-Stay Mad. Keep Digging.
+Small Badger. Big Crypto.
 
 ---
 
@@ -86,7 +86,7 @@ Announcements: https://t.me/madgercoin
 
 MADGER admins will never contact you first, ask for your seed phrase, or send a secret purchase link. Verify every announcement through the website and this channel.
 
-**Stay Mad. Keep Digging.**
+**Small Badger. Big Crypto.**
 
 ---
 
@@ -96,7 +96,7 @@ MADGER admins will never contact you first, ask for your seed phrase, or send a 
 
 Meet MADGER. 🦡
 
-Small Badger. Big Mood.
+Small Badger. Big Crypto.
 
 Markets rise. Markets fall. Narratives change. MADGER keeps digging.
 
@@ -431,7 +431,7 @@ t.me/madgerburrow
 1. MARKETS PANIC.
 2. TIMELINES SCREAM.
 3. MADGER DIGS.
-4. STAY MAD. KEEP DIGGING.
+4. SMALL BADGER. BIG CRYPTO.
 5. MADGERCOIN.COM
 
 **Caption**
@@ -455,7 +455,7 @@ VERIFY AT MADGERCOIN.COM
 
 **Caption**
 
-Small Badger. Big Mood. Welcome to The Burrow.
+Small Badger. Big Crypto. Welcome to The Burrow.
 
 ## Video 03 — Badger Reaction
 
@@ -541,7 +541,7 @@ Protect The Burrow. Verify first.
 
 13. The market asked for a prediction. MADGER handed it a shovel.
 
-14. Stay Mad. Keep Digging.
+14. Small Badger. Big Crypto.
 
 15. The Burrow is open: https://t.me/madgerburrow
 
@@ -552,7 +552,7 @@ Protect The Burrow. Verify first.
 ## Story Set 01 — Introduction
 
 **Frame 1:** WHO IS MADGER?  
-**Frame 2:** SMALL BADGER. BIG MOOD.  
+**Frame 2:** SMALL BADGER. BIG CRYPTO.
 **Frame 3:** SKEPTICAL OF NOISE  
 **Frame 4:** LOYAL TO THE BURROW  
 **Frame 5:** ALWAYS DIGGING  
@@ -580,7 +580,7 @@ Protect The Burrow. Verify first.
 ## Instagram
 
 The grumpiest badger on Solana. 🦡  
-Stay Mad. Keep Digging.  
+Small Badger. Big Crypto.
 Minted • Public trading not launched  
 👇 Enter The Burrow
 

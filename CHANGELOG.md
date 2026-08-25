@@ -1,5 +1,10 @@
 # Changelog
 
+## 2026-08-25 — Brand tagline refresh
+
+- Replaced both retired legacy taglines across the public homepage, brand source of truth, social copy, campaign schedules, and listing materials.
+- Established “Small Badger. Big Crypto.” as the primary MADGER tagline and added regression protection against the retired phrases returning to indexable pages.
+
 ## 2026-08-25 — Pre-launch countdown hub
 
 - Removed the concluded meme contest from the production homepage, navigation, sitemap, and build.
