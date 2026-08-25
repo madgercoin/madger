@@ -25,6 +25,16 @@ const privateOperationsAddresses = [
 ];
 const publishedText = (await Promise.all(actual.filter(file => /\.(?:html|js|css|xml|txt|json|webmanifest)$/i.test(file))
   .map(file => readFile(path.join("dist", file), "utf8")))).join("\n");
+const workerSource = await readFile("worker.generated.js", "utf8");
+const requiredWorkerHeaders = [
+  "content-security-policy",
+  "permissions-policy",
+  "referrer-policy",
+  "strict-transport-security",
+  "x-content-type-options",
+  "x-frame-options"
+];
+const missingWorkerHeaders = requiredWorkerHeaders.filter(header => !workerSource.includes(`"${header}":`));
 const leakedAddresses = privateOperationsAddresses.filter(address => publishedText.includes(address));
 if (missing.length || unexpected.length) {
   if (missing.length) console.error(`Missing dist files: ${missing.join(", ")}`);
@@ -37,5 +47,10 @@ if (leakedDocuments.length || leakedAddresses.length || /(?:seed phrase|private 
   if (/(?:seed phrase|private key)\s*[:=]\s*[A-Za-z0-9]+/i.test(publishedText)) console.error("Private wallet material pattern found in dist");
   process.exit(1);
 }
+if (missingWorkerHeaders.length) {
+  console.error(`Generated Worker is missing security headers: ${missingWorkerHeaders.join(", ")}`);
+  process.exit(1);
+}
 console.log(`Validated explicit dist allowlist (${actual.length} files).`);
 console.log("Validated launch-document exclusion and absence of private wallet material/operations addresses in dist.");
+console.log(`Validated ${requiredWorkerHeaders.length} security headers in the generated Worker.`);
