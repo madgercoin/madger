@@ -205,8 +205,9 @@ if (crossPageDuplicates.length) {
 }
 
 const lowValuePhraseBudgets = new Map([
-  ["stay mad keep digging", 1],
-  ["small badger big mood", 1],
+  [["stay", "mad", "keep", "digging"].join(" "), 0],
+  [["small", "badger", "big", "mood"].join(" "), 0],
+  ["small badger big crypto", 1],
   ["build the burrow", 1],
   ["community campaigns partnerships", 1],
   ["games collectibles licensing", 1],

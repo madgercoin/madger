@@ -11,7 +11,7 @@ Official mint: `BHauMX8akk2umqkQqnJwpYkCRkZmefGnEBFByeFXRKqv`
 
 Verify everything at madgercoin.com. We are not launching on Pump.fun. Admins never DM first.
 
-Small badger. Big mood. Keep digging.
+Small Badger. Big Crypto.
 
 #MADGER #Solana #Raydium #LaunchLab #TheBurrow
 

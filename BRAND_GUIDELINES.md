@@ -22,8 +22,8 @@ The approved face-forward gold coin emblem is the canonical compact mark. The ap
 - Ticker: **$MADGER**
 - Blockchain: **Solana**
 - Community: **The Burrow**
-- Primary tagline: **Small Badger. Big Mood.**
-- Supporting slogans: **Stay Mad.**, **Keep Digging.**, and **The Burrow Never Sleeps.**
+- Primary tagline: **Small Badger. Big Crypto.**
+- Supporting slogans: **Keep Digging.** and **The Burrow Never Sleeps.**
 - Approved identity line: **The Badger. The Attitude. The Coin.**
 
 Use **MADGER** for the project and **$MADGER** when referring specifically to the ticker. The voice is direct, dry, sarcastic, capable, and calm under pressure. Bold humor is welcome; hostility, deception, artificial urgency, financial promotion, and claims beyond verified facts are not.

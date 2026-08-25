@@ -106,7 +106,7 @@ The recorded emblem is a fierce cartoon badger head with sharp eyes and one smal
 
 - “THE BURROW OPENS.”
 - “The burrow is open.”
-- “SMALL BADGER. BIG MOOD.”
+- “SMALL BADGER. BIG CRYPTO.”
 - “BUILT TO BREAK AWAY.”
 - “KEEP DIGGING.”
 - “NO SLOWING DOWN.”
