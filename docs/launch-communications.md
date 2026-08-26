@@ -2,6 +2,20 @@
 
 Replace bracketed fields only from the signed launch record. Every draft remains embargoed until its named condition is authorized. Never add price promises, urgency, unverified listings, or unofficial purchase instructions.
 
+## T−24-hour pre-launch announcement
+
+> **AUTHORIZED FOR PRE-LAUNCH USE ONLY WHILE THE WEBSITE SHOWS LAUNCH_SCHEDULED.**
+>
+> 🚀 **$MADGER TARGETS AUGUST 27 AT 14:00 UTC**
+>
+> MADGER is preparing to open public trading through a direct MADGER/SOL CPMM liquidity pool on Solana.
+>
+> Official mint: `BHauMX8akk2umqkQqnJwpYkCRkZmefGnEBFByeFXRKqv`
+>
+> The verified pool link will be published at https://madgercoin.com only after the launch transaction is final and independently checked. Until then, no market link is official. Admins never DM first.
+>
+> Small Badger. Big Crypto.
+
 ## Website launch update
 
 > **DO NOT PUBLISH BEFORE AUTHORIZED PUBLIC LAUNCH.**
