@@ -435,7 +435,7 @@ Capabilities envisioned for DeaniusOS/MADGER:
 
 - Confirm whether launch occurred and record the on-chain evidence.
 - Confirm the compliant transaction path, verified CPMM pool/trading link, LP-control proof, and final token configuration.
-- Confirm current authorities, metadata immutability, treasury/operations wallets, and custody controls.
+- Mint authority is revoked, freeze authority is absent, and metadata is immutable; confirm the five role-wallet balances and custody controls immediately before launch.
 - Confirm execution of the approved 60/20/10/7/3 target allocation and reconcile all five role wallets.
 - Record actual capital deployed versus the $4,000 reserve.
 
