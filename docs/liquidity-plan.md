@@ -6,7 +6,7 @@ This comparison informs founder decisions. It does **not** authorize a budget, q
 
 The selected launch design is a direct MADGER/SOL Raydium CPMM liquidity pool scheduled conditionally for August 27, 2026 at 14:00 UTC. This replaces the stale LaunchLab reference: MADGER is already minted and is not using a bonding curve or graduation mechanism.
 
-The selection remains blocked from execution until the compliant transaction path, exact liquidity budget, opening valuation/tolerance, LP policy, mint-authority revocation, allocation transfers, custody signers, and emergency owners are approved. Raydium's current interface requires a jurisdiction representation that the U.S.-citizen founder cannot truthfully make; no one may accept it on his behalf without a documented compliant path.
+The selection remains blocked from execution until the compliant transaction path, exact liquidity budget, opening valuation/tolerance, LP policy, verified authority state, allocation transfers, custody signers, and emergency owners are approved. Raydium's current interface requires a jurisdiction representation that the U.S.-citizen founder cannot truthfully make; no one may accept it on his behalf without a documented compliant path.
 
 ## Common opening mechanics
 
