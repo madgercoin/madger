@@ -24,7 +24,7 @@ for (const page of statePages) {
 }
 const homepage = await readFile("index.html", "utf8");
 if (!homepage.includes('data-launch-at="2026-08-27T14:00:00Z"')) failures.push("index.html: exact UTC countdown target is absent");
-if (!homepage.includes('src="/assets/media/madger-prelaunch-2-days.png" width="1254" height="1254"')) failures.push("index.html: approved pre-launch poster is absent");
+if (!homepage.includes('src="/assets/media/madger-prelaunch-tomorrow-cpmm.png" width="1254" height="1254"')) failures.push("index.html: approved pre-launch poster is absent");
 if (homepage.includes("meme-contest")) failures.push("index.html: retired meme contest remains on the homepage");
 for (const page of informationalPages) {
   const html = await readFile(page, "utf8");

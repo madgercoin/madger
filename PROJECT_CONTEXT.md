@@ -10,7 +10,7 @@ MADGER is minted but is **not publicly launched for trading**. The official Sola
 BHauMX8akk2umqkQqnJwpYkCRkZmefGnEBFByeFXRKqv
 ```
 
-This is an identity and verification fact, not a purchase instruction. The founder-directed campaign targets Thursday, August 27, 2026 at 14:00 GMT through Raydium LaunchLab. MADGER is still not publicly launched for trading, and the target does not verify a live market, pool, price, return, partnership, or completed utility. Public trading instructions remain blocked until the launch transaction and destination are final and independently verified.
+This is an identity and verification fact, not a purchase instruction. The founder-directed campaign targets Thursday, August 27, 2026 at 14:00 UTC through a direct Raydium CPMM liquidity pool. MADGER is still not publicly launched for trading, and the target does not verify a live market, pool, price, return, partnership, or completed utility. Public trading instructions remain blocked until every legal, custody, transaction, security, and independent-verification gate clears and the launch transaction and destination are final.
 
 ## Product today
 
@@ -30,4 +30,4 @@ Quality, transparency, safety, accessibility, performance, maintainability, and 
 
 ## Future Decisions
 
-Authority settings, allocation-transfer authorization, vesting, liquidity, launch timing/method/venue, governance, legal structure, custody implementation, payment scope, and utility architecture remain unresolved. The verified supply is 1,000,000,000, decimals are 6, and transfer tax is 0%.
+The compliant Raydium transaction path, liquidity budget, opening valuation, LP policy, allocation-transfer authorization, governance, legal structure, custody implementation, payment scope, and utility architecture remain unresolved. The verified supply is 1,000,000,000, decimals are 6, and transfer tax is 0%.

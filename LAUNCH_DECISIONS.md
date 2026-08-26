@@ -1,12 +1,23 @@
-# MADGER launch decisions requiring founder approval
+# MADGER launch decision register
 
-This file is intentionally limited to unresolved approvals. Record each decision, approver, UTC timestamp, rationale, and supporting review before changing launch state or moving funds.
+Record each founder decision, approver, UTC timestamp, rationale, and supporting review before changing launch state or moving funds. A selected method or target time is not authorization to transact. Any item marked unresolved means **STOP** at the dependent gate.
 
-1. **Launch method** — venue/pool design and operational sequence.
-2. **Liquidity budget** — amounts and assets committed, including fee/SOL reserve.
+## Recorded founder decisions
+
+| Decision | Approved value | Approver | Recorded UTC | Evidence / limitation |
+|---|---|---|---|---|
+| Launch method | Direct MADGER/SOL Raydium CPMM liquidity pool | James Dean | 2026-08-26 | Founder confirmed CPMM in the launch-preparation conversation. This does not clear the current Raydium jurisdiction restriction or authorize a transaction. |
+| Launch date and time | August 27, 2026 at 14:00 UTC | James Dean | 2026-08-26 | Consistent with the production countdown and founder instruction to use a worldwide UTC time. Publication remains conditional on all gates clearing. |
+
+## Verified authority state
+
+Solana Explorer reports a fixed 1,000,000,000 supply. Independent raw mint inspection confirms mint-authority option `0` and freeze-authority option `0`; Metaplex metadata is immutable. No authority-revocation transaction remains.
+
+## Unresolved approvals
+
+1. **Compliant transaction path** — qualified confirmation that the selected venue/program may be used without a false jurisdiction representation.
+2. **Liquidity budget** — exact SOL and MADGER amounts committed, including fee and priority reserve.
 3. **Opening valuation** — approved initial price/fully diluted valuation and acceptable setup tolerance.
-4. **LP policy** — custody, multisig/signers, lock/burn/retention choice, duration, and public disclosure.
-5. **Launch date and time** — exact UTC time, publication freeze, and delay window.
-6. **Authority-revocation timing** — which mint/freeze/metadata authorities are changed, when, and after which verification.
-7. **Allocation-transfer authorization** — approval to execute the target wallet movements and permitted batches.
-8. **Emergency decision owners** — named go/no-go, pause, cancellation, communications, custody, and incident owners plus alternates.
+4. **LP policy** — custody, multisig/signers, permanent Burn & Earn lock or other approved treatment, and exact public disclosure.
+5. **Allocation-transfer authorization** — approval to execute the target wallet movements and permitted batches.
+6. **Emergency decision owners** — named go/no-go, pause, cancellation, communications, custody, monitoring, and incident owners plus alternates.

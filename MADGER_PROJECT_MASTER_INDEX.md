@@ -1,6 +1,7 @@
 # $MADGER Coin — Consolidated Project Master Index
 
 **Prepared:** August 24, 2026  
+**Launch correction recorded:** August 26, 2026  
 **Project owner/founder:** James Dean  
 **Purpose:** Single source of truth consolidating all retrievable MADGER-related conversation history and project-file evidence.
 
@@ -142,17 +143,17 @@ These are roadmap concepts unless separately implemented and verified. Do not ma
 
 ### 6.1 Current founder-directed launch campaign
 
-The controlling launch-poster instruction is a **Raydium LaunchLab** launch on Solana rather than a pump.fun launch. It supersedes the older August 25 proposal below.
+The controlling founder instruction is a direct **Raydium CPMM** MADGER/SOL liquidity-pool launch on Solana. MADGER is already minted, so the selected path does not use a bonding curve or graduation. This supersedes the LaunchLab campaign language and the older August 25 proposal below.
 
 | Element | Current campaign value | Status |
 |---|---:|---|
 | Launch date | Thursday, August 27, 2026 | CONFIRMED founder instruction |
 | Launch time | 14:00 GMT | CONFIRMED founder instruction; this is 9:00 a.m. fixed EST, but 10:00 a.m. in New York during August EDT |
 | Network | Solana | CONFIRMED |
-| Venue | Raydium LaunchLab | CONFIRMED campaign instruction; verify live destination before trading instructions |
+| Venue / program | Direct Raydium CPMM MADGER/SOL pool | CONFIRMED founder instruction; execution remains subject to all legal, custody, transaction, and verification gates |
 | Total supply | 1,000,000,000 $MADGER | CONFIRMED campaign instruction |
 | Pump.fun | Not the launch venue | CONFIRMED campaign instruction |
-| Migration | Bonding curve to Raydium CPMM | CONFIRMED campaign instruction; verify live state before claiming completion |
+| Pool start | Direct CPMM pool; no bonding or graduation | CONFIRMED founder correction on August 26, 2026 |
 
 ### 6.2 Superseded August 25 proposal
 
@@ -180,11 +181,11 @@ The controlling launch-poster instruction is a **Raydium LaunchLab** launch on S
 Do not publish trading instructions until all of the following are verified:
 
 - Exact launch time and timezone.
-- Final Raydium LaunchLab page and official trading URL.
+- Final verified Raydium CPMM pool address and official trading URL.
 - Exact launch configuration actually deployed.
 - Full mint address matches the official token.
 - Whether the token is still “minted but not publicly launched” or is already live.
-- Actual liquidity/graduation status and whether any pool exists.
+- Actual liquidity, LP-control status, and whether the verified CPMM pool exists.
 - Wallet controls, mint/freeze authority state, metadata, and pool identifiers.
 - Any legal, jurisdictional, or platform disclosures required for promotion.
 
@@ -422,8 +423,8 @@ Capabilities envisioned for DeaniusOS/MADGER:
 |---|---|---|---|
 | Contest submission | Submit in Telegram/Madger Burrow | Post on X and submit via `madgercoin.com` entry form | Treat website form as official system of record; remove Telegram-only language |
 | Contest platform behavior | Social post could imply entry | Public social post alone is insufficient | Require website submission |
-| Launch status | Minted but not publicly launched; then Aug. 25 proposal | Launch campaign set for Aug. 27, 2026 at 14:00 GMT via Raydium LaunchLab | Verify live status; do not infer execution from planned copy |
-| Launch venue | Placeholders in launch file | Later Raydium LaunchLab proposal | Verify deployed venue and trading URL |
+| Launch status | Minted but not publicly launched; then Aug. 25 proposal | Conditional direct Raydium CPMM target for Aug. 27, 2026 at 14:00 UTC | Verify live status; do not infer execution from planned copy |
+| Launch venue | LaunchLab proposal | Direct MADGER/SOL Raydium CPMM selected on August 26 | Verify legal eligibility, deployed pool, and trading URL |
 | Character flexibility | New poses/scenes allowed | Exact identity cannot change | Creative freedom applies only to pose/scene, never likeness |
 | Animated stickers | Three GIFs requested | Rejected attempts; restart with one “LOCK IN” action sticker | Do not reuse failed/glitchy files |
 | Own coin vs Solana | Interest in independence | Utility ecosystem first; possible future chain | Do not present an independent chain as current plan |
@@ -433,9 +434,9 @@ Capabilities envisioned for DeaniusOS/MADGER:
 ### Launch-critical
 
 - Confirm whether launch occurred and record the on-chain evidence.
-- Confirm launch time, official LaunchLab/trading link, pool/graduation identifiers, and final token configuration.
-- Confirm current authorities, metadata immutability, treasury/operations wallets, and custody controls.
-- Confirm whether the 1B supply and 80/20 allocation are final deployed facts or only a proposal.
+- Confirm the compliant transaction path, verified CPMM pool/trading link, LP-control proof, and final token configuration.
+- Mint authority is revoked, freeze authority is absent, and metadata is immutable; confirm the five role-wallet balances and custody controls immediately before launch.
+- Confirm execution of the approved 60/20/10/7/3 target allocation and reconcile all five role wallets.
 - Record actual capital deployed versus the $4,000 reserve.
 
 ### Brand/assets
@@ -482,7 +483,7 @@ When records conflict, use this order:
 ## 19. Immediate operating checklist
 
 1. Lock the canonical character reference pack and reject all off-model outputs.
-2. Verify current on-chain launch status and record the authoritative trading/LaunchLab link.
+2. Verify current on-chain launch status and record the authoritative Raydium CPMM pool link.
 3. Update `madgercoin.com` with only verified current facts.
 4. Remove or label superseded Telegram-only contest instructions.
 5. Inventory all official account URLs and access owners.
