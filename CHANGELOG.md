@@ -6,6 +6,7 @@
 - Recorded August 27, 2026 at 14:00 UTC as the conditional worldwide launch target.
 - Added explicit compliance, liquidity-budget, opening-valuation, LP-policy, authority-revocation, allocation-transfer, custody, and incident-owner execution gates.
 - Archived and disabled the superseded August 24 LaunchLab campaign copy so it cannot be republished accidentally.
+- Added corrected direct-CPMM pre-launch copy with the full mint and website-first verification rule.
 - Preserved the minted-not-trading public state; no pool, trading link, or transaction is represented as live.
 
 ## 2026-08-25 — Brand tagline refresh
