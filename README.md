@@ -116,6 +116,7 @@ Only these endpoints are verified by the current repository:
 - Reddit: [u/Madgercoin](https://www.reddit.com/user/Madgercoin/)
 - Announcements: [t.me/madgercoin](https://t.me/madgercoin)
 - Community: [t.me/madgerburrow](https://t.me/madgerburrow)
+- Discord: [MADGER Community](https://discord.gg/NcuPzSNz9e)
 - Contact: [madgercoin@gmail.com](mailto:madgercoin@gmail.com)
 
 ## Future Decisions
@@ -127,4 +128,3 @@ The repository does not yet verify the following. Contributors and AI assistants
 - Analytics, monitoring, release environments, custom-domain ownership procedures, and formal availability targets.
 - The scope, sequencing, compliance requirements, custody model, supported assets/regions, vendors, and security architecture for real-world crypto payments or any other utility.
 - Whether to adopt a maintained application/content architecture when the static site no longer meets project needs.
-- The canonical Discord server invite. Do not publish or embed a Discord URL until the authenticated server, invite permissions, safety settings, and destination are independently verified.
