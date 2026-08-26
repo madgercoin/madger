@@ -30,4 +30,4 @@ Quality, transparency, safety, accessibility, performance, maintainability, and 
 
 ## Future Decisions
 
-The compliant Raydium transaction path, liquidity budget, opening valuation, LP policy, authority-revocation timing, allocation-transfer authorization, governance, legal structure, custody implementation, payment scope, and utility architecture remain unresolved. The verified supply is 1,000,000,000, decimals are 6, and transfer tax is 0%.
+The compliant Raydium transaction path, liquidity budget, opening valuation, LP policy, allocation-transfer authorization, governance, legal structure, custody implementation, payment scope, and utility architecture remain unresolved. The verified supply is 1,000,000,000, decimals are 6, and transfer tax is 0%.
