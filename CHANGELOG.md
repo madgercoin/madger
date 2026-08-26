@@ -11,6 +11,13 @@
 - Replaced the stale two-day/LaunchLab/GMT homepage poster with a one-day/direct-CPMM/UTC version while preserving the canonical Madger artwork.
 - Preserved the minted-not-trading public state; no pool, trading link, or transaction is represented as live.
 
+## 2026-08-26 — Launch-eve artwork
+
+- Integrated the corrected one-day direct-CPMM artwork as the centerpiece of a responsive launch showcase.
+- Paired the poster with the live countdown and a concise website-first verification briefing.
+- Preserved the conditional-launch warning, full-mint verification path, intrinsic image dimensions, and mobile reflow.
+- Corrected the rotated Daily Dig stamp so it no longer creates horizontal overflow on phone-width screens.
+
 ## 2026-08-25 — Brand tagline refresh
 
 - Replaced both retired legacy taglines across the public homepage, brand source of truth, social copy, campaign schedules, and listing materials.
