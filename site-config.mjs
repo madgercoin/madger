@@ -21,7 +21,7 @@ export const assetFiles = [
   "madger_v5_official_logo.webp",
   "madger_v5_social.jpg",
   "madger_v5_profile.webp",
-  "media/madger-prelaunch-tomorrow-cpmm.png"
+  "media/madger-prelaunch-tomorrow-cpmm-v2.png"
 ];
 
 export const distAllowlist = [
