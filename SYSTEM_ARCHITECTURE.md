@@ -12,7 +12,7 @@ root sources -> node build.mjs -> dist/ allowlist -> Cloudflare Worker -> madger
 
 ## Build boundary
 
-`build.mjs` deletes `dist/` and copies the ten root resources plus eight approved assets centralized in `site-config.mjs`. Anything not explicitly listed is private to the repository and not deployed. Internal documentation, package metadata, tests, validation scripts, and source maps are excluded. The obsolete Astro starter and declarations were removed rather than retained as misleading dead source.
+`build.mjs` deletes `dist/` and copies the eleven root resources plus nine approved assets centralized in `site-config.mjs`. Anything not explicitly listed is private to the repository and not deployed. Internal documentation, package metadata, tests, validation scripts, and source maps are excluded. The obsolete Astro starter and declarations were removed rather than retained as misleading dead source.
 
 ## Deployment
 

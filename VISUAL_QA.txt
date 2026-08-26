@@ -32,6 +32,7 @@ Typography uses an Impact/Arial Black-style condensed display stack for high-imp
 | `madger_v5_icon.png` | `/assets/madger_v5_icon.png` | Browser and manifest icon |
 | `madger_v5_social.jpg` | `/assets/madger_v5_social.jpg` | 1200×630 Open Graph/X compatibility card |
 | `madger_v5_graphics.webp` | `/assets/madger_v5_graphics.webp` | Supporting editorial/brand composition |
+| `media/madger-prelaunch-tomorrow-cpmm-v2.png` | `/assets/media/madger-prelaunch-tomorrow-cpmm-v2.png` | 1254×1254 direct-CPMM launch-eve poster paired with the live countdown |
 
 Only files listed in `site-config.mjs` are copied to production. Do not assume public availability grants reuse rights; formal asset licensing remains a Future Decision.
 
@@ -81,6 +82,7 @@ Exact supported browser versions are not yet defined. At minimum, use a current 
 
 - [ ] Hero subject remains intentional on desktop (`center 35%`) and mobile (`62% center`), with no stray source fragments at an edge.
 - [ ] Gradient maintains readable bone/gold text without erasing the mascot; headline and calls to action wrap cleanly.
+- [ ] Launch-eve poster remains uncropped, legible, and paired with the conditional-status caption and countdown at every target width.
 - [ ] Full-body portrait preserves its 900×1184 ratio, keeps the complete ears/fang/feet/tail visible, and does not regain the unused square perimeter.
 - [ ] Trust strip, token grid, roadmap cards, Daily Dig stamp, social grid, FAQ, and footer follow their responsive column changes without border anomalies.
 - [ ] Daily Dig text is readable for every entry in `script.js`, not just the current day.
