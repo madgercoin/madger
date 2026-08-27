@@ -65,3 +65,12 @@ if (countdown) {
   renderCountdown();
   window.setInterval(renderCountdown, 1000);
 }
+
+const manifestoFooter = document.querySelector(".manifesto blockquote footer");
+if (manifestoFooter) {
+  const fieldMark = document.createElement("p");
+  fieldMark.className = "launch-note";
+  fieldMark.setAttribute("aria-label", "Burrow field mark: DIGPASTNOISE27");
+  fieldMark.innerHTML = '<span class="dot" aria-hidden="true"></span> BURROW FIELD MARK · <strong>DIGPASTNOISE27</strong>';
+  manifestoFooter.insertAdjacentElement("afterend", fieldMark);
+}
