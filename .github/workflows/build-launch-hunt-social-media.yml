@@ -1,0 +1,55 @@
+name: Build Launch Hunt Social Media
+
+on:
+  push:
+    paths:
+      - '.github/workflows/build-launch-hunt-social-media.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-media:
+    runs-on: ubuntu-latest
+    env:
+      SOURCE_URL: "https://media.canva.com/v2/document-image/hash:1666899057/height:500/id:DAHTdT6Snkc/type:B/width:400?brand=BAFLvgiVPWg&csig=AAAAAAAAAAAAAAAAAAAAAOPR3B5r19KOqcsRlaC3tWkg6F-F6kFog-FoXmTINTaA&disableexport=T&exp=1787811536&fallback=https%3A%2F%2Fs3.amazonaws.com%2Fdocument-export.canva.com%2F6Snkc%2FDAHTdT6Snkc%2F1%2Fthumbnail%2F0001.png%3FX-Amz-Algorithm%3DAWS4-HMAC-SHA256%26X-Amz-Credential%3DAKIAQYCGKMUH4GDRW44L%252F20260826%252Fus-east-1%252Fs3%252Faws4_request%26X-Amz-Date%3D20260826T204200Z%26X-Amz-Expires%3D34616%26X-Amz-Signature%3D78e26d691f5885ccc7aaf7a22be1cfc8e47ce4f678bc794bc52d60646b31ca1c%26X-Amz-SignedHeaders%3Dhost%26response-expires%3DThu%252C%252027%2520Aug%25202026%252006%253A18%253A56%2520GMT&osig=AAAAAAAAAAAAAAAAAAAAAAuXZXEmrgT-muaZohZ1QEzKOLxKyrn6yzmS65COVNTP&page=1&signed=brand%2Cdisableexport%2Cfallback%2Cpage%2Cversion&signer=document-rpc&version=1"
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Install media tools
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg imagemagick
+      - name: Fetch approved social master
+        run: |
+          set -euo pipefail
+          curl --fail --location --retry 3 "$SOURCE_URL" -o /tmp/madger-launch-hunt-master.jpg
+          file /tmp/madger-launch-hunt-master.jpg
+          test -s /tmp/madger-launch-hunt-master.jpg
+      - name: Render platform-native assets
+        run: |
+          set -euo pipefail
+          mkdir -p media/launch-hunt
+          # 4:5 feed master for Instagram, Facebook, TikTok photo mode.
+          ffmpeg -y -i /tmp/madger-launch-hunt-master.jpg -vf "scale=1080:1350:force_original_aspect_ratio=decrease,pad=1080:1350:(ow-iw)/2:(oh-ih)/2:black" -q:v 2 media/launch-hunt/madger-launch-hunt-feed.jpg
+          # Square fallback for services that crop aggressively.
+          ffmpeg -y -i /tmp/madger-launch-hunt-master.jpg -vf "scale=1080:1080:force_original_aspect_ratio=decrease,pad=1080:1080:(ow-iw)/2:(oh-ih)/2:black" -q:v 2 media/launch-hunt/madger-launch-hunt-square.jpg
+          # Landscape X asset: blurred edge-fill with full poster centered.
+          ffmpeg -y -i /tmp/madger-launch-hunt-master.jpg -filter_complex "[0:v]scale=1600:900:force_original_aspect_ratio=increase,crop=1600:900,gblur=sigma=28[bg];[0:v]scale=720:900:force_original_aspect_ratio=decrease[fg];[bg][fg]overlay=(W-w)/2:(H-h)/2" -q:v 2 media/launch-hunt/madger-launch-hunt-x-1600x900.jpg
+          # Vertical 6-second motion asset for Reels, TikTok and YouTube Shorts.
+          ffmpeg -y -loop 1 -i /tmp/madger-launch-hunt-master.jpg -filter_complex "[0:v]scale=1080:1920:force_original_aspect_ratio=increase,crop=1080:1920,gblur=sigma=30[bg];[0:v]scale=1000:1250:force_original_aspect_ratio=decrease[fg];[bg][fg]overlay=(W-w)/2:(H-h)/2,zoompan=z='min(zoom+0.0006,1.035)':d=180:s=1080x1920:fps=30,fade=t=in:st=0:d=.35,fade=t=out:st=5.5:d=.5,format=yuv420p[v]" -map "[v]" -t 6 -an -c:v libx264 -preset medium -crf 20 -movflags +faststart media/launch-hunt/madger-launch-hunt-vertical.mp4
+          # Archive the exact rendered master received from Canva for auditability.
+          cp /tmp/madger-launch-hunt-master.jpg media/launch-hunt/madger-launch-hunt-rendered-master.jpg
+          sha256sum media/launch-hunt/* > media/launch-hunt/SHA256SUMS.txt
+      - name: Commit rendered media
+        run: |
+          set -euo pipefail
+          git config user.name "MADGER Release Bot"
+          git config user.email "madgercoin@gmail.com"
+          git add media/launch-hunt
+          if git diff --cached --quiet; then
+            echo "No media changes to commit."
+            exit 0
+          fi
+          git commit -m "media: publish Launch Hunt social kit"
+          git push origin HEAD:main
