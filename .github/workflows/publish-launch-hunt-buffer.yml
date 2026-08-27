@@ -1,0 +1,31 @@
+name: Publish MADGER Launch Hunt to Buffer
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/publish-launch-hunt-buffer.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: publish-launch-hunt-buffer
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+      - name: Publish final Launch Hunt campaign
+        env:
+          BUFFER_API_TOKEN: ${{ secrets.BUFFER_API_TOKEN }}
+          BUFFER_ORGANIZATION_ID: ${{ vars.BUFFER_ORGANIZATION_ID }}
+        run: node scripts/publish-launch-hunt-buffer.mjs
