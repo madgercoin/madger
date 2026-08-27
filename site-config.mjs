@@ -2,6 +2,7 @@ export const rootFiles = [
   "index.html",
   "litepaper.html",
   "official-links.html",
+  "launch-hunt.html",
   "404.html",
   "styles.css",
   "script.js",
