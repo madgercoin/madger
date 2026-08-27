@@ -1,0 +1,6 @@
+ed664222e230dc9778caa5966e3f00ce127cbd4e5d7234ab7402e6866da1954a  media/launch-hunt/README.md
+0ef698247d414acd078e30673d96eaf67964f01a7b553ebf004f84883d2fc326  media/launch-hunt/madger-launch-hunt-feed.jpg
+8be28145167793818800f6adcaa4b6dcc91cadd1abbd20aee802e568ce2893e1  media/launch-hunt/madger-launch-hunt-rendered-master.png
+b489721de36fa0cf15c4436d8fdf2863e50d30de3a1e97d1310370839ebdec78  media/launch-hunt/madger-launch-hunt-square.jpg
+115ebd1255e2f822e4cc16a0a0d3f3dac1a4e659d205671ed5feea51c3305746  media/launch-hunt/madger-launch-hunt-vertical.mp4
+7582920b19091bbc20c185a262aeb00ce2c00b56b7093d2e4e54fb9785f7c22b  media/launch-hunt/madger-launch-hunt-x-1600x900.jpg
