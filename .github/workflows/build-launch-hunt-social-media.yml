@@ -23,23 +23,18 @@ jobs:
       - name: Fetch approved social master
         run: |
           set -euo pipefail
-          curl --fail --location --retry 3 "$SOURCE_URL" -o /tmp/madger-launch-hunt-master.jpg
-          file /tmp/madger-launch-hunt-master.jpg
-          test -s /tmp/madger-launch-hunt-master.jpg
+          curl --fail --location --retry 3 "$SOURCE_URL" -o /tmp/madger-launch-hunt-master.png
+          file /tmp/madger-launch-hunt-master.png
+          test -s /tmp/madger-launch-hunt-master.png
       - name: Render platform-native assets
         run: |
           set -euo pipefail
           mkdir -p media/launch-hunt
-          # 4:5 feed master for Instagram, Facebook, TikTok photo mode.
-          ffmpeg -y -i /tmp/madger-launch-hunt-master.jpg -vf "scale=1080:1350:force_original_aspect_ratio=decrease,pad=1080:1350:(ow-iw)/2:(oh-ih)/2:black" -q:v 2 media/launch-hunt/madger-launch-hunt-feed.jpg
-          # Square fallback for services that crop aggressively.
-          ffmpeg -y -i /tmp/madger-launch-hunt-master.jpg -vf "scale=1080:1080:force_original_aspect_ratio=decrease,pad=1080:1080:(ow-iw)/2:(oh-ih)/2:black" -q:v 2 media/launch-hunt/madger-launch-hunt-square.jpg
-          # Landscape X asset: blurred edge-fill with full poster centered.
-          ffmpeg -y -i /tmp/madger-launch-hunt-master.jpg -filter_complex "[0:v]scale=1600:900:force_original_aspect_ratio=increase,crop=1600:900,gblur=sigma=28[bg];[0:v]scale=720:900:force_original_aspect_ratio=decrease[fg];[bg][fg]overlay=(W-w)/2:(H-h)/2" -q:v 2 media/launch-hunt/madger-launch-hunt-x-1600x900.jpg
-          # Vertical 6-second motion asset for Reels, TikTok and YouTube Shorts.
-          ffmpeg -y -loop 1 -i /tmp/madger-launch-hunt-master.jpg -filter_complex "[0:v]scale=1080:1920:force_original_aspect_ratio=increase,crop=1080:1920,gblur=sigma=30[bg];[0:v]scale=1000:1250:force_original_aspect_ratio=decrease[fg];[bg][fg]overlay=(W-w)/2:(H-h)/2,zoompan=z='min(zoom+0.0006,1.035)':d=180:s=1080x1920:fps=30,fade=t=in:st=0:d=.35,fade=t=out:st=5.5:d=.5,format=yuv420p[v]" -map "[v]" -t 6 -an -c:v libx264 -preset medium -crf 20 -movflags +faststart media/launch-hunt/madger-launch-hunt-vertical.mp4
-          # Archive the exact rendered master received from Canva for auditability.
-          cp /tmp/madger-launch-hunt-master.jpg media/launch-hunt/madger-launch-hunt-rendered-master.jpg
+          ffmpeg -y -i /tmp/madger-launch-hunt-master.png -vf "scale=1080:1350:force_original_aspect_ratio=decrease,pad=1080:1350:(ow-iw)/2:(oh-ih)/2:black" -frames:v 1 -q:v 2 media/launch-hunt/madger-launch-hunt-feed.jpg
+          ffmpeg -y -i /tmp/madger-launch-hunt-master.png -vf "scale=1080:1080:force_original_aspect_ratio=decrease,pad=1080:1080:(ow-iw)/2:(oh-ih)/2:black" -frames:v 1 -q:v 2 media/launch-hunt/madger-launch-hunt-square.jpg
+          ffmpeg -y -i /tmp/madger-launch-hunt-master.png -filter_complex "[0:v]scale=1600:900:force_original_aspect_ratio=increase,crop=1600:900,gblur=sigma=28[bg];[0:v]scale=720:900:force_original_aspect_ratio=decrease[fg];[bg][fg]overlay=(W-w)/2:(H-h)/2" -frames:v 1 -q:v 2 media/launch-hunt/madger-launch-hunt-x-1600x900.jpg
+          ffmpeg -y -loop 1 -i /tmp/madger-launch-hunt-master.png -filter_complex "[0:v]scale=1080:1920:force_original_aspect_ratio=increase,crop=1080:1920,gblur=sigma=30[bg];[0:v]scale=1000:1250:force_original_aspect_ratio=decrease[fg];[bg][fg]overlay=(W-w)/2:(H-h)/2,zoompan=z='min(zoom+0.0006,1.035)':d=180:s=1080x1920:fps=30,fade=t=in:st=0:d=0.35,fade=t=out:st=5.5:d=0.5,format=yuv420p[v]" -map "[v]" -t 6 -an -c:v libx264 -preset medium -crf 20 -movflags +faststart media/launch-hunt/madger-launch-hunt-vertical.mp4
+          cp /tmp/madger-launch-hunt-master.png media/launch-hunt/madger-launch-hunt-rendered-master.png
           sha256sum media/launch-hunt/* > media/launch-hunt/SHA256SUMS.txt
       - name: Commit rendered media
         run: |
