@@ -1,5 +1,10 @@
 # Changelog
 
+## 2026-08-28 — Contributor Program label and CTA contrast
+
+- Renamed the public navigation label from Collaborators to Contributor Program, matching the page's broader creator, moderator, KOL, and community-operator scope without implying employment or partnership.
+- Corrected the proposal button's text contrast so its label remains readable against the gold action background.
+
 ## 2026-08-28 — Creator-focused collaborator FAQ
 
 - Replaced the internal-curiosity Raydium fee questions on the Collaborators page with practical FAQs for creators covering proposals, project scope, starting compensation, content rights, creative review, performance evidence, disclosures, payment terms, authority, and future growth.
