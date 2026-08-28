@@ -6,7 +6,7 @@ const indexablePages = new Map([
   ["index.html", "https://madgercoin.com/"],
   ["litepaper.html", "https://madgercoin.com/litepaper.html"],
   ["official-links.html", "https://madgercoin.com/official-links.html"],
-  ["collaborators.html", "https://madgercoin.com/collaborators.html"],
+  ["collaborators.html", "https://madgercoin.com/collaborators"],
   ["privacy.html", "https://madgercoin.com/privacy.html"]
 ]);
 const requiredSocialProperties = [
@@ -116,12 +116,23 @@ for (const [file, html] of pages) {
       ? path.normalize(path.join(path.dirname(file), pathname.replace(/^\//, "")))
       : file;
     if (/^assets[\\/]/.test(target)) target = target.replace(/^assets[\\/]/, "");
-    const resolved = target === "." || target === "" ? "index.html" : target;
+    let resolved = target === "." || target === "" ? "index.html" : target;
     try {
       await access(resolved);
     } catch {
-      failures.push(`${file}: missing internal target ${reference}`);
-      continue;
+      if (!path.extname(resolved)) {
+        const htmlCandidate = `${resolved}.html`;
+        try {
+          await access(htmlCandidate);
+          resolved = htmlCandidate;
+        } catch {
+          failures.push(`${file}: missing internal target ${reference}`);
+          continue;
+        }
+      } else {
+        failures.push(`${file}: missing internal target ${reference}`);
+        continue;
+      }
     }
     if (fragment && resolved.endsWith(".html")) {
       const targetHtml = pages.get(resolved) ?? await readFile(resolved, "utf8");
