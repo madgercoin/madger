@@ -1,5 +1,14 @@
 # Changelog
 
+## 2026-08-28 — Launch Hunt homepage and app
+
+- Replaced the pre-launch countdown homepage with the active MADGER Launch Hunt experience.
+- Added the official cinematic launch film as the first major section beneath the hero.
+- Added the four-step hunt, six-prize breakdown, bonus-entry path, private email checklist, complete-rules route, hidden Burrow Field Mark, and contest safety notice.
+- Updated the installable MADGER app manifest so its root experience and description match the Launch Hunt homepage.
+- Preserved the exact official Solana mint, centralized launch-state disclosure, verified community links, reduced-motion support, keyboard navigation, and mobile reflow.
+- Allowed only the dedicated public Launch Hunt media origin through the production image and media content-security policy.
+
 ## 2026-08-26 — Direct CPMM launch correction
 
 - Replaced the stale Raydium LaunchLab/bonding-curve campaign assumption with the founder-selected direct MADGER/SOL Raydium CPMM design.
