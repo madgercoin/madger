@@ -1,7 +1,7 @@
 import { createHash } from "node:crypto";
 import { readFile } from "node:fs/promises";
 
-const statePages = ["index.html", "litepaper.html"];
+const statePages = ["index.html", "litepaper.html", "collaborators.html"];
 const informationalPages = ["index.html", "litepaper.html", "404.html"];
 const mint = "BHauMX8akk2umqkQqnJwpYkCRkZmefGnEBFByeFXRKqv";
 const stateSource = await readFile("launch-state.js", "utf8");

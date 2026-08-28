@@ -26,5 +26,6 @@
     </image:image>
   </url>
   <url><loc>https://madgercoin.com/official-links.html</loc><lastmod>2026-08-25</lastmod></url>
+  <url><loc>https://madgercoin.com/collaborators.html</loc><lastmod>2026-08-28</lastmod><changefreq>monthly</changefreq><priority>0.7</priority><image:image><image:loc>https://madgercoin.com/assets/madger_v5_social.jpg</image:loc><image:title>MADGER collaborator framework</image:title></image:image></url>
   <url><loc>https://madgercoin.com/privacy.html</loc><lastmod>2026-08-28</lastmod><changefreq>yearly</changefreq><priority>0.4</priority><image:image><image:loc>https://madgercoin.com/assets/madger_v5_social.jpg</image:loc><image:title>MADGER app privacy policy</image:title></image:image></url>
 </urlset>
