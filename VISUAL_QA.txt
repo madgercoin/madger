@@ -27,7 +27,7 @@ Typography uses an Impact/Arial Black-style condensed display stack for high-imp
 | `madger_v5_hero.webp` | `/assets/madger_v5_hero.webp` | 1920×1080 full-bleed homepage hero behind directional dark gradients |
 | `madger_v5_mascot.webp` | `/assets/madger_v5_mascot.webp` | Approved square full-body source composition |
 | `madger_v5_mascot_portrait.webp` | `/assets/madger_v5_mascot_portrait.webp` | 900×1184 tight, crop-only Meet Madger portrait |
-| `madger_v5_official_logo.webp` | `/assets/madger_v5_official_logo.webp` | Navigation/footer wordmark |
+| `madger_official_logo_transparent_512.png` | `/assets/madger_official_logo_transparent_512.png` | Transparent navigation/footer/app emblem |
 | `madger_v5_profile.webp` | `/assets/madger_v5_profile.webp` | Round profile/avatar treatment |
 | `madger_v5_icon.png` | `/assets/madger_v5_icon.png` | Browser and manifest icon |
 | `madger_v5_social.jpg` | `/assets/madger_v5_social.jpg` | 1200×630 Open Graph/X compatibility card |

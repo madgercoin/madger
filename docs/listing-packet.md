@@ -47,7 +47,7 @@ MADGER is a community-driven Solana memecoin and original character brand center
 |---|---|---|
 | Square icon | `assets/madger_v5_icon.png` | https://madgercoin.com/assets/madger_v5_icon.png |
 | Profile | `assets/madger_v5_profile.webp` | https://madgercoin.com/assets/madger_v5_profile.webp |
-| Official logo | `assets/madger_v5_official_logo.webp` | https://madgercoin.com/assets/madger_v5_official_logo.webp |
+| Official logo | `assets/madger_official_logo_transparent_512.png` | https://madgercoin.com/assets/madger_official_logo_transparent_512.png |
 | Hero/cover | `assets/madger_v5_hero.webp` | https://madgercoin.com/assets/madger_v5_hero.webp |
 
 Confirm each provider’s current dimensions, file type, background, and size requirements before submission. Do not substitute unofficial community artwork for the canonical icon.
