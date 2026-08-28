@@ -3,6 +3,7 @@ const officialMint = "BHauMX8akk2umqkQqnJwpYkCRkZmefGnEBFByeFXRKqv";
 const checks = [
   ["/", 200],
   ["/litepaper.html", 200],
+  ["/collaborators.html", 200],
   ["/privacy.html", 200],
   ["/__deployment-check-missing-page__", 404],
   ["/styles.css", 200],

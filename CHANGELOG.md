@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-08-28 — Public collaborator framework
+
+- Added a dedicated Collaborators page covering compensation structure, performance incentives, MADGER vesting, contribution points, role and pay principles, approvals, treasury/liquidity separation, emissions controls, KOL/referral standards, anti-abuse rules, transparency, and implementation expectations.
+- Published the Raydium fee-tier clarification: selecting a 0.30% trade-fee tier does not automatically create a 0.05% MADGER creator fee; creator-fee enablement is a separate creation-time setting.
+- Added the Collaborators tab to the Launch Hunt navigation and footer, included the page in the production allowlist and sitemap, and extended validation and deployment checks to cover it.
+
 ## 2026-08-28 — Launch Hunt homepage and app
 
 - Removed the white field from the official MADGER emblem and moved every published homepage, footer, app-manifest, browser-icon, Apple-touch, Launch Hunt, and official-links logo surface to exact transparent-background derivatives.
