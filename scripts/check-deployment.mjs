@@ -3,8 +3,8 @@ const officialMint = "BHauMX8akk2umqkQqnJwpYkCRkZmefGnEBFByeFXRKqv";
 const checks = [
   ["/", 200],
   ["/litepaper.html", 200],
-  ["/collaborators.html", 200],
-  ["/privacy.html", 200],
+  ["/collaborators", 200],
+  ["/privacy", 200],
   ["/__deployment-check-missing-page__", 404],
   ["/styles.css", 200],
   ["/script.js", 200],
@@ -19,7 +19,9 @@ const checks = [
 const redirects = [
   ["/index.html", "/"],
   ["/litepaper", "/litepaper.html"],
-  ["/litepaper/", "/litepaper.html"]
+  ["/litepaper/", "/litepaper.html"],
+  ["/collaborators.html", "/collaborators", 307],
+  ["/privacy.html", "/privacy", 307]
 ];
 const failures = [];
 const responses = new Map();
@@ -36,15 +38,15 @@ for (const [pathname, expectedStatus] of checks) {
   }
 }
 
-for (const [pathname, destination] of redirects) {
+for (const [pathname, destination, expectedStatus = 301] of redirects) {
   try {
     const response = await fetch(`${baseUrl}${pathname}`, { redirect: "manual" });
     const location = response.headers.get("location");
     const expected = new URL(destination, baseUrl).toString();
     const actual = location ? new URL(location, baseUrl).toString() : null;
-    const passed = response.status === 301 && actual === expected;
+    const passed = response.status === expectedStatus && actual === expected;
     console.log(`${passed ? "PASS" : "FAIL"} ${pathname} -> ${destination} (${response.status})`);
-    if (!passed) failures.push(`${pathname}: expected 301 to ${expected}, received ${response.status} to ${actual}`);
+    if (!passed) failures.push(`${pathname}: expected ${expectedStatus} to ${expected}, received ${response.status} to ${actual}`);
   } catch (error) {
     failures.push(`${pathname}: ${error.message}`);
   }
