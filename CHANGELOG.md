@@ -1,5 +1,10 @@
 # Changelog
 
+## 2026-08-28 — Creator-focused collaborator FAQ
+
+- Replaced the internal-curiosity Raydium fee questions on the Collaborators page with practical FAQs for creators covering proposals, project scope, starting compensation, content rights, creative review, performance evidence, disclosures, payment terms, authority, and future growth.
+- Clarified that the complete MCCP is MADGER's long-term operating goal, while the launch-stage starting point is selected, affordable, written creator projects without assumed salaries or automatic token awards.
+
 ## 2026-08-28 — Public collaborator framework
 
 - Added a dedicated Collaborators page covering compensation structure, performance incentives, MADGER vesting, contribution points, role and pay principles, approvals, treasury/liquidity separation, emissions controls, KOL/referral standards, anti-abuse rules, transparency, and implementation expectations.
