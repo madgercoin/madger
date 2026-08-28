@@ -2,6 +2,7 @@
 
 ## 2026-08-28 — Launch Hunt homepage and app
 
+- Removed the white field from the official MADGER emblem and moved every published homepage, footer, app-manifest, browser-icon, Apple-touch, Launch Hunt, and official-links logo surface to exact transparent-background derivatives.
 - Replaced the crossed-arms community portrait with a custom canonical welcoming Madger pose, restored the official logo in the page footer, and moved the installed app, browser, and Apple touch icons to official-logo artwork.
 - Replaced the pre-launch countdown homepage with the active MADGER Launch Hunt experience.
 - Added the official cinematic launch film as the first major section beneath the hero.

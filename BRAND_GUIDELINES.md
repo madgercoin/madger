@@ -48,7 +48,7 @@ Use the approved face-forward gold-edged circular coin emblem and the distressed
 
 ## Asset usage
 
-- `madger_v5_official_logo.webp` is the approved navigation/footer wordmark.
+- `madger_official_logo_transparent_512.png` is the approved transparent navigation/footer/app emblem; do not publish the white-background source derivative.
 - `madger_v5_icon.png` and `madger_v5_profile.webp` are compact identity derivatives.
 - `madger_v5_hero.webp` is the approved 1920×1080 homepage composition.
 - `madger_v5_mascot.webp` is the square full-body source; `madger_v5_mascot_portrait.webp` is its crop-only homepage derivative.
@@ -60,4 +60,3 @@ Do not stretch, mirror, recolor, redraw, or crop through the character or compac
 ## Safety expression
 
 The full mint must remain legible, selectable, and paired with trading-status and verification warnings. Do not use urgency, countdowns, “buy” language, price charts, exchange-like visual cues, profit promises, or purchase instructions before an approved public launch.
-

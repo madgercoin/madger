@@ -10,8 +10,8 @@ const checks = [
   ["/robots.txt", 200],
   ["/sitemap.xml", 200],
   ["/assets/madger_v5_hero.webp", 200],
-  ["/assets/madger_official_app_icon_192.png", 200],
-  ["/assets/madger_official_app_icon_512.png", 200],
+  ["/assets/madger_official_logo_transparent_192.png", 200],
+  ["/assets/madger_official_logo_transparent_512.png", 200],
   ["/assets/madger_v6_community_welcome.webp", 200]
 ];
 const redirects = [
