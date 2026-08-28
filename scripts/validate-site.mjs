@@ -187,7 +187,9 @@ if (/mint|trading|launch|financial advice|crypto assets/i.test(visiblePages.get(
 const homepage = pages.get("index.html");
 const stylesheet = await readFile("styles.css", "utf8");
 if (!homepage.includes('id="community" class="hunt-section community"')) failures.push("index.html: community section must expose the canonical #community anchor");
-if (!homepage.includes('src="/assets/madger_v5_mascot_portrait.webp" width="900" height="1184"')) failures.push("index.html: homepage portrait must use the tight approved derivative with exact intrinsic dimensions");
+if (!homepage.includes('src="/assets/madger_v6_community_welcome.webp" width="1084" height="1451"')) failures.push("index.html: community section must use the custom canonical welcoming pose with exact intrinsic dimensions");
+if (!homepage.includes('<footer class="hunt-footer"><div class="brand"><img src="/assets/madger_v5_official_logo.webp"')) failures.push("index.html: Launch Hunt footer must use the official MADGER logo");
+if (!homepage.includes('href="/assets/madger_official_apple_touch_icon.png"')) failures.push("index.html: missing official-logo Apple touch icon");
 if (!stylesheet.includes(".portrait-card img{width:100%;height:auto;aspect-ratio:900/1184;")) failures.push("styles.css: portrait must preserve its natural ratio and responsive height");
 if (!homepage.includes(officialFacebook) || homepage.includes("facebook.com/share/")) failures.push("index.html: Facebook links must use the canonical page URL");
 if (!homepage.includes(officialReddit)) failures.push("index.html: Reddit must use the verified u/Madgercoin profile");
