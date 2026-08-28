@@ -22,6 +22,10 @@ export const assetFiles = [
   "madger_v5_official_logo.webp",
   "madger_v5_social.jpg",
   "madger_v5_profile.webp",
+  "madger_v6_community_welcome.webp",
+  "madger_official_app_icon_192.png",
+  "madger_official_app_icon_512.png",
+  "madger_official_apple_touch_icon.png",
   "media/madger-prelaunch-tomorrow-cpmm-v2.png"
 ];
 

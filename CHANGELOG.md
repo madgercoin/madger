@@ -2,6 +2,7 @@
 
 ## 2026-08-28 — Launch Hunt homepage and app
 
+- Replaced the crossed-arms community portrait with a custom canonical welcoming Madger pose, restored the official logo in the page footer, and moved the installed app, browser, and Apple touch icons to official-logo artwork.
 - Replaced the pre-launch countdown homepage with the active MADGER Launch Hunt experience.
 - Added the official cinematic launch film as the first major section beneath the hero.
 - Added the four-step hunt, six-prize breakdown, bonus-entry path, private email checklist, complete-rules route, hidden Burrow Field Mark, and contest safety notice.
