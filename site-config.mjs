@@ -5,6 +5,7 @@ export const rootFiles = [
   "collaborators.html",
   "launch-hunt.html",
   "privacy.html",
+  "meme-contest.html",
   "404.html",
   "styles.css",
   "script.js",
@@ -13,6 +14,9 @@ export const rootFiles = [
   "sitemap.xml",
   "manifest.webmanifest",
   "favicon.png",
+  "favicon-spin.js",
+  "madger_coin_spin_sprite.png",
+  "madger_coin_spin_favicon.gif",
   "_headers"
 ];
 
