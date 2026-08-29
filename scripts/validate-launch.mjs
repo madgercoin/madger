@@ -23,6 +23,7 @@ for (const page of statePages) {
   if (!html.includes(`/launch-state.js?v=${stateCacheKey}`)) failures.push(`${page}: launch-state controller must use cache key ${stateCacheKey}`);
 }
 const homepage = await readFile("index.html", "utf8");
+const huntPage = await readFile("launch-hunt.html", "utf8");
 if (!homepage.includes('id="launch-film"')) failures.push("index.html: prominent launch-film section is absent");
 if (!homepage.includes('madger-launch-film.mp4')) failures.push("index.html: official cinematic launch film is absent");
 if (!homepage.includes('id="start"')) failures.push("index.html: Launch Hunt entry trail is absent");
@@ -30,6 +31,33 @@ if (!homepage.includes("SEEKPASTNOISE27")) failures.push("index.html: Burrow Fie
 if (!homepage.includes('href="/launch-hunt.html"')) failures.push("index.html: complete Launch Hunt rules link is absent");
 if (!homepage.includes('href="/launch.html"')) failures.push("index.html: canonical launch-status link is absent");
 if (homepage.includes("meme-contest")) failures.push("index.html: retired meme contest remains on the homepage");
+const entryRecipient = "madgercoin@gmail.com";
+const entrySubject = "MADGER Launch Hunt Entry — MLH26";
+const orderedEntryFields = [
+  "ENTRY FORMAT: MLH26",
+  "FIELD MARK:",
+  "TELEGRAM USERNAME:",
+  "COUNTRY / REGION:",
+  "AGE / ELIGIBILITY:",
+  "X USERNAME:",
+  "BONUS X POST URL:",
+  "REFERRER ENTRY ID:"
+];
+for (const [page, html] of [["index.html", homepage], ["launch-hunt.html", huntPage]]) {
+  const match = html.match(/href="(mailto:[^"]+)"/i);
+  if (!match) { failures.push(`${page}: private-entry email button is absent`); continue; }
+  const mailto = new URL(match[1].replaceAll("&amp;", "&"));
+  if (mailto.pathname.toLowerCase() !== entryRecipient) failures.push(`${page}: entry recipient must be ${entryRecipient}`);
+  if (mailto.searchParams.get("subject") !== entrySubject) failures.push(`${page}: entry subject is not canonical`);
+  const body = mailto.searchParams.get("body") || "";
+  let previousIndex = -1;
+  for (const field of orderedEntryFields) {
+    const index = body.indexOf(field);
+    if (index < 0) failures.push(`${page}: prepared email is missing ${field}`);
+    else if (index <= previousIndex) failures.push(`${page}: prepared email fields are not in spreadsheet-ready order`);
+    previousIndex = Math.max(previousIndex, index);
+  }
+}
 for (const page of informationalPages) {
   const html = await readFile(page, "utf8");
   if (tradingHosts.test(html)) failures.push(`${page}: trading link present before launch`);
