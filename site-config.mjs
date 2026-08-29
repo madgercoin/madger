@@ -12,6 +12,7 @@ export const rootFiles = [
   "robots.txt",
   "sitemap.xml",
   "manifest.webmanifest",
+  "favicon.png",
   "_headers"
 ];
 
