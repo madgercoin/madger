@@ -1,5 +1,9 @@
 # Changelog
 
+## 2026-08-29 — CPMM terminology correction
+
+- Removed the remaining public LaunchLab reference from the launch record and consistently identifies the planned venue as a direct Raydium CPMM pool.
+
 ## 2026-08-29 — Cross-device Journal delivery
 
 - Added installable-app metadata to the Journal and every Field Note, plus app shortcuts for the Journal, launch status, and official links.
