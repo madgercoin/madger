@@ -9,6 +9,9 @@ Record each founder decision, approver, UTC timestamp, rationale, and supporting
 | Launch method | Direct MADGER/SOL Raydium CPMM liquidity pool | James Dean | 2026-08-26 | Founder confirmed CPMM in the launch-preparation conversation. This does not clear the current Raydium jurisdiction restriction or authorize a transaction. |
 | Launch date and time | August 27, 2026 at 14:00 UTC | James Dean | 2026-08-26 | Consistent with the production countdown and founder instruction to use a worldwide UTC time. Publication remains conditional on all gates clearing. |
 
+The August 27 target expired without a finalized pool. It is retained as historical evidence and is
+not an active launch time. No replacement date may be inferred from this record.
+
 ## Verified authority state
 
 Solana Explorer reports a fixed 1,000,000,000 supply. Independent raw mint inspection confirms mint-authority option `0` and freeze-authority option `0`; Metaplex metadata is immutable. No authority-revocation transaction remains.

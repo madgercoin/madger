@@ -6,7 +6,7 @@
     TRADING_LIVE: "TRADING_LIVE",
     PAUSED_OR_DELAYED: "PAUSED_OR_DELAYED"
   });
-  const current = STATES.LAUNCH_SCHEDULED;
+  const current = STATES.PAUSED_OR_DELAYED;
   const labels = Object.freeze({
     MINTED_NOT_TRADING: Object.freeze({
       default: "Minted on Solana — public trading is not open.",
@@ -24,9 +24,9 @@
       research: "Trading phase active; consult the published launch record."
     }),
     PAUSED_OR_DELAYED: Object.freeze({
-      default: "The launch is paused. Wait for a new official update.",
-      safety: "Market instructions are suspended; ignore links until further notice.",
-      research: "Launch phase paused; the prior timetable is no longer operative."
+      default: "Launch preparation continues. Public trading is not live.",
+      safety: "No official MADGER pool is live. Ignore purchase links and direct messages.",
+      research: "The August 27 target passed without a verified pool; a new date is not announced."
     })
   });
   document.querySelectorAll("[data-launch-state]").forEach(node => {

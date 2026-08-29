@@ -1,9 +1,10 @@
 import { access, readFile } from "node:fs/promises";
 import path from "node:path";
 
-const htmlFiles = ["index.html", "litepaper.html", "official-links.html", "404.html"];
+const htmlFiles = ["index.html", "launch.html", "litepaper.html", "official-links.html", "404.html"];
 const indexablePages = new Map([
   ["index.html", "https://madgercoin.com/"],
+  ["launch.html", "https://madgercoin.com/launch.html"],
   ["litepaper.html", "https://madgercoin.com/litepaper.html"],
   ["official-links.html", "https://madgercoin.com/official-links.html"]
 ]);
@@ -169,6 +170,9 @@ if (metaContent(litepaper, "property", "article:published_time") !== "2026-07-23
 }
 if (!litepaper.includes('"datePublished": "2026-07-23"')) {
   failures.push("litepaper.html: Article JSON-LD must preserve the original July 23, 2026 publication date");
+}
+if (metaContent(litepaper, "property", "article:modified_time") !== "2026-08-29T00:00:00Z") {
+  failures.push("litepaper.html: article:modified_time must reflect the August 29, 2026 status update");
 }
 
 const visiblePages = new Map([...pages].map(([file, html]) => [file, visibleText(html).toLowerCase()]));

@@ -13,7 +13,7 @@ The application is static and collects no user data. `_headers` sets CSP, HSTS, 
 
 CI scans high-confidence secret patterns, validates the production artifact and mint, and runs a production-only dependency audit. Wrangler is pinned at `4.120.1`; the current non-major update closes the newly disclosed development-tree `undici` advisory inherited through Miniflare. `npm audit` reports zero findings across the complete dependency tree.
 
-The launch-state validator requires every indexable project page to load the same content-versioned controller, keeps `MINTED_NOT_TRADING` active, and rejects known trading hosts before launch. The no-index 404 is intentionally navigation-only and must not load the controller or repeat launch disclosures. Artifact validation proves launch-control documents and the five operational wallet addresses remain outside `dist/`. Public mint verification remains available; custody records and signing material never are.
+The launch-state validator requires every indexable project page to load the same content-versioned controller, keeps `PAUSED_OR_DELAYED` active after the expired August 27 target, and rejects known trading hosts before launch. The no-index 404 is intentionally navigation-only and must not load the controller or repeat launch disclosures. Artifact validation proves internal launch-control documents and operational wallet addresses remain outside `dist/`. Public mint verification remains available; custody records and signing material never are.
 
 ## Contributor rules
 

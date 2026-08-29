@@ -2,6 +2,7 @@ const baseUrl = (process.env.SITE_URL ?? "https://madgercoin.com").replace(/\/$/
 const officialMint = "BHauMX8akk2umqkQqnJwpYkCRkZmefGnEBFByeFXRKqv";
 const checks = [
   ["/", 200],
+  ["/launch.html", 200],
   ["/litepaper.html", 200],
   ["/__deployment-check-missing-page__", 404],
   ["/styles.css", 200],
@@ -14,6 +15,8 @@ const checks = [
 ];
 const redirects = [
   ["/index.html", "/"],
+  ["/launch", "/launch.html"],
+  ["/launch/", "/launch.html"],
   ["/litepaper", "/litepaper.html"],
   ["/litepaper/", "/litepaper.html"]
 ];
@@ -59,6 +62,8 @@ if (homepage) {
     [body.includes('rel="preload" as="image" href="/assets/madger_v5_hero.webp"'), "hero image preload"],
     [body.includes('"@type": "Organization"'), "Organization structured data"],
     [body.includes('name="robots" content="index,follow'), "homepage index directive"]
+    ,[body.includes("Launch preparation continues. Public trading is not live."), "current pre-launch status"]
+    ,[!body.includes("Launch Countdown"), "expired countdown absent"]
   ];
   for (const [passed, label] of contentChecks) {
     console.log(`${passed ? "PASS" : "FAIL"} ${label}`);
@@ -68,6 +73,21 @@ if (homepage) {
     const passed = Boolean(response.headers.get(header));
     console.log(`${passed ? "PASS" : "FAIL"} header ${header}`);
     if (!passed) failures.push(`homepage: missing ${header} header`);
+  }
+}
+
+const launch = responses.get("/launch.html");
+if (launch) {
+  const contentChecks = [
+    [launch.body.includes('<link rel="canonical" href="https://madgercoin.com/launch.html">'), "launch canonical"],
+    [launch.body.includes("No official MADGER pool is live"), "no-pool safety warning"],
+    [launch.body.includes("100,000,000 MADGER + 40 SOL"), "working opening-liquidity plan"],
+    [launch.body.includes("Permanent Burn & Earn protection"), "working LP-protection plan"],
+    [!/(raydium\.io\/(swap|liquidity)|jup\.ag|birdeye\.so|dexscreener\.com)\//i.test(launch.body), "no pre-launch trading destination"]
+  ];
+  for (const [passed, label] of contentChecks) {
+    console.log(`${passed ? "PASS" : "FAIL"} ${label}`);
+    if (!passed) failures.push(`launch: ${label}`);
   }
 }
 

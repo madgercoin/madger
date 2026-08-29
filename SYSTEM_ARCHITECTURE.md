@@ -8,7 +8,7 @@ MADGER is a static Cloudflare Workers Static Assets site. There is no applicatio
 root sources -> node build.mjs -> dist/ allowlist -> Cloudflare Worker -> madgercoin.com
 ```
 
-`index.html`, `litepaper.html`, and `404.html` provide documents. `styles.css` provides shared homepage presentation; auxiliary pages use inline styles. `script.js` rotates Daily Dig content by UTC day, updates the year, manages mobile navigation, and progressively enhances mint copying. Metadata files provide crawling/install behavior. `_headers` supplies security/cache headers.
+`index.html`, `launch.html`, `litepaper.html`, `official-links.html`, and `404.html` provide documents. `styles.css` provides shared homepage presentation; auxiliary pages use inline styles. `script.js` rotates Daily Dig content by UTC day, updates the year, manages mobile navigation, and progressively enhances mint copying. Metadata files provide crawling/install behavior. `_headers` supplies security/cache headers.
 
 ## Build boundary
 

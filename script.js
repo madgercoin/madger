@@ -38,30 +38,3 @@ copyButton?.addEventListener("click", async () => {
     copyStatus.textContent = "Copy unavailable. Select and copy the address above.";
   }
 });
-
-const countdown = document.querySelector("[data-countdown]");
-if (countdown) {
-  const launchAt = Date.parse(countdown.dataset.launchAt);
-  const fields = {
-    days: countdown.querySelector("[data-countdown-days]"),
-    hours: countdown.querySelector("[data-countdown-hours]"),
-    minutes: countdown.querySelector("[data-countdown-minutes]"),
-    seconds: countdown.querySelector("[data-countdown-seconds]")
-  };
-  const note = document.querySelector("[data-countdown-note]");
-
-  const renderCountdown = () => {
-    const remaining = Math.max(0, launchAt - Date.now());
-    const totalSeconds = Math.floor(remaining / 1000);
-    fields.days.textContent = String(Math.floor(totalSeconds / 86400)).padStart(2, "0");
-    fields.hours.textContent = String(Math.floor(totalSeconds / 3600) % 24).padStart(2, "0");
-    fields.minutes.textContent = String(Math.floor(totalSeconds / 60) % 60).padStart(2, "0");
-    fields.seconds.textContent = String(totalSeconds % 60).padStart(2, "0");
-    if (remaining === 0) {
-      note.textContent = "The target time has arrived. Wait for a verified live-status update and official market link on this website before taking any action.";
-    }
-  };
-
-  renderCountdown();
-  window.setInterval(renderCountdown, 1000);
-}

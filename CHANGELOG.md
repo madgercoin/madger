@@ -1,5 +1,14 @@
 # Changelog
 
+## 2026-08-29 — Pre-launch status correction
+
+- Replaced the expired August 27 countdown with a clear delayed/not-trading status.
+- Added a canonical launch record separating verified token facts, working pool configuration,
+  allocation plans, and remaining wallet/signature/LP-protection actions.
+- Standardized the existing-mint direct Raydium CPMM route and removed active LaunchLab implications.
+- Updated homepage metadata, litepaper status, official-link safety copy, sitemap, Worker routes,
+  deployment allowlist, and validation rules.
+
 ## 2026-08-26 — Direct CPMM launch correction
 
 - Replaced the stale Raydium LaunchLab/bonding-curve campaign assumption with the founder-selected direct MADGER/SOL Raydium CPMM design.

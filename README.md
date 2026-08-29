@@ -30,7 +30,7 @@ The production application is deliberately small and static:
 
 | Area | Authoritative files | Responsibility |
 | --- | --- | --- |
-| Pages | `index.html`, `litepaper.html`, `404.html` | Semantic content, metadata, navigation, disclosures, and official links |
+| Pages | `index.html`, `launch.html`, `litepaper.html`, `official-links.html`, `404.html` | Semantic content, launch status, metadata, navigation, disclosures, and official links |
 | Presentation | `styles.css` | Brand tokens, responsive layout, focus states, reduced-motion behavior, and component styling |
 | Behavior | `script.js` | UTC-based Daily Dig copy, current footer year, and accessible mobile-navigation state |
 | Brand assets | Root-level `madger_v5_*` images | Approved production imagery and purpose-built portrait/share derivatives copied to `/assets/` at build time |
