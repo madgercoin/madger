@@ -32,7 +32,7 @@ Published below `/assets/`:
 
 ```text
 madger_hero_burrow_v7.jpg        madger_official_logo_transparent_512.png
-madger_social_share_v9.jpg       madger_v6_community_welcome.webp
+madger_social_share_v10.jpg       madger_v6_community_welcome.webp
 ```
 
 No repository documentation, validation script, package file, or other unlisted source is published. A build log should report 18 copied source files; treat any unexpected count as a reason to inspect `dist/`, not as permission to deploy.

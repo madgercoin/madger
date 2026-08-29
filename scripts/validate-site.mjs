@@ -34,8 +34,8 @@ const officialMint = "BHauMX8akk2umqkQqnJwpYkCRkZmefGnEBFByeFXRKqv";
 const officialFacebook = "https://www.facebook.com/1279493098576451";
 const officialReddit = "https://www.reddit.com/user/Madgercoin/";
 const officialDiscord = "https://discord.gg/NcuPzSNz9e";
-const socialPreview = "https://madgercoin.com/assets/madger_social_share_v9.jpg";
-const homepageSocialPreview = "https://madgercoin.com/assets/madger_launch_hunt_backlink_v1.png";
+const socialPreview = "https://madgercoin.com/assets/madger_social_share_v10.jpg";
+const homepageSocialPreview = "https://madgercoin.com/assets/madger_social_share_v10.jpg";
 const pageSocialPreviews = new Map([
   ["blog.html", "https://madgercoin.com/assets/madger_journal_social_v2.jpg"],
   ["blog-building-foundations.html", "https://madgercoin.com/assets/madger_fieldnote_foundations_v1_social.jpg"],

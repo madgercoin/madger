@@ -6,7 +6,7 @@ All published files below use the approved black, charcoal, cream, bronze, and g
 | --- | --- | --- |
 | `madger_hero_burrow_v7.jpg` | `/assets/madger_hero_burrow_v7.jpg` | 1920×1080 cinematic Burrow backdrop without a standing character |
 | `madger_official_logo_transparent_512.png` | `/assets/madger_official_logo_transparent_512.png` | Transparent navigation/footer/app emblem and official logo |
-| `madger_social_share_v9.jpg` | `/assets/madger_social_share_v9.jpg` | 1200×630 JPEG branded link-preview card for Open Graph and X |
+| `madger_social_share_v10.jpg` | `/assets/madger_social_share_v10.jpg` | 1200×630 JPEG branded link-preview card for Open Graph and X |
 
 ## Canonical mascot
 
