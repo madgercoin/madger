@@ -69,6 +69,31 @@ if (countdown) {
   window.setInterval(renderCountdown, 1000);
 }
 
+const launchNotifyForm = document.querySelector("#launch-notify-form");
+const launchNotifyStatus = document.querySelector("#launch-notify-status");
+if (launchNotifyForm) {
+  launchNotifyForm.addEventListener("submit", async event => {
+    event.preventDefault();
+    const button = launchNotifyForm.querySelector("button[type='submit']");
+    const data = new FormData(launchNotifyForm);
+    data.append("_subject", "$MADGER launch reminder signup");
+    data.append("launch_time_utc", "2026-08-31 14:00 UTC");
+    data.append("source", "madgercoin.com launch countdown");
+    data.append("submitted_at", new Date().toISOString());
+    button.disabled = true;
+    launchNotifyStatus.textContent = "Saving your reminder…";
+    try {
+      const response = await fetch("https://formsubmit.co/ajax/madgercoin@gmail.com", { method: "POST", headers: { Accept: "application/json" }, body: data });
+      if (!response.ok) throw new Error("Signup failed");
+      const calendar = ["BEGIN:VCALENDAR","VERSION:2.0","PRODID:-//MADGER//Launch Reminder//EN","CALSCALE:GREGORIAN","METHOD:PUBLISH","BEGIN:VEVENT","UID:madger-launch-20260831@madgercoin.com","DTSTAMP:20260829T000000Z","DTSTART:20260831T140000Z","DTEND:20260831T143000Z","SUMMARY:$MADGER Launch","DESCRIPTION:$MADGER launch reminder from madgercoin.com","URL:https://madgercoin.com/","BEGIN:VALARM","TRIGGER:-PT24H","ACTION:DISPLAY","DESCRIPTION:$MADGER launches in 24 hours","END:VALARM","BEGIN:VALARM","TRIGGER:-PT1H","ACTION:DISPLAY","DESCRIPTION:$MADGER launches in 1 hour","END:VALARM","END:VEVENT","END:VCALENDAR"].join("\r\n");
+      const objectUrl = URL.createObjectURL(new Blob([calendar], { type: "text/calendar;charset=utf-8" }));
+      const link = document.createElement("a"); link.href = objectUrl; link.download = "MADGER-launch-reminder.ics"; document.body.appendChild(link); link.click(); link.remove(); window.setTimeout(() => URL.revokeObjectURL(objectUrl), 1000);
+      launchNotifyForm.reset(); launchNotifyStatus.textContent = "Saved — add the downloaded reminder to your phone calendar.";
+    } catch { launchNotifyStatus.textContent = "Could not save yet. Please try again."; }
+    finally { button.disabled = false; }
+  });
+}
+
 const manifestoFooter = document.querySelector(".manifesto blockquote footer");
 if (manifestoFooter) {
   const fieldMark = document.createElement("p");
