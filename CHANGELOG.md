@@ -1,5 +1,9 @@
 # Changelog
 
+## 2026-08-29 — Journal writer artwork refinement
+
+- Updated the Journal hero so MADGER wears brass writer's glasses and looks down at the notebook while actively writing.
+
 ## 2026-08-29 — Kinetic Journal redesign
 
 - Rebuilt The Burrow Journal around an original MADGER-at-the-writer's-desk hero composition.
