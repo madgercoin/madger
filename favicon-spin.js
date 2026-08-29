@@ -1,6 +1,12 @@
 (() => {
   const icon = document.getElementById("site-favicon");
-  if (!icon || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if (reducedMotion) {
+    document.querySelectorAll("[data-madger-coin-spin]").forEach(coin => {
+      coin.src = "/favicon.png?v=20260829-coin3d";
+    });
+  }
+  if (!icon || reducedMotion) return;
 
   const frameSize = 64;
   const frameCount = 48;

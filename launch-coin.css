@@ -1,0 +1,16 @@
+/* Verified double-sided MADGER coin beside the pinned launch countdown. */
+.launch-pin__brand .launch-pin__coin {
+  width: 82px;
+  height: 82px;
+  flex: 0 0 auto;
+  border-radius: 50%;
+  object-fit: contain;
+  background: #050505;
+  filter: drop-shadow(0 0 17px rgba(244, 189, 34, .62));
+  box-shadow: 0 0 0 1px rgba(244, 189, 34, .42), 0 0 28px rgba(244, 189, 34, .2);
+}
+
+@media (max-width: 680px) {
+  .launch-pin__brand { justify-content: flex-start; }
+  .launch-pin__brand .launch-pin__coin { width: 68px; height: 68px; }
+}

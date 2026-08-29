@@ -8,6 +8,7 @@ export const rootFiles = [
   "meme-contest.html",
   "404.html",
   "styles.css",
+  "launch-coin.css",
   "script.js",
   "launch-state.js",
   "robots.txt",
