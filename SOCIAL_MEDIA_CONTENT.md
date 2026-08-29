@@ -409,7 +409,7 @@ Stay sharp. Protect The Burrow.
 
 Thirty posts later, MADGER is still digging.
 
-The character is here. The website is live. The Burrow is open.
+The character is here. The website is live. Original By Design. Relentless by Nature.
 
 Now we build.
 
@@ -543,7 +543,7 @@ Protect The Burrow. Verify first.
 
 14. Small Badger. Big Crypto.
 
-15. The Burrow is open: https://t.me/madgerburrow
+15. Original By Design. Relentless by Nature. https://t.me/madgerburrow
 
 ---
 

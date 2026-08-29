@@ -23,7 +23,7 @@ export default function HomeScreen() {
   }
 
   return <Screen>
-    <BrandHeader eyebrow="The Burrow is open" title="MADGER" subtitle="Dig past the noise. Verify everything." />
+    <BrandHeader eyebrow="Original By Design. Relentless by Nature." title="MADGER" subtitle="Dig past the noise. Verify everything." />
     <Card style={styles.countdownCard}>
       <Pill tone="gold">$MADGER LAUNCH COUNTDOWN</Pill>
       <View style={styles.countdownRow}>{launchParts.map((value, index) => <View key={['days', 'hours', 'minutes', 'seconds'][index]} style={styles.countdownCell}><Text style={styles.countdownValue}>{String(value).padStart(2, '0')}</Text><Text style={styles.countdownLabel}>{['DAYS', 'HOURS', 'MIN', 'SEC'][index]}</Text></View>)}</View>

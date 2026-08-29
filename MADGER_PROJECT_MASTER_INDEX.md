@@ -106,7 +106,7 @@ The recorded emblem is a fierce cartoon badger head with sharp eyes and one smal
 ### 4.2 Approved/established phrases
 
 - “THE BURROW OPENS.”
-- “The burrow is open.”
+- “Original By Design. Relentless by Nature.”
 - “SMALL BADGER. BIG CRYPTO.”
 - “BUILT TO BREAK AWAY.”
 - “KEEP DIGGING.”

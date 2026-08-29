@@ -51,7 +51,7 @@ Use the approved face-forward gold-edged circular coin emblem and the distressed
 - `madger_official_logo_transparent_512.png` is the approved transparent navigation/footer/app emblem; do not publish the white-background source derivative.
 - `madger_official_logo_transparent_512.png` is the canonical compact identity asset.
 - `madger_hero_burrow_v7.jpg` is the approved 1920×1080 cinematic homepage backdrop.
-- `madger_social_share_v7.jpg` is the 1200×630 branded export for link previews.
+- `madger_social_share_v8.jpg` is the 1200×630 branded export for link previews and carries the supporting slogan “Original By Design. Relentless by Nature.”
 - Standing crossed-arm character renders are retired and must not be reused.
 
 Do not stretch, mirror, recolor, redraw, or crop through the character or compact emblem. Keep the relevant coin border or the complete ears, forehead stripe, expression, fang, feet, and tail visible.
