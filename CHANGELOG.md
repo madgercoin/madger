@@ -8,6 +8,30 @@
 - Kept exact opening pool funding, trading destinations, transaction evidence, and LP-protection proof unpublished until authorization and finalization.
 - Extended build, site, launch, and live-deployment checks for the new canonical route and pre-live safety boundary.
 
+## 2026-08-29 — Purpose-built Field Note artwork
+
+- Replaced reused mascot portraits with three story-specific MADGER scenes: foundation planning, the lantern standard, and link verification.
+- Added article-specific social previews and refreshed article discovery metadata.
+- Removed the Journal from the Launch Hunt's primary navigation and added a restrained entry point below all hunt and community content.
+- Preserved the Launch Hunt countdown, contest content, rules, and primary calls to action unchanged.
+
+## 2026-08-29 — Journal writer artwork refinement
+
+- Updated the Journal hero so MADGER wears brass writer's glasses and looks down at the notebook while actively writing.
+
+## 2026-08-29 — Kinetic Journal redesign
+
+- Rebuilt The Burrow Journal around an original MADGER-at-the-writer's-desk hero composition.
+- Added a layered editorial type system, continuous field ticker, reactive depth, reading progress, card tilt, and accessible scroll reveals.
+- Added a Journal-specific 1200×630 social card and refreshed image discovery metadata.
+
+## 2026-08-28 — The Burrow Journal
+
+- Added a responsive, accessible MADGER blog homepage under `/blog.html`.
+- Published three source-grounded launch articles covering project foundations, character standards, and token-link safety.
+- Added site navigation, article metadata, structured data, social previews, and sitemap discovery for the journal.
+- Extended the explicit build allowlist and validation coverage to include every new journal page.
+
 ## 2026-08-28 — Contributor Program label and CTA contrast
 
 - Renamed the public navigation label from Collaborators to Contributor Program, matching the page's broader creator, moderator, KOL, and community-operator scope without implying employment or partnership.

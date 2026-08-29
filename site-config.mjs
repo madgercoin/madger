@@ -7,6 +7,12 @@ export const rootFiles = [
   "launch-hunt.html",
   "privacy.html",
   "meme-contest.html",
+  "blog.html",
+  "blog-building-foundations.html",
+  "blog-honey-badger-standard.html",
+  "blog-token-link-safety.html",
+  "blog.css",
+  "blog.js",
   "404.html",
   "styles.css",
   "launch-coin.css",
@@ -34,6 +40,14 @@ export const assetFiles = [
   "madger_v5_social.jpg",
   "madger_v5_profile.webp",
   "madger_v6_community_welcome.webp",
+  "madger_journal_writer_v3.webp",
+  "madger_journal_social_v2.jpg",
+  "madger_fieldnote_foundations_v1.webp",
+  "madger_fieldnote_foundations_v1_social.jpg",
+  "madger_fieldnote_standard_v1.webp",
+  "madger_fieldnote_standard_v1_social.jpg",
+  "madger_fieldnote_safety_v1.webp",
+  "madger_fieldnote_safety_v1_social.jpg",
   "media/madger-prelaunch-tomorrow-cpmm-v2.png"
 ];
 
