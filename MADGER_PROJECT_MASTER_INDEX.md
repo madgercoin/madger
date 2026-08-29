@@ -147,7 +147,7 @@ The controlling founder instruction is a direct **Raydium CPMM** MADGER/SOL liqu
 
 | Element | Current campaign value | Status |
 |---|---:|---|
-| Launch date | Thursday, August 27, 2026 | CONFIRMED founder instruction |
+| Launch date | Monday, August 31, 2026 at 14:00 UTC | RESCHEDULED through the founder-controlled August 28 campaign and production countdown |
 | Launch time | 14:00 GMT | CONFIRMED founder instruction; this is 9:00 a.m. fixed EST, but 10:00 a.m. in New York during August EDT |
 | Network | Solana | CONFIRMED |
 | Venue / program | Direct Raydium CPMM MADGER/SOL pool | CONFIRMED founder instruction; execution remains subject to all legal, custody, transaction, and verification gates |
@@ -423,7 +423,7 @@ Capabilities envisioned for DeaniusOS/MADGER:
 |---|---|---|---|
 | Contest submission | Submit in Telegram/Madger Burrow | Post on X and submit via `madgercoin.com` entry form | Treat website form as official system of record; remove Telegram-only language |
 | Contest platform behavior | Social post could imply entry | Public social post alone is insufficient | Require website submission |
-| Launch status | Minted but not publicly launched; then Aug. 25 proposal | Conditional direct Raydium CPMM target for Aug. 27, 2026 at 14:00 UTC | Verify live status; do not infer execution from planned copy |
+| Launch status | Minted but not publicly launched; then Aug. 25 proposal | Conditional direct Raydium CPMM target rescheduled to Aug. 31, 2026 at 14:00 UTC | Verify live status; do not infer execution from planned copy |
 | Launch venue | LaunchLab proposal | Direct MADGER/SOL Raydium CPMM selected on August 26 | Verify legal eligibility, deployed pool, and trading URL |
 | Character flexibility | New poses/scenes allowed | Exact identity cannot change | Creative freedom applies only to pose/scene, never likeness |
 | Animated stickers | Three GIFs requested | Rejected attempts; restart with one “LOCK IN” action sticker | Do not reuse failed/glitchy files |

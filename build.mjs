@@ -11,14 +11,15 @@ await Promise.all(assetFiles.map(async file => {
   await cp(file, destination);
 }));
 
-const [home, litepaper, notFound] = await Promise.all([
+const [home, launch, litepaper, notFound] = await Promise.all([
   readFile("index.html", "utf8"),
+  readFile("launch.html", "utf8"),
   readFile("litepaper.html", "utf8"),
   readFile("404.html", "utf8")
 ]);
 
 const workerSource = `/** Generated at build time. HTML is bundled to prevent stale or corrupted edge assets. */
-const pages = ${JSON.stringify({ home, litepaper, notFound })};
+const pages = ${JSON.stringify({ home, launch, litepaper, notFound })};
 const securityHeaders = Object.freeze({
   "content-security-policy": "default-src 'self'; base-uri 'self'; connect-src 'self' https://formsubmit.co; font-src 'self'; form-action 'self' https://formsubmit.co; frame-ancestors 'none'; frame-src https://docs.google.com; img-src 'self' data: https://madger-launch-hunt.gorilla-white.chatgpt.site; media-src 'self' https://madger-launch-hunt.gorilla-white.chatgpt.site; object-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; upgrade-insecure-requests",
   "permissions-policy": "camera=(), microphone=(), geolocation=()",
@@ -41,8 +42,10 @@ export default {
   async fetch(request, env) {
     const { pathname } = new URL(request.url);
     if (pathname === "/index.html") return permanentRedirect("/");
+    if (pathname === "/launch" || pathname === "/launch/") return permanentRedirect("/launch.html");
     if (pathname === "/litepaper" || pathname === "/litepaper/") return permanentRedirect("/litepaper.html");
     if (pathname === "/") return new Response(pages.home, html);
+    if (pathname === "/launch.html") return new Response(pages.launch, html);
     if (pathname === "/litepaper.html") return new Response(pages.litepaper, html);
     const asset = await env.ASSETS.fetch(request);
     if (asset.status !== 404) return asset;

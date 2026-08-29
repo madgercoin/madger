@@ -2,6 +2,7 @@ const baseUrl = (process.env.SITE_URL ?? "https://madgercoin.com").replace(/\/$/
 const officialMint = "BHauMX8akk2umqkQqnJwpYkCRkZmefGnEBFByeFXRKqv";
 const checks = [
   ["/", 200],
+  ["/launch.html", 200],
   ["/litepaper.html", 200],
   ["/collaborators", 200],
   ["/privacy", 200],
@@ -18,6 +19,8 @@ const checks = [
 ];
 const redirects = [
   ["/index.html", "/"],
+  ["/launch", "/launch.html"],
+  ["/launch/", "/launch.html"],
   ["/litepaper", "/litepaper.html"],
   ["/litepaper/", "/litepaper.html"],
   ["/collaborators.html", "/collaborators", 307],
@@ -87,6 +90,22 @@ if (litepaper) {
   for (const [passed, label] of contentChecks) {
     console.log(`${passed ? "PASS" : "FAIL"} ${label}`);
     if (!passed) failures.push(`litepaper: ${label}`);
+  }
+}
+
+const launch = responses.get("/launch.html");
+if (launch) {
+  const contentChecks = [
+    [launch.body.includes('<link rel="canonical" href="https://madgercoin.com/launch.html">'), "launch canonical"],
+    [launch.body.includes("Monday, August 31, 2026 at 14:00 UTC"), "current public launch target"],
+    [launch.body.includes("Public trading is not live yet"), "pre-live safety warning"],
+    [launch.body.includes("600,000,000 MADGER") && launch.body.includes("Final amounts pending authorization"), "liquidity target and funding boundary"],
+    [launch.body.includes("Permanent Burn &amp; Earn planned"), "working LP-protection plan"],
+    [!/(raydium\.io\/(swap|liquidity)|jup\.ag|birdeye\.so|dexscreener\.com)\//i.test(launch.body), "no pre-launch trading destination"]
+  ];
+  for (const [passed, label] of contentChecks) {
+    console.log(`${passed ? "PASS" : "FAIL"} ${label}`);
+    if (!passed) failures.push(`launch: ${label}`);
   }
 }
 

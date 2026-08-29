@@ -1,5 +1,6 @@
 export const rootFiles = [
   "index.html",
+  "launch.html",
   "litepaper.html",
   "official-links.html",
   "collaborators.html",
