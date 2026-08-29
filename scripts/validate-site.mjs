@@ -35,6 +35,7 @@ const officialFacebook = "https://www.facebook.com/1279493098576451";
 const officialReddit = "https://www.reddit.com/user/Madgercoin/";
 const officialDiscord = "https://discord.gg/NcuPzSNz9e";
 const socialPreview = "https://madgercoin.com/assets/madger_social_share_v9.jpg";
+const homepageSocialPreview = "https://madgercoin.com/assets/madger_launch_hunt_backlink_v1.png";
 const pageSocialPreviews = new Map([
   ["blog.html", "https://madgercoin.com/assets/madger_journal_social_v2.jpg"],
   ["blog-building-foundations.html", "https://madgercoin.com/assets/madger_fieldnote_foundations_v1_social.jpg"],
@@ -164,7 +165,10 @@ const titles = new Set();
 const descriptions = new Set();
 for (const [file, expectedCanonical] of indexablePages) {
   const html = pages.get(file);
-  const expectedSocialPreview = pageSocialPreviews.get(file) ?? socialPreview;
+  const expectedSocialPreview = file === "index.html" ? homepageSocialPreview : (pageSocialPreviews.get(file) ?? socialPreview);
+  const expectedSocialType = file === "index.html" ? "image/png" : "image/jpeg";
+  const expectedSocialWidth = file === "index.html" ? "1731" : "1200";
+  const expectedSocialHeight = file === "index.html" ? "909" : "630";
   const canonical = linkHref(html, "canonical");
   if (canonical !== expectedCanonical) failures.push(`${file}: canonical must be ${expectedCanonical}`);
 
@@ -183,9 +187,9 @@ for (const [file, expectedCanonical] of indexablePages) {
     if (!html.includes(property)) failures.push(`${file}: missing social metadata ${property}`);
   }
   if (!html.includes('type="application/ld+json"')) failures.push(`${file}: missing JSON-LD`);
-  if (metaContent(html, "property", "og:image") !== expectedSocialPreview) failures.push(`${file}: Open Graph image must use its approved 1200x630 JPEG share card`);
-  if (metaContent(html, "property", "og:image:type") !== "image/jpeg") failures.push(`${file}: Open Graph image type must be image/jpeg`);
-  if (metaContent(html, "property", "og:image:width") !== "1200" || metaContent(html, "property", "og:image:height") !== "630") failures.push(`${file}: Open Graph image dimensions must be 1200x630`);
+  if (metaContent(html, "property", "og:image") !== expectedSocialPreview) failures.push(`${file}: Open Graph image must use its approved share card`);
+  if (metaContent(html, "property", "og:image:type") !== expectedSocialType) failures.push(`${file}: Open Graph image type must be ${expectedSocialType}`);
+  if (metaContent(html, "property", "og:image:width") !== expectedSocialWidth || metaContent(html, "property", "og:image:height") !== expectedSocialHeight) failures.push(`${file}: Open Graph image dimensions must be ${expectedSocialWidth}x${expectedSocialHeight}`);
   if (metaContent(html, "name", "twitter:image") !== expectedSocialPreview) failures.push(`${file}: X card must use its approved share card`);
 }
 
