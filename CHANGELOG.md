@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026-08-29 — Canonical scheduled-launch status
+
+- Preserved the active Launch Hunt homepage and August 31 countdown while adding a dedicated, indexable launch-status record.
+- Reconciled the launch-control date with the founder-controlled August 31, 2026 at 14:00 UTC reschedule campaign.
+- Published verified mint and supply facts, the selected direct Raydium CPMM route, the existing 60/20/10/7/3 allocation targets, and the planned permanent Burn & Earn treatment.
+- Kept exact opening pool funding, trading destinations, transaction evidence, and LP-protection proof unpublished until authorization and finalization.
+- Extended build, site, launch, and live-deployment checks for the new canonical route and pre-live safety boundary.
+
 ## 2026-08-28 — Contributor Program label and CTA contrast
 
 - Renamed the public navigation label from Collaborators to Contributor Program, matching the page's broader creator, moderator, KOL, and community-operator scope without implying employment or partnership.

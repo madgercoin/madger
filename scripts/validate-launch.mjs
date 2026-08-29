@@ -1,8 +1,8 @@
 import { createHash } from "node:crypto";
 import { readFile } from "node:fs/promises";
 
-const statePages = ["index.html", "litepaper.html", "collaborators.html"];
-const informationalPages = ["index.html", "litepaper.html", "404.html"];
+const statePages = ["index.html", "launch.html", "litepaper.html", "collaborators.html"];
+const informationalPages = ["index.html", "launch.html", "litepaper.html", "404.html"];
 const mint = "BHauMX8akk2umqkQqnJwpYkCRkZmefGnEBFByeFXRKqv";
 const stateSource = await readFile("launch-state.js", "utf8");
 const normalizedStateSource = stateSource.replace(/\r\n?/g, "\n");
@@ -28,11 +28,17 @@ if (!homepage.includes('madger-launch-film.mp4')) failures.push("index.html: off
 if (!homepage.includes('id="start"')) failures.push("index.html: Launch Hunt entry trail is absent");
 if (!homepage.includes("DIGPASTNOISE27")) failures.push("index.html: Burrow Field Mark is absent");
 if (!homepage.includes('href="/launch-hunt.html"')) failures.push("index.html: complete Launch Hunt rules link is absent");
+if (!homepage.includes('href="/launch.html"')) failures.push("index.html: canonical launch-status link is absent");
 if (homepage.includes("meme-contest")) failures.push("index.html: retired meme contest remains on the homepage");
 for (const page of informationalPages) {
   const html = await readFile(page, "utf8");
   if (tradingHosts.test(html)) failures.push(`${page}: trading link present before launch`);
 }
+const launchPage = await readFile("launch.html", "utf8");
+if (!launchPage.includes('href="https://madgercoin.com/launch.html"')) failures.push("launch.html: canonical URL is absent");
+if (!launchPage.includes("Monday, August 31, 2026 at 14:00 UTC")) failures.push("launch.html: current public target is absent");
+if (!launchPage.includes("600,000,000 MADGER") || !launchPage.includes("Final amounts pending authorization")) failures.push("launch.html: liquidity target or funding boundary is incomplete");
+if (!launchPage.includes("Permanent Burn &amp; Earn planned")) failures.push("launch.html: working LP-protection plan is absent");
 const notFound = await readFile("404.html", "utf8");
 if (notFound.includes("data-launch-state") || notFound.includes("/launch-state.js")) {
   failures.push("404.html: error page must not repeat project launch messaging");

@@ -9,7 +9,7 @@
 | Network / token | Solana / MADGER |
 | Official mint | `BHauMX8akk2umqkQqnJwpYkCRkZmefGnEBFByeFXRKqv` |
 | Supply / decimals / transfer tax | 1,000,000,000 / 6 / 0% |
-| Current state | `MINTED_NOT_TRADING` |
+| Current state | `LAUNCH_SCHEDULED` (public target August 31, 2026 at 14:00 UTC; not yet trading) |
 | Website | https://madgercoin.com |
 
 The target allocation is liquidity 60% (600,000,000), treasury 20% (200,000,000), community 10% (100,000,000), operations 7% (70,000,000), and creator reserve 3% (30,000,000). These are target balances, not transfer authorization.

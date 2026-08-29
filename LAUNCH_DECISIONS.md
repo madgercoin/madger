@@ -7,7 +7,7 @@ Record each founder decision, approver, UTC timestamp, rationale, and supporting
 | Decision | Approved value | Approver | Recorded UTC | Evidence / limitation |
 |---|---|---|---|---|
 | Launch method | Direct MADGER/SOL Raydium CPMM liquidity pool | James Dean | 2026-08-26 | Founder confirmed CPMM in the launch-preparation conversation. This does not clear the current Raydium jurisdiction restriction or authorize a transaction. |
-| Launch date and time | August 27, 2026 at 14:00 UTC | James Dean | 2026-08-26 | Consistent with the production countdown and founder instruction to use a worldwide UTC time. Publication remains conditional on all gates clearing. |
+| Launch date and time | August 31, 2026 at 14:00 UTC | James Dean | 2026-08-28 | Rescheduled through the founder-controlled launch-update campaign and production countdown. Trading remains conditional on all gates clearing and a verified pool link being published. |
 
 ## Verified authority state
 
