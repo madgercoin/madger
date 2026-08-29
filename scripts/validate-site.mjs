@@ -34,6 +34,9 @@ const officialFacebook = "https://www.facebook.com/1279493098576451";
 const officialReddit = "https://www.reddit.com/user/Madgercoin/";
 const officialDiscord = "https://discord.gg/NcuPzSNz9e";
 const socialPreview = "https://madgercoin.com/assets/madger_v5_social.jpg";
+const pageSocialPreviews = new Map([
+  ["blog.html", "https://madgercoin.com/assets/madger_journal_social_v2.jpg"]
+]);
 const failures = [];
 const pages = new Map();
 
@@ -152,6 +155,7 @@ const titles = new Set();
 const descriptions = new Set();
 for (const [file, expectedCanonical] of indexablePages) {
   const html = pages.get(file);
+  const expectedSocialPreview = pageSocialPreviews.get(file) ?? socialPreview;
   const canonical = linkHref(html, "canonical");
   if (canonical !== expectedCanonical) failures.push(`${file}: canonical must be ${expectedCanonical}`);
 
@@ -170,10 +174,10 @@ for (const [file, expectedCanonical] of indexablePages) {
     if (!html.includes(property)) failures.push(`${file}: missing social metadata ${property}`);
   }
   if (!html.includes('type="application/ld+json"')) failures.push(`${file}: missing JSON-LD`);
-  if (metaContent(html, "property", "og:image") !== socialPreview) failures.push(`${file}: Open Graph image must use the 1200x630 JPEG share card`);
+  if (metaContent(html, "property", "og:image") !== expectedSocialPreview) failures.push(`${file}: Open Graph image must use its approved 1200x630 JPEG share card`);
   if (metaContent(html, "property", "og:image:type") !== "image/jpeg") failures.push(`${file}: Open Graph image type must be image/jpeg`);
   if (metaContent(html, "property", "og:image:width") !== "1200" || metaContent(html, "property", "og:image:height") !== "630") failures.push(`${file}: Open Graph image dimensions must be 1200x630`);
-  if (metaContent(html, "name", "twitter:image") !== socialPreview) failures.push(`${file}: X card must use the canonical share card`);
+  if (metaContent(html, "name", "twitter:image") !== expectedSocialPreview) failures.push(`${file}: X card must use its approved share card`);
 }
 
 if (!metaContent(pages.get("404.html"), "name", "robots")?.includes("noindex")) {

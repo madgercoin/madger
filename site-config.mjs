@@ -10,6 +10,7 @@ export const rootFiles = [
   "blog-honey-badger-standard.html",
   "blog-token-link-safety.html",
   "blog.css",
+  "blog.js",
   "404.html",
   "styles.css",
   "script.js",
@@ -32,6 +33,8 @@ export const assetFiles = [
   "madger_v5_social.jpg",
   "madger_v5_profile.webp",
   "madger_v6_community_welcome.webp",
+  "madger_journal_writer_v2.webp",
+  "madger_journal_social_v2.jpg",
   "media/madger-prelaunch-tomorrow-cpmm-v2.png"
 ];
 

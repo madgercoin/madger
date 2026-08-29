@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-08-29 — Kinetic Journal redesign
+
+- Rebuilt The Burrow Journal around an original MADGER-at-the-writer's-desk hero composition.
+- Added a layered editorial type system, continuous field ticker, reactive depth, reading progress, card tilt, and accessible scroll reveals.
+- Added a Journal-specific 1200×630 social card and refreshed image discovery metadata.
+
 ## 2026-08-28 — The Burrow Journal
 
 - Added a responsive, accessible MADGER blog homepage under `/blog.html`.
