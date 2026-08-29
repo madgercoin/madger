@@ -19,7 +19,7 @@
     "validate:launch": "node scripts/validate-launch.mjs"
   },
   "devDependencies": {
-    "wrangler": "4.120.1"
+    "wrangler": "4.126.0"
   },
   "engines": {
     "node": ">=22"
