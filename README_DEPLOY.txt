@@ -31,10 +31,8 @@ sitemap.xml             manifest.webmanifest _headers
 Published below `/assets/`:
 
 ```text
-madger_v5_graphics.webp          madger_v5_hero.webp
-madger_v5_icon.png               madger_v5_mascot.webp
-madger_v5_mascot_portrait.webp   madger_official_logo_transparent_512.png
-madger_v5_profile.webp           madger_v5_social.jpg
+madger_hero_burrow_v7.jpg        madger_official_logo_transparent_512.png
+madger_social_share_v7.jpg       madger_v6_community_welcome.webp
 ```
 
 No repository documentation, validation script, package file, or other unlisted source is published. A build log should report 18 copied source files; treat any unexpected count as a reason to inspect `dist/`, not as permission to deploy.

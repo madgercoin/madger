@@ -43,7 +43,7 @@ Add a Discord URL to visible pages or structured data only after an authenticate
 
 Keep the site static and dependency-light. Do not add render-blocking third-party scripts solely for SEO. Preserve compressed WebP imagery, intrinsic image dimensions, the hero preload, immutable versioned asset caching, reduced-motion support, and mobile-first layout behavior.
 
-Social previews use the dedicated 1200×630 `madger_v5_social.jpg` compatibility export with explicit dimensions and alternative text. The homepage also exposes the descriptive, tightly framed mascot portrait through a standard `<img>` element and image sitemap entry.
+Social previews use the dedicated 1200×630 `madger_social_share_v7.jpg` branded export with explicit dimensions and alternative text. The homepage also exposes the descriptive, tightly framed mascot portrait through a standard `<img>` element and image sitemap entry.
 
 ## Release checks
 

@@ -29,16 +29,11 @@ export const rootFiles = [
 ];
 
 export const assetFiles = [
-  "madger_v5_graphics.webp",
-  "madger_v5_hero.webp",
-  "madger_v5_icon.png",
-  "madger_v5_mascot.webp",
-  "madger_v5_mascot_portrait.webp",
+  "madger_hero_burrow_v7.jpg",
   "madger_official_logo_transparent_180.png",
   "madger_official_logo_transparent_192.png",
   "madger_official_logo_transparent_512.png",
-  "madger_v5_social.jpg",
-  "madger_v5_profile.webp",
+  "madger_social_share_v7.jpg",
   "madger_v6_community_welcome.webp",
   "social_telegram.svg",
   "social_x.svg",
@@ -55,8 +50,7 @@ export const assetFiles = [
   "madger_fieldnote_standard_v1.webp",
   "madger_fieldnote_standard_v1_social.jpg",
   "madger_fieldnote_safety_v1.webp",
-  "madger_fieldnote_safety_v1_social.jpg",
-  "media/madger-prelaunch-tomorrow-cpmm-v2.png"
+  "madger_fieldnote_safety_v1_social.jpg"
 ];
 
 export const distAllowlist = [

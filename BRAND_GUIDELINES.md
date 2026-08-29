@@ -49,11 +49,10 @@ Use the approved face-forward gold-edged circular coin emblem and the distressed
 ## Asset usage
 
 - `madger_official_logo_transparent_512.png` is the approved transparent navigation/footer/app emblem; do not publish the white-background source derivative.
-- `madger_v5_icon.png` and `madger_v5_profile.webp` are compact identity derivatives.
-- `madger_v5_hero.webp` is the approved 1920×1080 homepage composition.
-- `madger_v5_mascot.webp` is the square full-body source; `madger_v5_mascot_portrait.webp` is its crop-only homepage derivative.
-- `madger_v5_social.jpg` is the 1200×630 compatibility export for link previews.
-- `madger_v5_graphics.webp` is supporting editorial artwork.
+- `madger_official_logo_transparent_512.png` is the canonical compact identity asset.
+- `madger_hero_burrow_v7.jpg` is the approved 1920×1080 cinematic homepage backdrop.
+- `madger_social_share_v7.jpg` is the 1200×630 branded export for link previews.
+- Standing crossed-arm character renders are retired and must not be reused.
 
 Do not stretch, mirror, recolor, redraw, or crop through the character or compact emblem. Keep the relevant coin border or the complete ears, forehead stripe, expression, fang, feet, and tail visible.
 
