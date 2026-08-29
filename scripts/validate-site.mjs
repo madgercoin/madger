@@ -85,8 +85,13 @@ function normalizePhraseText(text) {
 }
 
 const manifest = JSON.parse(await readFile("manifest.webmanifest", "utf8"));
-for (const icon of manifest.icons ?? []) {
-  const source = icon.src.split("?")[0].replace(/^\//, "");
+const manifestIcons = [
+  ...(manifest.icons ?? []),
+  ...(manifest.shortcuts ?? []).flatMap(shortcut => shortcut.icons ?? [])
+];
+for (const icon of manifestIcons) {
+  const publicPath = icon.src.split("?")[0].replace(/^\//, "");
+  const source = publicPath.replace(/^assets\//, "");
   try {
     await access(source);
   } catch {

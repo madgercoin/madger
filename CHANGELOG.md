@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-08-29 — Cross-device Journal delivery
+
+- Added installable-app metadata to the Journal and every Field Note, plus app shortcuts for the Journal, launch status, and official links.
+- Added a 192px app icon alongside the existing 512px icon and cache-bumped the app manifest and Journal stylesheet.
+- Removed the last tiny horizontal-overflow edge from the animated Journal layout without changing Launch Hunt content.
+
 ## 2026-08-29 — Canonical scheduled-launch status
 
 - Preserved the active Launch Hunt homepage and August 31 countdown while adding a dedicated, indexable launch-status record.
