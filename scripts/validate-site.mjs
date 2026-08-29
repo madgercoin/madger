@@ -1,13 +1,17 @@
 import { access, readFile } from "node:fs/promises";
 import path from "node:path";
 
-const htmlFiles = ["index.html", "litepaper.html", "official-links.html", "collaborators.html", "privacy.html", "404.html"];
+const htmlFiles = ["index.html", "litepaper.html", "official-links.html", "collaborators.html", "privacy.html", "blog.html", "blog-building-foundations.html", "blog-honey-badger-standard.html", "blog-token-link-safety.html", "404.html"];
 const indexablePages = new Map([
   ["index.html", "https://madgercoin.com/"],
   ["litepaper.html", "https://madgercoin.com/litepaper.html"],
   ["official-links.html", "https://madgercoin.com/official-links.html"],
   ["collaborators.html", "https://madgercoin.com/collaborators"],
   ["privacy.html", "https://madgercoin.com/privacy.html"]
+  ,["blog.html", "https://madgercoin.com/blog.html"]
+  ,["blog-building-foundations.html", "https://madgercoin.com/blog-building-foundations.html"]
+  ,["blog-honey-badger-standard.html", "https://madgercoin.com/blog-honey-badger-standard.html"]
+  ,["blog-token-link-safety.html", "https://madgercoin.com/blog-token-link-safety.html"]
 ]);
 const requiredSocialProperties = [
   'property="og:type"',

@@ -1,5 +1,12 @@
 # Changelog
 
+## 2026-08-28 — The Burrow Journal
+
+- Added a responsive, accessible MADGER blog homepage under `/blog.html`.
+- Published three source-grounded launch articles covering project foundations, character standards, and token-link safety.
+- Added site navigation, article metadata, structured data, social previews, and sitemap discovery for the journal.
+- Extended the explicit build allowlist and validation coverage to include every new journal page.
+
 ## 2026-08-28 — Contributor Program label and CTA contrast
 
 - Renamed the public navigation label from Collaborators to Contributor Program, matching the page's broader creator, moderator, KOL, and community-operator scope without implying employment or partnership.
