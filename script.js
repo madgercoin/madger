@@ -1,5 +1,5 @@
 const moods = [
-  ["Still digging.", "Markets change. Madger doesn't."],
+  ["Still standing.", "Markets change. Madger doesn't."],
   ["Not impressed.", "Another prediction. Cool."],
   ["Coffee helped.", "Barely."],
   ["About time.", "Green candles should not be this surprising."],
@@ -98,8 +98,8 @@ const manifestoFooter = document.querySelector(".manifesto blockquote footer");
 if (manifestoFooter) {
   const fieldMark = document.createElement("p");
   fieldMark.className = "launch-note";
-  fieldMark.setAttribute("aria-label", "Burrow field mark: DIGPASTNOISE27");
-  fieldMark.innerHTML = '<span class="dot" aria-hidden="true"></span> BURROW FIELD MARK · <strong>DIGPASTNOISE27</strong>';
+  fieldMark.setAttribute("aria-label", "Burrow field mark: SEEKPASTNOISE27");
+  fieldMark.innerHTML = '<span class="dot" aria-hidden="true"></span> BURROW FIELD MARK · <strong>SEEKPASTNOISE27</strong>';
   manifestoFooter.insertAdjacentElement("afterend", fieldMark);
 }
 

@@ -1,5 +1,10 @@
 # Changelog
 
+## 2026-08-29 — Sharper MADGER voice
+
+- Replaced every public-facing digging slogan with stronger language centered on signal, focus, momentum, and clean execution.
+- Updated the active Burrow Field Mark from `DIGPASTNOISE27` to `SEEKPASTNOISE27` so the Launch Hunt matches the refreshed voice.
+
 ## 2026-08-29 — Countdown collision fix
 
 - Prevented the Launch Countdown label from crossing into the days tile at tablet and compact-desktop widths while preserving the phone and full-desktop layouts.

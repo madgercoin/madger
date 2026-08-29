@@ -26,7 +26,7 @@ const homepage = await readFile("index.html", "utf8");
 if (!homepage.includes('id="launch-film"')) failures.push("index.html: prominent launch-film section is absent");
 if (!homepage.includes('madger-launch-film.mp4')) failures.push("index.html: official cinematic launch film is absent");
 if (!homepage.includes('id="start"')) failures.push("index.html: Launch Hunt entry trail is absent");
-if (!homepage.includes("DIGPASTNOISE27")) failures.push("index.html: Burrow Field Mark is absent");
+if (!homepage.includes("SEEKPASTNOISE27")) failures.push("index.html: Burrow Field Mark is absent");
 if (!homepage.includes('href="/launch-hunt.html"')) failures.push("index.html: complete Launch Hunt rules link is absent");
 if (!homepage.includes('href="/launch.html"')) failures.push("index.html: canonical launch-status link is absent");
 if (homepage.includes("meme-contest")) failures.push("index.html: retired meme contest remains on the homepage");
