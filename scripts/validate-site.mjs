@@ -166,9 +166,9 @@ const descriptions = new Set();
 for (const [file, expectedCanonical] of indexablePages) {
   const html = pages.get(file);
   const expectedSocialPreview = file === "index.html" ? homepageSocialPreview : (pageSocialPreviews.get(file) ?? socialPreview);
-  const expectedSocialType = file === "index.html" ? "image/png" : "image/jpeg";
-  const expectedSocialWidth = file === "index.html" ? "1731" : "1200";
-  const expectedSocialHeight = file === "index.html" ? "909" : "630";
+  const expectedSocialType = "image/jpeg";
+  const expectedSocialWidth = "1200";
+  const expectedSocialHeight = "630";
   const canonical = linkHref(html, "canonical");
   if (canonical !== expectedCanonical) failures.push(`${file}: canonical must be ${expectedCanonical}`);
 
