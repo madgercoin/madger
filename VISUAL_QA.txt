@@ -26,7 +26,7 @@ Typography uses an Impact/Arial Black-style condensed display stack for high-imp
 | --- | --- | --- |
 | `madger_hero_burrow_v7.jpg` | `/assets/madger_hero_burrow_v7.jpg` | 1920×1080 cinematic Burrow backdrop without a standing character |
 | `madger_official_logo_transparent_512.png` | `/assets/madger_official_logo_transparent_512.png` | Transparent navigation/footer/app emblem |
-| `madger_social_share_v8.jpg` | `/assets/madger_social_share_v8.jpg` | 1200×630 branded Open Graph/X card |
+| `madger_social_share_v9.jpg` | `/assets/madger_social_share_v9.jpg` | 1200×630 branded Open Graph/X card |
 
 Only files listed in `site-config.mjs` are copied to production. Do not assume public availability grants reuse rights; formal asset licensing remains a Future Decision.
 

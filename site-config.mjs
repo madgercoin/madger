@@ -33,7 +33,7 @@ export const assetFiles = [
   "madger_official_logo_transparent_180.png",
   "madger_official_logo_transparent_192.png",
   "madger_official_logo_transparent_512.png",
-  "madger_social_share_v8.jpg",
+  "madger_social_share_v9.jpg",
   "madger_v6_community_welcome.webp",
   "social_telegram.svg",
   "social_x.svg",
