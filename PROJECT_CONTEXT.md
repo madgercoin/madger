@@ -26,7 +26,12 @@ Quality, transparency, safety, accessibility, performance, maintainability, and 
 - X: https://x.com/madgercoin
 - Announcements: https://t.me/madgercoin
 - Community: https://t.me/madgerburrow
-- Email: madgercoin@gmail.com
+- General email: hello@madgercoin.com
+- Support: support@madgercoin.com
+- Security: security@madgercoin.com
+- Partnerships: partnerships@madgercoin.com
+- Launch entries: entries@madgercoin.com
+- Updates and reminders: updates@madgercoin.com
 
 ## Future Decisions
 

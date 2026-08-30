@@ -31,7 +31,12 @@ The positioning is:
 | X | https://x.com/madgercoin / `@madgercoin` | CONFIRMED |
 | Telegram announcement channel | https://t.me/madgercoin / `@madgercoin` | CONFIRMED |
 | Telegram community | https://t.me/madgerburrow / `@madgerburrow` | CONFIRMED |
-| Email | `madgercoin@gmail.com` | CONFIRMED |
+| General email | `hello@madgercoin.com` | CONFIRMED |
+| Support email | `support@madgercoin.com` | CONFIRMED |
+| Security email | `security@madgercoin.com` | CONFIRMED |
+| Partnerships email | `partnerships@madgercoin.com` | CONFIRMED |
+| Launch entries email | `entries@madgercoin.com` | CONFIRMED |
+| Updates email | `updates@madgercoin.com` | CONFIRMED |
 | Instagram | `@madgercoin` | CONFIRMED as Buffer destination |
 | TikTok | `@themadgercoin` | CONFIRMED as Buffer destination |
 | YouTube | `@Madgercoin` / channel name `Madger` | CONFIRMED as Buffer destination |

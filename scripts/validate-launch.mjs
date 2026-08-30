@@ -31,7 +31,7 @@ if (!homepage.includes("SEEKPASTNOISE27")) failures.push("index.html: Burrow Fie
 if (!homepage.includes('href="/launch-hunt.html"')) failures.push("index.html: complete Launch Hunt rules link is absent");
 if (!homepage.includes('href="/launch.html"')) failures.push("index.html: canonical launch-status link is absent");
 if (homepage.includes("meme-contest")) failures.push("index.html: retired meme contest remains on the homepage");
-const entryRecipient = "madgercoin@gmail.com";
+const entryRecipient = "entries@madgercoin.com";
 const entrySubject = "MADGER Launch Hunt Entry — MLH26";
 const orderedEntryFields = [
   "ENTRY FORMAT: MLH26",

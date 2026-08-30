@@ -83,7 +83,7 @@ if (launchNotifyForm) {
     button.disabled = true;
     launchNotifyStatus.textContent = "Saving your reminder…";
     try {
-      const response = await fetch("https://formsubmit.co/ajax/madgercoin@gmail.com", { method: "POST", headers: { Accept: "application/json" }, body: data });
+      const response = await fetch("https://formsubmit.co/ajax/updates@madgercoin.com", { method: "POST", headers: { Accept: "application/json" }, body: data });
       if (!response.ok) throw new Error("Signup failed");
       const calendar = ["BEGIN:VCALENDAR","VERSION:2.0","PRODID:-//MADGER//Launch Reminder//EN","CALSCALE:GREGORIAN","METHOD:PUBLISH","BEGIN:VEVENT","UID:madger-launch-20260831@madgercoin.com","DTSTAMP:20260829T000000Z","DTSTART:20260831T140000Z","DTEND:20260831T143000Z","SUMMARY:$MADGER Launch","DESCRIPTION:$MADGER launch reminder from madgercoin.com","URL:https://madgercoin.com/","BEGIN:VALARM","TRIGGER:-PT24H","ACTION:DISPLAY","DESCRIPTION:$MADGER launches in 24 hours","END:VALARM","BEGIN:VALARM","TRIGGER:-PT1H","ACTION:DISPLAY","DESCRIPTION:$MADGER launches in 1 hour","END:VALARM","END:VEVENT","END:VCALENDAR"].join("\r\n");
       const objectUrl = URL.createObjectURL(new Blob([calendar], { type: "text/calendar;charset=utf-8" }));
