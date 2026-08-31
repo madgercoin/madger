@@ -1,9 +1,9 @@
 {
-  "generatedAt": "2026-08-30T13:54:21.372Z",
-  "previousGeneratedAt": "2026-08-29T13:56:02.654Z",
+  "generatedAt": "2026-08-31T16:17:09.765Z",
+  "previousGeneratedAt": "2026-08-30T13:54:21.372Z",
   "window": {
-    "start": "2026-07-31T13:54:21.372Z",
-    "end": "2026-08-30T13:54:21.372Z"
+    "start": "2026-08-01T16:17:09.765Z",
+    "end": "2026-08-31T16:17:09.765Z"
   },
   "organization": {
     "id": "6a67aceacff325d8d2d231e9",
@@ -20,15 +20,15 @@
       "state": "connected",
       "healthy": true,
       "queuePaused": false,
-      "metricsUpdatedAt": "2026-08-29T20:55:15.470Z",
+      "metricsUpdatedAt": "2026-08-30T19:55:27.984Z",
       "metrics": {
-        "postCount": 41,
-        "reactions": 44,
+        "postCount": 43,
+        "reactions": 45,
         "comments": 28,
-        "engagementRate": 4.87,
-        "impressions": 2260,
+        "engagementRate": 4.84,
+        "impressions": 2993,
         "shares": 1,
-        "clicks": 42
+        "clicks": 76
       },
       "requiresCommunityReview": true
     },
@@ -42,13 +42,13 @@
       "state": "connected",
       "healthy": true,
       "queuePaused": false,
-      "metricsUpdatedAt": "2026-08-30T10:54:49.279Z",
+      "metricsUpdatedAt": "2026-08-31T02:57:25.861Z",
       "metrics": {
-        "postCount": 28,
+        "postCount": 29,
         "reactions": 7,
         "comments": 4,
         "engagementRate": 3.06,
-        "views": 359
+        "views": 360
       },
       "requiresCommunityReview": true
     },
@@ -62,15 +62,15 @@
       "state": "connected",
       "healthy": true,
       "queuePaused": false,
-      "metricsUpdatedAt": "2026-08-30T12:34:11.036Z",
+      "metricsUpdatedAt": "2026-08-31T14:33:41.369Z",
       "metrics": {
-        "postCount": 74,
-        "reactions": 1864,
-        "comments": 872,
-        "engagementRate": 12.58,
-        "reposts": 457,
-        "impressions": 53187,
-        "clicks": 616
+        "postCount": 83,
+        "reactions": 2048,
+        "comments": 934,
+        "engagementRate": 12.65,
+        "reposts": 499,
+        "impressions": 57230,
+        "clicks": 658
       },
       "requiresCommunityReview": true
     },
@@ -84,18 +84,18 @@
       "state": "connected",
       "healthy": true,
       "queuePaused": false,
-      "metricsUpdatedAt": "2026-08-30T10:50:47.178Z",
+      "metricsUpdatedAt": "2026-08-31T09:50:58.028Z",
       "metrics": {
-        "postCount": 41,
-        "reactions": 35,
+        "postCount": 44,
+        "reactions": 37,
         "comments": 9,
-        "engagementRate": 5.14,
+        "engagementRate": 5.2,
         "impressions": 0,
-        "views": 1122,
+        "views": 1169,
         "shares": 0,
         "saves": 1,
         "follows": 0,
-        "reach": 875
+        "reach": 903
       },
       "requiresCommunityReview": true
     },
@@ -109,15 +109,15 @@
       "state": "connected",
       "healthy": true,
       "queuePaused": false,
-      "metricsUpdatedAt": "2026-08-29T21:57:02.439Z",
+      "metricsUpdatedAt": "2026-08-30T20:33:02.116Z",
       "metrics": {
-        "postCount": 36,
-        "reactions": 74,
-        "comments": 8,
-        "engagementRate": 1.56,
-        "views": 5320,
+        "postCount": 37,
+        "reactions": 90,
+        "comments": 9,
+        "engagementRate": 1.7,
+        "views": 5877,
         "shares": 1,
-        "reach": 4244
+        "reach": 4780
       },
       "requiresCommunityReview": true
     }
@@ -164,7 +164,7 @@
         "shares": 0,
         "reposts": 47,
         "reach": 808,
-        "impressions": 6317,
+        "impressions": 6334,
         "views": 963,
         "clicks": 192,
         "saves": 0,
@@ -176,8 +176,8 @@
         "shares": 0,
         "reposts": 0,
         "reach": 0,
-        "impressions": 14,
-        "views": 2,
+        "impressions": 17,
+        "views": 0,
         "clicks": 0,
         "saves": 0,
         "follows": 0
@@ -194,7 +194,7 @@
         "saves": 6,
         "follows": 6
       },
-      "averageEngagementRate": 13.460384615384614,
+      "averageEngagementRate": 13.456923076923077,
       "priorSnapshotAvailable": true
     },
     "posts": [
@@ -325,8 +325,8 @@
         "metricDeltas": {
           "reactions": 0,
           "comments": 0,
-          "engagementRate": -0.020000000000000018,
-          "views": 1,
+          "engagementRate": 0,
+          "views": 0,
           "shares": 0,
           "reach": 0
         }
@@ -403,7 +403,7 @@
         "status": "sent",
         "externalLink": "https://www.instagram.com/reel/DbawDMtmlki/",
         "publishingError": null,
-        "metricsUpdatedAt": "2026-08-30T09:12:50.071Z",
+        "metricsUpdatedAt": "2026-08-31T08:12:58.761Z",
         "metrics": {
           "reactions": 2,
           "comments": 0,
@@ -437,7 +437,7 @@
         "status": "sent",
         "externalLink": "https://www.youtube.com/shorts/yDeRT1XJgsA",
         "publishingError": null,
-        "metricsUpdatedAt": "2026-08-29T19:29:06.165Z",
+        "metricsUpdatedAt": "2026-08-30T18:30:37.231Z",
         "metrics": {
           "reactions": 0,
           "comments": 0,
@@ -463,7 +463,7 @@
         "status": "sent",
         "externalLink": "https://www.tiktok.com/@themadgercoin/video/7668815697367076109?utm_campaign=tt4d_open_api&utm_source=7103819247981182978",
         "publishingError": null,
-        "metricsUpdatedAt": "2026-08-29T21:57:02.404Z",
+        "metricsUpdatedAt": "2026-08-30T20:33:02.116Z",
         "metrics": {
           "reactions": 3,
           "comments": 0,
@@ -493,7 +493,7 @@
         "status": "sent",
         "externalLink": "https://www.youtube.com/shorts/cD9BiH569oI",
         "publishingError": null,
-        "metricsUpdatedAt": "2026-08-29T19:29:06.165Z",
+        "metricsUpdatedAt": "2026-08-30T18:30:37.231Z",
         "metrics": {
           "reactions": 0,
           "comments": 0,
@@ -519,7 +519,7 @@
         "status": "sent",
         "externalLink": "https://www.tiktok.com/@themadgercoin/video/7669418973116632333?utm_campaign=tt4d_open_api&utm_source=7103819247981182978",
         "publishingError": null,
-        "metricsUpdatedAt": "2026-08-29T21:57:02.370Z",
+        "metricsUpdatedAt": "2026-08-30T20:33:02.116Z",
         "metrics": {
           "reactions": 7,
           "comments": 0,
@@ -549,7 +549,7 @@
         "status": "sent",
         "externalLink": "https://www.facebook.com/reel/1732520327655007/",
         "publishingError": null,
-        "metricsUpdatedAt": "2026-08-29T20:55:15.470Z",
+        "metricsUpdatedAt": "2026-08-30T19:55:27.984Z",
         "metrics": {
           "reactions": 1,
           "comments": 0,
@@ -561,8 +561,8 @@
         "metricDeltas": {
           "reactions": 0,
           "comments": 0,
-          "engagementRate": 100,
-          "impressions": 1,
+          "engagementRate": 0,
+          "impressions": 0,
           "shares": 0,
           "clicks": 0
         }
@@ -579,7 +579,7 @@
         "status": "sent",
         "externalLink": "https://www.instagram.com/reel/DbmBD6Gk3yf/",
         "publishingError": null,
-        "metricsUpdatedAt": "2026-08-30T10:50:47.178Z",
+        "metricsUpdatedAt": "2026-08-31T09:50:58.028Z",
         "metrics": {
           "reactions": 1,
           "comments": 0,
@@ -701,7 +701,7 @@
         "status": "sent",
         "externalLink": "https://facebook.com/1279493098576451_122108036793423166",
         "publishingError": null,
-        "metricsUpdatedAt": "2026-08-29T20:55:15.470Z",
+        "metricsUpdatedAt": "2026-08-30T19:55:27.984Z",
         "metrics": {
           "reactions": 3,
           "comments": 0,
@@ -730,7 +730,7 @@
         "status": "sent",
         "externalLink": "https://www.instagram.com/p/DcFbFJPlFqB/",
         "publishingError": null,
-        "metricsUpdatedAt": "2026-08-30T10:50:47.178Z",
+        "metricsUpdatedAt": "2026-08-31T09:50:58.027Z",
         "metrics": {
           "reactions": 0,
           "comments": 0,
@@ -764,21 +764,21 @@
         "status": "sent",
         "externalLink": "https://x.com/2080142722153816065/status/2088931163230376000",
         "publishingError": null,
-        "metricsUpdatedAt": "2026-08-29T16:33:21.144Z",
+        "metricsUpdatedAt": "2026-08-31T14:33:41.369Z",
         "metrics": {
           "reactions": 157,
           "comments": 91,
-          "engagementRate": 15.4,
+          "engagementRate": 15.36,
           "reposts": 42,
-          "impressions": 5494,
+          "impressions": 5509,
           "clicks": 188
         },
         "metricDeltas": {
           "reactions": 0,
           "comments": 0,
-          "engagementRate": -0.03999999999999915,
+          "engagementRate": -0.040000000000000924,
           "reposts": 0,
-          "impressions": 13,
+          "impressions": 15,
           "clicks": 0
         }
       },
@@ -794,7 +794,7 @@
         "status": "sent",
         "externalLink": "https://facebook.com/1279493098576451_122108134587423166",
         "publishingError": null,
-        "metricsUpdatedAt": "2026-08-29T20:55:15.469Z",
+        "metricsUpdatedAt": "2026-08-30T19:55:27.984Z",
         "metrics": {
           "reactions": 2,
           "comments": 0,
@@ -824,7 +824,7 @@
         "status": "sent",
         "externalLink": "https://www.instagram.com/p/DcGOkg5ltva/",
         "publishingError": null,
-        "metricsUpdatedAt": "2026-08-30T10:50:47.178Z",
+        "metricsUpdatedAt": "2026-08-31T09:50:58.027Z",
         "metrics": {
           "reactions": 0,
           "comments": 0,
@@ -858,7 +858,7 @@
         "status": "sent",
         "externalLink": "https://www.tiktok.com/@themadgercoin/video/7674570062266666254?utm_campaign=tt4d_open_api&utm_source=7103819247981182978",
         "publishingError": null,
-        "metricsUpdatedAt": "2026-08-29T21:57:02.302Z",
+        "metricsUpdatedAt": "2026-08-30T20:33:02.115Z",
         "metrics": {
           "reactions": 0,
           "comments": 0,
@@ -901,21 +901,21 @@
         "status": "sent",
         "externalLink": "https://x.com/2080142722153816065/status/2090903038424736251",
         "publishingError": null,
-        "metricsUpdatedAt": "2026-08-29T16:33:21.144Z",
+        "metricsUpdatedAt": "2026-08-31T14:33:41.368Z",
         "metrics": {
           "reactions": 33,
           "comments": 14,
-          "engagementRate": 15.07,
+          "engagementRate": 15.02,
           "reposts": 5,
-          "impressions": 677,
+          "impressions": 679,
           "clicks": 1
         },
         "metricDeltas": {
           "reactions": 0,
           "comments": 0,
-          "engagementRate": 0,
+          "engagementRate": -0.05000000000000071,
           "reposts": 0,
-          "impressions": 0,
+          "impressions": 2,
           "clicks": 0
         }
       },
@@ -931,7 +931,7 @@
         "status": "sent",
         "externalLink": "https://facebook.com/1279493098576451_122109624249423166",
         "publishingError": null,
-        "metricsUpdatedAt": "2026-08-29T20:55:15.469Z",
+        "metricsUpdatedAt": "2026-08-30T19:55:27.983Z",
         "metrics": {
           "reactions": 1,
           "comments": 0,
@@ -961,7 +961,7 @@
         "status": "sent",
         "externalLink": "https://www.instagram.com/p/DcUO7rak_qB/",
         "publishingError": null,
-        "metricsUpdatedAt": "2026-08-30T10:50:47.178Z",
+        "metricsUpdatedAt": "2026-08-31T09:50:58.026Z",
         "metrics": {
           "reactions": 1,
           "comments": 0,
@@ -995,7 +995,7 @@
         "status": "sent",
         "externalLink": "https://www.tiktok.com/@themadgercoin/video/7676590217716845838?utm_campaign=tt4d_open_api&utm_source=7103819247981182978",
         "publishingError": null,
-        "metricsUpdatedAt": "2026-08-29T21:57:02.419Z",
+        "metricsUpdatedAt": "2026-08-30T20:33:02.115Z",
         "metrics": {
           "reactions": 0,
           "comments": 0,
@@ -1008,7 +1008,7 @@
           "reactions": 0,
           "comments": 0,
           "engagementRate": 0,
-          "views": 1,
+          "views": 0,
           "shares": 0,
           "reach": 0
         }
