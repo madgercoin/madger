@@ -96,11 +96,11 @@ const launch = responses.get("/launch.html");
 if (launch) {
   const contentChecks = [
     [launch.body.includes('<link rel="canonical" href="https://madgercoin.com/launch.html">'), "launch canonical"],
-    [launch.body.includes("Monday, August 31, 2026 at 14:00 UTC"), "current public launch target"],
-    [launch.body.includes("Public trading is not live yet"), "pre-live safety warning"],
-    [launch.body.includes("600,000,000 MADGER") && launch.body.includes("Final amounts pending authorization"), "liquidity target and funding boundary"],
-    [launch.body.includes("Permanent Burn &amp; Earn planned"), "working LP-protection plan"],
-    [!/(raydium\.io\/(swap|liquidity)|jup\.ag|birdeye\.so|dexscreener\.com)\//i.test(launch.body), "no pre-launch trading destination"]
+    [launch.body.includes("TRADING LIVE"), "trading-live status"],
+    [launch.body.includes("The SOL–MADGER market is live on Raydium"), "live-market notice"],
+    [launch.body.includes("600,000,000 MADGER") && launch.body.includes("Awaiting public verification"), "launch allocation and LP-evidence boundary"],
+    [launch.body.includes("0.25%"), "verified Raydium fee tier"],
+    [launch.body.includes("https://raydium.io/liquidity-pools/?token=" + officialMint), "verified Raydium market destination"]
   ];
   for (const [passed, label] of contentChecks) {
     console.log(`${passed ? "PASS" : "FAIL"} ${label}`);
