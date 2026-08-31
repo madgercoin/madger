@@ -273,7 +273,16 @@ for (const requiredFile of indexablePages.keys()) {
 }
 if (/no official token contract/i.test(productionText)) failures.push("obsolete no-contract language is present");
 const mintCandidates = productionText.match(/\b[1-9A-HJ-NP-Za-km-z]{43,44}\b/g) ?? [];
-const unexpectedMints = [...new Set(mintCandidates.filter(value => value !== officialMint))];
+const publishedAddresses = new Set([
+  officialMint,
+  "GWyajcELd3nM1NtfvkJoXz2AgYYinqyZzqAC4NQyBzsi",
+  "Ge91NeKSg4uYci29mq2XN5N4KQsnoXtkWBPEorPa63aZ",
+  "C29Y6p3NXgi5UauC3W9PVN7SDguk9EA2e5oDDJEHRxNz",
+  "ATFELs8fV9CthKDjVLfhMb756uD499nHVtzLr5i7XKPp",
+  "EVSB7eT5ws43oi2ztWKNQvH4THXQD3k9z6Sk9NNFP1FT",
+  "FVRpAmyDsdvKHQT2ds6ytZsJHt7SDDDbScQx3c4fu32h"
+]);
+const unexpectedMints = [...new Set(mintCandidates.filter(value => !publishedAddresses.has(value)))];
 if (unexpectedMints.length) failures.push(`unexpected mint-like value(s): ${unexpectedMints.join(", ")}`);
 
 if (failures.length) {
