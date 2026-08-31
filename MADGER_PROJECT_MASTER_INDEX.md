@@ -148,7 +148,7 @@ These are roadmap concepts unless separately implemented and verified. Do not ma
 
 ### 6.1 Current founder-directed launch campaign
 
-The controlling founder instruction is a direct **Raydium CPMM** MADGER/SOL liquidity-pool launch on Solana. MADGER is already minted, so the selected path does not use a bonding curve or graduation. This supersedes the LaunchLab campaign language and the older August 25 proposal below.
+The controlling founder instruction is a direct **Raydium CPMM** MADGER/SOL liquidity-pool launch on Solana. MADGER is already minted, so the selected path does not use a bonding curve or graduation. This supersedes the earlier bonding-curve campaign language and the older August 25 proposal below.
 
 | Element | Current campaign value | Status |
 |---|---:|---|
@@ -166,7 +166,7 @@ The controlling founder instruction is a direct **Raydium CPMM** MADGER/SOL liqu
 |---|---:|---|
 | Target launch date | Tuesday, August 25, 2026 | SUPERSEDED by August 27 campaign |
 | Network | Solana | CONFIRMED |
-| Venue | Raydium LaunchLab | PLANNED; earlier launch file still contained a venue placeholder |
+| Venue | Earlier Raydium bonding-curve proposal | PLANNED; earlier launch file still contained a venue placeholder |
 | Total supply | 1,000,000,000 $MADGER | PLANNED/latest proposal |
 | Bonding-curve allocation | 80% | PLANNED/latest proposal |
 | Raydium CPMM pool allocation | 20% | PLANNED/latest proposal |
@@ -179,7 +179,7 @@ The controlling founder instruction is a direct **Raydium CPMM** MADGER/SOL liqu
 
 ### 6.3 Launch messaging recovered
 
-“TOMORROW, THE BURROW OPENS. 🦡⚡” was drafted for the August 25 launch, with references to Solana, Raydium LaunchLab, 1B supply, 80/20 allocation, a 24 SOL community-funded graduation target, and an approximately 1 SOL setup reserve.
+“TOMORROW, THE BURROW OPENS. 🦡⚡” was drafted for the August 25 launch, with references to Solana, an earlier Raydium bonding-curve venue, 1B supply, 80/20 allocation, a 24 SOL community-funded graduation target, and an approximately 1 SOL setup reserve.
 
 ### 6.4 Launch facts requiring final confirmation
 
@@ -429,7 +429,7 @@ Capabilities envisioned for DeaniusOS/MADGER:
 | Contest submission | Submit in Telegram/Madger Burrow | Post on X and submit via `madgercoin.com` entry form | Treat website form as official system of record; remove Telegram-only language |
 | Contest platform behavior | Social post could imply entry | Public social post alone is insufficient | Require website submission |
 | Launch status | Minted but not publicly launched; then Aug. 25 proposal | Conditional direct Raydium CPMM target rescheduled to Aug. 31, 2026 at 14:00 UTC | Verify live status; do not infer execution from planned copy |
-| Launch venue | LaunchLab proposal | Direct MADGER/SOL Raydium CPMM selected on August 26 | Verify legal eligibility, deployed pool, and trading URL |
+| Launch venue | Earlier bonding-curve proposal | Direct MADGER/SOL Raydium CPMM selected on August 26 | Verify legal eligibility, deployed pool, and trading URL |
 | Character flexibility | New poses/scenes allowed | Exact identity cannot change | Creative freedom applies only to pose/scene, never likeness |
 | Animated stickers | Three GIFs requested | Rejected attempts; restart with one “LOCK IN” action sticker | Do not reuse failed/glitchy files |
 | Own coin vs Solana | Interest in independence | Utility ecosystem first; possible future chain | Do not present an independent chain as current plan |

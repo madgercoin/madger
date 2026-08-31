@@ -1,9 +1,9 @@
 {
   "campaign": "MADGER launch countdown — archived August 24 campaign",
   "disabled": true,
-  "archiveReason": "Superseded LaunchLab and bonding-curve language. Do not publish.",
+  "archiveReason": "Superseded bonding-curve language. Do not publish.",
   "assetTitle": "MADGER August 24 countdown — archived",
-  "altText": "Archived MADGER countdown artwork. Former LaunchLab and bonding-curve text is superseded by the direct Raydium CPMM launch selection and must not be published.",
+  "altText": "Archived MADGER countdown artwork. Former bonding-curve text is superseded by the direct Raydium CPMM launch selection and must not be published.",
   "defaultText": "ARCHIVED — DO NOT PUBLISH",
   "posts": {}
 }

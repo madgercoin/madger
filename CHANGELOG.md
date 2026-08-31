@@ -11,7 +11,7 @@
 
 ## 2026-08-29 — CPMM terminology correction
 
-- Removed the remaining public LaunchLab reference from the launch record and consistently identifies the planned venue as a direct Raydium CPMM pool.
+- Removed the remaining public reference to the superseded bonding-curve venue from the launch record and consistently identifies the planned venue as a direct Raydium CPMM pool.
 
 ## 2026-08-29 — Cross-device Journal delivery
 
@@ -80,13 +80,13 @@
 
 ## 2026-08-26 — Direct CPMM launch correction
 
-- Replaced the stale Raydium LaunchLab/bonding-curve campaign assumption with the founder-selected direct MADGER/SOL Raydium CPMM design.
+- Replaced the stale bonding-curve campaign assumption with the founder-selected direct MADGER/SOL Raydium CPMM design.
 - Recorded August 27, 2026 at 14:00 UTC as the conditional worldwide launch target.
 - Added explicit compliance, liquidity-budget, opening-valuation, LP-policy, authority-revocation, allocation-transfer, custody, and incident-owner execution gates.
-- Archived and disabled the superseded August 24 LaunchLab campaign copy so it cannot be republished accidentally.
+- Archived and disabled the superseded August 24 bonding-curve campaign copy so it cannot be republished accidentally.
 - Added corrected direct-CPMM pre-launch copy with the full mint and website-first verification rule.
 - Independently verified the published Discord invite resolves to the official MADGER community and reconciled the README channel registry.
-- Replaced the stale two-day/LaunchLab/GMT homepage poster with a one-day/direct-CPMM/UTC version while preserving the canonical Madger artwork.
+- Replaced the stale two-day/bonding-curve/GMT homepage poster with a one-day/direct-CPMM/UTC version while preserving the canonical Madger artwork.
 - Preserved the minted-not-trading public state; no pool, trading link, or transaction is represented as live.
 
 ## 2026-08-26 — Launch-eve artwork

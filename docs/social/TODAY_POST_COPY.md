@@ -1,6 +1,6 @@
 # Archived MADGER countdown copy — do not publish
 
-This August 24 three-day countdown is retained only as campaign history. Its former LaunchLab/bonding language was superseded by the founder's August 26 selection of a direct Raydium CPMM pool.
+This August 24 three-day countdown is retained only as campaign history. Its former bonding-curve language was superseded by the founder's August 26 selection of a direct Raydium CPMM pool.
 
 ## Corrected historical caption
 
@@ -19,4 +19,4 @@ Small Badger. Big Crypto.
 
 ## Corrected alt text
 
-Vertical black, cream, and metallic-gold MADGER countdown poster featuring the canonical Madger honey badger in a futuristic underground command center beside the official round MADGER emblem. The campaign announces the conditional August 27, 2026 at 14:00 UTC target on Solana. The former poster text referencing LaunchLab and bonding is superseded and must not be reused.
+Vertical black, cream, and metallic-gold MADGER countdown poster featuring the canonical Madger honey badger in a futuristic underground command center beside the official round MADGER emblem. The campaign announces the conditional August 27, 2026 at 14:00 UTC target on Solana. The former poster text referencing a bonding-curve venue is superseded and must not be reused.
