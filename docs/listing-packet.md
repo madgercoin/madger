@@ -1,6 +1,6 @@
 # MADGER canonical listing packet
 
-Status: **pre-launch preparation only**. Do not submit until public trading is authorized, the genuine pool is finalized, and the website shows `TRADING_LIVE`.
+Status: **post-launch listing packet**. Public trading is live and the website shows `TRADING_LIVE`; submit only with provider-specific evidence that has been independently verified.
 
 ## Project identity
 
@@ -16,9 +16,10 @@ Status: **pre-launch preparation only**. Do not submit until public trading is a
 | Mint authority | Revoked |
 | Freeze authority | Revoked |
 | Transfer tax | 0%; classic SPL Token mint with no Token-2022 transfer-fee extension |
-| Trading status | Not publicly launched |
+| Trading status | Live on Raydium through the canonical market link below |
 | Website | https://madgercoin.com |
 | Explorer | https://solscan.io/token/BHauMX8akk2umqkQqnJwpYkCRkZmefGnEBFByeFXRKqv |
+| Official market | https://raydium.io/liquidity-pools/?token=BHauMX8akk2umqkQqnJwpYkCRkZmefGnEBFByeFXRKqv |
 
 ## Official channels
 
@@ -52,13 +53,12 @@ MADGER is a community-driven Solana memecoin and original character brand center
 
 Confirm each provider’s current dimensions, file type, background, and size requirements before submission. Do not substitute unofficial community artwork for the canonical icon.
 
-## Fields blocked until launch
+## Fields still requiring finalized evidence
 
 The following fields must come from the signed launch record and finalized on-chain evidence:
 
-- verified venue and pool/pair address;
-- direct market URL;
-- launch UTC time;
+- exact pool/pair address from the finalized launch record;
+- launch transaction signature and exact UTC time;
 - opening liquidity and approved LP disclosure;
 - LP token/position custody and lock, burn, or retention evidence;
 - circulating supply and controlled-wallet disclosures;

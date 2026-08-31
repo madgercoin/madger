@@ -8,8 +8,8 @@ Read `PROJECT_CONTEXT.md`, `README.md`, `PRODUCT_REQUIREMENTS.md`, `SYSTEM_ARCHI
 
 - Name: MADGER; proposed ticker: `$MADGER`; network: Solana.
 - Official mint: `BHauMX8akk2umqkQqnJwpYkCRkZmefGnEBFByeFXRKqv`.
-- Status: minted, not publicly launched for trading.
-- Never describe the mint as undeployed or unannounced, and never imply trading is available.
+- Status: trading live through the official SOL–MADGER market published at `https://madgercoin.com/launch.html`.
+- Never describe the mint as undeployed, unannounced, or pre-launch. Never publish a market link that is not verified against the complete mint.
 - Do not invent launch timing, liquidity, listing, price, return, partnership, allocation, authority, or completed utility claims.
 - Practical crypto payments are a future vision, not a current capability.
 

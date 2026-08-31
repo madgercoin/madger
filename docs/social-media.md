@@ -27,7 +27,7 @@ Do not reserve a placeholder URL in public HTML, structured data, bios, or campa
 
 ## Editorial contract
 
-- Keep the public launch state `MINTED_NOT_TRADING` until the recorded launch gates change it.
+- Keep the public launch state `TRADING_LIVE` while the verified SOL–MADGER market remains active, and route market references through `https://madgercoin.com/launch.html`.
 - The exact mint is `BHauMX8akk2umqkQqnJwpYkCRkZmefGnEBFByeFXRKqv`.
 - Lead with character, useful context, or a real question. Do not manufacture urgency, pretend a market exists, or force the ticker into unrelated conversations.
 - Answer genuine inbound messages before publishing more outbound content.

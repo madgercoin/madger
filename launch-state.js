@@ -6,7 +6,7 @@
     TRADING_LIVE: "TRADING_LIVE",
     PAUSED_OR_DELAYED: "PAUSED_OR_DELAYED"
   });
-  const current = STATES.LAUNCH_SCHEDULED;
+  const current = STATES.TRADING_LIVE;
   const labels = Object.freeze({
     MINTED_NOT_TRADING: Object.freeze({
       default: "Minted on Solana — public trading is not open.",

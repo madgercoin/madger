@@ -11,7 +11,7 @@ $MADGER targets Thursday, August 27 at 14:00 UTC on Solana through a direct MADG
 Supply: 1,000,000,000  
 Official mint: `BHauMX8akk2umqkQqnJwpYkCRkZmefGnEBFByeFXRKqv`
 
-Trading is not live until the verified pool link is published at madgercoin.com. Admins never DM first.
+$MADGER is live on Solana. Verify the official SOL–MADGER market through madgercoin.com. Admins never DM first.
 
 Small Badger. Big Crypto.
 

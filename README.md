@@ -4,7 +4,7 @@ This repository is the production source for [madgercoin.com](https://madgercoin
 
 MADGER's character is resilient, confident, determined, and attentive to detail. The product standard follows the character: quality before speed, facts before hype, and durable systems before short-lived trends. The long-term direction is to grow from a memecoin and character brand into a cryptocurrency ecosystem with practical utility, including real-world crypto payments when the project can support them responsibly. That direction is a vision—not a promise that a product, token, or utility currently exists.
 
-> **Current verified status:** MADGER has been minted on Solana but has not yet been publicly launched for trading. The official mint is `BHauMX8akk2umqkQqnJwpYkCRkZmefGnEBFByeFXRKqv`. Its existence is not evidence of public trading, liquidity, or a listing; verify it through the official channels below.
+> **Current verified status:** MADGER is live on Solana through the official SOL–MADGER market published at [madgercoin.com/launch.html](https://madgercoin.com/launch.html). The official mint is `BHauMX8akk2umqkQqnJwpYkCRkZmefGnEBFByeFXRKqv`; compare it in full before using any market link.
 
 ## Documentation map
 

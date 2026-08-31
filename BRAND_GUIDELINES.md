@@ -28,7 +28,7 @@ The approved face-forward gold coin emblem is the canonical compact mark. The ap
 
 Use **MADGER** for the project and **$MADGER** when referring specifically to the ticker. The voice is direct, dry, sarcastic, capable, and calm under pressure. Bold humor is welcome; hostility, deception, artificial urgency, financial promotion, and claims beyond verified facts are not.
 
-Describe the current status precisely: **“Minted on Solana; not yet publicly launched for trading.”**
+Describe the current status precisely: **“MADGER is live on Solana; verify the official mint and SOL–MADGER market through madgercoin.com.”**
 
 ## Final visual system
 

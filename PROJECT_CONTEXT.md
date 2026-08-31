@@ -4,13 +4,13 @@
 
 MADGER is a professional, community-driven Solana memecoin represented by the Honey Badger: resilient, confident, determined, and attentive to detail. The community is The Burrow. The proposed ticker is `$MADGER`.
 
-MADGER is minted but is **not publicly launched for trading**. The official Solana mint is:
+MADGER is **live for public trading on Solana** through the official SOL–MADGER market published at `https://madgercoin.com/launch.html`. The official Solana mint is:
 
 ```text
 BHauMX8akk2umqkQqnJwpYkCRkZmefGnEBFByeFXRKqv
 ```
 
-This is an identity and verification fact, not a purchase instruction. The founder-controlled reschedule campaign targets Monday, August 31, 2026 at 14:00 UTC through a direct Raydium CPMM liquidity pool. MADGER is still not publicly launched for trading, and the target does not verify a live market, pool, price, return, partnership, or completed utility. Public trading instructions remain blocked until every legal, custody, transaction, security, and independent-verification gate clears and the launch transaction and destination are final.
+This is an identity and verification fact, not financial advice or a promise of price, return, liquidity, listing, partnership, or utility. The official Raydium market must always be reached through the canonical launch record and checked against the full mint. LP-protection evidence, finalized launch balances, and transaction records remain separate disclosure items until published.
 
 ## Product today
 

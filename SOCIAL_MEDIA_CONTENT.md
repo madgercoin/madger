@@ -1,6 +1,6 @@
 # MADGER Social Media Content Pack
 
-**Campaign state:** Pre-launch  
+**Campaign state:** Trading live
 **Primary posting workflow:** Post to Instagram first, cross-post to Facebook, then use the platform-specific copy for X, Telegram, TikTok, YouTube Shorts, and Threads.  
 **Official website:** https://madgercoin.com  
 **Official X:** https://x.com/madgercoin  

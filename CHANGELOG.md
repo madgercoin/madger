@@ -1,5 +1,12 @@
 # Changelog
 
+## 2026-08-31 — Trading live transition
+
+- Switched the centralized public state to `TRADING_LIVE` and replaced the launch countdown with a verified live-market banner.
+- Published the official SOL–MADGER Raydium market link using the complete MADGER mint and recorded the observed 0.25% pool fee.
+- Updated the homepage, launch record, litepaper, official-links directory, Journal surfaces, metadata, manifest, and active project guidance to reflect the launch.
+- Kept LP-protection evidence, finalized balances, transaction records, and material wallet labels explicitly unverified until their public evidence is available.
+
 ## 2026-08-29 — Sharper MADGER voice
 
 - Replaced every public-facing digging slogan with stronger language centered on signal, focus, momentum, and clean execution.

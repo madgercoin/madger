@@ -9,7 +9,7 @@ const normalizedStateSource = stateSource.replace(/\r\n?/g, "\n");
 const stateBlobHeader = `blob ${Buffer.byteLength(normalizedStateSource)}\0`;
 const stateCacheKey = createHash("sha1").update(stateBlobHeader).update(normalizedStateSource).digest("hex").slice(0, 8);
 const failures = [];
-if (!/const current = STATES\.LAUNCH_SCHEDULED;/.test(stateSource)) failures.push("LAUNCH_SCHEDULED is not the active launch state");
+if (!/const current = STATES\.TRADING_LIVE;/.test(stateSource)) failures.push("TRADING_LIVE is not the active launch state");
 for (const state of ["MINTED_NOT_TRADING", "LAUNCH_SCHEDULED", "TRADING_LIVE", "PAUSED_OR_DELAYED"]) {
   if (!stateSource.includes(`${state}: "${state}"`)) failures.push(`missing supported state ${state}`);
 }
@@ -58,15 +58,15 @@ for (const [page, html] of [["index.html", homepage], ["launch-hunt.html", huntP
     previousIndex = Math.max(previousIndex, index);
   }
 }
-for (const page of informationalPages) {
+for (const page of ["index.html", "launch.html", "litepaper.html"]) {
   const html = await readFile(page, "utf8");
-  if (tradingHosts.test(html)) failures.push(`${page}: trading link present before launch`);
+  if (!tradingHosts.test(html)) failures.push(`${page}: verified live-market link is absent`);
 }
 const launchPage = await readFile("launch.html", "utf8");
 if (!launchPage.includes('href="https://madgercoin.com/launch.html"')) failures.push("launch.html: canonical URL is absent");
-if (!launchPage.includes("Monday, August 31, 2026 at 14:00 UTC")) failures.push("launch.html: current public target is absent");
-if (!launchPage.includes("600,000,000 MADGER") || !launchPage.includes("Final amounts pending authorization")) failures.push("launch.html: liquidity target or funding boundary is incomplete");
-if (!launchPage.includes("Permanent Burn &amp; Earn planned")) failures.push("launch.html: working LP-protection plan is absent");
+if (!launchPage.includes("TRADING LIVE")) failures.push("launch.html: live launch status is absent");
+if (!launchPage.includes("600,000,000 MADGER") || !launchPage.includes("Awaiting public verification")) failures.push("launch.html: launch allocation or LP-evidence boundary is incomplete");
+if (!launchPage.includes("0.25%")) failures.push("launch.html: verified Raydium fee tier is absent");
 const notFound = await readFile("404.html", "utf8");
 if (notFound.includes("data-launch-state") || notFound.includes("/launch-state.js")) {
   failures.push("404.html: error page must not repeat project launch messaging");
@@ -75,4 +75,4 @@ for (const file of statePages) {
   if (!(await readFile(file, "utf8")).includes(mint)) failures.push(`${file}: exact official mint absent`);
 }
 if (failures.length) { console.error(failures.map(x => `- ${x}`).join("\n")); process.exit(1); }
-console.log(`Validated exact mint, ${statePages.length} distinct launch-state surfaces, all states and voices, focused 404 copy, and pre-launch trading-link prohibition.`);
+console.log(`Validated exact mint, ${statePages.length} distinct launch-state surfaces, live-market links, launch status, and focused 404 copy.`);
