@@ -11,6 +11,7 @@ MADGER's character is resilient, confident, determined, and attentive to detail.
 These files are the contributor source of truth. When implementation and documentation disagree, verify the implementation, correct the documentation in the same change, and call out any unresolved product decision.
 
 - [`README.md`](README.md) — project purpose, repository architecture, contributor standards, and verified status.
+- [`docs/token-verification.md`](docs/token-verification.md) — permanent official mint, live pool, explorer, market, and safety-verification links.
 - [`LAUNCH_PLAN.md`](LAUNCH_PLAN.md) — authoritative launch control index; its linked runbooks are internal source documents excluded from `dist/`.
 - [`LAUNCH_DECISIONS.md`](LAUNCH_DECISIONS.md) — the eight founder approvals that remain required before launch actions.
 - [`README_DEPLOY.txt`](README_DEPLOY.txt) — reproducible build, Cloudflare Workers deployment, rollback, and operations runbook.
