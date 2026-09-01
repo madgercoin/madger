@@ -13,7 +13,8 @@ for (const [name, html] of [["index.html", home], ["launch.html", launch], ["off
   if (!html.includes(mint)) failures.push(`${name}: official mint is absent`);
 }
 if (!home.includes("TRADING LIVE") || !home.includes("RAYDIUM CPMM")) failures.push("index.html: post-launch status is absent");
-if (!home.includes("N7G_241JLT0")) failures.push("index.html: official cinematic film is absent");
+if (!home.includes("https://www.instagram.com/reel/DcotYCFDD3p/embed/") || !home.includes("<iframe")) failures.push("index.html: Instagram-hosted cinematic film is absent");
+if (/youtube\.com|youtube-nocookie\.com/i.test(home)) failures.push("index.html: suspended YouTube destination remains");
 if (!launch.includes(pool) || !launch.includes("0.25%")) failures.push("launch.html: verified pool record is incomplete");
 if (/Launch Hunt|Meme Contest|MLH26|SEEKPASTNOISE27|ENDS SEP/i.test(home)) failures.push("index.html: expired campaign content is present");
 for (const retired of ["launch-hunt.html", "meme-contest.html"]) {
