@@ -1,9 +1,9 @@
 {
-  "generatedAt": "2026-08-31T16:17:09.765Z",
-  "previousGeneratedAt": "2026-08-30T13:54:21.372Z",
+  "generatedAt": "2026-09-01T13:36:26.388Z",
+  "previousGeneratedAt": "2026-08-31T16:17:09.765Z",
   "window": {
-    "start": "2026-08-01T16:17:09.765Z",
-    "end": "2026-08-31T16:17:09.765Z"
+    "start": "2026-08-02T13:36:26.388Z",
+    "end": "2026-09-01T13:36:26.388Z"
   },
   "organization": {
     "id": "6a67aceacff325d8d2d231e9",
@@ -20,15 +20,15 @@
       "state": "connected",
       "healthy": true,
       "queuePaused": false,
-      "metricsUpdatedAt": "2026-08-30T19:55:27.984Z",
+      "metricsUpdatedAt": "2026-08-31T18:55:39.951Z",
       "metrics": {
-        "postCount": 43,
-        "reactions": 45,
+        "postCount": 46,
+        "reactions": 48,
         "comments": 28,
-        "engagementRate": 4.84,
-        "impressions": 2993,
+        "engagementRate": 4.97,
+        "impressions": 3217,
         "shares": 1,
-        "clicks": 76
+        "clicks": 88
       },
       "requiresCommunityReview": true
     },
@@ -37,14 +37,14 @@
       "channel": "Madger",
       "service": "youtube",
       "externalLink": "https://www.youtube.com/channel/UCqbAvD8zi6psByKRk50qCkg",
-      "disconnected": false,
+      "disconnected": true,
       "locked": false,
-      "state": "connected",
-      "healthy": true,
+      "state": "disconnected",
+      "healthy": false,
       "queuePaused": false,
-      "metricsUpdatedAt": "2026-08-31T02:57:25.861Z",
+      "metricsUpdatedAt": "2026-08-31T17:32:12.308Z",
       "metrics": {
-        "postCount": 29,
+        "postCount": 28,
         "reactions": 7,
         "comments": 4,
         "engagementRate": 3.06,
@@ -62,15 +62,15 @@
       "state": "connected",
       "healthy": true,
       "queuePaused": false,
-      "metricsUpdatedAt": "2026-08-31T14:33:41.369Z",
+      "metricsUpdatedAt": "2026-09-01T13:33:51.290Z",
       "metrics": {
-        "postCount": 83,
-        "reactions": 2048,
-        "comments": 934,
-        "engagementRate": 12.65,
-        "reposts": 499,
-        "impressions": 57230,
-        "clicks": 658
+        "postCount": 89,
+        "reactions": 2113,
+        "comments": 955,
+        "engagementRate": 12.69,
+        "reposts": 513,
+        "impressions": 58953,
+        "clicks": 680
       },
       "requiresCommunityReview": true
     },
@@ -84,18 +84,18 @@
       "state": "connected",
       "healthy": true,
       "queuePaused": false,
-      "metricsUpdatedAt": "2026-08-31T09:50:58.028Z",
+      "metricsUpdatedAt": "2026-09-01T08:51:14.200Z",
       "metrics": {
-        "postCount": 44,
-        "reactions": 37,
+        "postCount": 47,
+        "reactions": 38,
         "comments": 9,
-        "engagementRate": 5.2,
+        "engagementRate": 5.27,
         "impressions": 0,
-        "views": 1169,
+        "views": 1197,
         "shares": 0,
         "saves": 1,
         "follows": 0,
-        "reach": 903
+        "reach": 910
       },
       "requiresCommunityReview": true
     },
@@ -109,15 +109,15 @@
       "state": "connected",
       "healthy": true,
       "queuePaused": false,
-      "metricsUpdatedAt": "2026-08-30T20:33:02.116Z",
+      "metricsUpdatedAt": "2026-08-31T19:40:07.250Z",
       "metrics": {
-        "postCount": 37,
+        "postCount": 39,
         "reactions": 90,
         "comments": 9,
-        "engagementRate": 1.7,
-        "views": 5877,
+        "engagementRate": 1.65,
+        "views": 6060,
         "shares": 1,
-        "reach": 4780
+        "reach": 5252
       },
       "requiresCommunityReview": true
     }
@@ -132,6 +132,9 @@
       "errors": 2,
       "needsAttention": [
         "madger-002-x",
+        "madger-002-youtube",
+        "madger-003-youtube",
+        "madger-004-youtube",
         "telegram-200-x-2026-08-16",
         "telegram-200-facebook-2026-08-16",
         "telegram-200-instagram-2026-08-16",
@@ -141,6 +144,15 @@
         "madger-002-x": [
           "monitor_error",
           "overdue"
+        ],
+        "madger-002-youtube": [
+          "channel_disconnected"
+        ],
+        "madger-003-youtube": [
+          "channel_disconnected"
+        ],
+        "madger-004-youtube": [
+          "channel_disconnected"
         ],
         "telegram-200-x-2026-08-16": [
           "channel_missing"
@@ -153,18 +165,23 @@
         ],
         "meme-contest-launch-youtube-2026-08-17": [
           "monitor_error",
+          "channel_disconnected",
           "overdue"
         ]
       },
-      "atRiskPosts": [],
-      "unhealthyChannelIds": [],
+      "atRiskPosts": [
+        "meme-contest-launch-youtube-2026-08-17"
+      ],
+      "unhealthyChannelIds": [
+        "6a67af404b2d03035f4e8e79"
+      ],
       "totals": {
         "reactions": 224,
         "comments": 105,
         "shares": 0,
         "reposts": 47,
         "reach": 808,
-        "impressions": 6334,
+        "impressions": 6335,
         "views": 963,
         "clicks": 192,
         "saves": 0,
@@ -176,7 +193,7 @@
         "shares": 0,
         "reposts": 0,
         "reach": 0,
-        "impressions": 17,
+        "impressions": 1,
         "views": 0,
         "clicks": 0,
         "saves": 0,
@@ -194,7 +211,7 @@
         "saves": 6,
         "follows": 6
       },
-      "averageEngagementRate": 13.456923076923077,
+      "averageEngagementRate": 13.45653846153846,
       "priorSnapshotAvailable": true
     },
     "posts": [
@@ -281,7 +298,7 @@
         "title": "MADGER 002 — Keep Digging",
         "service": "youtube",
         "channelId": "6a67af404b2d03035f4e8e79",
-        "channelState": "connected",
+        "channelState": "disconnected",
         "dueAt": "2026-07-29T23:00:00.000Z",
         "sentAt": "2026-07-29T23:01:09.223Z",
         "status": "sent",
@@ -431,7 +448,7 @@
         "title": "MADGER 003 — No Slowing Down",
         "service": "youtube",
         "channelId": "6a67af404b2d03035f4e8e79",
-        "channelState": "connected",
+        "channelState": "disconnected",
         "dueAt": "2026-07-31T20:00:00.000Z",
         "sentAt": "2026-07-31T20:01:24.859Z",
         "status": "sent",
@@ -487,13 +504,13 @@
         "title": "MADGER 004 — Join the Burrow",
         "service": "youtube",
         "channelId": "6a67af404b2d03035f4e8e79",
-        "channelState": "connected",
+        "channelState": "disconnected",
         "dueAt": "2026-08-01T22:00:00.000Z",
         "sentAt": "2026-08-01T22:01:11.088Z",
         "status": "sent",
         "externalLink": "https://www.youtube.com/shorts/cD9BiH569oI",
         "publishingError": null,
-        "metricsUpdatedAt": "2026-08-30T18:30:37.231Z",
+        "metricsUpdatedAt": "2026-08-31T17:32:12.308Z",
         "metrics": {
           "reactions": 0,
           "comments": 0,
@@ -519,7 +536,7 @@
         "status": "sent",
         "externalLink": "https://www.tiktok.com/@themadgercoin/video/7669418973116632333?utm_campaign=tt4d_open_api&utm_source=7103819247981182978",
         "publishingError": null,
-        "metricsUpdatedAt": "2026-08-30T20:33:02.116Z",
+        "metricsUpdatedAt": "2026-08-31T19:40:07.250Z",
         "metrics": {
           "reactions": 7,
           "comments": 0,
@@ -549,7 +566,7 @@
         "status": "sent",
         "externalLink": "https://www.facebook.com/reel/1732520327655007/",
         "publishingError": null,
-        "metricsUpdatedAt": "2026-08-30T19:55:27.984Z",
+        "metricsUpdatedAt": "2026-08-31T18:55:39.951Z",
         "metrics": {
           "reactions": 1,
           "comments": 0,
@@ -579,7 +596,7 @@
         "status": "sent",
         "externalLink": "https://www.instagram.com/reel/DbmBD6Gk3yf/",
         "publishingError": null,
-        "metricsUpdatedAt": "2026-08-31T09:50:58.028Z",
+        "metricsUpdatedAt": "2026-09-01T08:51:14.200Z",
         "metrics": {
           "reactions": 1,
           "comments": 0,
@@ -701,7 +718,7 @@
         "status": "sent",
         "externalLink": "https://facebook.com/1279493098576451_122108036793423166",
         "publishingError": null,
-        "metricsUpdatedAt": "2026-08-30T19:55:27.984Z",
+        "metricsUpdatedAt": "2026-08-31T18:55:39.950Z",
         "metrics": {
           "reactions": 3,
           "comments": 0,
@@ -730,7 +747,7 @@
         "status": "sent",
         "externalLink": "https://www.instagram.com/p/DcFbFJPlFqB/",
         "publishingError": null,
-        "metricsUpdatedAt": "2026-08-31T09:50:58.027Z",
+        "metricsUpdatedAt": "2026-09-01T08:51:14.200Z",
         "metrics": {
           "reactions": 0,
           "comments": 0,
@@ -764,21 +781,21 @@
         "status": "sent",
         "externalLink": "https://x.com/2080142722153816065/status/2088931163230376000",
         "publishingError": null,
-        "metricsUpdatedAt": "2026-08-31T14:33:41.369Z",
+        "metricsUpdatedAt": "2026-09-01T13:33:51.289Z",
         "metrics": {
           "reactions": 157,
           "comments": 91,
-          "engagementRate": 15.36,
+          "engagementRate": 15.35,
           "reposts": 42,
-          "impressions": 5509,
+          "impressions": 5510,
           "clicks": 188
         },
         "metricDeltas": {
           "reactions": 0,
           "comments": 0,
-          "engagementRate": -0.040000000000000924,
+          "engagementRate": -0.009999999999999787,
           "reposts": 0,
-          "impressions": 15,
+          "impressions": 1,
           "clicks": 0
         }
       },
@@ -794,7 +811,7 @@
         "status": "sent",
         "externalLink": "https://facebook.com/1279493098576451_122108134587423166",
         "publishingError": null,
-        "metricsUpdatedAt": "2026-08-30T19:55:27.984Z",
+        "metricsUpdatedAt": "2026-08-31T18:55:39.950Z",
         "metrics": {
           "reactions": 2,
           "comments": 0,
@@ -824,7 +841,7 @@
         "status": "sent",
         "externalLink": "https://www.instagram.com/p/DcGOkg5ltva/",
         "publishingError": null,
-        "metricsUpdatedAt": "2026-08-31T09:50:58.027Z",
+        "metricsUpdatedAt": "2026-09-01T08:51:14.200Z",
         "metrics": {
           "reactions": 0,
           "comments": 0,
@@ -858,7 +875,7 @@
         "status": "sent",
         "externalLink": "https://www.tiktok.com/@themadgercoin/video/7674570062266666254?utm_campaign=tt4d_open_api&utm_source=7103819247981182978",
         "publishingError": null,
-        "metricsUpdatedAt": "2026-08-30T20:33:02.115Z",
+        "metricsUpdatedAt": "2026-08-31T19:40:07.249Z",
         "metrics": {
           "reactions": 0,
           "comments": 0,
@@ -882,7 +899,7 @@
         "title": "The Great Burrow Meme Contest | Enter Aug 17–23",
         "service": "youtube",
         "channelId": "6a67af404b2d03035f4e8e79",
-        "channelState": "connected",
+        "channelState": "disconnected",
         "dueAt": "2026-08-17T13:20:00.000Z",
         "status": "monitor_error",
         "metrics": {},
@@ -901,7 +918,7 @@
         "status": "sent",
         "externalLink": "https://x.com/2080142722153816065/status/2090903038424736251",
         "publishingError": null,
-        "metricsUpdatedAt": "2026-08-31T14:33:41.368Z",
+        "metricsUpdatedAt": "2026-09-01T13:33:51.288Z",
         "metrics": {
           "reactions": 33,
           "comments": 14,
@@ -913,9 +930,9 @@
         "metricDeltas": {
           "reactions": 0,
           "comments": 0,
-          "engagementRate": -0.05000000000000071,
+          "engagementRate": 0,
           "reposts": 0,
-          "impressions": 2,
+          "impressions": 0,
           "clicks": 0
         }
       },
@@ -931,7 +948,7 @@
         "status": "sent",
         "externalLink": "https://facebook.com/1279493098576451_122109624249423166",
         "publishingError": null,
-        "metricsUpdatedAt": "2026-08-30T19:55:27.983Z",
+        "metricsUpdatedAt": "2026-08-31T18:55:39.950Z",
         "metrics": {
           "reactions": 1,
           "comments": 0,
@@ -961,7 +978,7 @@
         "status": "sent",
         "externalLink": "https://www.instagram.com/p/DcUO7rak_qB/",
         "publishingError": null,
-        "metricsUpdatedAt": "2026-08-31T09:50:58.026Z",
+        "metricsUpdatedAt": "2026-09-01T08:51:14.199Z",
         "metrics": {
           "reactions": 1,
           "comments": 0,
@@ -995,7 +1012,7 @@
         "status": "sent",
         "externalLink": "https://www.tiktok.com/@themadgercoin/video/7676590217716845838?utm_campaign=tt4d_open_api&utm_source=7103819247981182978",
         "publishingError": null,
-        "metricsUpdatedAt": "2026-08-30T20:33:02.115Z",
+        "metricsUpdatedAt": "2026-08-31T19:40:07.248Z",
         "metrics": {
           "reactions": 0,
           "comments": 0,
