@@ -219,14 +219,17 @@ if (/mint|trading|launch|financial advice|crypto assets/i.test(visiblePages.get(
   failures.push("404.html: error-page copy must stay navigational rather than repeat project disclosures");
 }
 const homepage = pages.get("index.html");
-const stylesheet = await readFile("styles.css", "utf8");
-if (!homepage.includes('id="community" class="hunt-section community"')) failures.push("index.html: community section must expose the canonical #community anchor");
+const stylesheet = await readFile("home-v2.css", "utf8");
+if (!homepage.includes('id="community" class="home-section community"')) failures.push("index.html: community section must expose the canonical #community anchor");
 if (!homepage.includes('src="/assets/madger_v6_community_welcome.webp" width="1084" height="1451"')) failures.push("index.html: community section must use the custom canonical welcoming pose with exact intrinsic dimensions");
-if (!homepage.includes('<footer class="hunt-footer"><div class="brand"><img src="/assets/madger_official_logo_transparent_512.png"')) failures.push("index.html: Launch Hunt footer must use the transparent official MADGER logo");
+if (!homepage.includes('<footer class="site-footer"><a class="footer-logo" href="#top"><img src="/assets/madger_official_logo_transparent_512.png"')) failures.push("index.html: footer must use the transparent official MADGER logo");
 if (!homepage.includes('rel="apple-touch-icon" href="/favicon.png?v=20260829-coin3d"')) failures.push("index.html: missing official 3D coin Apple touch icon");
 if (!homepage.includes('id="site-favicon"') || !homepage.includes('src="/favicon-spin.js?v=20260829-coin-visible"')) failures.push("index.html: missing continuous 360-degree coin favicon runtime");
-if (!homepage.includes('class="launch-pin__coin"') || !homepage.includes('src="/madger_coin_spin_favicon.gif?v=20260829-360"')) failures.push("index.html: missing visible 360-degree coin beside the launch countdown");
-if (!stylesheet.includes(".portrait-card img{width:100%;height:auto;aspect-ratio:900/1184;")) failures.push("styles.css: portrait must preserve its natural ratio and responsive height");
+if (!homepage.includes('class="hero-coin"') || !homepage.includes('src="/madger_coin_spin_favicon.gif?v=20260829-360"')) failures.push("index.html: missing visible 360-degree MADGER coin");
+if (!stylesheet.includes("text-shadow") || !stylesheet.includes("box-shadow")) failures.push("home-v2.css: dimensional type and beveled surfaces are required");
+if (!homepage.includes("N7G_241JLT0")) failures.push("index.html: official launch film is absent");
+if (!homepage.includes("RAYDIUM CPMM") || !homepage.includes("TRADING LIVE")) failures.push("index.html: verified post-launch status is absent");
+if (/Launch Hunt|Meme Contest|SEEKPASTNOISE27|MLH26|ENDS SEP/i.test(homepage)) failures.push("index.html: expired contest material is present");
 if (!homepage.includes(officialFacebook) || homepage.includes("facebook.com/share/")) failures.push("index.html: Facebook links must use the canonical page URL");
 if (!homepage.includes(officialReddit)) failures.push("index.html: Reddit must use the verified u/Madgercoin profile");
 if (!homepage.includes(officialDiscord)) failures.push("index.html: Discord must use the verified permanent MADGER invite");

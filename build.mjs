@@ -21,7 +21,7 @@ const [home, launch, litepaper, notFound] = await Promise.all([
 const workerSource = `/** Generated at build time. HTML is bundled to prevent stale or corrupted edge assets. */
 const pages = ${JSON.stringify({ home, launch, litepaper, notFound })};
 const securityHeaders = Object.freeze({
-  "content-security-policy": "default-src 'self'; base-uri 'self'; connect-src 'self' https://formsubmit.co; font-src 'self'; form-action 'self' https://formsubmit.co; frame-ancestors 'none'; frame-src https://docs.google.com; img-src 'self' data: https://madger-launch-hunt.gorilla-white.chatgpt.site; media-src 'self' https://madger-launch-hunt.gorilla-white.chatgpt.site; object-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; upgrade-insecure-requests",
+  "content-security-policy": "default-src 'self'; base-uri 'self'; connect-src 'self'; font-src 'self'; form-action 'self'; frame-ancestors 'none'; frame-src https://www.youtube-nocookie.com; img-src 'self' data:; media-src 'self'; object-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; upgrade-insecure-requests",
   "permissions-policy": "camera=(), microphone=(), geolocation=()",
   "referrer-policy": "strict-origin-when-cross-origin",
   "strict-transport-security": "max-age=31536000; includeSubDomains",
@@ -44,6 +44,8 @@ export default {
     if (pathname === "/index.html") return permanentRedirect("/");
     if (pathname === "/launch" || pathname === "/launch/") return permanentRedirect("/launch.html");
     if (pathname === "/litepaper" || pathname === "/litepaper/") return permanentRedirect("/litepaper.html");
+    if (pathname === "/launch-hunt" || pathname === "/launch-hunt/" || pathname === "/launch-hunt.html") return permanentRedirect("/");
+    if (pathname === "/meme-contest" || pathname === "/meme-contest/" || pathname === "/meme-contest.html") return permanentRedirect("/");
     if (pathname === "/") return new Response(pages.home, html);
     if (pathname === "/launch.html") return new Response(pages.launch, html);
     if (pathname === "/litepaper.html") return new Response(pages.litepaper, html);

@@ -42,67 +42,6 @@ copyButton?.addEventListener("click", async () => {
   }
 });
 
-const countdown = document.querySelector("[data-countdown]");
-if (countdown) {
-  const launchAt = Date.parse(countdown.dataset.launchAt);
-  const fields = {
-    days: countdown.querySelector("[data-countdown-days]"),
-    hours: countdown.querySelector("[data-countdown-hours]"),
-    minutes: countdown.querySelector("[data-countdown-minutes]"),
-    seconds: countdown.querySelector("[data-countdown-seconds]")
-  };
-  const note = document.querySelector("[data-countdown-note]");
-
-  const renderCountdown = () => {
-    const remaining = Math.max(0, launchAt - Date.now());
-    const totalSeconds = Math.floor(remaining / 1000);
-    fields.days.textContent = String(Math.floor(totalSeconds / 86400)).padStart(2, "0");
-    fields.hours.textContent = String(Math.floor(totalSeconds / 3600) % 24).padStart(2, "0");
-    fields.minutes.textContent = String(Math.floor(totalSeconds / 60) % 60).padStart(2, "0");
-    fields.seconds.textContent = String(totalSeconds % 60).padStart(2, "0");
-    if (remaining === 0) {
-      note.textContent = "The target time has arrived. Wait for a verified live-status update and official market link on this website before taking any action.";
-    }
-  };
-
-  renderCountdown();
-  window.setInterval(renderCountdown, 1000);
-}
-
-const launchNotifyForm = document.querySelector("#launch-notify-form");
-const launchNotifyStatus = document.querySelector("#launch-notify-status");
-if (launchNotifyForm) {
-  launchNotifyForm.addEventListener("submit", async event => {
-    event.preventDefault();
-    const button = launchNotifyForm.querySelector("button[type='submit']");
-    const data = new FormData(launchNotifyForm);
-    data.append("_subject", "$MADGER launch reminder signup");
-    data.append("launch_time_utc", "2026-08-31 14:00 UTC");
-    data.append("source", "madgercoin.com launch countdown");
-    data.append("submitted_at", new Date().toISOString());
-    button.disabled = true;
-    launchNotifyStatus.textContent = "Saving your reminder…";
-    try {
-      const response = await fetch("https://formsubmit.co/ajax/updates@madgercoin.com", { method: "POST", headers: { Accept: "application/json" }, body: data });
-      if (!response.ok) throw new Error("Signup failed");
-      const calendar = ["BEGIN:VCALENDAR","VERSION:2.0","PRODID:-//MADGER//Launch Reminder//EN","CALSCALE:GREGORIAN","METHOD:PUBLISH","BEGIN:VEVENT","UID:madger-launch-20260831@madgercoin.com","DTSTAMP:20260829T000000Z","DTSTART:20260831T140000Z","DTEND:20260831T143000Z","SUMMARY:$MADGER Launch","DESCRIPTION:$MADGER launch reminder from madgercoin.com","URL:https://madgercoin.com/","BEGIN:VALARM","TRIGGER:-PT24H","ACTION:DISPLAY","DESCRIPTION:$MADGER launches in 24 hours","END:VALARM","BEGIN:VALARM","TRIGGER:-PT1H","ACTION:DISPLAY","DESCRIPTION:$MADGER launches in 1 hour","END:VALARM","END:VEVENT","END:VCALENDAR"].join("\r\n");
-      const objectUrl = URL.createObjectURL(new Blob([calendar], { type: "text/calendar;charset=utf-8" }));
-      const link = document.createElement("a"); link.href = objectUrl; link.download = "MADGER-launch-reminder.ics"; document.body.appendChild(link); link.click(); link.remove(); window.setTimeout(() => URL.revokeObjectURL(objectUrl), 1000);
-      launchNotifyForm.reset(); launchNotifyStatus.textContent = "Saved — add the downloaded reminder to your phone calendar.";
-    } catch { launchNotifyStatus.textContent = "Could not save yet. Please try again."; }
-    finally { button.disabled = false; }
-  });
-}
-
-const manifestoFooter = document.querySelector(".manifesto blockquote footer");
-if (manifestoFooter) {
-  const fieldMark = document.createElement("p");
-  fieldMark.className = "launch-note";
-  fieldMark.setAttribute("aria-label", "Burrow field mark: SEEKPASTNOISE27");
-  fieldMark.innerHTML = '<span class="dot" aria-hidden="true"></span> BURROW FIELD MARK · <strong>SEEKPASTNOISE27</strong>';
-  manifestoFooter.insertAdjacentElement("afterend", fieldMark);
-}
-
 const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 const root = document.documentElement;
 

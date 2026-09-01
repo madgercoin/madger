@@ -8,6 +8,7 @@ const checks = [
   ["/privacy", 200],
   ["/__deployment-check-missing-page__", 404],
   ["/styles.css", 200],
+  ["/home-v2.css", 200],
   ["/script.js", 200],
   ["/manifest.webmanifest", 200],
   ["/robots.txt", 200],
@@ -23,6 +24,8 @@ const redirects = [
   ["/launch/", "/launch.html"],
   ["/litepaper", "/litepaper.html"],
   ["/litepaper/", "/litepaper.html"],
+  ["/launch-hunt.html", "/"],
+  ["/meme-contest.html", "/"],
   ["/collaborators.html", "/collaborators", 307],
   ["/privacy.html", "/privacy", 307]
 ];
@@ -67,6 +70,9 @@ if (homepage) {
     [body.includes('<link rel="canonical" href="https://madgercoin.com/">'), "homepage canonical"],
     [body.includes('"@type": "Organization"'), "Organization structured data"],
     [body.includes('name="robots" content="index,follow'), "homepage index directive"]
+    ,[body.includes("N7G_241JLT0"), "official launch film"]
+    ,[body.includes("TRADING LIVE") && body.includes("RAYDIUM CPMM"), "post-launch trading status"]
+    ,[!/Launch Hunt|Meme Contest|MLH26|ENDS SEP/i.test(body), "expired contest content absent"]
   ];
   for (const [passed, label] of contentChecks) {
     console.log(`${passed ? "PASS" : "FAIL"} ${label}`);
