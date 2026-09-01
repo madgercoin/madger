@@ -68,7 +68,7 @@ if (homepage) {
     [body.includes('href="https://t.me/madgercoin"'), "official Telegram announcement link"],
     [body.includes('href="https://t.me/madgerburrow"'), "official Telegram community link"],
     [body.includes('<link rel="canonical" href="https://madgercoin.com/">'), "homepage canonical"],
-    [body.includes('"@type": "Organization"'), "Organization structured data"],
+    [body.includes('"@type":"Organization"'), "Organization structured data"],
     [body.includes('name="robots" content="index,follow'), "homepage index directive"]
     ,[body.includes("N7G_241JLT0"), "official launch film"]
     ,[body.includes("TRADING LIVE") && body.includes("RAYDIUM CPMM"), "post-launch trading status"]
