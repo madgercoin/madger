@@ -119,7 +119,7 @@ MADGER exists on Solana; its public market is not open.
 
 #MADGER #Solana #CryptoTok #Animation
 
-### YouTube Shorts
+### Vertical Short-Form
 
 Title: `MADGER EP04 — THE CURATOR`
 

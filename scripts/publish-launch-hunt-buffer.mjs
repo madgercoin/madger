@@ -33,12 +33,6 @@ const posts = [
     assets: [{ video: { url: VIDEO, metadata: { thumbnailOffset: 1000, title: 'MADGER Launch Hunt' } } }],
     metadata: { tiktok: { title: 'MADGER Launch Hunt — $75 paid in SOL · 6 winners', isAiGenerated: true } },
   },
-  {
-    id: 'launch-hunt-youtube', channelId: '6a67af404b2d03035f4e8e79', service: 'youtube',
-    text: 'The MADGER Launch Hunt is live.\n\n$75 total prize value paid in SOL. 6 winners. No purchase necessary.\n\nFind the hidden Burrow Field Mark at madgercoin.com, join The Burrow on Telegram, and submit privately. Earn up to 3 entries with the optional X bonus and one verified-friend bonus.\n\nEnds September 1, 2026 at 14:00 UTC.\nRules + entry: https://madgercoin.com/launch-hunt.html\n\n#MADGER #MADGERGiveaway #Solana',
-    assets: [{ video: { url: VIDEO, metadata: { thumbnailOffset: 1000, title: 'MADGER Launch Hunt: $75 in SOL • 6 Winners' } } }],
-    metadata: { youtube: { title: 'MADGER Launch Hunt: $75 in SOL • 6 Winners', categoryId: '22', privacy: 'public', notifySubscribers: true, embeddable: true, madeForKids: false, isAiGenerated: true } },
-  },
 ];
 
 async function graphql(query, variables = {}) {

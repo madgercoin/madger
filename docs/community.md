@@ -7,7 +7,6 @@ Trust only links published at **https://madgercoin.com**. Current official accou
 - X: https://x.com/madgercoin
 - Instagram: https://instagram.com/madgercoin
 - Facebook: https://facebook.com/1279493098576451
-- YouTube: https://www.youtube.com/channel/UCqbAvD8zi6psByKRk50qCkg
 - TikTok: https://tiktok.com/@themadgercoin
 - Reddit: https://www.reddit.com/user/Madgercoin/
 - Telegram announcements: https://t.me/madgercoin

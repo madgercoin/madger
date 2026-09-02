@@ -19,7 +19,7 @@ All times are UTC relative to the founder-approved launch time (`T`). Names, app
 
 ### T−24 hours to T−1 hour — preflight
 
-- Reconfirm official-account access through independent channels; restrict posting rights and remove stale sessions. This includes the website, X, Telegram, Instagram, Facebook, YouTube, TikTok, the verified Reddit identity/community, and the verified Discord server if active. Check domain/DNS/hosting health.
+- Reconfirm official-account access through independent channels; restrict posting rights and remove stale sessions. This includes the website, X, Telegram, Instagram, Facebook, TikTok, the verified Reddit identity/community, and the verified Discord server if active. Check domain/DNS/hosting health.
 - Compare full addresses and instruction data against the approved record. Recheck balances, priority-fee conditions, Solana health, venue availability, clock sync, and simulations.
 - Prepare but do not sign transactions until their authorized window. The launch commander records preliminary GO/NO-GO; any stop condition is NO-GO.
 

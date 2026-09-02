@@ -33,18 +33,6 @@ export function metadataFor(entry) {
       return { facebook: { type: entry.mediaType === "image" ? "post" : "reel" } };
     case "tiktok":
       return entry.mediaType === "image" ? undefined : { tiktok: { isAiGenerated: true } };
-    case "youtube":
-      return {
-        youtube: {
-          title: entry.title,
-          categoryId: "24",
-          privacy: "public",
-          madeForKids: false,
-          embeddable: true,
-          notifySubscribers: true,
-          isAiGenerated: true
-        }
-      };
     case "twitter":
       return { twitter: { isAiGenerated: true } };
     default:

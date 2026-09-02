@@ -8,7 +8,6 @@
 | X | `@madgercoin` | Buffer API | Account was recorded as connected in prior setup; live API validation awaits the encrypted `BUFFER_API_KEY` repository secret |
 | Instagram | `@madgercoin` | Buffer API | Account was recorded as connected in prior setup; live API validation awaits the encrypted secret |
 | TikTok | `@themadgercoin` | Buffer API | Account was recorded as connected in prior setup; live API validation awaits the encrypted secret |
-| YouTube | `@Madgercoin` / `Madger` | Buffer API | Account was recorded as connected in prior setup; live API validation awaits the encrypted secret |
 | Facebook | MADGER Page only | Buffer API | Page was the recorded destination; personal Facebook is permanently excluded; live API validation awaits the encrypted secret |
 | Telegram announcements | `Madgercoin` | Separate Telegram automation | No durable Telegram connector or bot authorization is available in this project yet |
 | Telegram community | `Madgerburrow` | Forward from announcements | No durable Telegram connector or bot authorization is available in this project yet |

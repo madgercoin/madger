@@ -14,7 +14,7 @@ Recommendation: **NO-GO for public trading until the blocked controls below are 
 | Freeze authority | PASS | Revoked; recurring six-hour token guard enabled |
 | Transfer-fee review | PASS | Classic SPL Token mint; no Token-2022 transfer-fee extension |
 | Official website | PASS | Live at https://madgercoin.com |
-| Website social verification | PASS | X, Instagram, Facebook, YouTube, TikTok, and both Telegram destinations published |
+| Website social verification | PASS | X, Instagram, Facebook, TikTok, and both Telegram destinations published |
 | Social publishing access | PASS | Five Buffer channels connected and healthy |
 | Seven-day content batch | PASS | 15 posts scheduled with exact channel IDs and recorded Buffer post IDs |
 | Duplicate prevention | PASS | Channel/text/time duplicate checks and closed activation flags |

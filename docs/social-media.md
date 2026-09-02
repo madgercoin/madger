@@ -10,7 +10,6 @@ This file is the repository-level channel registry. It complements `docs/communi
 | X | `https://x.com/madgercoin` | Public conversation, concise updates, and ecosystem participation |
 | Instagram | `https://www.instagram.com/madgercoin/` | Character-led visual storytelling |
 | Facebook | `https://www.facebook.com/1279493098576451` | Native video and broader community conversation |
-| YouTube | `https://www.youtube.com/channel/UCqbAvD8zi6psByKRk50qCkg` | Searchable Shorts and durable video discovery |
 | TikTok | `https://www.tiktok.com/@themadgercoin` | Native short-form character hooks |
 | Reddit | `https://www.reddit.com/user/Madgercoin/` | Durable discussion and useful external participation |
 | Telegram announcements | `https://t.me/madgercoin` | Authoritative announcement broadcast |

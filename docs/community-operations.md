@@ -91,12 +91,11 @@ Run one-variable tests. Change only the hook, prompt, format, or posting windowâ
 | Instagram | character-led Reel with one caption prompt | shares, saves, and comments per reach |
 | TikTok | 7â€“12 second native vertical hook with captions | completion/rewatch proxy, comments, shares |
 | Facebook | community question or native Reel context | comments and shares, not raw impressions |
-| YouTube Shorts | searchable title plus immediate visual hook | viewed vs. swiped away and retention |
 | Telegram | one specific discussion prompt with active follow-up | distinct participants and returning participants |
 | Reddit | useful discussion, build note, original art, or open question with full context | thoughtful comments, saves, and repeat contributors |
 | Discord | hosted conversation, contributor workroom, or office-hour prompt | activated newcomers, returning participants, and resolved questions |
 
-Use `reports/social/latest.md` for the automated Buffer view and native analytics when the connector omits retention, profile visits, or comment content. Do not infer unavailable values as zero.
+Use newly generated Buffer reports and native analytics when the connector omits retention, profile visits, or comment content. Do not infer unavailable values as zero.
 
 ## Reddit operating standard
 

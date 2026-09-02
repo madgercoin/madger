@@ -112,7 +112,6 @@ Only these endpoints are verified by the current repository:
 - X: [@madgercoin](https://x.com/madgercoin)
 - Instagram: [@madgercoin](https://www.instagram.com/madgercoin/)
 - Facebook: [Madger Coin](https://www.facebook.com/1279493098576451)
-- YouTube: [MADGER](https://www.youtube.com/channel/UCqbAvD8zi6psByKRk50qCkg)
 - TikTok: [@themadgercoin](https://www.tiktok.com/@themadgercoin)
 - Reddit: [u/Madgercoin](https://www.reddit.com/user/Madgercoin/)
 - Announcements: [t.me/madgercoin](https://t.me/madgercoin)

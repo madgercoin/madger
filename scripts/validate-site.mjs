@@ -230,7 +230,6 @@ if (!homepage.includes('class="hero-coin"') || !homepage.includes('src="/madger_
 if (!stylesheet.includes("text-shadow") || !stylesheet.includes("box-shadow")) failures.push("home-v2.css: dimensional type and beveled surfaces are required");
 if (!homepage.includes("https://www.instagram.com/reel/DcotYCFDD3p/embed/") || !homepage.includes("<iframe")) failures.push("index.html: Instagram-hosted launch film is absent");
 if (!homepage.includes('src="/assets/madger_social_share_v10.jpg" width="1200" height="630"')) failures.push("index.html: visible branded hero artwork is absent");
-if (/youtube\.com|youtube-nocookie\.com/i.test(homepage)) failures.push("index.html: suspended YouTube destination remains");
 if (!homepage.includes("RAYDIUM CPMM") || !homepage.includes("TRADING LIVE")) failures.push("index.html: verified post-launch status is absent");
 if (/Launch Hunt|Meme Contest|SEEKPASTNOISE27|MLH26|ENDS SEP/i.test(homepage)) failures.push("index.html: expired contest material is present");
 if (!homepage.includes(officialFacebook) || homepage.includes("facebook.com/share/")) failures.push("index.html: Facebook links must use the canonical page URL");

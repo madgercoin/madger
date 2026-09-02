@@ -35,7 +35,7 @@ Use “MADGER,” “Solana,” “official mint,” “Honey Badger,” “The 
 
 Structured data must match visible content and verified facts. Do not add Product, Offer, FinancialProduct, review, rating, event, or token-market markup without corresponding public facts and a dedicated review.
 
-Official identity must remain consistent across the website, X, Instagram, Facebook, YouTube, TikTok, Reddit, Telegram, listing submissions, and press materials. The verified Reddit identity is `u/Madgercoin` at `https://www.reddit.com/user/Madgercoin/`. The official mint is `BHauMX8akk2umqkQqnJwpYkCRkZmefGnEBFByeFXRKqv`.
+Official identity must remain consistent across the website, X, Instagram, Facebook, TikTok, Reddit, Telegram, listing submissions, and press materials. The verified Reddit identity is `u/Madgercoin` at `https://www.reddit.com/user/Madgercoin/`. The official mint is `BHauMX8akk2umqkQqnJwpYkCRkZmefGnEBFByeFXRKqv`.
 
 Add a Discord URL to visible pages or structured data only after an authenticated administrator verifies the live server, durable invite, destination channel, invite permissions, moderation settings, and recovery owners. A guessed, expired, or personal-user invite is worse than no link because it creates an impersonation surface.
 

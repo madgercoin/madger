@@ -39,7 +39,6 @@ The positioning is:
 | Updates email | `updates@madgercoin.com` | CONFIRMED |
 | Instagram | `@madgercoin` | CONFIRMED as Buffer destination |
 | TikTok | `@themadgercoin` | CONFIRMED as Buffer destination |
-| YouTube | `@Madgercoin` / channel name `Madger` | CONFIRMED as Buffer destination |
 | Facebook | MADGER Facebook Page only; never the founder's personal profile | CONFIRMED as Buffer destination and guardrail |
 | Other intended platforms | Reddit and Discord | Intended distribution channels; no autonomous account authorization recovered |
 
@@ -270,13 +269,13 @@ Before production launch, test end-to-end submission, admin approval, gallery pu
 
 ### 10.1 Confirmed persistent distribution map
 
-1. Buffer publishes platform-adapted content to X `@madgercoin`, Instagram `@madgercoin`, TikTok `@themadgercoin`, YouTube `@Madgercoin`, and the MADGER Facebook Page.
+1. Buffer publishes platform-adapted content to X `@madgercoin`, Instagram `@madgercoin`, TikTok `@themadgercoin`, and the MADGER Facebook Page.
 2. Telegram remains separate: publish to the `Madgercoin` announcement channel, then forward into the `Madgerburrow` community group.
 3. Reddit and Discord remain intended distribution channels, but no current autonomous account authorization is recorded.
 
 The repository now includes a dependency-free Buffer GraphQL publisher, guarded channel selectors, campaign JSON, and a GitHub Actions workflow. After one-time setup, a new JSON instruction committed to `social/outbox/` automatically triggers publishing. The system requires one encrypted GitHub Actions secret named `BUFFER_API_KEY` and a public HTTPS media URL. It rejects personal Facebook profiles, disconnected/locked channels, and ambiguous account matches.
 
-One contest deployment package used this full map: Instagram feed, Facebook feed, TikTok photo post, YouTube Community, X, Telegram announcement and community, Discord announcement, and Reddit.
+One contest deployment package used this full map: Instagram feed, Facebook feed, TikTok photo post, X, Telegram announcement and community, Discord announcement, and Reddit.
 
 ### 10.2 Asset-format rules recovered
 
@@ -301,7 +300,6 @@ Recorded timing guidance:
 - Facebook: weekdays 8–11 a.m.
 - Instagram: test weekday mornings and evenings.
 - TikTok: test evenings and weekend mornings.
-- YouTube Shorts: late afternoon/evening, with emphasis on Friday–Saturday.
 - Animations are tentpoles; also publish platform-native X content rather than identical cross-posts only.
 
 ### 10.4 Content concepts already developed or requested
@@ -382,7 +380,7 @@ Capabilities envisioned for DeaniusOS/MADGER:
 
 - Canva was requested for branded posters, social resizes, and video/design production.
 - Runway was requested for canonical Madger video creation and episodic story content.
-- Buffer was used/planned as a cross-platform publishing route for Facebook, Instagram, TikTok, YouTube, and X, followed by Telegram distribution.
+- Buffer was used/planned as a cross-platform publishing route for Facebook, Instagram, TikTok, and X, followed by Telegram distribution.
 - Approved references must be loaded into creative tools before generation; off-model assets must not be reused.
 - Do not claim a post or deployment succeeded without a live URL or platform confirmation.
 
@@ -420,7 +418,7 @@ Capabilities envisioned for DeaniusOS/MADGER:
 - `MADGER-MEME-CONTEST-LAUNCH-PACKAGE.zip`
 - `01-COPY-PASTE-INTO-CODEX.txt`
 - `02-PLATFORM-CAPTIONS.md`
-- Platform poster assets for Instagram, Facebook, TikTok, YouTube Community, X, Telegram, Discord, and Reddit.
+- Platform poster assets for Instagram, Facebook, TikTok, X, Telegram, Discord, and Reddit.
 
 ## 16. Superseded instructions and conflicts
 
@@ -453,7 +451,7 @@ Capabilities envisioned for DeaniusOS/MADGER:
 
 ### Marketing/community
 
-- Record full live URLs for the confirmed Instagram, Facebook, TikTok, and YouTube destinations; identify Reddit and Discord only if they are actually authorized.
+- Record full live URLs for the confirmed Instagram, Facebook, and TikTok destinations; identify Reddit and Discord only if they are actually authorized.
 - Add the encrypted `BUFFER_API_KEY` GitHub Actions secret and run the publisher in dry-run mode to capture exact Buffer channel IDs.
 - Publish the approved animation at a stable public HTTPS URL that Buffer can fetch.
 - Record admin roster, roles, permissions, and escalation contacts.

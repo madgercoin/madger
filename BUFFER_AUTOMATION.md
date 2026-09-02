@@ -28,7 +28,7 @@ Set `mediaType` to `image` for a static image or `video` for a video. Legacy ent
 
 1. Merge the automation pull request.
 2. Run **Actions → MADGER Buffer Automation → Run workflow → discover**.
-3. Confirm the expected Facebook, Instagram, TikTok, X, and YouTube channels are present, connected, unlocked, and unpaused.
+3. Confirm the expected Facebook, Instagram, TikTok, and X channels are present, connected, unlocked, and unpaused.
 4. Upload approved images or videos to the public media host and verify each URL in a private browser.
 5. Add the verified URLs to `content/buffer-schedule.json`.
 6. Review captions, UTC timestamps, platform metadata, and launch-state compliance.
@@ -52,12 +52,9 @@ The successful discovery run at `2026-08-16T01:17:51Z` returned the following va
 | Service | Buffer name/displayName | Channel ID |
 | --- | --- | --- |
 | Facebook | `Madger Coin` | `6a67ecc14b2d03035f50dbad` |
-| YouTube | `Madger` | `6a67af404b2d03035f4e8e79` |
 | X | `MadgerCoin` | `6a67af8a4b2d03035f4e91f4` |
 | Instagram | `madgercoin` | `6a67aebb4b2d03035f4e8b45` |
 | TikTok | `themadgercoin` | `6a67b0034b2d03035f4e9477` |
-
-The YouTube channel did **not** change names during this campaign. The failed contest entry inherited the stale descriptive value `Madgercoin` from older manifest copy, while Buffer correctly reported `Madger`. Pinning all posts to the discovered channel IDs prevents a display-name mismatch from blocking future runs.
 
 ## Official references
 

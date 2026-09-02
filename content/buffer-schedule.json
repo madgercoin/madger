@@ -46,20 +46,6 @@
       "bufferPostId": "6a6874352dcd5a840df345cf"
     },
     {
-      "id": "madger-002-youtube",
-      "enabled": false,
-      "service": "youtube",
-      "channelName": "Madgercoin",
-      "title": "MADGER 002 — Keep Digging",
-      "dueAt": "2026-07-29T23:00:00.000Z",
-      "mediaUrl": "https://raw.githubusercontent.com/madgercoin/madger/main/media/MADGER_002_KEEP_DIGGING_VERTICAL-1.mp4",
-      "thumbnailOffsetMs": 1000,
-      "text": "The market gets loud. MADGER digs deeper. Small Badger. Big Crypto. 🦡⛏️ #MADGER #TheBurrow #Solana",
-      "channelId": "6a67af404b2d03035f4e8e79",
-      "status": "scheduled",
-      "bufferPostId": "6a68748f602e6f9b41464e23"
-    },
-    {
       "id": "madger-002-tiktok",
       "enabled": false,
       "service": "tiktok",
@@ -116,20 +102,6 @@
       "bufferPostId": "6a6874922dcd5a840df34863"
     },
     {
-      "id": "madger-003-youtube",
-      "enabled": false,
-      "service": "youtube",
-      "channelName": "Madgercoin",
-      "title": "MADGER 003 — No Slowing Down",
-      "dueAt": "2026-07-31T20:00:00.000Z",
-      "mediaUrl": "https://raw.githubusercontent.com/madgercoin/madger/main/media/MADGER_003_NO_SLOWING_DOWN_VERTICAL.mp4",
-      "thumbnailOffsetMs": 1000,
-      "text": "No slowing down. No shortcuts underground. The Burrow keeps moving. 🦡 #MADGER #KeepDigging #Solana",
-      "channelId": "6a67af404b2d03035f4e8e79",
-      "status": "scheduled",
-      "bufferPostId": "6a6874927e8cbcebb3b539c7"
-    },
-    {
       "id": "madger-003-tiktok",
       "enabled": false,
       "service": "tiktok",
@@ -142,20 +114,6 @@
       "channelId": "6a67b0034b2d03035f4e9477",
       "status": "scheduled",
       "bufferPostId": "6a6874922dcd5a840df34888"
-    },
-    {
-      "id": "madger-004-youtube",
-      "enabled": false,
-      "service": "youtube",
-      "channelName": "Madgercoin",
-      "title": "MADGER 004 — Join the Burrow",
-      "dueAt": "2026-08-01T22:00:00.000Z",
-      "mediaUrl": "https://raw.githubusercontent.com/madgercoin/madger/main/media/MADGER_004_JOIN_THE_BURROW_VERTICAL.mp4",
-      "thumbnailOffsetMs": 1000,
-      "text": "The signal is up. The Burrow is open. Join MADGER. 🦡 #MADGER #TheBurrow #Solana",
-      "channelId": "6a67af404b2d03035f4e8e79",
-      "status": "scheduled",
-      "bufferPostId": "6a687493602e6f9b41464e56"
     },
     {
       "id": "madger-004-tiktok",
@@ -334,22 +292,6 @@
       "cancel": true
     },
     {
-      "id": "meme-contest-launch-youtube-2026-08-17",
-      "enabled": false,
-      "service": "youtube",
-      "channelName": "Madger",
-      "title": "The Great Burrow Meme Contest | Enter Aug 17–23",
-      "dueAt": "2026-08-17T13:20:00.000Z",
-      "mediaType": "video",
-      "mediaUrl": "https://raw.githubusercontent.com/madgercoin/madger/main/media/meme-contest/madger-meme-contest-vertical.mp4",
-      "thumbnailOffsetMs": 1000,
-      "text": "The Great Burrow Meme Contest is open. Post an original MADGER or honey-badger meme publicly on X, tag @madgercoin, include #MadgerMemeContest, then send the X post link in The Burrow: https://t.me/madgerburrow. Prizes: $20 in SOL for first, $10 in SOL for second, and $5 in SOL for third, plus creator titles and credited spotlights. Entries run August 17–23, 2026. No purchase or wallet connection required to enter. Enter on X: https://x.com/madgercoin Official rules: https://madgercoin.com/meme-contest.html #MADGER #MemeContest #Shorts",
-      "channelId": "6a67af404b2d03035f4e8e79",
-      "status": "scheduled",
-      "bufferPostId": "6a813ecb5afed12f716b7c00",
-      "cancel": true
-    },
-    {
       "id": "community-before-launch-x-2026-08-16",
       "enabled": false,
       "service": "twitter",
@@ -399,19 +341,6 @@
       "mediaUrl": "https://raw.githubusercontent.com/madgercoin/madger/main/media/community-before-launch/community-before-launch-madger.jpg",
       "text": "Why build community before launching a meme coin? Because liquidity creates a market—but community creates trust, culture, distribution, resilience, and lasting momentum. A token can launch overnight. A real community has to be earned. Build the people. Then build the market. #MADGER #Memecoin #CryptoEducation #CommunityFirst #TheBurrow",
       "channelId": "6a67b0034b2d03035f4e9477",
-      "status": "blocked_buffer_rate_limit"
-    },
-    {
-      "id": "community-before-launch-youtube-2026-08-16",
-      "enabled": false,
-      "service": "youtube",
-      "channelName": "Madger",
-      "title": "Why Community Comes Before a Meme Coin Launch",
-      "dueAt": "2026-08-16T19:59:00.000Z",
-      "mediaType": "image",
-      "mediaUrl": "https://raw.githubusercontent.com/madgercoin/madger/main/media/community-before-launch/community-before-launch-madger.jpg",
-      "text": "Why build community before launching a meme coin?\n\nBecause liquidity creates a market—but community creates trust, culture, distribution, resilience, and lasting momentum.\n\nA token can launch overnight. A real community has to be earned.\n\nBuild the people. Then build the market.\n\n#MADGER #Memecoin #CryptoEducation #CommunityFirst #TheBurrow",
-      "channelId": "6a67af404b2d03035f4e8e79",
       "status": "blocked_buffer_rate_limit"
     },
     {
@@ -469,19 +398,6 @@
       "channelId": "6a67b0034b2d03035f4e9477",
       "status": "scheduled",
       "bufferPostId": "6a88b5b61b38003a90d3a6b8"
-    },
-    {
-      "id": "aura-unmeasurable-youtube-2026-08-21",
-      "enabled": false,
-      "service": "youtube",
-      "channelName": "Madger",
-      "title": "Aura: Unmeasurable | $MADGER",
-      "dueAt": "2026-08-21T20:53:00.000Z",
-      "mediaType": "image",
-      "mediaUrl": "https://raw.githubusercontent.com/madgercoin/madger/main/media/aura-unmeasurable/aura-unmeasurable.png",
-      "text": "Some things can be counted. Aura can’t. $MADGER doesn’t enter the race to disappear in the pack. He takes the prow and sets the pace. The momentum is real. The identity is undeniable. AURA: UNMEASURABLE. https://madgercoin.com #MADGER #TheBurrow #Solana",
-      "channelId": "6a67af404b2d03035f4e8e79",
-      "status": "unsupported_requires_video"
     }
   ],
   "lastSuccessfulActivation": "2026-08-16T04:38:35Z"

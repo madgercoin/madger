@@ -21,16 +21,16 @@ Primary metrics: 3-second/video views where available, completion proxy, reactio
 |---|---:|---|---|---|---|
 | Wed Aug 5 | 10:00 AM | X, Facebook | Character plate: unimpressed | Brand recognition | Morning static |
 | Wed Aug 5 | 7:30 PM | Instagram | Character plate carousel | Saves/shares | Evening carousel |
-| Thu Aug 6 | 6:00 PM | YouTube, Instagram | MADGER 005 — No Shortcut Underground | Video retention | Evening video |
+| Thu Aug 6 | 6:00 PM | Instagram | MADGER 005 — No Shortcut Underground | Video retention | Evening video |
 | Thu Aug 6 | 9:30 PM | TikTok | MADGER 005 | Late discovery | Late video |
 | Fri Aug 7 | 12:30 PM | X | Mint-verification safety card | Trust/clicks | Lunch utility |
 | Fri Aug 7 | 6:30 PM | Facebook, Instagram | Mint-verification safety card | Shares/saves | Evening utility |
-| Sat Aug 8 | 11:00 AM | TikTok, YouTube | MADGER 006 — Verify Before You Trust | Educational retention | Weekend morning |
+| Sat Aug 8 | 11:00 AM | TikTok | MADGER 006 — Verify Before You Trust | Educational retention | Weekend morning |
 | Sat Aug 8 | 8:00 PM | X | Community prompt | Replies | Weekend evening |
 | Sun Aug 9 | 10:00 AM | Facebook, Instagram | Burrow roll-call | Comments | Community morning |
 | Sun Aug 9 | 7:00 PM | TikTok | MADGER 007 — Signal From the Burrow | Video retention | Sunday evening |
 | Mon Aug 10 | 9:00 AM | X, Facebook | Monday persistence meme | Shares | Workweek morning |
-| Mon Aug 10 | 7:00 PM | YouTube, Instagram | MADGER 007 | Video retention | Monday evening |
+| Mon Aug 10 | 7:00 PM | Instagram | MADGER 007 | Video retention | Monday evening |
 | Tue Aug 11 | 1:00 PM | X | Build update | Trust/clicks | Midday update |
 | Tue Aug 11 | 6:00 PM | All eligible channels | Best-performing adapted creative | Confirm winner | Controlled replication |
 

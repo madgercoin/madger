@@ -1,7 +1,7 @@
 # MADGER Social Media Content Pack
 
 **Campaign state:** Trading live
-**Primary posting workflow:** Post to Instagram first, cross-post to Facebook, then use the platform-specific copy for X, Telegram, TikTok, YouTube Shorts, and Threads.  
+**Primary posting workflow:** Post to Instagram first, cross-post to Facebook, then use the platform-specific copy for X, Telegram, TikTok, and Threads.  
 **Official website:** https://madgercoin.com  
 **Official X:** https://x.com/madgercoin  
 **Announcements:** https://t.me/madgercoin  
@@ -14,7 +14,7 @@
 
 ## 2026 platform execution standard
 
-The current performance baseline shows Instagram generating the strongest early engagement while X and YouTube need more native, conversational experiments. Do not solve that by copying the same caption everywhere.
+The current performance baseline shows Instagram generating the strongest early engagement while X needs more native, conversational experiments. Do not solve that by copying the same caption everywhere.
 
 - **X:** keep most posts concise and conversational; use zero to two relevant hashtags, ask a real question when it earns a response, and prioritize thoughtful replies in existing Solana/builder conversations.
 - **Instagram:** lead with the character or a recognizable visual beat, use a small rotating set of relevant discovery terms, and end with one easy prompt rather than several calls to action.
@@ -420,7 +420,7 @@ t.me/madgerburrow
 
 ---
 
-# Reels / TikTok / YouTube Shorts Scripts
+# Reels / TikTok Short-Form Scripts
 
 ## Video 01 — Markets Panic
 
@@ -593,10 +593,6 @@ Trading not launched
 ## X
 
 The grumpiest badger on Solana. Markets panic. MADGER digs. 🦡⛏️ Minted; public trading not launched. Verify at madgercoin.com.
-
-## YouTube
-
-MADGER is a community-driven Solana character brand built around persistence, sharp humor, and facts over fake hype. Markets panic. MADGER digs.
 
 ## Telegram Community Description
 

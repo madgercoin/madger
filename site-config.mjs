@@ -42,7 +42,6 @@ export const assetFiles = [
   "social_x.svg",
   "social_instagram.svg",
   "social_facebook.svg",
-  "social_youtube.svg",
   "social_tiktok.svg",
   "social_reddit.svg",
   "social_discord.svg",

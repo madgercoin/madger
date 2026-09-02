@@ -104,7 +104,7 @@ MADGER is minted on Solana; public trading is not open.
 
 #MADGER #Solana #CryptoTok #Animation
 
-### YouTube Shorts
+### Vertical Short-Form
 
 Title: `MADGER EP01 — MEMETIC SIGNATURE: ZERO`
 

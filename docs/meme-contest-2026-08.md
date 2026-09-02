@@ -65,7 +65,7 @@ Each provisional winner must respond publicly within 72 hours to accept the plac
 
 MADGER may pause, modify, or cancel the Contest if fraud, abuse, platform failure, security risk, or circumstances outside reasonable control prevent fair administration. Decisions will be documented and applied consistently. Telegram usernames, X usernames, submitted content, public X post links, form-response timestamps, and public replies are used only to administer, credit, moderate, and report the Contest. Entry responses are processed through Google Forms and are accessible to the MADGER form owner. Do not include private personal information beyond the fields requested by the official form.
 
-The Contest is not sponsored, endorsed, administered by, or associated with Telegram, X, Meta, Facebook, Instagram, TikTok, YouTube, Google, Reddit, Discord, Solana, or Buffer. Entrants release those platforms from responsibility for Contest administration to the extent permitted by law. Platform terms continue to apply.
+The Contest is not sponsored, endorsed, administered by, or associated with Telegram, X, Meta, Facebook, Instagram, TikTok, Google, Reddit, Discord, Solana, or Buffer. Entrants release those platforms from responsibility for Contest administration to the extent permitted by law. Platform terms continue to apply.
 
 Questions and rule clarifications must be posted in the official Telegram community. Trust only links published at **https://madgercoin.com**.
 

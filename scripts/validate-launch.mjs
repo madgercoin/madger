@@ -15,7 +15,6 @@ for (const [name, html] of [["index.html", home], ["launch.html", launch], ["off
 }
 if (!home.includes("TRADING LIVE") || !home.includes("RAYDIUM CPMM")) failures.push("index.html: post-launch status is absent");
 if (!home.includes("https://www.instagram.com/reel/DcotYCFDD3p/embed/") || !home.includes("<iframe")) failures.push("index.html: Instagram-hosted cinematic film is absent");
-if (/youtube\.com|youtube-nocookie\.com/i.test(home)) failures.push("index.html: suspended YouTube destination remains");
 if (!launch.includes(pool) || !launch.includes("0.25%")) failures.push("launch.html: verified pool record is incomplete");
 if (!launch.includes(`href="${dexScreenerPair}"`)) failures.push("launch.html: exact DEX Screener pair link is absent");
 if (!links.includes(`href="${dexScreenerPair}"`)) failures.push("official-links.html: exact DEX Screener pair link is absent");

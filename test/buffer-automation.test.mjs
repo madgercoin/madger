@@ -76,14 +76,6 @@ test("does not treat a different channel, caption, or time as a duplicate", () =
   assert.equal(result.duplicate, null);
 });
 
-test("YouTube metadata always includes Buffer's required category and title", () => {
-  const metadata = metadataFor({ service: "youtube", title: "MADGER 002 — Keep Digging" });
-  assert.equal(metadata.youtube.categoryId, "24");
-  assert.equal(metadata.youtube.title, "MADGER 002 — Keep Digging");
-  assert.equal(metadata.youtube.privacy, "public");
-  assert.equal(metadata.youtube.madeForKids, false);
-});
-
 test("creates an image asset without video-only metadata", () => {
   assert.deepEqual(assetFor({
     mediaType: "image",
@@ -133,18 +125,17 @@ test("scheduled meme contest launch covers every Buffer channel", () => {
   )));
   const posts = manifest.posts.filter(({ id }) => id.startsWith("meme-contest-launch-"));
 
-  assert.equal(posts.length, 5);
+  assert.equal(posts.length, 4);
   assert.deepEqual(new Set(posts.map(({ service }) => service)), new Set([
-    "twitter", "facebook", "instagram", "tiktok", "youtube"
+    "twitter", "facebook", "instagram", "tiktok"
   ]));
   assert.ok(posts.every(({ enabled }) => enabled === false));
   assert.ok(posts.every(({ mediaUrl }) => mediaUrl.startsWith("https://")));
   assert.ok(posts.every(({ channelId }) => typeof channelId === "string" && channelId.length > 0));
   assert.ok(posts.every(({ status, bufferPostId }) => status === "scheduled" && bufferPostId));
   assert.ok(posts.every(({ cancel }) => cancel === true));
-  assert.equal(posts.find(({ service }) => service === "youtube").channelName, "Madger");
   assert.equal(posts.find(({ service }) => service === "twitter").text.length <= 280, true);
-  assert.ok(posts.filter(({ service }) => ["tiktok", "youtube"].includes(service))
+  assert.ok(posts.filter(({ service }) => service === "tiktok")
     .every(({ mediaType }) => mediaType === "video"));
   assert.ok(posts.filter(({ service }) => ["twitter", "facebook", "instagram"].includes(service))
     .every(({ mediaType }) => mediaType === "image"));

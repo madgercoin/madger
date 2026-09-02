@@ -19,12 +19,6 @@
       "expectedType": "profile"
     },
     {
-      "service": "youtube",
-      "label": "YouTube @Madgercoin",
-      "selectors": ["@madgercoin", "madgercoin"],
-      "expectedType": "channel"
-    },
-    {
       "service": "facebook",
       "label": "MADGER Facebook Page",
       "selectors": ["madger"],

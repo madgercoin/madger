@@ -5,7 +5,6 @@ This repository contains a guarded Buffer publishing workflow for the confirmed 
 - X `@madgercoin`
 - Instagram `@madgercoin`
 - TikTok `@themadgercoin`
-- YouTube `@Madgercoin`
 - the MADGER Facebook Page
 
 The personal Facebook profile is explicitly excluded. Telegram is separate: publish to the `Madgercoin` announcement channel, then forward to the `Madgerburrow` community group.
