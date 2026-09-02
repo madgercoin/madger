@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-09-01 — DEX Screener verification and discovery
+
+- Added the exact verified SOL–MADGER DEX Screener pair to the canonical launch record and official-links directory.
+- Added automated checks that reject missing or substituted DEX Screener pair links.
+- Kept market data external and dynamic, with no paid boosts, embedded third-party code, wallet connection, or purchase flow.
+
 ## 2026-08-31 — Trading live transition
 
 - Switched the centralized public state to `TRADING_LIVE` and replaced the launch countdown with a verified live-market banner.

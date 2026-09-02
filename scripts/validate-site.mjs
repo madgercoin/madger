@@ -31,6 +31,7 @@ const requiredSocialProperties = [
   'name="twitter:image:alt"'
 ];
 const officialMint = "BHauMX8akk2umqkQqnJwpYkCRkZmefGnEBFByeFXRKqv";
+const officialPool = "FVRpAmyDsdvKHQT2ds6ytZsJHt7SDDDbScQx3c4fu32h";
 const officialFacebook = "https://www.facebook.com/1279493098576451";
 const officialReddit = "https://www.reddit.com/user/Madgercoin/";
 const officialDiscord = "https://discord.gg/NcuPzSNz9e";
@@ -285,7 +286,8 @@ const publishedAddresses = new Set([
   "C29Y6p3NXgi5UauC3W9PVN7SDguk9EA2e5oDDJEHRxNz",
   "ATFELs8fV9CthKDjVLfhMb756uD499nHVtzLr5i7XKPp",
   "EVSB7eT5ws43oi2ztWKNQvH4THXQD3k9z6Sk9NNFP1FT",
-  "FVRpAmyDsdvKHQT2ds6ytZsJHt7SDDDbScQx3c4fu32h"
+  officialPool,
+  officialPool.toLowerCase()
 ]);
 const unexpectedMints = [...new Set(mintCandidates.filter(value => !publishedAddresses.has(value)))];
 if (unexpectedMints.length) failures.push(`unexpected mint-like value(s): ${unexpectedMints.join(", ")}`);
