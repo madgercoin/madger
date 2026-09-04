@@ -1,16 +1,16 @@
 # MADGER social performance
 
-Generated: 2026-09-03T12:56:04.494Z
-Previous snapshot: none
+Generated: 2026-09-04T12:49:57.652Z
+Previous snapshot: 2026-09-03T12:56:04.494Z
 
 ## 30-day channel rollup
 
 | Channel | Health | Posts | Impressions | Reach | Views | Eng. rate | Clicks | Follows | Review |
 |---|---|---:|---:|---:|---:|---:|---:|---:|---|
-| facebook: Madger Coin | Connected | 52 | 3270 | — | — | 4.86% | 88 | — | Check Buffer Community |
-| twitter: MadgerCoin | Connected | 94 | 60452 | — | — | 12.68% | 691 | — | Check Buffer Community |
-| instagram: madgercoin | Connected | 52 | 0 | 804 | 1072 | 6.22% | — | 0 | Check Buffer Community |
-| tiktok: themadgercoin | Connected | 46 | — | 5689 | 7029 | 1.59% | — | — | Check Buffer Community |
+| facebook: Madger Coin | Connected | 51 | 3057 | — | — | 5.14% | 88 | — | Check Buffer Community |
+| twitter: MadgerCoin | Connected | 94 | 61402 | — | — | 12.64% | 696 | — | Check Buffer Community |
+| instagram: madgercoin | Connected | 54 | — | 847 | 1128 | 7.67% | — | 0 | Check Buffer Community |
+| tiktok: themadgercoin | Connected | 45 | — | 6173 | 7037 | 1.56% | — | — | Check Buffer Community |
 
 ## Scheduled campaign
 
@@ -18,17 +18,17 @@ Sent: 23/24 · Scheduled: 0 · Errors: 1 · Attention: 4 · At risk: 0
 
 | Metric | Current | Change since prior report |
 |---|---:|---:|
-| reactions | 224 | — |
-| comments | 105 | — |
-| shares | 0 | — |
-| reposts | 47 | — |
-| reach | 808 | — |
-| impressions | 6353 | — |
-| views | 949 | — |
-| clicks | 192 | — |
-| saves | 0 | — |
-| follows | 0 | — |
-| averageEngagementRate | 15.21% | — |
+| reactions | 224 | 0 |
+| comments | 105 | 0 |
+| shares | 0 | 0 |
+| reposts | 47 | 0 |
+| reach | 810 | 2 |
+| impressions | 6362 | 9 |
+| views | 951 | 2 |
+| clicks | 192 | 0 |
+| saves | 0 | 0 |
+| follows | 0 | 0 |
+| averageEngagementRate | 14.85% | — |
 
 ## Per-post performance
 
@@ -50,13 +50,13 @@ Sent: 23/24 · Scheduled: 0 · Errors: 1 · Attention: 4 · At risk: 0
 | The Burrow hits 200 Telegram members | twitter | unknown | 2026-08-16T02:46:25.753Z | ⚠ sent (channel missing) | — | 0 | — | 0 | 0 | — | 0 | — | [Open](https://x.com/2080142722153816065/status/2088819648166813808) |
 | The Burrow hits 200 Telegram members | facebook | unknown | 2026-08-16T02:46:27.988Z | ⚠ sent (channel missing) | — | 7 | — | 3 | 0 | 0 | 1 | — | [Open](https://facebook.com/1279493098576451_122108036793423166) |
 | The Burrow hits 200 Telegram members | instagram | unknown | 2026-08-16T02:46:33.258Z | ⚠ sent (channel missing) | 6 | — | 4 | 0 | 0 | 0 | — | 0 | [Open](https://www.instagram.com/p/DcFbFJPlFqB/) |
-| The Great Burrow Meme Contest | twitter | connected | 2026-08-16T10:09:33.282Z | sent | — | 5528 | — | 157 | 91 | — | 188 | — | [Open](https://x.com/2080142722153816065/status/2088931163230376000) |
+| The Great Burrow Meme Contest | twitter | connected | 2026-08-16T10:09:33.282Z | sent | — | 5537 (+9) | — | 157 | 91 | — | 188 | — | [Open](https://x.com/2080142722153816065/status/2088931163230376000) |
 | The Great Burrow Meme Contest | facebook | connected | 2026-08-16T10:10:22.882Z | sent | — | 7 | — | 2 | 0 | 0 | 1 | — | [Open](https://facebook.com/1279493098576451_122108134587423166) |
-| The Great Burrow Meme Contest | instagram | connected | 2026-08-16T10:11:18.541Z | sent | 3 | — | 3 | 0 | 0 | 0 | — | 0 | [Open](https://www.instagram.com/p/DcGOkg5ltva/) |
+| The Great Burrow Meme Contest | instagram | connected | 2026-08-16T10:11:18.541Z | sent | 4 (+1) | — | 4 (+1) | 0 | 0 | 0 | — | 0 | [Open](https://www.instagram.com/p/DcGOkg5ltva/) |
 | The Great Burrow Meme Contest | tiktok | connected | 2026-08-16T10:11:37.451Z | sent | 215 | — | 208 | 0 | 0 | 0 | — | — | [Open](https://www.tiktok.com/@themadgercoin/video/7674570062266666254?utm_campaign=tt4d_open_api&utm_source=7103819247981182978) |
 | Aura: Unmeasurable | twitter | connected | 2026-08-21T20:45:00.000Z | sent | — | 679 | — | 33 | 14 | — | 1 | — | [Open](https://x.com/2080142722153816065/status/2090903038424736251) |
 | Aura: Unmeasurable | facebook | connected | 2026-08-21T20:47:00.000Z | sent | — | 11 | — | 1 | 0 | 0 | 1 | — | [Open](https://facebook.com/1279493098576451_122109624249423166) |
-| Aura: Unmeasurable | instagram | connected | 2026-08-21T20:49:00.000Z | sent | 6 | — | 3 | 1 | 0 | 0 | — | 0 | [Open](https://www.instagram.com/p/DcUO7rak_qB/) |
+| Aura: Unmeasurable | instagram | connected | 2026-08-21T20:49:00.000Z | sent | 7 (+1) | — | 4 (+1) | 1 | 0 | 0 | — | 0 | [Open](https://www.instagram.com/p/DcUO7rak_qB/) |
 | Aura: Unmeasurable | tiktok | connected | 2026-08-21T20:51:00.000Z | sent | 69 | — | 64 | 0 | 0 | 0 | — | — | [Open](https://www.tiktok.com/@themadgercoin/video/7676590217716845838?utm_campaign=tt4d_open_api&utm_source=7103819247981182978) |
 
 ## Interpretation
