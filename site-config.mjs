@@ -13,7 +13,7 @@ export const rootFiles = [
   "blog-building-foundations.html",
   "blog-honey-badger-standard.html",
   "blog-token-link-safety.html",
-  "blog-after-launch.html",
+  "blog-burrow-after-launch.html",
   "blog-character-outlives-chart.html",
   "blog-verify-live-market.html",
   "blog-diligence-map.html",

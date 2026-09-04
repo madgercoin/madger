@@ -1,7 +1,7 @@
 import { access, readFile } from "node:fs/promises";
 import path from "node:path";
 
-const htmlFiles = ["buy.html", "index.html", "launch.html", "litepaper.html", "official-links.html", "collaborators.html", "privacy.html", "blog.html", "blog-madger-thesis.html", "blog-diligence-map.html", "blog-after-launch.html", "blog-character-outlives-chart.html", "blog-verify-live-market.html", "blog-building-foundations.html", "blog-honey-badger-standard.html", "blog-token-link-safety.html", "404.html"];
+const htmlFiles = ["buy.html", "index.html", "launch.html", "litepaper.html", "official-links.html", "collaborators.html", "privacy.html", "blog.html", "blog-madger-thesis.html", "blog-diligence-map.html", "blog-burrow-after-launch.html", "blog-character-outlives-chart.html", "blog-verify-live-market.html", "blog-building-foundations.html", "blog-honey-badger-standard.html", "blog-token-link-safety.html", "404.html"];
 const indexablePages = new Map([
   ["buy.html", "https://madgercoin.com/buy"],
   ["index.html", "https://madgercoin.com/"],
@@ -13,7 +13,7 @@ const indexablePages = new Map([
   ,["blog.html", "https://madgercoin.com/blog.html"]
   ,["blog-madger-thesis.html", "https://madgercoin.com/blog-madger-thesis.html"]
   ,["blog-diligence-map.html", "https://madgercoin.com/blog-diligence-map.html"]
-  ,["blog-after-launch.html", "https://madgercoin.com/blog-after-launch.html"]
+  ,["blog-burrow-after-launch.html", "https://madgercoin.com/blog-burrow-after-launch.html"]
   ,["blog-character-outlives-chart.html", "https://madgercoin.com/blog-character-outlives-chart.html"]
   ,["blog-verify-live-market.html", "https://madgercoin.com/blog-verify-live-market.html"]
   ,["blog-building-foundations.html", "https://madgercoin.com/blog-building-foundations.html"]
@@ -47,7 +47,7 @@ const pageSocialPreviews = new Map([
   ["blog.html", "https://madgercoin.com/assets/madger_journal_social_v2.jpg"],
   ["blog-madger-thesis.html", "https://madgercoin.com/assets/madger_social_share_v10.jpg"],
   ["blog-diligence-map.html", "https://madgercoin.com/assets/madger_social_share_v10.jpg"],
-  ["blog-after-launch.html", "https://madgercoin.com/assets/madger_social_share_v10.jpg"],
+  ["blog-burrow-after-launch.html", "https://madgercoin.com/assets/madger_social_share_v10.jpg"],
   ["blog-character-outlives-chart.html", "https://madgercoin.com/assets/madger_social_share_v10.jpg"],
   ["blog-verify-live-market.html", "https://madgercoin.com/assets/madger_social_share_v10.jpg"],
   ["blog-building-foundations.html", "https://madgercoin.com/assets/madger_fieldnote_foundations_v1_social.jpg"],
