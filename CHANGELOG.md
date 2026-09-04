@@ -1,5 +1,12 @@
 # Changelog
 
+## 2026-09-03 - Roadmap publication
+
+- Added the accessible four-stage roadmap page and dated official 8-page PDF, preserving the exact official emblem.
+- Added discovery links from the homepage, journal, litepaper, launch record, official directory, and contributor framework.
+- Added roadmap metadata, sitemap entry, and focused checks for PDF availability, source links, stages, and non-guarantee language.
+- Preserved existing launch facts, safety records, unrelated content, and social-preview assets.
+
 ## 2026-09-01 — DEX Screener verification and discovery
 
 - Added the exact verified SOL–MADGER DEX Screener pair to the canonical launch record and official-links directory.

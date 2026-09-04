@@ -2,6 +2,8 @@ export const rootFiles = [
   "index.html",
   "launch.html",
   "litepaper.html",
+  "roadmap.html",
+  "roadmap.css",
   "official-links.html",
   "collaborators.html",
   "privacy.html",
@@ -28,6 +30,7 @@ export const rootFiles = [
 ];
 
 export const assetFiles = [
+  "MADGER_Roadmap_2026_2026-09-03.pdf",
   "madger_hero_burrow_v7.jpg",
   "madger_official_logo_transparent_180.png",
   "madger_official_logo_transparent_192.png",

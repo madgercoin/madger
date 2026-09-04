@@ -264,7 +264,7 @@ for (const [phrase, budget] of lowValuePhraseBudgets) {
 
 const sitemap = await readFile("sitemap.xml", "utf8");
 const sitemapUrls = [...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map(match => match[1]);
-const expectedSitemapUrls = [...indexablePages.values()];
+const expectedSitemapUrls = [...indexablePages.values(), "https://madgercoin.com/roadmap"];
 if (JSON.stringify(sitemapUrls.sort()) !== JSON.stringify(expectedSitemapUrls.sort())) {
   failures.push(`sitemap.xml: expected only canonical indexable URLs, found ${sitemapUrls.join(", ")}`);
 }
