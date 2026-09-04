@@ -1,0 +1,33 @@
+/* Purchase guidance extends the existing visual system without hiding core content. */
+.purchase-help { display: inline-block; margin-top: 1rem; color: var(--lime); font-size: 1rem; text-decoration: underline; text-underline-offset: .25em; }
+.purchase-risk { max-width: 38rem; color: var(--muted); font-size: .875rem; line-height: 1.6; }
+.buy-main { max-width: var(--max); margin: auto; padding: clamp(2rem, 5vw, 5rem) 24px; }
+.buy-intro { display: grid; grid-template-columns: 1.15fr 1fr; gap: clamp(2rem, 5vw, 5rem); align-items: start; }
+.buy-intro > *, .buy-steps li { min-width: 0; }
+.buy-page h1 { margin: 0; font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif; font-size: clamp(2.8rem, 7vw, 6rem); line-height: 1.05; }
+.buy-page h1 span { display: block; color: var(--lime); }
+.buy-page h2 { font-size: clamp(1.4rem, 3vw, 2rem); line-height: 1.2; margin-top: 0; }
+.buy-page h3 { margin: 0 0 .75rem; font-size: 1.15rem; }
+.buy-page p { color: var(--muted); font-size: 1rem; line-height: 1.7; }
+.buy-page strong { color: var(--text); }
+.buy-page .eyebrow, .buy-page .buy-note { font-size: .875rem; }
+.buy-page .button, .buy-page .copy-button { font-size: .875rem; min-height: 48px; white-space: normal; text-align: center; }
+.buy-page .mint-card { transform: none; }
+.buy-page .mint-card code { font-size: 1rem; user-select: all; }
+.buy-page .mint-links { flex-wrap: wrap; }
+.buy-page .mint-links a { font-size: .875rem; }
+.buy-risk { border-left: 3px solid var(--gold); padding: .25rem 0 .25rem 1rem; }
+.buy-nav { display: flex; gap: 1rem; flex-wrap: wrap; }
+.buy-nav a, .buy-page .site-footer a { display: inline-flex; align-items: center; min-height: 44px; font-size: .875rem; }
+.buy-text-link, .buy-help a { color: var(--lime); text-decoration: underline; text-underline-offset: .2em; }
+.buy-section { margin-top: clamp(3rem, 6vw, 5rem); scroll-margin-top: 7rem; }
+.buy-steps { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.5rem; padding-left: 1.5rem; }
+.buy-steps li { padding: 1.25rem; background: var(--panel); border: 1px solid var(--line); border-radius: 10px; }
+.buy-steps li::marker { color: var(--lime); font-weight: 800; }
+.buy-steps p:last-child { margin-bottom: 0; }
+.buy-help { max-width: 54rem; }
+.buy-help details { border-bottom: 1px solid var(--line); padding: .5rem 0; }
+.buy-help summary { cursor: pointer; padding: 1rem 0; font-weight: 700; line-height: 1.5; }
+.buy-page :focus-visible, .purchase-help:focus-visible, .hero-actions a:focus-visible, #main-nav a:focus-visible { outline: 3px solid var(--gold); outline-offset: 5px; }
+@media (max-width: 760px) { .buy-intro, .buy-steps { grid-template-columns: 1fr; } .buy-main { padding-inline: 16px; } .buy-page .site-header { gap: 1rem; flex-wrap: wrap; } }
+@media (prefers-reduced-motion: reduce) { .buy-page *, .buy-page *::before { animation: none !important; transition: none !important; scroll-behavior: auto !important; } }

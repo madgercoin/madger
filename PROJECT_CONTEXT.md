@@ -10,7 +10,7 @@ MADGER is **live for public trading on Solana** through the official SOL–MADGE
 BHauMX8akk2umqkQqnJwpYkCRkZmefGnEBFByeFXRKqv
 ```
 
-This is an identity and verification fact, not financial advice or a promise of price, return, liquidity, listing, partnership, or utility. The official Raydium market must always be reached through the canonical launch record and checked against the full mint. LP-protection evidence, finalized launch balances, and transaction records remain separate disclosure items until published.
+This is an identity and verification fact, not financial advice or a promise of price, return, liquidity, listing, partnership, or utility. The official Raydium market can be reached through the canonical launch record or the fixed SOL-to-MADGER swap links on the homepage and `/buy` guide, and must be checked against the full mint. LP-protection evidence, finalized launch balances, and transaction records remain separate disclosure items until published.
 
 ## Product today
 

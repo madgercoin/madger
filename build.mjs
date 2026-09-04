@@ -11,15 +11,16 @@ await Promise.all(assetFiles.map(async file => {
   await cp(file, destination);
 }));
 
-const [home, launch, litepaper, notFound] = await Promise.all([
+const [home, launch, litepaper, notFound, buy] = await Promise.all([
   readFile("index.html", "utf8"),
   readFile("launch.html", "utf8"),
   readFile("litepaper.html", "utf8"),
-  readFile("404.html", "utf8")
+  readFile("404.html", "utf8"),
+  readFile("buy.html", "utf8")
 ]);
 
 const workerSource = `/** Generated at build time. HTML is bundled to prevent stale or corrupted edge assets. */
-const pages = ${JSON.stringify({ home, launch, litepaper, notFound })};
+const pages = ${JSON.stringify({ home, launch, litepaper, notFound, buy })};
 const securityHeaders = Object.freeze({
   "content-security-policy": "default-src 'self'; base-uri 'self'; connect-src 'self'; font-src 'self'; form-action 'self'; frame-ancestors 'none'; frame-src https://www.instagram.com; img-src 'self' data:; media-src 'self'; object-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; upgrade-insecure-requests",
   "permissions-policy": "camera=(), microphone=(), geolocation=()",
@@ -42,6 +43,11 @@ export default {
   async fetch(request, env) {
     const { pathname } = new URL(request.url);
     if (pathname === "/index.html") return permanentRedirect("/");
+    if (pathname === "/buy/" || pathname === "/buy.html") return permanentRedirect("/buy");
+    if (pathname === "/buy") {
+      if (request.method !== "GET" && request.method !== "HEAD") return new Response(null, { status: 405, headers: { ...html.headers, allow: "GET, HEAD" } });
+      return new Response(request.method === "HEAD" ? null : pages.buy, html);
+    }
     if (pathname === "/launch" || pathname === "/launch/") return permanentRedirect("/launch.html");
     if (pathname === "/litepaper" || pathname === "/litepaper/") return permanentRedirect("/litepaper.html");
     if (pathname === "/launch-hunt" || pathname === "/launch-hunt/" || pathname === "/launch-hunt.html") return permanentRedirect("/");

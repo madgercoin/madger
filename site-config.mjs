@@ -1,5 +1,7 @@
 export const rootFiles = [
   "index.html",
+  "buy.html",
+  "purchase-path.css",
   "launch.html",
   "litepaper.html",
   "roadmap.html",

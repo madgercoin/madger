@@ -15,6 +15,10 @@ CI scans high-confidence secret patterns, validates the production artifact and 
 
 The launch-state validator requires every indexable project page to load the same content-versioned controller, keeps `MINTED_NOT_TRADING` active, and rejects known trading hosts before launch. The no-index 404 is intentionally navigation-only and must not load the controller or repeat launch disclosures. Artifact validation proves launch-control documents and the five operational wallet addresses remain outside `dist/`. Public mint verification remains available; custody records and signing material never are.
 
+## Purchase navigation review — September 3, 2026
+
+The authorized purchase guide uses fixed external HTTPS links only. It adds no wallet SDK, tracking, forms, financial transactions, or visitor-controlled redirect parameters. SOL input and MADGER output are fixed; amounts, slippage, and referrals are never preset. See `docs/purchase-path.md` for the research, threat review, and verification boundaries. Earlier pre-launch descriptions above are historical and do not override the current trading-live implementation.
+
 ## Contributor rules
 
 Never commit seed phrases, keys, tokens, private wallet details, personal data, or unapproved addresses. Public operational addresses may appear only in the internal wallet runbook and transaction records, never the deployed artifact. Verify mint changes character by character and across official channels with multiple authorized reviewers. Avoid remote scripts, trackers, forms, wallet adapters, and dependencies unless threat-modeled and approved. Review generated `dist/` and Git diff for disclosure before release.

@@ -7,6 +7,13 @@
 - Added roadmap metadata, sitemap entry, and focused checks for PDF availability, source links, stages, and non-guarantee language.
 - Preserved existing launch facts, safety records, unrelated content, and social-preview assets.
 
+## 2026-09-03 — Verified purchase navigation
+
+- Added a fixed SOL-to-MADGER Raydium swap route to homepage purchase buttons and an accessible `/buy` guide.
+- Added full-mint verification, beginner/mobile instructions, quote and fee checks, transaction recovery, and prominent loss-risk information.
+- Kept pool research links and current liquidity disclosures; added no wallet connections, tracking, referral fees, or transaction execution.
+- Added purchase-path integrity and clipboard regression tests. Research and security review are documented in `docs/purchase-path.md`.
+
 ## 2026-09-01 — DEX Screener verification and discovery
 
 - Added the exact verified SOL–MADGER DEX Screener pair to the canonical launch record and official-links directory.

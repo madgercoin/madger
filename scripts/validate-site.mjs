@@ -1,8 +1,9 @@
 import { access, readFile } from "node:fs/promises";
 import path from "node:path";
 
-const htmlFiles = ["index.html", "launch.html", "litepaper.html", "official-links.html", "collaborators.html", "privacy.html", "blog.html", "blog-building-foundations.html", "blog-honey-badger-standard.html", "blog-token-link-safety.html", "404.html"];
+const htmlFiles = ["buy.html", "index.html", "launch.html", "litepaper.html", "official-links.html", "collaborators.html", "privacy.html", "blog.html", "blog-building-foundations.html", "blog-honey-badger-standard.html", "blog-token-link-safety.html", "404.html"];
 const indexablePages = new Map([
+  ["buy.html", "https://madgercoin.com/buy"],
   ["index.html", "https://madgercoin.com/"],
   ["launch.html", "https://madgercoin.com/launch.html"],
   ["litepaper.html", "https://madgercoin.com/litepaper.html"],

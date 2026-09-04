@@ -1,6 +1,8 @@
 const baseUrl = (process.env.SITE_URL ?? "https://madgercoin.com").replace(/\/$/, "");
 const officialMint = "BHauMX8akk2umqkQqnJwpYkCRkZmefGnEBFByeFXRKqv";
 const checks = [
+  ["/buy", 200],
+  ["/purchase-path.css", 200],
   ["/", 200],
   ["/launch.html", 200],
   ["/litepaper.html", 200],
@@ -19,6 +21,8 @@ const checks = [
   ["/assets/madger_v6_community_welcome.webp", 200]
 ];
 const redirects = [
+  ["/buy.html", "/buy"],
+  ["/buy/", "/buy"],
   ["/index.html", "/"],
   ["/launch", "/launch.html"],
   ["/launch/", "/launch.html"],
@@ -116,6 +120,18 @@ if (launch) {
 }
 
 const missing = responses.get("/__deployment-check-missing-page__");
+const purchaseGuide = responses.get("/buy");
+if (purchaseGuide) {
+  const html = purchaseGuide.body ?? "";
+  const expectedSwap = "https://raydium.io/swap/?inputMint=sol&amp;outputMint=" + officialMint;
+  if (!html.includes(expectedSwap)) failures.push("buy: exact swap destination absent");
+  if (!html.includes(officialMint)) failures.push("buy: complete mint absent");
+  if (!html.includes('href="https://madgercoin.com/buy"')) failures.push("buy: canonical absent");
+  if (!html.includes("Do not send SOL to this mint")) failures.push("buy: mint/payment distinction absent");
+  if (!html.includes("lose the full amount")) failures.push("buy: risk disclosure absent");
+  if (!purchaseGuide.response.headers.get("content-security-policy")) failures.push("buy: CSP absent");
+  if (!(homepage?.body ?? "").includes(expectedSwap) || !(homepage?.body ?? "").includes('href="/buy"')) failures.push("homepage: purchase path absent");
+}
 if (missing && !missing.response.headers.get("x-robots-tag")?.includes("noindex")) {
   failures.push("404 response: missing X-Robots-Tag noindex");
 }

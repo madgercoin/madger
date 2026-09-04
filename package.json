@@ -14,7 +14,8 @@
     "scan:secrets": "node scripts/scan-secrets.mjs",
     "test:buffer": "node --test test/buffer-automation.test.mjs",
     "test:performance": "node --test test/buffer-performance.test.mjs",
-    "validate": "npm run validate:js && npm run test:buffer && npm run test:performance && npm run validate:launch && npm run validate:site && npm run validate:dist && npm run scan:secrets",
+    "test:purchase": "node --test test/purchase-path.test.mjs",
+    "validate": "npm run test:purchase && npm run validate:js && npm run test:buffer && npm run test:performance && npm run validate:launch && npm run validate:site && npm run validate:dist && npm run scan:secrets",
     "check:deployment": "node scripts/check-deployment.mjs",
     "validate:launch": "node scripts/validate-launch.mjs"
   },
