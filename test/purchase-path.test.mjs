@@ -8,6 +8,19 @@ const mint = 'BHauMX8akk2umqkQqnJwpYkCRkZmefGnEBFByeFXRKqv';
 const home = await readFile('index.html', 'utf8');
 const guide = await readFile('buy.html', 'utf8');
 const script = await readFile('script.js', 'utf8');
+const homeCss = await readFile('home-v2.css', 'utf8');
+
+test('hero banner retains its full landscape composition at responsive widths', () => {
+  assert.match(home, /madger_social_share_v10\.jpg" width="1200" height="630"/);
+  const imageRule = homeCss.match(/\.image-frame img\{([^}]+)\}/)?.[1];
+  assert.ok(imageRule);
+  assert.match(imageRule, /width:100%;height:auto;/);
+  assert.match(imageRule, /aspect-ratio:1200\/630;/);
+  assert.match(imageRule, /object-fit:contain;/);
+  assert.doesNotMatch(imageRule, /object-fit:cover/);
+  assert.match(homeCss, /\.hero-art\{min-width:0;width:100%;position:relative\}/);
+  assert.match(home, /home-v2\.css\?v=20260903-image-fit/);
+});
 
 test('all purchase links are fixed SOL-to-MADGER links without financial presets', () => {
   for (const [name, html, count] of [['home', home, 2], ['guide', guide, 1]]) {
