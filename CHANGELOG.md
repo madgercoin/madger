@@ -61,7 +61,7 @@
 - Kept exact opening pool funding, trading destinations, transaction evidence, and LP-protection proof unpublished until authorization and finalization.
 - Extended build, site, launch, and live-deployment checks for the new canonical route and pre-live safety boundary.
 
-## 2026-08-29 — Purpose-built Field Note artwork
+## 2026-08-29 — Purpose-built dispatch artwork
 
 - Replaced reused mascot portraits with three story-specific MADGER scenes: foundation planning, the lantern standard, and link verification.
 - Added article-specific social previews and refreshed article discovery metadata.
@@ -74,11 +74,11 @@
 
 ## 2026-08-29 — Kinetic Journal redesign
 
-- Rebuilt The Burrow Journal around an original MADGER-at-the-writer's-desk hero composition.
+- Rebuilt Signals From Below around an original MADGER-at-the-writer's-desk hero composition.
 - Added a layered editorial type system, continuous field ticker, reactive depth, reading progress, card tilt, and accessible scroll reveals.
 - Added a Journal-specific 1200×630 social card and refreshed image discovery metadata.
 
-## 2026-08-28 — The Burrow Journal
+## 2026-08-28 — Signals From Below
 
 - Added a responsive, accessible MADGER blog homepage under `/blog.html`.
 - Published three source-grounded launch articles covering project foundations, character standards, and token-link safety.
