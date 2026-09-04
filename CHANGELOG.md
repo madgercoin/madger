@@ -1,5 +1,12 @@
 # Changelog
 
+## 2026-09-04 - Signals From Below growth system
+
+- Made Signals From Below the publication name across the archive, homepage, articles, and roadmap.
+- Added two source-first investor briefings: a MADGER thesis and a practical diligence map with explicit risk language.
+- Expanded the archive from six to eight dispatches and corrected the two restored pieces to their actual September 1 publication date.
+- Added RSS discovery, investor-friendly share paths, a public weekly publishing standard, refreshed structured data, and sitemap coverage.
+
 ## 2026-09-03 - Roadmap publication
 
 - Added the accessible four-stage roadmap page and dated official 8-page PDF, preserving the exact official emblem.
@@ -42,7 +49,7 @@
 
 ## 2026-08-29 — Cross-device Journal delivery
 
-- Added installable-app metadata to the Journal and every Field Note, plus app shortcuts for the Journal, launch status, and official links.
+- Added installable-app metadata to Signals From Below and every dispatch, plus app shortcuts for the archive, launch status, and official links.
 - Added a 192px app icon alongside the existing 512px icon and cache-bumped the app manifest and Journal stylesheet.
 - Removed the last tiny horizontal-overflow edge from the animated Journal layout without changing Launch Hunt content.
 
