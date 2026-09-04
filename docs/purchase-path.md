@@ -37,3 +37,7 @@ Known-good production version before release: 46173bde-1f87-4d3b-a9e7-3f1b2774ec
 - Existing unrelated work remains untouched. Publication must not regress current production content.
 - Browser rendering and real-wallet completion are not established by HTTP/source tests; record verification limits honestly.
 - Advertising eligibility and financial-promotion review are separate from this website navigation implementation.
+
+## Concurrent-release reconciliation
+
+The roadmap release landed during this task. The purchase change was rebased onto GitHub commit 2326522, preserving its roadmap page, PDF, homepage and auxiliary-page links, sitemap, and validation. Updated rollback target: c91bf802-f25b-4b49-9f74-19a1d2315afe. All 26 unit tests, site/roadmap/mint validation, artifact allowlist, syntax checks, and secret scan passed after reconciliation.
