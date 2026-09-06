@@ -4,6 +4,10 @@ const checks = [
   ["/buy", 200],
   ["/purchase-path.css", 200],
   ["/", 200],
+  ["/commons", 200],
+  ["/brand-system.css", 200],
+  ["/commons.css", 200],
+  ["/home-utility.css", 200],
   ["/launch.html", 200],
   ["/litepaper.html", 200],
   ["/collaborators", 200],
@@ -74,9 +78,9 @@ if (homepage) {
     [body.includes('<link rel="canonical" href="https://madgercoin.com/">'), "homepage canonical"],
     [body.includes('"@type":"Organization"'), "Organization structured data"],
     [body.includes('name="robots" content="index,follow'), "homepage index directive"]
-    ,[body.includes("https://www.instagram.com/reel/DcotYCFDD3p/embed/") && body.includes("<iframe"), "Instagram-hosted official launch film"]
-    ,[body.includes('src="/assets/madger_social_share_v10.jpg" width="1200" height="630"'), "visible branded hero artwork"]
-    ,[body.includes("TRADING LIVE") && body.includes("RAYDIUM CPMM"), "post-launch trading status"]
+    ,[body.includes('class="hero utility-first-hero"') && body.includes("Explore The Burrow Commons"), "utility-first hero"]
+    ,[body.includes("New to Crypto? Start Here") && body.includes("Safer onboarding"), "beginner guidance"]
+    ,[body.includes('href="/launch.html">Open launch record'), "post-launch verification record"]
     ,[!/Launch Hunt|Meme Contest|MLH26|ENDS SEP/i.test(body), "expired contest content absent"]
   ];
   for (const [passed, label] of contentChecks) {
@@ -87,6 +91,21 @@ if (homepage) {
     const passed = Boolean(response.headers.get(header));
     console.log(`${passed ? "PASS" : "FAIL"} header ${header}`);
     if (!passed) failures.push(`homepage: missing ${header} header`);
+  }
+}
+
+const commons = responses.get("/commons");
+if (commons) {
+  const contentChecks = [
+    [commons.body.includes("UTILITY THAT") && commons.body.includes("STARTS WITH PEOPLE"), "Commons value proposition"],
+    [commons.body.includes("OPEN COMMUNITY MISSIONS"), "open community missions"],
+    [commons.body.includes("PUBLIC PROOF LEDGER"), "public proof ledger"],
+    [commons.body.includes("No wallet or token purchase is required"), "no-purchase access standard"],
+    [commons.body.includes(officialMint), "official mint"]
+  ];
+  for (const [passed, label] of contentChecks) {
+    console.log(`${passed ? "PASS" : "FAIL"} ${label}`);
+    if (!passed) failures.push(`commons: ${label}`);
   }
 }
 
