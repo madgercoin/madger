@@ -11,20 +11,17 @@ const script = await readFile('script.js', 'utf8');
 const homeCss = await readFile('home-v2.css', 'utf8');
 const purchaseCss = await readFile('purchase-path.css', 'utf8');
 
-test('hero banner retains its full landscape composition at responsive widths', () => {
-  assert.match(home, /madger_social_share_v10\.jpg" width="1200" height="630"/);
-  const imageRule = homeCss.match(/\.image-frame img\{([^}]+)\}/)?.[1];
-  assert.ok(imageRule);
-  assert.match(imageRule, /width:100%;height:auto;/);
-  assert.match(imageRule, /aspect-ratio:1200\/630;/);
-  assert.match(imageRule, /object-fit:contain;/);
-  assert.doesNotMatch(imageRule, /object-fit:cover/);
-  assert.match(homeCss, /\.hero-art\{min-width:0;width:100%;position:relative\}/);
-  assert.match(home, /home-v2\.css\?v=20260903-image-fit/);
+test('homepage leads with usable community utility instead of promotional artwork', () => {
+  assert.match(home, /class="hero utility-first-hero"/);
+  assert.match(home, /COMMUNITY UTILITY \/ LIVE NOW/);
+  assert.match(home, /href="\/commons">Explore The Burrow Commons/);
+  assert.match(home, /No wallet or token purchase is required|without buying or holding a token/);
+  assert.doesNotMatch(home, /class="hero-art"/);
+  assert.match(home, /home-utility\.css\?v=20260906/);
 });
 
 test('all purchase links are fixed SOL-to-MADGER links without financial presets', () => {
-  for (const [name, html, count] of [['home', home, 2], ['guide', guide, 1]]) {
+  for (const [name, html, count] of [['home', home, 1], ['guide', guide, 1]]) {
     const links = [...html.matchAll(/<a\b[^>]*href="(https:\/\/raydium\.io\/swap\/[^\"]*)"[^>]*>/g)];
     assert.equal(links.length, count, name);
     for (const [tag, href] of links) {
@@ -41,11 +38,10 @@ test('all purchase links are fixed SOL-to-MADGER links without financial presets
   assert.ok(!home.includes('raydium.io/liquidity-pools/'));
 });
 
-test('homepage gives beginners a primary buying path and removes the launch film', () => {
-  assert.match(home, /class="hero-actions hero-actions--purchase"/);
-  assert.match(home, /class="button guide" href="\/buy">New to Crypto\? Start Here/);
-  assert.match(home, /First crypto purchase\?/);
-  assert.match(purchaseCss, /\.hero-actions--purchase \.button \{ flex: 1 1 220px; min-height: 58px; \}/);
+test('homepage keeps beginner help prominent while putting utility first', () => {
+  assert.match(home, /class="button secondary" href="\/buy">New to Crypto\? Start Here/);
+  assert.match(home, /<span>Safer onboarding<small>Step-by-step, source-first guidance<\/small><\/span>/);
+  assert.match(home, /The utility is public and usable without buying or holding a token/);
   assert.doesNotMatch(home, /id="film"|Launch film|Watch the film|official launch film|instagram\.com\/reel\/DcotYCFDD3p/i);
 });
 

@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026-09-06 — Utility-first brand and Burrow Commons
+
+- Repositioned MADGER around practical community utility, with the character serving as the memorable identity layer rather than the full value proposition.
+- Launched The Burrow Commons with safer onboarding, a verified source desk, open missions, creator resources, a community compact, and a dated proof ledger available without token ownership.
+- Standardized the public palette around ink, bone, moss, and brass-gold; strengthened accessible focus states and removed the lemon-versus-orange split across key surfaces.
+- Reworked homepage, roadmap, creator, Signals, litepaper, launch, purchase, and official-link messaging so utility, evidence, terms, and risk are easier to find.
+- Added a creator brief and a human-direction standard requiring intentional authorship, character consistency, claim discipline, and disclosure of material AI assistance.
+
 ## 2026-09-04 - Signals From Below growth system
 
 - Made Signals From Below the publication name across the archive, homepage, articles, and roadmap.

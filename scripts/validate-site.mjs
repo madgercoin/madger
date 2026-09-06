@@ -1,10 +1,11 @@
 import { access, readFile } from "node:fs/promises";
 import path from "node:path";
 
-const htmlFiles = ["buy.html", "index.html", "launch.html", "litepaper.html", "official-links.html", "collaborators.html", "privacy.html", "blog.html", "blog-madger-thesis.html", "blog-diligence-map.html", "blog-burrow-after-launch.html", "blog-character-outlives-chart.html", "blog-verify-live-market.html", "blog-building-foundations.html", "blog-honey-badger-standard.html", "blog-token-link-safety.html", "404.html"];
+const htmlFiles = ["buy.html", "index.html", "commons.html", "launch.html", "litepaper.html", "official-links.html", "collaborators.html", "privacy.html", "blog.html", "blog-madger-thesis.html", "blog-diligence-map.html", "blog-burrow-after-launch.html", "blog-character-outlives-chart.html", "blog-verify-live-market.html", "blog-building-foundations.html", "blog-honey-badger-standard.html", "blog-token-link-safety.html", "404.html"];
 const indexablePages = new Map([
   ["buy.html", "https://madgercoin.com/buy"],
   ["index.html", "https://madgercoin.com/"],
+  ["commons.html", "https://madgercoin.com/commons"],
   ["launch.html", "https://madgercoin.com/launch.html"],
   ["litepaper.html", "https://madgercoin.com/litepaper.html"],
   ["official-links.html", "https://madgercoin.com/official-links.html"],
@@ -237,12 +238,12 @@ if (!homepage.includes('src="/assets/madger_v6_community_welcome.webp" width="10
 if (!homepage.includes('<footer class="site-footer"><a class="footer-logo" href="#top"><img src="/assets/madger_official_logo_transparent_512.png"')) failures.push("index.html: footer must use the transparent official MADGER logo");
 if (!homepage.includes('rel="apple-touch-icon" href="/favicon.png?v=20260829-coin3d"')) failures.push("index.html: missing official 3D coin Apple touch icon");
 if (!homepage.includes('id="site-favicon"') || !homepage.includes('src="/favicon-spin.js?v=20260829-coin-visible"')) failures.push("index.html: missing continuous 360-degree coin favicon runtime");
-if (!homepage.includes('class="hero-coin"') || !homepage.includes('src="/madger_coin_spin_favicon.gif?v=20260829-360"')) failures.push("index.html: missing visible 360-degree MADGER coin");
 if (!stylesheet.includes("text-shadow") || !stylesheet.includes("box-shadow")) failures.push("home-v2.css: dimensional type and beveled surfaces are required");
-if (!homepage.includes('class="hero-actions hero-actions--purchase"') || !homepage.includes('class="button guide" href="/buy">New to Crypto? Start Here')) failures.push("index.html: prominent beginner buying path is absent");
+if (!homepage.includes('class="hero utility-first-hero"') || !homepage.includes('href="/commons">Explore The Burrow Commons')) failures.push("index.html: utility-first value proposition is absent");
+if (!homepage.includes('class="button secondary" href="/buy">New to Crypto? Start Here') || !homepage.includes("Safer onboarding")) failures.push("index.html: prominent beginner guidance is absent");
 if (/id="film"|Launch film|Watch the film|official launch film|instagram\.com\/reel\/DcotYCFDD3p/i.test(homepage)) failures.push("index.html: retired launch film is still present");
-if (!homepage.includes('src="/assets/madger_social_share_v10.jpg" width="1200" height="630"')) failures.push("index.html: visible branded hero artwork is absent");
-if (!homepage.includes("RAYDIUM CPMM") || !homepage.includes("TRADING LIVE")) failures.push("index.html: verified post-launch status is absent");
+if (!homepage.includes("UTILITY FIRST · CHARACTER WITH PURPOSE")) failures.push("index.html: utility-first brand line is absent");
+if (!homepage.includes('href="/launch.html">Open launch record')) failures.push("index.html: verified post-launch record is absent");
 if (/Launch Hunt|Meme Contest|SEEKPASTNOISE27|MLH26|ENDS SEP/i.test(homepage)) failures.push("index.html: expired contest material is present");
 if (!homepage.includes(officialFacebook) || homepage.includes("facebook.com/share/")) failures.push("index.html: Facebook links must use the canonical page URL");
 if (!homepage.includes(officialReddit)) failures.push("index.html: Reddit must use the verified u/Madgercoin profile");

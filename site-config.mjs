@@ -1,5 +1,10 @@
 export const rootFiles = [
   "index.html",
+  "commons.html",
+  "commons.css",
+  "brand-system.css",
+  "home-utility.css",
+  "MADGER_community_creator_brief.txt",
   "buy.html",
   "purchase-path.css",
   "launch.html",

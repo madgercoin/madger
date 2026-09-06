@@ -1,0 +1,36 @@
+MADGER COMMUNITY CREATOR BRIEF
+Updated September 6, 2026
+
+PURPOSE
+Create something useful for the MADGER community: safer onboarding, clearer verification, original storytelling, community education, or a better way to recognize useful work.
+
+OFFICIAL SOURCES
+Website: https://madgercoin.com
+Utility: https://madgercoin.com/commons
+Official links: https://madgercoin.com/official-links.html
+Contributor framework: https://madgercoin.com/collaborators
+Signals From Below: https://madgercoin.com/blog.html
+Official Solana mint: BHauMX8akk2umqkQqnJwpYkCRkZmefGnEBFByeFXRKqv
+
+CHARACTER STANDARD
+- Use the official logo and approved MADGER references.
+- Preserve the face, markings, proportions, expression, five claws where paws are visible, and signature fang.
+- Do not substitute a generic badger, copy another brand, or imply an unofficial account is official.
+- AI-assisted output must still be deliberately directed, carefully reviewed, original, and corrected before submission.
+
+SUBMISSION CHECKLIST
+- State the problem your work solves.
+- Describe the exact deliverable and timeline.
+- Link relevant samples or attach a safe preview.
+- State whether it is a volunteer contribution or a paid proposal.
+- Identify any third-party assets, licenses, collaborators, or AI assistance that require disclosure.
+- Never include a seed phrase, private key, password, authentication code, or private wallet information.
+
+CLAIMS STANDARD
+- Do not promise price appreciation, income, returns, listings, liquidity, or guaranteed rewards.
+- Separate what exists now from what is planned.
+- Link to the canonical source instead of relying on screenshots or copied addresses.
+- Describe $MADGER as a speculative crypto asset and community project.
+
+SUBMIT
+Email madgercoin@gmail.com with the subject “MADGER Creator Proposal.” An introduction or submission is not an engagement until MADGER confirms scope and terms in writing.
