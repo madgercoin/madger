@@ -6,13 +6,11 @@ export const COLORS = {
 
 export const LINKS = {
   website: 'https://madgercoin.com',
-  hunt: 'https://madgercoin.com/launch-hunt.html',
-  film: 'https://madger-launch-hunt.gorilla-white.chatgpt.site/assets/madger-launch-film.mp4',
-  filmPoster: 'https://madger-launch-hunt.gorilla-white.chatgpt.site/assets/madger-launch-film-poster.jpg',
+  buyGuide: 'https://madgercoin.com/buy',
+  raydiumSwap: 'https://raydium.io/swap/?inputMint=sol&outputMint=BHauMX8akk2umqkQqnJwpYkCRkZmefGnEBFByeFXRKqv',
   x: 'https://x.com/madgercoin', telegramNews: 'https://t.me/madgercoin',
   telegramCommunity: 'https://t.me/madgerburrow', email: 'mailto:madgercoin@gmail.com',
   litepaper: 'https://madgercoin.com/litepaper.html', privacy: 'https://madgercoin.com/privacy.html',
 } as const;
 
 export const MINT = 'BHauMX8akk2umqkQqnJwpYkCRkZmefGnEBFByeFXRKqv';
-export const HUNT_END = '2026-09-01T14:00:00Z';

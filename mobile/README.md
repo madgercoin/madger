@@ -5,8 +5,8 @@ The official native MADGER companion app, built with Expo SDK 57 and React Nativ
 ## Included
 
 - Official transparent MADGER logo and custom branded character art
-- Prominent in-app launch film with fullscreen and picture-in-picture
-- Active Launch Hunt instructions, prizes, rules, and private submission flow
+- Prominent direct-buy and beginner buying-guide paths
+- Dedicated Buy tab with wallet, SOL, mint-verification, swap, and risk guidance
 - Exact official Solana mint verification, copy, and sharing
 - Private on-device Daily Dig streak with no account or wallet
 - Official Telegram, X, website, litepaper, and email directory
@@ -33,8 +33,8 @@ Store submission requires access to the MADGER Apple Developer and Google Play C
 
 ## Release checks
 
-- Confirm Launch Hunt status and dates before every release.
+- Confirm the buying guide and Raydium route before every release.
 - Confirm every URL in `src/constants/brand.ts` is official and reachable.
-- Test film playback on real Android and iPhone devices.
+- Test the buying guide and Raydium links on real Android and iPhone devices.
 - Verify the mint exactly matches madgercoin.com.
 - Review `PRIVACY.md` and the live privacy-policy URL.

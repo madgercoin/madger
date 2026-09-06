@@ -9,6 +9,7 @@ const home = await readFile('index.html', 'utf8');
 const guide = await readFile('buy.html', 'utf8');
 const script = await readFile('script.js', 'utf8');
 const homeCss = await readFile('home-v2.css', 'utf8');
+const purchaseCss = await readFile('purchase-path.css', 'utf8');
 
 test('hero banner retains its full landscape composition at responsive widths', () => {
   assert.match(home, /madger_social_share_v10\.jpg" width="1200" height="630"/);
@@ -38,6 +39,14 @@ test('all purchase links are fixed SOL-to-MADGER links without financial presets
   }
   assert.match(home, /href="\/buy"/);
   assert.ok(!home.includes('raydium.io/liquidity-pools/'));
+});
+
+test('homepage gives beginners a primary buying path and removes the launch film', () => {
+  assert.match(home, /class="hero-actions hero-actions--purchase"/);
+  assert.match(home, /class="button guide" href="\/buy">New to Crypto\? Start Here/);
+  assert.match(home, /First crypto purchase\?/);
+  assert.match(purchaseCss, /\.hero-actions--purchase \.button \{ flex: 1 1 220px; min-height: 58px; \}/);
+  assert.doesNotMatch(home, /id="film"|Launch film|Watch the film|official launch film|instagram\.com\/reel\/DcotYCFDD3p/i);
 });
 
 test('guide is useful without scripts and includes failure/risk information', () => {

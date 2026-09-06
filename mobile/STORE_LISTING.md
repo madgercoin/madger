@@ -12,13 +12,13 @@ The official MADGER community companion.
 
 Enter the Burrow with the official MADGER app.
 
-Watch the cinematic launch film, join the active Launch Hunt, verify the exact official Solana mint, discover official community channels, and build a private Daily Dig streak that stays on your device.
+Follow the official purchase path, learn how to buy safely if you are new to crypto, verify the exact official Solana mint, discover official community channels, and build a private Daily Dig streak that stays on your device.
 
 MADGER never asks for a seed phrase or private key. The app does not connect to wallets, execute transactions, sell tokens, or provide financial advice.
 
 Highlights:
-- Native launch-film player
-- Official Launch Hunt guide and private entry flow
+- Equal direct-buy and beginner-guide actions
+- Step-by-step wallet, SOL, verification, and swap guidance
 - Exact mint copy and share tools
 - Official Telegram, X, website, and litepaper links
 - Local Daily Dig streak with no account required
@@ -27,7 +27,7 @@ Dig past the noise.
 
 ## Keywords
 
-MADGER, community, Solana, launch hunt, badger, verification
+MADGER, community, Solana, crypto guide, badger, verification
 
 ## Category
 
@@ -43,4 +43,4 @@ Secondary: Social Networking
 
 ## Review notes
 
-No login is required and no wallet is connected. The Daily Dig uses only on-device storage. All external links are user initiated. The Launch Hunt screen explains the active no-purchase-necessary community contest and directs entries to the official private email channel.
+No login is required and no wallet is connected. The Daily Dig uses only on-device storage. All external links are user initiated. The Buy screen opens the official website guide or a fixed SOL-to-MADGER Raydium route; all transactions occur outside the app.

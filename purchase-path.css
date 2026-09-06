@@ -1,5 +1,9 @@
 /* Purchase guidance extends the existing visual system without hiding core content. */
-.purchase-help { display: inline-block; margin-top: 1rem; color: var(--lime); font-size: 1rem; text-decoration: underline; text-underline-offset: .25em; }
+.hero-actions--purchase { align-items: stretch; }
+.hero-actions--purchase .button { flex: 1 1 220px; min-height: 58px; }
+.button.guide { color: #181300; border-color: #ffe27a; background: linear-gradient(#ffe56f, #d99b00); box-shadow: inset 0 2px 0 #fff8, inset 0 -3px 0 #6f4a0066, 0 8px 20px #0008; text-shadow: 0 1px 0 #fff8; }
+.purchase-help { max-width: 38rem; margin: 1rem 0 0; padding: .9rem 1rem; border-left: 3px solid var(--gold); border-radius: 0 8px 8px 0; background: linear-gradient(90deg, rgba(255, 201, 40, .12), rgba(255, 201, 40, 0)); color: #e6e3da; font-size: .92rem; line-height: 1.55; text-shadow: 0 2px 3px #000; }
+.purchase-help strong { color: #ffe16b; }
 .purchase-risk { max-width: 38rem; color: var(--muted); font-size: .875rem; line-height: 1.6; }
 .buy-main { max-width: var(--max); margin: auto; padding: clamp(2rem, 5vw, 5rem) 24px; }
 .buy-intro { display: grid; grid-template-columns: 1.15fr 1fr; gap: clamp(2rem, 5vw, 5rem); align-items: start; }
@@ -29,5 +33,5 @@
 .buy-help details { border-bottom: 1px solid var(--line); padding: .5rem 0; }
 .buy-help summary { cursor: pointer; padding: 1rem 0; font-weight: 700; line-height: 1.5; }
 .buy-page :focus-visible, .purchase-help:focus-visible, .hero-actions a:focus-visible, #main-nav a:focus-visible { outline: 3px solid var(--gold); outline-offset: 5px; }
-@media (max-width: 760px) { .buy-intro, .buy-steps { grid-template-columns: 1fr; } .buy-main { padding-inline: 16px; } .buy-page .site-header { gap: 1rem; flex-wrap: wrap; } }
+@media (max-width: 760px) { .hero-actions--purchase .button { flex-basis: 100%; width: 100%; } .purchase-help { font-size: .88rem; } .buy-intro, .buy-steps { grid-template-columns: 1fr; } .buy-main { padding-inline: 16px; } .buy-page .site-header { gap: 1rem; flex-wrap: wrap; } }
 @media (prefers-reduced-motion: reduce) { .buy-page *, .buy-page *::before { animation: none !important; transition: none !important; scroll-behavior: auto !important; } }
