@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-09-06 — Clear newcomer purchase decision
+
+- Separated the purchase decision from The Burrow Commons so community utility no longer competes with beginner onboarding.
+- Added an above-the-fold choice between a guided first-crypto walkthrough and a direct Raydium route for visitors who already have SOL.
+- Added plain-language context explaining exactly what the beginner guide covers and reinforced the wallet, mint-verification, and loss-risk boundaries.
+
 ## 2026-09-06 — Utility-first brand and Burrow Commons
 
 - Repositioned MADGER around practical community utility, with the character serving as the memorable identity layer rather than the full value proposition.

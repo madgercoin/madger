@@ -14,7 +14,7 @@ for (const [name, html] of [["index.html", home], ["launch.html", launch], ["off
   if (!html.includes(mint)) failures.push(`${name}: official mint is absent`);
 }
 if (!home.includes('href="/launch.html">Open launch record')) failures.push("index.html: canonical post-launch record is absent");
-if (!home.includes('class="button secondary" href="/buy">New to Crypto? Start Here') || !home.includes("Safer onboarding")) failures.push("index.html: prominent beginner guidance is absent");
+if (!home.includes('class="hero-actions hero-actions--purchase"') || !home.includes('class="button guide" href="/buy">First Time? Start Step-by-Step') || !home.includes("Already Have SOL? Buy on Raydium")) failures.push("index.html: distinct beginner and experienced buying paths are absent");
 if (/id="film"|Launch film|Watch the film|official launch film|instagram\.com\/reel\/DcotYCFDD3p/i.test(home)) failures.push("index.html: retired launch film is still present");
 if (!launch.includes(pool) || !launch.includes("0.25%")) failures.push("launch.html: verified pool record is incomplete");
 if (!launch.includes(`href="${dexScreenerPair}"`)) failures.push("launch.html: exact DEX Screener pair link is absent");

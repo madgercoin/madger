@@ -14,14 +14,14 @@ const purchaseCss = await readFile('purchase-path.css', 'utf8');
 test('homepage leads with usable community utility instead of promotional artwork', () => {
   assert.match(home, /class="hero utility-first-hero"/);
   assert.match(home, /COMMUNITY UTILITY \/ LIVE NOW/);
-  assert.match(home, /href="\/commons">Explore The Burrow Commons/);
-  assert.match(home, /No wallet or token purchase is required|without buying or holding a token/);
+  assert.match(home, /THE BURROW COMMONS \/ PROJECT UTILITY/);
+  assert.match(home, /href="\/commons"><b>01<\/b><span>Explore the Commons/);
   assert.doesNotMatch(home, /class="hero-art"/);
   assert.match(home, /home-utility\.css\?v=20260906/);
 });
 
 test('all purchase links are fixed SOL-to-MADGER links without financial presets', () => {
-  for (const [name, html, count] of [['home', home, 1], ['guide', guide, 1]]) {
+  for (const [name, html, count] of [['home', home, 2], ['guide', guide, 1]]) {
     const links = [...html.matchAll(/<a\b[^>]*href="(https:\/\/raydium\.io\/swap\/[^\"]*)"[^>]*>/g)];
     assert.equal(links.length, count, name);
     for (const [tag, href] of links) {
@@ -38,10 +38,12 @@ test('all purchase links are fixed SOL-to-MADGER links without financial presets
   assert.ok(!home.includes('raydium.io/liquidity-pools/'));
 });
 
-test('homepage keeps beginner help prominent while putting utility first', () => {
-  assert.match(home, /class="button secondary" href="\/buy">New to Crypto\? Start Here/);
-  assert.match(home, /<span>Safer onboarding<small>Step-by-step, source-first guidance<\/small><\/span>/);
-  assert.match(home, /The utility is public and usable without buying or holding a token/);
+test('homepage clearly separates first-time and experienced buying paths from utility', () => {
+  assert.match(home, /WANT TO GET \$MADGER\? CHOOSE YOUR PATH/);
+  assert.match(home, /class="hero-actions hero-actions--purchase"/);
+  assert.match(home, /class="button guide" href="\/buy">First Time\? Start Step-by-Step/);
+  assert.match(home, /Already Have SOL\? Buy on Raydium/);
+  assert.match(home, /First crypto purchase\?/);
   assert.doesNotMatch(home, /id="film"|Launch film|Watch the film|official launch film|instagram\.com\/reel\/DcotYCFDD3p/i);
 });
 

@@ -239,8 +239,8 @@ if (!homepage.includes('<footer class="site-footer"><a class="footer-logo" href=
 if (!homepage.includes('rel="apple-touch-icon" href="/favicon.png?v=20260829-coin3d"')) failures.push("index.html: missing official 3D coin Apple touch icon");
 if (!homepage.includes('id="site-favicon"') || !homepage.includes('src="/favicon-spin.js?v=20260829-coin-visible"')) failures.push("index.html: missing continuous 360-degree coin favicon runtime");
 if (!stylesheet.includes("text-shadow") || !stylesheet.includes("box-shadow")) failures.push("home-v2.css: dimensional type and beveled surfaces are required");
-if (!homepage.includes('class="hero utility-first-hero"') || !homepage.includes('href="/commons">Explore The Burrow Commons')) failures.push("index.html: utility-first value proposition is absent");
-if (!homepage.includes('class="button secondary" href="/buy">New to Crypto? Start Here') || !homepage.includes("Safer onboarding")) failures.push("index.html: prominent beginner guidance is absent");
+if (!homepage.includes('class="hero utility-first-hero"') || !homepage.includes("THE BURROW COMMONS / PROJECT UTILITY")) failures.push("index.html: utility-first value proposition is absent");
+if (!homepage.includes('class="hero-actions hero-actions--purchase"') || !homepage.includes('class="button guide" href="/buy">First Time? Start Step-by-Step') || !homepage.includes("Already Have SOL? Buy on Raydium")) failures.push("index.html: distinct beginner and experienced buying paths are absent");
 if (/id="film"|Launch film|Watch the film|official launch film|instagram\.com\/reel\/DcotYCFDD3p/i.test(homepage)) failures.push("index.html: retired launch film is still present");
 if (!homepage.includes("UTILITY FIRST · CHARACTER WITH PURPOSE")) failures.push("index.html: utility-first brand line is absent");
 if (!homepage.includes('href="/launch.html">Open launch record')) failures.push("index.html: verified post-launch record is absent");
