@@ -1,16 +1,16 @@
 # MADGER social performance
 
-Generated: 2026-09-05T11:54:50.067Z
-Previous snapshot: 2026-09-04T12:49:57.652Z
+Generated: 2026-09-06T12:13:58.717Z
+Previous snapshot: 2026-09-05T11:54:50.067Z
 
 ## 30-day channel rollup
 
 | Channel | Health | Posts | Impressions | Reach | Views | Eng. rate | Clicks | Follows | Review |
 |---|---|---:|---:|---:|---:|---:|---:|---:|---|
-| facebook: Madger Coin | Connected | 53 | 2840 | — | — | 5.49% | 88 | — | Check Buffer Community |
-| twitter: MadgerCoin | Connected | 94 | 61885 | — | — | 12.66% | 701 | — | Check Buffer Community |
-| instagram: madgercoin | Connected | 53 | — | 601 | 837 | 12.48% | — | 0 | Check Buffer Community |
-| tiktok: themadgercoin | Connected | 46 | — | 6289 | 7124 | 1.52% | — | — | Check Buffer Community |
+| facebook: Madger Coin | Connected | 50 | 2279 | — | — | 6.63% | 87 | — | Check Buffer Community |
+| twitter: MadgerCoin | Connected | 93 | 63193 | — | — | 12.89% | 728 | — | Check Buffer Community |
+| instagram: madgercoin | Connected | 51 | — | 468 | 688 | 14.53% | — | 0 | Check Buffer Community |
+| tiktok: themadgercoin | Connected | 45 | — | 6571 | 7226 | 1.45% | — | — | Check Buffer Community |
 
 ## Scheduled campaign
 
@@ -23,7 +23,7 @@ Sent: 23/24 · Scheduled: 0 · Errors: 1 · Attention: 4 · At risk: 0
 | shares | 0 | 0 |
 | reposts | 47 | 0 |
 | reach | 810 | 0 |
-| impressions | 6363 | 1 |
+| impressions | 6363 | 0 |
 | views | 951 | 0 |
 | clicks | 192 | 0 |
 | saves | 0 | 0 |
@@ -50,7 +50,7 @@ Sent: 23/24 · Scheduled: 0 · Errors: 1 · Attention: 4 · At risk: 0
 | The Burrow hits 200 Telegram members | twitter | unknown | 2026-08-16T02:46:25.753Z | ⚠ sent (channel missing) | — | 0 | — | 0 | 0 | — | 0 | — | [Open](https://x.com/2080142722153816065/status/2088819648166813808) |
 | The Burrow hits 200 Telegram members | facebook | unknown | 2026-08-16T02:46:27.988Z | ⚠ sent (channel missing) | — | 7 | — | 3 | 0 | 0 | 1 | — | [Open](https://facebook.com/1279493098576451_122108036793423166) |
 | The Burrow hits 200 Telegram members | instagram | unknown | 2026-08-16T02:46:33.258Z | ⚠ sent (channel missing) | 6 | — | 4 | 0 | 0 | 0 | — | 0 | [Open](https://www.instagram.com/p/DcFbFJPlFqB/) |
-| The Great Burrow Meme Contest | twitter | connected | 2026-08-16T10:09:33.282Z | sent | — | 5538 (+1) | — | 157 | 91 | — | 188 | — | [Open](https://x.com/2080142722153816065/status/2088931163230376000) |
+| The Great Burrow Meme Contest | twitter | connected | 2026-08-16T10:09:33.282Z | sent | — | 5538 | — | 157 | 91 | — | 188 | — | [Open](https://x.com/2080142722153816065/status/2088931163230376000) |
 | The Great Burrow Meme Contest | facebook | connected | 2026-08-16T10:10:22.882Z | sent | — | 7 | — | 2 | 0 | 0 | 1 | — | [Open](https://facebook.com/1279493098576451_122108134587423166) |
 | The Great Burrow Meme Contest | instagram | connected | 2026-08-16T10:11:18.541Z | sent | 4 | — | 4 | 0 | 0 | 0 | — | 0 | [Open](https://www.instagram.com/p/DcGOkg5ltva/) |
 | The Great Burrow Meme Contest | tiktok | connected | 2026-08-16T10:11:37.451Z | sent | 215 | — | 208 | 0 | 0 | 0 | — | — | [Open](https://www.tiktok.com/@themadgercoin/video/7674570062266666254?utm_campaign=tt4d_open_api&utm_source=7103819247981182978) |
