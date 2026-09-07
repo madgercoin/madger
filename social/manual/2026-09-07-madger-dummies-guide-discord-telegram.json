@@ -1,0 +1,22 @@
+{
+  "campaign": "Dummies Guide to Buying $MADGER",
+  "createdAt": "2026-09-07T14:35:00Z",
+  "landingPage": "https://madgercoin.com/buy",
+  "officialMint": "BHauMX8akk2umqkQqnJwpYkCRkZmefGnEBFByeFXRKqv",
+  "telegram": {
+    "announcementChannel": "Madgercoin",
+    "communityGroup": "Madgerburrow",
+    "flow": "Publish to Madgercoin, then forward to Madgerburrow.",
+    "text": "🦡📱 DUMMIES GUIDE TO BUYING $MADGER\n\nNever bought crypto before? Start here. This beginner-friendly guide walks through Phantom, SOL, Raydium, the real screens to recognize, the safety checks to make, and what to review before confirming a swap—one step at a time.\n\n▶️ Watch the full guide: https://madgercoin.com/buy\n\n📌 Official Solana mint:\nBHauMX8akk2umqkQqnJwpYkCRkZmefGnEBFByeFXRKqv\n\nVerify every character before swapping. Never share your recovery phrase or private key. Educational content only; crypto assets are volatile.\n\n#MADGER #Solana #PhantomWallet #Raydium #CryptoForBeginners"
+  },
+  "discord": {
+    "destination": "MADGER Community announcements",
+    "text": "🦡📱 **DUMMIES GUIDE TO BUYING $MADGER**\n\nNever bought crypto before? Start here. This beginner-friendly guide walks through Phantom, SOL, Raydium, the real screens to recognize, the safety checks to make, and what to review before confirming a swap—one step at a time.\n\n▶️ **Watch the full guide:** https://madgercoin.com/buy\n\n📌 **Official Solana mint:**\n`BHauMX8akk2umqkQqnJwpYkCRkZmefGnEBFByeFXRKqv`\n\nVerify every character before swapping. Never share your recovery phrase or private key. Educational content only; crypto assets are volatile.\n\n#MADGER #Solana #PhantomWallet #Raydium #CryptoForBeginners"
+  },
+  "youtubeExcluded": true,
+  "deliveryState": {
+    "githubPackage": "committed",
+    "telegram": "awaiting authenticated session",
+    "discord": "awaiting authenticated session"
+  }
+}
