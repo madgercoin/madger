@@ -21,6 +21,36 @@
     }, 60000);
   }
 
+  // Keep the contest resource area synchronized with the exact approved files.
+  // The transparent logo already ships as a public website asset; the two video
+  // masters are stored in the official contest Drive package and will be linked
+  // publicly only after their download permissions/hosting are verified.
+  const quickRuleHeadings = [...document.querySelectorAll('#rules .card h3')];
+  const introRuleHeading = quickRuleHeadings.find((node) => node.textContent.trim() === 'Official intro + outro');
+  if (introRuleHeading?.nextElementSibling) {
+    introRuleHeading.nextElementSibling.innerHTML = 'Every entry must begin with <strong>Madger_Productions_Presents_Intro_clip.mp4</strong> and end with <strong>Madger_Official_Outro_Clip.mp4</strong>. These are the exact contest masters supplied by MADGER. Do not substitute older intro, outro, or other MADGER video files.';
+  }
+
+  const assetsGrid = document.querySelector('#assets .grid2');
+  if (assetsGrid && !document.getElementById('official-transparent-logo-card')) {
+    const logoCard = document.createElement('article');
+    logoCard.className = 'card asset-card';
+    logoCard.id = 'official-transparent-logo-card';
+    logoCard.innerHTML = `
+      <img src="/assets/madger_official_logo_transparent_512.png" width="512" height="512" alt="Official transparent MADGER logo">
+      <h3>Official Transparent MADGER Logo</h3>
+      <p>Use this exact transparent logo for contest branding. Do not redraw, recolor, recreate, place it on a fake background, or substitute another MADGER logo.</p>
+      <div class="asset-actions"><a class="button ghost" href="/assets/madger_official_logo_transparent_512.png" download="MADGER_Official_Transparent_Logo.png">Download Transparent Logo ↓</a></div>`;
+    assetsGrid.appendChild(logoCard);
+  }
+
+  const pendingAssets = document.querySelector('#assets .pending-assets');
+  if (pendingAssets) {
+    pendingAssets.innerHTML = `
+      <h3>Official intro and outro — received</h3>
+      <p>The exact contest masters are now locked: <strong>Madger_Productions_Presents_Intro_clip.mp4</strong> and <strong>Madger_Official_Outro_Clip.mp4</strong>. The intro includes the required one-second black hold after the fade. They are stored in the official contest asset package. Public website download buttons will be enabled only after those exact binaries are published with verified public access.</p>`;
+  }
+
   const form = document.getElementById('madger-contest-form');
   if (!form) return;
 
