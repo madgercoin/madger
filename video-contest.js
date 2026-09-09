@@ -1,4 +1,26 @@
 (() => {
+  const countdown = document.getElementById('contest-countdown');
+  const contestClose = new Date('2026-09-22T23:59:00-04:00').getTime();
+  if (countdown) {
+    const renderCountdown = () => {
+      const remaining = contestClose - Date.now();
+      if (remaining <= 0) {
+        countdown.textContent = 'CLOSED';
+        return false;
+      }
+      const totalMinutes = Math.floor(remaining / 60000);
+      const days = Math.floor(totalMinutes / 1440);
+      const hours = Math.floor((totalMinutes % 1440) / 60);
+      const minutes = totalMinutes % 60;
+      countdown.textContent = `${days}d ${hours}h ${minutes}m`;
+      return true;
+    };
+    renderCountdown();
+    const timer = setInterval(() => {
+      if (!renderCountdown()) clearInterval(timer);
+    }, 60000);
+  }
+
   const form = document.getElementById('madger-contest-form');
   if (!form) return;
 
@@ -69,6 +91,11 @@
   form.addEventListener('submit', async (event) => {
     event.preventDefault();
     setStatus('');
+
+    if (Date.now() > contestClose) {
+      setStatus('The contest entry window has closed.');
+      return;
+    }
 
     if (!form.checkValidity()) {
       form.reportValidity();
