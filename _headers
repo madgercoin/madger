@@ -9,5 +9,11 @@
 /assets/*
   Cache-Control: public, max-age=31536000, immutable
 
+/script.js
+  Cache-Control: no-cache
+
+/video-contest.js
+  Cache-Control: no-cache
+
 /*.html
   Cache-Control: public, max-age=300
