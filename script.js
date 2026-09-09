@@ -48,14 +48,14 @@ nav?.addEventListener("click", event => {
   banner.setAttribute("aria-labelledby", "video-contest-banner-title");
   banner.innerHTML = `
     <div class="contest-home-copy">
-      <p class="contest-home-kicker"><i aria-hidden="true"></i> VIDEO CREATION CONTEST · OPEN NOW</p>
+      <p class="contest-home-kicker"><i aria-hidden="true"></i> VIDEO CREATION CONTEST · CONTEST WINDOW OPEN</p>
       <h2 id="video-contest-banner-title">CREATE MADGER.<br><span>WIN $MADGER.</span></h2>
-      <p class="contest-home-lede">The official MADGER Video Creation Contest is live. Create an original video for any public platform, use the current official MADGER likeness plus the required intro and outro, post with <strong>#MadgerMeme</strong>, and submit the original file through MADGERCOIN.COM.</p>
+      <p class="contest-home-lede">The MADGER Video Creation Contest window is open. Create an original video for any public platform, use the current official MADGER likeness, post with <strong>#MadgerMeme</strong>, and use the exact contest intro and outro once MADGER publishes those two required files. <strong>Do not substitute older intro/outro files.</strong></p>
       <div class="contest-home-facts"><span>$120 prize pool</span><span>1st place: $50</span><span>Top 10 win</span><span>Ends Sep 22 · 11:59 PM ET</span></div>
-      <div class="contest-home-actions"><a class="button primary" href="/video-contest.html#entry">Enter the Contest →</a><a class="button secondary" href="/video-contest-rules.html">Official Rules</a></div>
-      <p class="contest-home-deadline">Winners announced by September 25, 2026.</p>
+      <div class="contest-home-actions"><a class="button primary" href="/video-contest.html">Contest Details →</a><a class="button secondary" href="/video-contest-rules.html">Official Rules</a></div>
+      <p class="contest-home-deadline">Official intro/outro files are pending. Final submissions should wait for those exact masters. Winners announced by September 25, 2026.</p>
     </div>
-    <div class="contest-home-poster"><a href="/video-contest.html" aria-label="Open MADGER Video Creation Contest"><img src="/assets/madger_video_creation_contest_poster.svg" width="600" height="750" alt="Official MADGER Video Creation Contest poster showing a $120 prize pool and $50 first prize"></a><span class="contest-home-caption">Tap the poster for contest details, official resources, and submission.</span></div>`;
+    <div class="contest-home-poster"><a href="/video-contest.html" aria-label="Open MADGER Video Creation Contest"><img src="/assets/madger_video_creation_contest_poster.svg" width="600" height="750" alt="Official MADGER Video Creation Contest poster showing a $120 prize pool and $50 first prize"></a><span class="contest-home-caption">Tap the poster for contest details, official resources, and submission requirements.</span></div>`;
   main.insertBefore(banner, main.firstChild);
 
   if (nav && !nav.querySelector('a[href="/video-contest.html"]')) {
