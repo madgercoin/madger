@@ -11,13 +11,14 @@ const script = await readFile('script.js', 'utf8');
 const homeCss = await readFile('home-v2.css', 'utf8');
 const purchaseCss = await readFile('purchase-path.css', 'utf8');
 
-test('homepage leads with usable community utility instead of promotional artwork', () => {
-  assert.match(home, /class="hero utility-first-hero"/);
-  assert.match(home, /COMMUNITY UTILITY \/ LIVE NOW/);
-  assert.match(home, /THE BURROW COMMONS \/ PROJECT UTILITY/);
-  assert.match(home, /href="\/commons"><b>01<\/b><span>Explore the Commons/);
+test('homepage leads with the MADGER brand and usable community paths', () => {
+  assert.match(home, /class="hero hero-showcase utility-first-hero"/);
+  assert.match(home, /LIVE ON SOLANA · THE BURROW IS OPEN/);
+  assert.match(home, /YOUR WAY INTO THE BURROW/);
+  assert.match(home, /href="\/commons"><b>02<\/b><span>Use the Commons/);
   assert.doesNotMatch(home, /class="hero-art"/);
-  assert.match(home, /home-utility\.css\?v=20260906/);
+  assert.match(home, /home-utility\.css\?v=20260909-home-reorg/);
+  assert.ok(home.indexOf('hero-showcase') < home.indexOf('featured-section'));
 });
 
 test('all purchase links are fixed SOL-to-MADGER links without financial presets', () => {
@@ -39,12 +40,19 @@ test('all purchase links are fixed SOL-to-MADGER links without financial presets
 });
 
 test('homepage clearly separates first-time and experienced buying paths from utility', () => {
-  assert.match(home, /WANT TO GET \$MADGER\? CHOOSE YOUR PATH/);
+  assert.match(home, /READY TO EXPLORE \$MADGER\?/);
   assert.match(home, /class="hero-actions hero-actions--purchase"/);
-  assert.match(home, /class="button guide" href="\/buy">First Time\? Start Step-by-Step/);
-  assert.match(home, /Already Have SOL\? Buy on Raydium/);
-  assert.match(home, /First crypto purchase\?/);
+  assert.match(home, /class="button guide" href="\/buy">Beginner Guide/);
+  assert.match(home, /Buy on Raydium/);
+  assert.match(home, /New to crypto\?/);
   assert.doesNotMatch(home, /id="film"|Launch film|Watch the film|official launch film|instagram\.com\/reel\/DcotYCFDD3p/i);
+});
+
+test('homepage features the contest without duplicating its full entry experience', () => {
+  assert.match(home, /class="home-section featured-section"/);
+  assert.match(home, /Contest Details &amp; Entry Form/);
+  assert.match(home, /href="\/video-contest\.html"/);
+  assert.doesNotMatch(home, /id="madger-contest-form"|id="original_file"|Required confirmations/);
 });
 
 test('guide is useful without scripts and includes failure/risk information', () => {

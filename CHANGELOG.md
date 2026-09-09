@@ -1,5 +1,12 @@
 # Changelog
 
+## 2026-09-09 — Homepage hierarchy and contest separation
+
+- Restored MADGER's brand story as the first homepage experience with a vivid cinematic Burrow hero, the established “Small Badger. Big Crypto.” headline, and clear beginner and experienced-buyer paths.
+- Reorganized the primary navigation into compact page tabs for Home, Start Here, Utility, Contest, Creators, Signals, and Verify while preserving the direct Raydium action.
+- Reduced the contest from a page-dominating homepage takeover to a focused featured card; complete requirements, official resources, rules, prizes, and the active submission form remain on the dedicated contest page.
+- Preserved the homepage utility, roadmap, character, Signals, verification, and community sections and added direct contest access to the footer.
+
 ## 2026-09-06 — Clear newcomer purchase decision
 
 - Separated the purchase decision from The Burrow Commons so community utility no longer competes with beginner onboarding.
