@@ -1,0 +1,71 @@
+name: Contest Video Fetch Bridge
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'contest-sync/request.json'
+
+permissions:
+  contents: read
+  id-token: write
+
+env:
+  BRIDGE_URL: https://wtqcolceuvlxrelugvjw.supabase.co/functions/v1/contest-video-bridge
+  OIDC_AUDIENCE: madger-contest-video-bridge
+
+jobs:
+  fetch-video:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Read request
+        id: req
+        shell: bash
+        run: |
+          submission_id=$(jq -r '.submission_id' contest-sync/request.json)
+          file_name=$(jq -r '.file_name' contest-sync/request.json)
+          if [[ -z "$submission_id" || "$submission_id" == "null" || -z "$file_name" || "$file_name" == "null" ]]; then
+            echo 'Invalid request.json' >&2
+            exit 1
+          fi
+          echo "submission_id=$submission_id" >> "$GITHUB_OUTPUT"
+          echo "file_name=$file_name" >> "$GITHUB_OUTPUT"
+
+      - name: Get GitHub OIDC token
+        id: oidc
+        shell: bash
+        run: |
+          token_json=$(curl -fsSL -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" \
+            "$ACTIONS_ID_TOKEN_REQUEST_URL&audience=$OIDC_AUDIENCE")
+          token=$(printf '%s' "$token_json" | jq -r '.value')
+          test -n "$token" && test "$token" != "null"
+          echo "token=$token" >> "$GITHUB_OUTPUT"
+
+      - name: Download original from Supabase
+        shell: bash
+        env:
+          OIDC_TOKEN: ${{ steps.oidc.outputs.token }}
+          SUBMISSION_ID: ${{ steps.req.outputs.submission_id }}
+          FILE_NAME: ${{ steps.req.outputs.file_name }}
+        run: |
+          mkdir -p contest-sync/out
+          curl --fail --location --silent --show-error \
+            -H "Authorization: Bearer $OIDC_TOKEN" \
+            "$BRIDGE_URL?submission_id=$SUBMISSION_ID" \
+            --output "contest-sync/out/$FILE_NAME"
+          test -s "contest-sync/out/$FILE_NAME"
+          sha256sum "contest-sync/out/$FILE_NAME" | tee contest-sync/out/SHA256.txt
+
+      - name: Upload transfer artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: contest-video-${{ steps.req.outputs.submission_id }}
+          path: |
+            contest-sync/out/${{ steps.req.outputs.file_name }}
+            contest-sync/out/SHA256.txt
+          if-no-files-found: error
+          retention-days: 1
+          compression-level: 0
