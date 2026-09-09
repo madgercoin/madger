@@ -78,8 +78,8 @@ if (homepage) {
     [body.includes('<link rel="canonical" href="https://madgercoin.com/">'), "homepage canonical"],
     [body.includes('"@type":"Organization"'), "Organization structured data"],
     [body.includes('name="robots" content="index,follow'), "homepage index directive"]
-    ,[body.includes('class="hero utility-first-hero"') && body.includes("THE BURROW COMMONS / PROJECT UTILITY"), "utility-first hero"]
-    ,[body.includes("First Time? Start Step-by-Step") && body.includes("Already Have SOL? Buy on Raydium"), "separate beginner and experienced purchase paths"]
+    ,[body.includes('class="hero hero-showcase utility-first-hero"') && body.includes("YOUR WAY INTO THE BURROW"), "utility-first hero"]
+    ,[body.includes("Beginner Guide") && body.includes("Buy on Raydium"), "separate beginner and experienced purchase paths"]
     ,[body.includes('href="/launch.html">Open launch record'), "post-launch verification record"]
     ,[!/Launch Hunt|Meme Contest|MLH26|ENDS SEP/i.test(body), "expired contest content absent"]
   ];
