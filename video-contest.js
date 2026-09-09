@@ -19,7 +19,7 @@
   const quickRuleHeadings = [...document.querySelectorAll('#rules .card h3')];
   const introRuleHeading = quickRuleHeadings.find((node) => node.textContent.trim() === 'Official intro + outro');
   if (introRuleHeading?.nextElementSibling) {
-    introRuleHeading.nextElementSibling.innerHTML = 'Every entry must begin with <strong>Madger_Productions_Presents_Intro_clip.mp4</strong> and end with <strong>Madger_Official_Outro_Clip.mp4</strong>. These are the exact contest masters supplied by MADGER. Do not substitute older intro, outro, or other MADGER video files.';
+    introRuleHeading.nextElementSibling.innerHTML = 'Every entry must begin with <a class="link-inline" href="/assets/Madger_Productions_Presents_Intro_clip.mp4" download><strong>Madger_Productions_Presents_Intro_clip.mp4</strong></a> and end with <a class="link-inline" href="/assets/Madger_Official_Outro_Clip.mp4" download><strong>Madger_Official_Outro_Clip.mp4</strong></a>. These are the exact contest masters supplied by MADGER. Do not substitute older intro, outro, or other MADGER video files.';
   }
 
   const assetsGrid = document.querySelector('#assets .grid2');
@@ -29,11 +29,6 @@
     logoCard.id = 'official-transparent-logo-card';
     logoCard.innerHTML = `<img src="/assets/madger_official_logo_transparent_512.png" width="512" height="512" alt="Official transparent MADGER logo"><h3>Official Transparent MADGER Logo</h3><p>Use this exact transparent logo for contest branding. Do not redraw, recolor, recreate, place it on a fake background, or substitute another MADGER logo.</p><div class="asset-actions"><a class="button ghost" href="/assets/madger_official_logo_transparent_512.png" download="MADGER_Official_Transparent_Logo.png">Download Transparent Logo ↓</a></div>`;
     assetsGrid.appendChild(logoCard);
-  }
-
-  const pendingAssets = document.querySelector('#assets .pending-assets');
-  if (pendingAssets) {
-    pendingAssets.innerHTML = `<h3>Official intro and outro — locked</h3><p>The exact contest masters are <strong>Madger_Productions_Presents_Intro_clip.mp4</strong> and <strong>Madger_Official_Outro_Clip.mp4</strong>. The intro includes the required one-second black hold after the fade. These exact files are the required contest bookends; no older MADGER intro/outro is valid.</p>`;
   }
 
   const form = document.getElementById('madger-contest-form');
