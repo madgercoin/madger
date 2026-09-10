@@ -1,5 +1,9 @@
 # Changelog
 
+## 2026-09-10 — Blockspot verification backlink
+
+- Added a compact homepage-footer badge linking to MADGER's verified Blockspot profile.
+
 ## 2026-09-09 — Homepage hierarchy and contest separation
 
 - Restored MADGER's brand story as the first homepage experience with a vivid cinematic Burrow hero, the established “Small Badger. Big Crypto.” headline, and clear beginner and experienced-buyer paths.
