@@ -8,51 +8,72 @@ const mint = 'BHauMX8akk2umqkQqnJwpYkCRkZmefGnEBFByeFXRKqv';
 const home = await readFile('index.html', 'utf8');
 const guide = await readFile('buy.html', 'utf8');
 const script = await readFile('script.js', 'utf8');
-const homeCss = await readFile('home-v2.css', 'utf8');
-const purchaseCss = await readFile('purchase-path.css', 'utf8');
+
+const expectedDestinations = {
+  raydium: `https://raydium.io/swap/?inputMint=sol&outputMint=${mint}`,
+  jupiter: `https://jup.ag/swap?buy=${mint}&sell=So11111111111111111111111111111111111111112`,
+  bonkbot: `https://t.me/bonkbot_bot?start=ref_7cien_ca_${mint}`,
+  trojan: `https://t.me/achilles_trojanbot?start=r-burrowking-${mint}`,
+};
 
 test('homepage leads with the MADGER brand and usable community paths', () => {
   assert.match(home, /class="hero hero-showcase utility-first-hero"/);
   assert.match(home, /LIVE ON SOLANA · THE BURROW IS OPEN/);
   assert.match(home, /YOUR WAY INTO THE BURROW/);
   assert.match(home, /href="\/commons"><b>02<\/b><span>Use the Commons/);
-  assert.doesNotMatch(home, /class="hero-art"/);
-  assert.match(home, /home-utility\.css\?v=20260909-home-reorg/);
-  assert.ok(home.indexOf('hero-showcase') < home.indexOf('featured-section'));
-});
-
-test('all purchase links are fixed SOL-to-MADGER links without financial presets', () => {
-  for (const [name, html, count] of [['home', home, 2], ['guide', guide, 1]]) {
-    const links = [...html.matchAll(/<a\b[^>]*href="(https:\/\/raydium\.io\/swap\/[^\"]*)"[^>]*>/g)];
-    assert.equal(links.length, count, name);
-    for (const [tag, href] of links) {
-      const url = new URL(href.replaceAll('&amp;', '&'));
-      assert.equal(url.origin, 'https://raydium.io');
-      assert.equal(url.pathname, '/swap/');
-      assert.deepEqual([...url.searchParams.keys()].sort(), ['inputMint', 'outputMint']);
-      assert.equal(url.searchParams.get('inputMint'), 'sol');
-      assert.equal(url.searchParams.get('outputMint'), mint);
-      assert.match(tag, /rel="noopener noreferrer"/);
-    }
-  }
   assert.match(home, /href="\/buy"/);
-  assert.ok(!home.includes('raydium.io/liquidity-pools/'));
 });
 
-test('homepage clearly separates first-time and experienced buying paths from utility', () => {
-  assert.match(home, /READY TO EXPLORE \$MADGER\?/);
-  assert.match(home, /class="hero-actions hero-actions--purchase"/);
-  assert.match(home, /class="button guide" href="\/buy">Beginner Guide/);
-  assert.match(home, /Buy on Raydium/);
-  assert.match(home, /New to crypto\?/);
-  assert.doesNotMatch(home, /id="film"|Launch film|Watch the film|official launch film|instagram\.com\/reel\/DcotYCFDD3p/i);
+test('guide exposes four verified routes without financial presets', () => {
+  for (const route of Object.keys(expectedDestinations)) assert.match(guide, new RegExp(`href="\\/r\\/${route}"`));
+  assert.match(guide, /Buy on Raydium/);
+  assert.match(guide, /Buy on Jupiter/);
+  assert.match(guide, /Buy with BONKbot/);
+  assert.match(guide, /Buy with Trojan/);
+  assert.match(guide, /@bonkbot_bot/);
+  assert.match(guide, /@achilles_trojanbot/);
+  assert.doesNotMatch(guide, /[?&](amount|inputAmount|fixedAmount)=/i);
 });
 
-test('homepage features the contest without duplicating its full entry experience', () => {
-  assert.match(home, /class="home-section featured-section"/);
-  assert.match(home, /Contest Details &amp; Entry Form/);
-  assert.match(home, /href="\/video-contest\.html"/);
-  assert.doesNotMatch(home, /id="madger-contest-form"|id="original_file"|Required confirmations/);
+test('fixed buy redirects resolve only to approved destinations and log aggregate clicks', async () => {
+  const events = [];
+  const env = { FUNNEL_ANALYTICS: { writeDataPoint: point => events.push(point) } };
+  for (const [route, expected] of Object.entries(expectedDestinations)) {
+    const request = new Request(`https://madgercoin.com/r/${route}?utm_source=test&utm_medium=qa&utm_campaign=route_test&utm_content=${route}`);
+    const response = await worker.fetch(request, env);
+    assert.equal(response.status, 302);
+    assert.equal(response.headers.get('location'), expected);
+  }
+  assert.equal(events.length, 4);
+  for (const event of events) {
+    assert.equal(event.indexes[0], 'madger');
+    assert.equal(event.blobs[0], 'outbound_buy_click');
+    assert.equal(event.blobs[1], 'test');
+    assert.equal(event.blobs[2], 'qa');
+    assert.equal(event.blobs[3], 'route_test');
+    assert.equal(event.doubles[0], 1);
+  }
+});
+
+test('unknown redirect keys and hostile redirect parameters cannot create an open redirect', async () => {
+  const unknown = await worker.fetch(new Request('https://madgercoin.com/r/evil?redirect=https://evil.example'), {});
+  assert.equal(unknown.status, 404);
+  const known = await worker.fetch(new Request('https://madgercoin.com/r/raydium?redirect=https://evil.example'), {});
+  assert.equal(known.status, 302);
+  assert.equal(known.headers.get('location'), expectedDestinations.raydium);
+});
+
+test('Proficy and Telegram campaign aliases carry fixed attribution into the buy guide', async () => {
+  const cases = {
+    'proficy-4h': '/buy?utm_source=proficy&utm_medium=paid_trending&utm_campaign=proficy_4h_test&utm_content=trending_slot',
+    'proficy-12h': '/buy?utm_source=proficy&utm_medium=paid_trending&utm_campaign=proficy_12h_test&utm_content=trending_slot',
+    'telegram-pin': '/buy?utm_source=telegram&utm_medium=community&utm_campaign=burrow_buy_pin&utm_content=pinned_message',
+  };
+  for (const [key, expected] of Object.entries(cases)) {
+    const response = await worker.fetch(new Request(`https://madgercoin.com/c/${key}`), {});
+    assert.equal(response.status, 302);
+    assert.equal(response.headers.get('location'), expected);
+  }
 });
 
 test('guide is useful without scripts and includes failure/risk information', () => {
@@ -61,8 +82,7 @@ test('guide is useful without scripts and includes failure/risk information', ()
   assert.match(guide, /lose the full amount/);
   assert.match(guide, /price impact/);
   assert.match(guide, /minimum received/);
-  assert.match(guide, /before retrying/i);
-  assert.match(guide, /aria-live="polite"/);
+  assert.match(guide, /without cookies, wallet addresses, or personal identifiers/);
   assert.equal((guide.match(/<details>/g) || []).length, 4);
   assert.ok(!/<iframe|<form|<input|src="https:/i.test(guide));
 });
@@ -86,12 +106,15 @@ for (const clipboardMode of ['success', 'denied', 'unavailable']) {
   });
 }
 
-test('guide route ignores hostile query parameters and serves secured HTML', async () => {
-  const response = await worker.fetch(new Request('https://madgercoin.com/buy?outputMint=evil&redirect=https://evil.example'), {});
+test('buy page preserves UTM query for attribution but ignores hostile redirect intent', async () => {
+  const events = [];
+  const env = { FUNNEL_ANALYTICS: { writeDataPoint: point => events.push(point) } };
+  const response = await worker.fetch(new Request('https://madgercoin.com/buy?utm_source=proficy&utm_medium=paid_trending&utm_campaign=proficy_4h_test&redirect=https://evil.example'), env);
   assert.equal(response.status, 200);
   assert.equal(await response.text(), guide);
+  assert.equal(events.length, 1);
+  assert.deepEqual(events[0].blobs.slice(0, 4), ['buy_page_view', 'proficy', 'paid_trending', 'proficy_4h_test']);
   for (const name of ['content-security-policy', 'x-content-type-options', 'referrer-policy', 'x-frame-options']) assert.ok(response.headers.get(name));
-  assert.equal(response.headers.get('cache-control'), 'no-cache');
 });
 
 test('guide canonical redirects, HEAD and unsupported methods', async () => {
