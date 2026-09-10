@@ -6,10 +6,13 @@ export default function BuyScreen() {
   return <Screen>
     <BrandHeader eyebrow="Official purchase path" title="Buy $MADGER" subtitle="Choose the path that matches your experience." />
     <Card style={styles.actionCard}>
-      <Pill tone="gold">TRADING LIVE • RAYDIUM</Pill>
+      <Pill tone="gold">TRADING LIVE • SOLANA</Pill>
       <SectionTitle>Ready to swap?</SectionTitle>
-      <Text style={textStyles.body}>If you already have SOL in a compatible wallet, open the official SOL-to-MADGER route and verify the complete mint before approving anything.</Text>
+      <Text style={textStyles.body}>If you already have SOL, use the verified Raydium route or an optional Telegram trading-bot route. Always verify the complete MADGER mint before approving anything.</Text>
       <ActionButton label="Buy $MADGER on Raydium" icon="open-in-new" onPress={() => Linking.openURL(LINKS.raydiumSwap)} />
+      <ActionButton label="Buy with BONKbot" icon="send" onPress={() => Linking.openURL(LINKS.bonkbotBuy)} />
+      <ActionButton label="Buy with Trojan" icon="send" onPress={() => Linking.openURL(LINKS.trojanBuy)} />
+      <Text style={textStyles.body}>BONKbot and Trojan are optional Telegram routes for experienced users. Verify the bot username and the full MADGER mint before trading.</Text>
       <ActionButton label="New to Crypto? Start Here" icon="school" onPress={() => Linking.openURL(LINKS.buyGuide)} />
     </Card>
     <Card>
