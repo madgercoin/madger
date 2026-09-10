@@ -33,7 +33,7 @@ export default function HomeScreen() {
       <View style={styles.streakRow}><Text style={styles.streak}>{dig.streak}</Text><Text style={styles.streakLabel}>day streak</Text></View>
       <ActionButton label={checked ? 'Checked in today' : 'Dig in for today'} icon={checked ? 'check-circle' : 'shovel'} onPress={dailyDig} secondary={checked} />
     </Card>
-    <Card><SectionTitle>Official home</SectionTitle><Text style={textStyles.body}>News, the litepaper, safety notes, and every official link live at madgercoin.com.</Text><ActionButton label="Open madgercoin.com" icon="open-in-new" onPress={() => Linking.openURL(LINKS.website)} secondary /></Card>
+    <Card><SectionTitle>Official home</SectionTitle><Text style={textStyles.body}>News, the litepaper, safety notes, and every official link live at madgercoin.com.</Text><ActionButton label="Open madgercoin.com" icon="open-in-new" onPress={() => Linking.openURL(LINKS.website)} secondary /><ActionButton label="View verified Blockspot profile" icon="shield-check" onPress={() => Linking.openURL(LINKS.blockspot)} secondary /></Card>
   </Screen>;
 }
 

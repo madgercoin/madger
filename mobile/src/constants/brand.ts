@@ -6,6 +6,7 @@ export const COLORS = {
 
 export const LINKS = {
   website: 'https://madgercoin.com',
+  blockspot: 'https://blockspot.io/coin/madger/',
   buyGuide: 'https://madgercoin.com/buy?utm_source=madger_app&utm_medium=app&utm_campaign=buy_screen&utm_content=guide',
   raydiumSwap: 'https://madgercoin.com/r/raydium?utm_source=madger_app&utm_medium=app&utm_campaign=buy_screen&utm_content=raydium',
   jupiterSwap: 'https://madgercoin.com/r/jupiter?utm_source=madger_app&utm_medium=app&utm_campaign=buy_screen&utm_content=jupiter',
