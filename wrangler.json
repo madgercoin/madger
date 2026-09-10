@@ -9,5 +9,11 @@
     "binding": "ASSETS",
     "run_worker_first": true
   },
+  "analytics_engine_datasets": [
+    {
+      "binding": "FUNNEL_ANALYTICS",
+      "dataset": "madger_acquisition_funnel"
+    }
+  ],
   "main": "./worker.generated.js"
 }
