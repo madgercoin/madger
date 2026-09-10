@@ -1,0 +1,80 @@
+{
+  "generatedAt": "2026-09-10T02:28:51.176Z",
+  "snapshotLabel": "pre-liquidity-pre-proficy-2026-09-09",
+  "network": "solana",
+  "mint": "BHauMX8akk2umqkQqnJwpYkCRkZmefGnEBFByeFXRKqv",
+  "pool": "FVRpAmyDsdvKHQT2ds6ytZsJHt7SDDDbScQx3c4fu32h",
+  "market": {
+    "source": "DEX Screener API",
+    "pairUrl": "https://dexscreener.com/solana/fvrpamydsdvkhqt2ds6ytzsjht7sdddbscqx3c4fu32h",
+    "dexId": "raydium",
+    "pairAddress": "FVRpAmyDsdvKHQT2ds6ytZsJHt7SDDDbScQx3c4fu32h",
+    "baseToken": {
+      "address": "BHauMX8akk2umqkQqnJwpYkCRkZmefGnEBFByeFXRKqv",
+      "name": "MADGER",
+      "symbol": "MADGER"
+    },
+    "quoteToken": {
+      "address": "So11111111111111111111111111111111111111112",
+      "name": "Wrapped SOL",
+      "symbol": "SOL"
+    },
+    "priceUsd": 0.001115,
+    "priceNative": 0.00001104,
+    "liquidityUsd": 4989.43,
+    "liquidityBase": 2236365,
+    "liquidityQuote": 24.6977,
+    "fdv": 1115524,
+    "marketCap": 1115524,
+    "volume24h": 136.77,
+    "buys24h": 9,
+    "sells24h": 6,
+    "pairCreatedAt": 1788193708000,
+    "websites": [
+      {
+        "url": "https://madgercoin.com/",
+        "label": "Website"
+      },
+      {
+        "url": "https://madgercoin.com/roadmap",
+        "label": "Docs"
+      }
+    ],
+    "socials": [
+      {
+        "url": "https://x.com/madgercoin",
+        "type": "twitter"
+      },
+      {
+        "url": "https://t.me/madgerburrow",
+        "type": "telegram"
+      },
+      {
+        "url": "https://discord.gg/NcuPzSNz9e",
+        "type": "discord"
+      },
+      {
+        "url": "https://www.tiktok.com/@themadgercoin",
+        "type": "tiktok"
+      },
+      {
+        "url": "https://www.instagram.com/madgercoin/",
+        "type": "instagram"
+      },
+      {
+        "url": "https://www.reddit.com/user/Madgercoin/",
+        "type": "reddit"
+      }
+    ]
+  },
+  "holders": {
+    "status": "ok",
+    "source": "Solana finalized RPC",
+    "uniqueOwnersWithPositiveBalance": 30,
+    "positiveTokenAccounts": 30
+  },
+  "interpretation": {
+    "holderCount": "Unique SPL token-account owners with a positive raw token balance at finalized commitment.",
+    "attribution": "Campaign attribution is aggregate. It does not identify a purchaser or prove that an individual click caused an on-chain purchase."
+  }
+}
