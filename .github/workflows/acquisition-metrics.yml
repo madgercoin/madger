@@ -1,0 +1,56 @@
+name: MADGER Acquisition Metrics
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - ".github/workflows/acquisition-metrics.yml"
+      - "scripts/capture-acquisition-metrics.mjs"
+      - "acquisition/request.json"
+  workflow_dispatch:
+    inputs:
+      snapshot_label:
+        description: Label for this acquisition snapshot
+        required: false
+        default: manual
+  schedule:
+    - cron: "47 */4 * * *"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: madger-acquisition-metrics
+  cancel-in-progress: false
+
+jobs:
+  capture:
+    name: Capture market and holder baseline
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      SOLANA_RPC_URL: ${{ secrets.SOLANA_RPC_URL }}
+      SNAPSHOT_LABEL: ${{ github.event.inputs.snapshot_label }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 2
+      - uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5
+        with:
+          node-version: 22
+      - name: Validate snapshot script
+        run: node --check scripts/capture-acquisition-metrics.mjs
+      - name: Capture verified pool and holder metrics
+        run: node scripts/capture-acquisition-metrics.mjs
+      - name: Commit acquisition report
+        run: |
+          if [ -z "$(git status --porcelain -- reports/acquisition)" ]; then
+            echo "No report changes."
+            exit 0
+          fi
+          git config user.name "madger-automation"
+          git config user.email "actions@users.noreply.github.com"
+          git add reports/acquisition
+          git commit -m "Refresh MADGER acquisition metrics"
+          git push
