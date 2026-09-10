@@ -1,43 +1,104 @@
-# Purchase path — research, plan, and release checks
+# MADGER purchase path — current architecture and release checks
 
-## Scope and authority
+## Canonical identity
 
-User authorized research followed by implementation on September 3, 2026. Work is based on production GitHub commit 21486b5 in an isolated checkout; the original dirty workspace and the separate private Sites journal are preserved. No trades, financial commitments, liquidity operations, ad purchases, wallet integrations, or analytics are part of this release.
+- Network: Solana
+- Mint: `BHauMX8akk2umqkQqnJwpYkCRkZmefGnEBFByeFXRKqv`
+- Verified SOL–MADGER pool: `FVRpAmyDsdvKHQT2ds6ytZsJHt7SDDDbScQx3c4fu32h`
+- Canonical buying guide: `https://madgercoin.com/buy`
 
-## Research
+## User-facing hierarchy
 
-- Production homepage sent prospective buyers to Raydium's liquidity-pool listing, not its swap screen.
-- Raydium's public UI constructs `/swap/?inputMint=sol&outputMint=<mint>` links. SwapPanel reads these parameters before its cached pair. Sources: https://github.com/raydium-io/raydium-ui-v3-public/blob/master/src/features/Swap/Swap.tsx and https://github.com/raydium-io/raydium-ui-v3-public/blob/master/src/features/Swap/components/SwapPanel.tsx (retrieved September 3–4, 2026).
-- https://docs.raydium.io/user-flows/swap explains route review, minimum received, slippage, fees, confirmation, and failure handling. We do not prescribe a trade amount or slippage percentage.
-- Read-only Raydium pool API confirmed pool FVRpAmyDsdvKHQT2ds6ytZsJHt7SDDDbScQx3c4fu32h contains WSOL and the exact MADGER mint, with MADGER decimals 6. API: https://api-v3.raydium.io/pools/info/ids?ids=FVRpAmyDsdvKHQT2ds6ytZsJHt7SDDDbScQx3c4fu32h. Its reported liquidity was low and burnPercent was 0 at research time; these changing observations are not embedded as permanent marketing claims.
+The buying guide intentionally separates two levels of purchase routes so more choice does not make beginner onboarding worse.
 
-## Implementation plan
+### Standard Solana routes
 
-1. Preserve the current homepage, film, artwork, market record, and project disclosures.
-2. Replace homepage pool-listing CTAs with direct, fixed SOL-to-MADGER swap links. Add an adjacent how-to-buy link and loss-risk notice.
-3. Add `/buy` with an immediately available external swap link, complete selectable/copyable mint, beginner setup, mobile wallet-browser instructions, quote review, and troubleshooting. Explicitly distinguish a mint from a payment destination.
-4. Keep market-record links for liquidity research. Add purchase-guide discovery to the official-links directory.
-5. No iframes, new external scripts, wallet adapters, tracking, referral parameters, amount presets, or destination parameters supplied by visitors. User approval happens only in their wallet on Raydium.
-6. Check build allowlist, metadata, navigation, destination/mint integrity, clipboard success/denial, responsive CSS constraints, and HTTP routes/security headers. A quote is not a completed swap. No wallet signing is tested.
-7. Record a known-good production deployment, check production has not changed, deploy using its established Cloudflare path, and verify live outputs. Do not overwrite the separate private journal preview with the public site's older journal.
+1. **Raydium** — fixed SOL → MADGER swap route on `raydium.io`.
+2. **Jupiter** — fixed SOL → MADGER route on `jup.ag`.
 
-## Security and privacy review
+These are presented first. New users are directed to the step-by-step guide rather than to Telegram trading bots.
 
-The guide is informational and navigation-only. New links use fixed HTTPS destinations and noopener/noreferrer; there is no open redirect or query-parameter-based mint substitution. Copying uses only visible mint text. No wallet address, seed phrase, payment, identity data, analytics identifiers, or consent records are collected. A provider outage or missing quote must never be described as success. Instructions advise stopping on mismatched tokens, unexplained approvals, or unacceptable price impact; never bypass regional restrictions or repeatedly sign an uncertain transaction.
+### Optional Telegram routes
 
-## Acceptance and boundaries
+3. **BONKbot** — verified token-specific deep link for `@bonkbot_bot`.
+4. **Trojan** — verified token-specific deep link using Trojan's official Achilles backup, `@achilles_trojanbot`.
 
-Read-only quote verification succeeded through Raydium's compute/swap-base-in endpoint using a 0.01 SOL diagnostic amount, with the exact expected pool and output mint. This was solely a test input, not a recommended spend or website preset. No transaction was constructed or submitted.
+These are labeled for experienced Telegram traders. The guide warns that trading bots may create separate trading wallets and that exposed private keys must never be funded.
 
-Known-good production version before release: 46173bde-1f87-4d3b-a9e7-3f1b2774ec00 (September 3, 2026). Fresh HTTP comparisons confirmed homepage, launch record, litepaper, shared stylesheet/script, official-links directory, and blog matched the GitHub baseline. Local tests use port 8794 to avoid an existing preview on port 8787. The guide is bundled in the Worker to guarantee its canonical route and headers.
+## Fixed redirect architecture
 
-- Links work without JavaScript; mint remains visible if copying fails.
-- Direct route selects SOL input and official MADGER output, without amount/slippage/referrer parameters.
-- Keyboard focus is visible; content wraps at narrow widths; headings and native disclosure controls are semantic.
-- Existing unrelated work remains untouched. Publication must not regress current production content.
-- Browser rendering and real-wallet completion are not established by HTTP/source tests; record verification limits honestly.
-- Advertising eligibility and financial-promotion review are separate from this website navigation implementation.
+The public guide uses same-domain routes rather than scattering third-party URLs throughout campaign copy:
 
-## Concurrent-release reconciliation
+- `/r/raydium`
+- `/r/jupiter`
+- `/r/bonkbot`
+- `/r/trojan`
 
-The roadmap release landed during this task. The purchase change was rebased onto GitHub commit 2326522, preserving its roadmap page, PDF, homepage and auxiliary-page links, sitemap, and validation. Updated rollback target: c91bf802-f25b-4b49-9f74-19a1d2315afe. All 26 unit tests, site/roadmap/mint validation, artifact allowlist, syntax checks, and secret scan passed after reconciliation.
+The Cloudflare Worker maps each key to one hard-coded destination. Visitors cannot supply or override a destination URL. Unknown route keys return 404. This design preserves an auditable allowlist and prevents the route mechanism from becoming an open redirect.
+
+Repository files under `r/` are **virtual-route markers for static validation only**. They are deliberately excluded from the production static-asset allowlist because the Worker handles `/r/*` before static assets.
+
+## Campaign attribution
+
+Fixed campaign aliases provide reproducible source attribution:
+
+- `/c/proficy-4h`
+- `/c/proficy-12h`
+- `/c/telegram-pin`
+
+Each alias redirects to `/buy` with controlled UTM dimensions. The Worker records aggregate events through Cloudflare Workers Analytics Engine when configured in production:
+
+- `campaign_entry`
+- `buy_page_view`
+- `outbound_buy_click`
+
+Stored dimensions are limited to short labels for event, source, medium, campaign, content, and route destination, plus an aggregate count. The MADGER acquisition dataset is intentionally designed without cookies, names, email addresses, wallet addresses, IP-address fields, advertising identifiers, browser fingerprints, or persistent user IDs.
+
+The system therefore supports statements such as “the Proficy test produced N guide visits and M outbound route clicks,” but **not** “this click belongs to this wallet.” On-chain holder and market snapshots are compared by time window rather than joined to individual visitors.
+
+## Market and holder snapshots
+
+`scripts/capture-acquisition-metrics.mjs` captures:
+
+- verified-pool price and liquidity
+- market cap / FDV where supplied by the market API
+- 24-hour volume and buy/sell transaction counts
+- unique positive-balance SPL token owners when Solana RPC access permits the query
+- positive token-account count
+
+The workflow `.github/workflows/acquisition-metrics.yml` runs on demand, on relevant source changes, and every four hours. Reports are written under `reports/acquisition/`.
+
+The holder metric is a wallet/account-state measurement, not a claim about unique human investors. Custodial wallets, program-controlled accounts, transfers among wallets, and other on-chain structures can affect interpretation.
+
+## Security and safety requirements
+
+- Never expose a user-supplied redirect destination.
+- Never prescribe a purchase amount, slippage percentage, return, or price target in the website path.
+- Never call routing through Jupiter, Raydium, BONKbot, or Trojan an endorsement by that provider.
+- Never ask for seed phrases, private keys, wallet exports, remote access, or “verification payments.”
+- Always display the complete mint in the official guide.
+- Make the destination provider explicit before a user clicks.
+- Preserve `noopener noreferrer` where a browser opens an external tab directly.
+- Treat a quote as informational until an on-chain transaction is confirmed.
+- If price impact, minimum received, token identity, or permissions are unacceptable, the user should stop rather than force execution.
+
+## Release gate
+
+Before paid acquisition or a major social push:
+
+1. `npm ci`
+2. `npm run build`
+3. `npm run check`
+4. `npm run validate`
+5. `npm audit --omit=dev`
+6. Confirm `/buy` displays Raydium, Jupiter, BONKbot, and Trojan in the intended hierarchy.
+7. Confirm `/r/*` resolves only to the four allowlisted providers.
+8. Confirm `/c/proficy-4h` and other active campaign aliases preserve their expected attribution labels.
+9. Confirm the complete mint and verified pool remain consistent with the launch record and public market references.
+10. Capture a fresh pre-campaign acquisition snapshot.
+11. Test mobile and desktop layout, keyboard navigation, external destinations, and wallet-browser behavior without signing an unintended transaction.
+12. Verify `https://madgercoin.com` production after deployment; source-code completion is not proof that Cloudflare has deployed the new Worker.
+
+## Measurement boundary
+
+The funnel deliberately measures **attention and route selection**, not private identity. A campaign should be evaluated using a combination of aggregate landing/route events, holder-count changes, pool liquidity, volume, and buy/sell activity. Correlation across a campaign window is useful operational evidence but is not individual-level attribution.
