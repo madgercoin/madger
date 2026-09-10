@@ -1,0 +1,1 @@
+Virtual route marker: /r/trojan is handled by the Cloudflare Worker before static assets. This repository file exists only so static link validation can recognize the intentional runtime route; it is not included in the production asset allowlist.
