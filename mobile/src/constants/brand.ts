@@ -6,10 +6,11 @@ export const COLORS = {
 
 export const LINKS = {
   website: 'https://madgercoin.com',
-  buyGuide: 'https://madgercoin.com/buy',
-  raydiumSwap: 'https://raydium.io/swap/?inputMint=sol&outputMint=BHauMX8akk2umqkQqnJwpYkCRkZmefGnEBFByeFXRKqv',
-  bonkbotBuy: 'https://t.me/bonkbot_bot?start=ref_7cien_ca_BHauMX8akk2umqkQqnJwpYkCRkZmefGnEBFByeFXRKqv',
-  trojanBuy: 'https://t.me/achilles_trojanbot?start=r-burrowking-BHauMX8akk2umqkQqnJwpYkCRkZmefGnEBFByeFXRKqv',
+  buyGuide: 'https://madgercoin.com/buy?utm_source=madger_app&utm_medium=app&utm_campaign=buy_screen&utm_content=guide',
+  raydiumSwap: 'https://madgercoin.com/r/raydium?utm_source=madger_app&utm_medium=app&utm_campaign=buy_screen&utm_content=raydium',
+  jupiterSwap: 'https://madgercoin.com/r/jupiter?utm_source=madger_app&utm_medium=app&utm_campaign=buy_screen&utm_content=jupiter',
+  bonkbotBuy: 'https://madgercoin.com/r/bonkbot?utm_source=madger_app&utm_medium=app&utm_campaign=buy_screen&utm_content=bonkbot',
+  trojanBuy: 'https://madgercoin.com/r/trojan?utm_source=madger_app&utm_medium=app&utm_campaign=buy_screen&utm_content=trojan',
   x: 'https://x.com/madgercoin', telegramNews: 'https://t.me/madgercoin',
   telegramCommunity: 'https://t.me/madgerburrow', email: 'mailto:madgercoin@gmail.com',
   litepaper: 'https://madgercoin.com/litepaper.html', privacy: 'https://madgercoin.com/privacy.html',
