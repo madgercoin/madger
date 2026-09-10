@@ -8,6 +8,8 @@ export const LINKS = {
   website: 'https://madgercoin.com',
   buyGuide: 'https://madgercoin.com/buy',
   raydiumSwap: 'https://raydium.io/swap/?inputMint=sol&outputMint=BHauMX8akk2umqkQqnJwpYkCRkZmefGnEBFByeFXRKqv',
+  bonkbotBuy: 'https://t.me/bonkbot_bot?start=ref_7cien_ca_BHauMX8akk2umqkQqnJwpYkCRkZmefGnEBFByeFXRKqv',
+  trojanBuy: 'https://t.me/achilles_trojanbot?start=r-burrowking-BHauMX8akk2umqkQqnJwpYkCRkZmefGnEBFByeFXRKqv',
   x: 'https://x.com/madgercoin', telegramNews: 'https://t.me/madgercoin',
   telegramCommunity: 'https://t.me/madgerburrow', email: 'mailto:madgercoin@gmail.com',
   litepaper: 'https://madgercoin.com/litepaper.html', privacy: 'https://madgercoin.com/privacy.html',
