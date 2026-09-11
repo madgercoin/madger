@@ -3,7 +3,8 @@ import test from 'node:test'
 import {
   OFFICIAL_MINT, buyTier, escapeHtml, isSuspiciousMadgerMessage,
   marketAlertReasons, moderationEscalation, moderationReason,
-  normalizeReferral, normalizeTeam, normalizedMessageFingerprint, parseTeamAlert
+  normalizeReferral, normalizeTeam, normalizedMessageFingerprint,
+  parseAnnouncement, parseTeamAlert
 } from '../supabase/functions/madger-command-bot/core.js'
 
 test('escapes Telegram HTML', () => assert.equal(escapeHtml('<bad & worse>'), '&lt;bad &amp; worse&gt;'))
@@ -52,4 +53,14 @@ test('accepts bounded team alerts only on trusted community platforms', () => {
   })
   assert.equal(parseTeamAlert('shill https://evil.example/connect | Paste this everywhere'), null)
   assert.equal(parseTeamAlert('raid javascript:alert(1) | Unsafe'), null)
+})
+
+test('parses plain and linked official announcements', () => {
+  assert.deepEqual(parseAnnouncement('The AMA begins in ten minutes.'), {
+    text: 'The AMA begins in ten minutes.', url: null, label: null
+  })
+  assert.deepEqual(parseAnnouncement('Join the AMA now. | https://x.com/i/spaces/1 | Enter Space'), {
+    text: 'Join the AMA now.', url: 'https://x.com/i/spaces/1', label: 'Enter Space'
+  })
+  assert.equal(parseAnnouncement('Connect now | https://evil.example/wallet | Open'), null)
 })
