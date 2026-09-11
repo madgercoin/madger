@@ -4,7 +4,8 @@ import {
   findVerifiedMadgerBuyers,
   marketAlertReasons, marketSnapshotSummary, moderationEscalation, moderationReason,
   normalizeMissionCode, normalizeReferral, normalizeTeam, normalizedMessageFingerprint,
-  parseAnnouncement, parseMissionDefinition, parseRaidMode, parseTeamAlert, shouldActivateRaidMode
+  parseAnnouncement, parseMissionDefinition, parseRaidMode, parseReviewRequest, parseTeamAlert,
+  shouldActivateRaidMode
 } from './core.js'
 
 const BOT_TOKEN = Deno.env.get('TELEGRAM_BOT_TOKEN') ?? ''
@@ -375,7 +376,7 @@ async function showOfficialLinks(chatId) {
 }
 
 async function showHelp(chatId) {
-  return send(chatId, '<b>MADGERBOT COMMANDS</b> 🦡\n\n<b>Trade safely</b>\n/buy · /price · /chart · /ca · /verify · /links\n\n<b>Community</b>\n/rules · /safety · /report · /teams\n\n<b>Contribute</b>\n/missions · /submit · /rank · /leaderboard · /referral\n\nMADGERbot never requests wallet credentials, payments, verification transfers, or remote access.')
+  return send(chatId, '<b>MADGERBOT COMMANDS</b> 🦡\n\n<b>Trade safely</b>\n/buy · /price · /chart · /ca · /verify · /links\n\n<b>Community</b>\n/rules · /safety · /report · /teams\n\n<b>Contribute</b>\n/missions · /submit · /mywork · /rank · /leaderboard · /referral\n\nMADGERbot never requests wallet credentials, payments, verification transfers, or remote access.')
 }
 
 async function faqResponderEnabled() {
@@ -654,7 +655,7 @@ async function submitMission(chatId, args) {
   const [missionCode, evidence] = args.trim().split(/\s+/, 2)
   let parsed
   try { parsed = new URL(evidence) } catch { parsed = null }
-  if (!missionCode || !parsed || parsed.protocol !== 'https:') {
+  if (!missionCode || !parsed || parsed.protocol !== 'https:' || parsed.href.length > 500) {
     return send(chatId, 'Use: <code>/submit mission-code https://your-public-evidence-link</code>')
   }
   const mission = await db(`madger_bot_missions?code=eq.${encodeURIComponent(missionCode)}&active=eq.true&select=code&limit=1`)
@@ -675,6 +676,51 @@ async function showRank(chatId) {
   const points = Number(users?.[0]?.points ?? 0)
   const rank = contributorRank(points)
   await send(chatId, `<b>${rank}</b>\n${points} verified contribution points\n\nPoints measure approved work—not purchases, hype, or blind engagement.`)
+}
+
+async function showMyWork(message) {
+  if (message.chat.type !== 'private') {
+    await deleteQuietly(message.chat.id, message.message_id)
+    try {
+      return await send(message.from.id, 'Your contribution record is private. Use /mywork here to view it.')
+    } catch {
+      const username = BOT_USERNAME || (await telegram('getMe', {})).username
+      return send(message.chat.id, 'Open MADGERbot privately first, then use /mywork.',
+        keyboard([[{ text: 'Open private contribution record', url: `https://t.me/${escapeHtml(username)}` }]]))
+    }
+  }
+  const rows = await db(`madger_bot_submissions?user_chat_id=eq.${encodeURIComponent(message.from.id)}&select=id,mission_code,evidence_url,status,review_note,created_at,reviewed_at&order=created_at.desc&limit=5`)
+  if (!rows?.length) return send(message.chat.id, 'You have no mission submissions yet. Use /missions to find approved contribution work.')
+  const lines = rows.map(row => {
+    const status = row.status === 'approved' ? 'APPROVED ✅' : row.status === 'rejected' ? 'REJECTED' : 'PENDING ⏳'
+    const note = row.review_note ? `\nReview: ${escapeHtml(String(row.review_note).slice(0, 300))}` : ''
+    return `<b>#${row.id} · ${status}</b>\nMission: <code>${escapeHtml(row.mission_code)}</code>\n<a href="${escapeHtml(row.evidence_url)}">Open submitted evidence</a>${note}`
+  })
+  return send(message.chat.id, `<b>MY MADGER CONTRIBUTIONS</b>\n\n${lines.join('\n\n')}\n\nPoints are awarded only after administrator review.`)
+}
+
+async function showReviews(message) {
+  if (!ADMIN_IDS.has(String(message.from.id))) return send(message.chat.id, 'Admin command denied.')
+  if (message.chat.type !== 'private') {
+    await deleteQuietly(message.chat.id, message.message_id)
+    return send(message.from.id, 'The review queue is private. Use /reviews here in your direct MADGERbot chat.')
+  }
+  const rows = await db('madger_bot_submissions?status=eq.pending&select=id,mission_code,user_chat_id,evidence_url,created_at&order=created_at.asc&limit=5')
+  if (!rows?.length) return send(message.chat.id, '<b>MADGER REVIEW QUEUE</b>\n\nNo submissions are awaiting review.')
+  const lines = rows.map(row => `<b>Submission #${row.id}</b>\nMission: <code>${escapeHtml(row.mission_code)}</code>\nContributor: <code>${row.user_chat_id}</code>\n<a href="${escapeHtml(row.evidence_url)}">Open evidence</a>\nApprove: <code>/approve ${row.id} optional-note</code>\nReject: <code>/reject ${row.id} reason</code>`)
+  return send(message.chat.id, `<b>MADGER REVIEW QUEUE</b> 🧾\n\n${lines.join('\n\n')}\n\nShowing the oldest ${rows.length} pending submission${rows.length === 1 ? '' : 's'}.`)
+}
+
+async function showMissionList(message) {
+  if (!ADMIN_IDS.has(String(message.from.id))) return send(message.chat.id, 'Admin command denied.')
+  if (message.chat.type !== 'private') {
+    await deleteQuietly(message.chat.id, message.message_id)
+    return send(message.from.id, 'Mission administration is private. Use /missionlist here in your direct MADGERbot chat.')
+  }
+  const rows = await db('madger_bot_missions?select=code,title,points,active&order=active.desc,created_at.desc&limit=25')
+  if (!rows?.length) return send(message.chat.id, 'No missions exist.')
+  const lines = rows.map(row => `${row.active ? '🟢' : '⚫'} <code>${escapeHtml(row.code)}</code> · ${Number(row.points)} points\n${escapeHtml(row.title)}`)
+  return send(message.chat.id, `<b>MADGER MISSION CONTROL</b>\n\n${lines.join('\n\n')}\n\n🟢 active · ⚫ closed`)
 }
 
 async function showLeaderboard(chatId) {
@@ -741,17 +787,20 @@ async function adminStats(chatId) {
   await send(chatId, `<b>MADGER BOT — 7 DAY COMMAND REPORT</b>\n\nMembers tracked: ${users?.length ?? 0}\nPending submissions: ${submissions?.length ?? 0}\nWelcome sessions: ${counts.welcome ?? 0}\nMission views: ${counts.missions_viewed ?? 0}\nSubmissions: ${counts.mission_submitted ?? 0}\nReferral link opens: ${counts.referral_open ?? 0}\n\nLatest market snapshot:\nPrice: ${market?.price_usd ?? 'unavailable'} USD\nLiquidity: ${market?.liquidity_usd ?? 'unavailable'} USD`)
 }
 
-async function reviewSubmission(chatId, args, status) {
-  if (!ADMIN_IDS.has(String(chatId))) return send(chatId, 'Admin command denied.')
-  const [idValue, ...noteParts] = args.trim().split(/\s+/)
-  const id = Number(idValue)
-  if (!Number.isSafeInteger(id) || id <= 0) return send(chatId, `Use: <code>/${status === 'approved' ? 'approve' : 'reject'} submission-id optional-note</code>`)
+async function reviewSubmission(message, args, status) {
+  if (!ADMIN_IDS.has(String(message.from.id))) return send(message.chat.id, 'Admin command denied.')
+  if (message.chat.type !== 'private') {
+    await deleteQuietly(message.chat.id, message.message_id)
+    return send(message.from.id, 'Submission reviews are private. Use /reviews here in your direct MADGERbot chat.')
+  }
+  const review = parseReviewRequest(args)
+  if (!review) return send(message.chat.id, `Use: <code>/${status === 'approved' ? 'approve' : 'reject'} submission-id optional-note</code>\nReview notes may contain up to 300 characters.`)
   const result = await db('rpc/madger_bot_review_submission', {
-    method: 'POST', body: JSON.stringify({ p_submission_id: id, p_status: status, p_reviewer_chat_id: Number(chatId), p_note: noteParts.join(' ') || null })
+    method: 'POST', body: JSON.stringify({ p_submission_id: review.id, p_status: status, p_reviewer_chat_id: Number(message.from.id), p_note: review.note })
   })
   const reviewed = result?.[0]
-  await send(chatId, `Submission ${id} ${status}.${status === 'approved' ? ` Awarded ${reviewed?.awarded_points ?? 0} points.` : ''}`)
-  if (reviewed?.user_chat_id) await send(reviewed.user_chat_id, `Your mission submission ${id} was ${status}.${status === 'approved' ? ` +${reviewed.awarded_points} verified points.` : ''}`)
+  await send(message.chat.id, `Submission ${review.id} ${status}.${status === 'approved' ? ` Awarded ${reviewed?.awarded_points ?? 0} points.` : ''}`)
+  if (reviewed?.user_chat_id) await send(reviewed.user_chat_id, `Your mission submission ${review.id} was ${status}.${status === 'approved' ? ` +${reviewed.awarded_points} verified points.` : ''}${review.note ? `\nReview: ${escapeHtml(review.note)}` : ''}`)
 }
 
 async function reportMessage(message) {
@@ -813,6 +862,7 @@ async function handleCommand(message) {
   if (command === '/help') return showHelp(chatId)
   if (command === '/missions') return showMissions(chatId)
   if (command === '/submit') return submitMission(chatId, args)
+  if (command === '/mywork') return showMyWork(message)
   if (command === '/rank') return showRank(chatId)
   if (command === '/leaderboard') return showLeaderboard(chatId)
   if (command === '/referral') return showReferral(chatId)
@@ -833,15 +883,17 @@ async function handleCommand(message) {
   if (command === '/whoami') return send(chatId, `Your Telegram user ID is <code>${message.from.id}</code>. Treat admin IDs as operational configuration, not public content.`)
   if (command === '/chatid') return send(chatId, `This chat ID is <code>${message.chat.id}</code>. Use it only in the bot's secure runtime configuration.`)
   if (command === '/stats') return adminStats(chatId)
-  if (command === '/approve') return reviewSubmission(chatId, args, 'approved')
-  if (command === '/reject') return reviewSubmission(chatId, args, 'rejected')
+  if (command === '/reviews') return showReviews(message)
+  if (command === '/missionlist') return showMissionList(message)
+  if (command === '/approve') return reviewSubmission(message, args, 'approved')
+  if (command === '/reject') return reviewSubmission(message, args, 'rejected')
   if (command === '/missionadd') return manageMission(message, args, 'add')
   if (command === '/missionclose') return manageMission(message, args, 'close')
   if (command === '/missionopen') return manageMission(message, args, 'open')
   if (command === '/warn') return adminModerationAction(message, 'warn', args)
   if (command === '/mute') return adminModerationAction(message, 'mute', args)
   if (command === '/ban') return adminModerationAction(message, 'ban', args)
-  return send(chatId, 'Commands: /buy · /verify · /missions · /submit · /rank · /leaderboard · /referral · /teams · /rules · /safety · /report')
+  return send(chatId, 'Commands: /buy · /verify · /missions · /submit · /mywork · /rank · /leaderboard · /referral · /teams · /rules · /safety · /report')
 }
 
 async function moderate(message) {
@@ -1049,6 +1101,7 @@ async function setupTelegram(request) {
     { command: 'verify', description: 'Verify the official mint and pool' },
     { command: 'missions', description: 'View active contributor missions' },
     { command: 'submit', description: 'Submit mission evidence' },
+    { command: 'mywork', description: 'View your private submission history' },
     { command: 'rank', description: 'View contribution points and rank' },
     { command: 'leaderboard', description: 'Top approved MADGER contributors' },
     { command: 'referral', description: 'Create your attributable invite link' },
@@ -1074,6 +1127,8 @@ async function setupTelegram(request) {
     { command: 'missionadd', description: 'Admin create contributor mission' },
     { command: 'missionclose', description: 'Admin close contributor mission' },
     { command: 'missionopen', description: 'Admin reactivate contributor mission' },
+    { command: 'missionlist', description: 'Admin view all mission statuses' },
+    { command: 'reviews', description: 'Admin pending submission queue' },
     { command: 'stats', description: 'Admin seven-day bot report' },
     { command: 'warn', description: 'Admin reply-based warning' },
     { command: 'mute', description: 'Admin reply-based temporary mute' },
@@ -1108,7 +1163,7 @@ Deno.serve(async request => {
     const url = new URL(request.url)
     if (request.method === 'GET' && url.pathname.includes('/go/')) return routeRedirect(request, url)
     if (request.method === 'GET') {
-      return Response.json({ ok: true, service: 'MADGER Command Bot', version: '2.7.0', configured: Boolean(BOT_TOKEN && WEBHOOK_SECRET), community_guard: true, raid_shield: true, raid_link_firewall: true, faq_responder: true, market_commands: true, promotion_teams: true, announcements: true, contributor_leaderboard: true, mission_admin: true, native_buy_watcher: true })
+      return Response.json({ ok: true, service: 'MADGER Command Bot', version: '2.8.0', configured: Boolean(BOT_TOKEN && WEBHOOK_SECRET), community_guard: true, raid_shield: true, raid_link_firewall: true, faq_responder: true, market_commands: true, promotion_teams: true, announcements: true, contributor_leaderboard: true, contributor_history: true, mission_admin: true, review_queue: true, native_buy_watcher: true })
     }
     if (url.pathname.endsWith('/setup')) return setupTelegram(request)
     if (url.pathname.endsWith('/monitor')) return monitorMarket(request)
