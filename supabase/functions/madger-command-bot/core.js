@@ -182,7 +182,9 @@ export function parseRaidMode(value, now = Date.now()) {
 }
 
 export function marketSnapshotSummary(snapshot, now = Date.now()) {
-  const number = value => Number.isFinite(Number(value)) ? Number(value) : null
+  const number = value => value === null || value === undefined || value === ''
+    ? null
+    : Number.isFinite(Number(value)) ? Number(value) : null
   const createdAt = Date.parse(String(snapshot?.created_at ?? ''))
   return {
     priceUsd: number(snapshot?.price_usd),
