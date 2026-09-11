@@ -20,5 +20,12 @@
 /video-contest.js
   Cache-Control: no-cache
 
+/app.js
+  Cache-Control: no-cache
+
+/sw.js
+  Cache-Control: no-cache
+  Service-Worker-Allowed: /
+
 /*.html
   Cache-Control: public, max-age=300

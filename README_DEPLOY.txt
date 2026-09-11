@@ -20,22 +20,9 @@ The GitHub/Cloudflare production integration is expected to build the `main` bra
 
 `build.mjs` deletes any previous `dist/`, creates `dist/assets/`, then copies an explicit list.
 
-Published at the site root:
+The exact root and `/assets/` inventories are maintained in `site-config.mjs`. `npm run validate:dist` requires the built output to match that allowlist exactly, rejects confidential operational documents and secret-like wallet material, and enforces Cloudflare's per-asset upload ceiling.
 
-```text
-index.html              litepaper.html       404.html
-styles.css              script.js            robots.txt
-sitemap.xml             manifest.webmanifest _headers
-```
-
-Published below `/assets/`:
-
-```text
-madger_hero_burrow_v7.jpg        madger_official_logo_transparent_512.png
-madger_social_share_v10.jpg       madger_v6_community_welcome.webp
-```
-
-No repository documentation, validation script, package file, or other unlisted source is published. A build log should report 18 copied source files; treat any unexpected count as a reason to inspect `dist/`, not as permission to deploy.
+No repository documentation, validation script, package file, or other unlisted source is published. Treat any unexpected build count as a reason to compare `dist/` with `site-config.mjs`, not as permission to deploy.
 
 ## First-time workstation setup
 
@@ -89,7 +76,7 @@ Deploy the reviewed commit manually when authorized:
 npm run deploy
 ```
 
-For an automated `main` deployment, observe the Cloudflare build rather than also issuing a manual deploy. Do not publish concurrent builds whose ordering is unclear.
+For an automated `main` deployment, observe the `Deploy production website` GitHub Actions workflow rather than also issuing a manual deploy. The workflow validates the build, requires the repository's scoped Cloudflare token and account ID secrets, deploys once, and runs `npm run check:deployment` against the canonical origin. Do not publish concurrent builds whose ordering is unclear.
 
 ## Post-deployment verification
 
