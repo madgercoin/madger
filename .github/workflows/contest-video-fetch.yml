@@ -25,6 +25,15 @@ jobs:
         id: req
         shell: bash
         run: |
+          action=$(jq -r '.action // "video"' contest-sync/request.json)
+          echo "action=$action" >> "$GITHUB_OUTPUT"
+          if [[ "$action" == "list_ready" ]]; then
+            exit 0
+          fi
+          if [[ "$action" != "video" ]]; then
+            echo 'Invalid action' >&2
+            exit 1
+          fi
           submission_id=$(jq -r '.submission_id' contest-sync/request.json)
           file_name=$(jq -r '.file_name' contest-sync/request.json)
           if [[ -z "$submission_id" || "$submission_id" == "null" || -z "$file_name" || "$file_name" == "null" ]]; then
@@ -44,28 +53,38 @@ jobs:
           test -n "$token" && test "$token" != "null"
           echo "token=$token" >> "$GITHUB_OUTPUT"
 
-      - name: Download original from Supabase
+      - name: Fetch from Supabase bridge
+        id: fetch
         shell: bash
         env:
           OIDC_TOKEN: ${{ steps.oidc.outputs.token }}
+          ACTION: ${{ steps.req.outputs.action }}
           SUBMISSION_ID: ${{ steps.req.outputs.submission_id }}
           FILE_NAME: ${{ steps.req.outputs.file_name }}
         run: |
           mkdir -p contest-sync/out
-          curl --fail --location --silent --show-error \
-            -H "Authorization: Bearer $OIDC_TOKEN" \
-            "$BRIDGE_URL?submission_id=$SUBMISSION_ID" \
-            --output "contest-sync/out/$FILE_NAME"
-          test -s "contest-sync/out/$FILE_NAME"
-          sha256sum "contest-sync/out/$FILE_NAME" | tee contest-sync/out/SHA256.txt
+          if [[ "$ACTION" == "list_ready" ]]; then
+            curl --fail --location --silent --show-error \
+              -H "Authorization: Bearer $OIDC_TOKEN" \
+              "$BRIDGE_URL?action=list_ready" \
+              --output contest-sync/out/ready.json
+            jq -e '.rows | type == "array"' contest-sync/out/ready.json >/dev/null
+            echo "artifact_name=contest-ready-submissions" >> "$GITHUB_OUTPUT"
+          else
+            curl --fail --location --silent --show-error \
+              -H "Authorization: Bearer $OIDC_TOKEN" \
+              "$BRIDGE_URL?action=video&submission_id=$SUBMISSION_ID" \
+              --output "contest-sync/out/$FILE_NAME"
+            test -s "contest-sync/out/$FILE_NAME"
+            sha256sum "contest-sync/out/$FILE_NAME" | tee contest-sync/out/SHA256.txt
+            echo "artifact_name=contest-video-$SUBMISSION_ID" >> "$GITHUB_OUTPUT"
+          fi
 
       - name: Upload transfer artifact
         uses: actions/upload-artifact@v4
         with:
-          name: contest-video-${{ steps.req.outputs.submission_id }}
-          path: |
-            contest-sync/out/${{ steps.req.outputs.file_name }}
-            contest-sync/out/SHA256.txt
+          name: ${{ steps.fetch.outputs.artifact_name }}
+          path: contest-sync/out/
           if-no-files-found: error
           retention-days: 1
           compression-level: 0
