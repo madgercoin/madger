@@ -27,6 +27,8 @@ export const rootFiles = [
   "blog-verify-live-market.html",
   "blog-diligence-map.html",
   "blog-madger-thesis.html",
+  "blog-utility-without-a-wallet.html",
+  "blog-creator-trust-standard.html",
   "blog.css",
   "blog.js",
   "feed.xml",

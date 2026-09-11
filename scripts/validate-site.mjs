@@ -1,7 +1,7 @@
 import { access, readFile } from "node:fs/promises";
 import path from "node:path";
 
-const htmlFiles = ["buy.html", "index.html", "commons.html", "launch.html", "litepaper.html", "official-links.html", "collaborators.html", "privacy.html", "blog.html", "blog-madger-thesis.html", "blog-diligence-map.html", "blog-burrow-after-launch.html", "blog-character-outlives-chart.html", "blog-verify-live-market.html", "blog-building-foundations.html", "blog-honey-badger-standard.html", "blog-token-link-safety.html", "404.html"];
+const htmlFiles = ["buy.html", "index.html", "commons.html", "launch.html", "litepaper.html", "official-links.html", "collaborators.html", "privacy.html", "blog.html", "blog-utility-without-a-wallet.html", "blog-creator-trust-standard.html", "blog-madger-thesis.html", "blog-diligence-map.html", "blog-burrow-after-launch.html", "blog-character-outlives-chart.html", "blog-verify-live-market.html", "blog-building-foundations.html", "blog-honey-badger-standard.html", "blog-token-link-safety.html", "404.html"];
 const indexablePages = new Map([
   ["buy.html", "https://madgercoin.com/buy"],
   ["index.html", "https://madgercoin.com/"],
@@ -12,6 +12,8 @@ const indexablePages = new Map([
   ["collaborators.html", "https://madgercoin.com/collaborators"],
   ["privacy.html", "https://madgercoin.com/privacy.html"]
   ,["blog.html", "https://madgercoin.com/blog.html"]
+  ,["blog-utility-without-a-wallet.html", "https://madgercoin.com/blog-utility-without-a-wallet.html"]
+  ,["blog-creator-trust-standard.html", "https://madgercoin.com/blog-creator-trust-standard.html"]
   ,["blog-madger-thesis.html", "https://madgercoin.com/blog-madger-thesis.html"]
   ,["blog-diligence-map.html", "https://madgercoin.com/blog-diligence-map.html"]
   ,["blog-burrow-after-launch.html", "https://madgercoin.com/blog-burrow-after-launch.html"]
@@ -46,6 +48,8 @@ const socialPreview = "https://madgercoin.com/assets/madger_social_share_v10.jpg
 const homepageSocialPreview = "https://madgercoin.com/assets/madger_social_share_v10.jpg";
 const pageSocialPreviews = new Map([
   ["blog.html", "https://madgercoin.com/assets/madger_journal_social_v2.jpg"],
+  ["blog-utility-without-a-wallet.html", "https://madgercoin.com/assets/madger_social_share_v10.jpg"],
+  ["blog-creator-trust-standard.html", "https://madgercoin.com/assets/madger_social_share_v10.jpg"],
   ["blog-madger-thesis.html", "https://madgercoin.com/assets/madger_social_share_v10.jpg"],
   ["blog-diligence-map.html", "https://madgercoin.com/assets/madger_social_share_v10.jpg"],
   ["blog-burrow-after-launch.html", "https://madgercoin.com/assets/madger_social_share_v10.jpg"],

@@ -1,5 +1,12 @@
 # Changelog
 
+## 2026-09-11 — Signals From Below editorial cycle
+
+- Published two source-grounded dispatches on community utility and creator trust, expanding the archive from eight to ten entries.
+- Made the Commons utility the lead story without mixing community participation into the dedicated beginner purchase path.
+- Added a public Thursday publishing target and evidence, correction, RSS, sitemap, homepage, and social-distribution standards.
+- Extended archive, homepage, feed, sitemap, build allowlist, validation, and production checks for the new release.
+
 ## 2026-09-10 — Blockspot verification backlink
 
 - Added a compact homepage-footer badge linking to MADGER's verified Blockspot profile.
