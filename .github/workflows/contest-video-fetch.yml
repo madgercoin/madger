@@ -17,6 +17,7 @@ env:
 jobs:
   fetch-video:
     runs-on: ubuntu-latest
+    timeout-minutes: 3
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -47,7 +48,7 @@ jobs:
         id: oidc
         shell: bash
         run: |
-          token_json=$(curl -fsSL -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" \
+          token_json=$(curl -fsSL --max-time 20 -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" \
             "$ACTIONS_ID_TOKEN_REQUEST_URL&audience=$OIDC_AUDIENCE")
           token=$(printf '%s' "$token_json" | jq -r '.value')
           test -n "$token" && test "$token" != "null"
@@ -63,18 +64,13 @@ jobs:
           FILE_NAME: ${{ steps.req.outputs.file_name }}
         run: |
           mkdir -p contest-sync/out
+          CURL=(curl --fail --location --silent --show-error --max-time 30 --retry 2 --retry-all-errors --retry-delay 3 -H "Authorization: Bearer $OIDC_TOKEN")
           if [[ "$ACTION" == "list_ready" ]]; then
-            curl --fail --location --silent --show-error \
-              -H "Authorization: Bearer $OIDC_TOKEN" \
-              "$BRIDGE_URL?action=list_ready" \
-              --output contest-sync/out/ready.json
+            "${CURL[@]}" "$BRIDGE_URL?action=list_ready" --output contest-sync/out/ready.json
             jq -e '.rows | type == "array"' contest-sync/out/ready.json >/dev/null
             echo "artifact_name=contest-ready-submissions" >> "$GITHUB_OUTPUT"
           else
-            curl --fail --location --silent --show-error \
-              -H "Authorization: Bearer $OIDC_TOKEN" \
-              "$BRIDGE_URL?action=video&submission_id=$SUBMISSION_ID" \
-              --output "contest-sync/out/$FILE_NAME"
+            "${CURL[@]}" "$BRIDGE_URL?action=video&submission_id=$SUBMISSION_ID" --output "contest-sync/out/$FILE_NAME"
             test -s "contest-sync/out/$FILE_NAME"
             sha256sum "contest-sync/out/$FILE_NAME" | tee contest-sync/out/SHA256.txt
             echo "artifact_name=contest-video-$SUBMISSION_ID" >> "$GITHUB_OUTPUT"
