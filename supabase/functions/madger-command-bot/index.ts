@@ -2,7 +2,7 @@ import 'jsr:@supabase/functions-js/edge-runtime.d.ts'
 import {
   LINKS, OFFICIAL_MINT, OFFICIAL_POOL, buyTier, escapeHtml,
   marketAlertReasons, moderationEscalation, moderationReason,
-  normalizeReferral, normalizeTeam, normalizedMessageFingerprint, parseTeamAlert
+  normalizeReferral, normalizeTeam, normalizedMessageFingerprint, parseAnnouncement, parseTeamAlert
 } from './core.js'
 
 const BOT_TOKEN = Deno.env.get('TELEGRAM_BOT_TOKEN') ?? ''
@@ -137,6 +137,27 @@ async function saveModerationState(body) {
   })
 }
 
+async function scheduleCleanup(chatId, messageId, reason, minutes = 5) {
+  await db('madger_bot_message_cleanup?on_conflict=chat_id,message_id', {
+    method: 'POST', headers: { Prefer: 'resolution=merge-duplicates,return=minimal' },
+    body: JSON.stringify({
+      chat_id: chatId, message_id: messageId, reason,
+      delete_after: new Date(Date.now() + minutes * 60000).toISOString()
+    })
+  })
+}
+
+async function sweepMessageCleanup() {
+  const cutoff = encodeURIComponent(new Date().toISOString())
+  const rows = await db(`madger_bot_message_cleanup?deleted_at=is.null&delete_after=lte.${cutoff}&select=chat_id,message_id&limit=100`)
+  for (const row of rows ?? []) {
+    await deleteQuietly(row.chat_id, row.message_id)
+    await db(`madger_bot_message_cleanup?chat_id=eq.${row.chat_id}&message_id=eq.${row.message_id}`, {
+      method: 'PATCH', body: JSON.stringify({ deleted_at: new Date().toISOString() })
+    })
+  }
+}
+
 function conversionKeyboard(referralCode = '') {
   return keyboard([
     [{ text: '🧭 New to crypto: Start Here', url: trackedUrl('guide', referralCode) }],
@@ -253,6 +274,7 @@ async function verifyNewMember(callback) {
       chat_id: chatId, message_id: callback.message.message_id, parse_mode: 'HTML',
       text: `<b>${escapeHtml(callback.from.first_name || callback.from.username || 'Member')} verified.</b> Welcome to The Burrow. 🦡\n\nUse /buy for official purchase routes and /safety before trusting any link.`
     })
+    await scheduleCleanup(chatId, callback.message.message_id, 'verified_welcome', 5)
   } catch { /* welcome may have been removed by an admin */ }
   await recordEvent('join_verified', userId, { chat_id: chatId })
 }
@@ -373,6 +395,52 @@ async function launchTeamAlert(message, args) {
   })
   await recordEvent('team_alert', message.from.id, { team: alert.team, alert_id: created?.[0]?.id, delivered, failed })
   return send(message.chat.id, `<b>${teamLabel(alert.team)} alert complete.</b>\nDelivered: ${delivered}\nFailed/blocked: ${failed}`)
+}
+
+async function publishAnnouncement(message, args, pinRequested) {
+  if (!ADMIN_IDS.has(String(message.from.id))) return send(message.chat.id, 'Admin command denied.')
+  if (message.chat.type !== 'private') return send(message.chat.id, 'Publish official announcements only from your private MADGERbot chat.')
+  if (!BUY_CHAT_ID) return send(message.chat.id, 'The Burrow destination is not configured.')
+  const announcement = parseAnnouncement(args)
+  if (!announcement) return send(message.chat.id, `Use: <code>/${pinRequested ? 'announcepin' : 'announce'} Message text | https://trusted-link | Button label</code>\n\nThe link and button are optional. Messages must contain 5–1,000 characters.`)
+  const replyMarkup = announcement.url ? keyboard([[{ text: announcement.label, url: announcement.url }]]) : undefined
+  const posted = await send(BUY_CHAT_ID, `<b>MADGER OFFICIAL</b> 📣\n\n${escapeHtml(announcement.text)}`, replyMarkup)
+  let pinned = false
+  let pinFailure = ''
+  if (pinRequested) {
+    try {
+      await telegram('pinChatMessage', { chat_id: BUY_CHAT_ID, message_id: posted.message_id, disable_notification: false })
+      pinned = true
+    } catch (error) {
+      pinFailure = ' The announcement posted, but Telegram denied pinning; grant MADGERbot permission to pin messages.'
+    }
+  }
+  await insert('madger_bot_announcements', {
+    chat_id: Number(BUY_CHAT_ID), message_id: posted.message_id, body: announcement.text,
+    target_url: announcement.url, button_label: announcement.label, pinned, created_by: message.from.id
+  })
+  await recordEvent('announcement', message.from.id, { chat_id: BUY_CHAT_ID, message_id: posted.message_id, pinned })
+  return send(message.chat.id, `<b>Announcement published.</b>\nMessage ID: <code>${posted.message_id}</code>\nPinned: ${pinned ? 'yes' : 'no'}.${pinFailure}`)
+}
+
+async function adminDashboard(message) {
+  if (!ADMIN_IDS.has(String(message.from.id))) return send(message.chat.id, 'Admin command denied.')
+  const since = encodeURIComponent(new Date(Date.now() - 7 * 86400000).toISOString())
+  const [users, pending, events, memberships, alerts, announcements, snapshots] = await Promise.all([
+    db('madger_bot_users?select=chat_id'),
+    db('madger_bot_moderation_state?pending_verification=eq.true&select=user_id'),
+    db(`madger_bot_events?created_at=gte.${since}&select=event_type`),
+    db('madger_bot_team_memberships?active=eq.true&select=team'),
+    db('madger_bot_team_alerts?select=recipient_count,failure_count&order=created_at.desc&limit=20'),
+    db('madger_bot_announcements?select=id&order=created_at.desc&limit=20'),
+    db('madger_bot_market_snapshots?select=price_usd,liquidity_usd&order=created_at.desc&limit=1')
+  ])
+  const eventCounts = (events ?? []).reduce((result, row) => ({ ...result, [row.event_type]: (result[row.event_type] ?? 0) + 1 }), {})
+  const teamCounts = (memberships ?? []).reduce((result, row) => ({ ...result, [row.team]: (result[row.team] ?? 0) + 1 }), {})
+  const delivered = (alerts ?? []).reduce((sum, row) => sum + Number(row.recipient_count ?? 0), 0)
+  const failed = (alerts ?? []).reduce((sum, row) => sum + Number(row.failure_count ?? 0), 0)
+  const market = snapshots?.[0]
+  return send(message.chat.id, `<b>MADGER COMMAND DASHBOARD</b> 🦡\n\n<b>Community</b>\nTracked members: ${users?.length ?? 0}\nPending join checks: ${pending?.length ?? 0}\nVerified joins (7d): ${eventCounts.join_verified ?? 0}\nModeration actions (7d): ${eventCounts.moderation_action ?? 0}\nMember reports (7d): ${eventCounts.member_report ?? 0}\n\n<b>Promotion teams</b>\nRaid: ${teamCounts.raid ?? 0}\nOutreach: ${teamCounts.outreach ?? 0}\nRecent deliveries: ${delivered}\nDelivery failures: ${failed}\n\n<b>Publishing</b>\nRecent announcements: ${announcements?.length ?? 0}\n\n<b>Market</b>\nPrice: ${market?.price_usd ?? 'unavailable'} USD\nLiquidity: ${market?.liquidity_usd ?? 'unavailable'} USD`)
 }
 
 async function showMissions(chatId) {
@@ -511,6 +579,9 @@ async function handleCommand(message) {
   if (command === '/leaveteam') return setTeamFromCommand(message, args, false)
   if (command === '/teamalert') return launchTeamAlert(message, args)
   if (command === '/teamstats') return teamStats(message)
+  if (command === '/announce') return publishAnnouncement(message, args, false)
+  if (command === '/announcepin') return publishAnnouncement(message, args, true)
+  if (command === '/dashboard') return adminDashboard(message)
   if (command === '/whoami') return send(chatId, `Your Telegram user ID is <code>${message.from.id}</code>. Treat admin IDs as operational configuration, not public content.`)
   if (command === '/chatid') return send(chatId, `This chat ID is <code>${message.chat.id}</code>. Use it only in the bot's secure runtime configuration.`)
   if (command === '/stats') return adminStats(chatId)
@@ -566,7 +637,8 @@ async function moderate(message) {
   } else {
     await saveModerationState({ chat_id: message.chat.id, user_id: message.from.id, warning_count: warningCount })
   }
-  await send(message.chat.id, `<b>MADGER Guard:</b> ${escapeHtml(reason)}. ${publicAction}\nUse /safety for the official protection standard.`)
+  const notice = await send(message.chat.id, `<b>MADGER Guard:</b> ${escapeHtml(reason)}. ${publicAction}\nUse /safety for the official protection standard.`)
+  await scheduleCleanup(message.chat.id, notice.message_id, 'moderation_notice', 5)
   await recordEvent('moderation_action', message.from.id, { chat_id: message.chat.id, reason, action, warning_count: warningCount })
   if (ADMIN_CHAT_ID) await send(ADMIN_CHAT_ID, `<b>MADGER Guard action</b> 🛡️\nChat: <code>${message.chat.id}</code>\nUser: <code>${message.from.id}</code> @${escapeHtml(message.from.username ?? 'none')}\nReason: ${escapeHtml(reason)}\nAction: ${escapeHtml(action)}\nMessage ID: <code>${message.message_id}</code>`)
   return true
@@ -606,7 +678,7 @@ async function routeRedirect(request, url) {
 
 async function monitorMarket(request) {
   if (!await authenticateInternal(request)) return new Response('Unauthorized', { status: 401 })
-  await sweepExpiredJoins()
+  await Promise.all([sweepExpiredJoins(), sweepMessageCleanup()])
   const response = await fetch(`https://api.dexscreener.com/latest/dex/pairs/solana/${OFFICIAL_POOL}`)
   if (!response.ok) throw new Error(`DEX Screener request failed: ${response.status}`)
   const payload = await response.json()
@@ -680,20 +752,24 @@ async function setupTelegram(request) {
     { command: 'teams', description: 'Join or leave MADGER promotion teams' },
     { command: 'jointeam', description: 'Join raid or outreach alerts privately' },
     { command: 'leaveteam', description: 'Leave raid or outreach alerts' },
+    { command: 'dashboard', description: 'Admin command-center dashboard' },
+    { command: 'announce', description: 'Admin official Burrow announcement' },
+    { command: 'announcepin', description: 'Admin announcement with pin request' },
     { command: 'rules', description: 'Read The Burrow community rules' },
     { command: 'safety', description: 'Read the official wallet safety standard' },
     { command: 'report', description: 'Reply to suspicious content to report it' },
     { command: 'whoami', description: 'Display your numeric Telegram ID' },
     { command: 'chatid', description: 'Display the current chat ID' }
   ] })
-  let guard = { configured: false, can_delete_messages: false, can_restrict_members: false }
+  let guard = { configured: false, can_delete_messages: false, can_restrict_members: false, can_pin_messages: false }
   if (BUY_CHAT_ID) {
     try {
       const membership = await telegram('getChatMember', { chat_id: BUY_CHAT_ID, user_id: bot.id })
       guard = {
         configured: membership.status === 'administrator' || membership.status === 'creator',
         can_delete_messages: Boolean(membership.can_delete_messages),
-        can_restrict_members: Boolean(membership.can_restrict_members)
+        can_restrict_members: Boolean(membership.can_restrict_members),
+        can_pin_messages: Boolean(membership.can_pin_messages)
       }
     } catch { /* group may not be configured yet */ }
   }
@@ -705,7 +781,7 @@ Deno.serve(async request => {
     const url = new URL(request.url)
     if (request.method === 'GET' && url.pathname.includes('/go/')) return routeRedirect(request, url)
     if (request.method === 'GET') {
-      return Response.json({ ok: true, service: 'MADGER Command Bot', version: '2.1.0', configured: Boolean(BOT_TOKEN && WEBHOOK_SECRET), community_guard: true, promotion_teams: true })
+      return Response.json({ ok: true, service: 'MADGER Command Bot', version: '2.2.0', configured: Boolean(BOT_TOKEN && WEBHOOK_SECRET), community_guard: true, promotion_teams: true, announcements: true })
     }
     if (url.pathname.endsWith('/setup')) return setupTelegram(request)
     if (url.pathname.endsWith('/monitor')) return monitorMarket(request)
