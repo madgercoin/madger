@@ -3,7 +3,7 @@ import test from 'node:test'
 import {
   OFFICIAL_MINT, buyTier, escapeHtml, isSuspiciousMadgerMessage,
   marketAlertReasons, moderationEscalation, moderationReason,
-  normalizeReferral, normalizedMessageFingerprint
+  normalizeReferral, normalizeTeam, normalizedMessageFingerprint, parseTeamAlert
 } from '../supabase/functions/madger-command-bot/core.js'
 
 test('escapes Telegram HTML', () => assert.equal(escapeHtml('<bad & worse>'), '&lt;bad &amp; worse&gt;'))
@@ -38,4 +38,18 @@ test('escalates repeated moderation violations', () => {
   assert.equal(moderationEscalation(1), 'warn')
   assert.equal(moderationEscalation(2), 'mute')
   assert.equal(moderationEscalation(3), 'remove')
+})
+
+test('normalizes raid and outreach team aliases', () => {
+  assert.equal(normalizeTeam('RAID'), 'raid')
+  assert.equal(normalizeTeam('shill'), 'outreach')
+  assert.equal(normalizeTeam('unknown'), null)
+})
+
+test('accepts bounded team alerts only on trusted community platforms', () => {
+  assert.deepEqual(parseTeamAlert('raid https://x.com/madger/status/1 | Add an original comment about the artwork.'), {
+    team: 'raid', url: 'https://x.com/madger/status/1', brief: 'Add an original comment about the artwork.'
+  })
+  assert.equal(parseTeamAlert('shill https://evil.example/connect | Paste this everywhere'), null)
+  assert.equal(parseTeamAlert('raid javascript:alert(1) | Unsafe'), null)
 })
