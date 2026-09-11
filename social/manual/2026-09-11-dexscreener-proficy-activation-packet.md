@@ -2,7 +2,9 @@
 
 Date: **Friday, September 11, 2026**  
 Timezone: **America/New_York (ET)**  
-Status: **PREPARED — DO NOT PUBLISH UNTIL DEX SCREENER CONFIRMS THE PAID CAMPAIGN IS LIVE**
+Status: **PREPARED — PRODUCTION ROUTE BLOCKER OPEN**
+
+At 4:03 AM ET, `/buy` returned 200 but every `/r/*` and `/c/*` route returned 404. The Cloudflare deployment was retried and failed at the deploy step after all builds and validation passed. Do not publish the prepared social drafts until the production routes pass, or replace campaign aliases with the direct fallback URLs below.
 
 ## Approved paid stack
 
@@ -72,6 +74,16 @@ Never use “100x,” “moonshot,” guaranteed-return language, price targets,
 - Telegram: `https://t.me/madgerburrow`
 - X: `https://x.com/madgercoin`
 
+### Direct fallbacks while the Worker routes return 404
+
+- DEX paid: `https://madgercoin.com/buy?utm_source=dexscreener&utm_medium=paid&utm_campaign=dexscreener_20k`
+- Proficy paid: `https://madgercoin.com/buy?utm_source=proficy&utm_medium=paid_trending&utm_campaign=proficy_4h_test&utm_content=trending_slot`
+- Telegram: `https://madgercoin.com/buy?utm_source=telegram&utm_medium=community&utm_campaign=burrow_buy_pin&utm_content=pinned_message`
+- BONKbot direct: `https://t.me/bonkbot_bot?start=ref_7cien_ca_BHauMX8akk2umqkQqnJwpYkCRkZmefGnEBFByeFXRKqv`
+- Trojan direct: `https://t.me/achilles_trojanbot?start=r-burrowking-BHauMX8akk2umqkQqnJwpYkCRkZmefGnEBFByeFXRKqv`
+
+Use direct fallbacks only if the fixed same-domain route cannot be restored before activation.
+
 **Description**
 
 `MADGER ($MADGER) is a live Solana community token with a verified public mint, open market record, beginner buying guide, and active community at The Burrow. Verify the full mint before trading.`
@@ -125,6 +137,8 @@ Release the four prepared Buffer drafts:
 | TikTok | `6aa3b55e816445bddc4d3316` |
 
 Then publish the Telegram and Discord messages below.
+
+**Prepared media alt text:** `Official MADGER trading graphic in black, gold, and neon purple, featuring the MADGER character, Solana branding, and the words Verify, Watch, Join.`
 
 ### 10:30 AM ET — Proficy
 
