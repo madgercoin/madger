@@ -5,7 +5,8 @@ import {
   findVerifiedMadgerBuyers, isSuspiciousMadgerMessage,
   marketAlertReasons, marketSnapshotSummary, moderationEscalation, moderationReason,
   normalizeMissionCode, normalizeReferral, normalizeTeam, normalizedMessageFingerprint,
-  parseAnnouncement, parseMissionDefinition, parseRaidMode, parseTeamAlert, shouldActivateRaidMode
+  parseAnnouncement, parseMissionDefinition, parseRaidMode, parseReviewRequest, parseTeamAlert,
+  shouldActivateRaidMode
 } from '../supabase/functions/madger-command-bot/core.js'
 
 test('escapes Telegram HTML', () => assert.equal(escapeHtml('<bad & worse>'), '&lt;bad &amp; worse&gt;'))
@@ -30,6 +31,13 @@ test('assigns contribution ranks at exact thresholds', () => {
   assert.equal(contributorRank(250), 'Claw Contributor')
   assert.equal(contributorRank(500), 'Verified Creator')
   assert.equal(contributorRank(1000), 'Burrow Elite')
+})
+
+test('parses bounded submission review requests', () => {
+  assert.deepEqual(parseReviewRequest('42 Strong original work.'), { id: 42, note: 'Strong original work.' })
+  assert.deepEqual(parseReviewRequest('7'), { id: 7, note: null })
+  assert.equal(parseReviewRequest('0 invalid'), null)
+  assert.equal(parseReviewRequest(`9 ${'x'.repeat(301)}`), null)
 })
 test('accepts the official MADGER mint', () => assert.equal(isSuspiciousMadgerMessage(`MADGER ${OFFICIAL_MINT}`), false))
 test('flags an alternate address presented as MADGER', () => assert.equal(isSuspiciousMadgerMessage('MADGER 9JnqwF5QzMtLE2BfypLzWrXWX7XsNJ8yqSwuNasupump'), true))
