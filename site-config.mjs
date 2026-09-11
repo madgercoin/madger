@@ -41,6 +41,7 @@ export const rootFiles = [
   "robots.txt",
   "sitemap.xml",
   "manifest.webmanifest",
+  "token-metadata.json",
   "favicon.png",
   "favicon-spin.js",
   "madger_coin_spin_sprite.png",

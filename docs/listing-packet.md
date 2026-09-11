@@ -18,6 +18,7 @@ Status: **post-launch listing packet**. Public trading is live and the website s
 | Transfer tax | 0%; classic SPL Token mint with no Token-2022 transfer-fee extension |
 | Trading status | Live on Raydium through the canonical market link below |
 | Website | https://madgercoin.com |
+| Canonical metadata | https://madgercoin.com/token-metadata.json |
 | Explorer | https://solscan.io/token/BHauMX8akk2umqkQqnJwpYkCRkZmefGnEBFByeFXRKqv |
 | Official market | https://raydium.io/liquidity-pools/?token=BHauMX8akk2umqkQqnJwpYkCRkZmefGnEBFByeFXRKqv |
 
@@ -48,6 +49,7 @@ MADGER is a community-driven Solana memecoin and original character brand center
 | Square icon | `assets/madger_official_logo_transparent_512.png` | https://madgercoin.com/assets/madger_official_logo_transparent_512.png |
 | Profile | `assets/madger_official_logo_transparent_512.png` | https://madgercoin.com/assets/madger_official_logo_transparent_512.png |
 | Official logo | `assets/madger_official_logo_transparent_512.png` | https://madgercoin.com/assets/madger_official_logo_transparent_512.png |
+| Token metadata | `token-metadata.json` | https://madgercoin.com/token-metadata.json |
 | Hero/cover | `assets/madger_hero_burrow_v7.jpg` | https://madgercoin.com/assets/madger_hero_burrow_v7.jpg |
 
 Confirm each provider’s current dimensions, file type, background, and size requirements before submission. Do not substitute unofficial community artwork for the canonical icon.
