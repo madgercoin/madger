@@ -50,6 +50,9 @@ The database invokes `/monitor` every five minutes with a secret stored in Supab
 - `/jointeam raid|outreach` and `/leaveteam raid|outreach` — manage voluntary notifications
 - `/teamalert TEAM HTTPS_URL | BRIEF` — admin-only campaign alert, private chat only, with a 30-minute team cooldown
 - `/teamstats` — admin-only opt-in counts
+- `/announce MESSAGE [| HTTPS_URL | BUTTON]` — publish one official announcement to The Burrow
+- `/announcepin MESSAGE [| HTTPS_URL | BUTTON]` — publish and request a Telegram notification pin
+- `/dashboard` — private command-center view of joins, safety actions, teams, delivery, announcements, and market state
 - `/warn`, `/mute [MINUTES]`, and `/ban` — reply-based administrator moderation
 - `/stats` — admin-only seven-day report
 - `/approve ID [NOTE]` and `/reject ID [NOTE]` — admin-only human review
@@ -69,6 +72,13 @@ The database invokes `/monitor` every five minutes with a secret stored in Supab
 - Membership is private, voluntary, and revocable at any time. The bot never tags the entire group.
 - Alerts permit only trusted MADGER and major social-platform HTTPS targets, are admin-only, and have a 30-minute per-team cooldown.
 - Every alert prohibits scripts, copy-paste swarms, spam, harassment, misleading claims, and financial promises.
+
+## Announcements and cleanup
+
+- Admins publish from the private bot chat; the destination is fixed to the configured Burrow chat ID.
+- Optional buttons accept only the same trusted MADGER and major social-platform HTTPS targets as team alerts.
+- Pin requests use Telegram's native notification pin and fail safely if the bot lacks pin permission.
+- Completed join notices and moderation notices are automatically removed after five minutes during the existing monitor cycle.
 
 ## Local verification
 
