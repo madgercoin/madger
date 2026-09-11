@@ -2,7 +2,7 @@ import 'jsr:@supabase/functions-js/edge-runtime.d.ts'
 import {
   LINKS, OFFICIAL_MINT, OFFICIAL_POOL, buyTier, escapeHtml,
   findVerifiedMadgerBuyers,
-  marketAlertReasons, moderationEscalation, moderationReason,
+  marketAlertReasons, marketSnapshotSummary, moderationEscalation, moderationReason,
   normalizeReferral, normalizeTeam, normalizedMessageFingerprint, parseAnnouncement,
   parseRaidMode, parseTeamAlert, shouldActivateRaidMode
 } from './core.js'
@@ -353,6 +353,42 @@ async function sweepExpiredJoins() {
   }
 }
 
+function compactUsd(value, maximumFractionDigits = 2) {
+  if (!Number.isFinite(value)) return 'unavailable'
+  if (value > 0 && value < 0.01) return `$${value.toLocaleString('en-US', { minimumFractionDigits: 6, maximumFractionDigits: 10 })}`
+  return `$${value.toLocaleString('en-US', { maximumFractionDigits })}`
+}
+
+async function showMarket(chatId) {
+  const rows = await db('madger_bot_market_snapshots?select=price_usd,liquidity_usd,volume_m5_usd,buys_m5,sells_m5,raw,created_at&order=created_at.desc&limit=1')
+  if (!rows?.length) return send(chatId, 'Market data is temporarily unavailable. Use the verified chart link below.', keyboard([[{ text: '📈 Open verified chart', url: LINKS.dex }]]))
+  const market = marketSnapshotSummary(rows[0])
+  return send(chatId, `<b>MADGER MARKET SNAPSHOT</b> 📊\n\nPrice: ${compactUsd(market.priceUsd)}\nMarket cap: ${compactUsd(market.marketCapUsd, 0)}\nLiquidity: ${compactUsd(market.liquidityUsd, 0)}\n5m volume: ${compactUsd(market.volumeM5Usd)}\n5m trades: ${market.buysM5 ?? '—'} buys · ${market.sellsM5 ?? '—'} sells\nUpdated: ${market.ageMinutes === null ? 'unknown' : `${market.ageMinutes} minute${market.ageMinutes === 1 ? '' : 's'} ago`}\n\nAlways verify the mint before trading.`, keyboard([[{ text: '📈 Live verified chart', url: LINKS.dex }, { text: '⚡ Open Raydium', url: LINKS.raydium }]]))
+}
+
+async function showOfficialLinks(chatId) {
+  return send(chatId, `<b>OFFICIAL MADGER LINKS</b> ✅\n\nWebsite: ${LINKS.official}\nOfficial mint:\n<code>${OFFICIAL_MINT}</code>\n\nTreat any conflicting contract, support account, or wallet link as suspicious.`, keyboard([
+    [{ text: '🌐 Official website', url: LINKS.official }, { text: '🦡 The Burrow', url: LINKS.community }],
+    [{ text: '✅ Verify MADGER', url: LINKS.verify }, { text: '📈 Verified chart', url: LINKS.dex }]
+  ]))
+}
+
+async function showHelp(chatId) {
+  return send(chatId, '<b>MADGERBOT COMMANDS</b> 🦡\n\n<b>Trade safely</b>\n/buy · /price · /chart · /ca · /verify · /links\n\n<b>Community</b>\n/rules · /safety · /report · /teams\n\n<b>Contribute</b>\n/missions · /submit · /rank · /referral\n\nMADGERbot never requests wallet credentials, payments, verification transfers, or remote access.')
+}
+
+async function chatSecurityInfo(chatId) {
+  try {
+    const chat = await telegram('getChat', { chat_id: chatId })
+    return {
+      aggressiveAntiSpam: chat.has_aggressive_anti_spam_enabled === true,
+      slowModeSeconds: Number(chat.slow_mode_delay ?? 0)
+    }
+  } catch {
+    return { aggressiveAntiSpam: null, slowModeSeconds: null }
+  }
+}
+
 async function manageRaidMode(message, args) {
   if (!ADMIN_IDS.has(String(message.from.id))) return send(message.chat.id, 'Admin command denied.')
   if (message.chat.type !== 'private') {
@@ -543,7 +579,7 @@ async function adminDashboard(message) {
     return send(message.from.id, 'The command dashboard is private. Use /dashboard here in your direct MADGERbot chat.')
   }
   const since = encodeURIComponent(new Date(Date.now() - 7 * 86400000).toISOString())
-  const [users, pending, events, memberships, alerts, announcements, snapshots, raidMode] = await Promise.all([
+  const [users, pending, events, memberships, alerts, announcements, snapshots, raidMode, chatSecurity] = await Promise.all([
     db('madger_bot_users?select=chat_id'),
     db('madger_bot_moderation_state?pending_verification=eq.true&select=user_id'),
     db(`madger_bot_events?created_at=gte.${since}&select=event_type`),
@@ -551,14 +587,15 @@ async function adminDashboard(message) {
     db('madger_bot_team_alerts?select=recipient_count,failure_count&order=created_at.desc&limit=20'),
     db('madger_bot_announcements?select=id&order=created_at.desc&limit=20'),
     db('madger_bot_market_snapshots?select=price_usd,liquidity_usd&order=created_at.desc&limit=1'),
-    raidModeForChat(BUY_CHAT_ID)
+    raidModeForChat(BUY_CHAT_ID),
+    chatSecurityInfo(BUY_CHAT_ID)
   ])
   const eventCounts = (events ?? []).reduce((result, row) => ({ ...result, [row.event_type]: (result[row.event_type] ?? 0) + 1 }), {})
   const teamCounts = (memberships ?? []).reduce((result, row) => ({ ...result, [row.team]: (result[row.team] ?? 0) + 1 }), {})
   const delivered = (alerts ?? []).reduce((sum, row) => sum + Number(row.recipient_count ?? 0), 0)
   const failed = (alerts ?? []).reduce((sum, row) => sum + Number(row.failure_count ?? 0), 0)
   const market = snapshots?.[0]
-  return send(message.chat.id, `<b>MADGER COMMAND DASHBOARD</b> 🦡\n\n<b>Community</b>\nRaid Shield: ${raidMode.active ? 'ACTIVE 🚨' : 'normal'}\nTracked members: ${users?.length ?? 0}\nPending join checks: ${pending?.length ?? 0}\nVerified joins (7d): ${eventCounts.join_verified ?? 0}\nExpired/purged joins (7d): ${(eventCounts.join_expired ?? 0) + (eventCounts.join_purged ?? 0)}\nModeration actions (7d): ${eventCounts.moderation_action ?? 0}\nMember reports (7d): ${eventCounts.member_report ?? 0}\n\n<b>Promotion teams</b>\nRaid: ${teamCounts.raid ?? 0}\nOutreach: ${teamCounts.outreach ?? 0}\nRecent deliveries: ${delivered}\nDelivery failures: ${failed}\n\n<b>Publishing</b>\nRecent announcements: ${announcements?.length ?? 0}\n\n<b>Market</b>\nPrice: ${market?.price_usd ?? 'unavailable'} USD\nLiquidity: ${market?.liquidity_usd ?? 'unavailable'} USD`)
+  return send(message.chat.id, `<b>MADGER COMMAND DASHBOARD</b> 🦡\n\n<b>Community</b>\nRaid Shield: ${raidMode.active ? 'ACTIVE 🚨' : 'normal'}\nRaid link firewall: ${raidMode.active ? 'locked' : 'standby'}\nTelegram native anti-spam: ${chatSecurity.aggressiveAntiSpam === null ? 'unknown' : chatSecurity.aggressiveAntiSpam ? 'enabled' : 'disabled'}\nTelegram slow mode: ${chatSecurity.slowModeSeconds === null ? 'unknown' : `${chatSecurity.slowModeSeconds}s`}\nTracked members: ${users?.length ?? 0}\nPending join checks: ${pending?.length ?? 0}\nVerified joins (7d): ${eventCounts.join_verified ?? 0}\nExpired/purged joins (7d): ${(eventCounts.join_expired ?? 0) + (eventCounts.join_purged ?? 0)}\nModeration actions (7d): ${eventCounts.moderation_action ?? 0}\nMember reports (7d): ${eventCounts.member_report ?? 0}\n\n<b>Promotion teams</b>\nRaid: ${teamCounts.raid ?? 0}\nOutreach: ${teamCounts.outreach ?? 0}\nRecent deliveries: ${delivered}\nDelivery failures: ${failed}\n\n<b>Publishing</b>\nRecent announcements: ${announcements?.length ?? 0}\n\n<b>Market</b>\nPrice: ${market?.price_usd ?? 'unavailable'} USD\nLiquidity: ${market?.liquidity_usd ?? 'unavailable'} USD`)
 }
 
 async function showMissions(chatId) {
@@ -684,7 +721,11 @@ async function handleCommand(message) {
   if (command === '/start' && startIntent === 'teams') return showTeams(message)
   if (command === '/start') return showWelcome(chatId, message.from, startRef)
   if (command === '/buy') return send(chatId, `<b>BUY $MADGER SAFELY</b>\n\nOfficial mint:\n<code>${OFFICIAL_MINT}</code>\n\nMADGER never presets your amount or slippage. Review every wallet prompt before approving.`, conversionKeyboard())
-  if (command === '/mint' || command === '/verify') return send(chatId, `<b>OFFICIAL MADGER MINT</b>\n<code>${OFFICIAL_MINT}</code>\n\nPool:\n<code>${OFFICIAL_POOL}</code>`, keyboard([[{ text: 'Open canonical verification', url: LINKS.verify }]]))
+  if (command === '/mint' || command === '/verify' || command === '/ca' || command === '/contract') return send(chatId, `<b>OFFICIAL MADGER MINT</b>\n<code>${OFFICIAL_MINT}</code>\n\nPool:\n<code>${OFFICIAL_POOL}</code>`, keyboard([[{ text: 'Open canonical verification', url: LINKS.verify }]]))
+  if (command === '/price') return showMarket(chatId)
+  if (command === '/chart') return send(chatId, '<b>MADGER VERIFIED CHART</b> 📈\nThis link is locked to the official Raydium pool.', keyboard([[{ text: 'Open live chart', url: LINKS.dex }]]))
+  if (command === '/links') return showOfficialLinks(chatId)
+  if (command === '/help') return showHelp(chatId)
   if (command === '/missions') return showMissions(chatId)
   if (command === '/submit') return submitMission(chatId, args)
   if (command === '/rank') return showRank(chatId)
@@ -728,7 +769,8 @@ async function moderate(message) {
   const duplicateStarted = state?.duplicate_window_started_at ? Date.parse(state.duplicate_window_started_at) : 0
   const sameDuplicateWindow = Boolean(hash && state?.duplicate_hash === hash && now - duplicateStarted <= DUPLICATE_WINDOW_SECONDS * 1000)
   const duplicateCount = sameDuplicateWindow ? Number(state?.duplicate_count ?? 0) + 1 : 1
-  const reason = moderationReason(text)
+  const strictLinks = /https?:\/\//i.test(text) && (await raidModeForChat(message.chat.id)).active
+  const reason = moderationReason(text, { strictLinks })
     ?? (floodCount >= FLOOD_MESSAGE_LIMIT ? 'message flooding' : null)
     ?? (fingerprint.length >= 8 && duplicateCount >= DUPLICATE_MESSAGE_LIMIT ? 'repeated-message spam' : null)
 
@@ -905,8 +947,12 @@ async function setupTelegram(request) {
     allowed_updates: ['message', 'channel_post', 'callback_query', 'my_chat_member'],
     drop_pending_updates: false
   })
-  await telegram('setMyCommands', { commands: [
+  const publicCommands = [
     { command: 'buy', description: 'Open verified MADGER purchase routes' },
+    { command: 'price', description: 'Latest MADGER market snapshot' },
+    { command: 'chart', description: 'Open the verified live chart' },
+    { command: 'ca', description: 'Copy the official MADGER mint' },
+    { command: 'links', description: 'Open verified MADGER links' },
     { command: 'verify', description: 'Verify the official mint and pool' },
     { command: 'missions', description: 'View active contributor missions' },
     { command: 'submit', description: 'Submit mission evidence' },
@@ -915,26 +961,44 @@ async function setupTelegram(request) {
     { command: 'teams', description: 'Join or leave MADGER promotion teams' },
     { command: 'jointeam', description: 'Join raid or outreach alerts privately' },
     { command: 'leaveteam', description: 'Leave raid or outreach alerts' },
+    { command: 'rules', description: 'Read The Burrow community rules' },
+    { command: 'safety', description: 'Read the official wallet safety standard' },
+    { command: 'report', description: 'Reply to suspicious content to report it' },
+    { command: 'help', description: 'Show MADGERbot commands' },
+    { command: 'whoami', description: 'Display your numeric Telegram ID' },
+    { command: 'chatid', description: 'Display the current chat ID' }
+  ]
+  const adminCommands = [...publicCommands,
     { command: 'dashboard', description: 'Admin command-center dashboard' },
     { command: 'raidmode', description: 'Admin Raid Shield controls' },
     { command: 'purgeunverified', description: 'Admin removal of pending joins' },
     { command: 'announce', description: 'Admin official Burrow announcement' },
     { command: 'announcepin', description: 'Admin announcement with pin request' },
-    { command: 'rules', description: 'Read The Burrow community rules' },
-    { command: 'safety', description: 'Read the official wallet safety standard' },
-    { command: 'report', description: 'Reply to suspicious content to report it' },
-    { command: 'whoami', description: 'Display your numeric Telegram ID' },
-    { command: 'chatid', description: 'Display the current chat ID' }
-  ] })
-  let guard = { configured: false, can_delete_messages: false, can_restrict_members: false, can_pin_messages: false }
+    { command: 'teamalert', description: 'Admin promotion-team alert' },
+    { command: 'teamstats', description: 'Admin promotion-team counts' },
+    { command: 'stats', description: 'Admin seven-day bot report' },
+    { command: 'warn', description: 'Admin reply-based warning' },
+    { command: 'mute', description: 'Admin reply-based temporary mute' },
+    { command: 'ban', description: 'Admin reply-based removal' }
+  ]
+  await telegram('setMyCommands', { commands: publicCommands })
+  for (const adminId of ADMIN_IDS) {
+    await telegram('setMyCommands', { commands: adminCommands, scope: { type: 'chat', chat_id: Number(adminId) } })
+  }
+  let guard = { configured: false, can_delete_messages: false, can_restrict_members: false, can_pin_messages: false, aggressive_anti_spam: null, slow_mode_seconds: null }
   if (BUY_CHAT_ID) {
     try {
-      const membership = await telegram('getChatMember', { chat_id: BUY_CHAT_ID, user_id: bot.id })
+      const [membership, security] = await Promise.all([
+        telegram('getChatMember', { chat_id: BUY_CHAT_ID, user_id: bot.id }),
+        chatSecurityInfo(BUY_CHAT_ID)
+      ])
       guard = {
         configured: membership.status === 'administrator' || membership.status === 'creator',
         can_delete_messages: Boolean(membership.can_delete_messages),
         can_restrict_members: Boolean(membership.can_restrict_members),
-        can_pin_messages: Boolean(membership.can_pin_messages)
+        can_pin_messages: Boolean(membership.can_pin_messages),
+        aggressive_anti_spam: security.aggressiveAntiSpam,
+        slow_mode_seconds: security.slowModeSeconds
       }
     } catch { /* group may not be configured yet */ }
   }
@@ -946,7 +1010,7 @@ Deno.serve(async request => {
     const url = new URL(request.url)
     if (request.method === 'GET' && url.pathname.includes('/go/')) return routeRedirect(request, url)
     if (request.method === 'GET') {
-      return Response.json({ ok: true, service: 'MADGER Command Bot', version: '2.4.0', configured: Boolean(BOT_TOKEN && WEBHOOK_SECRET), community_guard: true, raid_shield: true, promotion_teams: true, announcements: true, native_buy_watcher: true })
+      return Response.json({ ok: true, service: 'MADGER Command Bot', version: '2.5.0', configured: Boolean(BOT_TOKEN && WEBHOOK_SECRET), community_guard: true, raid_shield: true, raid_link_firewall: true, market_commands: true, promotion_teams: true, announcements: true, native_buy_watcher: true })
     }
     if (url.pathname.endsWith('/setup')) return setupTelegram(request)
     if (url.pathname.endsWith('/monitor')) return monitorMarket(request)
