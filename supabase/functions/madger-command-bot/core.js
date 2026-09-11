@@ -34,6 +34,58 @@ export function isSuspiciousMadgerMessage(text) {
   return candidates.some(candidate => candidate !== OFFICIAL_MINT && candidate !== OFFICIAL_POOL)
 }
 
+const TRUSTED_HOSTS = new Set([
+  'madgercoin.com', 'www.madgercoin.com', 'raydium.io', 'www.raydium.io',
+  'dexscreener.com', 'www.dexscreener.com', 'solscan.io', 'www.solscan.io',
+  't.me', 'telegram.me', 'x.com', 'twitter.com'
+])
+
+const SHORTENER_HOSTS = new Set([
+  'bit.ly', 'tinyurl.com', 't.co', 'cutt.ly', 'shorturl.at', 'rebrand.ly',
+  'is.gd', 'rb.gy', 'ow.ly'
+])
+
+export function extractHttpHosts(text) {
+  const hosts = []
+  for (const raw of String(text ?? '').match(/https?:\/\/[^\s<>]+/gi) ?? []) {
+    try { hosts.push(new URL(raw.replace(/[),.!?]+$/, '')).hostname.toLowerCase()) } catch { /* ignore malformed URLs */ }
+  }
+  return hosts
+}
+
+export function moderationReason(text) {
+  const value = String(text ?? '')
+  if (isSuspiciousMadgerMessage(value)) return 'unverified MADGER contract address'
+
+  const credential = /(?:send|share|enter|provide|paste|submit|dm|message).{0,45}(?:seed phrase|recovery phrase|private key|secret key)|(?:seed phrase|recovery phrase|private key|secret key).{0,45}(?:send|share|enter|provide|paste|submit|dm|message)/i
+  const safetyEducation = /(?:never|do\s+not|don't)\s+(?:send|share|enter|provide|paste|submit).{0,45}(?:seed phrase|recovery phrase|private key|secret key)/i
+  if (credential.test(value) && !safetyEducation.test(value)) return 'wallet credential solicitation'
+
+  const hosts = extractHttpHosts(value)
+  const hasUntrustedLink = hosts.some(host => !TRUSTED_HOSTS.has(host))
+  const walletLure = /(?:connect|validate|synchroni[sz]e|rectify|restore|authenticate|verify).{0,30}wallet|wallet.{0,30}(?:connect|validate|synchroni[sz]e|rectify|restore|authenticate|verify)/i
+  if (hasUntrustedLink && walletLure.test(value)) return 'unverified wallet-connect link'
+
+  const claimLure = /(?:claim|airdrop|presale|migration|double|bonus|giveaway).{0,50}(?:token|coin|crypto|wallet|madger|\$madger)/i
+  if (hosts.some(host => SHORTENER_HOSTS.has(host)) && claimLure.test(value)) return 'obscured crypto promotion link'
+
+  const impersonation = /(?:official\s+)?(?:admin|support|moderator|help\s*desk).{0,45}(?:dm|message|contact|inbox)\s+(?:me|us)|(?:dm|message|contact|inbox)\s+(?:me|us).{0,45}(?:admin|support|moderator|help\s*desk)/i
+  if (impersonation.test(value) && (hasUntrustedLink || /@[A-Za-z0-9_]{5,}/.test(value))) return 'admin/support impersonation'
+
+  return null
+}
+
+export function normalizedMessageFingerprint(text) {
+  return String(text ?? '').toLowerCase().replace(/https?:\/\/\S+/g, '<url>').replace(/\s+/g, ' ').trim().slice(0, 500)
+}
+
+export function moderationEscalation(warningCount) {
+  const count = Number(warningCount)
+  if (count >= 3) return 'remove'
+  if (count === 2) return 'mute'
+  return 'warn'
+}
+
 export function buyTier(usdValue) {
   const value = Number(usdValue)
   if (value >= 500) return { label: 'WHALE IN THE BURROW', emoji: '🐋', instant: true }
@@ -59,4 +111,3 @@ export function marketAlertReasons(current, previous) {
   }
   return reasons
 }
-
