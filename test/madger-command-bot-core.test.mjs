@@ -5,7 +5,7 @@ import {
   findVerifiedMadgerBuyers, isSuspiciousMadgerMessage,
   marketAlertReasons, moderationEscalation, moderationReason,
   normalizeReferral, normalizeTeam, normalizedMessageFingerprint,
-  parseAnnouncement, parseTeamAlert
+  parseAnnouncement, parseRaidMode, parseTeamAlert, shouldActivateRaidMode
 } from '../supabase/functions/madger-command-bot/core.js'
 
 test('escapes Telegram HTML', () => assert.equal(escapeHtml('<bad & worse>'), '&lt;bad &amp; worse&gt;'))
@@ -93,4 +93,19 @@ test('rejects transfers and transactions outside the official CPMM pool', () => 
   assert.deepEqual(findVerifiedMadgerBuyers(transfer), [])
   transfer.transaction.message.accountKeys = [{ pubkey: buyer }, { pubkey: RAYDIUM_CPMM_PROGRAM }]
   assert.deepEqual(findVerifiedMadgerBuyers(transfer), [])
+})
+
+test('activates raid mode at the configured join-burst threshold', () => {
+  assert.equal(shouldActivateRaidMode(6, 2), true)
+  assert.equal(shouldActivateRaidMode(5, 2), false)
+  assert.equal(shouldActivateRaidMode(-10, 8), true)
+})
+
+test('parses only unexpired raid-mode windows as active', () => {
+  const now = Date.parse('2026-09-11T20:00:00.000Z')
+  assert.deepEqual(parseRaidMode({ until: '2026-09-11T20:30:00.000Z', source: 'automatic' }, now), {
+    active: true, until: '2026-09-11T20:30:00.000Z', source: 'automatic'
+  })
+  assert.equal(parseRaidMode({ until: '2026-09-11T19:59:00.000Z' }, now).active, false)
+  assert.equal(parseRaidMode({ until: 'invalid' }, now).active, false)
 })
