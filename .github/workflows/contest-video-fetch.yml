@@ -28,7 +28,7 @@ jobs:
         run: |
           action=$(jq -r '.action // "video"' contest-sync/request.json)
           echo "action=$action" >> "$GITHUB_OUTPUT"
-          if [[ "$action" == "list_ready" ]]; then
+          if [[ "$action" == "list_ready" || "$action" == "fetch_jwks" ]]; then
             exit 0
           fi
           if [[ "$action" != "video" ]]; then
@@ -45,6 +45,7 @@ jobs:
           echo "file_name=$file_name" >> "$GITHUB_OUTPUT"
 
       - name: Get GitHub OIDC token
+        if: steps.req.outputs.action != 'fetch_jwks'
         id: oidc
         shell: bash
         run: |
@@ -54,7 +55,7 @@ jobs:
           test -n "$token" && test "$token" != "null"
           echo "token=$token" >> "$GITHUB_OUTPUT"
 
-      - name: Fetch from Supabase bridge
+      - name: Fetch secure transfer payload
         id: fetch
         shell: bash
         env:
@@ -64,6 +65,14 @@ jobs:
           FILE_NAME: ${{ steps.req.outputs.file_name }}
         run: |
           mkdir -p contest-sync/out
+          if [[ "$ACTION" == "fetch_jwks" ]]; then
+            curl --fail --location --silent --show-error --max-time 20 \
+              https://token.actions.githubusercontent.com/.well-known/jwks \
+              --output contest-sync/out/github-actions-jwks.json
+            jq -e '.keys | type == "array" and length > 0' contest-sync/out/github-actions-jwks.json >/dev/null
+            echo "artifact_name=contest-github-jwks" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
           CURL=(curl --fail --location --silent --show-error --max-time 30 --retry 2 --retry-all-errors --retry-delay 3 -H "Authorization: Bearer $OIDC_TOKEN")
           if [[ "$ACTION" == "list_ready" ]]; then
             "${CURL[@]}" "$BRIDGE_URL?action=list_ready" --output contest-sync/out/ready.json
