@@ -62,6 +62,8 @@ The database invokes `/monitor` every five minutes with a secret stored in Supab
 - `/announce MESSAGE [| HTTPS_URL | BUTTON]` — publish one official announcement to The Burrow
 - `/announcepin MESSAGE [| HTTPS_URL | BUTTON]` — publish and request a Telegram notification pin
 - `/dashboard` — private command-center view of joins, safety actions, teams, delivery, announcements, and market state
+- `/health` — private live check of webhook delivery, market freshness, cleanup backlog, Raid Shield, and Telegram permissions
+- `/modlog` — private list of the ten most recent safety and administrator actions
 - `/raidmode status|on [MINUTES]|off` — private administrator control for Raid Shield
 - `/purgeunverified` — remove up to 25 pending unverified accounts from The Burrow
 - `/faqmode status|on|off` — private administrator control for automatic FAQ replies
@@ -74,6 +76,8 @@ The database invokes `/monitor` every five minutes with a secret stored in Supab
 Operational dashboards and team statistics are direct-message only. If invoked in a group, MADGERbot deletes the command and sends the result path privately to the authorized administrator.
 Telegram receives a public command menu without administrator operations. Each configured administrator receives a private command scope containing the complete public and admin toolset.
 - `/warn`, `/mute [MINUTES]`, and `/ban` — reply-based administrator moderation
+- `/unmute` and `/clearwarns` — reply-based recovery controls
+- `/memberinfo` — reply-based private inspection of verification, restriction, warning, flood, and repeat-message state
 - `/stats` — admin-only seven-day report
 - `/approve ID [NOTE]` and `/reject ID [NOTE]` — admin-only human review
 
@@ -87,6 +91,7 @@ Telegram receives a public command menu without administrator operations. Each c
 - Flooding and repeated-message spam escalate from warning to temporary mute to removal. Administrators are exempt.
 - Credential theft and admin impersonation attempts are removed immediately and reported privately.
 - `/report` records the reporter, reported user, message ID, and a bounded excerpt for administrator review.
+- Manual warnings, mutes, bans, unmutes, warning resets, cleanups, reports, and automatic guard actions produce bounded private audit events.
 
 ## Promotion teams
 
