@@ -39,6 +39,11 @@ The database invokes `/monitor` every five minutes with a secret stored in Supab
 ## Commands
 
 - `/buy` — neutral, verified purchase routes
+- `/price` — latest stored price, market cap, liquidity, five-minute volume, and buy/sell counts
+- `/chart` — official-pool DEX Screener chart
+- `/ca` or `/contract` — complete official mint and pool
+- `/links` — official website, community, verification, and chart links
+- `/help` — concise public command directory
 - `/verify` or `/mint` — complete official mint and pool
 - `/missions` — active contribution work
 - `/submit CODE HTTPS_URL` — evidence for human review
@@ -59,6 +64,7 @@ The database invokes `/monitor` every five minutes with a secret stored in Supab
 - `/purgeunverified` — remove up to 25 pending unverified accounts from The Burrow
 
 Operational dashboards and team statistics are direct-message only. If invoked in a group, MADGERbot deletes the command and sends the result path privately to the authorized administrator.
+Telegram receives a public command menu without administrator operations. Each configured administrator receives a private command scope containing the complete public and admin toolset.
 - `/warn`, `/mute [MINUTES]`, and `/ban` — reply-based administrator moderation
 - `/stats` — admin-only seven-day report
 - `/approve ID [NOTE]` and `/reject ID [NOTE]` — admin-only human review
@@ -67,6 +73,7 @@ Operational dashboards and team statistics are direct-message only. If invoked i
 
 - New human members receive a branded welcome and must pass a one-tap challenge within 10 minutes before posting.
 - Eight joins within 60 seconds automatically activate Raid Shield for 30 minutes, shorten all pending and new verification windows to three minutes, and alert the administrator privately.
+- While Raid Shield is active, non-administrator links are locked to the official MADGER website, Raydium, DEX Screener, and Solscan. Existing scam-specific filtering remains active at all times.
 - Manual Raid Shield windows can run for 5–180 minutes. Expiry restores the standard verification flow without changing the group's default permissions.
 - High-confidence wallet credential requests, admin impersonation, unverified wallet-connect links, and fake MADGER contract addresses are removed.
 - Flooding and repeated-message spam escalate from warning to temporary mute to removal. Administrators are exempt.
