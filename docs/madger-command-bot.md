@@ -47,6 +47,7 @@ The database invokes `/monitor` every five minutes with a secret stored in Supab
 - `/verify` or `/mint` — complete official mint and pool
 - `/missions` — active contribution work
 - `/submit CODE HTTPS_URL` — evidence for human review
+- `/mywork` — private history and status of the member's five latest submissions
 - `/rank` — approved contribution points and rank
 - `/leaderboard` — top contributors ranked only by human-approved work
 - `/referral` — attributable Telegram onboarding link
@@ -66,6 +67,8 @@ The database invokes `/monitor` every five minutes with a secret stored in Supab
 - `/faqmode status|on|off` — private administrator control for automatic FAQ replies
 - `/missionadd CODE | POINTS | TITLE | INSTRUCTIONS` — privately create a contributor mission
 - `/missionclose CODE` and `/missionopen CODE` — privately pause or reactivate a mission
+- `/missionlist` — private administrator view of active and closed missions
+- `/reviews` — private administrator queue of the five oldest pending submissions
 
 Operational dashboards and team statistics are direct-message only. If invoked in a group, MADGERbot deletes the command and sends the result path privately to the authorized administrator.
 Telegram receives a public command menu without administrator operations. Each configured administrator receives a private command scope containing the complete public and admin toolset.
@@ -99,6 +102,7 @@ Telegram receives a public command menu without administrator operations. Each c
 - Mission creation is administrator-only and direct-message-only. Codes, points, titles, and instructions are strictly bounded.
 - Missions that reward purchases, holdings, transfers, wallet connections, mass-tagging, spam, harassment, or guaranteed returns are rejected.
 - Closing a mission preserves its history and submissions; reopening restores it without rewriting prior records.
+- Member submission history and administrator review queues are direct-message-only. Evidence links are limited to 500 characters and review notes to 300 characters.
 
 ## Announcements and cleanup
 
