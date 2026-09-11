@@ -69,6 +69,7 @@ The database invokes `/monitor` every five minutes with a secret stored in Supab
 - `/missionclose CODE` and `/missionopen CODE` — privately pause or reactivate a mission
 - `/missionlist` — private administrator view of active and closed missions
 - `/reviews` — private administrator queue of the five oldest pending submissions
+- `/cleanup` — reply-based administrator removal of an obsolete group message
 
 Operational dashboards and team statistics are direct-message only. If invoked in a group, MADGERbot deletes the command and sends the result path privately to the authorized administrator.
 Telegram receives a public command menu without administrator operations. Each configured administrator receives a private command scope containing the complete public and admin toolset.
@@ -110,6 +111,8 @@ Telegram receives a public command menu without administrator operations. Each c
 - Optional buttons accept only the same trusted MADGER and major social-platform HTTPS targets as team alerts.
 - Pin requests use Telegram's native notification pin and fail safely if the bot lacks pin permission.
 - Completed join notices and moderation notices are automatically removed after five minutes during the existing monitor cycle.
+- Group mission lists are live snapshots that expire after 15 minutes, preventing closed or deleted work from remaining visibly active.
+- Replying to any obsolete group message with `/cleanup` removes the target, deletes the command, records an administrator audit event, and removes the confirmation after one minute.
 
 ## Automatic FAQ responder
 
