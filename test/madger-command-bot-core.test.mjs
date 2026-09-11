@@ -3,7 +3,7 @@ import test from 'node:test'
 import {
   OFFICIAL_MINT, OFFICIAL_POOL, RAYDIUM_CPMM_PROGRAM, buyTier, escapeHtml,
   findVerifiedMadgerBuyers, isSuspiciousMadgerMessage,
-  marketAlertReasons, moderationEscalation, moderationReason,
+  marketAlertReasons, marketSnapshotSummary, moderationEscalation, moderationReason,
   normalizeReferral, normalizeTeam, normalizedMessageFingerprint,
   parseAnnouncement, parseRaidMode, parseTeamAlert, shouldActivateRaidMode
 } from '../supabase/functions/madger-command-bot/core.js'
@@ -108,4 +108,22 @@ test('parses only unexpired raid-mode windows as active', () => {
   })
   assert.equal(parseRaidMode({ until: '2026-09-11T19:59:00.000Z' }, now).active, false)
   assert.equal(parseRaidMode({ until: 'invalid' }, now).active, false)
+})
+
+test('locks non-official links only while Raid Shield is strict', () => {
+  const socialPost = 'See https://x.com/example/status/123'
+  assert.equal(moderationReason(socialPost), null)
+  assert.equal(moderationReason(socialPost, { strictLinks: true }), 'external link blocked during Raid Shield')
+  assert.equal(moderationReason('Use https://madgercoin.com/buy', { strictLinks: true }), null)
+})
+
+test('normalizes a stored market snapshot for bot display', () => {
+  const summary = marketSnapshotSummary({
+    price_usd: '0.0012', liquidity_usd: '9000', volume_m5_usd: '42.5',
+    buys_m5: 3, sells_m5: 1, raw: { marketCap: 1200000 }, created_at: '2026-09-11T20:00:00.000Z'
+  }, Date.parse('2026-09-11T20:07:30.000Z'))
+  assert.deepEqual(summary, {
+    priceUsd: 0.0012, liquidityUsd: 9000, volumeM5Usd: 42.5,
+    buysM5: 3, sellsM5: 1, marketCapUsd: 1200000, ageMinutes: 7
+  })
 })
