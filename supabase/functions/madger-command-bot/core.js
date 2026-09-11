@@ -3,6 +3,7 @@ export const OFFICIAL_POOL = 'FVRpAmyDsdvKHQT2ds6ytZsJHt7SDDDbScQx3c4fu32h'
 export const RAYDIUM_CPMM_PROGRAM = 'CPMMoo8L3F4NbTegBCKVNunggL7H1ZpdTHKxQB5qKP1C'
 
 export const LINKS = Object.freeze({
+  home: 'https://madgercoin.com/',
   guide: 'https://madgercoin.com/buy',
   raydium: `https://raydium.io/liquidity-pools/?token=${OFFICIAL_MINT}`,
   dex: `https://dexscreener.com/solana/${OFFICIAL_POOL.toLowerCase()}`,
@@ -195,6 +196,18 @@ export function marketSnapshotSummary(snapshot, now = Date.now()) {
     marketCapUsd: number(snapshot?.raw?.marketCap ?? snapshot?.raw?.fdv),
     ageMinutes: Number.isFinite(createdAt) ? Math.max(0, Math.floor((now - createdAt) / 60000)) : null
   }
+}
+
+export function faqIntent(text) {
+  const value = String(text ?? '').trim().toLowerCase().replace(/\s+/g, ' ')
+  if (!value || value.length > 180 || value.startsWith('/')) return null
+  if (/^(?:what(?:'s| is) (?:the )?)?(?:madger |\$madger )?(?:price|market cap|mc)\??$/.test(value)
+    || /^(?:price|market cap) of (?:madger|\$madger)\??$/.test(value)) return 'price'
+  if (/^(?:what(?:'s| is) (?:the )?)?(?:madger |\$madger )?(?:ca|contract|contract address|mint|mint address)\??$/.test(value)) return 'contract'
+  if (/^(?:how|where) (?:do|can|could|should)?\s*(?:i|we)?\s*(?:buy|get|purchase) (?:madger|\$madger)(?: safely)?\??$/.test(value)
+    || /^where (?:is|can i find) (?:madger|\$madger)\??$/.test(value)) return 'buy'
+  if (/^(?:what|where) (?:are|is|can i find) (?:the )?(?:official|verified) (?:madger )?(?:links?|website|site)\??$/.test(value)) return 'links'
+  return null
 }
 
 export function buyTier(usdValue) {
