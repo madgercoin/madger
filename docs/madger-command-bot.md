@@ -16,7 +16,7 @@ Configure these in the Supabase project dashboard. Never commit them.
 - `TELEGRAM_BUY_ALERT_CHAT_ID`: public or private channel/group ID for verified buy alerts.
 - `SOLANA_RPC_URL`: optional private RPC endpoint; defaults to Solana's public mainnet RPC.
 
-Supabase supplies `SUPABASE_URL` and `SUPABASE_SERVICE_ROLE_KEY` to the Edge Function. Database tables use RLS with no public policies and explicitly deny `anon` and `authenticated` access.
+Supabase supplies `SUPABASE_URL` and `SUPABASE_SECRET_KEYS` to the Edge Function; a temporary `SUPABASE_SERVICE_ROLE_KEY` fallback supports legacy projects during key migration. Database tables use RLS with no public policies and explicitly deny `anon` and `authenticated` access.
 
 ## Activate
 
