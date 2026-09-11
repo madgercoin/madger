@@ -1,10 +1,10 @@
 import 'jsr:@supabase/functions-js/edge-runtime.d.ts'
 import {
-  LINKS, OFFICIAL_MINT, OFFICIAL_POOL, buyTier, escapeHtml, faqIntent,
+  LINKS, OFFICIAL_MINT, OFFICIAL_POOL, buyTier, contributorRank, escapeHtml, faqIntent,
   findVerifiedMadgerBuyers,
   marketAlertReasons, marketSnapshotSummary, moderationEscalation, moderationReason,
-  normalizeReferral, normalizeTeam, normalizedMessageFingerprint, parseAnnouncement,
-  parseRaidMode, parseTeamAlert, shouldActivateRaidMode
+  normalizeMissionCode, normalizeReferral, normalizeTeam, normalizedMessageFingerprint,
+  parseAnnouncement, parseMissionDefinition, parseRaidMode, parseTeamAlert, shouldActivateRaidMode
 } from './core.js'
 
 const BOT_TOKEN = Deno.env.get('TELEGRAM_BOT_TOKEN') ?? ''
@@ -375,7 +375,7 @@ async function showOfficialLinks(chatId) {
 }
 
 async function showHelp(chatId) {
-  return send(chatId, '<b>MADGERBOT COMMANDS</b> 🦡\n\n<b>Trade safely</b>\n/buy · /price · /chart · /ca · /verify · /links\n\n<b>Community</b>\n/rules · /safety · /report · /teams\n\n<b>Contribute</b>\n/missions · /submit · /rank · /referral\n\nMADGERbot never requests wallet credentials, payments, verification transfers, or remote access.')
+  return send(chatId, '<b>MADGERBOT COMMANDS</b> 🦡\n\n<b>Trade safely</b>\n/buy · /price · /chart · /ca · /verify · /links\n\n<b>Community</b>\n/rules · /safety · /report · /teams\n\n<b>Contribute</b>\n/missions · /submit · /rank · /leaderboard · /referral\n\nMADGERbot never requests wallet credentials, payments, verification transfers, or remote access.')
 }
 
 async function faqResponderEnabled() {
@@ -620,7 +620,7 @@ async function adminDashboard(message) {
     return send(message.from.id, 'The command dashboard is private. Use /dashboard here in your direct MADGERbot chat.')
   }
   const since = encodeURIComponent(new Date(Date.now() - 7 * 86400000).toISOString())
-  const [users, pending, events, memberships, alerts, announcements, snapshots, raidMode, chatSecurity, faqEnabled] = await Promise.all([
+  const [users, pendingJoins, events, memberships, alerts, announcements, snapshots, activeMissions, pendingSubmissions, raidMode, chatSecurity, faqEnabled] = await Promise.all([
     db('madger_bot_users?select=chat_id'),
     db('madger_bot_moderation_state?pending_verification=eq.true&select=user_id'),
     db(`madger_bot_events?created_at=gte.${since}&select=event_type`),
@@ -628,6 +628,8 @@ async function adminDashboard(message) {
     db('madger_bot_team_alerts?select=recipient_count,failure_count&order=created_at.desc&limit=20'),
     db('madger_bot_announcements?select=id&order=created_at.desc&limit=20'),
     db('madger_bot_market_snapshots?select=price_usd,liquidity_usd&order=created_at.desc&limit=1'),
+    db('madger_bot_missions?active=eq.true&select=code'),
+    db('madger_bot_submissions?status=eq.pending&select=id'),
     raidModeForChat(BUY_CHAT_ID),
     chatSecurityInfo(BUY_CHAT_ID),
     faqResponderEnabled()
@@ -637,7 +639,7 @@ async function adminDashboard(message) {
   const delivered = (alerts ?? []).reduce((sum, row) => sum + Number(row.recipient_count ?? 0), 0)
   const failed = (alerts ?? []).reduce((sum, row) => sum + Number(row.failure_count ?? 0), 0)
   const market = snapshots?.[0]
-  return send(message.chat.id, `<b>MADGER COMMAND DASHBOARD</b> 🦡\n\n<b>Community</b>\nRaid Shield: ${raidMode.active ? 'ACTIVE 🚨' : 'normal'}\nRaid link firewall: ${raidMode.active ? 'locked' : 'standby'}\nFAQ responder: ${faqEnabled ? 'on' : 'off'} · ${eventCounts.faq_answered ?? 0} answers (7d)\nTelegram native anti-spam: ${chatSecurity.aggressiveAntiSpam === null ? 'unknown' : chatSecurity.aggressiveAntiSpam ? 'enabled' : 'disabled'}\nTelegram slow mode: ${chatSecurity.slowModeSeconds === null ? 'unknown' : `${chatSecurity.slowModeSeconds}s`}\nTracked members: ${users?.length ?? 0}\nPending join checks: ${pending?.length ?? 0}\nVerified joins (7d): ${eventCounts.join_verified ?? 0}\nExpired/purged joins (7d): ${(eventCounts.join_expired ?? 0) + (eventCounts.join_purged ?? 0)}\nModeration actions (7d): ${eventCounts.moderation_action ?? 0}\nMember reports (7d): ${eventCounts.member_report ?? 0}\n\n<b>Promotion teams</b>\nRaid: ${teamCounts.raid ?? 0}\nOutreach: ${teamCounts.outreach ?? 0}\nRecent deliveries: ${delivered}\nDelivery failures: ${failed}\n\n<b>Publishing</b>\nRecent announcements: ${announcements?.length ?? 0}\n\n<b>Market</b>\nPrice: ${market?.price_usd ?? 'unavailable'} USD\nLiquidity: ${market?.liquidity_usd ?? 'unavailable'} USD`)
+  return send(message.chat.id, `<b>MADGER COMMAND DASHBOARD</b> 🦡\n\n<b>Community</b>\nRaid Shield: ${raidMode.active ? 'ACTIVE 🚨' : 'normal'}\nRaid link firewall: ${raidMode.active ? 'locked' : 'standby'}\nFAQ responder: ${faqEnabled ? 'on' : 'off'} · ${eventCounts.faq_answered ?? 0} answers (7d)\nTelegram native anti-spam: ${chatSecurity.aggressiveAntiSpam === null ? 'unknown' : chatSecurity.aggressiveAntiSpam ? 'enabled' : 'disabled'}\nTelegram slow mode: ${chatSecurity.slowModeSeconds === null ? 'unknown' : `${chatSecurity.slowModeSeconds}s`}\nTracked members: ${users?.length ?? 0}\nPending join checks: ${pendingJoins?.length ?? 0}\nVerified joins (7d): ${eventCounts.join_verified ?? 0}\nExpired/purged joins (7d): ${(eventCounts.join_expired ?? 0) + (eventCounts.join_purged ?? 0)}\nModeration actions (7d): ${eventCounts.moderation_action ?? 0}\nMember reports (7d): ${eventCounts.member_report ?? 0}\n\n<b>Contributor program</b>\nActive missions: ${activeMissions?.length ?? 0}\nPending reviews: ${pendingSubmissions?.length ?? 0}\nLeaderboard views (7d): ${eventCounts.leaderboard_viewed ?? 0}\n\n<b>Promotion teams</b>\nRaid: ${teamCounts.raid ?? 0}\nOutreach: ${teamCounts.outreach ?? 0}\nRecent deliveries: ${delivered}\nDelivery failures: ${failed}\n\n<b>Publishing</b>\nRecent announcements: ${announcements?.length ?? 0}\n\n<b>Market</b>\nPrice: ${market?.price_usd ?? 'unavailable'} USD\nLiquidity: ${market?.liquidity_usd ?? 'unavailable'} USD`)
 }
 
 async function showMissions(chatId) {
@@ -671,8 +673,49 @@ async function submitMission(chatId, args) {
 async function showRank(chatId) {
   const users = await db(`madger_bot_users?chat_id=eq.${encodeURIComponent(chatId)}&select=points&limit=1`)
   const points = Number(users?.[0]?.points ?? 0)
-  const rank = points >= 1000 ? 'Burrow Elite' : points >= 500 ? 'Verified Creator' : points >= 250 ? 'Claw Contributor' : points >= 100 ? 'Scout' : 'Burrow Member'
+  const rank = contributorRank(points)
   await send(chatId, `<b>${rank}</b>\n${points} verified contribution points\n\nPoints measure approved work—not purchases, hype, or blind engagement.`)
+}
+
+async function showLeaderboard(chatId) {
+  const users = await db('madger_bot_users?points=gt.0&status=eq.active&select=username,points&order=points.desc,last_seen_at.asc&limit=10')
+  if (!users?.length) return send(chatId, 'The contributor leaderboard is empty. Complete an active mission and pass human review to appear here.')
+  const medals = ['🥇', '🥈', '🥉']
+  const lines = users.map((user, index) => {
+    const username = /^[A-Za-z0-9_]{5,32}$/.test(String(user.username ?? '')) ? `@${escapeHtml(user.username)}` : 'Anonymous contributor'
+    return `${medals[index] ?? `${index + 1}.`} <b>${username}</b> — ${Number(user.points ?? 0)} points`
+  })
+  await send(chatId, `<b>MADGER CONTRIBUTOR LEADERBOARD</b> 🏆\n\n${lines.join('\n')}\n\nPoints represent administrator-approved contributions—not purchases, holdings, or spam.`)
+  await recordEvent('leaderboard_viewed', Number(chatId))
+}
+
+async function manageMission(message, args, action) {
+  if (!ADMIN_IDS.has(String(message.from.id))) return send(message.chat.id, 'Admin command denied.')
+  if (message.chat.type !== 'private') {
+    await deleteQuietly(message.chat.id, message.message_id)
+    return send(message.from.id, 'Mission controls are private. Manage missions here in your direct MADGERbot chat.')
+  }
+  if (action === 'add') {
+    const mission = parseMissionDefinition(args)
+    if (!mission) return send(message.chat.id, 'Use: <code>/missionadd code | points | title | instructions</code>\n\nPoints: 10–1,000. Missions must reward genuine work—not purchases, wallet connections, spam, mass-tagging, harassment, or financial promises.')
+    try {
+      await insert('madger_bot_missions', { ...mission, active: true })
+    } catch (error) {
+      if (String(error).includes('duplicate')) return send(message.chat.id, 'That mission code already exists. Use /missionopen to reactivate it or choose a new code.')
+      throw error
+    }
+    await recordEvent('mission_created', message.from.id, { mission_code: mission.code, points: mission.points })
+    return send(message.chat.id, `<b>Mission activated.</b> 🎯\n<code>${escapeHtml(mission.code)}</code> · ${mission.points} points\n${escapeHtml(mission.title)}`)
+  }
+
+  const code = normalizeMissionCode(args)
+  if (!code) return send(message.chat.id, `Use: <code>/mission${action} mission-code</code>`)
+  const rows = await db(`madger_bot_missions?code=eq.${encodeURIComponent(code)}&select=code`, {
+    method: 'PATCH', headers: { Prefer: 'return=representation' }, body: JSON.stringify({ active: action === 'open' })
+  })
+  if (!rows?.length) return send(message.chat.id, 'Mission not found.')
+  await recordEvent(`mission_${action === 'open' ? 'opened' : 'closed'}`, message.from.id, { mission_code: code })
+  return send(message.chat.id, `<b>Mission ${action === 'open' ? 'reactivated' : 'closed'}.</b>\n<code>${escapeHtml(code)}</code>`)
 }
 
 async function showReferral(chatId) {
@@ -771,6 +814,7 @@ async function handleCommand(message) {
   if (command === '/missions') return showMissions(chatId)
   if (command === '/submit') return submitMission(chatId, args)
   if (command === '/rank') return showRank(chatId)
+  if (command === '/leaderboard') return showLeaderboard(chatId)
   if (command === '/referral') return showReferral(chatId)
   if (command === '/rules') return showRules(chatId)
   if (command === '/safety') return showSafety(chatId)
@@ -791,10 +835,13 @@ async function handleCommand(message) {
   if (command === '/stats') return adminStats(chatId)
   if (command === '/approve') return reviewSubmission(chatId, args, 'approved')
   if (command === '/reject') return reviewSubmission(chatId, args, 'rejected')
+  if (command === '/missionadd') return manageMission(message, args, 'add')
+  if (command === '/missionclose') return manageMission(message, args, 'close')
+  if (command === '/missionopen') return manageMission(message, args, 'open')
   if (command === '/warn') return adminModerationAction(message, 'warn', args)
   if (command === '/mute') return adminModerationAction(message, 'mute', args)
   if (command === '/ban') return adminModerationAction(message, 'ban', args)
-  return send(chatId, 'Commands: /buy · /verify · /missions · /submit · /rank · /referral · /teams · /rules · /safety · /report')
+  return send(chatId, 'Commands: /buy · /verify · /missions · /submit · /rank · /leaderboard · /referral · /teams · /rules · /safety · /report')
 }
 
 async function moderate(message) {
@@ -1003,6 +1050,7 @@ async function setupTelegram(request) {
     { command: 'missions', description: 'View active contributor missions' },
     { command: 'submit', description: 'Submit mission evidence' },
     { command: 'rank', description: 'View contribution points and rank' },
+    { command: 'leaderboard', description: 'Top approved MADGER contributors' },
     { command: 'referral', description: 'Create your attributable invite link' },
     { command: 'teams', description: 'Join or leave MADGER promotion teams' },
     { command: 'jointeam', description: 'Join raid or outreach alerts privately' },
@@ -1023,6 +1071,9 @@ async function setupTelegram(request) {
     { command: 'announcepin', description: 'Admin announcement with pin request' },
     { command: 'teamalert', description: 'Admin promotion-team alert' },
     { command: 'teamstats', description: 'Admin promotion-team counts' },
+    { command: 'missionadd', description: 'Admin create contributor mission' },
+    { command: 'missionclose', description: 'Admin close contributor mission' },
+    { command: 'missionopen', description: 'Admin reactivate contributor mission' },
     { command: 'stats', description: 'Admin seven-day bot report' },
     { command: 'warn', description: 'Admin reply-based warning' },
     { command: 'mute', description: 'Admin reply-based temporary mute' },
@@ -1057,7 +1108,7 @@ Deno.serve(async request => {
     const url = new URL(request.url)
     if (request.method === 'GET' && url.pathname.includes('/go/')) return routeRedirect(request, url)
     if (request.method === 'GET') {
-      return Response.json({ ok: true, service: 'MADGER Command Bot', version: '2.6.0', configured: Boolean(BOT_TOKEN && WEBHOOK_SECRET), community_guard: true, raid_shield: true, raid_link_firewall: true, faq_responder: true, market_commands: true, promotion_teams: true, announcements: true, native_buy_watcher: true })
+      return Response.json({ ok: true, service: 'MADGER Command Bot', version: '2.7.0', configured: Boolean(BOT_TOKEN && WEBHOOK_SECRET), community_guard: true, raid_shield: true, raid_link_firewall: true, faq_responder: true, market_commands: true, promotion_teams: true, announcements: true, contributor_leaderboard: true, mission_admin: true, native_buy_watcher: true })
     }
     if (url.pathname.endsWith('/setup')) return setupTelegram(request)
     if (url.pathname.endsWith('/monitor')) return monitorMarket(request)
