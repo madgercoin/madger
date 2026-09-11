@@ -2,7 +2,8 @@ import assert from 'node:assert/strict'
 import test from 'node:test'
 import {
   OFFICIAL_MINT, buyTier, escapeHtml, isSuspiciousMadgerMessage,
-  marketAlertReasons, normalizeReferral
+  marketAlertReasons, moderationEscalation, moderationReason,
+  normalizeReferral, normalizedMessageFingerprint
 } from '../supabase/functions/madger-command-bot/core.js'
 
 test('escapes Telegram HTML', () => assert.equal(escapeHtml('<bad & worse>'), '&lt;bad &amp; worse&gt;'))
@@ -22,3 +23,19 @@ test('detects price and liquidity thresholds', () => {
   assert.equal(reasons.length, 2)
 })
 
+test('flags high-confidence wallet scams without blocking safety education', () => {
+  assert.equal(moderationReason('Admin here, DM me @fakehelp and send your seed phrase'), 'wallet credential solicitation')
+  assert.equal(moderationReason('Validate your wallet at https://evil.example/connect'), 'unverified wallet-connect link')
+  assert.equal(moderationReason('Never share your seed phrase with anyone.'), null)
+  assert.equal(moderationReason('Read https://madgercoin.com/buy to verify MADGER.'), null)
+})
+
+test('normalizes duplicate-message fingerprints', () => {
+  assert.equal(normalizedMessageFingerprint('  FREE   BUY https://one.example/x '), 'free buy <url>')
+})
+
+test('escalates repeated moderation violations', () => {
+  assert.equal(moderationEscalation(1), 'warn')
+  assert.equal(moderationEscalation(2), 'mute')
+  assert.equal(moderationEscalation(3), 'remove')
+})
