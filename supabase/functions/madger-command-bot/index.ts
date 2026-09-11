@@ -356,6 +356,10 @@ async function setTeamFromCommand(message, args, active) {
 
 async function teamStats(message) {
   if (!ADMIN_IDS.has(String(message.from.id))) return send(message.chat.id, 'Admin command denied.')
+  if (message.chat.type !== 'private') {
+    await deleteQuietly(message.chat.id, message.message_id)
+    return send(message.from.id, 'Team statistics are private. Use /teamstats here in your direct MADGERbot chat.')
+  }
   const memberships = await db('madger_bot_team_memberships?active=eq.true&select=team')
   const counts = (memberships ?? []).reduce((result, row) => ({ ...result, [row.team]: (result[row.team] ?? 0) + 1 }), {})
   return send(message.chat.id, `<b>MADGER TEAM STATUS</b>\n\nRaid Team: ${counts.raid ?? 0}\nOutreach Team: ${counts.outreach ?? 0}`)
@@ -425,6 +429,10 @@ async function publishAnnouncement(message, args, pinRequested) {
 
 async function adminDashboard(message) {
   if (!ADMIN_IDS.has(String(message.from.id))) return send(message.chat.id, 'Admin command denied.')
+  if (message.chat.type !== 'private') {
+    await deleteQuietly(message.chat.id, message.message_id)
+    return send(message.from.id, 'The command dashboard is private. Use /dashboard here in your direct MADGERbot chat.')
+  }
   const since = encodeURIComponent(new Date(Date.now() - 7 * 86400000).toISOString())
   const [users, pending, events, memberships, alerts, announcements, snapshots] = await Promise.all([
     db('madger_bot_users?select=chat_id'),
@@ -781,7 +789,7 @@ Deno.serve(async request => {
     const url = new URL(request.url)
     if (request.method === 'GET' && url.pathname.includes('/go/')) return routeRedirect(request, url)
     if (request.method === 'GET') {
-      return Response.json({ ok: true, service: 'MADGER Command Bot', version: '2.2.0', configured: Boolean(BOT_TOKEN && WEBHOOK_SECRET), community_guard: true, promotion_teams: true, announcements: true })
+      return Response.json({ ok: true, service: 'MADGER Command Bot', version: '2.2.1', configured: Boolean(BOT_TOKEN && WEBHOOK_SECRET), community_guard: true, promotion_teams: true, announcements: true })
     }
     if (url.pathname.endsWith('/setup')) return setupTelegram(request)
     if (url.pathname.endsWith('/monitor')) return monitorMarket(request)
