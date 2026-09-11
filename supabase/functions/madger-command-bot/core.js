@@ -1,5 +1,6 @@
 export const OFFICIAL_MINT = 'BHauMX8akk2umqkQqnJwpYkCRkZmefGnEBFByeFXRKqv'
 export const OFFICIAL_POOL = 'FVRpAmyDsdvKHQT2ds6ytZsJHt7SDDDbScQx3c4fu32h'
+export const RAYDIUM_CPMM_PROGRAM = 'CPMMoo8L3F4NbTegBCKVNunggL7H1ZpdTHKxQB5qKP1C'
 
 export const LINKS = Object.freeze({
   guide: 'https://madgercoin.com/buy',
@@ -121,6 +122,39 @@ export function parseAnnouncement(value) {
   const label = labelValue || 'Open official link'
   if (url.protocol !== 'https:' || !TEAM_TARGET_HOSTS.has(url.hostname.toLowerCase()) || label.length > 40) return null
   return { text: textValue, url: url.href, label }
+}
+
+export function findVerifiedMadgerBuyers(transaction) {
+  if (!transaction?.meta || transaction.meta.err) return []
+  const accountKeys = (transaction.transaction?.message?.accountKeys ?? []).map(key => String(key?.pubkey ?? key))
+  if (!accountKeys.includes(OFFICIAL_POOL) || !accountKeys.includes(RAYDIUM_CPMM_PROGRAM)) return []
+
+  const balances = new Map()
+  const apply = (entries, direction) => {
+    for (const entry of entries ?? []) {
+      if (!entry.owner || !entry.mint) continue
+      const key = `${entry.owner}:${entry.mint}`
+      const amount = Number(entry.uiTokenAmount?.uiAmountString ?? entry.uiTokenAmount?.uiAmount ?? 0)
+      balances.set(key, (balances.get(key) ?? 0) + direction * amount)
+    }
+  }
+  apply(transaction.meta.preTokenBalances, -1)
+  apply(transaction.meta.postTokenBalances, 1)
+
+  const candidates = []
+  for (const [key, amount] of balances) {
+    const separator = key.indexOf(':')
+    const owner = key.slice(0, separator)
+    const mint = key.slice(separator + 1)
+    if (mint !== OFFICIAL_MINT || !(amount > 0)) continue
+    const tokenSpent = [...balances].some(([otherKey, delta]) => otherKey.startsWith(`${owner}:`) && !otherKey.endsWith(`:${OFFICIAL_MINT}`) && delta < 0)
+    const ownerIndex = accountKeys.indexOf(owner)
+    const fee = ownerIndex === 0 ? Number(transaction.meta.fee ?? 0) : 0
+    const nativeSpent = ownerIndex >= 0
+      && Number(transaction.meta.preBalances?.[ownerIndex] ?? 0) - Number(transaction.meta.postBalances?.[ownerIndex] ?? 0) - fee > 1000
+    if (tokenSpent || nativeSpent) candidates.push({ buyer: owner, amount })
+  }
+  return candidates.sort((left, right) => right.amount - left.amount)
 }
 
 export function buyTier(usdValue) {
