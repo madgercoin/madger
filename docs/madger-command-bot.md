@@ -53,6 +53,8 @@ The database invokes `/monitor` every five minutes with a secret stored in Supab
 - `/announce MESSAGE [| HTTPS_URL | BUTTON]` — publish one official announcement to The Burrow
 - `/announcepin MESSAGE [| HTTPS_URL | BUTTON]` — publish and request a Telegram notification pin
 - `/dashboard` — private command-center view of joins, safety actions, teams, delivery, announcements, and market state
+
+Operational dashboards and team statistics are direct-message only. If invoked in a group, MADGERbot deletes the command and sends the result path privately to the authorized administrator.
 - `/warn`, `/mute [MINUTES]`, and `/ban` — reply-based administrator moderation
 - `/stats` — admin-only seven-day report
 - `/approve ID [NOTE]` and `/reject ID [NOTE]` — admin-only human review
