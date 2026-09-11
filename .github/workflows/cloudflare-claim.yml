@@ -5,6 +5,7 @@ on:
     branches: [main]
     paths:
       - ".github/workflows/cloudflare-claim.yml"
+      - "wrangler.temporary.json"
   workflow_dispatch:
 
 permissions:
@@ -28,7 +29,7 @@ jobs:
         shell: bash
         run: |
           set +e
-          npx wrangler deploy --temporary > "$RUNNER_TEMP/cloudflare-claim.txt" 2>&1
+          npx wrangler deploy --temporary --config wrangler.temporary.json > "$RUNNER_TEMP/cloudflare-claim.txt" 2>&1
           status=$?
           echo "status=$status" >> "$GITHUB_OUTPUT"
           exit 0
