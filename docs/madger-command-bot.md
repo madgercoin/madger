@@ -62,6 +62,7 @@ The database invokes `/monitor` every five minutes with a secret stored in Supab
 - `/dashboard` — private command-center view of joins, safety actions, teams, delivery, announcements, and market state
 - `/raidmode status|on [MINUTES]|off` — private administrator control for Raid Shield
 - `/purgeunverified` — remove up to 25 pending unverified accounts from The Burrow
+- `/faqmode status|on|off` — private administrator control for automatic FAQ replies
 
 Operational dashboards and team statistics are direct-message only. If invoked in a group, MADGERbot deletes the command and sends the result path privately to the authorized administrator.
 Telegram receives a public command menu without administrator operations. Each configured administrator receives a private command scope containing the complete public and admin toolset.
@@ -94,6 +95,13 @@ Telegram receives a public command menu without administrator operations. Each c
 - Optional buttons accept only the same trusted MADGER and major social-platform HTTPS targets as team alerts.
 - Pin requests use Telegram's native notification pin and fail safely if the bot lacks pin permission.
 - Completed join notices and moderation notices are automatically removed after five minutes during the existing monitor cycle.
+
+## Automatic FAQ responder
+
+- High-confidence natural-language questions about price, market cap, the official contract, buying routes, and official links receive the same verified answers as the matching commands.
+- Each chat and topic has a three-minute cooldown, preventing repeated questions from turning the bot into noise.
+- Automatic answers are removed after four minutes and recorded as aggregate operational events for the private dashboard.
+- Ambiguous price discussion and ordinary conversation are ignored. Administrators can disable or restore the feature privately with `/faqmode`.
 
 ## Local verification
 
