@@ -1,17 +1,35 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
 import {
-  OFFICIAL_MINT, OFFICIAL_POOL, RAYDIUM_CPMM_PROGRAM, buyTier, escapeHtml, faqIntent,
+  OFFICIAL_MINT, OFFICIAL_POOL, RAYDIUM_CPMM_PROGRAM, buyTier, contributorRank, escapeHtml, faqIntent,
   findVerifiedMadgerBuyers, isSuspiciousMadgerMessage,
   marketAlertReasons, marketSnapshotSummary, moderationEscalation, moderationReason,
-  normalizeReferral, normalizeTeam, normalizedMessageFingerprint,
-  parseAnnouncement, parseRaidMode, parseTeamAlert, shouldActivateRaidMode
+  normalizeMissionCode, normalizeReferral, normalizeTeam, normalizedMessageFingerprint,
+  parseAnnouncement, parseMissionDefinition, parseRaidMode, parseTeamAlert, shouldActivateRaidMode
 } from '../supabase/functions/madger-command-bot/core.js'
 
 test('escapes Telegram HTML', () => assert.equal(escapeHtml('<bad & worse>'), '&lt;bad &amp; worse&gt;'))
 test('normalizes valid referral codes', () => {
   assert.equal(normalizeReferral('ref_Mabc_1234'), 'mabc_1234')
   assert.equal(normalizeReferral('../bad'), null)
+})
+test('parses bounded contributor missions and rejects financial or spam rewards', () => {
+  assert.deepEqual(parseMissionDefinition('ART-WEEK | 125 | Create original MADGER art | Publish one original artwork and submit its public HTTPS link.'), {
+    code: 'art-week', points: 125, title: 'Create original MADGER art',
+    instructions: 'Publish one original artwork and submit its public HTTPS link.'
+  })
+  assert.equal(parseMissionDefinition('buyers | 500 | Reward buyers | Buy at least $50 of MADGER.'), null)
+  assert.equal(parseMissionDefinition('spam | 100 | Spread this everywhere | Mass DM and tag everyone in other groups.'), null)
+  assert.equal(parseMissionDefinition('wallet | 100 | Connect for points | Connect your wallet to complete this mission.'), null)
+  assert.equal(normalizeMissionCode('../bad'), null)
+})
+
+test('assigns contribution ranks at exact thresholds', () => {
+  assert.equal(contributorRank(99), 'Burrow Member')
+  assert.equal(contributorRank(100), 'Scout')
+  assert.equal(contributorRank(250), 'Claw Contributor')
+  assert.equal(contributorRank(500), 'Verified Creator')
+  assert.equal(contributorRank(1000), 'Burrow Elite')
 })
 test('accepts the official MADGER mint', () => assert.equal(isSuspiciousMadgerMessage(`MADGER ${OFFICIAL_MINT}`), false))
 test('flags an alternate address presented as MADGER', () => assert.equal(isSuspiciousMadgerMessage('MADGER 9JnqwF5QzMtLE2BfypLzWrXWX7XsNJ8yqSwuNasupump'), true))
