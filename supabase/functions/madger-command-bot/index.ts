@@ -3,7 +3,8 @@ import {
   LINKS, OFFICIAL_MINT, OFFICIAL_POOL, buyTier, escapeHtml,
   findVerifiedMadgerBuyers,
   marketAlertReasons, moderationEscalation, moderationReason,
-  normalizeReferral, normalizeTeam, normalizedMessageFingerprint, parseAnnouncement, parseTeamAlert
+  normalizeReferral, normalizeTeam, normalizedMessageFingerprint, parseAnnouncement,
+  parseRaidMode, parseTeamAlert, shouldActivateRaidMode
 } from './core.js'
 
 const BOT_TOKEN = Deno.env.get('TELEGRAM_BOT_TOKEN') ?? ''
@@ -18,6 +19,10 @@ const SERVICE_KEY = SECRET_KEYS.default ?? Deno.env.get('SUPABASE_SERVICE_ROLE_K
 const RPC_URL = Deno.env.get('SOLANA_RPC_URL') ?? 'https://api.mainnet-beta.solana.com'
 const API = BOT_TOKEN ? `https://api.telegram.org/bot${BOT_TOKEN}` : ''
 const JOIN_VERIFY_MINUTES = 10
+const RAID_VERIFY_MINUTES = 3
+const RAID_MODE_MINUTES = 30
+const RAID_JOIN_WINDOW_SECONDS = 60
+const RAID_JOIN_THRESHOLD = 8
 const FLOOD_WINDOW_SECONDS = 15
 const FLOOD_MESSAGE_LIMIT = 7
 const DUPLICATE_WINDOW_SECONDS = 60
@@ -255,8 +260,42 @@ async function showWelcome(chatId, user, ref) {
   await recordEvent('welcome', Number(chatId), { username: user.username ?? null }, ref)
 }
 
+function raidModeKey(chatId) {
+  return `raid_mode_${chatId}`
+}
+
+async function raidModeForChat(chatId) {
+  return parseRaidMode(await setting(raidModeKey(chatId)))
+}
+
+async function activateRaidMode(chatId, minutes, source) {
+  const until = new Date(Date.now() + minutes * 60000).toISOString()
+  await saveSetting(raidModeKey(chatId), { until, source, activated_at: new Date().toISOString() })
+  const shortenedDeadline = new Date(Date.now() + RAID_VERIFY_MINUTES * 60000).toISOString()
+  await db(`madger_bot_moderation_state?chat_id=eq.${encodeURIComponent(chatId)}&pending_verification=eq.true&verification_deadline=gt.${encodeURIComponent(shortenedDeadline)}`, {
+    method: 'PATCH', body: JSON.stringify({ verification_deadline: shortenedDeadline, updated_at: new Date().toISOString() })
+  })
+  await recordEvent('raid_mode_activated', null, { chat_id: chatId, minutes, source })
+  return { active: true, until, source }
+}
+
+async function maybeActivateRaidMode(chatId, incomingJoins) {
+  const current = await raidModeForChat(chatId)
+  if (current.active) return current
+  const cutoff = encodeURIComponent(new Date(Date.now() - RAID_JOIN_WINDOW_SECONDS * 1000).toISOString())
+  const recent = await db(`madger_bot_events?event_type=eq.join_challenge&created_at=gte.${cutoff}&select=metadata&limit=100`)
+  const recentInChat = (recent ?? []).filter(row => String(row.metadata?.chat_id) === String(chatId)).length
+  if (!shouldActivateRaidMode(recentInChat, incomingJoins, RAID_JOIN_THRESHOLD)) return current
+  const activated = await activateRaidMode(chatId, RAID_MODE_MINUTES, 'automatic_join_burst')
+  if (ADMIN_CHAT_ID) await send(ADMIN_CHAT_ID, `<b>MADGER RAID SHIELD ACTIVATED</b> 🚨\n\nDetected ${recentInChat + incomingJoins} joins within ${RAID_JOIN_WINDOW_SECONDS} seconds. New-member verification is reduced to ${RAID_VERIFY_MINUTES} minutes until ${escapeHtml(activated.until)}.\n\nUse /raidmode status or /raidmode off in this private chat.`)
+  return activated
+}
+
 async function welcomeNewMembers(message) {
   if (!isGroupChat(message.chat)) return
+  const incomingHumans = (message.new_chat_members ?? []).filter(user => user?.id && !user.is_bot).length
+  const raidMode = await maybeActivateRaidMode(message.chat.id, incomingHumans)
+  const verifyMinutes = raidMode.active ? RAID_VERIFY_MINUTES : JOIN_VERIFY_MINUTES
   for (const user of message.new_chat_members ?? []) {
     if (!user?.id) continue
     await registerUser(user, null)
@@ -267,17 +306,17 @@ async function welcomeNewMembers(message) {
     if (await isChatAdmin(message.chat.id, user.id)) continue
     let restricted = true
     try { await restrictMember(message.chat.id, user.id) } catch { restricted = false }
-    const deadline = new Date(Date.now() + JOIN_VERIFY_MINUTES * 60000).toISOString()
+    const deadline = new Date(Date.now() + verifyMinutes * 60000).toISOString()
     const name = escapeHtml(user.first_name || user.username || 'new member')
     const welcome = await send(message.chat.id,
-      `<b>Welcome to The Burrow, ${name}.</b> 🦡\n\nTap below within ${JOIN_VERIFY_MINUTES} minutes to unlock chat access.\n\nNever send anyone your seed phrase, private key, recovery code, or a “verification” payment. Official admins will not DM first.`,
+      `<b>Welcome to The Burrow, ${name}.</b> 🦡\n\nTap below within ${verifyMinutes} minutes to unlock chat access.${raidMode.active ? '\n\n🚨 Raid Shield is active. Unverified accounts are removed quickly.' : ''}\n\nNever send anyone your seed phrase, private key, recovery code, or a “verification” payment. Official admins will not DM first.`,
       keyboard([[{ text: '✅ I’m human — enter The Burrow', callback_data: `verify_join:${message.chat.id}:${user.id}` }]])
     )
     await saveModerationState({
       chat_id: message.chat.id, user_id: user.id, pending_verification: restricted,
       verification_deadline: restricted ? deadline : null, welcome_message_id: welcome.message_id
     })
-    await recordEvent('join_challenge', user.id, { chat_id: message.chat.id, restricted })
+    await recordEvent('join_challenge', user.id, { chat_id: message.chat.id, restricted, raid_mode: raidMode.active })
   }
   await deleteQuietly(message.chat.id, message.message_id)
 }
@@ -312,6 +351,52 @@ async function sweepExpiredJoins() {
     await saveModerationState({ chat_id: row.chat_id, user_id: row.user_id, pending_verification: false, verification_deadline: null, removed_at: new Date().toISOString() })
     await recordEvent('join_expired', row.user_id, { chat_id: row.chat_id })
   }
+}
+
+async function manageRaidMode(message, args) {
+  if (!ADMIN_IDS.has(String(message.from.id))) return send(message.chat.id, 'Admin command denied.')
+  if (message.chat.type !== 'private') {
+    await deleteQuietly(message.chat.id, message.message_id)
+    return send(message.from.id, 'Raid Shield controls are private. Use /raidmode here in your direct MADGERbot chat.')
+  }
+  if (!BUY_CHAT_ID) return send(message.chat.id, 'The Burrow destination is not configured.')
+  const [action = 'status', minutesValue = ''] = args.trim().toLowerCase().split(/\s+/)
+  if (action === 'off') {
+    await saveSetting(raidModeKey(BUY_CHAT_ID), { until: null, source: 'manual', disabled_at: new Date().toISOString() })
+    await recordEvent('raid_mode_disabled', message.from.id, { chat_id: BUY_CHAT_ID })
+    return send(message.chat.id, '<b>MADGER Raid Shield:</b> automatic emergency mode is off. Standard join verification remains active.')
+  }
+  if (action === 'on') {
+    const requested = minutesValue ? Number(minutesValue) : RAID_MODE_MINUTES
+    if (!Number.isInteger(requested) || requested < 5 || requested > 180) return send(message.chat.id, 'Use <code>/raidmode on 30</code>. Duration must be 5–180 minutes.')
+    const activated = await activateRaidMode(BUY_CHAT_ID, requested, 'manual')
+    return send(message.chat.id, `<b>MADGER Raid Shield activated.</b> 🚨\nNew members have ${RAID_VERIFY_MINUTES} minutes to verify.\nEnds: ${escapeHtml(activated.until)}`)
+  }
+  if (action !== 'status') return send(message.chat.id, 'Use <code>/raidmode status</code>, <code>/raidmode on 30</code>, or <code>/raidmode off</code>.')
+  const current = await raidModeForChat(BUY_CHAT_ID)
+  return send(message.chat.id, `<b>MADGER Raid Shield</b>\nStatus: ${current.active ? 'ACTIVE 🚨' : 'normal'}${current.active ? `\nEnds: ${escapeHtml(current.until)}\nSource: ${escapeHtml(current.source ?? 'unknown')}` : `\nAutomatic trigger: ${RAID_JOIN_THRESHOLD} joins in ${RAID_JOIN_WINDOW_SECONDS} seconds`}`)
+}
+
+async function purgeUnverified(message) {
+  if (!ADMIN_IDS.has(String(message.from.id))) return send(message.chat.id, 'Admin command denied.')
+  if (message.chat.type !== 'private') {
+    await deleteQuietly(message.chat.id, message.message_id)
+    return send(message.from.id, 'Unverified-member controls are private. Use /purgeunverified here in your direct MADGERbot chat.')
+  }
+  if (!BUY_CHAT_ID) return send(message.chat.id, 'The Burrow destination is not configured.')
+  const rows = await db(`madger_bot_moderation_state?chat_id=eq.${encodeURIComponent(BUY_CHAT_ID)}&pending_verification=eq.true&select=chat_id,user_id,welcome_message_id&order=verification_deadline.asc&limit=25`)
+  let removed = 0
+  let failed = 0
+  for (const row of rows ?? []) {
+    try {
+      await removeMember(row.chat_id, row.user_id)
+      if (row.welcome_message_id) await deleteQuietly(row.chat_id, row.welcome_message_id)
+      await saveModerationState({ chat_id: row.chat_id, user_id: row.user_id, pending_verification: false, verification_deadline: null, removed_at: new Date().toISOString() })
+      await recordEvent('join_purged', row.user_id, { chat_id: row.chat_id, admin_id: message.from.id })
+      removed += 1
+    } catch { failed += 1 }
+  }
+  return send(message.chat.id, `<b>Unverified-member purge complete.</b>\nRemoved: ${removed}\nFailed: ${failed}${rows?.length === 25 ? '\nRun /purgeunverified again if more remain.' : ''}`)
 }
 
 async function showSafety(chatId) {
@@ -458,21 +543,22 @@ async function adminDashboard(message) {
     return send(message.from.id, 'The command dashboard is private. Use /dashboard here in your direct MADGERbot chat.')
   }
   const since = encodeURIComponent(new Date(Date.now() - 7 * 86400000).toISOString())
-  const [users, pending, events, memberships, alerts, announcements, snapshots] = await Promise.all([
+  const [users, pending, events, memberships, alerts, announcements, snapshots, raidMode] = await Promise.all([
     db('madger_bot_users?select=chat_id'),
     db('madger_bot_moderation_state?pending_verification=eq.true&select=user_id'),
     db(`madger_bot_events?created_at=gte.${since}&select=event_type`),
     db('madger_bot_team_memberships?active=eq.true&select=team'),
     db('madger_bot_team_alerts?select=recipient_count,failure_count&order=created_at.desc&limit=20'),
     db('madger_bot_announcements?select=id&order=created_at.desc&limit=20'),
-    db('madger_bot_market_snapshots?select=price_usd,liquidity_usd&order=created_at.desc&limit=1')
+    db('madger_bot_market_snapshots?select=price_usd,liquidity_usd&order=created_at.desc&limit=1'),
+    raidModeForChat(BUY_CHAT_ID)
   ])
   const eventCounts = (events ?? []).reduce((result, row) => ({ ...result, [row.event_type]: (result[row.event_type] ?? 0) + 1 }), {})
   const teamCounts = (memberships ?? []).reduce((result, row) => ({ ...result, [row.team]: (result[row.team] ?? 0) + 1 }), {})
   const delivered = (alerts ?? []).reduce((sum, row) => sum + Number(row.recipient_count ?? 0), 0)
   const failed = (alerts ?? []).reduce((sum, row) => sum + Number(row.failure_count ?? 0), 0)
   const market = snapshots?.[0]
-  return send(message.chat.id, `<b>MADGER COMMAND DASHBOARD</b> 🦡\n\n<b>Community</b>\nTracked members: ${users?.length ?? 0}\nPending join checks: ${pending?.length ?? 0}\nVerified joins (7d): ${eventCounts.join_verified ?? 0}\nModeration actions (7d): ${eventCounts.moderation_action ?? 0}\nMember reports (7d): ${eventCounts.member_report ?? 0}\n\n<b>Promotion teams</b>\nRaid: ${teamCounts.raid ?? 0}\nOutreach: ${teamCounts.outreach ?? 0}\nRecent deliveries: ${delivered}\nDelivery failures: ${failed}\n\n<b>Publishing</b>\nRecent announcements: ${announcements?.length ?? 0}\n\n<b>Market</b>\nPrice: ${market?.price_usd ?? 'unavailable'} USD\nLiquidity: ${market?.liquidity_usd ?? 'unavailable'} USD`)
+  return send(message.chat.id, `<b>MADGER COMMAND DASHBOARD</b> 🦡\n\n<b>Community</b>\nRaid Shield: ${raidMode.active ? 'ACTIVE 🚨' : 'normal'}\nTracked members: ${users?.length ?? 0}\nPending join checks: ${pending?.length ?? 0}\nVerified joins (7d): ${eventCounts.join_verified ?? 0}\nExpired/purged joins (7d): ${(eventCounts.join_expired ?? 0) + (eventCounts.join_purged ?? 0)}\nModeration actions (7d): ${eventCounts.moderation_action ?? 0}\nMember reports (7d): ${eventCounts.member_report ?? 0}\n\n<b>Promotion teams</b>\nRaid: ${teamCounts.raid ?? 0}\nOutreach: ${teamCounts.outreach ?? 0}\nRecent deliveries: ${delivered}\nDelivery failures: ${failed}\n\n<b>Publishing</b>\nRecent announcements: ${announcements?.length ?? 0}\n\n<b>Market</b>\nPrice: ${market?.price_usd ?? 'unavailable'} USD\nLiquidity: ${market?.liquidity_usd ?? 'unavailable'} USD`)
 }
 
 async function showMissions(chatId) {
@@ -614,6 +700,8 @@ async function handleCommand(message) {
   if (command === '/announce') return publishAnnouncement(message, args, false)
   if (command === '/announcepin') return publishAnnouncement(message, args, true)
   if (command === '/dashboard') return adminDashboard(message)
+  if (command === '/raidmode') return manageRaidMode(message, args)
+  if (command === '/purgeunverified') return purgeUnverified(message)
   if (command === '/whoami') return send(chatId, `Your Telegram user ID is <code>${message.from.id}</code>. Treat admin IDs as operational configuration, not public content.`)
   if (command === '/chatid') return send(chatId, `This chat ID is <code>${message.chat.id}</code>. Use it only in the bot's secure runtime configuration.`)
   if (command === '/stats') return adminStats(chatId)
@@ -828,6 +916,8 @@ async function setupTelegram(request) {
     { command: 'jointeam', description: 'Join raid or outreach alerts privately' },
     { command: 'leaveteam', description: 'Leave raid or outreach alerts' },
     { command: 'dashboard', description: 'Admin command-center dashboard' },
+    { command: 'raidmode', description: 'Admin Raid Shield controls' },
+    { command: 'purgeunverified', description: 'Admin removal of pending joins' },
     { command: 'announce', description: 'Admin official Burrow announcement' },
     { command: 'announcepin', description: 'Admin announcement with pin request' },
     { command: 'rules', description: 'Read The Burrow community rules' },
@@ -856,7 +946,7 @@ Deno.serve(async request => {
     const url = new URL(request.url)
     if (request.method === 'GET' && url.pathname.includes('/go/')) return routeRedirect(request, url)
     if (request.method === 'GET') {
-      return Response.json({ ok: true, service: 'MADGER Command Bot', version: '2.3.0', configured: Boolean(BOT_TOKEN && WEBHOOK_SECRET), community_guard: true, promotion_teams: true, announcements: true, native_buy_watcher: true })
+      return Response.json({ ok: true, service: 'MADGER Command Bot', version: '2.4.0', configured: Boolean(BOT_TOKEN && WEBHOOK_SECRET), community_guard: true, raid_shield: true, promotion_teams: true, announcements: true, native_buy_watcher: true })
     }
     if (url.pathname.endsWith('/setup')) return setupTelegram(request)
     if (url.pathname.endsWith('/monitor')) return monitorMarket(request)
