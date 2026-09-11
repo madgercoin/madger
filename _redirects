@@ -1,0 +1,10 @@
+# Fixed MADGER purchase routes
+/r/raydium https://raydium.io/swap/?inputMint=sol&outputMint=BHauMX8akk2umqkQqnJwpYkCRkZmefGnEBFByeFXRKqv 302
+/r/jupiter https://jup.ag/swap?buy=BHauMX8akk2umqkQqnJwpYkCRkZmefGnEBFByeFXRKqv&sell=So11111111111111111111111111111111111111112 302
+/r/bonkbot https://t.me/bonkbot_bot?start=ref_7cien_ca_BHauMX8akk2umqkQqnJwpYkCRkZmefGnEBFByeFXRKqv 302
+/r/trojan https://t.me/achilles_trojanbot?start=r-burrowking-BHauMX8akk2umqkQqnJwpYkCRkZmefGnEBFByeFXRKqv 302
+
+# Campaign aliases
+/c/proficy-4h /buy?utm_source=proficy&utm_medium=paid_trending&utm_campaign=proficy_4h_test&utm_content=trending_slot 302
+/c/proficy-12h /buy?utm_source=proficy&utm_medium=paid_trending&utm_campaign=proficy_12h_test&utm_content=trending_slot 302
+/c/telegram-pin /buy?utm_source=telegram&utm_medium=community&utm_campaign=burrow_buy_pin&utm_content=pinned_message 302
