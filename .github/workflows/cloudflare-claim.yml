@@ -1,0 +1,43 @@
+name: Generate Cloudflare claim link
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/cloudflare-claim.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  claim:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      - name: Create temporary Cloudflare deployment
+        shell: bash
+        run: |
+          set +e
+          npx wrangler deploy --temporary > "$RUNNER_TEMP/cloudflare-claim.txt" 2>&1
+          status=$?
+          echo "status=$status" >> "$GITHUB_OUTPUT"
+          exit 0
+        id: deploy
+      - name: Store private claim details
+        uses: actions/upload-artifact@v4
+        with:
+          name: cloudflare-claim
+          path: ${{ runner.temp }}/cloudflare-claim.txt
+          retention-days: 1
+          if-no-files-found: error
+      - name: Confirm deployment creation
+        if: steps.deploy.outputs.status != '0'
+        run: exit 1
