@@ -2,9 +2,22 @@
 
 ## Purpose
 
-Build a real, recognizable community around MADGER and The Burrow before public trading exists. The operating goal is meaningful repeat participation—not inflated follower counts, reply spam, or manufactured urgency.
+Build a real, recognizable community around MADGER and The Burrow now that public trading is live. The operating goal is meaningful repeat participation—not inflated follower counts, reply spam, manufactured urgency, or coordinated trading.
 
-The public state remains `MINTED_NOT_TRADING`. Community work may discuss the character, creative process, verified project facts, safety, and what members want to build. It must not imply a launch date, liquidity, venue, price outcome, partnership, or purchase path.
+The public state is `TRADING_LIVE` through the exact official Raydium CPMM pool recorded at `https://madgercoin.com/launch.html`. Community work may discuss the character, creative process, verified project facts, safety, contribution opportunities, and what members want to build. It must not promise liquidity, price outcomes, returns, listings, partnerships, or future utility.
+
+## MADGER Command Bot
+
+The Command Bot provides exact-mint verification, neutral purchase navigation, referral attribution, contributor missions, human-reviewed points and ranks, suspicious-address moderation, private operational statistics, market alerts, and independently verified buy notifications.
+
+- Points reward approved work, not purchases, blind likes, spam, or coordinated trading.
+- Purchase destinations remain fixed and never preset amount, slippage, or referral fees.
+- A transaction is described as a verified buy only after the service confirms the buyer's balance increased for the exact official MADGER mint in a confirmed Solana transaction.
+- Purchases below $25 are recorded for aggregate operations but are not broadcast individually.
+- Moderation removes alternate addresses presented as MADGER without republishing the malicious address.
+- Every rejection, restriction, compensation decision, or disputed submission remains subject to human review.
+
+Implementation and operational commands are documented in `docs/madger-command-bot.md`.
 
 ## Evidence loop
 
