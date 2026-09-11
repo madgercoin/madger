@@ -28,7 +28,9 @@ Supabase supplies `SUPABASE_URL` and `SUPABASE_SECRET_KEYS` to the Edge Function
 
 ## Verified buy alerts
 
-POST candidate purchases to `/buy-alert` with the internal `x-madger-monitor-secret` header and JSON containing `signature`, `buyer`, and `source`. The function independently fetches the confirmed Solana transaction and only announces it when that buyer's balance of the exact official MADGER mint increased. Purchases below $25 are recorded but not broadcast individually.
+The five-minute monitor natively watches the exact official Raydium CPMM pool. It fetches each new confirmed signature, requires the official pool and CPMM program in the transaction, verifies that a recipient's balance of the official MADGER mint increased and that the same owner paid SOL or another token, and stores a durable checkpoint. First activation starts from the newest signature rather than replaying historical trades. Purchases below $25 are recorded but not broadcast individually.
+
+The authenticated `/buy-alert` route remains available for compatible external sources, but it applies the same independent transaction checks and duplicate suppression.
 
 ## Market monitor
 
@@ -53,6 +55,8 @@ The database invokes `/monitor` every five minutes with a secret stored in Supab
 - `/announce MESSAGE [| HTTPS_URL | BUTTON]` — publish one official announcement to The Burrow
 - `/announcepin MESSAGE [| HTTPS_URL | BUTTON]` — publish and request a Telegram notification pin
 - `/dashboard` — private command-center view of joins, safety actions, teams, delivery, announcements, and market state
+- `/raidmode status|on [MINUTES]|off` — private administrator control for Raid Shield
+- `/purgeunverified` — remove up to 25 pending unverified accounts from The Burrow
 
 Operational dashboards and team statistics are direct-message only. If invoked in a group, MADGERbot deletes the command and sends the result path privately to the authorized administrator.
 - `/warn`, `/mute [MINUTES]`, and `/ban` — reply-based administrator moderation
@@ -62,6 +66,8 @@ Operational dashboards and team statistics are direct-message only. If invoked i
 ## Community Guard
 
 - New human members receive a branded welcome and must pass a one-tap challenge within 10 minutes before posting.
+- Eight joins within 60 seconds automatically activate Raid Shield for 30 minutes, shorten all pending and new verification windows to three minutes, and alert the administrator privately.
+- Manual Raid Shield windows can run for 5–180 minutes. Expiry restores the standard verification flow without changing the group's default permissions.
 - High-confidence wallet credential requests, admin impersonation, unverified wallet-connect links, and fake MADGER contract addresses are removed.
 - Flooding and repeated-message spam escalate from warning to temporary mute to removal. Administrators are exempt.
 - Credential theft and admin impersonation attempts are removed immediately and reported privately.
