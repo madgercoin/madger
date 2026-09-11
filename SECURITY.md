@@ -19,6 +19,12 @@ The launch-state validator requires every indexable project page to load the sam
 
 The authorized purchase guide uses fixed external HTTPS links only. It adds no wallet SDK, tracking, forms, financial transactions, or visitor-controlled redirect parameters. SOL input and MADGER output are fixed; amounts, slippage, and referrals are never preset. See `docs/purchase-path.md` for the research, threat review, and verification boundaries. Earlier pre-launch descriptions above are historical and do not override the current trading-live implementation.
 
+## Command Bot review — September 11, 2026
+
+The MADGER Command Bot is isolated from the static website and never executes trades, holds funds, connects wallets, presets transaction values, or rewards purchases. Telegram webhook deliveries require Telegram's secret-token header. Internal market and buy-alert routes use a Vault-held secret whose SHA-256 digest is the only copy available to the Edge Function. Candidate buy alerts are independently checked against the confirmed Solana transaction and the exact official mint before publication.
+
+Bot tables use RLS with no public policies; `anon` and `authenticated` privileges are revoked, and only the server-side service role is granted table access. Review functions are explicitly denied to public roles. Bot credentials and chat identifiers are runtime secrets, never source files. Processed update IDs expire after 7 days, market snapshots after 30 days, and operational event telemetry after 180 days.
+
 ## Contributor rules
 
 Never commit seed phrases, keys, tokens, private wallet details, personal data, or unapproved addresses. Public operational addresses may appear only in the internal wallet runbook and transaction records, never the deployed artifact. Verify mint changes character by character and across official channels with multiple authorized reviewers. Avoid remote scripts, trackers, forms, wallet adapters, and dependencies unless threat-modeled and approved. Review generated `dist/` and Git diff for disclosure before release.
@@ -33,4 +39,4 @@ No dedicated vulnerability channel or response SLA is verified. The public proje
 
 ## Future Decisions
 
-Security contact/SLA, maintainer access controls, branch protection, signed releases, Cloudflare token scopes, wallet custody, independent audits, and payment threat models remain open.
+Security contact/SLA, maintainer access controls, branch protection, signed releases, Cloudflare token scopes, wallet custody, independent audits, formal bot privacy handling, and payment threat models remain open.
