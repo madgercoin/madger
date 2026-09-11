@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
 import {
-  OFFICIAL_MINT, OFFICIAL_POOL, RAYDIUM_CPMM_PROGRAM, buyTier, escapeHtml,
+  OFFICIAL_MINT, OFFICIAL_POOL, RAYDIUM_CPMM_PROGRAM, buyTier, escapeHtml, faqIntent,
   findVerifiedMadgerBuyers, isSuspiciousMadgerMessage,
   marketAlertReasons, marketSnapshotSummary, moderationEscalation, moderationReason,
   normalizeReferral, normalizeTeam, normalizedMessageFingerprint,
@@ -128,4 +128,13 @@ test('normalizes a stored market snapshot for bot display', () => {
   })
   assert.equal(marketSnapshotSummary({ price_usd: null }).priceUsd, null)
   assert.equal(marketSnapshotSummary({ raw: {} }).marketCapUsd, null)
+})
+
+test('routes only high-confidence FAQ questions', () => {
+  assert.equal(faqIntent('What is the MADGER price?'), 'price')
+  assert.equal(faqIntent('What is the CA?'), 'contract')
+  assert.equal(faqIntent('Where can I buy $MADGER safely?'), 'buy')
+  assert.equal(faqIntent('Where are the official MADGER links?'), 'links')
+  assert.equal(faqIntent('I think the price will move tomorrow'), null)
+  assert.equal(faqIntent('/price'), null)
 })
