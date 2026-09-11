@@ -1,7 +1,8 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
 import {
-  OFFICIAL_MINT, buyTier, escapeHtml, isSuspiciousMadgerMessage,
+  OFFICIAL_MINT, OFFICIAL_POOL, RAYDIUM_CPMM_PROGRAM, buyTier, escapeHtml,
+  findVerifiedMadgerBuyers, isSuspiciousMadgerMessage,
   marketAlertReasons, moderationEscalation, moderationReason,
   normalizeReferral, normalizeTeam, normalizedMessageFingerprint,
   parseAnnouncement, parseTeamAlert
@@ -63,4 +64,33 @@ test('parses plain and linked official announcements', () => {
     text: 'Join the AMA now.', url: 'https://x.com/i/spaces/1', label: 'Enter Space'
   })
   assert.equal(parseAnnouncement('Connect now | https://evil.example/wallet | Open'), null)
+})
+
+test('identifies a pool-touching MADGER buy with buyer payment', () => {
+  const buyer = 'Buyer11111111111111111111111111111111111111'
+  const transaction = {
+    transaction: { message: { accountKeys: [
+      { pubkey: buyer }, { pubkey: OFFICIAL_POOL }, { pubkey: RAYDIUM_CPMM_PROGRAM }
+    ] } },
+    meta: {
+      err: null, fee: 5000, preBalances: [2_000_000_000, 0, 0], postBalances: [1_899_995_000, 0, 0],
+      preTokenBalances: [{ owner: buyer, mint: OFFICIAL_MINT, uiTokenAmount: { uiAmountString: '100' } }],
+      postTokenBalances: [{ owner: buyer, mint: OFFICIAL_MINT, uiTokenAmount: { uiAmountString: '150' } }]
+    }
+  }
+  assert.deepEqual(findVerifiedMadgerBuyers(transaction), [{ buyer, amount: 50 }])
+})
+
+test('rejects transfers and transactions outside the official CPMM pool', () => {
+  const buyer = 'Buyer11111111111111111111111111111111111111'
+  const transfer = {
+    transaction: { message: { accountKeys: [{ pubkey: buyer }, { pubkey: OFFICIAL_POOL }, { pubkey: RAYDIUM_CPMM_PROGRAM }] } },
+    meta: {
+      err: null, fee: 5000, preBalances: [2_000_000_000, 0, 0], postBalances: [1_999_995_000, 0, 0],
+      preTokenBalances: [], postTokenBalances: [{ owner: buyer, mint: OFFICIAL_MINT, uiTokenAmount: { uiAmountString: '50' } }]
+    }
+  }
+  assert.deepEqual(findVerifiedMadgerBuyers(transfer), [])
+  transfer.transaction.message.accountKeys = [{ pubkey: buyer }, { pubkey: RAYDIUM_CPMM_PROGRAM }]
+  assert.deepEqual(findVerifiedMadgerBuyers(transfer), [])
 })
