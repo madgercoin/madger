@@ -86,6 +86,32 @@ export function moderationEscalation(warningCount) {
   return 'warn'
 }
 
+const TEAM_TARGET_HOSTS = new Set([
+  'madgercoin.com', 'www.madgercoin.com', 'x.com', 'twitter.com', 't.me',
+  'telegram.me', 'instagram.com', 'www.instagram.com', 'facebook.com',
+  'www.facebook.com', 'tiktok.com', 'www.tiktok.com', 'reddit.com',
+  'www.reddit.com', 'youtube.com', 'www.youtube.com'
+])
+
+export function normalizeTeam(value) {
+  const team = String(value ?? '').trim().toLowerCase()
+  if (team === 'raid') return 'raid'
+  if (team === 'shill' || team === 'outreach') return 'outreach'
+  return null
+}
+
+export function parseTeamAlert(value) {
+  const [head, ...briefParts] = String(value ?? '').split('|')
+  const [teamValue, urlValue] = head.trim().split(/\s+/, 2)
+  const team = normalizeTeam(teamValue)
+  let url
+  try { url = new URL(urlValue) } catch { return null }
+  const brief = briefParts.join('|').trim()
+  if (!team || url.protocol !== 'https:' || !TEAM_TARGET_HOSTS.has(url.hostname.toLowerCase())) return null
+  if (brief.length < 5 || brief.length > 500) return null
+  return { team, url: url.href, brief }
+}
+
 export function buyTier(usdValue) {
   const value = Number(usdValue)
   if (value >= 500) return { label: 'WHALE IN THE BURROW', emoji: '🐋', instant: true }
