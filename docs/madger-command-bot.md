@@ -42,6 +42,8 @@ The database invokes `/monitor` every five minutes with a secret stored in Supab
 - `/submit CODE HTTPS_URL` — evidence for human review
 - `/rank` — approved contribution points and rank
 - `/referral` — attributable Telegram onboarding link
+- `/whoami` — display the requesting user's numeric Telegram ID for secure admin setup
+- `/chatid` — display the current group's or channel's numeric Telegram ID
 - `/stats` — admin-only seven-day report
 - `/approve ID [NOTE]` and `/reject ID [NOTE]` — admin-only human review
 
