@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026-09-11 — MADGER Command Bot
+
+- Deployed the serverless MADGER Command Bot with safe purchase navigation, exact-mint verification, Telegram referral attribution, contributor missions, human-reviewed ranks, suspicious-address moderation, and private admin reporting.
+- Added independently verified buy-alert ingestion that confirms the buyer's official-MADGER balance increase in the referenced Solana transaction before publishing a thresholded notification.
+- Added five-minute monitoring of the exact DEX Screener pool for significant price and liquidity changes, plus daily retention cleanup.
+- Locked all operational tables behind RLS with no public policies, revoked client-role access, stored the internal scheduler secret in Vault, and kept Telegram credentials out of source control.
+- Added source, migrations, tests, deployment guidance, architecture documentation, and community-operation boundaries without changing the static website purchase flow.
+
 ## 2026-09-11 — Signals From Below editorial cycle
 
 - Published two source-grounded dispatches on community utility and creator trust, expanding the archive from eight to ten entries.
