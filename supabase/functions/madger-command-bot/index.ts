@@ -1,6 +1,6 @@
 import 'jsr:@supabase/functions-js/edge-runtime.d.ts'
 import {
-  LINKS, OFFICIAL_MINT, OFFICIAL_POOL, buyTier, escapeHtml,
+  LINKS, OFFICIAL_MINT, OFFICIAL_POOL, buyTier, escapeHtml, faqIntent,
   findVerifiedMadgerBuyers,
   marketAlertReasons, marketSnapshotSummary, moderationEscalation, moderationReason,
   normalizeReferral, normalizeTeam, normalizedMessageFingerprint, parseAnnouncement,
@@ -23,6 +23,7 @@ const RAID_VERIFY_MINUTES = 3
 const RAID_MODE_MINUTES = 30
 const RAID_JOIN_WINDOW_SECONDS = 60
 const RAID_JOIN_THRESHOLD = 8
+const FAQ_COOLDOWN_SECONDS = 180
 const FLOOD_WINDOW_SECONDS = 15
 const FLOOD_MESSAGE_LIMIT = 7
 const DUPLICATE_WINDOW_SECONDS = 60
@@ -367,14 +368,54 @@ async function showMarket(chatId) {
 }
 
 async function showOfficialLinks(chatId) {
-  return send(chatId, `<b>OFFICIAL MADGER LINKS</b> ✅\n\nWebsite: ${LINKS.official}\nOfficial mint:\n<code>${OFFICIAL_MINT}</code>\n\nTreat any conflicting contract, support account, or wallet link as suspicious.`, keyboard([
-    [{ text: '🌐 Official website', url: LINKS.official }, { text: '🦡 The Burrow', url: LINKS.community }],
+  return send(chatId, `<b>OFFICIAL MADGER LINKS</b> ✅\n\nWebsite: ${LINKS.home}\nOfficial mint:\n<code>${OFFICIAL_MINT}</code>\n\nTreat any conflicting contract, support account, or wallet link as suspicious.`, keyboard([
+    [{ text: '🌐 Official website', url: LINKS.home }, { text: '🦡 The Burrow', url: LINKS.community }],
     [{ text: '✅ Verify MADGER', url: LINKS.verify }, { text: '📈 Verified chart', url: LINKS.dex }]
   ]))
 }
 
 async function showHelp(chatId) {
   return send(chatId, '<b>MADGERBOT COMMANDS</b> 🦡\n\n<b>Trade safely</b>\n/buy · /price · /chart · /ca · /verify · /links\n\n<b>Community</b>\n/rules · /safety · /report · /teams\n\n<b>Contribute</b>\n/missions · /submit · /rank · /referral\n\nMADGERbot never requests wallet credentials, payments, verification transfers, or remote access.')
+}
+
+async function faqResponderEnabled() {
+  return await setting('faq_responder_enabled') !== false
+}
+
+async function manageFaqMode(message, args) {
+  if (!ADMIN_IDS.has(String(message.from.id))) return send(message.chat.id, 'Admin command denied.')
+  if (message.chat.type !== 'private') {
+    await deleteQuietly(message.chat.id, message.message_id)
+    return send(message.from.id, 'FAQ controls are private. Use /faqmode here in your direct MADGERbot chat.')
+  }
+  const action = args.trim().toLowerCase() || 'status'
+  if (action === 'on' || action === 'off') {
+    const enabled = action === 'on'
+    await saveSetting('faq_responder_enabled', enabled)
+    await recordEvent('faq_mode_changed', message.from.id, { enabled })
+    return send(message.chat.id, `<b>MADGER FAQ responder:</b> ${enabled ? 'ON' : 'OFF'}.`)
+  }
+  if (action !== 'status') return send(message.chat.id, 'Use <code>/faqmode status</code>, <code>/faqmode on</code>, or <code>/faqmode off</code>.')
+  return send(message.chat.id, `<b>MADGER FAQ responder:</b> ${await faqResponderEnabled() ? 'ON' : 'OFF'}\nPer-topic group cooldown: ${FAQ_COOLDOWN_SECONDS / 60} minutes.`)
+}
+
+async function maybeAnswerFaq(message) {
+  if (!isGroupChat(message.chat) || !message.from || message.from.is_bot) return false
+  const intent = faqIntent(message.text ?? message.caption ?? '')
+  if (!intent || !await faqResponderEnabled()) return false
+  const cooldownKey = `faq_last_${message.chat.id}_${intent}`
+  const lastAnswer = Date.parse(String(await setting(cooldownKey) ?? ''))
+  if (Number.isFinite(lastAnswer) && Date.now() - lastAnswer < FAQ_COOLDOWN_SECONDS * 1000) return false
+  await saveSetting(cooldownKey, new Date().toISOString())
+
+  let posted
+  if (intent === 'price') posted = await showMarket(message.chat.id)
+  else if (intent === 'contract') posted = await send(message.chat.id, `<b>OFFICIAL MADGER MINT</b> ✅\n<code>${OFFICIAL_MINT}</code>\n\nVerify the complete address—never a shortened match.`, keyboard([[{ text: 'Canonical verification', url: LINKS.verify }]]))
+  else if (intent === 'buy') posted = await send(message.chat.id, '<b>BUY $MADGER SAFELY</b> ⚡\nUse a verified route and choose your own amount and slippage. MADGERbot never asks for funds or wallet credentials.', keyboard([[{ text: '🧭 Beginner guide', url: LINKS.guide }, { text: '⚡ Open Raydium', url: LINKS.raydium }]]))
+  else posted = await showOfficialLinks(message.chat.id)
+  if (posted?.message_id) await scheduleCleanup(message.chat.id, posted.message_id, `faq_${intent}`, 4)
+  await recordEvent('faq_answered', message.from.id, { chat_id: message.chat.id, intent })
+  return true
 }
 
 async function chatSecurityInfo(chatId) {
@@ -579,7 +620,7 @@ async function adminDashboard(message) {
     return send(message.from.id, 'The command dashboard is private. Use /dashboard here in your direct MADGERbot chat.')
   }
   const since = encodeURIComponent(new Date(Date.now() - 7 * 86400000).toISOString())
-  const [users, pending, events, memberships, alerts, announcements, snapshots, raidMode, chatSecurity] = await Promise.all([
+  const [users, pending, events, memberships, alerts, announcements, snapshots, raidMode, chatSecurity, faqEnabled] = await Promise.all([
     db('madger_bot_users?select=chat_id'),
     db('madger_bot_moderation_state?pending_verification=eq.true&select=user_id'),
     db(`madger_bot_events?created_at=gte.${since}&select=event_type`),
@@ -588,14 +629,15 @@ async function adminDashboard(message) {
     db('madger_bot_announcements?select=id&order=created_at.desc&limit=20'),
     db('madger_bot_market_snapshots?select=price_usd,liquidity_usd&order=created_at.desc&limit=1'),
     raidModeForChat(BUY_CHAT_ID),
-    chatSecurityInfo(BUY_CHAT_ID)
+    chatSecurityInfo(BUY_CHAT_ID),
+    faqResponderEnabled()
   ])
   const eventCounts = (events ?? []).reduce((result, row) => ({ ...result, [row.event_type]: (result[row.event_type] ?? 0) + 1 }), {})
   const teamCounts = (memberships ?? []).reduce((result, row) => ({ ...result, [row.team]: (result[row.team] ?? 0) + 1 }), {})
   const delivered = (alerts ?? []).reduce((sum, row) => sum + Number(row.recipient_count ?? 0), 0)
   const failed = (alerts ?? []).reduce((sum, row) => sum + Number(row.failure_count ?? 0), 0)
   const market = snapshots?.[0]
-  return send(message.chat.id, `<b>MADGER COMMAND DASHBOARD</b> 🦡\n\n<b>Community</b>\nRaid Shield: ${raidMode.active ? 'ACTIVE 🚨' : 'normal'}\nRaid link firewall: ${raidMode.active ? 'locked' : 'standby'}\nTelegram native anti-spam: ${chatSecurity.aggressiveAntiSpam === null ? 'unknown' : chatSecurity.aggressiveAntiSpam ? 'enabled' : 'disabled'}\nTelegram slow mode: ${chatSecurity.slowModeSeconds === null ? 'unknown' : `${chatSecurity.slowModeSeconds}s`}\nTracked members: ${users?.length ?? 0}\nPending join checks: ${pending?.length ?? 0}\nVerified joins (7d): ${eventCounts.join_verified ?? 0}\nExpired/purged joins (7d): ${(eventCounts.join_expired ?? 0) + (eventCounts.join_purged ?? 0)}\nModeration actions (7d): ${eventCounts.moderation_action ?? 0}\nMember reports (7d): ${eventCounts.member_report ?? 0}\n\n<b>Promotion teams</b>\nRaid: ${teamCounts.raid ?? 0}\nOutreach: ${teamCounts.outreach ?? 0}\nRecent deliveries: ${delivered}\nDelivery failures: ${failed}\n\n<b>Publishing</b>\nRecent announcements: ${announcements?.length ?? 0}\n\n<b>Market</b>\nPrice: ${market?.price_usd ?? 'unavailable'} USD\nLiquidity: ${market?.liquidity_usd ?? 'unavailable'} USD`)
+  return send(message.chat.id, `<b>MADGER COMMAND DASHBOARD</b> 🦡\n\n<b>Community</b>\nRaid Shield: ${raidMode.active ? 'ACTIVE 🚨' : 'normal'}\nRaid link firewall: ${raidMode.active ? 'locked' : 'standby'}\nFAQ responder: ${faqEnabled ? 'on' : 'off'} · ${eventCounts.faq_answered ?? 0} answers (7d)\nTelegram native anti-spam: ${chatSecurity.aggressiveAntiSpam === null ? 'unknown' : chatSecurity.aggressiveAntiSpam ? 'enabled' : 'disabled'}\nTelegram slow mode: ${chatSecurity.slowModeSeconds === null ? 'unknown' : `${chatSecurity.slowModeSeconds}s`}\nTracked members: ${users?.length ?? 0}\nPending join checks: ${pending?.length ?? 0}\nVerified joins (7d): ${eventCounts.join_verified ?? 0}\nExpired/purged joins (7d): ${(eventCounts.join_expired ?? 0) + (eventCounts.join_purged ?? 0)}\nModeration actions (7d): ${eventCounts.moderation_action ?? 0}\nMember reports (7d): ${eventCounts.member_report ?? 0}\n\n<b>Promotion teams</b>\nRaid: ${teamCounts.raid ?? 0}\nOutreach: ${teamCounts.outreach ?? 0}\nRecent deliveries: ${delivered}\nDelivery failures: ${failed}\n\n<b>Publishing</b>\nRecent announcements: ${announcements?.length ?? 0}\n\n<b>Market</b>\nPrice: ${market?.price_usd ?? 'unavailable'} USD\nLiquidity: ${market?.liquidity_usd ?? 'unavailable'} USD`)
 }
 
 async function showMissions(chatId) {
@@ -743,6 +785,7 @@ async function handleCommand(message) {
   if (command === '/dashboard') return adminDashboard(message)
   if (command === '/raidmode') return manageRaidMode(message, args)
   if (command === '/purgeunverified') return purgeUnverified(message)
+  if (command === '/faqmode') return manageFaqMode(message, args)
   if (command === '/whoami') return send(chatId, `Your Telegram user ID is <code>${message.from.id}</code>. Treat admin IDs as operational configuration, not public content.`)
   if (command === '/chatid') return send(chatId, `This chat ID is <code>${message.chat.id}</code>. Use it only in the bot's secure runtime configuration.`)
   if (command === '/stats') return adminStats(chatId)
@@ -826,7 +869,10 @@ async function handleUpdate(update) {
   if (message.new_chat_members?.length) return welcomeNewMembers(message)
   if (await moderate(message)) return
   if (message.text?.startsWith('/') && message.from) await handleCommand(message)
-  else if (message.from) await registerUser(message.from, null)
+  else if (message.from) {
+    await registerUser(message.from, null)
+    await maybeAnswerFaq(message)
+  }
 }
 
 async function routeRedirect(request, url) {
@@ -972,6 +1018,7 @@ async function setupTelegram(request) {
     { command: 'dashboard', description: 'Admin command-center dashboard' },
     { command: 'raidmode', description: 'Admin Raid Shield controls' },
     { command: 'purgeunverified', description: 'Admin removal of pending joins' },
+    { command: 'faqmode', description: 'Admin FAQ responder controls' },
     { command: 'announce', description: 'Admin official Burrow announcement' },
     { command: 'announcepin', description: 'Admin announcement with pin request' },
     { command: 'teamalert', description: 'Admin promotion-team alert' },
@@ -1010,7 +1057,7 @@ Deno.serve(async request => {
     const url = new URL(request.url)
     if (request.method === 'GET' && url.pathname.includes('/go/')) return routeRedirect(request, url)
     if (request.method === 'GET') {
-      return Response.json({ ok: true, service: 'MADGER Command Bot', version: '2.5.0', configured: Boolean(BOT_TOKEN && WEBHOOK_SECRET), community_guard: true, raid_shield: true, raid_link_firewall: true, market_commands: true, promotion_teams: true, announcements: true, native_buy_watcher: true })
+      return Response.json({ ok: true, service: 'MADGER Command Bot', version: '2.6.0', configured: Boolean(BOT_TOKEN && WEBHOOK_SECRET), community_guard: true, raid_shield: true, raid_link_firewall: true, faq_responder: true, market_commands: true, promotion_teams: true, announcements: true, native_buy_watcher: true })
     }
     if (url.pathname.endsWith('/setup')) return setupTelegram(request)
     if (url.pathname.endsWith('/monitor')) return monitorMarket(request)
