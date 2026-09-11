@@ -41,6 +41,11 @@ const TRUSTED_HOSTS = new Set([
   't.me', 'telegram.me', 'x.com', 'twitter.com'
 ])
 
+const RAID_SHIELD_LINK_HOSTS = new Set([
+  'madgercoin.com', 'www.madgercoin.com', 'raydium.io', 'www.raydium.io',
+  'dexscreener.com', 'www.dexscreener.com', 'solscan.io', 'www.solscan.io'
+])
+
 const SHORTENER_HOSTS = new Set([
   'bit.ly', 'tinyurl.com', 't.co', 'cutt.ly', 'shorturl.at', 'rebrand.ly',
   'is.gd', 'rb.gy', 'ow.ly'
@@ -54,7 +59,7 @@ export function extractHttpHosts(text) {
   return hosts
 }
 
-export function moderationReason(text) {
+export function moderationReason(text, options = {}) {
   const value = String(text ?? '')
   if (isSuspiciousMadgerMessage(value)) return 'unverified MADGER contract address'
 
@@ -72,6 +77,8 @@ export function moderationReason(text) {
 
   const impersonation = /(?:official\s+)?(?:admin|support|moderator|help\s*desk).{0,45}(?:dm|message|contact|inbox)\s+(?:me|us)|(?:dm|message|contact|inbox)\s+(?:me|us).{0,45}(?:admin|support|moderator|help\s*desk)/i
   if (impersonation.test(value) && (hasUntrustedLink || /@[A-Za-z0-9_]{5,}/.test(value))) return 'admin/support impersonation'
+
+  if (options.strictLinks && hosts.some(host => !RAID_SHIELD_LINK_HOSTS.has(host))) return 'external link blocked during Raid Shield'
 
   return null
 }
@@ -171,6 +178,20 @@ export function parseRaidMode(value, now = Date.now()) {
     active: Number.isFinite(expiresAt) && expiresAt > now,
     until: Number.isFinite(expiresAt) ? new Date(expiresAt).toISOString() : null,
     source: typeof value === 'object' && value?.source ? String(value.source) : null
+  }
+}
+
+export function marketSnapshotSummary(snapshot, now = Date.now()) {
+  const number = value => Number.isFinite(Number(value)) ? Number(value) : null
+  const createdAt = Date.parse(String(snapshot?.created_at ?? ''))
+  return {
+    priceUsd: number(snapshot?.price_usd),
+    liquidityUsd: number(snapshot?.liquidity_usd),
+    volumeM5Usd: number(snapshot?.volume_m5_usd),
+    buysM5: number(snapshot?.buys_m5),
+    sellsM5: number(snapshot?.sells_m5),
+    marketCapUsd: number(snapshot?.raw?.marketCap ?? snapshot?.raw?.fdv),
+    ageMinutes: Number.isFinite(createdAt) ? Math.max(0, Math.floor((now - createdAt) / 60000)) : null
   }
 }
 
