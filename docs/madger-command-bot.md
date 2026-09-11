@@ -48,6 +48,7 @@ The database invokes `/monitor` every five minutes with a secret stored in Supab
 - `/missions` — active contribution work
 - `/submit CODE HTTPS_URL` — evidence for human review
 - `/rank` — approved contribution points and rank
+- `/leaderboard` — top contributors ranked only by human-approved work
 - `/referral` — attributable Telegram onboarding link
 - `/whoami` — display the requesting user's numeric Telegram ID for secure admin setup
 - `/chatid` — display the current group's or channel's numeric Telegram ID
@@ -63,6 +64,8 @@ The database invokes `/monitor` every five minutes with a secret stored in Supab
 - `/raidmode status|on [MINUTES]|off` — private administrator control for Raid Shield
 - `/purgeunverified` — remove up to 25 pending unverified accounts from The Burrow
 - `/faqmode status|on|off` — private administrator control for automatic FAQ replies
+- `/missionadd CODE | POINTS | TITLE | INSTRUCTIONS` — privately create a contributor mission
+- `/missionclose CODE` and `/missionopen CODE` — privately pause or reactivate a mission
 
 Operational dashboards and team statistics are direct-message only. If invoked in a group, MADGERbot deletes the command and sends the result path privately to the authorized administrator.
 Telegram receives a public command menu without administrator operations. Each configured administrator receives a private command scope containing the complete public and admin toolset.
@@ -88,6 +91,14 @@ Telegram receives a public command menu without administrator operations. Each c
 - Membership is private, voluntary, and revocable at any time. The bot never tags the entire group.
 - Alerts permit only trusted MADGER and major social-platform HTTPS targets, are admin-only, and have a 30-minute per-team cooldown.
 - Every alert prohibits scripts, copy-paste swarms, spam, harassment, misleading claims, and financial promises.
+
+## Contributor missions
+
+- The public leaderboard includes only members with human-approved contribution points and never exposes numeric Telegram IDs.
+- Members without a public Telegram username appear as anonymous contributors.
+- Mission creation is administrator-only and direct-message-only. Codes, points, titles, and instructions are strictly bounded.
+- Missions that reward purchases, holdings, transfers, wallet connections, mass-tagging, spam, harassment, or guaranteed returns are rejected.
+- Closing a mission preserves its history and submissions; reopening restores it without rewriting prior records.
 
 ## Announcements and cleanup
 
