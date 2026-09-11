@@ -793,6 +793,61 @@ async function adminStats(chatId) {
   await send(chatId, `<b>MADGER BOT — 7 DAY COMMAND REPORT</b>\n\nMembers tracked: ${users?.length ?? 0}\nPending submissions: ${submissions?.length ?? 0}\nWelcome sessions: ${counts.welcome ?? 0}\nMission views: ${counts.missions_viewed ?? 0}\nSubmissions: ${counts.mission_submitted ?? 0}\nReferral link opens: ${counts.referral_open ?? 0}\n\nLatest market snapshot:\nPrice: ${market?.price_usd ?? 'unavailable'} USD\nLiquidity: ${market?.liquidity_usd ?? 'unavailable'} USD`)
 }
 
+async function adminHealth(message) {
+  if (!ADMIN_IDS.has(String(message.from.id))) return send(message.chat.id, 'Admin command denied.')
+  if (message.chat.type !== 'private') {
+    await deleteQuietly(message.chat.id, message.message_id)
+    return send(message.from.id, 'System health is private. Use /health here in your direct MADGERbot chat.')
+  }
+  const bot = await telegram('getMe', {})
+  const [webhook, membership, snapshots, cleanup, raidMode, chatSecurity] = await Promise.all([
+    telegram('getWebhookInfo', {}),
+    BUY_CHAT_ID ? telegram('getChatMember', { chat_id: BUY_CHAT_ID, user_id: bot.id }).catch(() => null) : null,
+    db('madger_bot_market_snapshots?select=created_at&order=created_at.desc&limit=1'),
+    db('madger_bot_message_cleanup?deleted_at=is.null&select=message_id&limit=100'),
+    raidModeForChat(BUY_CHAT_ID),
+    chatSecurityInfo(BUY_CHAT_ID)
+  ])
+  const snapshotAt = Date.parse(String(snapshots?.[0]?.created_at ?? ''))
+  const marketAge = Number.isFinite(snapshotAt) ? Math.max(0, Math.floor((Date.now() - snapshotAt) / 60000)) : null
+  const webhookError = webhook.last_error_message
+    ? `\nLast delivery error: ${escapeHtml(String(webhook.last_error_message).slice(0, 200))}`
+    : ''
+  return send(message.chat.id, `<b>MADGERBOT SYSTEM HEALTH</b> 🩺
+
+Version: 3.0.0
+Webhook: ${webhook.url ? 'connected ✅' : 'missing ❌'}
+Pending Telegram updates: ${Number(webhook.pending_update_count ?? 0)}
+Market monitor: ${marketAge === null ? 'no snapshot ❌' : marketAge <= 10 ? `current ✅ · ${marketAge}m old` : `stale ⚠️ · ${marketAge}m old`}
+Cleanup backlog: ${cleanup?.length ?? 0}${cleanup?.length === 100 ? '+' : ''}
+Raid Shield: ${raidMode.active ? 'ACTIVE 🚨' : 'normal'}
+
+<b>Burrow permissions</b>
+Administrator: ${membership && ['administrator', 'creator'].includes(membership.status) ? 'yes ✅' : 'no ❌'}
+Delete messages: ${membership?.can_delete_messages ? 'yes ✅' : 'no ❌'}
+Restrict members: ${membership?.can_restrict_members ? 'yes ✅' : 'no ❌'}
+Pin messages: ${membership?.can_pin_messages ? 'yes ✅' : 'no ❌'}
+Native anti-spam: ${chatSecurity.aggressiveAntiSpam === null ? 'unknown' : chatSecurity.aggressiveAntiSpam ? 'on' : 'off'}
+Slow mode: ${chatSecurity.slowModeSeconds ?? 'unknown'}s${webhookError}`)
+}
+
+async function moderationLog(message) {
+  if (!ADMIN_IDS.has(String(message.from.id))) return send(message.chat.id, 'Admin command denied.')
+  if (message.chat.type !== 'private') {
+    await deleteQuietly(message.chat.id, message.message_id)
+    return send(message.from.id, 'The safety log is private. Use /modlog here in your direct MADGERbot chat.')
+  }
+  const types = 'moderation_action,member_report,admin_cleanup,admin_warn,admin_mute,admin_ban,admin_unmute,admin_clearwarns,raid_mode_activated,join_purged'
+  const rows = await db(`madger_bot_events?event_type=in.(${types})&select=event_type,chat_id,metadata,created_at&order=created_at.desc&limit=10`)
+  if (!rows?.length) return send(message.chat.id, '<b>MADGER SAFETY LOG</b>\n\nNo recent safety actions.')
+  const lines = rows.map(row => {
+    const at = new Date(row.created_at).toISOString().replace('T', ' ').slice(0, 16)
+    const detail = row.metadata?.reason ?? row.metadata?.action ?? row.metadata?.mission_code ?? ''
+    return `• <b>${escapeHtml(String(row.event_type).replaceAll('_', ' '))}</b> · ${at} UTC${detail ? `\n  ${escapeHtml(String(detail).slice(0, 160))}` : ''}`
+  })
+  return send(message.chat.id, `<b>MADGER SAFETY LOG</b> 🛡️\n\n${lines.join('\n')}\n\nAggregate operational records only; wallet credentials and private message contents are never stored.`)
+}
+
 async function reviewSubmission(message, args, status) {
   if (!ADMIN_IDS.has(String(message.from.id))) return send(message.chat.id, 'Admin command denied.')
   if (message.chat.type !== 'private') {
@@ -832,6 +887,7 @@ async function adminModerationAction(message, command, args) {
     const state = await moderationState(message.chat.id, target.id)
     const count = Number(state?.warning_count ?? 0) + 1
     await saveModerationState({ chat_id: message.chat.id, user_id: target.id, warning_count: count })
+    await recordEvent('admin_warn', message.from.id, { chat_id: message.chat.id, target_user_id: target.id, warning_count: count })
     return send(message.chat.id, `@${escapeHtml(target.username ?? target.first_name ?? String(target.id))} received an administrator warning (${count}).`)
   }
   if (command === 'mute') {
@@ -839,13 +895,67 @@ async function adminModerationAction(message, command, args) {
     const until = Math.floor(Date.now() / 1000) + minutes * 60
     await restrictMember(message.chat.id, target.id, until)
     await saveModerationState({ chat_id: message.chat.id, user_id: target.id, restricted_until: new Date(until * 1000).toISOString() })
+    await recordEvent('admin_mute', message.from.id, { chat_id: message.chat.id, target_user_id: target.id, minutes })
     return send(message.chat.id, `Member muted for ${minutes} minute${minutes === 1 ? '' : 's'}.`)
   }
   if (command === 'ban') {
     await telegram('banChatMember', { chat_id: message.chat.id, user_id: target.id, revoke_messages: true })
     await saveModerationState({ chat_id: message.chat.id, user_id: target.id, removed_at: new Date().toISOString() })
+    await recordEvent('admin_ban', message.from.id, { chat_id: message.chat.id, target_user_id: target.id })
     return send(message.chat.id, 'Member banned and recent messages removed.')
   }
+}
+
+async function memberInfo(message) {
+  if (!ADMIN_IDS.has(String(message.from.id)) && !await isChatAdmin(message.chat.id, message.from.id)) {
+    return send(message.chat.id, 'Admin command denied.')
+  }
+  if (!isGroupChat(message.chat)) return send(message.chat.id, 'Use /memberinfo as a reply to a member inside The Burrow.')
+  const target = message.reply_to_message?.from
+  if (!target) return send(message.chat.id, 'Reply directly to a member with <code>/memberinfo</code>.')
+  const state = await moderationState(message.chat.id, target.id)
+  await deleteQuietly(message.chat.id, message.message_id)
+  const username = target.username ? `@${escapeHtml(target.username)}` : escapeHtml(target.first_name ?? 'No public username')
+  const details = `<b>MADGER MEMBER INSPECTION</b>
+
+Member: ${username}
+User ID: <code>${target.id}</code>
+Warnings: ${Number(state?.warning_count ?? 0)}
+Pending verification: ${state?.pending_verification ? 'yes' : 'no'}
+Restricted until: ${state?.restricted_until ? escapeHtml(state.restricted_until) : 'not restricted'}
+Removed at: ${state?.removed_at ? escapeHtml(state.removed_at) : 'never'}
+Flood counter: ${Number(state?.flood_count ?? 0)}
+Repeat counter: ${Number(state?.duplicate_count ?? 0)}`
+  try {
+    return await send(message.from.id, details)
+  } catch {
+    return send(message.chat.id, 'Open MADGERbot privately before using /memberinfo.')
+  }
+}
+
+async function adminRecoveryAction(message, action) {
+  if (!ADMIN_IDS.has(String(message.from.id)) && !await isChatAdmin(message.chat.id, message.from.id)) {
+    return send(message.chat.id, 'Admin command denied.')
+  }
+  if (!isGroupChat(message.chat)) return send(message.chat.id, `Use /${action} as a reply to a member inside The Burrow.`)
+  const target = message.reply_to_message?.from
+  if (!target) return send(message.chat.id, `Reply directly to a member with <code>/${action}</code>.`)
+  if (await isChatAdmin(message.chat.id, target.id)) return send(message.chat.id, 'MADGERbot will not alter an administrator.')
+  if (action === 'unmute') {
+    await restoreMember(message.chat.id, target.id)
+    await saveModerationState({
+      chat_id: message.chat.id, user_id: target.id, restricted_until: null,
+      pending_verification: false, verification_deadline: null
+    })
+    await recordEvent('admin_unmute', message.from.id, { chat_id: message.chat.id, target_user_id: target.id })
+    return send(message.chat.id, `@${escapeHtml(target.username ?? target.first_name ?? String(target.id))} can speak again.`)
+  }
+  await saveModerationState({
+    chat_id: message.chat.id, user_id: target.id, warning_count: 0,
+    flood_count: 0, duplicate_count: 0, duplicate_hash: null
+  })
+  await recordEvent('admin_clearwarns', message.from.id, { chat_id: message.chat.id, target_user_id: target.id })
+  return send(message.chat.id, `Warnings and spam counters cleared for @${escapeHtml(target.username ?? target.first_name ?? String(target.id))}.`)
 }
 
 async function cleanupMessage(message) {
@@ -905,6 +1015,8 @@ async function handleCommand(message) {
   if (command === '/announce') return publishAnnouncement(message, args, false)
   if (command === '/announcepin') return publishAnnouncement(message, args, true)
   if (command === '/dashboard') return adminDashboard(message)
+  if (command === '/health') return adminHealth(message)
+  if (command === '/modlog') return moderationLog(message)
   if (command === '/raidmode') return manageRaidMode(message, args)
   if (command === '/purgeunverified') return purgeUnverified(message)
   if (command === '/faqmode') return manageFaqMode(message, args)
@@ -921,6 +1033,9 @@ async function handleCommand(message) {
   if (command === '/warn') return adminModerationAction(message, 'warn', args)
   if (command === '/mute') return adminModerationAction(message, 'mute', args)
   if (command === '/ban') return adminModerationAction(message, 'ban', args)
+  if (command === '/unmute') return adminRecoveryAction(message, 'unmute')
+  if (command === '/clearwarns') return adminRecoveryAction(message, 'clearwarns')
+  if (command === '/memberinfo') return memberInfo(message)
   if (command === '/cleanup') return cleanupMessage(message)
   return send(chatId, 'Commands: /buy · /verify · /missions · /submit · /mywork · /rank · /leaderboard · /referral · /teams · /rules · /safety · /report')
 }
@@ -1146,6 +1261,8 @@ async function setupTelegram(request) {
   ]
   const adminCommands = [...publicCommands,
     { command: 'dashboard', description: 'Admin command-center dashboard' },
+    { command: 'health', description: 'Admin system health console' },
+    { command: 'modlog', description: 'Admin recent safety activity' },
     { command: 'raidmode', description: 'Admin Raid Shield controls' },
     { command: 'purgeunverified', description: 'Admin removal of pending joins' },
     { command: 'faqmode', description: 'Admin FAQ responder controls' },
@@ -1162,6 +1279,9 @@ async function setupTelegram(request) {
     { command: 'warn', description: 'Admin reply-based warning' },
     { command: 'mute', description: 'Admin reply-based temporary mute' },
     { command: 'ban', description: 'Admin reply-based removal' },
+    { command: 'unmute', description: 'Admin restore a muted member' },
+    { command: 'clearwarns', description: 'Admin reset member warning counters' },
+    { command: 'memberinfo', description: 'Admin inspect a member privately' },
     { command: 'cleanup', description: 'Admin remove an obsolete message' }
   ]
   await telegram('setMyCommands', { commands: publicCommands })
@@ -1193,7 +1313,7 @@ Deno.serve(async request => {
     const url = new URL(request.url)
     if (request.method === 'GET' && url.pathname.includes('/go/')) return routeRedirect(request, url)
     if (request.method === 'GET') {
-      return Response.json({ ok: true, service: 'MADGER Command Bot', version: '2.9.0', configured: Boolean(BOT_TOKEN && WEBHOOK_SECRET), community_guard: true, raid_shield: true, raid_link_firewall: true, stale_content_cleanup: true, faq_responder: true, market_commands: true, promotion_teams: true, announcements: true, contributor_leaderboard: true, contributor_history: true, mission_admin: true, review_queue: true, native_buy_watcher: true })
+      return Response.json({ ok: true, service: 'MADGER Command Bot', version: '3.0.0', configured: Boolean(BOT_TOKEN && WEBHOOK_SECRET), operations_console: true, moderation_log: true, member_inspection: true, moderation_recovery: true, community_guard: true, raid_shield: true, raid_link_firewall: true, stale_content_cleanup: true, faq_responder: true, market_commands: true, promotion_teams: true, announcements: true, contributor_leaderboard: true, contributor_history: true, mission_admin: true, review_queue: true, native_buy_watcher: true })
     }
     if (url.pathname.endsWith('/setup')) return setupTelegram(request)
     if (url.pathname.endsWith('/monitor')) return monitorMarket(request)
