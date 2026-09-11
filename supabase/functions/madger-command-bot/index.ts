@@ -643,12 +643,18 @@ async function adminDashboard(message) {
   return send(message.chat.id, `<b>MADGER COMMAND DASHBOARD</b> 🦡\n\n<b>Community</b>\nRaid Shield: ${raidMode.active ? 'ACTIVE 🚨' : 'normal'}\nRaid link firewall: ${raidMode.active ? 'locked' : 'standby'}\nFAQ responder: ${faqEnabled ? 'on' : 'off'} · ${eventCounts.faq_answered ?? 0} answers (7d)\nTelegram native anti-spam: ${chatSecurity.aggressiveAntiSpam === null ? 'unknown' : chatSecurity.aggressiveAntiSpam ? 'enabled' : 'disabled'}\nTelegram slow mode: ${chatSecurity.slowModeSeconds === null ? 'unknown' : `${chatSecurity.slowModeSeconds}s`}\nTracked members: ${users?.length ?? 0}\nPending join checks: ${pendingJoins?.length ?? 0}\nVerified joins (7d): ${eventCounts.join_verified ?? 0}\nExpired/purged joins (7d): ${(eventCounts.join_expired ?? 0) + (eventCounts.join_purged ?? 0)}\nModeration actions (7d): ${eventCounts.moderation_action ?? 0}\nMember reports (7d): ${eventCounts.member_report ?? 0}\n\n<b>Contributor program</b>\nActive missions: ${activeMissions?.length ?? 0}\nPending reviews: ${pendingSubmissions?.length ?? 0}\nLeaderboard views (7d): ${eventCounts.leaderboard_viewed ?? 0}\n\n<b>Promotion teams</b>\nRaid: ${teamCounts.raid ?? 0}\nOutreach: ${teamCounts.outreach ?? 0}\nRecent deliveries: ${delivered}\nDelivery failures: ${failed}\n\n<b>Publishing</b>\nRecent announcements: ${announcements?.length ?? 0}\n\n<b>Market</b>\nPrice: ${market?.price_usd ?? 'unavailable'} USD\nLiquidity: ${market?.liquidity_usd ?? 'unavailable'} USD`)
 }
 
-async function showMissions(chatId) {
+async function showMissions(chatId, ephemeral = false) {
   const missions = await db('madger_bot_missions?active=eq.true&select=code,title,instructions,points&order=points.desc&limit=10')
-  if (!missions?.length) return send(chatId, 'No missions are active right now. Quality beats filler.')
+  if (!missions?.length) {
+    const empty = await send(chatId, 'No missions are active right now. Quality beats filler.')
+    if (ephemeral && empty?.message_id) await scheduleCleanup(chatId, empty.message_id, 'mission_list', 15)
+    return empty
+  }
   const lines = missions.map(m => `<b>${escapeHtml(m.title)}</b> · ${m.points} points\n<code>${escapeHtml(m.code)}</code> — ${escapeHtml(m.instructions)}`)
-  await send(chatId, `<b>ACTIVE CONTRIBUTOR MISSIONS</b> 🎯\n\n${lines.join('\n\n')}\n\nSubmit evidence with:\n<code>/submit mission-code https://your-public-link</code>`)
+  const posted = await send(chatId, `<b>ACTIVE CONTRIBUTOR MISSIONS</b> 🎯\n\n${lines.join('\n\n')}\n\nSubmit evidence with:\n<code>/submit mission-code https://your-public-link</code>${ephemeral ? '\n\nThis live list expires in 15 minutes.' : ''}`)
+  if (ephemeral && posted?.message_id) await scheduleCleanup(chatId, posted.message_id, 'mission_list', 15)
   await recordEvent('missions_viewed', Number(chatId))
+  return posted
 }
 
 async function submitMission(chatId, args) {
@@ -842,6 +848,28 @@ async function adminModerationAction(message, command, args) {
   }
 }
 
+async function cleanupMessage(message) {
+  if (!ADMIN_IDS.has(String(message.from.id)) && !await isChatAdmin(message.chat.id, message.from.id)) {
+    return send(message.chat.id, 'Admin command denied.')
+  }
+  if (!isGroupChat(message.chat)) return send(message.chat.id, 'Use /cleanup as a reply to an obsolete message inside The Burrow.')
+  const target = message.reply_to_message
+  if (!target) return send(message.chat.id, 'Reply directly to the obsolete message with <code>/cleanup</code>.')
+  try {
+    await telegram('deleteMessage', { chat_id: message.chat.id, message_id: target.message_id })
+  } catch {
+    return send(message.chat.id, 'Telegram could not remove that message. Confirm MADGERbot still has permission to delete messages.')
+  }
+  await deleteQuietly(message.chat.id, message.message_id)
+  await recordEvent('admin_cleanup', message.from.id, {
+    chat_id: message.chat.id, deleted_message_id: target.message_id,
+    deleted_sender_id: target.from?.id ?? null, deleted_sender_is_bot: target.from?.is_bot ?? null
+  })
+  const confirmation = await send(message.chat.id, 'Obsolete message removed.')
+  if (confirmation?.message_id) await scheduleCleanup(message.chat.id, confirmation.message_id, 'cleanup_confirmation', 1)
+  return confirmation
+}
+
 async function handleCommand(message) {
   const chatId = message.chat.id
   const raw = message.text?.trim() ?? ''
@@ -860,7 +888,7 @@ async function handleCommand(message) {
   if (command === '/chart') return send(chatId, '<b>MADGER VERIFIED CHART</b> 📈\nThis link is locked to the official Raydium pool.', keyboard([[{ text: 'Open live chart', url: LINKS.dex }]]))
   if (command === '/links') return showOfficialLinks(chatId)
   if (command === '/help') return showHelp(chatId)
-  if (command === '/missions') return showMissions(chatId)
+  if (command === '/missions') return showMissions(chatId, isGroupChat(message.chat))
   if (command === '/submit') return submitMission(chatId, args)
   if (command === '/mywork') return showMyWork(message)
   if (command === '/rank') return showRank(chatId)
@@ -893,6 +921,7 @@ async function handleCommand(message) {
   if (command === '/warn') return adminModerationAction(message, 'warn', args)
   if (command === '/mute') return adminModerationAction(message, 'mute', args)
   if (command === '/ban') return adminModerationAction(message, 'ban', args)
+  if (command === '/cleanup') return cleanupMessage(message)
   return send(chatId, 'Commands: /buy · /verify · /missions · /submit · /mywork · /rank · /leaderboard · /referral · /teams · /rules · /safety · /report')
 }
 
@@ -960,7 +989,7 @@ async function handleUpdate(update) {
     if (String(update.callback_query.data ?? '').startsWith('verify_join:')) return verifyNewMember(update.callback_query)
     if (String(update.callback_query.data ?? '').startsWith('team_join:') || String(update.callback_query.data ?? '').startsWith('team_leave:')) return setTeamMembership(update.callback_query)
     await telegram('answerCallbackQuery', { callback_query_id: update.callback_query.id })
-    if (update.callback_query.data === 'missions') await showMissions(update.callback_query.message.chat.id)
+    if (update.callback_query.data === 'missions') await showMissions(update.callback_query.message.chat.id, isGroupChat(update.callback_query.message.chat))
     return
   }
   const message = update.message ?? update.channel_post
@@ -1132,7 +1161,8 @@ async function setupTelegram(request) {
     { command: 'stats', description: 'Admin seven-day bot report' },
     { command: 'warn', description: 'Admin reply-based warning' },
     { command: 'mute', description: 'Admin reply-based temporary mute' },
-    { command: 'ban', description: 'Admin reply-based removal' }
+    { command: 'ban', description: 'Admin reply-based removal' },
+    { command: 'cleanup', description: 'Admin remove an obsolete message' }
   ]
   await telegram('setMyCommands', { commands: publicCommands })
   for (const adminId of ADMIN_IDS) {
@@ -1163,7 +1193,7 @@ Deno.serve(async request => {
     const url = new URL(request.url)
     if (request.method === 'GET' && url.pathname.includes('/go/')) return routeRedirect(request, url)
     if (request.method === 'GET') {
-      return Response.json({ ok: true, service: 'MADGER Command Bot', version: '2.8.0', configured: Boolean(BOT_TOKEN && WEBHOOK_SECRET), community_guard: true, raid_shield: true, raid_link_firewall: true, faq_responder: true, market_commands: true, promotion_teams: true, announcements: true, contributor_leaderboard: true, contributor_history: true, mission_admin: true, review_queue: true, native_buy_watcher: true })
+      return Response.json({ ok: true, service: 'MADGER Command Bot', version: '2.9.0', configured: Boolean(BOT_TOKEN && WEBHOOK_SECRET), community_guard: true, raid_shield: true, raid_link_firewall: true, stale_content_cleanup: true, faq_responder: true, market_commands: true, promotion_teams: true, announcements: true, contributor_leaderboard: true, contributor_history: true, mission_admin: true, review_queue: true, native_buy_watcher: true })
     }
     if (url.pathname.endsWith('/setup')) return setupTelegram(request)
     if (url.pathname.endsWith('/monitor')) return monitorMarket(request)
