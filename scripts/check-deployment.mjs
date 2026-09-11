@@ -12,7 +12,7 @@ const checks = [
   ["/litepaper.html", 200],
   ["/collaborators", 200],
   ["/privacy", 200],
-  ["/blog.html", 200],
+  ["/blog", 200],
   ["/blog-utility-without-a-wallet.html", 200],
   ["/blog-creator-trust-standard.html", 200],
   ["/feed.xml", 200],
