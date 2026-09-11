@@ -157,6 +157,23 @@ export function findVerifiedMadgerBuyers(transaction) {
   return candidates.sort((left, right) => right.amount - left.amount)
 }
 
+export function shouldActivateRaidMode(recentJoins, incomingJoins, threshold = 8) {
+  const recent = Math.max(0, Number(recentJoins) || 0)
+  const incoming = Math.max(0, Number(incomingJoins) || 0)
+  const limit = Math.max(2, Number(threshold) || 8)
+  return recent + incoming >= limit
+}
+
+export function parseRaidMode(value, now = Date.now()) {
+  const until = typeof value === 'string' ? value : value?.until
+  const expiresAt = Date.parse(String(until ?? ''))
+  return {
+    active: Number.isFinite(expiresAt) && expiresAt > now,
+    until: Number.isFinite(expiresAt) ? new Date(expiresAt).toISOString() : null,
+    source: typeof value === 'object' && value?.source ? String(value.source) : null
+  }
+}
+
 export function buyTier(usdValue) {
   const value = Number(usdValue)
   if (value >= 500) return { label: 'WHALE IN THE BURROW', emoji: '🐋', instant: true }
