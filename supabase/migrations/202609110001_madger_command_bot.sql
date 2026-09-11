@@ -118,7 +118,6 @@ insert into public.madger_bot_settings(key, value) values
 on conflict (key) do nothing;
 
 insert into public.madger_bot_missions(code, title, instructions, points) values
-  ('original-creative', 'Create original MADGER media', 'Publish an original MADGER meme, image, or short video. Submit the public HTTPS link. Recycled or misleading work is rejected.', 100),
   ('help-a-newcomer', 'Help a newcomer safely', 'Answer a genuine beginner question using the complete official mint and no private-message wallet support. Submit the public HTTPS evidence link.', 75),
   ('research-note', 'Deliver a useful research note', 'Create a concise, sourced research note that can improve MADGER operations, safety, content, or community decisions. Submit the public HTTPS link.', 125)
 on conflict (code) do nothing;
