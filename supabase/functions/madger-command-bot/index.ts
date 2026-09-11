@@ -11,7 +11,8 @@ const ADMIN_IDS = new Set((Deno.env.get('TELEGRAM_ADMIN_CHAT_IDS') ?? '').split(
 const ADMIN_CHAT_ID = Deno.env.get('TELEGRAM_ADMIN_CHANNEL_ID') ?? [...ADMIN_IDS][0] ?? ''
 const BUY_CHAT_ID = Deno.env.get('TELEGRAM_BUY_ALERT_CHAT_ID') ?? ADMIN_CHAT_ID
 const SUPABASE_URL = Deno.env.get('SUPABASE_URL') ?? ''
-const SERVICE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
+const SECRET_KEYS = JSON.parse(Deno.env.get('SUPABASE_SECRET_KEYS') ?? '{}')
+const SERVICE_KEY = SECRET_KEYS.default ?? Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
 const RPC_URL = Deno.env.get('SOLANA_RPC_URL') ?? 'https://api.mainnet-beta.solana.com'
 const API = BOT_TOKEN ? `https://api.telegram.org/bot${BOT_TOKEN}` : ''
 
