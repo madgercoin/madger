@@ -44,8 +44,19 @@ The database invokes `/monitor` every five minutes with a secret stored in Supab
 - `/referral` — attributable Telegram onboarding link
 - `/whoami` — display the requesting user's numeric Telegram ID for secure admin setup
 - `/chatid` — display the current group's or channel's numeric Telegram ID
+- `/rules` and `/safety` — community standards and wallet-safety guidance
+- `/report` — reply to suspicious content to send a private evidence record to administrators
+- `/warn`, `/mute [MINUTES]`, and `/ban` — reply-based administrator moderation
 - `/stats` — admin-only seven-day report
 - `/approve ID [NOTE]` and `/reject ID [NOTE]` — admin-only human review
+
+## Community Guard
+
+- New human members receive a branded welcome and must pass a one-tap challenge within 10 minutes before posting.
+- High-confidence wallet credential requests, admin impersonation, unverified wallet-connect links, and fake MADGER contract addresses are removed.
+- Flooding and repeated-message spam escalate from warning to temporary mute to removal. Administrators are exempt.
+- Credential theft and admin impersonation attempts are removed immediately and reported privately.
+- `/report` records the reporter, reported user, message ID, and a bounded excerpt for administrator review.
 
 ## Local verification
 
