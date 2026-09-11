@@ -126,4 +126,6 @@ test('normalizes a stored market snapshot for bot display', () => {
     priceUsd: 0.0012, liquidityUsd: 9000, volumeM5Usd: 42.5,
     buysM5: 3, sellsM5: 1, marketCapUsd: 1200000, ageMinutes: 7
   })
+  assert.equal(marketSnapshotSummary({ price_usd: null }).priceUsd, null)
+  assert.equal(marketSnapshotSummary({ raw: {} }).marketCapUsd, null)
 })
