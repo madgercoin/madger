@@ -54,6 +54,14 @@ export function contributorRank(points) {
   return 'Burrow Member'
 }
 
+export function parseReviewRequest(value) {
+  const [idValue = '', ...noteParts] = String(value ?? '').trim().split(/\s+/)
+  const id = Number(idValue)
+  const note = noteParts.join(' ').trim()
+  if (!Number.isSafeInteger(id) || id <= 0 || note.length > 300) return null
+  return { id, note: note || null }
+}
+
 export function extractSolanaCandidates(text) {
   return String(text ?? '').match(/\b[1-9A-HJ-NP-Za-km-z]{32,44}\b/g) ?? []
 }
