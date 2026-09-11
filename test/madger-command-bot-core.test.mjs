@@ -131,6 +131,10 @@ test('normalizes a stored market snapshot for bot display', () => {
 })
 
 test('routes only high-confidence FAQ questions', () => {
+  assert.equal(faqIntent('price'), 'price')
+  assert.equal(faqIntent('PRICE'), 'price')
+  assert.equal(faqIntent('ca'), 'contract')
+  assert.equal(faqIntent('CA'), 'contract')
   assert.equal(faqIntent('What is the MADGER price?'), 'price')
   assert.equal(faqIntent('What is the CA?'), 'contract')
   assert.equal(faqIntent('Where can I buy $MADGER safely?'), 'buy')
