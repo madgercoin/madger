@@ -2,7 +2,7 @@ import 'jsr:@supabase/functions-js/edge-runtime.d.ts'
 import {
   LINKS, OFFICIAL_MINT, OFFICIAL_POOL, buyTier, escapeHtml,
   marketAlertReasons, moderationEscalation, moderationReason,
-  normalizeReferral, normalizedMessageFingerprint
+  normalizeReferral, normalizeTeam, normalizedMessageFingerprint, parseTeamAlert
 } from './core.js'
 
 const BOT_TOKEN = Deno.env.get('TELEGRAM_BOT_TOKEN') ?? ''
@@ -276,6 +276,105 @@ async function showRules(chatId) {
   return send(chatId, '<b>THE BURROW RULES</b>\n\n1. No scams, fake contracts, impersonation, or unsolicited wallet links.\n2. No flooding, repeated promotions, or coordinated harassment.\n3. Debate ideas without threatening or targeting members.\n4. Promotions require administrator approval.\n5. Use /report as a reply when something needs review.\n\nEnforcement: warning → temporary mute → removal. Credential theft attempts may be removed immediately.')
 }
 
+function teamLabel(team) {
+  return team === 'raid' ? 'Raid Team' : 'Outreach Team'
+}
+
+function teamCenterKeyboard() {
+  return keyboard([
+    [{ text: '⚡ Join Raid Team', callback_data: 'team_join:raid' }, { text: '📣 Join Outreach Team', callback_data: 'team_join:outreach' }],
+    [{ text: 'Leave Raid Team', callback_data: 'team_leave:raid' }, { text: 'Leave Outreach Team', callback_data: 'team_leave:outreach' }]
+  ])
+}
+
+async function showTeams(message) {
+  if (message.chat.type !== 'private') {
+    const username = BOT_USERNAME || (await telegram('getMe', {})).username
+    return send(message.chat.id, '<b>MADGER PROMOTION TEAMS</b>\n\nParticipation is voluntary. Open the private team center to join without exposing the member list.',
+      keyboard([[{ text: 'Open private team center', url: `https://t.me/${escapeHtml(username)}?start=teams` }]]))
+  }
+  const memberships = await db(`madger_bot_team_memberships?user_chat_id=eq.${encodeURIComponent(message.from.id)}&active=eq.true&select=team`)
+  const joined = new Set((memberships ?? []).map(row => row.team))
+  return send(message.chat.id,
+    `<b>MADGER PROMOTION TEAMS</b>\n\n⚡ Raid Team: ${joined.has('raid') ? 'JOINED' : 'not joined'}\nApproved MADGER posts; authentic, original engagement only.\n\n📣 Outreach Team: ${joined.has('outreach') ? 'JOINED' : 'not joined'}\nRelevant community opportunities; disclose your connection and never spam.\n\nNo scripts, copy-paste swarms, fake claims, harassment, or financial promises.`,
+    teamCenterKeyboard())
+}
+
+async function setTeamMembership(callback) {
+  const [actionValue, teamValue] = String(callback.data ?? '').split(':')
+  const team = normalizeTeam(teamValue)
+  const active = actionValue === 'team_join'
+  if (!team || (actionValue !== 'team_join' && actionValue !== 'team_leave')) {
+    return telegram('answerCallbackQuery', { callback_query_id: callback.id, text: 'Invalid team request.', show_alert: true })
+  }
+  if (callback.message.chat.type !== 'private') {
+    return telegram('answerCallbackQuery', { callback_query_id: callback.id, text: 'Open the private bot chat to manage teams.', show_alert: true })
+  }
+  await registerUser(callback.from, null)
+  await db('madger_bot_team_memberships?on_conflict=user_chat_id,team', {
+    method: 'POST', headers: { Prefer: 'resolution=merge-duplicates,return=minimal' },
+    body: JSON.stringify({ user_chat_id: callback.from.id, team, active, updated_at: new Date().toISOString() })
+  })
+  await telegram('answerCallbackQuery', { callback_query_id: callback.id, text: `${active ? 'Joined' : 'Left'} ${teamLabel(team)}.` })
+  await recordEvent(active ? 'team_joined' : 'team_left', callback.from.id, { team })
+  return showTeams({ chat: callback.message.chat, from: callback.from })
+}
+
+async function setTeamFromCommand(message, args, active) {
+  if (message.chat.type !== 'private') return showTeams(message)
+  const team = normalizeTeam(args)
+  if (!team) return send(message.chat.id, `Use: <code>/${active ? 'jointeam' : 'leaveteam'} raid</code> or <code>/${active ? 'jointeam' : 'leaveteam'} outreach</code>`)
+  await db('madger_bot_team_memberships?on_conflict=user_chat_id,team', {
+    method: 'POST', headers: { Prefer: 'resolution=merge-duplicates,return=minimal' },
+    body: JSON.stringify({ user_chat_id: message.from.id, team, active, updated_at: new Date().toISOString() })
+  })
+  await recordEvent(active ? 'team_joined' : 'team_left', message.from.id, { team })
+  return send(message.chat.id, `${active ? 'Joined' : 'Left'} <b>${teamLabel(team)}</b>. ${active ? 'You will receive private, administrator-approved alerts and can leave at any time.' : 'Alerts for this team are now off.'}`)
+}
+
+async function teamStats(message) {
+  if (!ADMIN_IDS.has(String(message.from.id))) return send(message.chat.id, 'Admin command denied.')
+  const memberships = await db('madger_bot_team_memberships?active=eq.true&select=team')
+  const counts = (memberships ?? []).reduce((result, row) => ({ ...result, [row.team]: (result[row.team] ?? 0) + 1 }), {})
+  return send(message.chat.id, `<b>MADGER TEAM STATUS</b>\n\nRaid Team: ${counts.raid ?? 0}\nOutreach Team: ${counts.outreach ?? 0}`)
+}
+
+async function launchTeamAlert(message, args) {
+  if (!ADMIN_IDS.has(String(message.from.id))) return send(message.chat.id, 'Admin command denied.')
+  if (message.chat.type !== 'private') return send(message.chat.id, 'Launch team alerts only in your private chat with MADGERbot.')
+  const alert = parseTeamAlert(args)
+  if (!alert) return send(message.chat.id, 'Use: <code>/teamalert raid https://x.com/... | Write an original comment about the artwork.</code>\n\nAllowed targets: MADGER, X, Telegram, Instagram, Facebook, TikTok, Reddit, or YouTube HTTPS links.')
+  const cooldown = encodeURIComponent(new Date(Date.now() - 30 * 60000).toISOString())
+  const recent = await db(`madger_bot_team_alerts?team=eq.${alert.team}&created_at=gte.${cooldown}&select=id&limit=1`)
+  if (recent?.length) return send(message.chat.id, `${teamLabel(alert.team)} has already received an alert within the last 30 minutes.`)
+
+  const created = await insert('madger_bot_team_alerts?select=id', {
+    team: alert.team, target_url: alert.url, brief: alert.brief, created_by: message.from.id
+  }, 'return=representation')
+  const members = await db(`madger_bot_team_memberships?team=eq.${alert.team}&active=eq.true&select=user_chat_id&limit=500`)
+  let delivered = 0
+  let failed = 0
+  for (let index = 0; index < (members ?? []).length; index += 25) {
+    const batch = members.slice(index, index + 25)
+    const results = await Promise.all(batch.map(async member => {
+      try {
+        await send(member.user_chat_id,
+          `<b>MADGER ${alert.team === 'raid' ? 'RAID' : 'OUTREACH'} TEAM ALERT</b> ${alert.team === 'raid' ? '⚡' : '📣'}\n\n${escapeHtml(alert.brief)}\n\nUse your own words. Participate only if genuine. No copy-paste spam, harassment, misleading claims, or financial promises.`,
+          keyboard([[{ text: 'Open approved target', url: alert.url }], [{ text: 'Manage team alerts', callback_data: `team_leave:${alert.team}` }]]))
+        return true
+      } catch { return false }
+    }))
+    delivered += results.filter(Boolean).length
+    failed += results.filter(result => !result).length
+    if (index + 25 < members.length) await new Promise(resolve => setTimeout(resolve, 1000))
+  }
+  await db(`madger_bot_team_alerts?id=eq.${created?.[0]?.id}`, {
+    method: 'PATCH', body: JSON.stringify({ recipient_count: delivered, failure_count: failed })
+  })
+  await recordEvent('team_alert', message.from.id, { team: alert.team, alert_id: created?.[0]?.id, delivered, failed })
+  return send(message.chat.id, `<b>${teamLabel(alert.team)} alert complete.</b>\nDelivered: ${delivered}\nFailed/blocked: ${failed}`)
+}
+
 async function showMissions(chatId) {
   const missions = await db('madger_bot_missions?active=eq.true&select=code,title,instructions,points&order=points.desc&limit=10')
   if (!missions?.length) return send(chatId, 'No missions are active right now. Quality beats filler.')
@@ -392,9 +491,11 @@ async function handleCommand(message) {
   const [commandWithBot, ...rest] = raw.split(/\s+/)
   const command = commandWithBot.toLowerCase().split('@')[0]
   const args = rest.join(' ')
-  const startRef = command === '/start' ? normalizeReferral(args) : null
+  const startIntent = command === '/start' ? args.trim().toLowerCase() : ''
+  const startRef = command === '/start' && startIntent !== 'teams' ? normalizeReferral(args) : null
   await registerUser(message.from, startRef)
 
+  if (command === '/start' && startIntent === 'teams') return showTeams(message)
   if (command === '/start') return showWelcome(chatId, message.from, startRef)
   if (command === '/buy') return send(chatId, `<b>BUY $MADGER SAFELY</b>\n\nOfficial mint:\n<code>${OFFICIAL_MINT}</code>\n\nMADGER never presets your amount or slippage. Review every wallet prompt before approving.`, conversionKeyboard())
   if (command === '/mint' || command === '/verify') return send(chatId, `<b>OFFICIAL MADGER MINT</b>\n<code>${OFFICIAL_MINT}</code>\n\nPool:\n<code>${OFFICIAL_POOL}</code>`, keyboard([[{ text: 'Open canonical verification', url: LINKS.verify }]]))
@@ -405,6 +506,11 @@ async function handleCommand(message) {
   if (command === '/rules') return showRules(chatId)
   if (command === '/safety') return showSafety(chatId)
   if (command === '/report') return reportMessage(message)
+  if (command === '/teams') return showTeams(message)
+  if (command === '/jointeam') return setTeamFromCommand(message, args, true)
+  if (command === '/leaveteam') return setTeamFromCommand(message, args, false)
+  if (command === '/teamalert') return launchTeamAlert(message, args)
+  if (command === '/teamstats') return teamStats(message)
   if (command === '/whoami') return send(chatId, `Your Telegram user ID is <code>${message.from.id}</code>. Treat admin IDs as operational configuration, not public content.`)
   if (command === '/chatid') return send(chatId, `This chat ID is <code>${message.chat.id}</code>. Use it only in the bot's secure runtime configuration.`)
   if (command === '/stats') return adminStats(chatId)
@@ -413,7 +519,7 @@ async function handleCommand(message) {
   if (command === '/warn') return adminModerationAction(message, 'warn', args)
   if (command === '/mute') return adminModerationAction(message, 'mute', args)
   if (command === '/ban') return adminModerationAction(message, 'ban', args)
-  return send(chatId, 'Commands: /buy · /verify · /missions · /submit · /rank · /referral · /rules · /safety · /report')
+  return send(chatId, 'Commands: /buy · /verify · /missions · /submit · /rank · /referral · /teams · /rules · /safety · /report')
 }
 
 async function moderate(message) {
@@ -476,6 +582,7 @@ async function handleUpdate(update) {
 
   if (update.callback_query) {
     if (String(update.callback_query.data ?? '').startsWith('verify_join:')) return verifyNewMember(update.callback_query)
+    if (String(update.callback_query.data ?? '').startsWith('team_join:') || String(update.callback_query.data ?? '').startsWith('team_leave:')) return setTeamMembership(update.callback_query)
     await telegram('answerCallbackQuery', { callback_query_id: update.callback_query.id })
     if (update.callback_query.data === 'missions') await showMissions(update.callback_query.message.chat.id)
     return
@@ -570,6 +677,9 @@ async function setupTelegram(request) {
     { command: 'submit', description: 'Submit mission evidence' },
     { command: 'rank', description: 'View contribution points and rank' },
     { command: 'referral', description: 'Create your attributable invite link' },
+    { command: 'teams', description: 'Join or leave MADGER promotion teams' },
+    { command: 'jointeam', description: 'Join raid or outreach alerts privately' },
+    { command: 'leaveteam', description: 'Leave raid or outreach alerts' },
     { command: 'rules', description: 'Read The Burrow community rules' },
     { command: 'safety', description: 'Read the official wallet safety standard' },
     { command: 'report', description: 'Reply to suspicious content to report it' },
@@ -595,7 +705,7 @@ Deno.serve(async request => {
     const url = new URL(request.url)
     if (request.method === 'GET' && url.pathname.includes('/go/')) return routeRedirect(request, url)
     if (request.method === 'GET') {
-      return Response.json({ ok: true, service: 'MADGER Command Bot', version: '2.0.0', configured: Boolean(BOT_TOKEN && WEBHOOK_SECRET), community_guard: true })
+      return Response.json({ ok: true, service: 'MADGER Command Bot', version: '2.1.0', configured: Boolean(BOT_TOKEN && WEBHOOK_SECRET), community_guard: true, promotion_teams: true })
     }
     if (url.pathname.endsWith('/setup')) return setupTelegram(request)
     if (url.pathname.endsWith('/monitor')) return monitorMarket(request)
