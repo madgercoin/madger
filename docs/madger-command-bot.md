@@ -23,7 +23,7 @@ Supabase supplies `SUPABASE_URL` and `SUPABASE_SECRET_KEYS` to the Edge Function
 1. Apply the migration.
 2. Deploy `supabase/functions/madger-command-bot` with JWT verification disabled because Telegram authenticates with `X-Telegram-Bot-Api-Secret-Token`; the function rejects unsigned webhook requests.
 3. Add the bot to The Burrow and give it permission to delete malicious messages if moderation is desired.
-4. Register the webhook with Telegram using the function URL, webhook secret, and the update types `message`, `channel_post`, and `callback_query`.
+4. Invoke the internally authenticated `/setup` route. It registers the webhook and command menu directly from the function's runtime secrets, so the bot token never needs to leave the secrets manager.
 5. Run `/start`, `/verify`, `/missions`, `/referral`, and the admin-only `/stats` smoke tests.
 
 ## Verified buy alerts
