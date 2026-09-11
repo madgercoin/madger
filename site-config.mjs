@@ -46,7 +46,8 @@ export const rootFiles = [
   "favicon-spin.js",
   "madger_coin_spin_sprite.png",
   "madger_coin_spin_favicon.gif",
-  "_headers"
+  "_headers",
+  "_redirects"
 ];
 
 export const assetFiles = [
