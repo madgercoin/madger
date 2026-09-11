@@ -25,6 +25,35 @@ export function normalizeReferral(value) {
   return /^[a-z0-9_-]{4,32}$/.test(code) ? code : null
 }
 
+export function normalizeMissionCode(value) {
+  const code = String(value ?? '').trim().toLowerCase()
+  return /^[a-z0-9_-]{3,32}$/.test(code) ? code : null
+}
+
+export function parseMissionDefinition(value) {
+  const [codeValue = '', pointsValue = '', titleValue = '', ...instructionParts] = String(value ?? '').split('|').map(part => part.trim())
+  const code = normalizeMissionCode(codeValue)
+  const points = Number(pointsValue)
+  const instructions = instructionParts.join(' | ').trim()
+  if (!code || !Number.isInteger(points) || points < 10 || points > 1000) return null
+  if (titleValue.length < 5 || titleValue.length > 80 || instructions.length < 10 || instructions.length > 500) return null
+
+  const missionText = `${titleValue} ${instructions}`
+  const rewardsFinancialActivity = /(?:buy|purchase|hold|deposit|transfer)\s+(?:at least\s+)?(?:\$?\d|madger|tokens?|sol\b|usdc\b)|send\s+(?:money|sol\b|usdc\b)|connect\s+(?:your\s+)?wallet/i
+  const abusivePromotion = /(?:mass\s+(?:dm|message|tag)|tag\s+everyone|copy[- ]?paste\s+(?:this\s+)?(?:everywhere|into)|spam|harass|guaranteed\s+returns?)/i
+  if (rewardsFinancialActivity.test(missionText) || abusivePromotion.test(missionText)) return null
+  return { code, points, title: titleValue, instructions }
+}
+
+export function contributorRank(points) {
+  const value = Math.max(0, Number(points) || 0)
+  if (value >= 1000) return 'Burrow Elite'
+  if (value >= 500) return 'Verified Creator'
+  if (value >= 250) return 'Claw Contributor'
+  if (value >= 100) return 'Scout'
+  return 'Burrow Member'
+}
+
 export function extractSolanaCandidates(text) {
   return String(text ?? '').match(/\b[1-9A-HJ-NP-Za-km-z]{32,44}\b/g) ?? []
 }
