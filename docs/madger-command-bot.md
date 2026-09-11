@@ -46,6 +46,10 @@ The database invokes `/monitor` every five minutes with a secret stored in Supab
 - `/chatid` — display the current group's or channel's numeric Telegram ID
 - `/rules` and `/safety` — community standards and wallet-safety guidance
 - `/report` — reply to suspicious content to send a private evidence record to administrators
+- `/teams` — private opt-in center for Raid Team and Outreach Team alerts
+- `/jointeam raid|outreach` and `/leaveteam raid|outreach` — manage voluntary notifications
+- `/teamalert TEAM HTTPS_URL | BRIEF` — admin-only campaign alert, private chat only, with a 30-minute team cooldown
+- `/teamstats` — admin-only opt-in counts
 - `/warn`, `/mute [MINUTES]`, and `/ban` — reply-based administrator moderation
 - `/stats` — admin-only seven-day report
 - `/approve ID [NOTE]` and `/reject ID [NOTE]` — admin-only human review
@@ -57,6 +61,14 @@ The database invokes `/monitor` every five minutes with a secret stored in Supab
 - Flooding and repeated-message spam escalate from warning to temporary mute to removal. Administrators are exempt.
 - Credential theft and admin impersonation attempts are removed immediately and reported privately.
 - `/report` records the reporter, reported user, message ID, and a bounded excerpt for administrator review.
+
+## Promotion teams
+
+- The Raid Team receives approved MADGER post alerts for authentic, original participation.
+- The Outreach Team is the transparent alternative to mass “shilling”: members engage only where relevant and disclose their connection when appropriate.
+- Membership is private, voluntary, and revocable at any time. The bot never tags the entire group.
+- Alerts permit only trusted MADGER and major social-platform HTTPS targets, are admin-only, and have a 30-minute per-team cooldown.
+- Every alert prohibits scripts, copy-paste swarms, spam, harassment, misleading claims, and financial promises.
 
 ## Local verification
 
