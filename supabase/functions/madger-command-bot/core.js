@@ -112,6 +112,17 @@ export function parseTeamAlert(value) {
   return { team, url: url.href, brief }
 }
 
+export function parseAnnouncement(value) {
+  const [textValue, urlValue = '', labelValue = 'Open official link'] = String(value ?? '').split('|').map(part => part.trim())
+  if (textValue.length < 5 || textValue.length > 1000) return null
+  if (!urlValue) return { text: textValue, url: null, label: null }
+  let url
+  try { url = new URL(urlValue) } catch { return null }
+  const label = labelValue || 'Open official link'
+  if (url.protocol !== 'https:' || !TEAM_TARGET_HOSTS.has(url.hostname.toLowerCase()) || label.length > 40) return null
+  return { text: textValue, url: url.href, label }
+}
+
 export function buyTier(usdValue) {
   const value = Number(usdValue)
   if (value >= 500) return { label: 'WHALE IN THE BURROW', emoji: '🐋', instant: true }
