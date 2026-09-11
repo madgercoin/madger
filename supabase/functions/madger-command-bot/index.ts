@@ -222,10 +222,12 @@ async function handleCommand(message) {
   if (command === '/submit') return submitMission(chatId, args)
   if (command === '/rank') return showRank(chatId)
   if (command === '/referral') return showReferral(chatId)
+  if (command === '/whoami') return send(chatId, `Your Telegram user ID is <code>${message.from.id}</code>. Treat admin IDs as operational configuration, not public content.`)
+  if (command === '/chatid') return send(chatId, `This chat ID is <code>${message.chat.id}</code>. Use it only in the bot's secure runtime configuration.`)
   if (command === '/stats') return adminStats(chatId)
   if (command === '/approve') return reviewSubmission(chatId, args, 'approved')
   if (command === '/reject') return reviewSubmission(chatId, args, 'rejected')
-  return send(chatId, 'Commands: /buy · /verify · /missions · /submit · /rank · /referral')
+  return send(chatId, 'Commands: /buy · /verify · /missions · /submit · /rank · /referral · /whoami · /chatid')
 }
 
 async function moderate(message) {
