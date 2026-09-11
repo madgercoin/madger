@@ -22,6 +22,8 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run build
+      - name: Prepare temporary asset bundle
+        run: rm -f dist/assets/Madger_Official_Outro_Clip.mp4
       - name: Create temporary Cloudflare deployment
         shell: bash
         run: |
