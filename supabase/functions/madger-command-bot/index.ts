@@ -325,6 +325,29 @@ async function verifyBuyAlert(request) {
   return Response.json({ ok: true, verified: true, tier: tier.label, instant: tier.instant })
 }
 
+async function setupTelegram(request) {
+  if (!await authenticateInternal(request)) return new Response('Unauthorized', { status: 401 })
+  if (!BOT_TOKEN || !WEBHOOK_SECRET) return Response.json({ ok: false, error: 'telegram_secrets_missing' }, { status: 409 })
+  const bot = await telegram('getMe', {})
+  await telegram('setWebhook', {
+    url: `${SUPABASE_URL}/functions/v1/madger-command-bot`,
+    secret_token: WEBHOOK_SECRET,
+    allowed_updates: ['message', 'channel_post', 'callback_query'],
+    drop_pending_updates: false
+  })
+  await telegram('setMyCommands', { commands: [
+    { command: 'buy', description: 'Open verified MADGER purchase routes' },
+    { command: 'verify', description: 'Verify the official mint and pool' },
+    { command: 'missions', description: 'View active contributor missions' },
+    { command: 'submit', description: 'Submit mission evidence' },
+    { command: 'rank', description: 'View contribution points and rank' },
+    { command: 'referral', description: 'Create your attributable invite link' },
+    { command: 'whoami', description: 'Display your numeric Telegram ID' },
+    { command: 'chatid', description: 'Display the current chat ID' }
+  ] })
+  return Response.json({ ok: true, username: bot.username, webhook: 'registered', commands: 'registered' })
+}
+
 Deno.serve(async request => {
   try {
     const url = new URL(request.url)
@@ -332,6 +355,7 @@ Deno.serve(async request => {
     if (request.method === 'GET') {
       return Response.json({ ok: true, service: 'MADGER Command Bot', version: '1.0.0', configured: Boolean(BOT_TOKEN && WEBHOOK_SECRET) })
     }
+    if (url.pathname.endsWith('/setup')) return setupTelegram(request)
     if (url.pathname.endsWith('/monitor')) return monitorMarket(request)
     if (url.pathname.endsWith('/buy-alert')) return verifyBuyAlert(request)
     if (request.headers.get('x-telegram-bot-api-secret-token') !== WEBHOOK_SECRET || !WEBHOOK_SECRET) return new Response('Unauthorized', { status: 401 })
