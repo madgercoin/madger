@@ -1,6 +1,7 @@
 import 'jsr:@supabase/functions-js/edge-runtime.d.ts'
 import {
   LINKS, OFFICIAL_MINT, OFFICIAL_POOL, buyTier, escapeHtml,
+  findVerifiedMadgerBuyers,
   marketAlertReasons, moderationEscalation, moderationReason,
   normalizeReferral, normalizeTeam, normalizedMessageFingerprint, parseAnnouncement, parseTeamAlert
 } from './core.js'
@@ -43,6 +44,29 @@ async function db(path, init = {}) {
 
 async function insert(table, body, prefer = 'return=minimal') {
   return db(table, { method: 'POST', headers: { Prefer: prefer }, body: JSON.stringify(body) })
+}
+
+async function setting(key) {
+  const rows = await db(`madger_bot_settings?key=eq.${encodeURIComponent(key)}&select=value&limit=1`)
+  return rows?.[0]?.value ?? null
+}
+
+async function saveSetting(key, value) {
+  await db('madger_bot_settings?on_conflict=key', {
+    method: 'POST', headers: { Prefer: 'resolution=merge-duplicates,return=minimal' },
+    body: JSON.stringify({ key, value, updated_at: new Date().toISOString() })
+  })
+}
+
+async function solanaRpc(method, params) {
+  const response = await fetch(RPC_URL, {
+    method: 'POST', headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ jsonrpc: '2.0', id: 1, method, params })
+  })
+  if (!response.ok) throw new Error(`Solana RPC ${method} failed: ${response.status}`)
+  const payload = await response.json()
+  if (payload.error) throw new Error(`Solana RPC ${method} failed: ${payload.error.message ?? 'unknown error'}`)
+  return payload.result
 }
 
 async function telegram(method, body) {
@@ -684,6 +708,65 @@ async function routeRedirect(request, url) {
   return Response.redirect(target, 302)
 }
 
+async function publishVerifiedBuy(signature, buyer, amount, priceUsd, source) {
+  const usdValue = amount * priceUsd
+  const tier = buyTier(usdValue)
+  try {
+    await insert('madger_bot_alerts', {
+      alert_type: 'verified_buy', transaction_signature: signature, buyer_wallet: buyer,
+      token_amount: amount, usd_value: usdValue, metadata: { source }
+    })
+  } catch (error) {
+    if (String(error).includes('duplicate')) return { duplicate: true, instant: false, tier: tier.label }
+    throw error
+  }
+  if (tier.instant && BUY_CHAT_ID) {
+    await send(BUY_CHAT_ID, `${tier.emoji} <b>${tier.label}</b>\n\n${amount.toLocaleString('en-US', { maximumFractionDigits: 2 })} MADGER\nApprox. $${usdValue.toFixed(2)}\n\n<a href="https://solscan.io/tx/${encodeURIComponent(signature)}">Verified on Solana</a>`, conversionKeyboard())
+  }
+  return { duplicate: false, instant: tier.instant, tier: tier.label }
+}
+
+async function scanVerifiedBuys(priceUsd) {
+  const signatures = (await solanaRpc('getSignaturesForAddress', [
+    OFFICIAL_POOL, { commitment: 'confirmed', limit: 30 }
+  ]) ?? []).filter(item => !item.err)
+  if (!signatures.length) return { initialized: false, scanned: 0, verified: 0, posted: 0 }
+
+  const checkpointKey = 'native_buy_watcher_checkpoint'
+  const checkpoint = String(await setting(checkpointKey) ?? '')
+  if (!checkpoint) {
+    await saveSetting(checkpointKey, signatures[0].signature)
+    return { initialized: true, scanned: 0, verified: 0, posted: 0 }
+  }
+
+  const checkpointIndex = signatures.findIndex(item => item.signature === checkpoint)
+  const pending = (checkpointIndex >= 0 ? signatures.slice(0, checkpointIndex) : signatures.slice(0, 15)).reverse()
+  let scanned = 0
+  let verified = 0
+  let posted = 0
+  let error = null
+  for (const item of pending) {
+    try {
+      const transaction = await solanaRpc('getTransaction', [item.signature, {
+        encoding: 'jsonParsed', maxSupportedTransactionVersion: 0, commitment: 'confirmed'
+      }])
+      if (!transaction) throw new Error('confirmed transaction was unavailable')
+      const buyer = findVerifiedMadgerBuyers(transaction)[0]
+      if (buyer) {
+        const result = await publishVerifiedBuy(item.signature, buyer.buyer, buyer.amount, priceUsd, 'native_pool_watcher')
+        verified += 1
+        if (result.instant && !result.duplicate) posted += 1
+      }
+      scanned += 1
+      await saveSetting(checkpointKey, item.signature)
+    } catch (cause) {
+      error = String(cause instanceof Error ? cause.message : cause)
+      break
+    }
+  }
+  return { initialized: false, scanned, verified, posted, ...(error ? { error } : {}) }
+}
+
 async function monitorMarket(request) {
   if (!await authenticateInternal(request)) return new Response('Unauthorized', { status: 401 })
   await Promise.all([sweepExpiredJoins(), sweepMessageCleanup()])
@@ -705,7 +788,8 @@ async function monitorMarket(request) {
     raw: pair
   })
   if (reasons.length && ADMIN_CHAT_ID) await send(ADMIN_CHAT_ID, `<b>MADGER MARKET ALERT</b> ⚠️\n\n${reasons.map(escapeHtml).join('\n')}\n\nPrice: $${escapeHtml(pair.priceUsd)}\nLiquidity: $${escapeHtml(pair.liquidity?.usd)}\n<a href="${LINKS.dex}">Inspect verified pair</a>`)
-  return Response.json({ ok: true, alerts: reasons.length })
+  const buyWatcher = await scanVerifiedBuys(Number(pair.priceUsd ?? 0))
+  return Response.json({ ok: true, alerts: reasons.length, buy_watcher: buyWatcher })
 }
 
 async function verifyBuyAlert(request) {
@@ -714,30 +798,13 @@ async function verifyBuyAlert(request) {
   const signature = String(body.signature ?? '')
   const buyer = String(body.buyer ?? '')
   if (!signature || !buyer) return new Response('Missing signature or buyer', { status: 400 })
-  const rpc = await fetch(RPC_URL, {
-    method: 'POST', headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'getTransaction', params: [signature, { encoding: 'jsonParsed', maxSupportedTransactionVersion: 0, commitment: 'confirmed' }] })
-  }).then(response => response.json())
-  const transaction = rpc.result
+  const transaction = await solanaRpc('getTransaction', [signature, { encoding: 'jsonParsed', maxSupportedTransactionVersion: 0, commitment: 'confirmed' }])
   if (!transaction || transaction.meta?.err) return new Response('Transaction not confirmed', { status: 422 })
-  const pre = transaction.meta.preTokenBalances ?? []
-  const post = transaction.meta.postTokenBalances ?? []
-  const amount = post.filter(item => item.mint === OFFICIAL_MINT && item.owner === buyer).reduce((sum, item) => sum + Number(item.uiTokenAmount?.uiAmountString ?? 0), 0)
-    - pre.filter(item => item.mint === OFFICIAL_MINT && item.owner === buyer).reduce((sum, item) => sum + Number(item.uiTokenAmount?.uiAmountString ?? 0), 0)
-  if (!(amount > 0)) return new Response('No verified MADGER increase for buyer', { status: 422 })
+  const verifiedBuyer = findVerifiedMadgerBuyers(transaction).find(item => item.buyer === buyer)
+  if (!verifiedBuyer) return new Response('No verified MADGER purchase for buyer', { status: 422 })
   const latest = await db('madger_bot_market_snapshots?select=price_usd&order=created_at.desc&limit=1')
-  const usdValue = amount * Number(latest?.[0]?.price_usd ?? 0)
-  const tier = buyTier(usdValue)
-  try {
-    await insert('madger_bot_alerts', { alert_type: 'verified_buy', transaction_signature: signature, buyer_wallet: buyer, token_amount: amount, usd_value: usdValue, metadata: { source: body.source ?? 'webhook' } })
-  } catch (error) {
-    if (String(error).includes('duplicate')) return Response.json({ ok: true, duplicate: true })
-    throw error
-  }
-  if (tier.instant && BUY_CHAT_ID) {
-    await send(BUY_CHAT_ID, `${tier.emoji} <b>${tier.label}</b>\n\n${amount.toLocaleString('en-US', { maximumFractionDigits: 2 })} MADGER\nApprox. $${usdValue.toFixed(2)}\n\n<a href="https://solscan.io/tx/${encodeURIComponent(signature)}">Verified on Solana</a>`, conversionKeyboard())
-  }
-  return Response.json({ ok: true, verified: true, tier: tier.label, instant: tier.instant })
+  const result = await publishVerifiedBuy(signature, buyer, verifiedBuyer.amount, Number(latest?.[0]?.price_usd ?? 0), body.source ?? 'webhook')
+  return Response.json({ ok: true, verified: true, ...result })
 }
 
 async function setupTelegram(request) {
@@ -789,7 +856,7 @@ Deno.serve(async request => {
     const url = new URL(request.url)
     if (request.method === 'GET' && url.pathname.includes('/go/')) return routeRedirect(request, url)
     if (request.method === 'GET') {
-      return Response.json({ ok: true, service: 'MADGER Command Bot', version: '2.2.1', configured: Boolean(BOT_TOKEN && WEBHOOK_SECRET), community_guard: true, promotion_teams: true, announcements: true })
+      return Response.json({ ok: true, service: 'MADGER Command Bot', version: '2.3.0', configured: Boolean(BOT_TOKEN && WEBHOOK_SECRET), community_guard: true, promotion_teams: true, announcements: true, native_buy_watcher: true })
     }
     if (url.pathname.endsWith('/setup')) return setupTelegram(request)
     if (url.pathname.endsWith('/monitor')) return monitorMarket(request)
