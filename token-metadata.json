@@ -1,0 +1,34 @@
+{
+  "name": "MADGER",
+  "symbol": "MADGER",
+  "description": "MADGER is a community-driven Solana memecoin and original character brand centered on persistence, sharp humor, transparent communication, scam-resistant community practices, and practical community utility.",
+  "image": "https://madgercoin.com/assets/madger_official_logo_transparent_512.png",
+  "logoURI": "https://madgercoin.com/assets/madger_official_logo_transparent_512.png",
+  "external_url": "https://madgercoin.com",
+  "mint": "BHauMX8akk2umqkQqnJwpYkCRkZmefGnEBFByeFXRKqv",
+  "chainId": 101,
+  "decimals": 6,
+  "tags": [
+    "meme",
+    "memecoin",
+    "community",
+    "utility"
+  ],
+  "extensions": {
+    "website": "https://madgercoin.com",
+    "explorer": "https://solscan.io/token/BHauMX8akk2umqkQqnJwpYkCRkZmefGnEBFByeFXRKqv",
+    "raydium": "https://raydium.io/swap/?inputMint=sol&outputMint=BHauMX8akk2umqkQqnJwpYkCRkZmefGnEBFByeFXRKqv",
+    "twitter": "https://x.com/madgercoin",
+    "telegram": "https://t.me/madgercoin",
+    "discord": "https://discord.gg/NcuPzSNz9e"
+  },
+  "properties": {
+    "category": "image",
+    "files": [
+      {
+        "uri": "https://madgercoin.com/assets/madger_official_logo_transparent_512.png",
+        "type": "image/png"
+      }
+    ]
+  }
+}
