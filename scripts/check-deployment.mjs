@@ -21,6 +21,7 @@ const checks = [
   ["/home-v2.css", 200],
   ["/script.js", 200],
   ["/manifest.webmanifest", 200],
+  ["/token-metadata.json", 200],
   ["/robots.txt", 200],
   ["/sitemap.xml", 200],
   ["/assets/madger_hero_burrow_v7.jpg", 200],
@@ -67,6 +68,25 @@ for (const [pathname, destination, expectedStatus = 301] of redirects) {
     if (!passed) failures.push(`${pathname}: expected ${expectedStatus} to ${expected}, received ${response.status} to ${actual}`);
   } catch (error) {
     failures.push(`${pathname}: ${error.message}`);
+  }
+}
+
+const tokenMetadata = responses.get("/token-metadata.json");
+if (tokenMetadata) {
+  const { response } = tokenMetadata;
+  const contentType = response.headers.get("content-type") ?? "";
+  const cors = response.headers.get("access-control-allow-origin");
+  const cacheControl = response.headers.get("cache-control") ?? "";
+  if (!contentType.includes("application/json")) failures.push("token metadata: incorrect content type");
+  if (cors !== "*") failures.push("token metadata: missing permissive CORS");
+  if (!cacheControl.includes("public")) failures.push("token metadata: missing public cache policy");
+  try {
+    const metadata = await response.clone().json();
+    if (metadata.mint !== officialMint) failures.push("token metadata: incorrect mint");
+    if (metadata.image !== `${baseUrl}/assets/madger_official_logo_transparent_512.png`) failures.push("token metadata: incorrect canonical image");
+    if (metadata.symbol !== "MADGER") failures.push("token metadata: incorrect symbol");
+  } catch (error) {
+    failures.push(`token metadata: invalid JSON (${error.message})`);
   }
 }
 
