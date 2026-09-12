@@ -14,6 +14,7 @@ Configure these in the Supabase project dashboard. Never commit them.
 - `TELEGRAM_ADMIN_CHAT_IDS`: comma-separated numeric Telegram user IDs allowed to review submissions and view stats.
 - `TELEGRAM_ADMIN_CHANNEL_ID`: private admin channel ID for market and security alerts.
 - `TELEGRAM_BUY_ALERT_CHAT_ID`: public or private channel/group ID for verified buy alerts.
+- `TELEGRAM_BUY_ALERT_MEDIA_URL`: optional HTTPS image override for branded buy cards; defaults to the official MADGER social artwork.
 - `SOLANA_RPC_URL`: optional private RPC endpoint; defaults to Solana's public mainnet RPC.
 
 Supabase supplies `SUPABASE_URL` and `SUPABASE_SECRET_KEYS` to the Edge Function; a temporary `SUPABASE_SERVICE_ROLE_KEY` fallback supports legacy projects during key migration. Database tables use RLS with no public policies and explicitly deny `anon` and `authenticated` access.
@@ -28,7 +29,7 @@ Supabase supplies `SUPABASE_URL` and `SUPABASE_SECRET_KEYS` to the Edge Function
 
 ## Verified buy alerts
 
-The five-minute monitor natively watches the exact official Raydium CPMM pool. It fetches each new confirmed signature, requires the official pool and CPMM program in the transaction, verifies that a recipient's balance of the official MADGER mint increased and that the same owner paid SOL or another token, and stores a durable checkpoint. First activation starts from the newest signature rather than replaying historical trades. Purchases below $25 are recorded but not broadcast individually.
+The five-minute monitor natively watches the exact official Raydium CPMM pool. It fetches each new confirmed signature, requires the official pool and CPMM program in the transaction, verifies that a recipient's balance of the official MADGER mint increased and that the same owner paid SOL or another token, and stores a durable checkpoint. First activation starts from the newest signature rather than replaying historical trades. Every newly verified purchase is broadcast as a branded media card, including sub-$25 buys. Telegram media failures fall back to a text card, and delivery state is recorded for operations review. Pending or failed cards are retried for up to six hours without replaying delivered alerts.
 
 The authenticated `/buy-alert` route remains available for compatible external sources, but it applies the same independent transaction checks and duplicate suppression.
 
@@ -79,6 +80,8 @@ Telegram receives a public command menu without administrator operations. Each c
 - `/unmute` and `/clearwarns` — reply-based recovery controls
 - `/memberinfo` — reply-based private inspection of verification, restriction, warning, flood, and repeat-message state
 - `/stats` — admin-only seven-day report
+- `/buypreview` — private administrator preview of the exact branded buy-card layout without creating or publishing a fake buy
+- `/buystats` — private 24-hour and seven-day verified-buy volume and delivery report
 - `/approve ID [NOTE]` and `/reject ID [NOTE]` — admin-only human review
 
 ## Community Guard
