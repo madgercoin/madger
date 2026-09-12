@@ -29,13 +29,13 @@ Supabase supplies `SUPABASE_URL` and `SUPABASE_SECRET_KEYS` to the Edge Function
 
 ## Verified buy alerts
 
-The five-minute monitor natively watches the exact official Raydium CPMM pool. It fetches each new confirmed signature, requires the official pool and CPMM program in the transaction, verifies that a recipient's balance of the official MADGER mint increased and that the same owner paid SOL or another token, and stores a durable checkpoint. First activation starts from the newest signature rather than replaying historical trades. Every newly verified purchase is broadcast as a branded media card, including sub-$25 buys. Telegram media failures fall back to a text card, and delivery state is recorded for operations review. Pending or failed cards are retried for up to six hours without replaying delivered alerts.
+The one-minute buy watcher natively watches the exact official Raydium CPMM pool. It paginates up to 200 recent signatures, processes as many as 100 unseen transactions oldest-first, requires the official pool and CPMM program in each transaction, verifies that a recipient's balance of the official MADGER mint increased and that the same owner paid SOL or another token, and stores a durable checkpoint. First activation starts from the newest signature rather than replaying historical trades. Every newly verified purchase is broadcast as a branded media card, including sub-$25 buys. Telegram media failures fall back to a text card, and delivery state is recorded for operations review. Pending or failed cards are retried for up to six hours without replaying delivered alerts.
 
 The authenticated `/buy-alert` route remains available for compatible external sources, but it applies the same independent transaction checks and duplicate suppression.
 
 ## Market monitor
 
-The database invokes `/monitor` every five minutes with a secret stored in Supabase Vault. The function compares only its SHA-256 digest, verifies the exact official pool and mint returned by DEX Screener, records a snapshot, and alerts the private admin channel for a 15-minute price move of at least 8% or a liquidity decline of at least 10%. A daily retention job removes processed-update IDs after 7 days, market snapshots after 30 days, and event telemetry after 180 days.
+The database invokes `/watch-buys` every minute and `/monitor` every five minutes with a secret stored in Supabase Vault. Splitting the jobs keeps buy detection fast without multiplying DEX Screener traffic. The function compares only the secret's SHA-256 digest, verifies the exact official pool and mint returned by DEX Screener, records a snapshot, and alerts the private admin channel for a 15-minute price move of at least 8% or a liquidity decline of at least 10%. Each buy-watcher run records duration, scan totals, verified buys, posted cards, catch-up state, and bounded errors for the private health console. A daily retention job removes processed-update IDs after 7 days, market snapshots after 30 days, and event telemetry after 180 days.
 
 ## Commands
 
@@ -63,7 +63,7 @@ The database invokes `/monitor` every five minutes with a secret stored in Supab
 - `/announce MESSAGE [| HTTPS_URL | BUTTON]` — publish one official announcement to The Burrow
 - `/announcepin MESSAGE [| HTTPS_URL | BUTTON]` — publish and request a Telegram notification pin
 - `/dashboard` — private command-center view of joins, safety actions, teams, delivery, announcements, and market state
-- `/health` — private live check of webhook delivery, market freshness, cleanup backlog, Raid Shield, and Telegram permissions
+- `/health` — private live check of webhook delivery, market freshness, one-minute buy-watcher runs, card failures, cleanup backlog, Raid Shield, and Telegram permissions
 - `/modlog` — private list of the ten most recent safety and administrator actions
 - `/raidmode status|on [MINUTES]|off` — private administrator control for Raid Shield
 - `/purgeunverified` — remove up to 25 pending unverified accounts from The Burrow
