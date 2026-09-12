@@ -2,6 +2,32 @@ export const OFFICIAL_MINT = 'BHauMX8akk2umqkQqnJwpYkCRkZmefGnEBFByeFXRKqv'
 export const OFFICIAL_POOL = 'FVRpAmyDsdvKHQT2ds6ytZsJHt7SDDDbScQx3c4fu32h'
 export const RAYDIUM_CPMM_PROGRAM = 'CPMMoo8L3F4NbTegBCKVNunggL7H1ZpdTHKxQB5qKP1C'
 
+export const PROJECT_WALLETS = Object.freeze([
+  { role: 'Liquidity reserve', address: 'ATFELs8fV9CthKDjVLfhMb756uD499nHVtzLr5i7XKPp', targetPercentage: 60 },
+  { role: 'Treasury', address: 'Ge91NeKSg4uYci29mq2XN5N4KQsnoXtkWBPEorPa63aZ', targetPercentage: 20 },
+  { role: 'Community', address: 'EVSB7eT5ws43oi2ztWKNQvH4THXQD3k9z6Sk9NNFP1FT', targetPercentage: 10 },
+  { role: 'Operations', address: 'C29Y6p3NXgi5UauC3W9PVN7SDguk9EA2e5oDDJEHRxNz', targetPercentage: 7 },
+  { role: 'Creator reserve', address: 'GWyajcELd3nM1NtfvkJoXz2AgYYinqyZzqAC4NQyBzsi', targetPercentage: 3 }
+])
+
+export const LOCK_RECORDS = Object.freeze([
+  {
+    id: 'strategic-reserve', label: 'Strategic Reserve', asset: 'MADGER',
+    address: '5LVpo5QrNJPuasud75CuF3gRtipFStkR2seyWMgg5E8V', expectedAmount: 499999999.99968,
+    provider: 'Jupiter Lock', cliffDate: '2027-09-08', endDate: '2030-09-07'
+  },
+  {
+    id: 'lp-expansion', label: 'Expansion LP', asset: 'RAYDIUM LP',
+    address: 'rZbKNf3G2sLhNjaB5TSqy5TUbKPWgu2gBkw3VggqTkB', expectedAmount: 188.436429189,
+    provider: 'Streamflow', cliffDate: null, endDate: null
+  },
+  {
+    id: 'lp-original', label: 'Original LP', asset: 'RAYDIUM LP',
+    address: '9EVSaGAP7gDmuJAwzL4DWN6V7eHPVgd4UMzMmxnF2VkX', expectedAmount: 46.241020429,
+    provider: 'Streamflow', cliffDate: '2027-09-07', endDate: '2027-09-07'
+  }
+])
+
 export const LINKS = Object.freeze({
   home: 'https://madgercoin.com/',
   guide: 'https://madgercoin.com/buy',
@@ -343,6 +369,42 @@ export function significantHolderMovements(current, previous, options = {}) {
       approximateUsd: Math.abs(delta) * priceUsd
     }
   }).filter(item => item.supplyPercentage >= minimumPercentage || (priceUsd > 0 && item.approximateUsd >= minimumUsd))
+    .sort((left, right) => Math.abs(right.delta) - Math.abs(left.delta))
+}
+
+export function classifiedDistribution(snapshot, wallets = PROJECT_WALLETS, locks = LOCK_RECORDS) {
+  const supply = Math.max(0, Number(snapshot?.totalSupply) || 0)
+  const owners = new Map((snapshot?.owners ?? []).map(item => [item.owner, Number(item.amount) || 0]))
+  const rows = wallets.map(wallet => {
+    const amount = owners.get(wallet.address) ?? 0
+    return { ...wallet, amount, percentage: supply > 0 ? amount / supply * 100 : 0, kind: 'project' }
+  })
+  for (const lock of locks.filter(item => item.asset === 'MADGER')) {
+    const amount = owners.get(lock.address) ?? 0
+    rows.push({ ...lock, role: `${lock.label} lock`, amount, percentage: supply > 0 ? amount / supply * 100 : 0, kind: 'lock' })
+  }
+  const classifiedAmount = rows.reduce((sum, row) => sum + row.amount, 0)
+  return {
+    rows,
+    classifiedAmount,
+    classifiedPercentage: supply > 0 ? Math.min(100, classifiedAmount / supply * 100) : 0,
+    unclassifiedAmount: Math.max(0, supply - classifiedAmount),
+    unclassifiedPercentage: supply > 0 ? Math.max(0, (supply - classifiedAmount) / supply * 100) : 0
+  }
+}
+
+export function protectedWalletMovements(current, previous, wallets = PROJECT_WALLETS, locks = LOCK_RECORDS, options = {}) {
+  if (!previous?.owners?.length) return []
+  const protectedRows = [...wallets.map(item => ({ ...item, label: item.role })), ...locks.filter(item => item.asset === 'MADGER')]
+  const currentOwners = new Map((current?.owners ?? []).map(item => [item.owner, Number(item.amount) || 0]))
+  const priorOwners = new Map(previous.owners.map(item => [item.owner, Number(item.amount) || 0]))
+  const minimumOutbound = Math.max(0, Number(options.minimumOutbound) || 1000)
+  const minimumInbound = Math.max(0, Number(options.minimumInbound) || 10000)
+  return protectedRows.map(item => {
+    const previousAmount = priorOwners.get(item.address) ?? 0
+    const currentAmount = currentOwners.get(item.address) ?? 0
+    return { ...item, previousAmount, currentAmount, delta: currentAmount - previousAmount }
+  }).filter(item => item.delta <= -minimumOutbound || item.delta >= minimumInbound)
     .sort((left, right) => Math.abs(right.delta) - Math.abs(left.delta))
 }
 
