@@ -10,6 +10,7 @@ export const LINKS = Object.freeze({
   verify: 'https://madgercoin.com/launch.html',
   official: 'https://madgercoin.com/official-links.html',
   buyCard: 'https://madgercoin.com/assets/madger_social_share_v10.jpg',
+  solscanToken: `https://solscan.io/token/${OFFICIAL_MINT}`,
   community: 'https://t.me/madgerburrow',
   bonkbot: 'https://bonkbot.io/',
   trojan: 'https://trojan.com/'
@@ -272,6 +273,48 @@ export function pendingSignatures(signatures, checkpoint, maximum = 100) {
     checkpointFound: checkpointIndex >= 0,
     truncated: checkpointIndex < 0 && clean.length > Math.max(1, maximum)
   }
+}
+
+export function holderSnapshotFromAccounts(accounts, totalSupply) {
+  const supply = Math.max(0, Number(totalSupply) || 0)
+  const balances = new Map()
+  for (const entry of accounts ?? []) {
+    const info = entry?.account?.data?.parsed?.info
+    const owner = String(info?.owner ?? '')
+    const amount = Number(info?.tokenAmount?.uiAmountString ?? info?.tokenAmount?.uiAmount ?? 0)
+    if (!owner || !Number.isFinite(amount) || amount <= 0) continue
+    balances.set(owner, (balances.get(owner) ?? 0) + amount)
+  }
+  const owners = [...balances].map(([owner, amount]) => ({
+    owner, amount, percentage: supply > 0 ? amount / supply * 100 : 0
+  })).sort((left, right) => right.amount - left.amount)
+  return {
+    holderCount: owners.length,
+    totalSupply: supply,
+    largestPercentage: Math.min(100, owners[0]?.percentage ?? 0),
+    top10Percentage: Math.min(100, owners.slice(0, 10).reduce((sum, item) => sum + item.percentage, 0)),
+    owners
+  }
+}
+
+export function significantHolderMovements(current, previous, options = {}) {
+  if (!previous?.owners?.length || !(Number(current?.totalSupply) > 0)) return []
+  const prior = new Map(previous.owners.map(item => [item.owner, Number(item.amount) || 0]))
+  const next = new Map((current.owners ?? []).map(item => [item.owner, Number(item.amount) || 0]))
+  const minimumPercentage = Math.max(0, Number(options.minimumSupplyPercentage) || 0.25)
+  const minimumUsd = Math.max(0, Number(options.minimumUsd) || 1000)
+  const priceUsd = Math.max(0, Number(options.priceUsd) || 0)
+  return [...new Set([...prior.keys(), ...next.keys()])].map(owner => {
+    const previousAmount = prior.get(owner) ?? 0
+    const currentAmount = next.get(owner) ?? 0
+    const delta = currentAmount - previousAmount
+    return {
+      owner, previousAmount, currentAmount, delta,
+      supplyPercentage: Math.abs(delta) / current.totalSupply * 100,
+      approximateUsd: Math.abs(delta) * priceUsd
+    }
+  }).filter(item => item.supplyPercentage >= minimumPercentage || (priceUsd > 0 && item.approximateUsd >= minimumUsd))
+    .sort((left, right) => Math.abs(right.delta) - Math.abs(left.delta))
 }
 
 export function marketAlertReasons(current, previous) {
