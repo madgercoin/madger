@@ -4,7 +4,7 @@ import {
   findVerifiedMadgerBuyers,
   marketAlertReasons, marketSnapshotSummary, moderationEscalation, moderationReason,
   normalizeMissionCode, normalizeReferral, normalizeTeam, normalizedMessageFingerprint,
-  parseAnnouncement, parseMissionDefinition, parseRaidMode, parseReviewRequest, parseTeamAlert,
+  parseAnnouncement, parseMissionDefinition, parseRaidMode, parseReviewRequest, parseTeamAlert, pendingSignatures,
   shouldActivateRaidMode
 } from './core.js'
 
@@ -902,25 +902,34 @@ async function adminHealth(message) {
     return send(message.from.id, 'System health is private. Use /health here in your direct MADGERbot chat.')
   }
   const bot = await telegram('getMe', {})
-  const [webhook, membership, snapshots, cleanup, raidMode, chatSecurity] = await Promise.all([
+  const [webhook, membership, snapshots, cleanup, raidMode, chatSecurity, watcherHealth, recentBuys] = await Promise.all([
     telegram('getWebhookInfo', {}),
     BUY_CHAT_ID ? telegram('getChatMember', { chat_id: BUY_CHAT_ID, user_id: bot.id }).catch(() => null) : null,
     db('madger_bot_market_snapshots?select=created_at&order=created_at.desc&limit=1'),
     db('madger_bot_message_cleanup?deleted_at=is.null&select=message_id&limit=100'),
     raidModeForChat(BUY_CHAT_ID),
-    chatSecurityInfo(BUY_CHAT_ID)
+    chatSecurityInfo(BUY_CHAT_ID),
+    setting('native_buy_watcher_health'),
+    db('madger_bot_alerts?alert_type=eq.verified_buy&select=metadata,created_at&order=created_at.desc&limit=100')
   ])
   const snapshotAt = Date.parse(String(snapshots?.[0]?.created_at ?? ''))
   const marketAge = Number.isFinite(snapshotAt) ? Math.max(0, Math.floor((Date.now() - snapshotAt) / 60000)) : null
   const webhookError = webhook.last_error_message
     ? `\nLast delivery error: ${escapeHtml(String(webhook.last_error_message).slice(0, 200))}`
     : ''
+  const watcherAt = Date.parse(String(watcherHealth?.last_run_at ?? ''))
+  const watcherAge = Number.isFinite(watcherAt) ? Math.max(0, Math.floor((Date.now() - watcherAt) / 60000)) : null
+  const watcherFailures = (recentBuys ?? []).filter(row => row.metadata?.delivery_status === 'failed').length
   return send(message.chat.id, `<b>MADGERBOT SYSTEM HEALTH</b> 🩺
 
-Version: 3.0.0
+Version: 3.2.0
 Webhook: ${webhook.url ? 'connected ✅' : 'missing ❌'}
 Pending Telegram updates: ${Number(webhook.pending_update_count ?? 0)}
 Market monitor: ${marketAge === null ? 'no snapshot ❌' : marketAge <= 10 ? `current ✅ · ${marketAge}m old` : `stale ⚠️ · ${marketAge}m old`}
+Buy watcher: ${watcherAge === null ? 'no run recorded ❌' : watcherAge <= 2 && !watcherHealth?.error ? `current ✅ · ${watcherAge}m old` : `attention ⚠️ · ${watcherAge}m old`}
+Buy cadence: every minute
+Last scan: ${Number(watcherHealth?.scanned ?? 0)} transactions · ${Number(watcherHealth?.verified ?? 0)} buys · ${Number(watcherHealth?.posted ?? 0)} cards
+Recent card failures: ${watcherFailures}
 Cleanup backlog: ${cleanup?.length ?? 0}${cleanup?.length === 100 ? '+' : ''}
 Raid Shield: ${raidMode.active ? 'ACTIVE 🚨' : 'normal'}
 
@@ -1286,21 +1295,33 @@ async function publishVerifiedBuy(signature, buyer, amount, market, source) {
 }
 
 async function scanVerifiedBuys(market) {
-  const priceUsd = Number(market?.priceUsd ?? 0)
-  const signatures = (await solanaRpc('getSignaturesForAddress', [
-    OFFICIAL_POOL, { commitment: 'confirmed', limit: 30 }
-  ]) ?? []).filter(item => !item.err)
-  if (!signatures.length) return { initialized: false, scanned: 0, verified: 0, posted: 0 }
+  const firstPage = await solanaRpc('getSignaturesForAddress', [
+    OFFICIAL_POOL, { commitment: 'confirmed', limit: 50 }
+  ]) ?? []
+  const signatures = [...firstPage]
+  const newestUsable = firstPage.find(item => item?.signature && !item.err)
+  if (!newestUsable) return { initialized: false, scanned: 0, verified: 0, posted: 0 }
 
   const checkpointKey = 'native_buy_watcher_checkpoint'
   const checkpoint = String(await setting(checkpointKey) ?? '')
   if (!checkpoint) {
-    await saveSetting(checkpointKey, signatures[0].signature)
+    await saveSetting(checkpointKey, newestUsable.signature)
     return { initialized: true, scanned: 0, verified: 0, posted: 0 }
   }
 
-  const checkpointIndex = signatures.findIndex(item => item.signature === checkpoint)
-  const pending = (checkpointIndex >= 0 ? signatures.slice(0, checkpointIndex) : signatures.slice(0, 15)).reverse()
+  let checkpointFound = signatures.some(item => item.signature === checkpoint)
+  let before = signatures.at(-1)?.signature
+  for (let page = 1; page < 4 && !checkpointFound && before; page += 1) {
+    const batch = await solanaRpc('getSignaturesForAddress', [
+      OFFICIAL_POOL, { commitment: 'confirmed', limit: 50, before }
+    ]) ?? []
+    if (!batch.length) break
+    signatures.push(...batch)
+    checkpointFound = batch.some(item => item.signature === checkpoint)
+    before = batch.at(-1)?.signature
+  }
+  const planned = pendingSignatures(signatures, checkpoint, 100)
+  const pending = planned.items
   let scanned = 0
   let verified = 0
   let posted = 0
@@ -1324,7 +1345,28 @@ async function scanVerifiedBuys(market) {
       break
     }
   }
-  return { initialized: false, scanned, verified, posted, ...(error ? { error } : {}) }
+  return {
+    initialized: false, scanned, verified, posted,
+    checkpoint_found: planned.checkpointFound,
+    catchup_truncated: planned.truncated,
+    ...(error ? { error } : {})
+  }
+}
+
+async function watchVerifiedBuys(request) {
+  if (!await authenticateInternal(request)) return new Response('Unauthorized', { status: 401 })
+  const startedAt = Date.now()
+  let result
+  try {
+    const latest = await db('madger_bot_market_snapshots?select=price_usd,liquidity_usd,raw,created_at&order=created_at.desc&limit=1')
+    result = await scanVerifiedBuys(marketSnapshotSummary(latest?.[0] ?? {}))
+  } catch (error) {
+    result = { scanned: 0, verified: 0, posted: 0, error: String(error instanceof Error ? error.message : error).slice(0, 300) }
+  }
+  await saveSetting('native_buy_watcher_health', {
+    last_run_at: new Date().toISOString(), duration_ms: Date.now() - startedAt, ...result
+  })
+  return Response.json({ ok: !result.error, buy_watcher: result }, { status: result.error ? 503 : 200 })
 }
 
 async function monitorMarket(request) {
@@ -1348,13 +1390,7 @@ async function monitorMarket(request) {
     raw: pair
   })
   if (reasons.length && ADMIN_CHAT_ID) await send(ADMIN_CHAT_ID, `<b>MADGER MARKET ALERT</b> ⚠️\n\n${reasons.map(escapeHtml).join('\n')}\n\nPrice: $${escapeHtml(pair.priceUsd)}\nLiquidity: $${escapeHtml(pair.liquidity?.usd)}\n<a href="${LINKS.dex}">Inspect verified pair</a>`)
-  const buyWatcher = await scanVerifiedBuys(marketSnapshotSummary({
-    price_usd: pair.priceUsd ?? null,
-    liquidity_usd: pair.liquidity?.usd ?? null,
-    raw: pair,
-    created_at: new Date().toISOString()
-  }))
-  return Response.json({ ok: true, alerts: reasons.length, buy_watcher: buyWatcher })
+  return Response.json({ ok: true, alerts: reasons.length })
 }
 
 async function verifyBuyAlert(request) {
@@ -1462,9 +1498,10 @@ Deno.serve(async request => {
     const url = new URL(request.url)
     if (request.method === 'GET' && url.pathname.includes('/go/')) return routeRedirect(request, url)
     if (request.method === 'GET') {
-      return Response.json({ ok: true, service: 'MADGER Command Bot', version: '3.1.0', configured: Boolean(BOT_TOKEN && WEBHOOK_SECRET), operations_console: true, moderation_log: true, member_inspection: true, moderation_recovery: true, community_guard: true, raid_shield: true, raid_link_firewall: true, stale_content_cleanup: true, faq_responder: true, market_commands: true, promotion_teams: true, announcements: true, contributor_leaderboard: true, contributor_history: true, mission_admin: true, review_queue: true, native_buy_watcher: true, every_verified_buy: true, branded_buy_cards: true, buy_delivery_telemetry: true })
+      return Response.json({ ok: true, service: 'MADGER Command Bot', version: '3.2.0', configured: Boolean(BOT_TOKEN && WEBHOOK_SECRET), operations_console: true, moderation_log: true, member_inspection: true, moderation_recovery: true, community_guard: true, raid_shield: true, raid_link_firewall: true, stale_content_cleanup: true, faq_responder: true, market_commands: true, promotion_teams: true, announcements: true, contributor_leaderboard: true, contributor_history: true, mission_admin: true, review_queue: true, native_buy_watcher: true, one_minute_buy_watcher: true, catchup_scanner: true, watcher_health: true, every_verified_buy: true, branded_buy_cards: true, buy_delivery_telemetry: true })
     }
     if (url.pathname.endsWith('/setup')) return setupTelegram(request)
+    if (url.pathname.endsWith('/watch-buys')) return watchVerifiedBuys(request)
     if (url.pathname.endsWith('/monitor')) return monitorMarket(request)
     if (url.pathname.endsWith('/buy-alert')) return verifyBuyAlert(request)
     if (request.headers.get('x-telegram-bot-api-secret-token') !== WEBHOOK_SECRET || !WEBHOOK_SECRET) return new Response('Unauthorized', { status: 401 })
