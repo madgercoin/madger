@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
 import {
-  OFFICIAL_MINT, OFFICIAL_POOL, RAYDIUM_CPMM_PROGRAM, buyTier, contributorRank, escapeHtml, faqIntent,
+  OFFICIAL_MINT, OFFICIAL_POOL, RAYDIUM_CPMM_PROGRAM, buyTier, compactWallet, contributorRank, escapeHtml, faqIntent,
   findVerifiedMadgerBuyers, isSuspiciousMadgerMessage,
   marketAlertReasons, marketSnapshotSummary, moderationEscalation, moderationReason,
   normalizeMissionCode, normalizeReferral, normalizeTeam, normalizedMessageFingerprint,
@@ -42,9 +42,13 @@ test('parses bounded submission review requests', () => {
 test('accepts the official MADGER mint', () => assert.equal(isSuspiciousMadgerMessage(`MADGER ${OFFICIAL_MINT}`), false))
 test('flags an alternate address presented as MADGER', () => assert.equal(isSuspiciousMadgerMessage('MADGER 9JnqwF5QzMtLE2BfypLzWrXWX7XsNJ8yqSwuNasupump'), true))
 test('assigns honest buy tiers', () => {
-  assert.equal(buyTier(24.99).instant, false)
+  assert.equal(buyTier(0).instant, true)
   assert.equal(buyTier(25).label, 'CLAW TAP')
   assert.equal(buyTier(500).label, 'WHALE IN THE BURROW')
+})
+test('abbreviates only valid Solana wallet addresses', () => {
+  assert.equal(compactWallet(OFFICIAL_MINT), 'BHauM…XRKqv')
+  assert.equal(compactWallet('not-a-wallet'), 'unavailable')
 })
 test('detects price and liquidity thresholds', () => {
   const reasons = marketAlertReasons({ priceUsd: '1.09', liquidity: { usd: 890 } }, { price_usd: '1', liquidity_usd: 1000 })
