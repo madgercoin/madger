@@ -1,11 +1,11 @@
 import 'jsr:@supabase/functions-js/edge-runtime.d.ts'
 import {
   LINKS, OFFICIAL_MINT, OFFICIAL_POOL, buyTier, compactWallet, contributorRank, escapeHtml, faqIntent,
-  findVerifiedMadgerBuyers,
+  findVerifiedMadgerBuyers, holderSnapshotFromAccounts,
   marketAlertReasons, marketSnapshotSummary, moderationEscalation, moderationReason,
   normalizeMissionCode, normalizeReferral, normalizeTeam, normalizedMessageFingerprint,
   parseAnnouncement, parseMissionDefinition, parseRaidMode, parseReviewRequest, parseTeamAlert, pendingSignatures,
-  shouldActivateRaidMode
+  shouldActivateRaidMode, significantHolderMovements
 } from './core.js'
 
 const BOT_TOKEN = Deno.env.get('TELEGRAM_BOT_TOKEN') ?? ''
@@ -31,6 +31,7 @@ const FLOOD_MESSAGE_LIMIT = 7
 const DUPLICATE_WINDOW_SECONDS = 60
 const DUPLICATE_MESSAGE_LIMIT = 3
 const MUTE_MINUTES = 10
+const TOKEN_PROGRAM = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
 const adminCache = new Map()
 
 const dbHeaders = {
@@ -400,8 +401,65 @@ async function showOfficialLinks(chatId) {
   ]))
 }
 
+async function holderSnapshots() {
+  const cutoff = encodeURIComponent(new Date(Date.now() - 24 * 3600000).toISOString())
+  return Promise.all([
+    db('madger_bot_holder_snapshots?select=*&order=created_at.desc&limit=1'),
+    db(`madger_bot_holder_snapshots?created_at=lte.${cutoff}&select=*&order=created_at.desc&limit=1`)
+  ])
+}
+
+async function showHolders(chatId) {
+  const [latestRows, priorRows] = await holderSnapshots()
+  const latest = latestRows?.[0]
+  if (!latest) return send(chatId, 'Holder intelligence is initializing. Try again after the next 15-minute snapshot.', keyboard([[{ text: '🔎 Inspect official token', url: LINKS.solscanToken }]]))
+  const prior = priorRows?.[0]
+  const change = prior ? Number(latest.holder_count) - Number(prior.holder_count) : null
+  const age = Math.max(0, Math.floor((Date.now() - Date.parse(latest.created_at)) / 60000))
+  return send(chatId, `<b>MADGER HOLDER INTELLIGENCE</b> 🛰️
+
+Positive-balance wallets: <b>${Number(latest.holder_count).toLocaleString('en-US')}</b>
+24h wallet change: <b>${change === null ? 'building baseline' : `${change >= 0 ? '+' : ''}${change}`}</b>
+Largest wallet: <b>${Number(latest.largest_percentage).toFixed(2)}%</b> of supply
+Top 10 concentration: <b>${Number(latest.top_10_percentage).toFixed(2)}%</b>
+Updated: ${age} minute${age === 1 ? '' : 's'} ago
+
+Wallet counts represent positive on-chain owners—not verified people. Treasury, liquidity, exchange, and custodial wallets may be included.`, keyboard([
+    [{ text: '🔎 Inspect official token', url: LINKS.solscanToken }, { text: '📈 Live Chart', url: LINKS.dex }],
+    [{ text: '✅ Verify Mint', url: LINKS.verify }]
+  ]))
+}
+
+async function showHolderIntel(message) {
+  if (!ADMIN_IDS.has(String(message.from.id))) return send(message.chat.id, 'Admin command denied.')
+  if (message.chat.type !== 'private') {
+    await deleteQuietly(message.chat.id, message.message_id)
+    return send(message.from.id, 'Detailed holder intelligence is private. Use /holderintel in your direct MADGERbot chat.')
+  }
+  const [latestRows, priorRows] = await holderSnapshots()
+  const latest = latestRows?.[0]
+  if (!latest) return send(message.chat.id, 'Holder intelligence has not completed its first snapshot.')
+  const prior = priorRows?.[0]
+  const owners = latest.raw?.owners ?? []
+  const lines = owners.slice(0, 10).map((item, index) =>
+    `${index + 1}. <code>${escapeHtml(compactWallet(item.owner))}</code> · ${Number(item.percentage).toFixed(2)}% · ${Number(item.amount).toLocaleString('en-US', { maximumFractionDigits: 2 })}`
+  )
+  const change = prior ? Number(latest.holder_count) - Number(prior.holder_count) : null
+  return send(message.chat.id, `<b>MADGER HOLDER CONSOLE</b> 🔬
+
+Positive-balance wallets: ${latest.holder_count}
+24h change: ${change === null ? 'building baseline' : `${change >= 0 ? '+' : ''}${change}`}
+Token accounts scanned: ${latest.token_account_count}
+Top 10 concentration: ${Number(latest.top_10_percentage).toFixed(2)}%
+
+<b>Largest on-chain owners</b>
+${lines.join('\n')}
+
+Movement alerts identify balance changes only. They never label a transfer as a buy or sell.`, keyboard([[{ text: 'Inspect token accounts', url: LINKS.solscanToken }]]))
+}
+
 async function showHelp(chatId) {
-  return send(chatId, '<b>MADGERBOT COMMANDS</b> 🦡\n\n<b>Trade safely</b>\n/buy · /price · /chart · /ca · /verify · /links\n\n<b>Community</b>\n/rules · /safety · /report · /teams\n\n<b>Contribute</b>\n/missions · /submit · /mywork · /rank · /leaderboard · /referral\n\nMADGERbot never requests wallet credentials, payments, verification transfers, or remote access.')
+  return send(chatId, '<b>MADGERBOT COMMANDS</b> 🦡\n\n<b>Market intelligence</b>\n/buy · /price · /holders · /chart · /ca · /verify · /links\n\n<b>Community</b>\n/rules · /safety · /report · /teams\n\n<b>Contribute</b>\n/missions · /submit · /mywork · /rank · /leaderboard · /referral\n\nMADGERbot never requests wallet credentials, payments, verification transfers, or remote access.')
 }
 
 async function faqResponderEnabled() {
@@ -902,7 +960,7 @@ async function adminHealth(message) {
     return send(message.from.id, 'System health is private. Use /health here in your direct MADGERbot chat.')
   }
   const bot = await telegram('getMe', {})
-  const [webhook, membership, snapshots, cleanup, raidMode, chatSecurity, watcherHealth, recentBuys] = await Promise.all([
+  const [webhook, membership, snapshots, cleanup, raidMode, chatSecurity, watcherHealth, recentBuys, holderHealth] = await Promise.all([
     telegram('getWebhookInfo', {}),
     BUY_CHAT_ID ? telegram('getChatMember', { chat_id: BUY_CHAT_ID, user_id: bot.id }).catch(() => null) : null,
     db('madger_bot_market_snapshots?select=created_at&order=created_at.desc&limit=1'),
@@ -910,7 +968,8 @@ async function adminHealth(message) {
     raidModeForChat(BUY_CHAT_ID),
     chatSecurityInfo(BUY_CHAT_ID),
     setting('native_buy_watcher_health'),
-    db('madger_bot_alerts?alert_type=eq.verified_buy&select=metadata,created_at&order=created_at.desc&limit=100')
+    db('madger_bot_alerts?alert_type=eq.verified_buy&select=metadata,created_at&order=created_at.desc&limit=100'),
+    setting('holder_monitor_health')
   ])
   const snapshotAt = Date.parse(String(snapshots?.[0]?.created_at ?? ''))
   const marketAge = Number.isFinite(snapshotAt) ? Math.max(0, Math.floor((Date.now() - snapshotAt) / 60000)) : null
@@ -920,9 +979,11 @@ async function adminHealth(message) {
   const watcherAt = Date.parse(String(watcherHealth?.last_run_at ?? ''))
   const watcherAge = Number.isFinite(watcherAt) ? Math.max(0, Math.floor((Date.now() - watcherAt) / 60000)) : null
   const watcherFailures = (recentBuys ?? []).filter(row => row.metadata?.delivery_status === 'failed').length
+  const holderAt = Date.parse(String(holderHealth?.last_run_at ?? ''))
+  const holderAge = Number.isFinite(holderAt) ? Math.max(0, Math.floor((Date.now() - holderAt) / 60000)) : null
   return send(message.chat.id, `<b>MADGERBOT SYSTEM HEALTH</b> 🩺
 
-Version: 3.2.0
+Version: 3.3.0
 Webhook: ${webhook.url ? 'connected ✅' : 'missing ❌'}
 Pending Telegram updates: ${Number(webhook.pending_update_count ?? 0)}
 Market monitor: ${marketAge === null ? 'no snapshot ❌' : marketAge <= 10 ? `current ✅ · ${marketAge}m old` : `stale ⚠️ · ${marketAge}m old`}
@@ -930,6 +991,7 @@ Buy watcher: ${watcherAge === null ? 'no run recorded ❌' : watcherAge <= 2 && 
 Buy cadence: every minute
 Last scan: ${Number(watcherHealth?.scanned ?? 0)} transactions · ${Number(watcherHealth?.verified ?? 0)} buys · ${Number(watcherHealth?.posted ?? 0)} cards
 Recent card failures: ${watcherFailures}
+Holder monitor: ${holderAge === null ? 'initializing' : holderAge <= 20 && !holderHealth?.error ? `current ✅ · ${holderAge}m old · ${holderHealth.holder_count} wallets` : `attention ⚠️ · ${holderAge}m old`}
 Cleanup backlog: ${cleanup?.length ?? 0}${cleanup?.length === 100 ? '+' : ''}
 Raid Shield: ${raidMode.active ? 'ACTIVE 🚨' : 'normal'}
 
@@ -1106,6 +1168,7 @@ async function handleCommand(message) {
   if (command === '/buy') return send(chatId, `<b>BUY $MADGER SAFELY</b>\n\nOfficial mint:\n<code>${OFFICIAL_MINT}</code>\n\nMADGER never presets your amount or slippage. Review every wallet prompt before approving.`, conversionKeyboard())
   if (command === '/mint' || command === '/verify' || command === '/ca' || command === '/contract') return send(chatId, `<b>OFFICIAL MADGER MINT</b>\n<code>${OFFICIAL_MINT}</code>\n\nPool:\n<code>${OFFICIAL_POOL}</code>`, keyboard([[{ text: 'Open canonical verification', url: LINKS.verify }]]))
   if (command === '/price') return showMarket(chatId)
+  if (command === '/holders') return showHolders(chatId)
   if (command === '/chart') return send(chatId, '<b>MADGER VERIFIED CHART</b> 📈\nThis link is locked to the official Raydium pool.', keyboard([[{ text: 'Open live chart', url: LINKS.dex }]]))
   if (command === '/links') return showOfficialLinks(chatId)
   if (command === '/help') return showHelp(chatId)
@@ -1136,6 +1199,7 @@ async function handleCommand(message) {
   if (command === '/stats') return adminStats(chatId)
   if (command === '/buypreview') return buyPreview(message)
   if (command === '/buystats') return buyStats(message)
+  if (command === '/holderintel') return showHolderIntel(message)
   if (command === '/reviews') return showReviews(message)
   if (command === '/missionlist') return showMissionList(message)
   if (command === '/approve') return reviewSubmission(message, args, 'approved')
@@ -1150,7 +1214,7 @@ async function handleCommand(message) {
   if (command === '/clearwarns') return adminRecoveryAction(message, 'clearwarns')
   if (command === '/memberinfo') return memberInfo(message)
   if (command === '/cleanup') return cleanupMessage(message)
-  return send(chatId, 'Commands: /buy · /verify · /missions · /submit · /mywork · /rank · /leaderboard · /referral · /teams · /rules · /safety · /report')
+  return send(chatId, 'Commands: /buy · /price · /holders · /verify · /missions · /submit · /mywork · /rank · /leaderboard · /referral · /teams · /rules · /safety · /report')
 }
 
 async function moderate(message) {
@@ -1393,6 +1457,67 @@ async function monitorMarket(request) {
   return Response.json({ ok: true, alerts: reasons.length })
 }
 
+async function monitorHolders(request) {
+  if (!await authenticateInternal(request)) return new Response('Unauthorized', { status: 401 })
+  const startedAt = Date.now()
+  try {
+    const [tokenAccounts, supplyResult, previousRows, marketRows] = await Promise.all([
+      solanaRpc('getProgramAccounts', [TOKEN_PROGRAM, {
+        encoding: 'jsonParsed', commitment: 'confirmed',
+        filters: [{ dataSize: 165 }, { memcmp: { offset: 0, bytes: OFFICIAL_MINT } }]
+      }]),
+      solanaRpc('getTokenSupply', [OFFICIAL_MINT, { commitment: 'confirmed' }]),
+      db('madger_bot_holder_snapshots?select=*&order=created_at.desc&limit=1'),
+      db('madger_bot_market_snapshots?select=price_usd&order=created_at.desc&limit=1')
+    ])
+    const totalSupply = Number(supplyResult?.value?.uiAmountString ?? supplyResult?.value?.uiAmount ?? 0)
+    const current = holderSnapshotFromAccounts(tokenAccounts, totalSupply)
+    if (!(current.totalSupply > 0) || !current.holderCount) throw new Error('holder RPC returned no positive MADGER balances')
+    const previous = previousRows?.[0]
+    const priceUsd = Number(marketRows?.[0]?.price_usd ?? 0)
+    const movements = significantHolderMovements(current, previous?.raw, { priceUsd })
+    await insert('madger_bot_holder_snapshots', {
+      holder_count: current.holderCount,
+      token_account_count: tokenAccounts.length,
+      total_supply: current.totalSupply,
+      largest_percentage: current.largestPercentage,
+      top_10_percentage: current.top10Percentage,
+      raw: { owners: current.owners }
+    })
+
+    const holderChange = previous ? current.holderCount - Number(previous.holder_count) : 0
+    if (ADMIN_CHAT_ID && previous && (movements.length || Math.abs(holderChange) >= 2)) {
+      const movementLines = movements.slice(0, 5).map(item =>
+        `• <code>${escapeHtml(compactWallet(item.owner))}</code> · ${item.delta >= 0 ? '+' : ''}${item.delta.toLocaleString('en-US', { maximumFractionDigits: 2 })} MADGER · ${item.supplyPercentage.toFixed(2)}% of supply${priceUsd > 0 ? ` · ~${compactUsd(item.approximateUsd)}` : ''}`
+      )
+      await send(ADMIN_CHAT_ID, `<b>MADGER HOLDER MOVEMENT</b> 🔬
+
+Wallet-count change: ${holderChange >= 0 ? '+' : ''}${holderChange}
+${movementLines.length ? movementLines.join('\n') : 'No individual movement crossed the alert threshold.'}
+
+These are on-chain balance movements—not classified buys or sells. Treasury, liquidity, exchange, and custodial activity may be included.`, keyboard([[{ text: 'Inspect official token', url: LINKS.solscanToken }]]))
+      await recordEvent('holder_movement_alert', null, {
+        holder_change: holderChange, movement_count: movements.length,
+        largest_movement_percentage: movements[0]?.supplyPercentage ?? 0
+      })
+    }
+    const health = {
+      last_run_at: new Date().toISOString(), duration_ms: Date.now() - startedAt,
+      holder_count: current.holderCount, token_account_count: tokenAccounts.length,
+      holder_change: holderChange, movement_count: movements.length
+    }
+    await saveSetting('holder_monitor_health', health)
+    return Response.json({ ok: true, holder_monitor: health })
+  } catch (error) {
+    const health = {
+      last_run_at: new Date().toISOString(), duration_ms: Date.now() - startedAt,
+      error: String(error instanceof Error ? error.message : error).slice(0, 300)
+    }
+    await saveSetting('holder_monitor_health', health)
+    return Response.json({ ok: false, holder_monitor: health }, { status: 503 })
+  }
+}
+
 async function verifyBuyAlert(request) {
   if (!await authenticateInternal(request)) return new Response('Unauthorized', { status: 401 })
   const body = await request.json()
@@ -1422,6 +1547,7 @@ async function setupTelegram(request) {
   const publicCommands = [
     { command: 'buy', description: 'Open verified MADGER purchase routes' },
     { command: 'price', description: 'Latest MADGER market snapshot' },
+    { command: 'holders', description: 'On-chain MADGER holder intelligence' },
     { command: 'chart', description: 'Open the verified live chart' },
     { command: 'ca', description: 'Copy the official MADGER mint' },
     { command: 'links', description: 'Open verified MADGER links' },
@@ -1461,6 +1587,7 @@ async function setupTelegram(request) {
     { command: 'stats', description: 'Admin seven-day bot report' },
     { command: 'buypreview', description: 'Admin preview of the branded buy card' },
     { command: 'buystats', description: 'Admin verified-buy delivery performance' },
+    { command: 'holderintel', description: 'Admin holder concentration console' },
     { command: 'warn', description: 'Admin reply-based warning' },
     { command: 'mute', description: 'Admin reply-based temporary mute' },
     { command: 'ban', description: 'Admin reply-based removal' },
@@ -1498,10 +1625,11 @@ Deno.serve(async request => {
     const url = new URL(request.url)
     if (request.method === 'GET' && url.pathname.includes('/go/')) return routeRedirect(request, url)
     if (request.method === 'GET') {
-      return Response.json({ ok: true, service: 'MADGER Command Bot', version: '3.2.0', configured: Boolean(BOT_TOKEN && WEBHOOK_SECRET), operations_console: true, moderation_log: true, member_inspection: true, moderation_recovery: true, community_guard: true, raid_shield: true, raid_link_firewall: true, stale_content_cleanup: true, faq_responder: true, market_commands: true, promotion_teams: true, announcements: true, contributor_leaderboard: true, contributor_history: true, mission_admin: true, review_queue: true, native_buy_watcher: true, one_minute_buy_watcher: true, catchup_scanner: true, watcher_health: true, every_verified_buy: true, branded_buy_cards: true, buy_delivery_telemetry: true })
+      return Response.json({ ok: true, service: 'MADGER Command Bot', version: '3.3.0', configured: Boolean(BOT_TOKEN && WEBHOOK_SECRET), operations_console: true, moderation_log: true, member_inspection: true, moderation_recovery: true, community_guard: true, raid_shield: true, raid_link_firewall: true, stale_content_cleanup: true, faq_responder: true, market_commands: true, holder_intelligence: true, holder_growth: true, concentration_tracking: true, wallet_movement_alerts: true, promotion_teams: true, announcements: true, contributor_leaderboard: true, contributor_history: true, mission_admin: true, review_queue: true, native_buy_watcher: true, one_minute_buy_watcher: true, catchup_scanner: true, watcher_health: true, every_verified_buy: true, branded_buy_cards: true, buy_delivery_telemetry: true })
     }
     if (url.pathname.endsWith('/setup')) return setupTelegram(request)
     if (url.pathname.endsWith('/watch-buys')) return watchVerifiedBuys(request)
+    if (url.pathname.endsWith('/monitor-holders')) return monitorHolders(request)
     if (url.pathname.endsWith('/monitor')) return monitorMarket(request)
     if (url.pathname.endsWith('/buy-alert')) return verifyBuyAlert(request)
     if (request.headers.get('x-telegram-bot-api-secret-token') !== WEBHOOK_SECRET || !WEBHOOK_SECRET) return new Response('Unauthorized', { status: 401 })
