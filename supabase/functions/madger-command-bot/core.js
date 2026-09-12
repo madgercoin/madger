@@ -9,6 +9,7 @@ export const LINKS = Object.freeze({
   dex: `https://dexscreener.com/solana/${OFFICIAL_POOL.toLowerCase()}`,
   verify: 'https://madgercoin.com/launch.html',
   official: 'https://madgercoin.com/official-links.html',
+  buyCard: 'https://madgercoin.com/assets/madger_social_share_v10.jpg',
   community: 'https://t.me/madgerburrow',
   bonkbot: 'https://bonkbot.io/',
   trojan: 'https://trojan.com/'
@@ -253,7 +254,13 @@ export function buyTier(usdValue) {
   if (value >= 250) return { label: 'HEAVY CLAW', emoji: '🦡', instant: true }
   if (value >= 100) return { label: 'BURROW BUY', emoji: '⚡', instant: true }
   if (value >= 25) return { label: 'CLAW TAP', emoji: '⛏️', instant: true }
-  return { label: 'BURROW ACTIVITY', emoji: '🟡', instant: false }
+  return { label: 'BURROW ACTIVITY', emoji: '🟡', instant: true }
+}
+
+export function compactWallet(value) {
+  const wallet = String(value ?? '').trim()
+  if (!/^[1-9A-HJ-NP-Za-km-z]{32,44}$/.test(wallet)) return 'unavailable'
+  return `${wallet.slice(0, 5)}…${wallet.slice(-5)}`
 }
 
 export function marketAlertReasons(current, previous) {
