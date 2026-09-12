@@ -3,10 +3,11 @@ import test from 'node:test'
 import {
   OFFICIAL_MINT, OFFICIAL_POOL, RAYDIUM_CPMM_PROGRAM, buyTier, compactWallet, contributorRank, escapeHtml, faqIntent,
   findVerifiedMadgerBuyers, isSuspiciousMadgerMessage,
+  holderSnapshotFromAccounts,
   marketAlertReasons, marketSnapshotSummary, moderationEscalation, moderationReason,
   normalizeMissionCode, normalizeReferral, normalizeTeam, normalizedMessageFingerprint,
   parseAnnouncement, parseMissionDefinition, parseRaidMode, parseReviewRequest, parseTeamAlert, pendingSignatures,
-  shouldActivateRaidMode
+  shouldActivateRaidMode, significantHolderMovements
 } from '../supabase/functions/madger-command-bot/core.js'
 
 test('escapes Telegram HTML', () => assert.equal(escapeHtml('<bad & worse>'), '&lt;bad &amp; worse&gt;'))
@@ -60,6 +61,20 @@ test('plans oldest-first signature catch-up without replaying the checkpoint', (
   const capped = pendingSignatures(signatures, 'missing', 2)
   assert.deepEqual(capped.items, [{ signature: 'middle' }, { signature: 'newest' }])
   assert.equal(capped.truncated, true)
+})
+test('aggregates token accounts by owner for holder intelligence', () => {
+  const account = (owner, amount) => ({ account: { data: { parsed: { info: { owner, tokenAmount: { uiAmountString: String(amount) } } } } } })
+  const snapshot = holderSnapshotFromAccounts([account('A', 40), account('A', 10), account('B', 25), account('zero', 0)], 100)
+  assert.equal(snapshot.holderCount, 2)
+  assert.equal(snapshot.largestPercentage, 50)
+  assert.equal(snapshot.top10Percentage, 75)
+  assert.deepEqual(snapshot.owners.map(item => [item.owner, item.amount]), [['A', 50], ['B', 25]])
+})
+test('labels large holder changes as movements without classifying trade direction', () => {
+  const current = { totalSupply: 1000, owners: [{ owner: 'A', amount: 600 }, { owner: 'B', amount: 400 }] }
+  const previous = { owners: [{ owner: 'A', amount: 500 }, { owner: 'B', amount: 500 }] }
+  const movements = significantHolderMovements(current, previous, { minimumSupplyPercentage: 5, priceUsd: 2 })
+  assert.deepEqual(movements.map(item => [item.owner, item.delta]), [['A', 100], ['B', -100]])
 })
 test('detects price and liquidity thresholds', () => {
   const reasons = marketAlertReasons({ priceUsd: '1.09', liquidity: { usd: 890 } }, { price_usd: '1', liquidity_usd: 1000 })
