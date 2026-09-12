@@ -4,7 +4,7 @@ import {
   OFFICIAL_MINT, OFFICIAL_POOL, RAYDIUM_CPMM_PROGRAM, buyTier, compactWallet, contributorRank, escapeHtml, faqIntent,
   findVerifiedMadgerBuyers, isSuspiciousMadgerMessage,
   holderSnapshotFromAccounts,
-  marketAlertReasons, marketSnapshotSummary, moderationEscalation, moderationReason,
+  marketAlertReasons, marketSnapshotSummary, moderationEscalation, moderationReason, poolSnapshotSummary,
   normalizeMissionCode, normalizeReferral, normalizeTeam, normalizedMessageFingerprint,
   parseAnnouncement, parseMissionDefinition, parseRaidMode, parseReviewRequest, parseTeamAlert, pendingSignatures,
   shouldActivateRaidMode, significantHolderMovements
@@ -186,11 +186,30 @@ test('normalizes a stored market snapshot for bot display', () => {
   assert.equal(marketSnapshotSummary({ raw: {} }).marketCapUsd, null)
 })
 
+test('builds pool depth and 24-hour activity without inventing missing values', () => {
+  const now = Date.parse('2026-09-12T00:00:00.000Z')
+  const summary = poolSnapshotSummary({
+    price_usd: '0.001', liquidity_usd: '9000', created_at: '2026-09-11T23:55:00.000Z',
+    raw: { marketCap: 1000000, volume: { h24: 500 }, txns: { h24: { buys: 12, sells: 8 } },
+      priceChange: { h24: 4.5 }, dexId: 'raydium', labels: ['CPMM'], pairCreatedAt: now - 10 * 86400000 }
+  }, { liquidity_usd: '7500' }, now)
+  assert.equal(summary.liquidityChangePercentage, 20)
+  assert.ok(Math.abs(summary.liquidityToMarketCapPercentage - 0.9) < Number.EPSILON)
+  assert.equal(summary.volumeH24Usd, 500)
+  assert.equal(summary.buysH24, 12)
+  assert.equal(summary.sellsH24, 8)
+  assert.equal(summary.pairAgeDays, 10)
+  assert.equal(poolSnapshotSummary({ raw: {} }).liquidityChangePercentage, null)
+})
+
 test('routes only high-confidence FAQ questions', () => {
   assert.equal(faqIntent('price'), 'price')
   assert.equal(faqIntent('PRICE'), 'price')
   assert.equal(faqIntent('ca'), 'contract')
   assert.equal(faqIntent('CA'), 'contract')
+  assert.equal(faqIntent('liquidity'), 'pool')
+  assert.equal(faqIntent('MADGER pool status?'), 'pool')
+  assert.equal(faqIntent('risk'), 'risk')
   assert.equal(faqIntent('What is the MADGER price?'), 'price')
   assert.equal(faqIntent('What is the CA?'), 'contract')
   assert.equal(faqIntent('Where can I buy $MADGER safely?'), 'buy')
