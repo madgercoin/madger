@@ -2,6 +2,9 @@
 
 ## 2026-09-11 — MADGER Command Bot
 
+- Shipped the v4.5 reliability release with modular Telegram transport, a static official-site Mini App, monitor policy, RPC failover, webhook policy, and structured request telemetry.
+- Added failure-path tests for Telegram, RPC, DEX, and database outages, stale monitors, webhook authentication, duplicate updates, Mini App safety, and telemetry aggregation.
+- Permanently retired the five obsolete contest Edge Functions behind JWT-protected inert tombstones after identifying unused public storage-writing paths.
 - Consolidated command aliases, Telegram menus, help output, and version metadata into a tested registry; reduced the visible menus to essential commands while preserving every advanced and legacy command.
 - Deployed the serverless MADGER Command Bot with safe purchase navigation, exact-mint verification, Telegram referral attribution, contributor missions, human-reviewed ranks, suspicious-address moderation, and private admin reporting.
 - Added independently verified buy-alert ingestion that confirms the buyer's official-MADGER balance increase in the referenced Solana transaction before publishing a thresholded notification.

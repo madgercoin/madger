@@ -17,7 +17,7 @@ import {
 } from '../supabase/functions/madger-command-bot/command-registry.js'
 
 test('keeps compact Telegram menus backed by one command registry', () => {
-  assert.equal(BOT_VERSION, '4.4.0')
+  assert.equal(BOT_VERSION, '4.5.1')
   assert.equal(PUBLIC_MENU_NAMES.length, 12)
   assert.equal(ADMIN_MENU_NAMES.length, 15)
   assert.equal(new Set(PUBLIC_MENU_NAMES).size, PUBLIC_MENU_NAMES.length)

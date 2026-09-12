@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#080706">
+  <meta name="robots" content="noindex,nofollow">
+  <title>MADGER Bot Command Center</title>
+  <style>
+    :root{color-scheme:dark;--gold:#e7b84b;--ink:#080706;--panel:#17130d;--soft:#9d927d;--line:#3a2d18;--aqua:#63d8c6}*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 80% 0,#3a2810 0,transparent 35%),var(--ink);color:#fff;font:15px/1.45 system-ui,sans-serif}main{max-width:720px;margin:auto;padding:24px 18px 44px}.brand{display:flex;align-items:center;gap:12px}.mark{display:grid;place-items:center;width:50px;height:50px;border:1px solid var(--gold);border-radius:50%;font-size:27px;background:#120e08}h1{font-size:20px;margin:0;letter-spacing:.06em}small,.muted{color:var(--soft)}.hero{padding:22px 0}.price{font-size:42px;font-weight:850;letter-spacing:-.04em}.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.card{background:linear-gradient(145deg,#1d170e,#100e0b);border:1px solid var(--line);border-radius:18px;padding:16px}.card b{display:block;font-size:21px;margin-top:5px}.wide{grid-column:1/-1}.chart{width:100%;height:120px;margin-top:12px;overflow:visible}.chart path{fill:none;stroke:var(--gold);stroke-width:3;stroke-linecap:round;stroke-linejoin:round}.chart path.liquidity{stroke:var(--aqua)}.locks{display:grid;gap:8px;margin-top:9px}.lock{display:flex;justify-content:space-between;padding:10px;border-radius:10px;background:#0d0c0a}.ok{color:#69da8a}.actions{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:12px}a{color:#100d08;background:var(--gold);font-weight:800;text-decoration:none;text-align:center;padding:13px;border-radius:12px}code{word-break:break-all;color:#f5d98e}.error{color:#ff9b88}@media(max-width:420px){.price{font-size:35px}}
+  </style>
+  <script src="/bot-dashboard.js" defer></script>
+</head>
+<body>
+  <main>
+    <div class="brand"><div class="mark" aria-hidden="true">🦡</div><div><h1>MADGER COMMAND CENTER</h1><small>Read-only verified intelligence</small></div></div>
+    <section class="hero"><small>LIVE PRICE</small><div class="price" id="price">Loading…</div><div id="updated" class="muted"></div></section>
+    <section class="grid">
+      <div class="card"><small>LIQUIDITY</small><b id="liquidity">—</b></div>
+      <div class="card"><small>24H VOLUME</small><b id="volume">—</b></div>
+      <div class="card"><small>HOLDERS</small><b id="holders">—</b></div>
+      <div class="card"><small>24H MOVE</small><b id="change">—</b></div>
+      <div class="card wide"><small>VERIFIED 24H PRICE HISTORY</small><svg class="chart" viewBox="0 0 600 120" preserveAspectRatio="none" role="img" aria-label="MADGER 24-hour price history"><path id="pricepath" d=""></path></svg><div id="pricerange" class="muted">Loading snapshots…</div></div>
+      <div class="card wide"><small>VERIFIED 24H LIQUIDITY HISTORY</small><svg class="chart" viewBox="0 0 600 120" preserveAspectRatio="none" role="img" aria-label="MADGER 24-hour liquidity history"><path id="liquiditypath" class="liquidity" d=""></path></svg><div id="liquidityrange" class="muted">Loading snapshots…</div></div>
+      <div class="card wide"><small>SYSTEM STATUS</small><b id="system">Checking…</b></div>
+      <div class="card wide"><small>RESERVE + LP MONITOR</small><div id="locks" class="locks">Loading verified records…</div></div>
+      <div class="card wide"><small>OFFICIAL MINT</small><code>BHauMX8akk2umqkQqnJwpYkCRkZmefGnEBFByeFXRKqv</code><div class="actions"><a href="https://dexscreener.com/solana/fvrpamydsdvkhqt2ds6ytzsjht7sdddbscqx3c4fu32h">LIVE CHART</a><a href="https://madgercoin.com/buy">BUY GUIDE</a></div></div>
+    </section>
+    <p class="muted">No wallet connection. No custody. No transaction execution. Figures are snapshots and not financial advice.</p>
+  </main>
+</body>
+</html>

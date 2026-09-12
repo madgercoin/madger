@@ -20,5 +20,19 @@
 /video-contest.js
   Cache-Control: no-cache
 
+/app.js
+  Cache-Control: no-cache
+
+/sw.js
+  Cache-Control: no-cache
+  Service-Worker-Allowed: /
+
 /*.html
+  Cache-Control: public, max-age=300
+
+/bot-dashboard.html
+  Cache-Control: no-cache
+  X-Robots-Tag: noindex, nofollow
+
+/bot-dashboard.js
   Cache-Control: public, max-age=300

@@ -1,6 +1,10 @@
 const baseUrl = (process.env.SITE_URL ?? "https://madgercoin.com").replace(/\/$/, "");
 const officialMint = "BHauMX8akk2umqkQqnJwpYkCRkZmefGnEBFByeFXRKqv";
 const checks = [
+  ["/app", 200],
+  ["/app.css", 200],
+  ["/app.js", 200],
+  ["/sw.js", 200],
   ["/buy", 200],
   ["/purchase-path.css", 200],
   ["/", 200],
@@ -13,8 +17,10 @@ const checks = [
   ["/collaborators", 200],
   ["/privacy", 200],
   ["/blog", 200],
-  ["/blog-utility-without-a-wallet.html", 200],
-  ["/blog-creator-trust-standard.html", 200],
+  ["/blog-utility-without-a-wallet", 200],
+  ["/blog-creator-trust-standard", 200],
+  ["/bot-dashboard", 200],
+  ["/bot-dashboard.js", 200],
   ["/feed.xml", 200],
   ["/__deployment-check-missing-page__", 404],
   ["/styles.css", 200],
@@ -30,6 +36,8 @@ const checks = [
   ["/assets/madger_v6_community_welcome.webp", 200]
 ];
 const redirects = [
+  ["/app.html", "/app"],
+  ["/app/", "/app"],
   ["/buy.html", "/buy"],
   ["/buy/", "/buy"],
   ["/index.html", "/"],
@@ -118,6 +126,22 @@ if (homepage) {
   }
 }
 
+const burrowApp = responses.get("/app");
+if (burrowApp) {
+  const contentChecks = [
+    [burrowApp.body.includes('href="https://madgercoin.com/app"'), "app canonical"],
+    [burrowApp.body.includes(officialMint), "app official mint"],
+    [burrowApp.body.includes("Checked locally in your browser"), "local verifier privacy boundary"],
+    [burrowApp.body.includes("NO WALLET REQUIRED"), "no-wallet access"],
+    [burrowApp.body.includes("MADGER NEVER NEEDS YOUR SEED PHRASE"), "wallet-secret warning"],
+    [burrowApp.body.includes("madger_official_contest_pose_card.svg"), "approved pose card"]
+  ];
+  for (const [passed, label] of contentChecks) {
+    console.log(`${passed ? "PASS" : "FAIL"} ${label}`);
+    if (!passed) failures.push(`app: ${label}`);
+  }
+}
+
 const commons = responses.get("/commons");
 if (commons) {
   const contentChecks = [
@@ -167,7 +191,7 @@ const purchaseGuide = responses.get("/buy");
 if (purchaseGuide) {
   const html = purchaseGuide.body ?? "";
   const expectedSwap = "https://raydium.io/swap/?inputMint=sol&amp;outputMint=" + officialMint;
-  if (!html.includes(expectedSwap)) failures.push("buy: exact swap destination absent");
+  if (!html.includes('href="/r/raydium"')) failures.push("buy: fixed Raydium redirect absent");
   if (!html.includes(officialMint)) failures.push("buy: complete mint absent");
   if (!html.includes('href="https://madgercoin.com/buy"')) failures.push("buy: canonical absent");
   if (!html.includes("Do not send SOL to this mint")) failures.push("buy: mint/payment distinction absent");

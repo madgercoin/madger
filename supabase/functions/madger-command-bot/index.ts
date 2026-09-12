@@ -10,6 +10,12 @@ import {
 import {
   BOT_VERSION, commandsForMenu, helpText, normalizeTelegramCommand, unknownCommandText
 } from './command-registry.js'
+import { monitorIssues } from './monitor-policy.js'
+import { readJsonResponse } from './http-policy.js'
+import { operationTelemetry, routeLabel, telemetrySummary } from './observability.js'
+import { firstSuccessful } from './resilience.js'
+import { createTelegramClient, isGroupChat, keyboard } from './telegram-client.js'
+import { isDuplicateUpdateError, isWebhookAuthorized } from './webhook-policy.js'
 
 const BOT_TOKEN = Deno.env.get('TELEGRAM_BOT_TOKEN') ?? ''
 const WEBHOOK_SECRET = Deno.env.get('TELEGRAM_WEBHOOK_SECRET') ?? ''
@@ -25,7 +31,6 @@ const RPC_URLS = [...new Set([
   Deno.env.get('SOLANA_RPC_URL'), Deno.env.get('SOLANA_RPC_FALLBACK_URL'),
   'https://api.mainnet-beta.solana.com'
 ].filter(Boolean))]
-const API = BOT_TOKEN ? `https://api.telegram.org/bot${BOT_TOKEN}` : ''
 const JOIN_VERIFY_MINUTES = 10
 const RAID_VERIFY_MINUTES = 3
 const RAID_MODE_MINUTES = 30
@@ -42,6 +47,8 @@ const adminCache = new Map()
 const walletInspectionCooldown = new Map()
 const tokenInspectionCooldown = new Map()
 let activeRpcHost = ''
+const telegram = createTelegramClient(BOT_TOKEN)
+const DASHBOARD_URL = 'https://madgercoin.com/bot-dashboard.html'
 
 const dbHeaders = {
   apikey: SERVICE_KEY,
@@ -54,10 +61,7 @@ async function db(path, init = {}) {
     ...init,
     headers: { ...dbHeaders, ...(init.headers ?? {}) }
   })
-  if (!response.ok) throw new Error(`database request failed: ${response.status} ${await response.text()}`)
-  if (response.status === 204) return null
-  const text = await response.text()
-  return text ? JSON.parse(text) : null
+  return readJsonResponse(response, 'database request', { allowEmpty: true })
 }
 
 async function insert(table, body, prefer = 'return=minimal') {
@@ -77,9 +81,7 @@ async function saveSetting(key, value) {
 }
 
 async function solanaRpc(method, params) {
-  const errors = []
-  for (const endpoint of RPC_URLS) {
-    try {
+  const result = await firstSuccessful(RPC_URLS, async endpoint => {
       const response = await fetch(endpoint, {
         method: 'POST', headers: { 'Content-Type': 'application/json' }, signal: AbortSignal.timeout(12000),
         body: JSON.stringify({ jsonrpc: '2.0', id: 1, method, params })
@@ -87,27 +89,10 @@ async function solanaRpc(method, params) {
       if (!response.ok) throw new Error(`HTTP ${response.status}`)
       const payload = await response.json()
       if (payload.error) throw new Error(payload.error.message ?? 'unknown RPC error')
-      activeRpcHost = new URL(endpoint).hostname
       return payload.result
-    } catch (error) {
-      errors.push(`${new URL(endpoint).hostname}: ${String(error instanceof Error ? error.message : error).slice(0, 100)}`)
-    }
-  }
-  throw new Error(`Solana RPC ${method} exhausted ${RPC_URLS.length} endpoints (${errors.join('; ')})`)
-}
-
-async function telegram(method, body) {
-  if (!API) throw new Error('TELEGRAM_BOT_TOKEN is not configured')
-  const response = await fetch(`${API}/${method}`, {
-    method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body)
-  })
-  const result = await response.json()
-  if (!result.ok) throw new Error(`Telegram ${method} failed: ${result.description ?? response.status}`)
-  return result.result
-}
-
-function keyboard(rows) {
-  return { inline_keyboard: rows }
+  }, `Solana RPC ${method}`)
+  activeRpcHost = new URL(result.endpoint).hostname
+  return result.value
 }
 
 function trackedUrl(route, referralCode = '') {
@@ -124,10 +109,6 @@ async function send(chatId, text, replyMarkup, extra = {}) {
 
 async function deleteQuietly(chatId, messageId) {
   try { await telegram('deleteMessage', { chat_id: chatId, message_id: messageId }) } catch { /* already deleted or insufficient rights */ }
-}
-
-function isGroupChat(chat) {
-  return chat?.type === 'group' || chat?.type === 'supergroup'
 }
 
 async function isChatAdmin(chatId, userId) {
@@ -863,7 +844,7 @@ async function adminDashboard(message) {
   const flow = rows => rows.reduce((sum, row) => sum + Number(row.usd_value ?? 0), 0)
   return send(message.chat.id, `<b>MADGER COMMAND DASHBOARD</b> 🦡\n\n<b>Community</b>\nRaid Shield: ${raidMode.active ? 'ACTIVE 🚨' : 'normal'}\nRaid link firewall: ${raidMode.active ? 'locked' : 'standby'}\nFAQ responder: ${faqEnabled ? 'on' : 'off'} · ${eventCounts.faq_answered ?? 0} answers (7d)\nTelegram native anti-spam: ${chatSecurity.aggressiveAntiSpam === null ? 'unknown' : chatSecurity.aggressiveAntiSpam ? 'enabled' : 'disabled'}\nTelegram slow mode: ${chatSecurity.slowModeSeconds === null ? 'unknown' : `${chatSecurity.slowModeSeconds}s`}\nTracked members: ${users?.length ?? 0}\nPending join checks: ${pendingJoins?.length ?? 0}\nVerified joins (7d): ${eventCounts.join_verified ?? 0}\nExpired/purged joins (7d): ${(eventCounts.join_expired ?? 0) + (eventCounts.join_purged ?? 0)}\nModeration actions (7d): ${eventCounts.moderation_action ?? 0}\nMember reports (7d): ${eventCounts.member_report ?? 0}\n\n<b>Contributor program</b>\nActive missions: ${activeMissions?.length ?? 0}\nPending reviews: ${pendingSubmissions?.length ?? 0}\nLeaderboard views (7d): ${eventCounts.leaderboard_viewed ?? 0}\n\n<b>Promotion teams</b>\nRaid: ${teamCounts.raid ?? 0}\nOutreach: ${teamCounts.outreach ?? 0}\nRecent deliveries: ${delivered}\nDelivery failures: ${failed}\n\n<b>Publishing</b>\nRecent announcements: ${announcements?.length ?? 0}\n\n<b>Market</b>\nPrice: ${market?.price_usd ?? 'unavailable'} USD\nLiquidity: ${market?.liquidity_usd ?? 'unavailable'} USD`)
   return send(message.chat.id, `<b>MADGER COMMAND DASHBOARD</b> 🦡\n\n<b>Community</b>\nRaid Shield: ${raidMode.active ? 'ACTIVE 🚨' : 'normal'}\nFAQ responder: ${faqEnabled ? 'on' : 'off'}\nTracked members: ${users?.length ?? 0} · Pending joins: ${pendingJoins?.length ?? 0}\nVerified joins (7d): ${eventCounts.join_verified ?? 0}\nModeration actions (7d): ${eventCounts.moderation_action ?? 0}\n\n<b>Verified market flow · 7d</b>\nBuys: ${tradeSide('buy').length} · ${compactUsd(flow(tradeSide('buy')))}\nSells: ${tradeSide('sell').length} · ${compactUsd(flow(tradeSide('sell')))}\nNet: ${compactUsd(flow(tradeSide('buy')) - flow(tradeSide('sell')))}\nPersonal alerts armed: ${subscriptions?.length ?? 0}\n\n<b>Intelligence</b>\nPrice: ${market?.price_usd ?? 'unavailable'} USD\nLiquidity: ${market?.liquidity_usd ?? 'unavailable'} USD\nRPC endpoints: ${RPC_URLS.length}\n\n<b>Operations</b>\nActive missions: ${activeMissions?.length ?? 0} · Pending reviews: ${pendingSubmissions?.length ?? 0}\nPromotion teams: ${teamCounts.raid ?? 0} raid · ${teamCounts.outreach ?? 0} outreach\nTeam deliveries: ${delivered} · Failures: ${failed}\nAnnouncements: ${announcements?.length ?? 0}`, keyboard([
-    [{ text: '📊 Visual dashboard', web_app: { url: `${SUPABASE_URL}/functions/v1/madger-command-bot/mini-app` } }],
+    [{ text: '📊 Visual dashboard', web_app: { url: DASHBOARD_URL } }],
     [{ text: '📈 Verified chart', url: LINKS.dex }, { text: '🔎 Token explorer', url: LINKS.solscanToken }]
   ]))
 }
@@ -1305,7 +1286,7 @@ async function dailyBriefing(request = null, message = null) {
   const counts = (events ?? []).reduce((map, event) => ({ ...map, [event.event_type]: (map[event.event_type] ?? 0) + 1 }), {})
   const market = marketSnapshotSummary(marketRows?.[0] ?? {})
   const locks = lockHealth?.records ?? []
-  await send(target, `<b>MADGER DAILY ADMIN BRIEFING</b> 🌅\n\n<b>Verified flow</b>\nBuys: ${side('buy').length} · ${compactUsd(total(side('buy')))}\nSells: ${side('sell').length} · ${compactUsd(total(side('sell')))}\nNet: ${compactUsd(total(side('buy')) - total(side('sell')))}\n\n<b>Market</b>\nPrice: ${compactUsd(market.priceUsd)}\nLiquidity: ${compactUsd(market.liquidityUsd, 0)}\n24h volume: ${compactUsd(marketRows?.[0]?.raw?.volume?.h24)}\nHolders: ${Number(holderRows?.[0]?.holder_count ?? 0).toLocaleString('en-US')}\n\n<b>Operations</b>\nVerified joins: ${counts.join_verified ?? 0}\nModeration actions: ${counts.moderation_action ?? 0}\nMember reports: ${counts.member_report ?? 0}\nLocks intact: ${locks.filter(item => item.intact).length}/${locks.length}\nRPC: ${escapeHtml(activeRpcHost || 'not used in this instance')}\n\nGenerated from stored verified data; missing values are not invented.`, keyboard([[{ text: 'Open visual dashboard', url: `${SUPABASE_URL}/functions/v1/madger-command-bot/mini-app` }]]))
+  await send(target, `<b>MADGER DAILY ADMIN BRIEFING</b> 🌅\n\n<b>Verified flow</b>\nBuys: ${side('buy').length} · ${compactUsd(total(side('buy')))}\nSells: ${side('sell').length} · ${compactUsd(total(side('sell')))}\nNet: ${compactUsd(total(side('buy')) - total(side('sell')))}\n\n<b>Market</b>\nPrice: ${compactUsd(market.priceUsd)}\nLiquidity: ${compactUsd(market.liquidityUsd, 0)}\n24h volume: ${compactUsd(marketRows?.[0]?.raw?.volume?.h24)}\nHolders: ${Number(holderRows?.[0]?.holder_count ?? 0).toLocaleString('en-US')}\n\n<b>Operations</b>\nVerified joins: ${counts.join_verified ?? 0}\nModeration actions: ${counts.moderation_action ?? 0}\nMember reports: ${counts.member_report ?? 0}\nLocks intact: ${locks.filter(item => item.intact).length}/${locks.length}\nRPC: ${escapeHtml(activeRpcHost || 'not used in this instance')}\n\nGenerated from stored verified data; missing values are not invented.`, keyboard([[{ text: 'Open visual dashboard', url: DASHBOARD_URL }]]))
   return request ? Response.json({ ok: true, delivered: true }) : undefined
 }
 
@@ -1316,7 +1297,8 @@ async function adminHealth(message) {
     return send(message.from.id, 'System health is private. Use /health here in your direct MADGERbot chat.')
   }
   const bot = await telegram('getMe', {})
-  const [webhook, membership, snapshots, cleanup, raidMode, chatSecurity, watcherHealth, recentBuys, holderHealth, lockHealth] = await Promise.all([
+  const telemetrySince = encodeURIComponent(new Date(Date.now() - 3600000).toISOString())
+  const [webhook, membership, snapshots, cleanup, raidMode, chatSecurity, watcherHealth, recentBuys, holderHealth, lockHealth, telemetryRows] = await Promise.all([
     telegram('getWebhookInfo', {}),
     BUY_CHAT_ID ? telegram('getChatMember', { chat_id: BUY_CHAT_ID, user_id: bot.id }).catch(() => null) : null,
     db('madger_bot_market_snapshots?select=created_at&order=created_at.desc&limit=1'),
@@ -1326,7 +1308,8 @@ async function adminHealth(message) {
     setting('native_buy_watcher_health'),
     db('madger_bot_alerts?alert_type=eq.verified_buy&select=metadata,created_at&order=created_at.desc&limit=100'),
     setting('holder_monitor_health'),
-    setting('lock_monitor_health')
+    setting('lock_monitor_health'),
+    db(`madger_bot_events?event_type=eq.service_request&created_at=gte.${telemetrySince}&select=metadata&order=created_at.desc&limit=2000`)
   ])
   const snapshotAt = Date.parse(String(snapshots?.[0]?.created_at ?? ''))
   const marketAge = Number.isFinite(snapshotAt) ? Math.max(0, Math.floor((Date.now() - snapshotAt) / 60000)) : null
@@ -1338,6 +1321,7 @@ async function adminHealth(message) {
   const watcherFailures = (recentBuys ?? []).filter(row => row.metadata?.delivery_status === 'failed').length
   const holderAt = Date.parse(String(holderHealth?.last_run_at ?? ''))
   const holderAge = Number.isFinite(holderAt) ? Math.max(0, Math.floor((Date.now() - holderAt) / 60000)) : null
+  const telemetry = telemetrySummary(telemetryRows)
   return send(message.chat.id, `<b>MADGERBOT SYSTEM HEALTH</b> 🩺
 
 Version: ${BOT_VERSION}
@@ -1348,6 +1332,8 @@ Buy watcher: ${watcherAge === null ? 'no run recorded ❌' : watcherAge <= 2 && 
 Buy cadence: every minute
 Last scan: ${Number(watcherHealth?.scanned ?? 0)} transactions · ${Number(watcherHealth?.verified ?? 0)} buys · ${Number(watcherHealth?.posted ?? 0)} cards
 Recent card failures: ${watcherFailures}
+Requests (1h): ${telemetry.requests} · errors ${telemetry.errors} (${telemetry.errorRate.toFixed(1)}%)
+Request latency p95: ${telemetry.p95DurationMs === null ? 'collecting' : `${telemetry.p95DurationMs}ms`}
 Holder monitor: ${holderAge === null ? 'initializing' : holderAge <= 20 && !holderHealth?.error ? `current ✅ · ${holderAge}m old · ${holderHealth.holder_count} wallets` : `attention ⚠️ · ${holderAge}m old`}
 Lock monitor: ${lockHealth?.records?.length ? `${lockHealth.records.filter(item => item.intact).length}/${lockHealth.records.length} balances intact${lockHealth.records.every(item => item.intact) ? ' ✅' : ' ⚠️'}` : 'initializing'}
 RPC failover: ${RPC_URLS.length} endpoint${RPC_URLS.length === 1 ? '' : 's'} · active ${escapeHtml(activeRpcHost || 'awaiting call')}
@@ -1359,7 +1345,7 @@ Administrator: ${membership && ['administrator', 'creator'].includes(membership.
 Delete messages: ${membership?.can_delete_messages ? 'yes ✅' : 'no ❌'}
 Restrict members: ${membership?.can_restrict_members ? 'yes ✅' : 'no ❌'}
 Pin messages: ${membership?.can_pin_messages ? 'yes ✅' : 'no ❌'}
-Native anti-spam: ${chatSecurity.aggressiveAntiSpam === null ? 'unknown' : chatSecurity.aggressiveAntiSpam ? 'on' : 'off'}
+Native anti-spam: ${chatSecurity.aggressiveAntiSpam === null ? 'unknown' : chatSecurity.aggressiveAntiSpam ? 'on ✅' : 'off — enable manually in Telegram'}
 Slow mode: ${chatSecurity.slowModeSeconds ?? 'unknown'}s${webhookError}`)
 }
 
@@ -1544,7 +1530,7 @@ async function handleCommand(message) {
   if (command === '/alerts') return showPersonalAlerts(message)
   if (command === '/alertoff') return disablePersonalAlert(message, args)
   if (command === '/app') {
-    const appUrl = `${SUPABASE_URL}/functions/v1/madger-command-bot/mini-app`
+    const appUrl = DASHBOARD_URL
     const button = message.chat.type === 'private' ? { text: 'Open dashboard', web_app: { url: appUrl } } : { text: 'Open dashboard', url: appUrl }
     return send(chatId, '<b>MADGER COMMAND CENTER</b> 🦡\nLive market, holder, and lock intelligence in one read-only dashboard. No wallet connection.', keyboard([[button]]))
   }
@@ -1683,7 +1669,7 @@ async function handleUpdate(update) {
   try {
     await insert('madger_bot_processed_updates', { update_id: update.update_id })
   } catch (error) {
-    if (String(error).includes('duplicate')) return
+    if (isDuplicateUpdateError(error)) return
     throw error
   }
 
@@ -1718,7 +1704,7 @@ async function answerInlineQuery(query) {
   ].map(item => ({
     type: 'article', id: item.id, title: item.title, description: item.description,
     input_message_content: { message_text: item.text, parse_mode: 'HTML', link_preview_options: { is_disabled: true } },
-    reply_markup: keyboard([[{ text: item.id === 'buy' ? 'Open official guide' : 'Open MADGER dashboard', url: item.id === 'buy' ? LINKS.guide : `${SUPABASE_URL}/functions/v1/madger-command-bot/mini-app` }]])
+    reply_markup: keyboard([[{ text: item.id === 'buy' ? 'Open official guide' : 'Open MADGER dashboard', url: item.id === 'buy' ? LINKS.guide : DASHBOARD_URL }]])
   }))
   await telegram('answerInlineQuery', { inline_query_id: query.id, results, cache_time: 60, is_personal: false })
 }
@@ -1745,15 +1731,6 @@ async function publicDashboardData() {
     links: { website: LINKS.home, chart: LINKS.dex, buy: LINKS.guide, verify: LINKS.verify },
     generatedAt: new Date().toISOString()
   }, { headers: { 'Access-Control-Allow-Origin': '*', 'Cache-Control': 'public, max-age=30', 'X-Content-Type-Options': 'nosniff' } })
-}
-
-function miniAppResponse() {
-  const endpoint = `${SUPABASE_URL}/functions/v1/madger-command-bot/public-data`
-  return new Response(`<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#080706"><title>MADGER Command Center</title><style>
-  :root{color-scheme:dark;--gold:#e7b84b;--ink:#080706;--panel:#17130d;--soft:#9d927d;--line:#3a2d18;--aqua:#63d8c6}*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 80% 0,#3a2810 0,transparent 35%),var(--ink);color:#fff;font:15px/1.45 system-ui,sans-serif}main{max-width:720px;margin:auto;padding:24px 18px 44px}.brand{display:flex;align-items:center;gap:12px}.mark{display:grid;place-items:center;width:50px;height:50px;border:1px solid var(--gold);border-radius:50%;font-size:27px;background:#120e08}h1{font-size:20px;margin:0;letter-spacing:.06em}small,.muted{color:var(--soft)}.hero{padding:22px 0}.price{font-size:42px;font-weight:850;letter-spacing:-.04em}.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.card{background:linear-gradient(145deg,#1d170e,#100e0b);border:1px solid var(--line);border-radius:18px;padding:16px}.card b{display:block;font-size:21px;margin-top:5px}.wide{grid-column:1/-1}.chart{width:100%;height:120px;margin-top:12px;overflow:visible}.chart path{fill:none;stroke:var(--gold);stroke-width:3;stroke-linecap:round;stroke-linejoin:round}.chart path.liquidity{stroke:var(--aqua)}.locks{display:grid;gap:8px;margin-top:9px}.lock{display:flex;justify-content:space-between;padding:10px;border-radius:10px;background:#0d0c0a}.ok{color:#69da8a}.actions{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:12px}a{color:#100d08;background:var(--gold);font-weight:800;text-decoration:none;text-align:center;padding:13px;border-radius:12px}code{word-break:break-all;color:#f5d98e}.error{color:#ff9b88}@media(max-width:420px){.price{font-size:35px}}
-  </style></head><body><main><div class="brand"><div class="mark">🦡</div><div><h1>MADGER COMMAND CENTER</h1><small>Read-only verified intelligence</small></div></div><section class="hero"><small>LIVE PRICE</small><div class="price" id="price">Loading…</div><div id="updated" class="muted"></div></section><section class="grid"><div class="card"><small>LIQUIDITY</small><b id="liquidity">—</b></div><div class="card"><small>24H VOLUME</small><b id="volume">—</b></div><div class="card"><small>HOLDERS</small><b id="holders">—</b></div><div class="card"><small>24H MOVE</small><b id="change">—</b></div><div class="card wide"><small>VERIFIED 24H PRICE HISTORY</small><svg class="chart" viewBox="0 0 600 120" preserveAspectRatio="none" aria-label="MADGER 24-hour price history"><path id="pricepath" d=""></path></svg><div id="pricerange" class="muted">Loading snapshots…</div></div><div class="card wide"><small>VERIFIED 24H LIQUIDITY HISTORY</small><svg class="chart" viewBox="0 0 600 120" preserveAspectRatio="none" aria-label="MADGER 24-hour liquidity history"><path id="liquiditypath" class="liquidity" d=""></path></svg><div id="liquidityrange" class="muted">Loading snapshots…</div></div><div class="card wide"><small>SYSTEM STATUS</small><b id="system">Checking…</b></div><div class="card wide"><small>RESERVE + LP MONITOR</small><div id="locks" class="locks">Loading verified records…</div></div><div class="card wide"><small>OFFICIAL MINT</small><code>${OFFICIAL_MINT}</code><div class="actions"><a href="${LINKS.dex}">LIVE CHART</a><a href="${LINKS.guide}">BUY GUIDE</a></div></div></section><p class="muted">No wallet connection. No custody. No transaction execution. Figures are snapshots and not financial advice.</p></main><script>
-  const money=n=>Number.isFinite(Number(n))?'$'+Number(n).toLocaleString('en-US',{maximumFractionDigits:Number(n)<.01?10:2}):'Unavailable';const chart=(rows,key,pathId,rangeId)=>{const values=(rows||[]).map(x=>Number(x[key])).filter(Number.isFinite);if(values.length<2)return;const lo=Math.min(...values),hi=Math.max(...values),span=hi-lo||1;const points=values.map((v,i)=>(i*600/(values.length-1)).toFixed(1)+','+(112-(v-lo)*104/span).toFixed(1));document.querySelector(pathId).setAttribute('d','M'+points.join(' L'));document.querySelector(rangeId).textContent='Low '+money(lo)+' · High '+money(hi)+' · '+values.length+' verified snapshots'};fetch('${endpoint}').then(r=>r.json()).then(d=>{document.querySelector('#price').textContent=money(d.market.priceUsd);document.querySelector('#liquidity').textContent=money(d.market.liquidityUsd);document.querySelector('#volume').textContent=money(d.market.volume24hUsd);document.querySelector('#holders').textContent=Number(d.holders?.holder_count||0).toLocaleString();document.querySelector('#change').textContent=(Number(d.market.priceChange24h)>=0?'+':'')+Number(d.market.priceChange24h).toFixed(2)+'%';document.querySelector('#updated').textContent='Updated '+(d.market.ageMinutes??'?')+'m ago';chart(d.history24h,'priceUsd','#pricepath','#pricerange');chart(d.history24h,'liquidityUsd','#liquiditypath','#liquidityrange');const status=document.querySelector('#system');status.textContent=d.system?.operational?'OPERATIONAL ✓':'DEGRADED — CHECK /status';status.className=d.system?.operational?'ok':'error';const locks=document.querySelector('#locks');locks.textContent='';for(const x of d.locks||[]){const row=document.createElement('div'),label=document.createElement('span'),state=document.createElement('strong');row.className='lock';label.textContent=x.label+' · '+x.provider;state.className=x.intact?'ok':'error';state.textContent=x.intact?'INTACT':'CHECK';row.append(label,state);locks.append(row)}if(!locks.children.length)locks.textContent='Initializing';}).catch(()=>{document.querySelector('#price').textContent='Temporarily unavailable';document.querySelector('#price').className='price error'});
-  </script></body></html>`, { headers: { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'public, max-age=60', 'Content-Security-Policy': "default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; connect-src https://*.supabase.co; img-src 'none'; base-uri 'none'; frame-ancestors https://web.telegram.org https://*.telegram.org" } })
 }
 
 async function publishVerifiedBuy(signature, trade, market, source) {
@@ -1958,14 +1935,11 @@ async function watchdog(request) {
     setting('native_buy_watcher_health'), setting('holder_monitor_health'),
     db('madger_bot_market_snapshots?select=created_at&order=created_at.desc&limit=1'), setting('watchdog_health')
   ])
-  const ageMinutes = value => {
-    const time = Date.parse(String(value ?? ''))
-    return Number.isFinite(time) ? (Date.now() - time) / 60000 : Number.POSITIVE_INFINITY
-  }
-  const issues = []
-  if (buyHealth?.error || ageMinutes(buyHealth?.last_run_at) > 3) issues.push('buy_watcher')
-  if (ageMinutes(marketRows?.[0]?.created_at) > 12) issues.push('market_monitor')
-  if (holderHealth?.error || ageMinutes(holderHealth?.last_run_at) > 30) issues.push('holder_monitor')
+  const issues = monitorIssues({
+    buyHealth,
+    marketCreatedAt: marketRows?.[0]?.created_at,
+    holderHealth
+  })
   let attempted = null
   let recovered = true
   if (issues[0] === 'buy_watcher') {
@@ -1990,8 +1964,7 @@ async function monitorMarket(request) {
   if (!await authenticateInternal(request)) return new Response('Unauthorized', { status: 401 })
   await Promise.all([sweepExpiredJoins(), sweepMessageCleanup()])
   const response = await fetch(`https://api.dexscreener.com/latest/dex/pairs/solana/${OFFICIAL_POOL}`)
-  if (!response.ok) throw new Error(`DEX Screener request failed: ${response.status}`)
-  const payload = await response.json()
+  const payload = await readJsonResponse(response, 'DEX Screener request')
   const pair = payload.pair ?? payload.pairs?.find(item => item.pairAddress === OFFICIAL_POOL)
   const pairHasMint = pair && (pair.baseToken?.address === OFFICIAL_MINT || pair.quoteToken?.address === OFFICIAL_MINT)
   if (!pairHasMint || String(pair.pairAddress).toLowerCase() !== OFFICIAL_POOL.toLowerCase()) throw new Error('Official MADGER pair was not returned')
@@ -2154,7 +2127,7 @@ async function setupTelegram(request) {
   for (const adminId of ADMIN_IDS) {
     await telegram('setMyCommands', { commands: adminCommands, scope: { type: 'chat', chat_id: Number(adminId) } })
   }
-  await telegram('setChatMenuButton', { menu_button: { type: 'web_app', text: 'MADGER Dashboard', web_app: { url: `${SUPABASE_URL}/functions/v1/madger-command-bot/mini-app` } } })
+  await telegram('setChatMenuButton', { menu_button: { type: 'web_app', text: 'MADGER Dashboard', web_app: { url: DASHBOARD_URL } } })
   let guard = { configured: false, can_delete_messages: false, can_restrict_members: false, can_pin_messages: false, aggressive_anti_spam: null, slow_mode_seconds: null }
   if (BUY_CHAT_ID) {
     try {
@@ -2175,14 +2148,16 @@ async function setupTelegram(request) {
   return Response.json({ ok: true, username: bot.username, webhook: 'registered', commands: 'registered', menu_button: 'registered', inline_mode: Boolean(bot.supports_inline_queries), guard })
 }
 
-Deno.serve(async request => {
+async function serveRequest(request) {
   try {
     const url = new URL(request.url)
     if (request.method === 'GET' && url.pathname.includes('/go/')) return routeRedirect(request, url)
     if (request.method === 'GET' && url.pathname.endsWith('/public-data')) return publicDashboardData()
-    if (request.method === 'GET' && url.pathname.endsWith('/mini-app')) return miniAppResponse()
+    if (request.method === 'GET' && url.pathname.endsWith('/mini-app')) {
+      return Response.redirect(DASHBOARD_URL, 302)
+    }
     if (request.method === 'GET') {
-      return Response.json({ ok: true, service: 'MADGER Command Bot', version: BOT_VERSION, configured: Boolean(BOT_TOKEN && WEBHOOK_SECRET), command_registry: true, compact_command_menus: true, token_authenticity_inspector: true, live_supply_audit: true, rpc_diagnostics: true, liquidity_history_chart: true, private_wallet_inspector: true, public_system_status: true, market_history_chart: true, signer_proof: true, liquidity_event_classification: true, safe_link_inspector: true, self_healing_watchdog: true, buy_card_recovery: true, transaction_classifier: true, buy_card_v2: true, private_sell_intelligence: true, personal_alerts: true, daily_briefing: true, rpc_failover: true, inline_sharing: true, mini_app: true, operations_console: true, moderation_log: true, member_inspection: true, moderation_recovery: true, community_guard: true, raid_shield: true, raid_link_firewall: true, stale_content_cleanup: true, faq_responder: true, market_commands: true, pool_intelligence: true, risk_snapshot: true, liquidity_trends: true, holder_intelligence: true, holder_growth: true, concentration_tracking: true, wallet_classification: true, distribution_intelligence: true, lock_monitoring: true, protected_wallet_alerts: true, wallet_movement_alerts: true, promotion_teams: true, announcements: true, contributor_leaderboard: true, contributor_history: true, mission_admin: true, review_queue: true, native_buy_watcher: true, one_minute_buy_watcher: true, catchup_scanner: true, watcher_health: true, every_verified_buy: true, branded_buy_cards: true, buy_delivery_telemetry: true })
+      return Response.json({ ok: true, service: 'MADGER Command Bot', version: BOT_VERSION, configured: Boolean(BOT_TOKEN && WEBHOOK_SECRET), modular_runtime: true, structured_telemetry: true, failure_path_tests: true, static_dashboard: true, command_registry: true, compact_command_menus: true, token_authenticity_inspector: true, live_supply_audit: true, rpc_diagnostics: true, liquidity_history_chart: true, private_wallet_inspector: true, public_system_status: true, market_history_chart: true, signer_proof: true, liquidity_event_classification: true, safe_link_inspector: true, self_healing_watchdog: true, buy_card_recovery: true, transaction_classifier: true, buy_card_v2: true, private_sell_intelligence: true, personal_alerts: true, daily_briefing: true, rpc_failover: true, inline_sharing: true, mini_app: true, operations_console: true, moderation_log: true, member_inspection: true, moderation_recovery: true, community_guard: true, raid_shield: true, raid_link_firewall: true, stale_content_cleanup: true, faq_responder: true, market_commands: true, pool_intelligence: true, risk_snapshot: true, liquidity_trends: true, holder_intelligence: true, holder_growth: true, concentration_tracking: true, wallet_classification: true, distribution_intelligence: true, lock_monitoring: true, protected_wallet_alerts: true, wallet_movement_alerts: true, promotion_teams: true, announcements: true, contributor_leaderboard: true, contributor_history: true, mission_admin: true, review_queue: true, native_buy_watcher: true, one_minute_buy_watcher: true, catchup_scanner: true, watcher_health: true, every_verified_buy: true, branded_buy_cards: true, buy_delivery_telemetry: true })
     }
     if (url.pathname.endsWith('/setup')) return setupTelegram(request)
     if (url.pathname.endsWith('/watch-buys')) return watchVerifiedBuys(request)
@@ -2191,11 +2166,26 @@ Deno.serve(async request => {
     if (url.pathname.endsWith('/monitor')) return monitorMarket(request)
     if (url.pathname.endsWith('/daily-briefing')) return dailyBriefing(request)
     if (url.pathname.endsWith('/buy-alert')) return verifyBuyAlert(request)
-    if (request.headers.get('x-telegram-bot-api-secret-token') !== WEBHOOK_SECRET || !WEBHOOK_SECRET) return new Response('Unauthorized', { status: 401 })
+    if (!isWebhookAuthorized(request.headers.get('x-telegram-bot-api-secret-token'), WEBHOOK_SECRET)) return new Response('Unauthorized', { status: 401 })
     await handleUpdate(await request.json())
     return Response.json({ ok: true })
   } catch (error) {
-    console.error(error)
+    console.error(JSON.stringify(operationTelemetry('unhandled', 500, 0, error instanceof Error ? error.message : error)))
     return Response.json({ ok: false, error: 'internal_error' }, { status: 500 })
   }
+}
+
+Deno.serve(async request => {
+  const startedAt = Date.now()
+  const url = new URL(request.url)
+  const route = routeLabel(request.method, url.pathname)
+  const response = await serveRequest(request)
+  const telemetry = operationTelemetry(route, response.status, Date.now() - startedAt)
+  console.log(JSON.stringify(telemetry))
+  EdgeRuntime.waitUntil(
+    recordEvent('service_request', null, telemetry).catch(error =>
+      console.error(JSON.stringify(operationTelemetry('telemetry-write', 500, Date.now() - startedAt, error instanceof Error ? error.message : error)))
+    )
+  )
+  return response
 })

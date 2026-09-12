@@ -1,4 +1,4 @@
-export const BOT_VERSION = '4.4.0'
+export const BOT_VERSION = '4.5.1'
 
 const definitions = {
   buy: 'Open verified MADGER purchase routes',

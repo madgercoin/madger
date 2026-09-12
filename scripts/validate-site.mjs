@@ -1,8 +1,9 @@
 import { access, readFile } from "node:fs/promises";
 import path from "node:path";
 
-const htmlFiles = ["buy.html", "index.html", "commons.html", "launch.html", "litepaper.html", "official-links.html", "collaborators.html", "privacy.html", "blog.html", "blog-utility-without-a-wallet.html", "blog-creator-trust-standard.html", "blog-madger-thesis.html", "blog-diligence-map.html", "blog-burrow-after-launch.html", "blog-character-outlives-chart.html", "blog-verify-live-market.html", "blog-building-foundations.html", "blog-honey-badger-standard.html", "blog-token-link-safety.html", "404.html"];
+const htmlFiles = ["app.html", "buy.html", "index.html", "commons.html", "launch.html", "litepaper.html", "official-links.html", "collaborators.html", "privacy.html", "blog.html", "blog-utility-without-a-wallet.html", "blog-creator-trust-standard.html", "blog-madger-thesis.html", "blog-diligence-map.html", "blog-burrow-after-launch.html", "blog-character-outlives-chart.html", "blog-verify-live-market.html", "blog-building-foundations.html", "blog-honey-badger-standard.html", "blog-token-link-safety.html", "404.html"];
 const indexablePages = new Map([
+  ["app.html", "https://madgercoin.com/app"],
   ["buy.html", "https://madgercoin.com/buy"],
   ["index.html", "https://madgercoin.com/"],
   ["commons.html", "https://madgercoin.com/commons"],
