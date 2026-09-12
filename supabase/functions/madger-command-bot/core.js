@@ -127,6 +127,21 @@ export function extractHttpHosts(text) {
   return hosts
 }
 
+export function inspectLinkSafety(value) {
+  let url
+  try { url = new URL(String(value ?? '').trim()) } catch { return { level: 'invalid', reason: 'not a valid URL', host: null } }
+  if (url.protocol !== 'https:') return { level: 'danger', reason: 'not protected by HTTPS', host: url.hostname.toLowerCase() }
+  const host = url.hostname.toLowerCase()
+  if (TRUSTED_HOSTS.has(host)) return { level: 'trusted', reason: 'matches the MADGER trusted-domain registry', host }
+  if (url.username || url.password) return { level: 'danger', reason: 'contains hidden URL credentials', host }
+  if (/^xn--|\.xn--/.test(host)) return { level: 'danger', reason: 'uses internationalized domain encoding that can conceal lookalikes', host }
+  if (/^(?:\d{1,3}\.){3}\d{1,3}$/.test(host) || /^\[[0-9a-f:]+\]$/i.test(host)) return { level: 'danger', reason: 'uses a raw network address instead of a verified domain', host }
+  if (SHORTENER_HOSTS.has(host)) return { level: 'danger', reason: 'hides its destination behind a link shortener', host }
+  if (/madger|raydi[uv]m|solsc[a@]n|phant[o0]m/i.test(host)) return { level: 'danger', reason: 'resembles a trusted crypto domain but is not approved', host }
+  if (/(?:connect|validate|rectify|recover|claim|airdrop|migration|support)/i.test(`${url.pathname} ${url.search}`)) return { level: 'caution', reason: 'contains wallet-lure language on an unverified domain', host }
+  return { level: 'unverified', reason: 'is not in the MADGER trusted-domain registry', host }
+}
+
 export function moderationReason(text, options = {}) {
   const value = String(text ?? '')
   if (isSuspiciousMadgerMessage(value)) return 'unverified MADGER contract address'
@@ -230,7 +245,9 @@ export function classifyMadgerTransaction(transaction) {
   if (!transaction?.meta) return { status: 'unavailable', category: 'unavailable', verifiedPool: false, events: [] }
   const feeSol = Number(transaction.meta.fee ?? 0) / 1e9
   if (transaction.meta.err) return { status: 'failed', category: 'failed', verifiedPool: false, feeSol, events: [] }
-  const accountKeys = (transaction.transaction?.message?.accountKeys ?? []).map(key => String(key?.pubkey ?? key))
+  const rawAccountKeys = transaction.transaction?.message?.accountKeys ?? []
+  const accountKeys = rawAccountKeys.map(key => String(key?.pubkey ?? key))
+  const signers = new Set(rawAccountKeys.filter(key => key && typeof key === 'object' && key.signer === true).map(key => String(key.pubkey)))
   const verifiedPool = accountKeys.includes(OFFICIAL_POOL) && accountKeys.includes(RAYDIUM_CPMM_PROGRAM)
 
   const balances = new Map()
@@ -265,23 +282,29 @@ export function classifyMadgerTransaction(transaction) {
       : 0
     const tokenPayments = otherTokens.filter(item => amount > 0 ? item.delta < 0 : item.delta > 0)
       .sort((left, right) => Math.abs(right.delta) - Math.abs(left.delta))
+    const liquidityTokens = otherTokens.filter(item => amount > 0 ? item.delta > 0 : item.delta < 0)
+      .sort((left, right) => Math.abs(right.delta) - Math.abs(left.delta))
     const nativePayment = Math.abs(nativeDelta) > 0.000001 && (amount > 0 ? nativeDelta < 0 : nativeDelta > 0)
       ? { mint: WRAPPED_SOL_MINT, delta: nativeDelta }
       : null
     const payment = tokenPayments[0] ?? nativePayment
+    const liquidityAsset = liquidityTokens[0] ?? null
+    const actorSigned = signers.has(owner)
     let category = amount > 0 ? 'transfer_in' : 'transfer_out'
     if (protectedAddresses.has(owner)) category = 'protected_wallet_movement'
-    else if (verifiedPool && payment) category = amount > 0 ? 'buy' : 'sell'
+    else if (verifiedPool && actorSigned && payment) category = amount > 0 ? 'buy' : 'sell'
+    else if (verifiedPool && actorSigned && liquidityAsset) category = amount > 0 ? 'liquidity_remove' : 'liquidity_add'
+    const counterAsset = category.startsWith('liquidity_') ? liquidityAsset : payment
     const postEntry = (transaction.meta.postTokenBalances ?? []).find(entry => entry.owner === owner && entry.mint === OFFICIAL_MINT)
     events.push({
       category, actor: owner, madgerAmount: Math.abs(amount), madgerDelta: amount,
-      paymentAmount: payment ? Math.abs(payment.delta) : null,
-      paymentMint: payment?.mint ?? null, paymentSymbol: payment ? tokenSymbol(payment.mint) : null,
+      paymentAmount: counterAsset ? Math.abs(counterAsset.delta) : null,
+      paymentMint: counterAsset?.mint ?? null, paymentSymbol: counterAsset ? tokenSymbol(counterAsset.mint) : null,
       postMadgerBalance: Number(postEntry?.uiTokenAmount?.uiAmountString ?? postEntry?.uiTokenAmount?.uiAmount ?? 0),
-      feeSol
+      feeSol, actorSigned
     })
   }
-  const priority = ['protected_wallet_movement', 'buy', 'sell', 'transfer_in', 'transfer_out']
+  const priority = ['protected_wallet_movement', 'buy', 'sell', 'liquidity_add', 'liquidity_remove', 'transfer_in', 'transfer_out']
   events.sort((left, right) => priority.indexOf(left.category) - priority.indexOf(right.category) || right.madgerAmount - left.madgerAmount)
   return {
     status: 'confirmed', category: events[0]?.category ?? 'unrelated', verifiedPool,

@@ -2,7 +2,7 @@ import assert from 'node:assert/strict'
 import test from 'node:test'
 import {
   OFFICIAL_MINT, OFFICIAL_POOL, PROJECT_WALLETS, RAYDIUM_CPMM_PROGRAM, buyTier, classifiedDistribution, compactWallet, contributorRank, escapeHtml, faqIntent,
-  classifyMadgerTransaction, findVerifiedMadgerBuyers, isSuspiciousMadgerMessage,
+  classifyMadgerTransaction, findVerifiedMadgerBuyers, inspectLinkSafety, isSuspiciousMadgerMessage,
   holderSnapshotFromAccounts,
   marketAlertReasons, marketSnapshotSummary, moderationEscalation, moderationReason, poolSnapshotSummary,
   normalizeMissionCode, normalizeReferral, normalizeTeam, normalizedMessageFingerprint,
@@ -107,6 +107,14 @@ test('flags high-confidence wallet scams without blocking safety education', () 
   assert.equal(moderationReason('Read https://madgercoin.com/buy to verify MADGER.'), null)
 })
 
+test('inspects links without visiting untrusted destinations', () => {
+  assert.equal(inspectLinkSafety('https://madgercoin.com/buy').level, 'trusted')
+  assert.equal(inspectLinkSafety('http://madgercoin.com').level, 'danger')
+  assert.equal(inspectLinkSafety('https://madger-support.example/connect').level, 'danger')
+  assert.equal(inspectLinkSafety('https://example.com/claim-wallet').level, 'caution')
+  assert.equal(inspectLinkSafety('not a link').level, 'invalid')
+})
+
 test('normalizes duplicate-message fingerprints', () => {
   assert.equal(normalizedMessageFingerprint('  FREE   BUY https://one.example/x '), 'free buy <url>')
 })
@@ -145,7 +153,7 @@ test('identifies a pool-touching MADGER buy with buyer payment', () => {
   const buyer = 'Buyer11111111111111111111111111111111111111'
   const transaction = {
     transaction: { message: { accountKeys: [
-      { pubkey: buyer }, { pubkey: OFFICIAL_POOL }, { pubkey: RAYDIUM_CPMM_PROGRAM }
+      { pubkey: buyer, signer: true }, { pubkey: OFFICIAL_POOL }, { pubkey: RAYDIUM_CPMM_PROGRAM }
     ] } },
     meta: {
       err: null, fee: 5000, preBalances: [2_000_000_000, 0, 0], postBalances: [1_899_995_000, 0, 0],
@@ -165,7 +173,7 @@ test('classifies a verified sell from exact MADGER and SOL balance deltas', () =
   const seller = 'Se11er1111111111111111111111111111111111111'
   const transaction = {
     slot: 99, transaction: { message: { accountKeys: [
-      { pubkey: seller }, { pubkey: OFFICIAL_POOL }, { pubkey: RAYDIUM_CPMM_PROGRAM }
+      { pubkey: seller, signer: true }, { pubkey: OFFICIAL_POOL }, { pubkey: RAYDIUM_CPMM_PROGRAM }
     ] } },
     meta: {
       err: null, fee: 5000, preBalances: [1_000_000_000, 0, 0], postBalances: [1_199_995_000, 0, 0],
@@ -188,6 +196,37 @@ test('parses only safe transaction references and bounded alert rules', () => {
   assert.deepEqual(parseAlertSubscription('price above $0.002'), { metric: 'price', direction: 'above', threshold: 0.002 })
   assert.deepEqual(parseAlertSubscription('volume below 1,000'), { metric: 'volume24h', direction: 'below', threshold: 1000 })
   assert.equal(parseAlertSubscription('price around 1'), null)
+})
+
+test('classifies signed liquidity additions without calling them sells', () => {
+  const provider = 'Provider11111111111111111111111111111111111'
+  const transaction = {
+    transaction: { message: { accountKeys: [{ pubkey: provider, signer: true }, { pubkey: OFFICIAL_POOL }, { pubkey: RAYDIUM_CPMM_PROGRAM }] } },
+    meta: {
+      err: null, fee: 5000, preBalances: [1_000_000_000, 0, 0], postBalances: [999_995_000, 0, 0],
+      preTokenBalances: [
+        { owner: provider, mint: OFFICIAL_MINT, uiTokenAmount: { uiAmountString: '1000' } },
+        { owner: provider, mint: 'So11111111111111111111111111111111111111112', uiTokenAmount: { uiAmountString: '2' } }
+      ],
+      postTokenBalances: [
+        { owner: provider, mint: OFFICIAL_MINT, uiTokenAmount: { uiAmountString: '800' } },
+        { owner: provider, mint: 'So11111111111111111111111111111111111111112', uiTokenAmount: { uiAmountString: '1.5' } }
+      ]
+    }
+  }
+  const result = classifyMadgerTransaction(transaction)
+  assert.equal(result.category, 'liquidity_add')
+  assert.equal(result.events[0].paymentAmount, 0.5)
+  assert.deepEqual(findVerifiedMadgerBuyers(transaction), [])
+})
+
+test('does not label an unsigned pool-touching balance change as a trade', () => {
+  const owner = 'Owner1111111111111111111111111111111111111'
+  const transaction = {
+    transaction: { message: { accountKeys: [{ pubkey: owner }, { pubkey: OFFICIAL_POOL }, { pubkey: RAYDIUM_CPMM_PROGRAM }] } },
+    meta: { err: null, fee: 5000, preBalances: [2e9, 0, 0], postBalances: [1.9e9 - 5000, 0, 0], preTokenBalances: [], postTokenBalances: [{ owner, mint: OFFICIAL_MINT, uiTokenAmount: { uiAmountString: '50' } }] }
+  }
+  assert.equal(classifyMadgerTransaction(transaction).category, 'transfer_in')
 })
 
 test('rejects transfers and transactions outside the official CPMM pool', () => {

@@ -68,6 +68,7 @@ The bot classifies the five full wallet addresses published in MADGER's official
 - `/locks` — strategic-reserve and LP escrow balance monitor
 - `/chart` — official-pool DEX Screener chart
 - `/checktx SIGNATURE_OR_LINK` — read-only classification of a confirmed transaction as a verified buy, verified sell, transfer, protected-wallet movement, failure, or unrelated activity
+- `/checklink HTTPS_URL` — analyze a link locally for trusted-domain matches, lookalikes, shorteners, raw network addresses, and wallet-lure language without visiting it
 - `/alert METRIC above|below VALUE` — create a private price, liquidity, 24-hour volume, holder-count, or verified whale-flow alert
 - `/alerts` and `/alertoff ID` — list or disable private alerts
 - `/app` — open the branded read-only Telegram Mini App dashboard
@@ -111,12 +112,15 @@ Telegram receives a public command menu without administrator operations. Each c
 - `/stats` — admin-only seven-day report
 - `/buypreview` — private administrator preview of the exact branded buy-card layout without creating or publishing a fake buy
 - `/buystats` — private 24-hour and seven-day verified-buy volume and delivery report
+- `/retrycards` — retry up to ten failed or pending buy cards from the prior six hours without replaying delivered cards
 - `/sellstats` or `/flow` — private 24-hour verified buy/sell ratio and net-flow report
 - `/daily` — generate the admin briefing on demand; the same report is delivered automatically each day at 13:00 UTC
 - `/holderintel` — private largest-wallet and concentration console
 - `/approve ID [NOTE]` and `/reject ID [NOTE]` — admin-only human review
 
 Inline sharing is implemented for the official mint, current market snapshot, safety standard, and verified purchase guide. Telegram's BotFather inline mode must be enabled once before members can invoke `@MADGERcoin_bot` in another chat. The Mini App exposes only aggregate market, holder, and lock health data; it has no wallet connector, signing code, custody, or trading execution.
+
+Trade labels require the exact mint, exact official pool, Raydium CPMM program, matching payment-asset deltas, and signer proof from the affected wallet. Same-direction MADGER and counter-asset changes are classified as liquidity additions or removals rather than buys or sells. A five-minute watchdog checks watcher, market, and holder freshness and attempts one bounded recovery action per run; it never signs transactions or touches wallets.
 
 ## Community Guard
 
