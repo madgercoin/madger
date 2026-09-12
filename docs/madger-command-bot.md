@@ -15,7 +15,8 @@ Configure these in the Supabase project dashboard. Never commit them.
 - `TELEGRAM_ADMIN_CHANNEL_ID`: private admin channel ID for market and security alerts.
 - `TELEGRAM_BUY_ALERT_CHAT_ID`: public or private channel/group ID for verified buy alerts.
 - `TELEGRAM_BUY_ALERT_MEDIA_URL`: optional HTTPS image override for branded buy cards; defaults to the official MADGER social artwork.
-- `SOLANA_RPC_URL`: optional private RPC endpoint; defaults to Solana's public mainnet RPC.
+- `SOLANA_RPC_URL`: optional primary private RPC endpoint; defaults to Solana's public mainnet RPC.
+- `SOLANA_RPC_FALLBACK_URL`: optional secondary RPC endpoint used automatically after timeouts or provider errors.
 
 Supabase supplies `SUPABASE_URL` and `SUPABASE_SECRET_KEYS` to the Edge Function; a temporary `SUPABASE_SERVICE_ROLE_KEY` fallback supports legacy projects during key migration. Database tables use RLS with no public policies and explicitly deny `anon` and `authenticated` access.
 
@@ -29,7 +30,9 @@ Supabase supplies `SUPABASE_URL` and `SUPABASE_SECRET_KEYS` to the Edge Function
 
 ## Verified buy alerts
 
-The one-minute buy watcher natively watches the exact official Raydium CPMM pool. It paginates up to 200 recent signatures, processes as many as 100 unseen transactions oldest-first, requires the official pool and CPMM program in each transaction, verifies that a recipient's balance of the official MADGER mint increased and that the same owner paid SOL or another token, and stores a durable checkpoint. First activation starts from the newest signature rather than replaying historical trades. Every newly verified purchase is broadcast as a branded media card, including sub-$25 buys. Telegram media failures fall back to a text card, and delivery state is recorded for operations review. Pending or failed cards are retried for up to six hours without replaying delivered alerts.
+The one-minute transaction watcher natively watches the exact official Raydium CPMM pool. It paginates up to 200 recent signatures, processes as many as 100 unseen transactions oldest-first, and calculates exact MADGER and payment-asset balance deltas. Verified buys, verified sells, transfers, protected-wallet movements, failures, and unrelated transactions remain distinct. First activation starts from the newest signature rather than replaying history.
+
+Every verified buy is broadcast as a Buy Card v2 with the exact received amount, actual SOL/USDC payment delta when available, execution rate, resulting MADGER balance, transaction link, and only evidence-backed 24-hour milestones. Telegram media failures fall back to text. Verified sells are stored for private flow intelligence and never used for public wallet shaming. Pending or failed buy cards are retried for up to six hours without replaying delivered alerts.
 
 The authenticated `/buy-alert` route remains available for compatible external sources, but it applies the same independent transaction checks and duplicate suppression.
 
@@ -64,6 +67,10 @@ The bot classifies the five full wallet addresses published in MADGER's official
 - `/distribution` — classified project, lock, pool, and other-holder distribution
 - `/locks` — strategic-reserve and LP escrow balance monitor
 - `/chart` — official-pool DEX Screener chart
+- `/checktx SIGNATURE_OR_LINK` — read-only classification of a confirmed transaction as a verified buy, verified sell, transfer, protected-wallet movement, failure, or unrelated activity
+- `/alert METRIC above|below VALUE` — create a private price, liquidity, 24-hour volume, holder-count, or verified whale-flow alert
+- `/alerts` and `/alertoff ID` — list or disable private alerts
+- `/app` — open the branded read-only Telegram Mini App dashboard
 - `/ca` or `/contract` — complete official mint and pool
 - `/links` — official website, community, verification, and chart links
 - `/help` — concise public command directory
@@ -104,8 +111,12 @@ Telegram receives a public command menu without administrator operations. Each c
 - `/stats` — admin-only seven-day report
 - `/buypreview` — private administrator preview of the exact branded buy-card layout without creating or publishing a fake buy
 - `/buystats` — private 24-hour and seven-day verified-buy volume and delivery report
+- `/sellstats` or `/flow` — private 24-hour verified buy/sell ratio and net-flow report
+- `/daily` — generate the admin briefing on demand; the same report is delivered automatically each day at 13:00 UTC
 - `/holderintel` — private largest-wallet and concentration console
 - `/approve ID [NOTE]` and `/reject ID [NOTE]` — admin-only human review
+
+Inline sharing is implemented for the official mint, current market snapshot, safety standard, and verified purchase guide. Telegram's BotFather inline mode must be enabled once before members can invoke `@MADGERcoin_bot` in another chat. The Mini App exposes only aggregate market, holder, and lock health data; it has no wallet connector, signing code, custody, or trading execution.
 
 ## Community Guard
 

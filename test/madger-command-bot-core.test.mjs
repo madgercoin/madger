@@ -2,11 +2,11 @@ import assert from 'node:assert/strict'
 import test from 'node:test'
 import {
   OFFICIAL_MINT, OFFICIAL_POOL, PROJECT_WALLETS, RAYDIUM_CPMM_PROGRAM, buyTier, classifiedDistribution, compactWallet, contributorRank, escapeHtml, faqIntent,
-  findVerifiedMadgerBuyers, isSuspiciousMadgerMessage,
+  classifyMadgerTransaction, findVerifiedMadgerBuyers, isSuspiciousMadgerMessage,
   holderSnapshotFromAccounts,
   marketAlertReasons, marketSnapshotSummary, moderationEscalation, moderationReason, poolSnapshotSummary,
   normalizeMissionCode, normalizeReferral, normalizeTeam, normalizedMessageFingerprint,
-  parseAnnouncement, parseMissionDefinition, parseRaidMode, parseReviewRequest, parseTeamAlert, pendingSignatures,
+  parseAlertSubscription, parseAnnouncement, parseMissionDefinition, parseRaidMode, parseReviewRequest, parseTeamAlert, parseTransactionReference, pendingSignatures,
   protectedWalletMovements, shouldActivateRaidMode, significantHolderMovements
 } from '../supabase/functions/madger-command-bot/core.js'
 
@@ -154,6 +154,40 @@ test('identifies a pool-touching MADGER buy with buyer payment', () => {
     }
   }
   assert.deepEqual(findVerifiedMadgerBuyers(transaction), [{ buyer, amount: 50 }])
+  const classified = classifyMadgerTransaction(transaction)
+  assert.equal(classified.category, 'buy')
+  assert.equal(classified.events[0].paymentSymbol, 'SOL')
+  assert.equal(classified.events[0].paymentAmount, 0.1)
+  assert.equal(classified.events[0].postMadgerBalance, 150)
+})
+
+test('classifies a verified sell from exact MADGER and SOL balance deltas', () => {
+  const seller = 'Se11er1111111111111111111111111111111111111'
+  const transaction = {
+    slot: 99, transaction: { message: { accountKeys: [
+      { pubkey: seller }, { pubkey: OFFICIAL_POOL }, { pubkey: RAYDIUM_CPMM_PROGRAM }
+    ] } },
+    meta: {
+      err: null, fee: 5000, preBalances: [1_000_000_000, 0, 0], postBalances: [1_199_995_000, 0, 0],
+      preTokenBalances: [{ owner: seller, mint: OFFICIAL_MINT, uiTokenAmount: { uiAmountString: '1000' } }],
+      postTokenBalances: [{ owner: seller, mint: OFFICIAL_MINT, uiTokenAmount: { uiAmountString: '750' } }]
+    }
+  }
+  const result = classifyMadgerTransaction(transaction)
+  assert.equal(result.category, 'sell')
+  assert.equal(result.events[0].madgerAmount, 250)
+  assert.ok(Math.abs(result.events[0].paymentAmount - 0.2) < Number.EPSILON)
+  assert.deepEqual(findVerifiedMadgerBuyers(transaction), [])
+})
+
+test('parses only safe transaction references and bounded alert rules', () => {
+  const signature = '1'.repeat(88)
+  assert.equal(parseTransactionReference(signature), signature)
+  assert.equal(parseTransactionReference(`https://solscan.io/tx/${signature}`), signature)
+  assert.equal(parseTransactionReference(`https://evil.example/tx/${signature}`), null)
+  assert.deepEqual(parseAlertSubscription('price above $0.002'), { metric: 'price', direction: 'above', threshold: 0.002 })
+  assert.deepEqual(parseAlertSubscription('volume below 1,000'), { metric: 'volume24h', direction: 'below', threshold: 1000 })
+  assert.equal(parseAlertSubscription('price around 1'), null)
 })
 
 test('rejects transfers and transactions outside the official CPMM pool', () => {

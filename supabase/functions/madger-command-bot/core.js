@@ -1,6 +1,8 @@
 export const OFFICIAL_MINT = 'BHauMX8akk2umqkQqnJwpYkCRkZmefGnEBFByeFXRKqv'
 export const OFFICIAL_POOL = 'FVRpAmyDsdvKHQT2ds6ytZsJHt7SDDDbScQx3c4fu32h'
 export const RAYDIUM_CPMM_PROGRAM = 'CPMMoo8L3F4NbTegBCKVNunggL7H1ZpdTHKxQB5qKP1C'
+export const WRAPPED_SOL_MINT = 'So11111111111111111111111111111111111111112'
+export const USDC_MINT = 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v'
 
 export const PROJECT_WALLETS = Object.freeze([
   { role: 'Liquidity reserve', address: 'ATFELs8fV9CthKDjVLfhMb756uD499nHVtzLr5i7XKPp', targetPercentage: 60 },
@@ -197,10 +199,39 @@ export function parseAnnouncement(value) {
   return { text: textValue, url: url.href, label }
 }
 
-export function findVerifiedMadgerBuyers(transaction) {
-  if (!transaction?.meta || transaction.meta.err) return []
+export function parseTransactionReference(value) {
+  const raw = String(value ?? '').trim()
+  if (/^[1-9A-HJ-NP-Za-km-z]{64,88}$/.test(raw)) return raw
+  try {
+    const url = new URL(raw)
+    if (url.protocol !== 'https:' || !['solscan.io', 'www.solscan.io', 'explorer.solana.com'].includes(url.hostname.toLowerCase())) return null
+    const candidate = url.pathname.match(/^\/tx\/([1-9A-HJ-NP-Za-km-z]{64,88})\/?$/)?.[1]
+    return /^[1-9A-HJ-NP-Za-km-z]{64,88}$/.test(candidate ?? '') ? candidate : null
+  } catch { return null }
+}
+
+export function parseAlertSubscription(value) {
+  const [metricValue = '', directionValue = '', thresholdValue = ''] = String(value ?? '').trim().toLowerCase().split(/\s+/)
+  const metric = metricValue === 'volume' ? 'volume24h' : metricValue
+  const direction = directionValue
+  const threshold = Number(String(thresholdValue).replace(/[$,]/g, ''))
+  if (!['price', 'liquidity', 'volume24h', 'holders', 'whale'].includes(metric)) return null
+  if (!['above', 'below'].includes(direction) || !Number.isFinite(threshold) || threshold <= 0) return null
+  return { metric, direction, threshold }
+}
+
+function tokenSymbol(mint) {
+  if (mint === WRAPPED_SOL_MINT) return 'SOL'
+  if (mint === USDC_MINT) return 'USDC'
+  return `${String(mint).slice(0, 4)}…${String(mint).slice(-4)}`
+}
+
+export function classifyMadgerTransaction(transaction) {
+  if (!transaction?.meta) return { status: 'unavailable', category: 'unavailable', verifiedPool: false, events: [] }
+  const feeSol = Number(transaction.meta.fee ?? 0) / 1e9
+  if (transaction.meta.err) return { status: 'failed', category: 'failed', verifiedPool: false, feeSol, events: [] }
   const accountKeys = (transaction.transaction?.message?.accountKeys ?? []).map(key => String(key?.pubkey ?? key))
-  if (!accountKeys.includes(OFFICIAL_POOL) || !accountKeys.includes(RAYDIUM_CPMM_PROGRAM)) return []
+  const verifiedPool = accountKeys.includes(OFFICIAL_POOL) && accountKeys.includes(RAYDIUM_CPMM_PROGRAM)
 
   const balances = new Map()
   const apply = (entries, direction) => {
@@ -214,20 +245,55 @@ export function findVerifiedMadgerBuyers(transaction) {
   apply(transaction.meta.preTokenBalances, -1)
   apply(transaction.meta.postTokenBalances, 1)
 
-  const candidates = []
+  const protectedAddresses = new Set([
+    ...PROJECT_WALLETS.map(item => item.address),
+    ...LOCK_RECORDS.map(item => item.address)
+  ])
+  const events = []
   for (const [key, amount] of balances) {
     const separator = key.indexOf(':')
     const owner = key.slice(0, separator)
     const mint = key.slice(separator + 1)
-    if (mint !== OFFICIAL_MINT || !(amount > 0)) continue
-    const tokenSpent = [...balances].some(([otherKey, delta]) => otherKey.startsWith(`${owner}:`) && !otherKey.endsWith(`:${OFFICIAL_MINT}`) && delta < 0)
+    if (mint !== OFFICIAL_MINT || Math.abs(amount) < 1e-9) continue
+    const otherTokens = [...balances]
+      .filter(([otherKey, delta]) => otherKey.startsWith(`${owner}:`) && !otherKey.endsWith(`:${OFFICIAL_MINT}`) && Math.abs(delta) > 1e-12)
+      .map(([otherKey, delta]) => ({ mint: otherKey.slice(otherKey.indexOf(':') + 1), delta }))
     const ownerIndex = accountKeys.indexOf(owner)
-    const fee = ownerIndex === 0 ? Number(transaction.meta.fee ?? 0) : 0
-    const nativeSpent = ownerIndex >= 0
-      && Number(transaction.meta.preBalances?.[ownerIndex] ?? 0) - Number(transaction.meta.postBalances?.[ownerIndex] ?? 0) - fee > 1000
-    if (tokenSpent || nativeSpent) candidates.push({ buyer: owner, amount })
+    const nativeDelta = ownerIndex >= 0
+      ? (Number(transaction.meta.postBalances?.[ownerIndex] ?? 0) - Number(transaction.meta.preBalances?.[ownerIndex] ?? 0)
+        + (ownerIndex === 0 ? Number(transaction.meta.fee ?? 0) : 0)) / 1e9
+      : 0
+    const tokenPayments = otherTokens.filter(item => amount > 0 ? item.delta < 0 : item.delta > 0)
+      .sort((left, right) => Math.abs(right.delta) - Math.abs(left.delta))
+    const nativePayment = Math.abs(nativeDelta) > 0.000001 && (amount > 0 ? nativeDelta < 0 : nativeDelta > 0)
+      ? { mint: WRAPPED_SOL_MINT, delta: nativeDelta }
+      : null
+    const payment = tokenPayments[0] ?? nativePayment
+    let category = amount > 0 ? 'transfer_in' : 'transfer_out'
+    if (protectedAddresses.has(owner)) category = 'protected_wallet_movement'
+    else if (verifiedPool && payment) category = amount > 0 ? 'buy' : 'sell'
+    const postEntry = (transaction.meta.postTokenBalances ?? []).find(entry => entry.owner === owner && entry.mint === OFFICIAL_MINT)
+    events.push({
+      category, actor: owner, madgerAmount: Math.abs(amount), madgerDelta: amount,
+      paymentAmount: payment ? Math.abs(payment.delta) : null,
+      paymentMint: payment?.mint ?? null, paymentSymbol: payment ? tokenSymbol(payment.mint) : null,
+      postMadgerBalance: Number(postEntry?.uiTokenAmount?.uiAmountString ?? postEntry?.uiTokenAmount?.uiAmount ?? 0),
+      feeSol
+    })
   }
-  return candidates.sort((left, right) => right.amount - left.amount)
+  const priority = ['protected_wallet_movement', 'buy', 'sell', 'transfer_in', 'transfer_out']
+  events.sort((left, right) => priority.indexOf(left.category) - priority.indexOf(right.category) || right.madgerAmount - left.madgerAmount)
+  return {
+    status: 'confirmed', category: events[0]?.category ?? 'unrelated', verifiedPool,
+    feeSol, slot: transaction.slot ?? null, blockTime: transaction.blockTime ?? null, events
+  }
+}
+
+export function findVerifiedMadgerBuyers(transaction) {
+  return classifyMadgerTransaction(transaction).events
+    .filter(event => event.category === 'buy')
+    .map(event => ({ buyer: event.actor, amount: event.madgerAmount }))
+    .sort((left, right) => right.amount - left.amount)
 }
 
 export function shouldActivateRaidMode(recentJoins, incomingJoins, threshold = 8) {
