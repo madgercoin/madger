@@ -7,6 +7,8 @@ import worker from '../worker.generated.js';
 const mint = 'BHauMX8akk2umqkQqnJwpYkCRkZmefGnEBFByeFXRKqv';
 const home = await readFile('index.html', 'utf8');
 const guide = await readFile('buy.html', 'utf8');
+const app = await readFile('app.html', 'utf8');
+const appScript = await readFile('app.js', 'utf8');
 const script = await readFile('script.js', 'utf8');
 
 const expectedDestinations = {
@@ -22,6 +24,26 @@ test('homepage leads with the MADGER brand and usable community paths', () => {
   assert.match(home, /YOUR WAY INTO THE BURROW/);
   assert.match(home, /href="\/commons"><b>02<\/b><span>Use the Commons/);
   assert.match(home, /href="\/buy"/);
+});
+
+test('Burrow app is public, privacy-first, and served only through safe methods', async () => {
+  assert.match(app, /Verify\. Learn\. Contribute\. Create\. Inspect\./);
+  assert.match(app, /NO WALLET REQUIRED/);
+  assert.match(app, /Checked locally in your browser/);
+  assert.ok(app.includes(`<code id="mint">${mint}</code>`));
+  assert.doesNotMatch(app, /<iframe|wallet-adapter|connect wallet/i);
+  assert.match(appScript, /RECOGNIZED PLATFORM — NOT YET VERIFIED/);
+  assert.match(appScript, /host === "madgercoin\.com"/);
+  assert.match(appScript, /url\.searchParams\.get\("outputMint"\) === MINT/);
+  const get = await worker.fetch(new Request('https://madgercoin.com/app'), {});
+  assert.equal(get.status, 200);
+  assert.equal(await get.text(), app);
+  const head = await worker.fetch(new Request('https://madgercoin.com/app', { method: 'HEAD' }), {});
+  assert.equal(head.status, 200);
+  assert.equal(await head.text(), '');
+  const post = await worker.fetch(new Request('https://madgercoin.com/app', { method: 'POST' }), {});
+  assert.equal(post.status, 405);
+  assert.equal(post.headers.get('allow'), 'GET, HEAD');
 });
 
 test('guide exposes four verified routes without financial presets', () => {

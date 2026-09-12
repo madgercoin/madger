@@ -1,4 +1,4 @@
-import { readFile, readdir } from "node:fs/promises";
+import { readFile, readdir, stat } from "node:fs/promises";
 import path from "node:path";
 import { distAllowlist } from "../site-config.mjs";
 
@@ -14,6 +14,11 @@ async function walk(directory, prefix = "") {
 }
 
 const actual = (await walk("dist")).sort();
+const cloudflareAssetLimit = 5 * 1024 * 1024;
+const oversizedAssets = (await Promise.all(actual.map(async file => ({
+  file,
+  size: (await stat(path.join("dist", file))).size
+})))).filter(asset => asset.size > cloudflareAssetLimit);
 const missing = distAllowlist.filter(file => !actual.includes(file));
 const unexpected = actual.filter(file => !distAllowlist.includes(file));
 const launchDocuments = ["LAUNCH_PLAN.md", "LAUNCH_DECISIONS.md", "docs/launch-runbook.md", "docs/liquidity-plan.md", "docs/wallet-operations.md", "docs/launch-communications.md", "docs/listing-submissions.md"];
@@ -42,6 +47,10 @@ if (missing.length || unexpected.length) {
   if (unexpected.length) console.error(`Unapproved dist files: ${unexpected.join(", ")}`);
   process.exit(1);
 }
+if (oversizedAssets.length) {
+  console.error(`Assets exceed Cloudflare's 5 MiB upload limit: ${oversizedAssets.map(asset => `${asset.file} (${asset.size} bytes)`).join(", ")}`);
+  process.exit(1);
+}
 if (leakedDocuments.length || missingPublicAddresses.length || /(?:seed phrase|private key)\s*[:=]\s*[A-Za-z0-9]+/i.test(publishedText)) {
   if (leakedDocuments.length) console.error(`Launch documents leaked to dist: ${leakedDocuments.join(", ")}`);
   if (missingPublicAddresses.length) console.error(`Disclosed project wallet missing from launch record: ${missingPublicAddresses.join(", ")}`);
@@ -53,5 +62,6 @@ if (missingWorkerHeaders.length) {
   process.exit(1);
 }
 console.log(`Validated explicit dist allowlist (${actual.length} files).`);
+console.log("Validated Cloudflare's 5 MiB per-asset upload boundary.");
 console.log("Validated launch-document exclusion, disclosed project wallets, and absence of private wallet material in dist.");
 console.log(`Validated ${requiredWorkerHeaders.length} security headers in the generated Worker.`);

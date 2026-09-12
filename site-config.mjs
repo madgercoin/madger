@@ -1,5 +1,9 @@
 export const rootFiles = [
   "index.html",
+  "app.html",
+  "app.css",
+  "app.js",
+  "sw.js",
   "commons.html",
   "commons.css",
   "brand-system.css",
@@ -62,6 +66,7 @@ export const assetFiles = [
   "madger_trading_live_launch_poster_v1.png",
   "madger_trading_live_launch_poster_vertical_v1.png",
   "madger_v6_community_welcome.webp",
+  "madger_v6_community_welcome_640.webp",
   "madger_video_creation_contest_poster.svg",
   "madger_official_contest_pose_card.svg",
   "Madger_Productions_Presents_Intro_clip.mp4",
