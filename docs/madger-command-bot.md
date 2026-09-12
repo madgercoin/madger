@@ -1,6 +1,6 @@
 # MADGER Command Bot
 
-Production-ready Telegram webhook and market-intelligence service for MADGER. It provides safe purchase navigation, exact-mint verification, referral attribution, contributor missions and ranks, human-reviewed points, suspicious-address moderation, private admin statistics, DEX Screener market alerts, and independently verified buy notifications.
+Production-ready Telegram webhook and market-intelligence service for MADGER. It provides safe purchase navigation, exact-mint verification, referral attribution, contributor missions and ranks, human-reviewed points, suspicious-address moderation, private admin statistics, DEX Screener market alerts, independently verified buy notifications, and on-chain holder intelligence.
 
 The bot never holds funds, asks for wallet credentials, fabricates activity, executes trades, presets purchase amounts or slippage, or rewards purchases and blind engagement.
 
@@ -37,10 +37,17 @@ The authenticated `/buy-alert` route remains available for compatible external s
 
 The database invokes `/watch-buys` every minute and `/monitor` every five minutes with a secret stored in Supabase Vault. Splitting the jobs keeps buy detection fast without multiplying DEX Screener traffic. The function compares only the secret's SHA-256 digest, verifies the exact official pool and mint returned by DEX Screener, records a snapshot, and alerts the private admin channel for a 15-minute price move of at least 8% or a liquidity decline of at least 10%. Each buy-watcher run records duration, scan totals, verified buys, posted cards, catch-up state, and bounded errors for the private health console. A daily retention job removes processed-update IDs after 7 days, market snapshots after 30 days, and event telemetry after 180 days.
 
+## Holder intelligence
+
+The database invokes `/monitor-holders` every 15 minutes. Each run queries SPL Token Program accounts for the exact official mint, combines multiple token accounts belonging to the same owner, ignores zero balances, and stores a private aggregate snapshot. `/holders` reports positive-balance wallet count, 24-hour growth, the largest-wallet share, and top-10 concentration; `/holderintel` gives administrators the ten largest on-chain owners.
+
+Private alerts fire when wallet count changes materially or an owner balance moves by at least 0.25% of supply or approximately $1,000. These alerts always describe balance movements—not buys or sells—because transfers, treasury operations, liquidity pools, exchanges, and custodial wallets cannot be classified safely from balances alone. Holder snapshots have RLS enabled, no public grants, and 180-day retention.
+
 ## Commands
 
 - `/buy` — neutral, verified purchase routes
 - `/price` — latest stored price, market cap, liquidity, five-minute volume, and buy/sell counts
+- `/holders` — positive-balance wallet growth and ownership concentration
 - `/chart` — official-pool DEX Screener chart
 - `/ca` or `/contract` — complete official mint and pool
 - `/links` — official website, community, verification, and chart links
@@ -63,7 +70,7 @@ The database invokes `/watch-buys` every minute and `/monitor` every five minute
 - `/announce MESSAGE [| HTTPS_URL | BUTTON]` — publish one official announcement to The Burrow
 - `/announcepin MESSAGE [| HTTPS_URL | BUTTON]` — publish and request a Telegram notification pin
 - `/dashboard` — private command-center view of joins, safety actions, teams, delivery, announcements, and market state
-- `/health` — private live check of webhook delivery, market freshness, one-minute buy-watcher runs, card failures, cleanup backlog, Raid Shield, and Telegram permissions
+- `/health` — private live check of webhook delivery, market and holder freshness, one-minute buy-watcher runs, card failures, cleanup backlog, Raid Shield, and Telegram permissions
 - `/modlog` — private list of the ten most recent safety and administrator actions
 - `/raidmode status|on [MINUTES]|off` — private administrator control for Raid Shield
 - `/purgeunverified` — remove up to 25 pending unverified accounts from The Burrow
@@ -82,6 +89,7 @@ Telegram receives a public command menu without administrator operations. Each c
 - `/stats` — admin-only seven-day report
 - `/buypreview` — private administrator preview of the exact branded buy-card layout without creating or publishing a fake buy
 - `/buystats` — private 24-hour and seven-day verified-buy volume and delivery report
+- `/holderintel` — private largest-wallet and concentration console
 - `/approve ID [NOTE]` and `/reject ID [NOTE]` — admin-only human review
 
 ## Community Guard
