@@ -1,13 +1,13 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
 import {
-  OFFICIAL_MINT, OFFICIAL_POOL, RAYDIUM_CPMM_PROGRAM, buyTier, compactWallet, contributorRank, escapeHtml, faqIntent,
+  OFFICIAL_MINT, OFFICIAL_POOL, PROJECT_WALLETS, RAYDIUM_CPMM_PROGRAM, buyTier, classifiedDistribution, compactWallet, contributorRank, escapeHtml, faqIntent,
   findVerifiedMadgerBuyers, isSuspiciousMadgerMessage,
   holderSnapshotFromAccounts,
   marketAlertReasons, marketSnapshotSummary, moderationEscalation, moderationReason, poolSnapshotSummary,
   normalizeMissionCode, normalizeReferral, normalizeTeam, normalizedMessageFingerprint,
   parseAnnouncement, parseMissionDefinition, parseRaidMode, parseReviewRequest, parseTeamAlert, pendingSignatures,
-  shouldActivateRaidMode, significantHolderMovements
+  protectedWalletMovements, shouldActivateRaidMode, significantHolderMovements
 } from '../supabase/functions/madger-command-bot/core.js'
 
 test('escapes Telegram HTML', () => assert.equal(escapeHtml('<bad & worse>'), '&lt;bad &amp; worse&gt;'))
@@ -75,6 +75,25 @@ test('labels large holder changes as movements without classifying trade directi
   const previous = { owners: [{ owner: 'A', amount: 500 }, { owner: 'B', amount: 500 }] }
   const movements = significantHolderMovements(current, previous, { minimumSupplyPercentage: 5, priceUsd: 2 })
   assert.deepEqual(movements.map(item => [item.owner, item.delta]), [['A', 100], ['B', -100]])
+})
+test('classifies published project wallets and separates the remaining supply', () => {
+  const snapshot = { totalSupply: 1000, owners: [
+    { owner: PROJECT_WALLETS[0].address, amount: 600 },
+    { owner: PROJECT_WALLETS[1].address, amount: 200 },
+    { owner: 'unclassified', amount: 200 }
+  ] }
+  const result = classifiedDistribution(snapshot, PROJECT_WALLETS, [])
+  assert.equal(result.rows[0].role, 'Liquidity reserve')
+  assert.equal(result.classifiedAmount, 800)
+  assert.equal(result.unclassifiedPercentage, 20)
+})
+test('alerts on protected outflows and ignores dust movements', () => {
+  const wallet = PROJECT_WALLETS[0]
+  const previous = { owners: [{ owner: wallet.address, amount: 100000 }] }
+  const current = { owners: [{ owner: wallet.address, amount: 98000 }] }
+  assert.equal(protectedWalletMovements(current, previous, [wallet], [], { minimumOutbound: 1000 }).length, 1)
+  current.owners[0].amount = 99999
+  assert.equal(protectedWalletMovements(current, previous, [wallet], [], { minimumOutbound: 1000 }).length, 0)
 })
 test('detects price and liquidity thresholds', () => {
   const reasons = marketAlertReasons({ priceUsd: '1.09', liquidity: { usd: 890 } }, { price_usd: '1', liquidity_usd: 1000 })
