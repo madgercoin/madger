@@ -1429,10 +1429,13 @@ async function handleCommand(message) {
   if (command === '/links') return showOfficialLinks(chatId)
   if (command === '/help') return showHelp(chatId)
   if (command === '/missions') return showMissions(chatId, isGroupChat(message.chat))
+  if (command === '/submit' && message.chat.type !== 'private') return send(chatId, 'Submit evidence privately to MADGERbot so your contribution record stays tied to your account.')
   if (command === '/submit') return submitMission(chatId, args)
   if (command === '/mywork') return showMyWork(message)
+  if (command === '/rank' && message.chat.type !== 'private') return send(chatId, 'View your contribution rank privately in MADGERbot.')
   if (command === '/rank') return showRank(chatId)
   if (command === '/leaderboard') return showLeaderboard(chatId)
+  if (command === '/referral' && message.chat.type !== 'private') return send(chatId, 'Create your personal referral route privately in MADGERbot.')
   if (command === '/referral') return showReferral(chatId)
   if (command === '/rules') return showRules(chatId)
   if (command === '/safety') return showSafety(chatId)
@@ -1527,14 +1530,7 @@ async function moderate(message) {
   return true
 }
 
-async function handleUpdate(update) {
-  try {
-    await insert('madger_bot_processed_updates', { update_id: update.update_id })
-  } catch (error) {
-    if (String(error).includes('duplicate')) return
-    throw error
-  }
-
+async function processTelegramUpdate(update) {
   if (update.inline_query) return answerInlineQuery(update.inline_query)
   if (update.callback_query) {
     if (String(update.callback_query.data ?? '').startsWith('verify_join:')) return verifyNewMember(update.callback_query)
@@ -1543,8 +1539,13 @@ async function handleUpdate(update) {
     if (update.callback_query.data === 'missions') await showMissions(update.callback_query.message.chat.id, isGroupChat(update.callback_query.message.chat))
     return
   }
-  const message = update.message ?? update.channel_post
+  const edited = update.edited_message ?? update.edited_channel_post
+  const message = update.message ?? update.channel_post ?? edited
   if (!message) return
+  if (edited) {
+    await moderate(message)
+    return
+  }
   if (message.new_chat_members?.length) return welcomeNewMembers(message)
   if (await moderate(message)) return
   if (message.text?.startsWith('/') && message.from) await handleCommand(message)
@@ -1554,12 +1555,28 @@ async function handleUpdate(update) {
   }
 }
 
+async function handleUpdate(update) {
+  try {
+    await insert('madger_bot_processed_updates', { update_id: update.update_id })
+  } catch (error) {
+    if (String(error).includes('duplicate')) return
+    throw error
+  }
+
+  try {
+    return await processTelegramUpdate(update)
+  } catch (error) {
+    try { await db(`madger_bot_processed_updates?update_id=eq.${encodeURIComponent(update.update_id)}`, { method: 'DELETE' }) } catch { /* preserve original failure */ }
+    throw error
+  }
+}
+
 async function routeRedirect(request, url) {
   const route = url.pathname.split('/').filter(Boolean).at(-1)
   const target = LINKS[route]
   if (!target) return new Response('Unknown route', { status: 404 })
   const ref = normalizeReferral(url.searchParams.get('ref'))
-  await recordEvent('referral_open', null, { route }, ref)
+  try { await recordEvent('referral_open', null, { route }, ref) } catch { /* telemetry must never block a verified redirect */ }
   return Response.redirect(target, 302)
 }
 
@@ -1937,7 +1954,7 @@ async function setupTelegram(request) {
   await telegram('setWebhook', {
     url: `${SUPABASE_URL}/functions/v1/madger-command-bot`,
     secret_token: WEBHOOK_SECRET,
-    allowed_updates: ['message', 'channel_post', 'callback_query', 'inline_query', 'my_chat_member'],
+    allowed_updates: ['message', 'edited_message', 'channel_post', 'edited_channel_post', 'callback_query', 'inline_query', 'my_chat_member'],
     drop_pending_updates: false
   })
   const publicCommands = [

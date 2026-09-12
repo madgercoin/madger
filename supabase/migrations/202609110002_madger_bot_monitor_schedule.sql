@@ -1,4 +1,5 @@
 create extension if not exists pg_cron;
+create extension if not exists pg_net with schema extensions;
 
 do $$
 declare
@@ -51,4 +52,3 @@ select cron.schedule(
     delete from public.madger_bot_events where created_at < now() - interval '180 days';
   $job$
 );
-
