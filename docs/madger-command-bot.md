@@ -176,3 +176,7 @@ node --check supabase/functions/madger-command-bot/core.js
 ## Version 4.2
 
 The v4.2 operational upgrade adds a private, read-only Solana wallet inspector (`/walletcheck`), a public aggregate service report (`/status`), and a verified 24-hour price-history chart in the Mini App. Wallet inspection never connects to a wallet, requests credentials, infers identity, or labels unclassified addresses as suspicious.
+
+## Version 4.3
+
+The v4.3 verification release adds `/tokencheck` for exact-address token authenticity inspection, `/supply` for a live official-mint supply and authority audit, private `/rpcstatus` failover diagnostics, and verified 24-hour liquidity history in the Mini App. All features are read-only and never request wallet access.

@@ -3,6 +3,7 @@ export const OFFICIAL_POOL = 'FVRpAmyDsdvKHQT2ds6ytZsJHt7SDDDbScQx3c4fu32h'
 export const RAYDIUM_CPMM_PROGRAM = 'CPMMoo8L3F4NbTegBCKVNunggL7H1ZpdTHKxQB5qKP1C'
 export const WRAPPED_SOL_MINT = 'So11111111111111111111111111111111111111112'
 export const USDC_MINT = 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v'
+export const SPL_TOKEN_PROGRAM = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
 
 export const PROJECT_WALLETS = Object.freeze([
   { role: 'Liquidity reserve', address: 'ATFELs8fV9CthKDjVLfhMb756uD499nHVtzLr5i7XKPp', targetPercentage: 60 },
@@ -437,6 +438,25 @@ export function classifyKnownAddress(address, wallets = PROJECT_WALLETS, locks =
   const lock = locks.find(item => item.address === address)
   if (lock) return { kind: 'verified_lock', label: `${lock.label} · ${lock.provider}` }
   return { kind: 'unclassified', label: 'Unclassified public address' }
+}
+
+export function summarizeMintAccount(address, accountResult, supplyResult) {
+  const account = accountResult?.value ?? null
+  const parsed = account?.data?.parsed
+  const info = parsed?.info ?? {}
+  const isMint = account?.owner === SPL_TOKEN_PROGRAM && parsed?.type === 'mint'
+  const rawSupply = supplyResult?.value?.uiAmountString ?? supplyResult?.value?.uiAmount ?? info.supply
+  const supply = Number(rawSupply)
+  const decimals = Number(supplyResult?.value?.decimals ?? info.decimals)
+  return {
+    exists: Boolean(account), isMint, isOfficial: address === OFFICIAL_MINT,
+    ownerProgram: account?.owner ?? null,
+    supply: Number.isFinite(supply) ? supply : null,
+    decimals: Number.isInteger(decimals) && decimals >= 0 ? decimals : null,
+    initialized: isMint ? info.isInitialized === true : false,
+    mintAuthority: isMint ? info.mintAuthority ?? null : null,
+    freezeAuthority: isMint ? info.freezeAuthority ?? null : null
+  }
 }
 
 export function sampleMarketHistory(rows, maximum = 96) {

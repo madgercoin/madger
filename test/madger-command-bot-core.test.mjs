@@ -1,13 +1,13 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
 import {
-  OFFICIAL_MINT, OFFICIAL_POOL, PROJECT_WALLETS, RAYDIUM_CPMM_PROGRAM, buyTier, classifiedDistribution, compactWallet, contributorRank, escapeHtml, faqIntent,
+  OFFICIAL_MINT, OFFICIAL_POOL, PROJECT_WALLETS, RAYDIUM_CPMM_PROGRAM, SPL_TOKEN_PROGRAM, buyTier, classifiedDistribution, compactWallet, contributorRank, escapeHtml, faqIntent,
   classifyKnownAddress, classifyMadgerTransaction, findVerifiedMadgerBuyers, inspectLinkSafety, isSuspiciousMadgerMessage,
   holderSnapshotFromAccounts,
   marketAlertReasons, marketSnapshotSummary, moderationEscalation, moderationReason, poolSnapshotSummary,
   normalizeMissionCode, normalizeReferral, normalizeTeam, normalizedMessageFingerprint,
   parseAlertSubscription, parseAnnouncement, parseMissionDefinition, parseRaidMode, parseReviewRequest, parseSolanaAddress, parseTeamAlert, parseTransactionReference, pendingSignatures,
-  sampleMarketHistory,
+  sampleMarketHistory, summarizeMintAccount,
   protectedWalletMovements, shouldActivateRaidMode, significantHolderMovements
 } from '../supabase/functions/madger-command-bot/core.js'
 
@@ -67,6 +67,16 @@ test('samples market history while preserving endpoints and rejecting invalid ro
   assert.equal(sampled.length, 4)
   assert.equal(sampled[0].priceUsd, 0)
   assert.equal(sampled.at(-1).priceUsd, 9)
+})
+test('summarizes mint accounts without treating alternate mints as official', () => {
+  const account = { value: { owner: SPL_TOKEN_PROGRAM, data: { parsed: { type: 'mint', info: { isInitialized: true, mintAuthority: null, freezeAuthority: null, decimals: 6 } } } } }
+  const supply = { value: { uiAmountString: '999999999.5', decimals: 6 } }
+  assert.deepEqual(summarizeMintAccount(OFFICIAL_MINT, account, supply), {
+    exists: true, isMint: true, isOfficial: true, ownerProgram: SPL_TOKEN_PROGRAM,
+    supply: 999999999.5, decimals: 6, initialized: true, mintAuthority: null, freezeAuthority: null
+  })
+  assert.equal(summarizeMintAccount('1'.repeat(32), account, supply).isOfficial, false)
+  assert.equal(summarizeMintAccount('1'.repeat(32), { value: null }, null).exists, false)
 })
 test('plans oldest-first signature catch-up without replaying the checkpoint', () => {
   const signatures = ['newest', 'middle', 'checkpoint', 'old'].map(signature => ({ signature }))
