@@ -237,11 +237,40 @@ export function marketSnapshotSummary(snapshot, now = Date.now()) {
   }
 }
 
+export function poolSnapshotSummary(snapshot, previous = null, now = Date.now()) {
+  const latest = marketSnapshotSummary(snapshot, now)
+  const number = value => value === null || value === undefined || value === ''
+    ? null
+    : Number.isFinite(Number(value)) ? Number(value) : null
+  const priorLiquidity = number(previous?.liquidity_usd)
+  const pairCreatedAt = number(snapshot?.raw?.pairCreatedAt)
+  return {
+    ...latest,
+    liquidityChangePercentage: latest.liquidityUsd !== null && priorLiquidity !== null && priorLiquidity > 0
+      ? (latest.liquidityUsd - priorLiquidity) / priorLiquidity * 100
+      : null,
+    liquidityToMarketCapPercentage: latest.liquidityUsd !== null && latest.marketCapUsd !== null && latest.marketCapUsd > 0
+      ? latest.liquidityUsd / latest.marketCapUsd * 100
+      : null,
+    volumeH24Usd: number(snapshot?.raw?.volume?.h24),
+    buysH24: number(snapshot?.raw?.txns?.h24?.buys),
+    sellsH24: number(snapshot?.raw?.txns?.h24?.sells),
+    priceChangeH24Percentage: number(snapshot?.raw?.priceChange?.h24),
+    dexId: String(snapshot?.raw?.dexId ?? ''),
+    poolLabel: Array.isArray(snapshot?.raw?.labels) ? snapshot.raw.labels.map(String).join(', ') : '',
+    pairAgeDays: pairCreatedAt !== null && pairCreatedAt > 0
+      ? Math.max(0, Math.floor((now - pairCreatedAt) / 86400000))
+      : null
+  }
+}
+
 export function faqIntent(text) {
   const value = String(text ?? '').trim().toLowerCase().replace(/\s+/g, ' ')
   if (!value || value.length > 180 || value.startsWith('/')) return null
   if (/^(?:what(?:'s| is) (?:the )?)?(?:madger |\$madger )?(?:price|market cap|mc)\??$/.test(value)
     || /^(?:price|market cap) of (?:madger|\$madger)\??$/.test(value)) return 'price'
+  if (/^(?:what(?:'s| is) (?:the )?)?(?:madger |\$madger )?(?:liquidity|pool|pool status|liquidity status)\??$/.test(value)) return 'pool'
+  if (/^(?:what(?:'s| is) (?:the )?)?(?:madger |\$madger )?(?:risk|risk report|risk snapshot)\??$/.test(value)) return 'risk'
   if (/^(?:what(?:'s| is) (?:the )?)?(?:madger |\$madger )?(?:ca|contract|contract address|mint|mint address)\??$/.test(value)) return 'contract'
   if (/^(?:how|where) (?:do|can|could|should)?\s*(?:i|we)?\s*(?:buy|get|purchase) (?:madger|\$madger)(?: safely)?\??$/.test(value)
     || /^where (?:is|can i find) (?:madger|\$madger)\??$/.test(value)) return 'buy'
