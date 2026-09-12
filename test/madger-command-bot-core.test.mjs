@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict'
+import { readFileSync } from 'node:fs'
 import test from 'node:test'
 import {
   OFFICIAL_MINT, OFFICIAL_POOL, PROJECT_WALLETS, RAYDIUM_CPMM_PROGRAM, SPL_TOKEN_PROGRAM, buyTier, classifiedDistribution, compactWallet, contributorRank, escapeHtml, faqIntent,
@@ -10,6 +11,39 @@ import {
   sampleMarketHistory, summarizeMintAccount,
   protectedWalletMovements, shouldActivateRaidMode, significantHolderMovements
 } from '../supabase/functions/madger-command-bot/core.js'
+import {
+  ADMIN_MENU_NAMES, BOT_VERSION, COMMAND_ALIASES, COMMAND_DEFINITIONS, PUBLIC_MENU_NAMES,
+  commandsForMenu, helpText, normalizeTelegramCommand
+} from '../supabase/functions/madger-command-bot/command-registry.js'
+
+test('keeps compact Telegram menus backed by one command registry', () => {
+  assert.equal(BOT_VERSION, '4.4.0')
+  assert.equal(PUBLIC_MENU_NAMES.length, 12)
+  assert.equal(ADMIN_MENU_NAMES.length, 15)
+  assert.equal(new Set(PUBLIC_MENU_NAMES).size, PUBLIC_MENU_NAMES.length)
+  assert.equal(new Set(ADMIN_MENU_NAMES).size, ADMIN_MENU_NAMES.length)
+  assert.ok(commandsForMenu().every(item => item.description === COMMAND_DEFINITIONS[item.command]))
+  assert.ok(commandsForMenu(true).every(item => item.description === COMMAND_DEFINITIONS[item.command]))
+})
+
+test('preserves legacy command aliases while canonicalizing Telegram mentions', () => {
+  assert.deepEqual(COMMAND_ALIASES, {
+    ca: 'verify', contract: 'verify', mint: 'verify', liquidity: 'pool', flow: 'sellstats'
+  })
+  assert.equal(normalizeTelegramCommand('/CA@MADGERcoin_bot'), '/verify')
+  assert.equal(normalizeTelegramCommand('/liquidity'), '/pool')
+  assert.equal(normalizeTelegramCommand('/flow'), '/sellstats')
+  assert.equal(normalizeTelegramCommand('/price@MADGERcoin_bot'), '/price')
+})
+
+test('keeps every registered core function reachable after menu consolidation', () => {
+  const source = readFileSync(new URL('../supabase/functions/madger-command-bot/index.ts', import.meta.url), 'utf8')
+  for (const command of Object.keys(COMMAND_DEFINITIONS)) {
+    assert.match(source, new RegExp("command === '/" + command + "'"), '/' + command + ' remains routed')
+  }
+  assert.match(helpText(true), /\/distribution/)
+  assert.match(helpText(true), /\/leaderboard/)
+})
 
 test('escapes Telegram HTML', () => assert.equal(escapeHtml('<bad & worse>'), '&lt;bad &amp; worse&gt;'))
 test('normalizes valid referral codes', () => {

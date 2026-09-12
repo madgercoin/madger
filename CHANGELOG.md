@@ -2,6 +2,7 @@
 
 ## 2026-09-11 — MADGER Command Bot
 
+- Consolidated command aliases, Telegram menus, help output, and version metadata into a tested registry; reduced the visible menus to essential commands while preserving every advanced and legacy command.
 - Deployed the serverless MADGER Command Bot with safe purchase navigation, exact-mint verification, Telegram referral attribution, contributor missions, human-reviewed ranks, suspicious-address moderation, and private admin reporting.
 - Added independently verified buy-alert ingestion that confirms the buyer's official-MADGER balance increase in the referenced Solana transaction before publishing a thresholded notification.
 - Added five-minute monitoring of the exact DEX Screener pool for significant price and liquidity changes, plus daily retention cleanup.

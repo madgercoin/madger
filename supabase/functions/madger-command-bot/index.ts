@@ -7,6 +7,9 @@ import {
   parseAlertSubscription, parseAnnouncement, parseMissionDefinition, parseRaidMode, parseReviewRequest, parseSolanaAddress, parseTeamAlert, parseTransactionReference, pendingSignatures,
   protectedWalletMovements, sampleMarketHistory, shouldActivateRaidMode, significantHolderMovements, summarizeMintAccount
 } from './core.js'
+import {
+  BOT_VERSION, commandsForMenu, helpText, normalizeTelegramCommand, unknownCommandText
+} from './command-registry.js'
 
 const BOT_TOKEN = Deno.env.get('TELEGRAM_BOT_TOKEN') ?? ''
 const WEBHOOK_SECRET = Deno.env.get('TELEGRAM_WEBHOOK_SECRET') ?? ''
@@ -587,8 +590,8 @@ ${lines.join('\n\n')}
 Updated ${age} minute${age === 1 ? '' : 's'} ago. “Balance intact” confirms the monitored escrow balance, not an endorsement of the provider or a guarantee against every contract risk.`, keyboard([[{ text: '🔎 Verify official mint', url: LINKS.solscanToken }]]))
 }
 
-async function showHelp(chatId) {
-  return send(chatId, '<b>MADGERBOT COMMANDS</b> 🦡\n\n<b>Verification and market intelligence</b>\n/buy · /price · /pool · /risk · /supply · /holders · /wallets · /distribution · /locks · /chart · /checktx · /tokencheck · /checklink · /status · /ca · /verify · /links\n\n<b>Private tools</b>\n/walletcheck · /alert · /alerts · /alertoff · /app\n\n<b>Community</b>\n/rules · /safety · /report · /teams\n\n<b>Contribute</b>\n/missions · /submit · /mywork · /rank · /leaderboard · /referral\n\nMADGERbot never requests wallet credentials, payments, verification transfers, or remote access.')
+async function showHelp(chatId, args = '') {
+  return send(chatId, helpText(args.trim().toLowerCase() === 'all'))
 }
 
 async function faqResponderEnabled() {
@@ -1337,7 +1340,7 @@ async function adminHealth(message) {
   const holderAge = Number.isFinite(holderAt) ? Math.max(0, Math.floor((Date.now() - holderAt) / 60000)) : null
   return send(message.chat.id, `<b>MADGERBOT SYSTEM HEALTH</b> 🩺
 
-Version: 4.3.0
+Version: ${BOT_VERSION}
 Webhook: ${webhook.url ? 'connected ✅' : 'missing ❌'}
 Pending Telegram updates: ${Number(webhook.pending_update_count ?? 0)}
 Market monitor: ${marketAge === null ? 'no snapshot ❌' : marketAge <= 10 ? `current ✅ · ${marketAge}m old` : `stale ⚠️ · ${marketAge}m old`}
@@ -1513,7 +1516,7 @@ async function handleCommand(message) {
   const chatId = message.chat.id
   const raw = message.text?.trim() ?? ''
   const [commandWithBot, ...rest] = raw.split(/\s+/)
-  const command = commandWithBot.toLowerCase().split('@')[0]
+  const command = normalizeTelegramCommand(commandWithBot)
   const args = rest.join(' ')
   const startIntent = command === '/start' ? args.trim().toLowerCase() : ''
   const startRef = command === '/start' && startIntent !== 'teams' ? normalizeReferral(args) : null
@@ -1522,9 +1525,9 @@ async function handleCommand(message) {
   if (command === '/start' && startIntent === 'teams') return showTeams(message)
   if (command === '/start') return showWelcome(chatId, message.from, startRef)
   if (command === '/buy') return send(chatId, `<b>BUY $MADGER SAFELY</b>\n\nOfficial mint:\n<code>${OFFICIAL_MINT}</code>\n\nMADGER never presets your amount or slippage. Review every wallet prompt before approving.`, conversionKeyboard())
-  if (command === '/mint' || command === '/verify' || command === '/ca' || command === '/contract') return send(chatId, `<b>OFFICIAL MADGER MINT</b>\n<code>${OFFICIAL_MINT}</code>\n\nPool:\n<code>${OFFICIAL_POOL}</code>`, keyboard([[{ text: 'Open canonical verification', url: LINKS.verify }]]))
+  if (command === '/verify') return send(chatId, `<b>OFFICIAL MADGER MINT</b>\n<code>${OFFICIAL_MINT}</code>\n\nPool:\n<code>${OFFICIAL_POOL}</code>`, keyboard([[{ text: 'Open canonical verification', url: LINKS.verify }]]))
   if (command === '/price') return showMarket(chatId)
-  if (command === '/pool' || command === '/liquidity') return showPool(chatId)
+  if (command === '/pool') return showPool(chatId)
   if (command === '/risk') return showRisk(chatId)
   if (command === '/supply') return showSupply(chatId)
   if (command === '/holders') return showHolders(chatId)
@@ -1546,7 +1549,7 @@ async function handleCommand(message) {
     return send(chatId, '<b>MADGER COMMAND CENTER</b> 🦡\nLive market, holder, and lock intelligence in one read-only dashboard. No wallet connection.', keyboard([[button]]))
   }
   if (command === '/links') return showOfficialLinks(chatId)
-  if (command === '/help') return showHelp(chatId)
+  if (command === '/help') return showHelp(chatId, args)
   if (command === '/missions') return showMissions(chatId, isGroupChat(message.chat))
   if (command === '/submit' && message.chat.type !== 'private') return send(chatId, 'Submit evidence privately to MADGERbot so your contribution record stays tied to your account.')
   if (command === '/submit') return submitMission(chatId, args)
@@ -1579,7 +1582,7 @@ async function handleCommand(message) {
   if (command === '/buypreview') return buyPreview(message)
   if (command === '/buystats') return buyStats(message)
   if (command === '/retrycards') return retryFailedCards(message)
-  if (command === '/sellstats' || command === '/flow') return sellStats(message)
+  if (command === '/sellstats') return sellStats(message)
   if (command === '/daily') return dailyBriefing(null, message)
   if (command === '/holderintel') return showHolderIntel(message)
   if (command === '/reviews') return showReviews(message)
@@ -1596,7 +1599,7 @@ async function handleCommand(message) {
   if (command === '/clearwarns') return adminRecoveryAction(message, 'clearwarns')
   if (command === '/memberinfo') return memberInfo(message)
   if (command === '/cleanup') return cleanupMessage(message)
-  return send(chatId, 'Commands: /buy · /price · /pool · /risk · /holders · /wallets · /distribution · /locks · /checktx · /checklink · /alert · /alerts · /app · /verify · /missions · /submit · /mywork · /rank · /leaderboard · /referral · /teams · /rules · /safety · /report')
+  return send(chatId, unknownCommandText())
 }
 
 async function moderate(message) {
@@ -2145,77 +2148,8 @@ async function setupTelegram(request) {
     allowed_updates: ['message', 'edited_message', 'channel_post', 'edited_channel_post', 'callback_query', 'inline_query', 'my_chat_member'],
     drop_pending_updates: false
   })
-  const publicCommands = [
-    { command: 'buy', description: 'Open verified MADGER purchase routes' },
-    { command: 'price', description: 'Latest MADGER market snapshot' },
-    { command: 'pool', description: 'Official pool liquidity and activity' },
-    { command: 'risk', description: 'Verified MADGER risk snapshot' },
-    { command: 'supply', description: 'Live on-chain supply and authority audit' },
-    { command: 'holders', description: 'On-chain MADGER holder intelligence' },
-    { command: 'wallets', description: 'Live published project-wallet balances' },
-    { command: 'distribution', description: 'Classified MADGER distribution' },
-    { command: 'locks', description: 'Verified reserve and LP lock balances' },
-    { command: 'chart', description: 'Open the verified live chart' },
-    { command: 'checktx', description: 'Classify a Solana transaction safely' },
-    { command: 'tokencheck', description: 'Verify any token mint against MADGER' },
-    { command: 'checklink', description: 'Inspect a link without opening it' },
-    { command: 'walletcheck', description: 'Privately inspect a public Solana address' },
-    { command: 'status', description: 'Public MADGERbot service health' },
-    { command: 'alert', description: 'Create a private market alert' },
-    { command: 'alerts', description: 'Manage your private alerts' },
-    { command: 'alertoff', description: 'Disable one private alert' },
-    { command: 'app', description: 'Open the visual MADGER dashboard' },
-    { command: 'ca', description: 'Copy the official MADGER mint' },
-    { command: 'links', description: 'Open verified MADGER links' },
-    { command: 'verify', description: 'Verify the official mint and pool' },
-    { command: 'missions', description: 'View active contributor missions' },
-    { command: 'submit', description: 'Submit mission evidence' },
-    { command: 'mywork', description: 'View your private submission history' },
-    { command: 'rank', description: 'View contribution points and rank' },
-    { command: 'leaderboard', description: 'Top approved MADGER contributors' },
-    { command: 'referral', description: 'Create your attributable invite link' },
-    { command: 'teams', description: 'Join or leave MADGER promotion teams' },
-    { command: 'jointeam', description: 'Join raid or outreach alerts privately' },
-    { command: 'leaveteam', description: 'Leave raid or outreach alerts' },
-    { command: 'rules', description: 'Read The Burrow community rules' },
-    { command: 'safety', description: 'Read the official wallet safety standard' },
-    { command: 'report', description: 'Reply to suspicious content to report it' },
-    { command: 'help', description: 'Show MADGERbot commands' },
-    { command: 'whoami', description: 'Display your numeric Telegram ID' },
-    { command: 'chatid', description: 'Display the current chat ID' }
-  ]
-  const adminCommands = [...publicCommands,
-    { command: 'dashboard', description: 'Admin command-center dashboard' },
-    { command: 'health', description: 'Admin system health console' },
-    { command: 'rpcstatus', description: 'Admin RPC failover diagnostics' },
-    { command: 'modlog', description: 'Admin recent safety activity' },
-    { command: 'raidmode', description: 'Admin Raid Shield controls' },
-    { command: 'purgeunverified', description: 'Admin removal of pending joins' },
-    { command: 'faqmode', description: 'Admin FAQ responder controls' },
-    { command: 'announce', description: 'Admin official Burrow announcement' },
-    { command: 'announcepin', description: 'Admin announcement with pin request' },
-    { command: 'teamalert', description: 'Admin promotion-team alert' },
-    { command: 'teamstats', description: 'Admin promotion-team counts' },
-    { command: 'missionadd', description: 'Admin create contributor mission' },
-    { command: 'missionclose', description: 'Admin close contributor mission' },
-    { command: 'missionopen', description: 'Admin reactivate contributor mission' },
-    { command: 'missionlist', description: 'Admin view all mission statuses' },
-    { command: 'reviews', description: 'Admin pending submission queue' },
-    { command: 'stats', description: 'Admin seven-day bot report' },
-    { command: 'buypreview', description: 'Admin preview of the branded buy card' },
-    { command: 'buystats', description: 'Admin verified-buy delivery performance' },
-    { command: 'retrycards', description: 'Admin retry failed buy cards' },
-    { command: 'sellstats', description: 'Admin private verified-flow report' },
-    { command: 'daily', description: 'Admin daily operations briefing' },
-    { command: 'holderintel', description: 'Admin holder concentration console' },
-    { command: 'warn', description: 'Admin reply-based warning' },
-    { command: 'mute', description: 'Admin reply-based temporary mute' },
-    { command: 'ban', description: 'Admin reply-based removal' },
-    { command: 'unmute', description: 'Admin restore a muted member' },
-    { command: 'clearwarns', description: 'Admin reset member warning counters' },
-    { command: 'memberinfo', description: 'Admin inspect a member privately' },
-    { command: 'cleanup', description: 'Admin remove an obsolete message' }
-  ]
+  const publicCommands = commandsForMenu(false)
+  const adminCommands = commandsForMenu(true)
   await telegram('setMyCommands', { commands: publicCommands })
   for (const adminId of ADMIN_IDS) {
     await telegram('setMyCommands', { commands: adminCommands, scope: { type: 'chat', chat_id: Number(adminId) } })
@@ -2248,7 +2182,7 @@ Deno.serve(async request => {
     if (request.method === 'GET' && url.pathname.endsWith('/public-data')) return publicDashboardData()
     if (request.method === 'GET' && url.pathname.endsWith('/mini-app')) return miniAppResponse()
     if (request.method === 'GET') {
-      return Response.json({ ok: true, service: 'MADGER Command Bot', version: '4.3.0', configured: Boolean(BOT_TOKEN && WEBHOOK_SECRET), token_authenticity_inspector: true, live_supply_audit: true, rpc_diagnostics: true, liquidity_history_chart: true, private_wallet_inspector: true, public_system_status: true, market_history_chart: true, signer_proof: true, liquidity_event_classification: true, safe_link_inspector: true, self_healing_watchdog: true, buy_card_recovery: true, transaction_classifier: true, buy_card_v2: true, private_sell_intelligence: true, personal_alerts: true, daily_briefing: true, rpc_failover: true, inline_sharing: true, mini_app: true, operations_console: true, moderation_log: true, member_inspection: true, moderation_recovery: true, community_guard: true, raid_shield: true, raid_link_firewall: true, stale_content_cleanup: true, faq_responder: true, market_commands: true, pool_intelligence: true, risk_snapshot: true, liquidity_trends: true, holder_intelligence: true, holder_growth: true, concentration_tracking: true, wallet_classification: true, distribution_intelligence: true, lock_monitoring: true, protected_wallet_alerts: true, wallet_movement_alerts: true, promotion_teams: true, announcements: true, contributor_leaderboard: true, contributor_history: true, mission_admin: true, review_queue: true, native_buy_watcher: true, one_minute_buy_watcher: true, catchup_scanner: true, watcher_health: true, every_verified_buy: true, branded_buy_cards: true, buy_delivery_telemetry: true })
+      return Response.json({ ok: true, service: 'MADGER Command Bot', version: BOT_VERSION, configured: Boolean(BOT_TOKEN && WEBHOOK_SECRET), command_registry: true, compact_command_menus: true, token_authenticity_inspector: true, live_supply_audit: true, rpc_diagnostics: true, liquidity_history_chart: true, private_wallet_inspector: true, public_system_status: true, market_history_chart: true, signer_proof: true, liquidity_event_classification: true, safe_link_inspector: true, self_healing_watchdog: true, buy_card_recovery: true, transaction_classifier: true, buy_card_v2: true, private_sell_intelligence: true, personal_alerts: true, daily_briefing: true, rpc_failover: true, inline_sharing: true, mini_app: true, operations_console: true, moderation_log: true, member_inspection: true, moderation_recovery: true, community_guard: true, raid_shield: true, raid_link_firewall: true, stale_content_cleanup: true, faq_responder: true, market_commands: true, pool_intelligence: true, risk_snapshot: true, liquidity_trends: true, holder_intelligence: true, holder_growth: true, concentration_tracking: true, wallet_classification: true, distribution_intelligence: true, lock_monitoring: true, protected_wallet_alerts: true, wallet_movement_alerts: true, promotion_teams: true, announcements: true, contributor_leaderboard: true, contributor_history: true, mission_admin: true, review_queue: true, native_buy_watcher: true, one_minute_buy_watcher: true, catchup_scanner: true, watcher_health: true, every_verified_buy: true, branded_buy_cards: true, buy_delivery_telemetry: true })
     }
     if (url.pathname.endsWith('/setup')) return setupTelegram(request)
     if (url.pathname.endsWith('/watch-buys')) return watchVerifiedBuys(request)
