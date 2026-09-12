@@ -263,6 +263,17 @@ export function compactWallet(value) {
   return `${wallet.slice(0, 5)}…${wallet.slice(-5)}`
 }
 
+export function pendingSignatures(signatures, checkpoint, maximum = 100) {
+  const clean = (signatures ?? []).filter(item => item?.signature && !item.err)
+  const checkpointIndex = clean.findIndex(item => item.signature === checkpoint)
+  const newestFirst = checkpointIndex >= 0 ? clean.slice(0, checkpointIndex) : clean.slice(0, Math.max(1, maximum))
+  return {
+    items: newestFirst.reverse(),
+    checkpointFound: checkpointIndex >= 0,
+    truncated: checkpointIndex < 0 && clean.length > Math.max(1, maximum)
+  }
+}
+
 export function marketAlertReasons(current, previous) {
   const reasons = []
   const currentPrice = Number(current?.priceUsd)
