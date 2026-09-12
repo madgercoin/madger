@@ -1,6 +1,6 @@
 import 'jsr:@supabase/functions-js/edge-runtime.d.ts'
 import {
-  LINKS, OFFICIAL_MINT, OFFICIAL_POOL, buyTier, contributorRank, escapeHtml, faqIntent,
+  LINKS, OFFICIAL_MINT, OFFICIAL_POOL, buyTier, compactWallet, contributorRank, escapeHtml, faqIntent,
   findVerifiedMadgerBuyers,
   marketAlertReasons, marketSnapshotSummary, moderationEscalation, moderationReason,
   normalizeMissionCode, normalizeReferral, normalizeTeam, normalizedMessageFingerprint,
@@ -14,6 +14,7 @@ const BOT_USERNAME = Deno.env.get('TELEGRAM_BOT_USERNAME') ?? ''
 const ADMIN_IDS = new Set((Deno.env.get('TELEGRAM_ADMIN_CHAT_IDS') ?? '').split(',').map(v => v.trim()).filter(Boolean))
 const ADMIN_CHAT_ID = Deno.env.get('TELEGRAM_ADMIN_CHANNEL_ID') ?? [...ADMIN_IDS][0] ?? ''
 const BUY_CHAT_ID = Deno.env.get('TELEGRAM_BUY_ALERT_CHAT_ID') ?? ADMIN_CHAT_ID
+const BUY_ALERT_MEDIA_URL = Deno.env.get('TELEGRAM_BUY_ALERT_MEDIA_URL') ?? LINKS.buyCard
 const SUPABASE_URL = Deno.env.get('SUPABASE_URL') ?? ''
 const SECRET_KEYS = JSON.parse(Deno.env.get('SUPABASE_SECRET_KEYS') ?? '{}')
 const SERVICE_KEY = SECRET_KEYS.default ?? Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
@@ -197,6 +198,30 @@ function conversionKeyboard(referralCode = '') {
     [{ text: '✅ Verify MADGER', url: LINKS.verify }, { text: '🦡 Join The Burrow', url: LINKS.community }],
     [{ text: '🎯 Contributor Missions', callback_data: 'missions' }]
   ])
+}
+
+function buyAlertKeyboard(signature = '') {
+  const firstRow = signature
+    ? [{ text: '🔎 View Transaction', url: `https://solscan.io/tx/${encodeURIComponent(signature)}` }, { text: '📈 Live Chart', url: LINKS.dex }]
+    : [{ text: '📈 Live Chart', url: LINKS.dex }]
+  return keyboard([
+    firstRow,
+    [{ text: '⚡ Buy MADGER', url: trackedUrl('raydium') }, { text: '✅ Verify Mint', url: LINKS.verify }]
+  ])
+}
+
+async function sendBuyCard(chatId, caption, signature = '') {
+  try {
+    const message = await telegram('sendPhoto', {
+      chat_id: chatId, photo: BUY_ALERT_MEDIA_URL, caption, parse_mode: 'HTML',
+      reply_markup: buyAlertKeyboard(signature)
+    })
+    return { message, deliveryMethod: 'photo' }
+  } catch (mediaError) {
+    console.error('MADGER buy-card media delivery failed; using text fallback', mediaError)
+    const message = await send(chatId, caption, buyAlertKeyboard(signature))
+    return { message, deliveryMethod: 'text_fallback' }
+  }
 }
 
 async function recordEvent(eventType, chatId, metadata = {}, referralCode = null) {
@@ -793,6 +818,83 @@ async function adminStats(chatId) {
   await send(chatId, `<b>MADGER BOT — 7 DAY COMMAND REPORT</b>\n\nMembers tracked: ${users?.length ?? 0}\nPending submissions: ${submissions?.length ?? 0}\nWelcome sessions: ${counts.welcome ?? 0}\nMission views: ${counts.missions_viewed ?? 0}\nSubmissions: ${counts.mission_submitted ?? 0}\nReferral link opens: ${counts.referral_open ?? 0}\n\nLatest market snapshot:\nPrice: ${market?.price_usd ?? 'unavailable'} USD\nLiquidity: ${market?.liquidity_usd ?? 'unavailable'} USD`)
 }
 
+function buyAlertCaption({ amount, usdValue, buyer, tier, market, preview = false }) {
+  const metric = value => value === null || value === undefined ? Number.NaN : Number(value)
+  const price = metric(market?.priceUsd)
+  const liquidity = metric(market?.liquidityUsd)
+  const marketCap = metric(market?.marketCapUsd)
+  return `${preview ? '<b>PREVIEW — NOT A LIVE BUY</b> 🧪\\n\\n' : ''}<b>MADGER BUY DETECTED</b> 🦡⚡
+
+${tier.emoji} <b>${escapeHtml(tier.label)}</b>
+<b>${Number(amount).toLocaleString('en-US', { maximumFractionDigits: 2 })} $MADGER</b>
+Approx. value: <b>${compactUsd(Number(usdValue))}</b>
+
+Price: ${compactUsd(price)}
+Market cap: ${compactUsd(marketCap, 0)}
+Liquidity: ${compactUsd(liquidity, 0)}
+Buyer: <code>${escapeHtml(compactWallet(buyer))}</code>
+
+✅ Verified against the official Raydium pool
+Mint: <code>${OFFICIAL_MINT}</code>`
+}
+
+async function buyPreview(message) {
+  if (!ADMIN_IDS.has(String(message.from.id))) return send(message.chat.id, 'Admin command denied.')
+  if (message.chat.type !== 'private') {
+    await deleteQuietly(message.chat.id, message.message_id)
+    return send(message.from.id, 'Buy-card previews are private. Use /buypreview in your direct MADGERbot chat.')
+  }
+  const rows = await db('madger_bot_market_snapshots?select=price_usd,liquidity_usd,raw,created_at&order=created_at.desc&limit=1')
+  const market = marketSnapshotSummary(rows?.[0] ?? {})
+  const usdValue = 250
+  const amount = market.priceUsd > 0 ? usdValue / market.priceUsd : 250000
+  await sendBuyCard(message.chat.id, buyAlertCaption({
+    amount, usdValue, buyer: OFFICIAL_POOL, tier: buyTier(usdValue), market, preview: true
+  }))
+  await recordEvent('buy_preview_viewed', message.from.id)
+}
+
+async function buyStats(message) {
+  if (!ADMIN_IDS.has(String(message.from.id))) return send(message.chat.id, 'Admin command denied.')
+  if (message.chat.type !== 'private') {
+    await deleteQuietly(message.chat.id, message.message_id)
+    return send(message.from.id, 'Buy performance is private. Use /buystats in your direct MADGERbot chat.')
+  }
+  const since = encodeURIComponent(new Date(Date.now() - 7 * 86400000).toISOString())
+  const rows = await db(`madger_bot_alerts?alert_type=eq.verified_buy&created_at=gte.${since}&select=token_amount,usd_value,metadata,created_at&order=created_at.desc&limit=1000`)
+  const now = Date.now()
+  const summarize = days => {
+    const cutoff = now - days * 86400000
+    const matches = (rows ?? []).filter(row => Date.parse(row.created_at) >= cutoff)
+    return {
+      count: matches.length,
+      tokens: matches.reduce((sum, row) => sum + Number(row.token_amount ?? 0), 0),
+      usd: matches.reduce((sum, row) => sum + Number(row.usd_value ?? 0), 0),
+      largest: Math.max(0, ...matches.map(row => Number(row.usd_value ?? 0))),
+      delivered: matches.filter(row => row.metadata?.delivery_status === 'delivered').length
+    }
+  }
+  const one = summarize(1)
+  const seven = summarize(7)
+  return send(message.chat.id, `<b>MADGER BUY PERFORMANCE</b> 📡
+
+<b>Last 24 hours</b>
+Verified buys: ${one.count}
+Cards delivered: ${one.delivered}/${one.count}
+MADGER bought: ${one.tokens.toLocaleString('en-US', { maximumFractionDigits: 2 })}
+Approx. volume: ${compactUsd(one.usd)}
+Largest buy: ${compactUsd(one.largest)}
+
+<b>Last 7 days</b>
+Verified buys: ${seven.count}
+Cards delivered: ${seven.delivered}/${seven.count}
+MADGER bought: ${seven.tokens.toLocaleString('en-US', { maximumFractionDigits: 2 })}
+Approx. volume: ${compactUsd(seven.usd)}
+Largest buy: ${compactUsd(seven.largest)}
+
+Only independently verified official-pool buys are counted.`)
+}
+
 async function adminHealth(message) {
   if (!ADMIN_IDS.has(String(message.from.id))) return send(message.chat.id, 'Admin command denied.')
   if (message.chat.type !== 'private') {
@@ -1023,6 +1125,8 @@ async function handleCommand(message) {
   if (command === '/whoami') return send(chatId, `Your Telegram user ID is <code>${message.from.id}</code>. Treat admin IDs as operational configuration, not public content.`)
   if (command === '/chatid') return send(chatId, `This chat ID is <code>${message.chat.id}</code>. Use it only in the bot's secure runtime configuration.`)
   if (command === '/stats') return adminStats(chatId)
+  if (command === '/buypreview') return buyPreview(message)
+  if (command === '/buystats') return buyStats(message)
   if (command === '/reviews') return showReviews(message)
   if (command === '/missionlist') return showMissionList(message)
   if (command === '/approve') return reviewSubmission(message, args, 'approved')
@@ -1127,25 +1231,62 @@ async function routeRedirect(request, url) {
   return Response.redirect(target, 302)
 }
 
-async function publishVerifiedBuy(signature, buyer, amount, priceUsd, source) {
+async function publishVerifiedBuy(signature, buyer, amount, market, source) {
+  const priceUsd = Number(typeof market === 'number' ? market : market?.priceUsd ?? 0)
   const usdValue = amount * priceUsd
   const tier = buyTier(usdValue)
+  let inserted
+  let deliveryAttempts = 0
+  let retried = false
   try {
-    await insert('madger_bot_alerts', {
+    inserted = await insert('madger_bot_alerts', {
       alert_type: 'verified_buy', transaction_signature: signature, buyer_wallet: buyer,
-      token_amount: amount, usd_value: usdValue, metadata: { source }
-    })
+      token_amount: amount, usd_value: usdValue,
+      metadata: { source, delivery_status: BUY_CHAT_ID ? 'pending' : 'skipped', delivery_attempts: 0 }
+    }, 'return=representation')
   } catch (error) {
-    if (String(error).includes('duplicate')) return { duplicate: true, instant: false, tier: tier.label }
-    throw error
+    if (!String(error).includes('duplicate')) throw error
+    const existing = await db(`madger_bot_alerts?transaction_signature=eq.${encodeURIComponent(signature)}&select=id,metadata,created_at&limit=1`)
+    const alert = existing?.[0]
+    const status = alert?.metadata?.delivery_status
+    const age = Date.now() - Date.parse(String(alert?.created_at ?? ''))
+    if (!BUY_CHAT_ID || !alert || !['pending', 'failed'].includes(status) || !Number.isFinite(age) || age > 6 * 3600000) {
+      return { duplicate: true, instant: false, tier: tier.label }
+    }
+    inserted = existing
+    deliveryAttempts = Number(alert.metadata?.delivery_attempts ?? 0)
+    retried = true
   }
-  if (tier.instant && BUY_CHAT_ID) {
-    await send(BUY_CHAT_ID, `${tier.emoji} <b>${tier.label}</b>\n\n${amount.toLocaleString('en-US', { maximumFractionDigits: 2 })} MADGER\nApprox. $${usdValue.toFixed(2)}\n\n<a href="https://solscan.io/tx/${encodeURIComponent(signature)}">Verified on Solana</a>`, conversionKeyboard())
+  const alertId = inserted?.[0]?.id
+  if (BUY_CHAT_ID) {
+    try {
+      const delivered = await sendBuyCard(BUY_CHAT_ID, buyAlertCaption({ amount, usdValue, buyer, tier, market }), signature)
+      if (alertId) await db(`madger_bot_alerts?id=eq.${alertId}`, {
+        method: 'PATCH', body: JSON.stringify({
+          metadata: {
+            source, delivery_status: 'delivered', delivered_at: new Date().toISOString(),
+            telegram_message_id: delivered.message?.message_id ?? null,
+            delivery_attempts: deliveryAttempts + 1, delivery_method: delivered.deliveryMethod
+          }
+        })
+      })
+    } catch (error) {
+      if (alertId) await db(`madger_bot_alerts?id=eq.${alertId}`, {
+        method: 'PATCH', body: JSON.stringify({
+          metadata: {
+            source, delivery_status: 'failed', delivery_attempts: deliveryAttempts + 1,
+            last_delivery_error: String(error instanceof Error ? error.message : error).slice(0, 300)
+          }
+        })
+      })
+      throw error
+    }
   }
-  return { duplicate: false, instant: tier.instant, tier: tier.label }
+  return { duplicate: false, retried, instant: Boolean(BUY_CHAT_ID), tier: tier.label }
 }
 
-async function scanVerifiedBuys(priceUsd) {
+async function scanVerifiedBuys(market) {
+  const priceUsd = Number(market?.priceUsd ?? 0)
   const signatures = (await solanaRpc('getSignaturesForAddress', [
     OFFICIAL_POOL, { commitment: 'confirmed', limit: 30 }
   ]) ?? []).filter(item => !item.err)
@@ -1172,7 +1313,7 @@ async function scanVerifiedBuys(priceUsd) {
       if (!transaction) throw new Error('confirmed transaction was unavailable')
       const buyer = findVerifiedMadgerBuyers(transaction)[0]
       if (buyer) {
-        const result = await publishVerifiedBuy(item.signature, buyer.buyer, buyer.amount, priceUsd, 'native_pool_watcher')
+        const result = await publishVerifiedBuy(item.signature, buyer.buyer, buyer.amount, market, 'native_pool_watcher')
         verified += 1
         if (result.instant && !result.duplicate) posted += 1
       }
@@ -1207,7 +1348,12 @@ async function monitorMarket(request) {
     raw: pair
   })
   if (reasons.length && ADMIN_CHAT_ID) await send(ADMIN_CHAT_ID, `<b>MADGER MARKET ALERT</b> ⚠️\n\n${reasons.map(escapeHtml).join('\n')}\n\nPrice: $${escapeHtml(pair.priceUsd)}\nLiquidity: $${escapeHtml(pair.liquidity?.usd)}\n<a href="${LINKS.dex}">Inspect verified pair</a>`)
-  const buyWatcher = await scanVerifiedBuys(Number(pair.priceUsd ?? 0))
+  const buyWatcher = await scanVerifiedBuys(marketSnapshotSummary({
+    price_usd: pair.priceUsd ?? null,
+    liquidity_usd: pair.liquidity?.usd ?? null,
+    raw: pair,
+    created_at: new Date().toISOString()
+  }))
   return Response.json({ ok: true, alerts: reasons.length, buy_watcher: buyWatcher })
 }
 
@@ -1221,8 +1367,9 @@ async function verifyBuyAlert(request) {
   if (!transaction || transaction.meta?.err) return new Response('Transaction not confirmed', { status: 422 })
   const verifiedBuyer = findVerifiedMadgerBuyers(transaction).find(item => item.buyer === buyer)
   if (!verifiedBuyer) return new Response('No verified MADGER purchase for buyer', { status: 422 })
-  const latest = await db('madger_bot_market_snapshots?select=price_usd&order=created_at.desc&limit=1')
-  const result = await publishVerifiedBuy(signature, buyer, verifiedBuyer.amount, Number(latest?.[0]?.price_usd ?? 0), body.source ?? 'webhook')
+  const latest = await db('madger_bot_market_snapshots?select=price_usd,liquidity_usd,raw,created_at&order=created_at.desc&limit=1')
+  const market = marketSnapshotSummary(latest?.[0] ?? {})
+  const result = await publishVerifiedBuy(signature, buyer, verifiedBuyer.amount, market, body.source ?? 'webhook')
   return Response.json({ ok: true, verified: true, ...result })
 }
 
@@ -1276,6 +1423,8 @@ async function setupTelegram(request) {
     { command: 'missionlist', description: 'Admin view all mission statuses' },
     { command: 'reviews', description: 'Admin pending submission queue' },
     { command: 'stats', description: 'Admin seven-day bot report' },
+    { command: 'buypreview', description: 'Admin preview of the branded buy card' },
+    { command: 'buystats', description: 'Admin verified-buy delivery performance' },
     { command: 'warn', description: 'Admin reply-based warning' },
     { command: 'mute', description: 'Admin reply-based temporary mute' },
     { command: 'ban', description: 'Admin reply-based removal' },
@@ -1313,7 +1462,7 @@ Deno.serve(async request => {
     const url = new URL(request.url)
     if (request.method === 'GET' && url.pathname.includes('/go/')) return routeRedirect(request, url)
     if (request.method === 'GET') {
-      return Response.json({ ok: true, service: 'MADGER Command Bot', version: '3.0.0', configured: Boolean(BOT_TOKEN && WEBHOOK_SECRET), operations_console: true, moderation_log: true, member_inspection: true, moderation_recovery: true, community_guard: true, raid_shield: true, raid_link_firewall: true, stale_content_cleanup: true, faq_responder: true, market_commands: true, promotion_teams: true, announcements: true, contributor_leaderboard: true, contributor_history: true, mission_admin: true, review_queue: true, native_buy_watcher: true })
+      return Response.json({ ok: true, service: 'MADGER Command Bot', version: '3.1.0', configured: Boolean(BOT_TOKEN && WEBHOOK_SECRET), operations_console: true, moderation_log: true, member_inspection: true, moderation_recovery: true, community_guard: true, raid_shield: true, raid_link_firewall: true, stale_content_cleanup: true, faq_responder: true, market_commands: true, promotion_teams: true, announcements: true, contributor_leaderboard: true, contributor_history: true, mission_admin: true, review_queue: true, native_buy_watcher: true, every_verified_buy: true, branded_buy_cards: true, buy_delivery_telemetry: true })
     }
     if (url.pathname.endsWith('/setup')) return setupTelegram(request)
     if (url.pathname.endsWith('/monitor')) return monitorMarket(request)
