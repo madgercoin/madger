@@ -43,10 +43,16 @@ The database invokes `/monitor-holders` every 15 minutes. Each run queries SPL T
 
 Private alerts fire when wallet count changes materially or an owner balance moves by at least 0.25% of supply or approximately $1,000. These alerts always describe balance movements—not buys or sells—because transfers, treasury operations, liquidity pools, exchanges, and custodial wallets cannot be classified safely from balances alone. Holder snapshots have RLS enabled, no public grants, and 180-day retention.
 
+## Pool and risk intelligence
+
+`/pool` reports the exact configured Raydium pool's liquidity, 24-hour liquidity change, liquidity-to-market-cap ratio, volume, buy/sell counts, price change, age, and data freshness. `/risk` combines exact-mint and exact-pool verification with market freshness, liquidity depth, holder count, and raw concentration. Neither command assigns a “safe” score or predicts returns; both expose the measurable inputs and their limitations. High-confidence natural-language questions such as `liquidity`, `pool`, or `risk` route to the same reports.
+
 ## Commands
 
 - `/buy` — neutral, verified purchase routes
 - `/price` — latest stored price, market cap, liquidity, five-minute volume, and buy/sell counts
+- `/pool` or `/liquidity` — official-pool liquidity depth, 24-hour trend, activity, and age
+- `/risk` — combined verified-pool, freshness, liquidity, and raw concentration snapshot
 - `/holders` — positive-balance wallet growth and ownership concentration
 - `/chart` — official-pool DEX Screener chart
 - `/ca` or `/contract` — complete official mint and pool
