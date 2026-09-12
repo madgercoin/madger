@@ -47,6 +47,12 @@ Private alerts fire when wallet count changes materially or an owner balance mov
 
 `/pool` reports the exact configured Raydium pool's liquidity, 24-hour liquidity change, liquidity-to-market-cap ratio, volume, buy/sell counts, price change, age, and data freshness. `/risk` combines exact-mint and exact-pool verification with market freshness, liquidity depth, holder count, and raw concentration. Neither command assigns a “safe” score or predicts returns; both expose the measurable inputs and their limitations. High-confidence natural-language questions such as `liquidity`, `pool`, or `risk` route to the same reports.
 
+## Wallet classification and locks
+
+The bot classifies the five full wallet addresses published in MADGER's official allocation record: liquidity reserve, treasury, community, operations, and creator reserve. `/wallets` displays their current on-chain balances, while `/distribution` separates those balances and the verified strategic-reserve lock from other pool and holder wallets. Target allocation percentages remain reference targets and are never presented as current balances.
+
+`/locks` monitors the Jupiter Lock strategic-reserve escrow and two documented Streamflow LP escrow token accounts. Every 15-minute holder run verifies each escrow balance. Any decrease triggers a private administrator warning, and outbound movements of at least 1,000 MADGER or inbound movements of at least 10,000 MADGER involving a published project wallet produce a separate protected-wallet alert. Alerts describe observed movements and require comparison against the authorized transaction record; they do not allege misconduct or infer trade direction.
+
 ## Commands
 
 - `/buy` — neutral, verified purchase routes
@@ -54,6 +60,9 @@ Private alerts fire when wallet count changes materially or an owner balance mov
 - `/pool` or `/liquidity` — official-pool liquidity depth, 24-hour trend, activity, and age
 - `/risk` — combined verified-pool, freshness, liquidity, and raw concentration snapshot
 - `/holders` — positive-balance wallet growth and ownership concentration
+- `/wallets` — live balances for the five published project wallets
+- `/distribution` — classified project, lock, pool, and other-holder distribution
+- `/locks` — strategic-reserve and LP escrow balance monitor
 - `/chart` — official-pool DEX Screener chart
 - `/ca` or `/contract` — complete official mint and pool
 - `/links` — official website, community, verification, and chart links
