@@ -1,11 +1,11 @@
 import 'jsr:@supabase/functions-js/edge-runtime.d.ts'
 import {
-  LINKS, OFFICIAL_MINT, OFFICIAL_POOL, buyTier, compactWallet, contributorRank, escapeHtml, faqIntent,
+  LINKS, LOCK_RECORDS, OFFICIAL_MINT, OFFICIAL_POOL, PROJECT_WALLETS, buyTier, classifiedDistribution, compactWallet, contributorRank, escapeHtml, faqIntent,
   findVerifiedMadgerBuyers, holderSnapshotFromAccounts,
   marketAlertReasons, marketSnapshotSummary, moderationEscalation, moderationReason, poolSnapshotSummary,
   normalizeMissionCode, normalizeReferral, normalizeTeam, normalizedMessageFingerprint,
   parseAnnouncement, parseMissionDefinition, parseRaidMode, parseReviewRequest, parseTeamAlert, pendingSignatures,
-  shouldActivateRaidMode, significantHolderMovements
+  protectedWalletMovements, shouldActivateRaidMode, significantHolderMovements
 } from './core.js'
 
 const BOT_TOKEN = Deno.env.get('TELEGRAM_BOT_TOKEN') ?? ''
@@ -520,8 +520,60 @@ ${lines.join('\n')}
 Movement alerts identify balance changes only. They never label a transfer as a buy or sell.`, keyboard([[{ text: 'Inspect token accounts', url: LINKS.solscanToken }]]))
 }
 
+function walletExplorer(address) {
+  return `https://solscan.io/account/${address}`
+}
+
+async function showWallets(chatId) {
+  const [rows] = await holderSnapshots()
+  const latest = rows?.[0]
+  if (!latest) return send(chatId, 'Wallet intelligence is initializing.')
+  const distribution = classifiedDistribution({ totalSupply: Number(latest.total_supply), owners: latest.raw?.owners ?? [] })
+  const lines = distribution.rows.filter(item => item.kind === 'project').map(item =>
+    `• <b>${escapeHtml(item.role)}</b> · ${Number(item.amount).toLocaleString('en-US', { maximumFractionDigits: 2 })} MADGER · ${item.percentage.toFixed(2)}%\n  <a href="${walletExplorer(item.address)}"><code>${escapeHtml(compactWallet(item.address))}</code></a>`
+  )
+  return send(chatId, `<b>MADGER PROJECT WALLETS</b> 🧾
+
+${lines.join('\n')}
+
+These are the five wallets published in MADGER's official allocation record. Balances are read from the chain and may differ from target percentages after authorized liquidity, lock, or operating activity.`, keyboard([[{ text: '✅ Official allocation record', url: LINKS.verify }, { text: '🔎 Token explorer', url: LINKS.solscanToken }]]))
+}
+
+async function showDistribution(chatId) {
+  const [rows] = await holderSnapshots()
+  const latest = rows?.[0]
+  if (!latest) return send(chatId, 'Distribution intelligence is initializing.')
+  const distribution = classifiedDistribution({ totalSupply: Number(latest.total_supply), owners: latest.raw?.owners ?? [] })
+  const lines = distribution.rows.map(item =>
+    `• ${escapeHtml(item.role)}: <b>${Number(item.amount).toLocaleString('en-US', { maximumFractionDigits: 2 })}</b> · ${item.percentage.toFixed(2)}%`
+  )
+  return send(chatId, `<b>MADGER CLASSIFIED DISTRIBUTION</b> 🧭
+
+${lines.join('\n')}
+
+Classified total: <b>${distribution.classifiedPercentage.toFixed(2)}%</b>
+Other pool and holder wallets: <b>${distribution.unclassifiedPercentage.toFixed(2)}%</b>
+
+“Classified” identifies a published wallet or verified lock account. It does not imply that every transfer is authorized, and target allocation percentages are not current balances.`, keyboard([[{ text: '🧾 Project wallets', url: LINKS.verify }, { text: '📊 Holder report', url: LINKS.solscanToken }]]))
+}
+
+async function showLocks(chatId) {
+  const health = await setting('lock_monitor_health')
+  if (!health?.records?.length) return send(chatId, 'Lock intelligence is initializing. Try again after the next holder-monitor run.')
+  const lines = health.records.map(item => {
+    const schedule = item.end_date ? ` · scheduled through ${item.end_date}` : item.cliff_date ? ` · unlock ${item.cliff_date}` : ' · unlock date pending verified record'
+    return `• <b>${escapeHtml(item.label)}</b> · ${escapeHtml(item.provider)}\n  ${Number(item.amount).toLocaleString('en-US', { maximumFractionDigits: 9 })} ${escapeHtml(item.asset)} · ${item.intact ? 'balance intact ✅' : 'review required ⚠️'}${schedule}\n  <a href="${walletExplorer(item.address)}"><code>${escapeHtml(compactWallet(item.address))}</code></a>`
+  })
+  const age = Math.max(0, Math.floor((Date.now() - Date.parse(health.last_run_at)) / 60000))
+  return send(chatId, `<b>MADGER LOCK MONITOR</b> 🔐
+
+${lines.join('\n\n')}
+
+Updated ${age} minute${age === 1 ? '' : 's'} ago. “Balance intact” confirms the monitored escrow balance, not an endorsement of the provider or a guarantee against every contract risk.`, keyboard([[{ text: '🔎 Verify official mint', url: LINKS.solscanToken }]]))
+}
+
 async function showHelp(chatId) {
-  return send(chatId, '<b>MADGERBOT COMMANDS</b> 🦡\n\n<b>Market intelligence</b>\n/buy · /price · /pool · /risk · /holders · /chart · /ca · /verify · /links\n\n<b>Community</b>\n/rules · /safety · /report · /teams\n\n<b>Contribute</b>\n/missions · /submit · /mywork · /rank · /leaderboard · /referral\n\nMADGERbot never requests wallet credentials, payments, verification transfers, or remote access.')
+  return send(chatId, '<b>MADGERBOT COMMANDS</b> 🦡\n\n<b>Market intelligence</b>\n/buy · /price · /pool · /risk · /holders · /wallets · /distribution · /locks · /chart · /ca · /verify · /links\n\n<b>Community</b>\n/rules · /safety · /report · /teams\n\n<b>Contribute</b>\n/missions · /submit · /mywork · /rank · /leaderboard · /referral\n\nMADGERbot never requests wallet credentials, payments, verification transfers, or remote access.')
 }
 
 async function faqResponderEnabled() {
@@ -1024,7 +1076,7 @@ async function adminHealth(message) {
     return send(message.from.id, 'System health is private. Use /health here in your direct MADGERbot chat.')
   }
   const bot = await telegram('getMe', {})
-  const [webhook, membership, snapshots, cleanup, raidMode, chatSecurity, watcherHealth, recentBuys, holderHealth] = await Promise.all([
+  const [webhook, membership, snapshots, cleanup, raidMode, chatSecurity, watcherHealth, recentBuys, holderHealth, lockHealth] = await Promise.all([
     telegram('getWebhookInfo', {}),
     BUY_CHAT_ID ? telegram('getChatMember', { chat_id: BUY_CHAT_ID, user_id: bot.id }).catch(() => null) : null,
     db('madger_bot_market_snapshots?select=created_at&order=created_at.desc&limit=1'),
@@ -1033,7 +1085,8 @@ async function adminHealth(message) {
     chatSecurityInfo(BUY_CHAT_ID),
     setting('native_buy_watcher_health'),
     db('madger_bot_alerts?alert_type=eq.verified_buy&select=metadata,created_at&order=created_at.desc&limit=100'),
-    setting('holder_monitor_health')
+    setting('holder_monitor_health'),
+    setting('lock_monitor_health')
   ])
   const snapshotAt = Date.parse(String(snapshots?.[0]?.created_at ?? ''))
   const marketAge = Number.isFinite(snapshotAt) ? Math.max(0, Math.floor((Date.now() - snapshotAt) / 60000)) : null
@@ -1047,7 +1100,7 @@ async function adminHealth(message) {
   const holderAge = Number.isFinite(holderAt) ? Math.max(0, Math.floor((Date.now() - holderAt) / 60000)) : null
   return send(message.chat.id, `<b>MADGERBOT SYSTEM HEALTH</b> 🩺
 
-Version: 3.4.0
+Version: 3.5.0
 Webhook: ${webhook.url ? 'connected ✅' : 'missing ❌'}
 Pending Telegram updates: ${Number(webhook.pending_update_count ?? 0)}
 Market monitor: ${marketAge === null ? 'no snapshot ❌' : marketAge <= 10 ? `current ✅ · ${marketAge}m old` : `stale ⚠️ · ${marketAge}m old`}
@@ -1056,6 +1109,7 @@ Buy cadence: every minute
 Last scan: ${Number(watcherHealth?.scanned ?? 0)} transactions · ${Number(watcherHealth?.verified ?? 0)} buys · ${Number(watcherHealth?.posted ?? 0)} cards
 Recent card failures: ${watcherFailures}
 Holder monitor: ${holderAge === null ? 'initializing' : holderAge <= 20 && !holderHealth?.error ? `current ✅ · ${holderAge}m old · ${holderHealth.holder_count} wallets` : `attention ⚠️ · ${holderAge}m old`}
+Lock monitor: ${lockHealth?.records?.length ? `${lockHealth.records.filter(item => item.intact).length}/${lockHealth.records.length} balances intact${lockHealth.records.every(item => item.intact) ? ' ✅' : ' ⚠️'}` : 'initializing'}
 Cleanup backlog: ${cleanup?.length ?? 0}${cleanup?.length === 100 ? '+' : ''}
 Raid Shield: ${raidMode.active ? 'ACTIVE 🚨' : 'normal'}
 
@@ -1235,6 +1289,9 @@ async function handleCommand(message) {
   if (command === '/pool' || command === '/liquidity') return showPool(chatId)
   if (command === '/risk') return showRisk(chatId)
   if (command === '/holders') return showHolders(chatId)
+  if (command === '/wallets') return showWallets(chatId)
+  if (command === '/distribution') return showDistribution(chatId)
+  if (command === '/locks') return showLocks(chatId)
   if (command === '/chart') return send(chatId, '<b>MADGER VERIFIED CHART</b> 📈\nThis link is locked to the official Raydium pool.', keyboard([[{ text: 'Open live chart', url: LINKS.dex }]]))
   if (command === '/links') return showOfficialLinks(chatId)
   if (command === '/help') return showHelp(chatId)
@@ -1280,7 +1337,7 @@ async function handleCommand(message) {
   if (command === '/clearwarns') return adminRecoveryAction(message, 'clearwarns')
   if (command === '/memberinfo') return memberInfo(message)
   if (command === '/cleanup') return cleanupMessage(message)
-  return send(chatId, 'Commands: /buy · /price · /pool · /risk · /holders · /verify · /missions · /submit · /mywork · /rank · /leaderboard · /referral · /teams · /rules · /safety · /report')
+  return send(chatId, 'Commands: /buy · /price · /pool · /risk · /holders · /wallets · /distribution · /locks · /verify · /missions · /submit · /mywork · /rank · /leaderboard · /referral · /teams · /rules · /safety · /report')
 }
 
 async function moderate(message) {
@@ -1527,21 +1584,34 @@ async function monitorHolders(request) {
   if (!await authenticateInternal(request)) return new Response('Unauthorized', { status: 401 })
   const startedAt = Date.now()
   try {
-    const [tokenAccounts, supplyResult, previousRows, marketRows] = await Promise.all([
+    const [tokenAccounts, supplyResult, previousRows, marketRows, previousLockHealth] = await Promise.all([
       solanaRpc('getProgramAccounts', [TOKEN_PROGRAM, {
         encoding: 'jsonParsed', commitment: 'confirmed',
         filters: [{ dataSize: 165 }, { memcmp: { offset: 0, bytes: OFFICIAL_MINT } }]
       }]),
       solanaRpc('getTokenSupply', [OFFICIAL_MINT, { commitment: 'confirmed' }]),
       db('madger_bot_holder_snapshots?select=*&order=created_at.desc&limit=1'),
-      db('madger_bot_market_snapshots?select=price_usd&order=created_at.desc&limit=1')
+      db('madger_bot_market_snapshots?select=price_usd&order=created_at.desc&limit=1'),
+      setting('lock_monitor_health')
     ])
     const totalSupply = Number(supplyResult?.value?.uiAmountString ?? supplyResult?.value?.uiAmount ?? 0)
     const current = holderSnapshotFromAccounts(tokenAccounts, totalSupply)
     if (!(current.totalSupply > 0) || !current.holderCount) throw new Error('holder RPC returned no positive MADGER balances')
     const previous = previousRows?.[0]
     const priceUsd = Number(marketRows?.[0]?.price_usd ?? 0)
-    const movements = significantHolderMovements(current, previous?.raw, { priceUsd })
+    const protectedMovements = protectedWalletMovements(current, previous?.raw)
+    const protectedAddresses = new Set([...PROJECT_WALLETS.map(item => item.address), ...LOCK_RECORDS.filter(item => item.asset === 'MADGER').map(item => item.address)])
+    const movements = significantHolderMovements(current, previous?.raw, { priceUsd }).filter(item => !protectedAddresses.has(item.owner))
+    const lockRecords = await Promise.all(LOCK_RECORDS.map(async record => {
+      let amount
+      if (record.asset === 'MADGER') amount = current.owners.find(item => item.owner === record.address)?.amount ?? 0
+      else {
+        const balance = await solanaRpc('getTokenAccountBalance', [record.address, { commitment: 'confirmed' }])
+        amount = Number(balance?.value?.uiAmountString ?? balance?.value?.uiAmount ?? 0)
+      }
+      const tolerance = record.asset === 'MADGER' ? 1 : 0.000001
+      return { ...record, amount, intact: amount + tolerance >= record.expectedAmount }
+    }))
     await insert('madger_bot_holder_snapshots', {
       holder_count: current.holderCount,
       token_account_count: tokenAccounts.length,
@@ -1552,6 +1622,28 @@ async function monitorHolders(request) {
     })
 
     const holderChange = previous ? current.holderCount - Number(previous.holder_count) : 0
+    if (ADMIN_CHAT_ID && previous && protectedMovements.length) {
+      const lines = protectedMovements.map(item =>
+        `• <b>${escapeHtml(item.label)}</b> · ${item.delta >= 0 ? '+' : ''}${item.delta.toLocaleString('en-US', { maximumFractionDigits: 2 })} MADGER\n  <code>${escapeHtml(compactWallet(item.address))}</code> · ${item.previousAmount.toLocaleString('en-US', { maximumFractionDigits: 2 })} → ${item.currentAmount.toLocaleString('en-US', { maximumFractionDigits: 2 })}`
+      )
+      await send(ADMIN_CHAT_ID, `<b>PROTECTED WALLET MOVEMENT</b> 🚨
+
+${lines.join('\n')}
+
+Review these on-chain balance movements against the authorized transaction record. The bot does not determine authorization or trade direction.`, keyboard([[{ text: 'Inspect official token', url: LINKS.solscanToken }]]))
+      await recordEvent('protected_wallet_movement', null, { movement_count: protectedMovements.length })
+    }
+    const priorLocks = new Map((previousLockHealth?.records ?? []).map(item => [item.id, Number(item.amount) || 0]))
+    const decreasedLocks = lockRecords.filter(item => priorLocks.has(item.id) && priorLocks.get(item.id) - item.amount > (item.asset === 'MADGER' ? 1 : 0.000001))
+    if (ADMIN_CHAT_ID && decreasedLocks.length) {
+      const lines = decreasedLocks.map(item => `• <b>${escapeHtml(item.label)}</b> · ${priorLocks.get(item.id).toLocaleString('en-US', { maximumFractionDigits: 9 })} → ${item.amount.toLocaleString('en-US', { maximumFractionDigits: 9 })} ${escapeHtml(item.asset)}`)
+      await send(ADMIN_CHAT_ID, `<b>LOCK BALANCE DECREASE</b> 🔐⚠️
+
+${lines.join('\n')}
+
+Verify the escrow account and the documented release schedule immediately.`)
+      await recordEvent('lock_balance_decrease', null, { lock_count: decreasedLocks.length })
+    }
     if (ADMIN_CHAT_ID && previous && (movements.length || Math.abs(holderChange) >= 2)) {
       const movementLines = movements.slice(0, 5).map(item =>
         `• <code>${escapeHtml(compactWallet(item.owner))}</code> · ${item.delta >= 0 ? '+' : ''}${item.delta.toLocaleString('en-US', { maximumFractionDigits: 2 })} MADGER · ${item.supplyPercentage.toFixed(2)}% of supply${priceUsd > 0 ? ` · ~${compactUsd(item.approximateUsd)}` : ''}`
@@ -1573,13 +1665,23 @@ These are on-chain balance movements—not classified buys or sells. Treasury, l
       holder_change: holderChange, movement_count: movements.length
     }
     await saveSetting('holder_monitor_health', health)
-    return Response.json({ ok: true, holder_monitor: health })
+    const lockHealth = {
+      last_run_at: new Date().toISOString(),
+      records: lockRecords.map(item => ({
+        id: item.id, label: item.label, asset: item.asset, address: item.address,
+        expected_amount: item.expectedAmount, amount: item.amount, intact: item.intact,
+        provider: item.provider, cliff_date: item.cliffDate, end_date: item.endDate
+      }))
+    }
+    await saveSetting('lock_monitor_health', lockHealth)
+    return Response.json({ ok: true, holder_monitor: health, lock_monitor: { records: lockHealth.records.length, intact: lockHealth.records.filter(item => item.intact).length } })
   } catch (error) {
     const health = {
       last_run_at: new Date().toISOString(), duration_ms: Date.now() - startedAt,
       error: String(error instanceof Error ? error.message : error).slice(0, 300)
     }
     await saveSetting('holder_monitor_health', health)
+    await saveSetting('lock_monitor_health', { last_run_at: new Date().toISOString(), records: [], error: health.error })
     return Response.json({ ok: false, holder_monitor: health }, { status: 503 })
   }
 }
@@ -1616,6 +1718,9 @@ async function setupTelegram(request) {
     { command: 'pool', description: 'Official pool liquidity and activity' },
     { command: 'risk', description: 'Verified MADGER risk snapshot' },
     { command: 'holders', description: 'On-chain MADGER holder intelligence' },
+    { command: 'wallets', description: 'Live published project-wallet balances' },
+    { command: 'distribution', description: 'Classified MADGER distribution' },
+    { command: 'locks', description: 'Verified reserve and LP lock balances' },
     { command: 'chart', description: 'Open the verified live chart' },
     { command: 'ca', description: 'Copy the official MADGER mint' },
     { command: 'links', description: 'Open verified MADGER links' },
@@ -1693,7 +1798,7 @@ Deno.serve(async request => {
     const url = new URL(request.url)
     if (request.method === 'GET' && url.pathname.includes('/go/')) return routeRedirect(request, url)
     if (request.method === 'GET') {
-      return Response.json({ ok: true, service: 'MADGER Command Bot', version: '3.4.0', configured: Boolean(BOT_TOKEN && WEBHOOK_SECRET), operations_console: true, moderation_log: true, member_inspection: true, moderation_recovery: true, community_guard: true, raid_shield: true, raid_link_firewall: true, stale_content_cleanup: true, faq_responder: true, market_commands: true, pool_intelligence: true, risk_snapshot: true, liquidity_trends: true, holder_intelligence: true, holder_growth: true, concentration_tracking: true, wallet_movement_alerts: true, promotion_teams: true, announcements: true, contributor_leaderboard: true, contributor_history: true, mission_admin: true, review_queue: true, native_buy_watcher: true, one_minute_buy_watcher: true, catchup_scanner: true, watcher_health: true, every_verified_buy: true, branded_buy_cards: true, buy_delivery_telemetry: true })
+      return Response.json({ ok: true, service: 'MADGER Command Bot', version: '3.5.0', configured: Boolean(BOT_TOKEN && WEBHOOK_SECRET), operations_console: true, moderation_log: true, member_inspection: true, moderation_recovery: true, community_guard: true, raid_shield: true, raid_link_firewall: true, stale_content_cleanup: true, faq_responder: true, market_commands: true, pool_intelligence: true, risk_snapshot: true, liquidity_trends: true, holder_intelligence: true, holder_growth: true, concentration_tracking: true, wallet_classification: true, distribution_intelligence: true, lock_monitoring: true, protected_wallet_alerts: true, wallet_movement_alerts: true, promotion_teams: true, announcements: true, contributor_leaderboard: true, contributor_history: true, mission_admin: true, review_queue: true, native_buy_watcher: true, one_minute_buy_watcher: true, catchup_scanner: true, watcher_health: true, every_verified_buy: true, branded_buy_cards: true, buy_delivery_telemetry: true })
     }
     if (url.pathname.endsWith('/setup')) return setupTelegram(request)
     if (url.pathname.endsWith('/watch-buys')) return watchVerifiedBuys(request)
