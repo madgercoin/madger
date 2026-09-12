@@ -2,11 +2,12 @@ import assert from 'node:assert/strict'
 import test from 'node:test'
 import {
   OFFICIAL_MINT, OFFICIAL_POOL, PROJECT_WALLETS, RAYDIUM_CPMM_PROGRAM, buyTier, classifiedDistribution, compactWallet, contributorRank, escapeHtml, faqIntent,
-  classifyMadgerTransaction, findVerifiedMadgerBuyers, inspectLinkSafety, isSuspiciousMadgerMessage,
+  classifyKnownAddress, classifyMadgerTransaction, findVerifiedMadgerBuyers, inspectLinkSafety, isSuspiciousMadgerMessage,
   holderSnapshotFromAccounts,
   marketAlertReasons, marketSnapshotSummary, moderationEscalation, moderationReason, poolSnapshotSummary,
   normalizeMissionCode, normalizeReferral, normalizeTeam, normalizedMessageFingerprint,
-  parseAlertSubscription, parseAnnouncement, parseMissionDefinition, parseRaidMode, parseReviewRequest, parseTeamAlert, parseTransactionReference, pendingSignatures,
+  parseAlertSubscription, parseAnnouncement, parseMissionDefinition, parseRaidMode, parseReviewRequest, parseSolanaAddress, parseTeamAlert, parseTransactionReference, pendingSignatures,
+  sampleMarketHistory,
   protectedWalletMovements, shouldActivateRaidMode, significantHolderMovements
 } from '../supabase/functions/madger-command-bot/core.js'
 
@@ -50,6 +51,22 @@ test('assigns honest buy tiers', () => {
 test('abbreviates only valid Solana wallet addresses', () => {
   assert.equal(compactWallet(OFFICIAL_MINT), 'BHauM…XRKqv')
   assert.equal(compactWallet('not-a-wallet'), 'unavailable')
+})
+test('validates full 32-byte Solana addresses and classifies only published records', () => {
+  assert.equal(parseSolanaAddress(OFFICIAL_MINT), OFFICIAL_MINT)
+  assert.equal(parseSolanaAddress('1'.repeat(32)), '1'.repeat(32))
+  assert.equal(parseSolanaAddress('not-a-wallet'), null)
+  assert.deepEqual(classifyKnownAddress(OFFICIAL_POOL), { kind: 'official_pool', label: 'Official Raydium pool' })
+  assert.deepEqual(classifyKnownAddress(PROJECT_WALLETS[1].address), { kind: 'project_wallet', label: 'Treasury' })
+  assert.equal(classifyKnownAddress('1'.repeat(32)).kind, 'unclassified')
+})
+test('samples market history while preserving endpoints and rejecting invalid rows', () => {
+  const rows = Array.from({ length: 10 }, (_, index) => ({ price_usd: index, liquidity_usd: 100 + index, created_at: new Date(index * 1000).toISOString() }))
+  rows.splice(4, 0, { price_usd: 'bad', liquidity_usd: 1, created_at: 'bad' })
+  const sampled = sampleMarketHistory(rows, 4)
+  assert.equal(sampled.length, 4)
+  assert.equal(sampled[0].priceUsd, 0)
+  assert.equal(sampled.at(-1).priceUsd, 9)
 })
 test('plans oldest-first signature catch-up without replaying the checkpoint', () => {
   const signatures = ['newest', 'middle', 'checkpoint', 'old'].map(signature => ({ signature }))

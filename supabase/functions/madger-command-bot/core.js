@@ -408,6 +408,51 @@ export function compactWallet(value) {
   return `${wallet.slice(0, 5)}…${wallet.slice(-5)}`
 }
 
+export function parseSolanaAddress(value) {
+  const address = String(value ?? '').trim()
+  if (!/^[1-9A-HJ-NP-Za-km-z]{32,44}$/.test(address)) return null
+  const alphabet = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz'
+  const bytes = [0]
+  for (const character of address) {
+    let carry = alphabet.indexOf(character)
+    if (carry < 0) return null
+    for (let index = 0; index < bytes.length; index += 1) {
+      carry += bytes[index] * 58
+      bytes[index] = carry & 255
+      carry >>= 8
+    }
+    while (carry > 0) {
+      bytes.push(carry & 255)
+      carry >>= 8
+    }
+  }
+  for (let index = 0; index < address.length - 1 && address[index] === '1'; index += 1) bytes.push(0)
+  return bytes.length === 32 ? address : null
+}
+
+export function classifyKnownAddress(address, wallets = PROJECT_WALLETS, locks = LOCK_RECORDS) {
+  if (address === OFFICIAL_POOL) return { kind: 'official_pool', label: 'Official Raydium pool' }
+  const wallet = wallets.find(item => item.address === address)
+  if (wallet) return { kind: 'project_wallet', label: wallet.role }
+  const lock = locks.find(item => item.address === address)
+  if (lock) return { kind: 'verified_lock', label: `${lock.label} · ${lock.provider}` }
+  return { kind: 'unclassified', label: 'Unclassified public address' }
+}
+
+export function sampleMarketHistory(rows, maximum = 96) {
+  const clean = (rows ?? []).map(row => ({
+    priceUsd: Number(row.price_usd), liquidityUsd: Number(row.liquidity_usd),
+    createdAt: String(row.created_at ?? '')
+  })).filter(row => Number.isFinite(row.priceUsd) && row.priceUsd >= 0
+    && Number.isFinite(row.liquidityUsd) && row.liquidityUsd >= 0
+    && Number.isFinite(Date.parse(row.createdAt)))
+  const limit = Math.max(2, Math.floor(Number(maximum) || 96))
+  if (clean.length <= limit) return clean
+  const sampled = []
+  for (let index = 0; index < limit; index += 1) sampled.push(clean[Math.round(index * (clean.length - 1) / (limit - 1))])
+  return sampled
+}
+
 export function pendingSignatures(signatures, checkpoint, maximum = 100) {
   const clean = (signatures ?? []).filter(item => item?.signature && !item.err)
   const checkpointIndex = clean.findIndex(item => item.signature === checkpoint)

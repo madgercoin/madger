@@ -1,11 +1,11 @@
 import 'jsr:@supabase/functions-js/edge-runtime.d.ts'
 import {
   LINKS, LOCK_RECORDS, OFFICIAL_MINT, OFFICIAL_POOL, PROJECT_WALLETS, buyTier, classifiedDistribution, compactWallet, contributorRank, escapeHtml, faqIntent,
-  classifyMadgerTransaction, findVerifiedMadgerBuyers, holderSnapshotFromAccounts, inspectLinkSafety,
+  classifyKnownAddress, classifyMadgerTransaction, findVerifiedMadgerBuyers, holderSnapshotFromAccounts, inspectLinkSafety,
   marketAlertReasons, marketSnapshotSummary, moderationEscalation, moderationReason, poolSnapshotSummary,
   normalizeMissionCode, normalizeReferral, normalizeTeam, normalizedMessageFingerprint,
-  parseAlertSubscription, parseAnnouncement, parseMissionDefinition, parseRaidMode, parseReviewRequest, parseTeamAlert, parseTransactionReference, pendingSignatures,
-  protectedWalletMovements, shouldActivateRaidMode, significantHolderMovements
+  parseAlertSubscription, parseAnnouncement, parseMissionDefinition, parseRaidMode, parseReviewRequest, parseSolanaAddress, parseTeamAlert, parseTransactionReference, pendingSignatures,
+  protectedWalletMovements, sampleMarketHistory, shouldActivateRaidMode, significantHolderMovements
 } from './core.js'
 
 const BOT_TOKEN = Deno.env.get('TELEGRAM_BOT_TOKEN') ?? ''
@@ -36,6 +36,7 @@ const DUPLICATE_MESSAGE_LIMIT = 3
 const MUTE_MINUTES = 10
 const TOKEN_PROGRAM = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
 const adminCache = new Map()
+const walletInspectionCooldown = new Map()
 let activeRpcHost = ''
 
 const dbHeaders = {
@@ -586,7 +587,7 @@ Updated ${age} minute${age === 1 ? '' : 's'} ago. “Balance intact” confirms 
 }
 
 async function showHelp(chatId) {
-  return send(chatId, '<b>MADGERBOT COMMANDS</b> 🦡\n\n<b>Market intelligence</b>\n/buy · /price · /pool · /risk · /holders · /wallets · /distribution · /locks · /chart · /checktx · /checklink · /ca · /verify · /links\n\n<b>Private tools</b>\n/alert · /alerts · /alertoff · /app\n\n<b>Community</b>\n/rules · /safety · /report · /teams\n\n<b>Contribute</b>\n/missions · /submit · /mywork · /rank · /leaderboard · /referral\n\nMADGERbot never requests wallet credentials, payments, verification transfers, or remote access.')
+  return send(chatId, '<b>MADGERBOT COMMANDS</b> 🦡\n\n<b>Market intelligence</b>\n/buy · /price · /pool · /risk · /holders · /wallets · /distribution · /locks · /chart · /checktx · /checklink · /status · /ca · /verify · /links\n\n<b>Private tools</b>\n/walletcheck · /alert · /alerts · /alertoff · /app\n\n<b>Community</b>\n/rules · /safety · /report · /teams\n\n<b>Contribute</b>\n/missions · /submit · /mywork · /rank · /leaderboard · /referral\n\nMADGERbot never requests wallet credentials, payments, verification transfers, or remote access.')
 }
 
 async function faqResponderEnabled() {
@@ -1119,6 +1120,49 @@ async function checkLink(message, args) {
   return send(message.chat.id, `<b>MADGER LINK INSPECTOR</b> 🛡️\n\nResult: <b>${titles[result.level]}</b>\nHost: <code>${escapeHtml(result.host ?? 'unavailable')}</code>\nReason: ${escapeHtml(result.reason)}\n\nThe inspector analyzes the text without opening the destination. An “unverified” result is not proof of fraud; never connect a wallet or enter credentials through an unverified link.`, keyboard([[{ text: 'Open official MADGER links', url: LINKS.official }]]))
 }
 
+async function inspectWallet(message, args) {
+  if (message.chat.type !== 'private') return send(message.chat.id, 'Wallet inspection is private. Open MADGERbot directly and use <code>/walletcheck ADDRESS</code>.')
+  const address = parseSolanaAddress(args)
+  if (!address) return send(message.chat.id, 'Use: <code>/walletcheck SOLANA_ADDRESS</code>\nThe address must be a complete valid 32-byte Solana public key.')
+  const userId = String(message.from.id)
+  const lastRun = Number(walletInspectionCooldown.get(userId) ?? 0)
+  if (Date.now() - lastRun < 15000) return send(message.chat.id, 'Please wait 15 seconds between wallet inspections.')
+  walletInspectionCooldown.set(userId, Date.now())
+  try {
+    const [tokenAccounts, solBalance] = await Promise.all([
+      solanaRpc('getTokenAccountsByOwner', [address, { mint: OFFICIAL_MINT }, { encoding: 'jsonParsed', commitment: 'confirmed' }]),
+      solanaRpc('getBalance', [address, { commitment: 'confirmed' }])
+    ])
+    const madgerBalance = (tokenAccounts?.value ?? []).reduce((sum, item) => {
+      const amount = Number(item?.account?.data?.parsed?.info?.tokenAmount?.uiAmountString ?? item?.account?.data?.parsed?.info?.tokenAmount?.uiAmount ?? 0)
+      return sum + (Number.isFinite(amount) ? amount : 0)
+    }, 0)
+    const sol = Number(solBalance?.value ?? 0) / 1e9
+    const classification = classifyKnownAddress(address)
+    return send(message.chat.id, `<b>MADGER PRIVATE WALLET CHECK</b> 🔎\n\nAddress: <code>${escapeHtml(address)}</code>\nPublished classification: <b>${escapeHtml(classification.label)}</b>\nMADGER balance: <b>${madgerBalance.toLocaleString('en-US', { maximumFractionDigits: 6 })}</b>\nSOL balance: <b>${sol.toLocaleString('en-US', { maximumFractionDigits: 9 })}</b>\nToken accounts found: ${tokenAccounts?.value?.length ?? 0}\n\nRead-only confirmed-chain data. “Unclassified” does not imply misconduct or identify the owner. MADGERbot never connects to, signs for, or controls this wallet.`, keyboard([[{ text: 'Open address on Solscan', url: walletExplorer(address) }]]))
+  } catch {
+    return send(message.chat.id, 'Wallet data is temporarily unavailable across the configured Solana endpoints. No result was inferred—please try again shortly.')
+  }
+}
+
+async function showSystemStatus(chatId) {
+  const [marketRows, watcherHealth, holderHealth, lockHealth] = await Promise.all([
+    db('madger_bot_market_snapshots?select=created_at&order=created_at.desc&limit=1'),
+    setting('native_buy_watcher_health'), setting('holder_monitor_health'), setting('lock_monitor_health')
+  ])
+  const age = value => {
+    const parsed = Date.parse(String(value ?? ''))
+    return Number.isFinite(parsed) ? Math.max(0, Math.floor((Date.now() - parsed) / 60000)) : null
+  }
+  const marketAge = age(marketRows?.[0]?.created_at)
+  const watcherAge = age(watcherHealth?.last_run_at)
+  const holderAge = age(holderHealth?.last_run_at)
+  const locks = lockHealth?.records ?? []
+  const healthy = marketAge !== null && marketAge <= 10 && watcherAge !== null && watcherAge <= 2 && !watcherHealth?.error
+    && (holderAge === null || (holderAge <= 20 && !holderHealth?.error)) && (!locks.length || locks.every(item => item.intact))
+  return send(chatId, `<b>MADGER SYSTEM STATUS</b> ${healthy ? '✅' : '⚠️'}\n\nOverall: <b>${healthy ? 'OPERATIONAL' : 'DEGRADED'}</b>\nMarket feed: ${marketAge === null ? 'initializing' : `${marketAge}m old ${marketAge <= 10 ? '✅' : '⚠️'}`}\nVerified-buy watcher: ${watcherAge === null ? 'initializing' : `${watcherAge}m old ${watcherAge <= 2 && !watcherHealth?.error ? '✅' : '⚠️'}`}\nHolder monitor: ${holderAge === null ? 'initializing' : `${holderAge}m old ${holderAge <= 20 && !holderHealth?.error ? '✅' : '⚠️'}`}\nPublished locks: ${locks.length ? `${locks.filter(item => item.intact).length}/${locks.length} intact` : 'initializing'}\n\nStatus exposes aggregate health only—never private configuration or wallet credentials.`)
+}
+
 async function managePriceAlert(message, args) {
   if (message.chat.type !== 'private') return send(message.chat.id, 'Personal market alerts are private. Open MADGERbot directly and use /alert there.')
   const parsed = parseAlertSubscription(args)
@@ -1230,7 +1274,7 @@ async function adminHealth(message) {
   const holderAge = Number.isFinite(holderAt) ? Math.max(0, Math.floor((Date.now() - holderAt) / 60000)) : null
   return send(message.chat.id, `<b>MADGERBOT SYSTEM HEALTH</b> 🩺
 
-Version: 4.1.0
+Version: 4.2.0
 Webhook: ${webhook.url ? 'connected ✅' : 'missing ❌'}
 Pending Telegram updates: ${Number(webhook.pending_update_count ?? 0)}
 Market monitor: ${marketAge === null ? 'no snapshot ❌' : marketAge <= 10 ? `current ✅ · ${marketAge}m old` : `stale ⚠️ · ${marketAge}m old`}
@@ -1426,6 +1470,8 @@ async function handleCommand(message) {
   if (command === '/chart') return send(chatId, '<b>MADGER VERIFIED CHART</b> 📈\nThis link is locked to the official Raydium pool.', keyboard([[{ text: 'Open live chart', url: LINKS.dex }]]))
   if (command === '/checktx') return checkTransaction(message, args)
   if (command === '/checklink') return checkLink(message, args)
+  if (command === '/walletcheck') return inspectWallet(message, args)
+  if (command === '/status') return showSystemStatus(chatId)
   if (command === '/alert') return managePriceAlert(message, args)
   if (command === '/alerts') return showPersonalAlerts(message)
   if (command === '/alertoff') return disablePersonalAlert(message, args)
@@ -1609,17 +1655,24 @@ async function answerInlineQuery(query) {
 }
 
 async function publicDashboardData() {
-  const [marketRows, holderRows, lockHealth] = await Promise.all([
+  const since = encodeURIComponent(new Date(Date.now() - 86400000).toISOString())
+  const [marketRows, historyRows, holderRows, lockHealth, watcherHealth] = await Promise.all([
     db('madger_bot_market_snapshots?select=price_usd,liquidity_usd,volume_m5_usd,buys_m5,sells_m5,raw,created_at&order=created_at.desc&limit=1'),
+    db(`madger_bot_market_snapshots?created_at=gte.${since}&select=price_usd,liquidity_usd,created_at&order=created_at.asc&limit=500`),
     db('madger_bot_holder_snapshots?select=holder_count,largest_percentage,top_10_percentage,created_at&order=created_at.desc&limit=1'),
-    setting('lock_monitor_health')
+    setting('lock_monitor_health'), setting('native_buy_watcher_health')
   ])
   const market = marketSnapshotSummary(marketRows?.[0] ?? {})
+  const watcherAt = Date.parse(String(watcherHealth?.last_run_at ?? ''))
+  const watcherAgeMinutes = Number.isFinite(watcherAt) ? Math.max(0, Math.floor((Date.now() - watcherAt) / 60000)) : null
+  const locks = lockHealth?.records ?? []
   return Response.json({
     ok: true, mint: OFFICIAL_MINT, pool: OFFICIAL_POOL,
     market: { ...market, volume24hUsd: Number(marketRows?.[0]?.raw?.volume?.h24 ?? 0), priceChange24h: Number(marketRows?.[0]?.raw?.priceChange?.h24 ?? 0) },
+    history24h: sampleMarketHistory(historyRows, 96),
     holders: holderRows?.[0] ?? null,
-    locks: (lockHealth?.records ?? []).map(item => ({ label: item.label, asset: item.asset, intact: item.intact, provider: item.provider, cliffDate: item.cliff_date, endDate: item.end_date })),
+    locks: locks.map(item => ({ label: item.label, asset: item.asset, intact: item.intact, provider: item.provider, cliffDate: item.cliff_date, endDate: item.end_date })),
+    system: { operational: market.ageMinutes <= 10 && watcherAgeMinutes !== null && watcherAgeMinutes <= 2 && !watcherHealth?.error && (!locks.length || locks.every(item => item.intact)), watcherAgeMinutes },
     links: { website: LINKS.home, chart: LINKS.dex, buy: LINKS.guide, verify: LINKS.verify },
     generatedAt: new Date().toISOString()
   }, { headers: { 'Access-Control-Allow-Origin': '*', 'Cache-Control': 'public, max-age=30', 'X-Content-Type-Options': 'nosniff' } })
@@ -1628,9 +1681,9 @@ async function publicDashboardData() {
 function miniAppResponse() {
   const endpoint = `${SUPABASE_URL}/functions/v1/madger-command-bot/public-data`
   return new Response(`<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#080706"><title>MADGER Command Center</title><style>
-  :root{color-scheme:dark;--gold:#e7b84b;--ink:#080706;--panel:#17130d;--soft:#9d927d;--line:#3a2d18}*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 80% 0,#3a2810 0,transparent 35%),var(--ink);color:#fff;font:15px/1.45 system-ui,sans-serif}main{max-width:720px;margin:auto;padding:24px 18px 44px}.brand{display:flex;align-items:center;gap:12px}.mark{display:grid;place-items:center;width:50px;height:50px;border:1px solid var(--gold);border-radius:50%;font-size:27px;background:#120e08}h1{font-size:20px;margin:0;letter-spacing:.06em}small,.muted{color:var(--soft)}.hero{padding:22px 0}.price{font-size:42px;font-weight:850;letter-spacing:-.04em}.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.card{background:linear-gradient(145deg,#1d170e,#100e0b);border:1px solid var(--line);border-radius:18px;padding:16px}.card b{display:block;font-size:21px;margin-top:5px}.wide{grid-column:1/-1}.locks{display:grid;gap:8px;margin-top:9px}.lock{display:flex;justify-content:space-between;padding:10px;border-radius:10px;background:#0d0c0a}.ok{color:#69da8a}.actions{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:12px}a{color:#100d08;background:var(--gold);font-weight:800;text-decoration:none;text-align:center;padding:13px;border-radius:12px}code{word-break:break-all;color:#f5d98e}.error{color:#ff9b88}@media(max-width:420px){.price{font-size:35px}}
-  </style></head><body><main><div class="brand"><div class="mark">🦡</div><div><h1>MADGER COMMAND CENTER</h1><small>Read-only verified intelligence</small></div></div><section class="hero"><small>LIVE PRICE</small><div class="price" id="price">Loading…</div><div id="updated" class="muted"></div></section><section class="grid"><div class="card"><small>LIQUIDITY</small><b id="liquidity">—</b></div><div class="card"><small>24H VOLUME</small><b id="volume">—</b></div><div class="card"><small>HOLDERS</small><b id="holders">—</b></div><div class="card"><small>24H MOVE</small><b id="change">—</b></div><div class="card wide"><small>RESERVE + LP MONITOR</small><div id="locks" class="locks">Loading verified records…</div></div><div class="card wide"><small>OFFICIAL MINT</small><code>${OFFICIAL_MINT}</code><div class="actions"><a href="${LINKS.dex}">LIVE CHART</a><a href="${LINKS.guide}">BUY GUIDE</a></div></div></section><p class="muted">No wallet connection. No custody. No transaction execution. Figures are snapshots and not financial advice.</p></main><script>
-  const money=n=>Number.isFinite(Number(n))?'$'+Number(n).toLocaleString('en-US',{maximumFractionDigits:Number(n)<.01?10:2}):'Unavailable';fetch('${endpoint}').then(r=>r.json()).then(d=>{document.querySelector('#price').textContent=money(d.market.priceUsd);document.querySelector('#liquidity').textContent=money(d.market.liquidityUsd);document.querySelector('#volume').textContent=money(d.market.volume24hUsd);document.querySelector('#holders').textContent=Number(d.holders?.holder_count||0).toLocaleString();document.querySelector('#change').textContent=(Number(d.market.priceChange24h)>=0?'+':'')+Number(d.market.priceChange24h).toFixed(2)+'%';document.querySelector('#updated').textContent='Updated '+(d.market.ageMinutes??'?')+'m ago';document.querySelector('#locks').innerHTML=d.locks.map(x=>'<div class="lock"><span>'+x.label+' · '+x.provider+'</span><strong class="'+(x.intact?'ok':'error')+'">'+(x.intact?'INTACT':'CHECK')+'</strong></div>').join('')||'Initializing';}).catch(()=>{document.querySelector('#price').textContent='Temporarily unavailable';document.querySelector('#price').className='price error'});
+  :root{color-scheme:dark;--gold:#e7b84b;--ink:#080706;--panel:#17130d;--soft:#9d927d;--line:#3a2d18}*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 80% 0,#3a2810 0,transparent 35%),var(--ink);color:#fff;font:15px/1.45 system-ui,sans-serif}main{max-width:720px;margin:auto;padding:24px 18px 44px}.brand{display:flex;align-items:center;gap:12px}.mark{display:grid;place-items:center;width:50px;height:50px;border:1px solid var(--gold);border-radius:50%;font-size:27px;background:#120e08}h1{font-size:20px;margin:0;letter-spacing:.06em}small,.muted{color:var(--soft)}.hero{padding:22px 0}.price{font-size:42px;font-weight:850;letter-spacing:-.04em}.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.card{background:linear-gradient(145deg,#1d170e,#100e0b);border:1px solid var(--line);border-radius:18px;padding:16px}.card b{display:block;font-size:21px;margin-top:5px}.wide{grid-column:1/-1}.chart{width:100%;height:120px;margin-top:12px;overflow:visible}.chart path{fill:none;stroke:var(--gold);stroke-width:3;stroke-linecap:round;stroke-linejoin:round}.locks{display:grid;gap:8px;margin-top:9px}.lock{display:flex;justify-content:space-between;padding:10px;border-radius:10px;background:#0d0c0a}.ok{color:#69da8a}.actions{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:12px}a{color:#100d08;background:var(--gold);font-weight:800;text-decoration:none;text-align:center;padding:13px;border-radius:12px}code{word-break:break-all;color:#f5d98e}.error{color:#ff9b88}@media(max-width:420px){.price{font-size:35px}}
+  </style></head><body><main><div class="brand"><div class="mark">🦡</div><div><h1>MADGER COMMAND CENTER</h1><small>Read-only verified intelligence</small></div></div><section class="hero"><small>LIVE PRICE</small><div class="price" id="price">Loading…</div><div id="updated" class="muted"></div></section><section class="grid"><div class="card"><small>LIQUIDITY</small><b id="liquidity">—</b></div><div class="card"><small>24H VOLUME</small><b id="volume">—</b></div><div class="card"><small>HOLDERS</small><b id="holders">—</b></div><div class="card"><small>24H MOVE</small><b id="change">—</b></div><div class="card wide"><small>VERIFIED 24H PRICE HISTORY</small><svg class="chart" viewBox="0 0 600 120" preserveAspectRatio="none" aria-label="MADGER 24-hour price history"><path id="pricepath" d=""></path></svg><div id="range" class="muted">Loading snapshots…</div></div><div class="card wide"><small>SYSTEM STATUS</small><b id="system">Checking…</b></div><div class="card wide"><small>RESERVE + LP MONITOR</small><div id="locks" class="locks">Loading verified records…</div></div><div class="card wide"><small>OFFICIAL MINT</small><code>${OFFICIAL_MINT}</code><div class="actions"><a href="${LINKS.dex}">LIVE CHART</a><a href="${LINKS.guide}">BUY GUIDE</a></div></div></section><p class="muted">No wallet connection. No custody. No transaction execution. Figures are snapshots and not financial advice.</p></main><script>
+  const money=n=>Number.isFinite(Number(n))?'$'+Number(n).toLocaleString('en-US',{maximumFractionDigits:Number(n)<.01?10:2}):'Unavailable';const chart=rows=>{const values=(rows||[]).map(x=>Number(x.priceUsd)).filter(Number.isFinite);if(values.length<2)return;const lo=Math.min(...values),hi=Math.max(...values),span=hi-lo||1;const points=values.map((v,i)=>(i*600/(values.length-1)).toFixed(1)+','+(112-(v-lo)*104/span).toFixed(1));document.querySelector('#pricepath').setAttribute('d','M'+points.join(' L'));document.querySelector('#range').textContent='Low '+money(lo)+' · High '+money(hi)+' · '+values.length+' verified snapshots'};fetch('${endpoint}').then(r=>r.json()).then(d=>{document.querySelector('#price').textContent=money(d.market.priceUsd);document.querySelector('#liquidity').textContent=money(d.market.liquidityUsd);document.querySelector('#volume').textContent=money(d.market.volume24hUsd);document.querySelector('#holders').textContent=Number(d.holders?.holder_count||0).toLocaleString();document.querySelector('#change').textContent=(Number(d.market.priceChange24h)>=0?'+':'')+Number(d.market.priceChange24h).toFixed(2)+'%';document.querySelector('#updated').textContent='Updated '+(d.market.ageMinutes??'?')+'m ago';chart(d.history24h);const status=document.querySelector('#system');status.textContent=d.system?.operational?'OPERATIONAL ✓':'DEGRADED — CHECK /status';status.className=d.system?.operational?'ok':'error';const locks=document.querySelector('#locks');locks.textContent='';for(const x of d.locks||[]){const row=document.createElement('div'),label=document.createElement('span'),state=document.createElement('strong');row.className='lock';label.textContent=x.label+' · '+x.provider;state.className=x.intact?'ok':'error';state.textContent=x.intact?'INTACT':'CHECK';row.append(label,state);locks.append(row)}if(!locks.children.length)locks.textContent='Initializing';}).catch(()=>{document.querySelector('#price').textContent='Temporarily unavailable';document.querySelector('#price').className='price error'});
   </script></body></html>`, { headers: { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'public, max-age=60', 'Content-Security-Policy': "default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; connect-src https://*.supabase.co; img-src 'none'; base-uri 'none'; frame-ancestors https://web.telegram.org https://*.telegram.org" } })
 }
 
@@ -2038,6 +2091,8 @@ async function setupTelegram(request) {
     { command: 'chart', description: 'Open the verified live chart' },
     { command: 'checktx', description: 'Classify a Solana transaction safely' },
     { command: 'checklink', description: 'Inspect a link without opening it' },
+    { command: 'walletcheck', description: 'Privately inspect a public Solana address' },
+    { command: 'status', description: 'Public MADGERbot service health' },
     { command: 'alert', description: 'Create a private market alert' },
     { command: 'alerts', description: 'Manage your private alerts' },
     { command: 'alertoff', description: 'Disable one private alert' },
@@ -2124,7 +2179,7 @@ Deno.serve(async request => {
     if (request.method === 'GET' && url.pathname.endsWith('/public-data')) return publicDashboardData()
     if (request.method === 'GET' && url.pathname.endsWith('/mini-app')) return miniAppResponse()
     if (request.method === 'GET') {
-      return Response.json({ ok: true, service: 'MADGER Command Bot', version: '4.1.0', configured: Boolean(BOT_TOKEN && WEBHOOK_SECRET), signer_proof: true, liquidity_event_classification: true, safe_link_inspector: true, self_healing_watchdog: true, buy_card_recovery: true, transaction_classifier: true, buy_card_v2: true, private_sell_intelligence: true, personal_alerts: true, daily_briefing: true, rpc_failover: true, inline_sharing: true, mini_app: true, operations_console: true, moderation_log: true, member_inspection: true, moderation_recovery: true, community_guard: true, raid_shield: true, raid_link_firewall: true, stale_content_cleanup: true, faq_responder: true, market_commands: true, pool_intelligence: true, risk_snapshot: true, liquidity_trends: true, holder_intelligence: true, holder_growth: true, concentration_tracking: true, wallet_classification: true, distribution_intelligence: true, lock_monitoring: true, protected_wallet_alerts: true, wallet_movement_alerts: true, promotion_teams: true, announcements: true, contributor_leaderboard: true, contributor_history: true, mission_admin: true, review_queue: true, native_buy_watcher: true, one_minute_buy_watcher: true, catchup_scanner: true, watcher_health: true, every_verified_buy: true, branded_buy_cards: true, buy_delivery_telemetry: true })
+      return Response.json({ ok: true, service: 'MADGER Command Bot', version: '4.2.0', configured: Boolean(BOT_TOKEN && WEBHOOK_SECRET), private_wallet_inspector: true, public_system_status: true, market_history_chart: true, signer_proof: true, liquidity_event_classification: true, safe_link_inspector: true, self_healing_watchdog: true, buy_card_recovery: true, transaction_classifier: true, buy_card_v2: true, private_sell_intelligence: true, personal_alerts: true, daily_briefing: true, rpc_failover: true, inline_sharing: true, mini_app: true, operations_console: true, moderation_log: true, member_inspection: true, moderation_recovery: true, community_guard: true, raid_shield: true, raid_link_firewall: true, stale_content_cleanup: true, faq_responder: true, market_commands: true, pool_intelligence: true, risk_snapshot: true, liquidity_trends: true, holder_intelligence: true, holder_growth: true, concentration_tracking: true, wallet_classification: true, distribution_intelligence: true, lock_monitoring: true, protected_wallet_alerts: true, wallet_movement_alerts: true, promotion_teams: true, announcements: true, contributor_leaderboard: true, contributor_history: true, mission_admin: true, review_queue: true, native_buy_watcher: true, one_minute_buy_watcher: true, catchup_scanner: true, watcher_health: true, every_verified_buy: true, branded_buy_cards: true, buy_delivery_telemetry: true })
     }
     if (url.pathname.endsWith('/setup')) return setupTelegram(request)
     if (url.pathname.endsWith('/watch-buys')) return watchVerifiedBuys(request)
