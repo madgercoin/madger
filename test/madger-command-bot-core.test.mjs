@@ -5,7 +5,7 @@ import {
   findVerifiedMadgerBuyers, isSuspiciousMadgerMessage,
   marketAlertReasons, marketSnapshotSummary, moderationEscalation, moderationReason,
   normalizeMissionCode, normalizeReferral, normalizeTeam, normalizedMessageFingerprint,
-  parseAnnouncement, parseMissionDefinition, parseRaidMode, parseReviewRequest, parseTeamAlert,
+  parseAnnouncement, parseMissionDefinition, parseRaidMode, parseReviewRequest, parseTeamAlert, pendingSignatures,
   shouldActivateRaidMode
 } from '../supabase/functions/madger-command-bot/core.js'
 
@@ -49,6 +49,17 @@ test('assigns honest buy tiers', () => {
 test('abbreviates only valid Solana wallet addresses', () => {
   assert.equal(compactWallet(OFFICIAL_MINT), 'BHauM…XRKqv')
   assert.equal(compactWallet('not-a-wallet'), 'unavailable')
+})
+test('plans oldest-first signature catch-up without replaying the checkpoint', () => {
+  const signatures = ['newest', 'middle', 'checkpoint', 'old'].map(signature => ({ signature }))
+  assert.deepEqual(pendingSignatures(signatures, 'checkpoint'), {
+    items: [{ signature: 'middle' }, { signature: 'newest' }],
+    checkpointFound: true,
+    truncated: false
+  })
+  const capped = pendingSignatures(signatures, 'missing', 2)
+  assert.deepEqual(capped.items, [{ signature: 'middle' }, { signature: 'newest' }])
+  assert.equal(capped.truncated, true)
 })
 test('detects price and liquidity thresholds', () => {
   const reasons = marketAlertReasons({ priceUsd: '1.09', liquidity: { usd: 890 } }, { price_usd: '1', liquidity_usd: 1000 })
