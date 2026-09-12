@@ -1,0 +1,2191 @@
+import 'jsr:@supabase/functions-js/edge-runtime.d.ts'
+import {
+  LINKS, LOCK_RECORDS, OFFICIAL_MINT, OFFICIAL_POOL, PROJECT_WALLETS, SPL_TOKEN_PROGRAM, buyTier, classifiedDistribution, compactWallet, contributorRank, escapeHtml, faqIntent,
+  classifyKnownAddress, classifyMadgerTransaction, findVerifiedMadgerBuyers, holderSnapshotFromAccounts, inspectLinkSafety,
+  marketAlertReasons, marketSnapshotSummary, moderationEscalation, moderationReason, poolSnapshotSummary,
+  normalizeMissionCode, normalizeReferral, normalizeTeam, normalizedMessageFingerprint,
+  parseAlertSubscription, parseAnnouncement, parseMissionDefinition, parseRaidMode, parseReviewRequest, parseSolanaAddress, parseTeamAlert, parseTransactionReference, pendingSignatures,
+  protectedWalletMovements, sampleMarketHistory, shouldActivateRaidMode, significantHolderMovements, summarizeMintAccount
+} from './core.js'
+import {
+  BOT_VERSION, commandsForMenu, helpText, normalizeTelegramCommand, unknownCommandText
+} from './command-registry.js'
+import { monitorIssues } from './monitor-policy.js'
+import { readJsonResponse } from './http-policy.js'
+import { operationTelemetry, routeLabel, telemetrySummary } from './observability.js'
+import { firstSuccessful } from './resilience.js'
+import { createTelegramClient, isGroupChat, keyboard } from './telegram-client.js'
+import { isDuplicateUpdateError, isWebhookAuthorized } from './webhook-policy.js'
+
+const BOT_TOKEN = Deno.env.get('TELEGRAM_BOT_TOKEN') ?? ''
+const WEBHOOK_SECRET = Deno.env.get('TELEGRAM_WEBHOOK_SECRET') ?? ''
+const BOT_USERNAME = Deno.env.get('TELEGRAM_BOT_USERNAME') ?? ''
+const ADMIN_IDS = new Set((Deno.env.get('TELEGRAM_ADMIN_CHAT_IDS') ?? '').split(',').map(v => v.trim()).filter(Boolean))
+const ADMIN_CHAT_ID = Deno.env.get('TELEGRAM_ADMIN_CHANNEL_ID') ?? [...ADMIN_IDS][0] ?? ''
+const BUY_CHAT_ID = Deno.env.get('TELEGRAM_BUY_ALERT_CHAT_ID') ?? ADMIN_CHAT_ID
+const BUY_ALERT_MEDIA_URL = Deno.env.get('TELEGRAM_BUY_ALERT_MEDIA_URL') ?? LINKS.buyCard
+const SUPABASE_URL = Deno.env.get('SUPABASE_URL') ?? ''
+const SECRET_KEYS = JSON.parse(Deno.env.get('SUPABASE_SECRET_KEYS') ?? '{}')
+const SERVICE_KEY = SECRET_KEYS.default ?? Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
+const RPC_URLS = [...new Set([
+  Deno.env.get('SOLANA_RPC_URL'), Deno.env.get('SOLANA_RPC_FALLBACK_URL'),
+  'https://api.mainnet-beta.solana.com'
+].filter(Boolean))]
+const JOIN_VERIFY_MINUTES = 10
+const RAID_VERIFY_MINUTES = 3
+const RAID_MODE_MINUTES = 30
+const RAID_JOIN_WINDOW_SECONDS = 60
+const RAID_JOIN_THRESHOLD = 8
+const FAQ_COOLDOWN_SECONDS = 180
+const FLOOD_WINDOW_SECONDS = 15
+const FLOOD_MESSAGE_LIMIT = 7
+const DUPLICATE_WINDOW_SECONDS = 60
+const DUPLICATE_MESSAGE_LIMIT = 3
+const MUTE_MINUTES = 10
+const TOKEN_PROGRAM = SPL_TOKEN_PROGRAM
+const adminCache = new Map()
+const walletInspectionCooldown = new Map()
+const tokenInspectionCooldown = new Map()
+let activeRpcHost = ''
+const telegram = createTelegramClient(BOT_TOKEN)
+const DASHBOARD_URL = 'https://madgercoin.com/bot-dashboard.html'
+
+const dbHeaders = {
+  apikey: SERVICE_KEY,
+  Authorization: `Bearer ${SERVICE_KEY}`,
+  'Content-Type': 'application/json'
+}
+
+async function db(path, init = {}) {
+  const response = await fetch(`${SUPABASE_URL}/rest/v1/${path}`, {
+    ...init,
+    headers: { ...dbHeaders, ...(init.headers ?? {}) }
+  })
+  return readJsonResponse(response, 'database request', { allowEmpty: true })
+}
+
+async function insert(table, body, prefer = 'return=minimal') {
+  return db(table, { method: 'POST', headers: { Prefer: prefer }, body: JSON.stringify(body) })
+}
+
+async function setting(key) {
+  const rows = await db(`madger_bot_settings?key=eq.${encodeURIComponent(key)}&select=value&limit=1`)
+  return rows?.[0]?.value ?? null
+}
+
+async function saveSetting(key, value) {
+  await db('madger_bot_settings?on_conflict=key', {
+    method: 'POST', headers: { Prefer: 'resolution=merge-duplicates,return=minimal' },
+    body: JSON.stringify({ key, value, updated_at: new Date().toISOString() })
+  })
+}
+
+async function solanaRpc(method, params) {
+  const result = await firstSuccessful(RPC_URLS, async endpoint => {
+      const response = await fetch(endpoint, {
+        method: 'POST', headers: { 'Content-Type': 'application/json' }, signal: AbortSignal.timeout(12000),
+        body: JSON.stringify({ jsonrpc: '2.0', id: 1, method, params })
+      })
+      if (!response.ok) throw new Error(`HTTP ${response.status}`)
+      const payload = await response.json()
+      if (payload.error) throw new Error(payload.error.message ?? 'unknown RPC error')
+      return payload.result
+  }, `Solana RPC ${method}`)
+  activeRpcHost = new URL(result.endpoint).hostname
+  return result.value
+}
+
+function trackedUrl(route, referralCode = '') {
+  const ref = referralCode ? `?ref=${encodeURIComponent(referralCode)}` : ''
+  return `${SUPABASE_URL}/functions/v1/madger-command-bot/go/${route}${ref}`
+}
+
+async function send(chatId, text, replyMarkup, extra = {}) {
+  return telegram('sendMessage', {
+    chat_id: chatId, text, parse_mode: 'HTML', disable_web_page_preview: true,
+    ...(replyMarkup ? { reply_markup: replyMarkup } : {}), ...extra
+  })
+}
+
+async function deleteQuietly(chatId, messageId) {
+  try { await telegram('deleteMessage', { chat_id: chatId, message_id: messageId }) } catch { /* already deleted or insufficient rights */ }
+}
+
+async function isChatAdmin(chatId, userId) {
+  if (ADMIN_IDS.has(String(userId))) return true
+  const key = `${chatId}:${userId}`
+  const cached = adminCache.get(key)
+  if (cached && cached.expires > Date.now()) return cached.value
+  try {
+    const member = await telegram('getChatMember', { chat_id: chatId, user_id: userId })
+    const value = member.status === 'creator' || member.status === 'administrator'
+    adminCache.set(key, { value, expires: Date.now() + 300000 })
+    return value
+  } catch {
+    return false
+  }
+}
+
+async function restrictMember(chatId, userId, untilDate = 0) {
+  return telegram('restrictChatMember', {
+    chat_id: chatId, user_id: userId, until_date: untilDate,
+    use_independent_chat_permissions: true,
+    permissions: {
+      can_send_messages: false, can_send_audios: false, can_send_documents: false,
+      can_send_photos: false, can_send_videos: false, can_send_video_notes: false,
+      can_send_voice_notes: false, can_send_polls: false, can_send_other_messages: false,
+      can_add_web_page_previews: false
+    }
+  })
+}
+
+async function restoreMember(chatId, userId) {
+  return telegram('restrictChatMember', {
+    chat_id: chatId, user_id: userId,
+    use_independent_chat_permissions: true,
+    permissions: {
+      can_send_messages: true, can_send_audios: true, can_send_documents: true,
+      can_send_photos: true, can_send_videos: true, can_send_video_notes: true,
+      can_send_voice_notes: true, can_send_polls: true, can_send_other_messages: true,
+      can_add_web_page_previews: true
+    }
+  })
+}
+
+async function removeMember(chatId, userId) {
+  await telegram('banChatMember', { chat_id: chatId, user_id: userId, revoke_messages: true })
+  await telegram('unbanChatMember', { chat_id: chatId, user_id: userId, only_if_banned: true })
+}
+
+async function moderationState(chatId, userId) {
+  const rows = await db(`madger_bot_moderation_state?chat_id=eq.${encodeURIComponent(chatId)}&user_id=eq.${encodeURIComponent(userId)}&select=*&limit=1`)
+  return rows?.[0] ?? null
+}
+
+async function saveModerationState(body) {
+  await db('madger_bot_moderation_state?on_conflict=chat_id,user_id', {
+    method: 'POST', headers: { Prefer: 'resolution=merge-duplicates,return=minimal' },
+    body: JSON.stringify({ ...body, updated_at: new Date().toISOString() })
+  })
+}
+
+async function scheduleCleanup(chatId, messageId, reason, minutes = 5) {
+  await db('madger_bot_message_cleanup?on_conflict=chat_id,message_id', {
+    method: 'POST', headers: { Prefer: 'resolution=merge-duplicates,return=minimal' },
+    body: JSON.stringify({
+      chat_id: chatId, message_id: messageId, reason,
+      delete_after: new Date(Date.now() + minutes * 60000).toISOString()
+    })
+  })
+}
+
+async function sweepMessageCleanup() {
+  const cutoff = encodeURIComponent(new Date().toISOString())
+  const rows = await db(`madger_bot_message_cleanup?deleted_at=is.null&delete_after=lte.${cutoff}&select=chat_id,message_id&limit=100`)
+  for (const row of rows ?? []) {
+    await deleteQuietly(row.chat_id, row.message_id)
+    await db(`madger_bot_message_cleanup?chat_id=eq.${row.chat_id}&message_id=eq.${row.message_id}`, {
+      method: 'PATCH', body: JSON.stringify({ deleted_at: new Date().toISOString() })
+    })
+  }
+}
+
+function conversionKeyboard(referralCode = '') {
+  return keyboard([
+    [{ text: '🧭 New to crypto: Start Here', url: trackedUrl('guide', referralCode) }],
+    [{ text: '⚡ Open Raydium', url: trackedUrl('raydium', referralCode) }, { text: '📈 Live Chart', url: trackedUrl('dex', referralCode) }],
+    [{ text: '🤖 BONKbot', url: trackedUrl('bonkbot', referralCode) }, { text: '⚔️ Trojan', url: trackedUrl('trojan', referralCode) }],
+    [{ text: '✅ Verify MADGER', url: LINKS.verify }, { text: '🦡 Join The Burrow', url: LINKS.community }],
+    [{ text: '🎯 Contributor Missions', callback_data: 'missions' }]
+  ])
+}
+
+function buyAlertKeyboard(signature = '') {
+  const firstRow = signature
+    ? [{ text: '🔎 View Transaction', url: `https://solscan.io/tx/${encodeURIComponent(signature)}` }, { text: '📈 Live Chart', url: LINKS.dex }]
+    : [{ text: '📈 Live Chart', url: LINKS.dex }]
+  return keyboard([
+    firstRow,
+    [{ text: '⚡ Buy MADGER', url: trackedUrl('raydium') }, { text: '✅ Verify Mint', url: LINKS.verify }]
+  ])
+}
+
+async function sendBuyCard(chatId, caption, signature = '') {
+  try {
+    const message = await telegram('sendPhoto', {
+      chat_id: chatId, photo: BUY_ALERT_MEDIA_URL, caption, parse_mode: 'HTML',
+      reply_markup: buyAlertKeyboard(signature)
+    })
+    return { message, deliveryMethod: 'photo' }
+  } catch (mediaError) {
+    console.error('MADGER buy-card media delivery failed; using text fallback', mediaError)
+    const message = await send(chatId, caption, buyAlertKeyboard(signature))
+    return { message, deliveryMethod: 'text_fallback' }
+  }
+}
+
+async function recordEvent(eventType, chatId, metadata = {}, referralCode = null) {
+  await insert('madger_bot_events', { event_type: eventType, chat_id: chatId, metadata, referral_code: referralCode })
+}
+
+async function sha256Hex(value) {
+  const digest = new Uint8Array(await crypto.subtle.digest('SHA-256', new TextEncoder().encode(value)))
+  return [...digest].map(byte => byte.toString(16).padStart(2, '0')).join('')
+}
+
+async function authenticateInternal(request) {
+  const supplied = request.headers.get('x-madger-monitor-secret') ?? ''
+  if (!supplied) return false
+  const rows = await db('madger_bot_settings?key=eq.monitor_secret_sha256&select=value&limit=1')
+  const expectedHash = String(rows?.[0]?.value ?? '')
+  return expectedHash.length === 64 && await sha256Hex(supplied) === expectedHash
+}
+
+async function registerUser(user, sourceRef) {
+  const chatId = String(user.id)
+  const existing = await db(`madger_bot_users?chat_id=eq.${encodeURIComponent(chatId)}&select=chat_id,source_ref&limit=1`)
+  const isNew = !existing?.length
+  await db('madger_bot_users?on_conflict=chat_id', {
+    method: 'POST',
+    headers: { Prefer: 'resolution=merge-duplicates,return=minimal' },
+    body: JSON.stringify({
+      chat_id: user.id,
+      username: user.username ?? null,
+      display_name: [user.first_name, user.last_name].filter(Boolean).join(' ') || null,
+      ...(isNew && sourceRef ? { source_ref: sourceRef } : {}),
+      last_seen_at: new Date().toISOString()
+    })
+  })
+  if (isNew && sourceRef) {
+    await db('rpc/madger_bot_increment_referral', {
+      method: 'POST', body: JSON.stringify({ p_code: sourceRef })
+    })
+  }
+  return isNew
+}
+
+async function referralJoinCount(code) {
+  const rows = await db(`madger_bot_referrals?code=eq.${encodeURIComponent(code)}&select=joins&limit=1`)
+  return Number(rows?.[0]?.joins ?? 0)
+}
+
+async function referralCodeFor(chatId) {
+  const current = await db(`madger_bot_referrals?owner_chat_id=eq.${encodeURIComponent(chatId)}&select=code&limit=1`)
+  if (current?.[0]?.code) return current[0].code
+  const bytes = new TextEncoder().encode(`madger:${chatId}`)
+  const digest = new Uint8Array(await crypto.subtle.digest('SHA-256', bytes))
+  const code = `m${[...digest].slice(0, 5).map(value => value.toString(16).padStart(2, '0')).join('')}`
+  await insert('madger_bot_referrals', { code, owner_chat_id: Number(chatId) })
+  return code
+}
+
+async function showWelcome(chatId, user, ref) {
+  await send(chatId,
+    `<b>MADGER COMMAND CENTER</b> 🦡\n\nVerify first. Then move. Use the complete official mint every time:\n<code>${OFFICIAL_MINT}</code>\n\nChoose your route below. Administrators never request seed phrases, private keys, recovery codes, verification transfers, or remote wallet access.`,
+    conversionKeyboard(ref)
+  )
+  await recordEvent('welcome', Number(chatId), { username: user.username ?? null }, ref)
+}
+
+function raidModeKey(chatId) {
+  return `raid_mode_${chatId}`
+}
+
+async function raidModeForChat(chatId) {
+  return parseRaidMode(await setting(raidModeKey(chatId)))
+}
+
+async function activateRaidMode(chatId, minutes, source) {
+  const until = new Date(Date.now() + minutes * 60000).toISOString()
+  await saveSetting(raidModeKey(chatId), { until, source, activated_at: new Date().toISOString() })
+  const shortenedDeadline = new Date(Date.now() + RAID_VERIFY_MINUTES * 60000).toISOString()
+  await db(`madger_bot_moderation_state?chat_id=eq.${encodeURIComponent(chatId)}&pending_verification=eq.true&verification_deadline=gt.${encodeURIComponent(shortenedDeadline)}`, {
+    method: 'PATCH', body: JSON.stringify({ verification_deadline: shortenedDeadline, updated_at: new Date().toISOString() })
+  })
+  await recordEvent('raid_mode_activated', null, { chat_id: chatId, minutes, source })
+  return { active: true, until, source }
+}
+
+async function maybeActivateRaidMode(chatId, incomingJoins) {
+  const current = await raidModeForChat(chatId)
+  if (current.active) return current
+  const cutoff = encodeURIComponent(new Date(Date.now() - RAID_JOIN_WINDOW_SECONDS * 1000).toISOString())
+  const recent = await db(`madger_bot_events?event_type=eq.join_challenge&created_at=gte.${cutoff}&select=metadata&limit=100`)
+  const recentInChat = (recent ?? []).filter(row => String(row.metadata?.chat_id) === String(chatId)).length
+  if (!shouldActivateRaidMode(recentInChat, incomingJoins, RAID_JOIN_THRESHOLD)) return current
+  const activated = await activateRaidMode(chatId, RAID_MODE_MINUTES, 'automatic_join_burst')
+  if (ADMIN_CHAT_ID) await send(ADMIN_CHAT_ID, `<b>MADGER RAID SHIELD ACTIVATED</b> 🚨\n\nDetected ${recentInChat + incomingJoins} joins within ${RAID_JOIN_WINDOW_SECONDS} seconds. New-member verification is reduced to ${RAID_VERIFY_MINUTES} minutes until ${escapeHtml(activated.until)}.\n\nUse /raidmode status or /raidmode off in this private chat.`)
+  return activated
+}
+
+async function welcomeNewMembers(message) {
+  if (!isGroupChat(message.chat)) return
+  const incomingHumans = (message.new_chat_members ?? []).filter(user => user?.id && !user.is_bot).length
+  const raidMode = await maybeActivateRaidMode(message.chat.id, incomingHumans)
+  const verifyMinutes = raidMode.active ? RAID_VERIFY_MINUTES : JOIN_VERIFY_MINUTES
+  for (const user of message.new_chat_members ?? []) {
+    if (!user?.id) continue
+    await registerUser(user, null)
+    if (user.is_bot) {
+      if (ADMIN_CHAT_ID) await send(ADMIN_CHAT_ID, `<b>Bot added to The Burrow</b>\n@${escapeHtml(user.username ?? 'unknown')} · <code>${user.id}</code>\nReview whether it is still required.`)
+      continue
+    }
+    if (await isChatAdmin(message.chat.id, user.id)) continue
+    let restricted = true
+    try { await restrictMember(message.chat.id, user.id) } catch { restricted = false }
+    const deadline = new Date(Date.now() + verifyMinutes * 60000).toISOString()
+    const name = escapeHtml(user.first_name || user.username || 'new member')
+    const welcome = await send(message.chat.id,
+      `<b>Welcome to The Burrow, ${name}.</b> 🦡\n\nTap below within ${verifyMinutes} minutes to unlock chat access.${raidMode.active ? '\n\n🚨 Raid Shield is active. Unverified accounts are removed quickly.' : ''}\n\nNever send anyone your seed phrase, private key, recovery code, or a “verification” payment. Official admins will not DM first.`,
+      keyboard([[{ text: '✅ I’m human — enter The Burrow', callback_data: `verify_join:${message.chat.id}:${user.id}` }]])
+    )
+    await saveModerationState({
+      chat_id: message.chat.id, user_id: user.id, pending_verification: restricted,
+      verification_deadline: restricted ? deadline : null, welcome_message_id: welcome.message_id
+    })
+    await recordEvent('join_challenge', user.id, { chat_id: message.chat.id, restricted, raid_mode: raidMode.active })
+  }
+  await deleteQuietly(message.chat.id, message.message_id)
+}
+
+async function verifyNewMember(callback) {
+  const [, chatValue, userValue] = String(callback.data ?? '').split(':')
+  const chatId = Number(chatValue)
+  const userId = Number(userValue)
+  if (!Number.isSafeInteger(chatId) || !Number.isSafeInteger(userId)) return telegram('answerCallbackQuery', { callback_query_id: callback.id, text: 'Invalid verification request.', show_alert: true })
+  if (callback.from.id !== userId) return telegram('answerCallbackQuery', { callback_query_id: callback.id, text: 'This verification button belongs to the new member.', show_alert: true })
+  const state = await moderationState(chatId, userId)
+  if (!state?.pending_verification) return telegram('answerCallbackQuery', { callback_query_id: callback.id, text: 'You are already verified.' })
+  await restoreMember(chatId, userId)
+  await saveModerationState({ chat_id: chatId, user_id: userId, pending_verification: false, verification_deadline: null })
+  await telegram('answerCallbackQuery', { callback_query_id: callback.id, text: 'Verified. Welcome to The Burrow!' })
+  try {
+    await telegram('editMessageText', {
+      chat_id: chatId, message_id: callback.message.message_id, parse_mode: 'HTML',
+      text: `<b>${escapeHtml(callback.from.first_name || callback.from.username || 'Member')} verified.</b> Welcome to The Burrow. 🦡\n\nUse /buy for official purchase routes and /safety before trusting any link.`
+    })
+    await scheduleCleanup(chatId, callback.message.message_id, 'verified_welcome', 5)
+  } catch { /* welcome may have been removed by an admin */ }
+  await recordEvent('join_verified', userId, { chat_id: chatId })
+}
+
+async function sweepExpiredJoins() {
+  const cutoff = encodeURIComponent(new Date().toISOString())
+  const rows = await db(`madger_bot_moderation_state?pending_verification=eq.true&verification_deadline=lte.${cutoff}&select=chat_id,user_id,welcome_message_id&limit=100`)
+  for (const row of rows ?? []) {
+    try { await removeMember(row.chat_id, row.user_id) } catch { /* permissions may have changed */ }
+    if (row.welcome_message_id) await deleteQuietly(row.chat_id, row.welcome_message_id)
+    await saveModerationState({ chat_id: row.chat_id, user_id: row.user_id, pending_verification: false, verification_deadline: null, removed_at: new Date().toISOString() })
+    await recordEvent('join_expired', row.user_id, { chat_id: row.chat_id })
+  }
+}
+
+function compactUsd(value, maximumFractionDigits = 2) {
+  if (!Number.isFinite(value)) return 'unavailable'
+  if (value > 0 && value < 0.01) return `$${value.toLocaleString('en-US', { minimumFractionDigits: 6, maximumFractionDigits: 10 })}`
+  return `$${value.toLocaleString('en-US', { maximumFractionDigits })}`
+}
+
+async function showMarket(chatId) {
+  const rows = await db('madger_bot_market_snapshots?select=price_usd,liquidity_usd,volume_m5_usd,buys_m5,sells_m5,raw,created_at&order=created_at.desc&limit=1')
+  if (!rows?.length) return send(chatId, 'Market data is temporarily unavailable. Use the verified chart link below.', keyboard([[{ text: '📈 Open verified chart', url: LINKS.dex }]]))
+  const market = marketSnapshotSummary(rows[0])
+  return send(chatId, `<b>MADGER MARKET SNAPSHOT</b> 📊\n\nPrice: ${compactUsd(market.priceUsd)}\nMarket cap: ${compactUsd(market.marketCapUsd, 0)}\nLiquidity: ${compactUsd(market.liquidityUsd, 0)}\n5m volume: ${compactUsd(market.volumeM5Usd)}\n5m trades: ${market.buysM5 ?? '—'} buys · ${market.sellsM5 ?? '—'} sells\nUpdated: ${market.ageMinutes === null ? 'unknown' : `${market.ageMinutes} minute${market.ageMinutes === 1 ? '' : 's'} ago`}\n\nAlways verify the mint before trading.`, keyboard([[{ text: '📈 Live verified chart', url: LINKS.dex }, { text: '⚡ Open Raydium', url: LINKS.raydium }]]))
+}
+
+async function marketSnapshots() {
+  const cutoff = encodeURIComponent(new Date(Date.now() - 24 * 3600000).toISOString())
+  return Promise.all([
+    db('madger_bot_market_snapshots?select=price_usd,liquidity_usd,volume_m5_usd,buys_m5,sells_m5,raw,created_at&order=created_at.desc&limit=1'),
+    db(`madger_bot_market_snapshots?created_at=lte.${cutoff}&select=liquidity_usd,created_at&order=created_at.desc&limit=1`)
+  ])
+}
+
+function signedPercentage(value) {
+  const amount = Number(value)
+  return Number.isFinite(amount) ? `${amount >= 0 ? '+' : ''}${amount.toFixed(2)}%` : 'building baseline'
+}
+
+async function showPool(chatId) {
+  const [latestRows, priorRows] = await marketSnapshots()
+  if (!latestRows?.length) return send(chatId, 'Pool intelligence is temporarily unavailable.', keyboard([[{ text: '📈 Open verified pool', url: LINKS.dex }]]))
+  const pool = poolSnapshotSummary(latestRows[0], priorRows?.[0])
+  return send(chatId, `<b>MADGER OFFICIAL POOL</b> 🌊
+
+DEX: <b>${escapeHtml(pool.dexId || 'Raydium')}</b> · ${escapeHtml(pool.poolLabel || 'CPMM')}
+Liquidity: <b>${compactUsd(pool.liquidityUsd, 0)}</b>
+24h liquidity change: <b>${signedPercentage(pool.liquidityChangePercentage)}</b>
+Liquidity / market cap: <b>${pool.liquidityToMarketCapPercentage === null ? 'unavailable' : `${pool.liquidityToMarketCapPercentage.toFixed(2)}%`}</b>
+24h volume: <b>${compactUsd(pool.volumeH24Usd)}</b>
+24h trades: <b>${pool.buysH24 ?? '—'} buys · ${pool.sellsH24 ?? '—'} sells</b>
+24h price move: <b>${signedPercentage(pool.priceChangeH24Percentage)}</b>
+Pool age: <b>${pool.pairAgeDays === null ? 'unknown' : `${pool.pairAgeDays} days`}</b>
+Updated: ${pool.ageMinutes === null ? 'unknown' : `${pool.ageMinutes} minute${pool.ageMinutes === 1 ? '' : 's'} ago`}
+
+This report verifies the configured pool; it is not a guarantee of liquidity or future price.`, keyboard([
+    [{ text: '📈 Inspect verified pool', url: LINKS.dex }, { text: '⚡ Open Raydium', url: LINKS.raydium }],
+    [{ text: '✅ Verify Mint', url: LINKS.verify }]
+  ]))
+}
+
+async function showRisk(chatId) {
+  const [[marketRows, priorMarketRows], [holderRows]] = await Promise.all([marketSnapshots(), holderSnapshots()])
+  const market = marketRows?.[0]
+  const holders = holderRows?.[0]
+  if (!market || !holders) return send(chatId, 'Risk intelligence is still building its verified market and holder baseline.')
+  const pool = poolSnapshotSummary(market, priorMarketRows?.[0])
+  const holderAge = Math.max(0, Math.floor((Date.now() - Date.parse(holders.created_at)) / 60000))
+  return send(chatId, `<b>MADGER RISK SNAPSHOT</b> 🛡️
+
+Official mint: <b>verified ✅</b>
+Official Raydium pool: <b>verified ✅</b>
+Market data age: <b>${pool.ageMinutes ?? 'unknown'}m</b>
+Holder data age: <b>${holderAge}m</b>
+
+Liquidity: <b>${compactUsd(pool.liquidityUsd, 0)}</b>
+Liquidity / market cap: <b>${pool.liquidityToMarketCapPercentage === null ? 'unavailable' : `${pool.liquidityToMarketCapPercentage.toFixed(2)}%`}</b>
+24h liquidity change: <b>${signedPercentage(pool.liquidityChangePercentage)}</b>
+Positive-balance wallets: <b>${Number(holders.holder_count).toLocaleString('en-US')}</b>
+Largest wallet: <b>${Number(holders.largest_percentage).toFixed(2)}%</b>
+Top 10 concentration: <b>${Number(holders.top_10_percentage).toFixed(2)}%</b>
+
+Concentration is raw on-chain ownership. Treasury, liquidity, locked, exchange, and custodial wallets may be included. This is a factual monitor—not a safety rating or financial advice.`, keyboard([
+    [{ text: '🌊 Pool details', url: LINKS.raydium }, { text: '🔎 Token accounts', url: LINKS.solscanToken }],
+    [{ text: '📈 Verified chart', url: LINKS.dex }]
+  ]))
+}
+
+async function showOfficialLinks(chatId) {
+  return send(chatId, `<b>OFFICIAL MADGER LINKS</b> ✅\n\nWebsite: ${LINKS.home}\nOfficial mint:\n<code>${OFFICIAL_MINT}</code>\n\nTreat any conflicting contract, support account, or wallet link as suspicious.`, keyboard([
+    [{ text: '🌐 Official website', url: LINKS.home }, { text: '🦡 The Burrow', url: LINKS.community }],
+    [{ text: '✅ Verify MADGER', url: LINKS.verify }, { text: '📈 Verified chart', url: LINKS.dex }]
+  ]))
+}
+
+async function holderSnapshots() {
+  const cutoff = encodeURIComponent(new Date(Date.now() - 24 * 3600000).toISOString())
+  return Promise.all([
+    db('madger_bot_holder_snapshots?select=*&order=created_at.desc&limit=1'),
+    db(`madger_bot_holder_snapshots?created_at=lte.${cutoff}&select=*&order=created_at.desc&limit=1`)
+  ])
+}
+
+async function showHolders(chatId) {
+  const [latestRows, priorRows] = await holderSnapshots()
+  const latest = latestRows?.[0]
+  if (!latest) return send(chatId, 'Holder intelligence is initializing. Try again after the next 15-minute snapshot.', keyboard([[{ text: '🔎 Inspect official token', url: LINKS.solscanToken }]]))
+  const prior = priorRows?.[0]
+  const change = prior ? Number(latest.holder_count) - Number(prior.holder_count) : null
+  const age = Math.max(0, Math.floor((Date.now() - Date.parse(latest.created_at)) / 60000))
+  return send(chatId, `<b>MADGER HOLDER INTELLIGENCE</b> 🛰️
+
+Positive-balance wallets: <b>${Number(latest.holder_count).toLocaleString('en-US')}</b>
+24h wallet change: <b>${change === null ? 'building baseline' : `${change >= 0 ? '+' : ''}${change}`}</b>
+Largest wallet: <b>${Number(latest.largest_percentage).toFixed(2)}%</b> of supply
+Top 10 concentration: <b>${Number(latest.top_10_percentage).toFixed(2)}%</b>
+Updated: ${age} minute${age === 1 ? '' : 's'} ago
+
+Wallet counts represent positive on-chain owners—not verified people. Treasury, liquidity, exchange, and custodial wallets may be included.`, keyboard([
+    [{ text: '🔎 Inspect official token', url: LINKS.solscanToken }, { text: '📈 Live Chart', url: LINKS.dex }],
+    [{ text: '✅ Verify Mint', url: LINKS.verify }]
+  ]))
+}
+
+async function showHolderIntel(message) {
+  if (!ADMIN_IDS.has(String(message.from.id))) return send(message.chat.id, 'Admin command denied.')
+  if (message.chat.type !== 'private') {
+    await deleteQuietly(message.chat.id, message.message_id)
+    return send(message.from.id, 'Detailed holder intelligence is private. Use /holderintel in your direct MADGERbot chat.')
+  }
+  const [latestRows, priorRows] = await holderSnapshots()
+  const latest = latestRows?.[0]
+  if (!latest) return send(message.chat.id, 'Holder intelligence has not completed its first snapshot.')
+  const prior = priorRows?.[0]
+  const owners = latest.raw?.owners ?? []
+  const lines = owners.slice(0, 10).map((item, index) =>
+    `${index + 1}. <code>${escapeHtml(compactWallet(item.owner))}</code> · ${Number(item.percentage).toFixed(2)}% · ${Number(item.amount).toLocaleString('en-US', { maximumFractionDigits: 2 })}`
+  )
+  const change = prior ? Number(latest.holder_count) - Number(prior.holder_count) : null
+  return send(message.chat.id, `<b>MADGER HOLDER CONSOLE</b> 🔬
+
+Positive-balance wallets: ${latest.holder_count}
+24h change: ${change === null ? 'building baseline' : `${change >= 0 ? '+' : ''}${change}`}
+Token accounts scanned: ${latest.token_account_count}
+Top 10 concentration: ${Number(latest.top_10_percentage).toFixed(2)}%
+
+<b>Largest on-chain owners</b>
+${lines.join('\n')}
+
+Movement alerts identify balance changes only. They never label a transfer as a buy or sell.`, keyboard([[{ text: 'Inspect token accounts', url: LINKS.solscanToken }]]))
+}
+
+function walletExplorer(address) {
+  return `https://solscan.io/account/${address}`
+}
+
+async function showWallets(chatId) {
+  const [rows] = await holderSnapshots()
+  const latest = rows?.[0]
+  if (!latest) return send(chatId, 'Wallet intelligence is initializing.')
+  const distribution = classifiedDistribution({ totalSupply: Number(latest.total_supply), owners: latest.raw?.owners ?? [] })
+  const lines = distribution.rows.filter(item => item.kind === 'project').map(item =>
+    `• <b>${escapeHtml(item.role)}</b> · ${Number(item.amount).toLocaleString('en-US', { maximumFractionDigits: 2 })} MADGER · ${item.percentage.toFixed(2)}%\n  <a href="${walletExplorer(item.address)}"><code>${escapeHtml(compactWallet(item.address))}</code></a>`
+  )
+  return send(chatId, `<b>MADGER PROJECT WALLETS</b> 🧾
+
+${lines.join('\n')}
+
+These are the five wallets published in MADGER's official allocation record. Balances are read from the chain and may differ from target percentages after authorized liquidity, lock, or operating activity.`, keyboard([[{ text: '✅ Official allocation record', url: LINKS.verify }, { text: '🔎 Token explorer', url: LINKS.solscanToken }]]))
+}
+
+async function showDistribution(chatId) {
+  const [rows] = await holderSnapshots()
+  const latest = rows?.[0]
+  if (!latest) return send(chatId, 'Distribution intelligence is initializing.')
+  const distribution = classifiedDistribution({ totalSupply: Number(latest.total_supply), owners: latest.raw?.owners ?? [] })
+  const lines = distribution.rows.map(item =>
+    `• ${escapeHtml(item.role)}: <b>${Number(item.amount).toLocaleString('en-US', { maximumFractionDigits: 2 })}</b> · ${item.percentage.toFixed(2)}%`
+  )
+  return send(chatId, `<b>MADGER CLASSIFIED DISTRIBUTION</b> 🧭
+
+${lines.join('\n')}
+
+Classified total: <b>${distribution.classifiedPercentage.toFixed(2)}%</b>
+Other pool and holder wallets: <b>${distribution.unclassifiedPercentage.toFixed(2)}%</b>
+
+“Classified” identifies a published wallet or verified lock account. It does not imply that every transfer is authorized, and target allocation percentages are not current balances.`, keyboard([[{ text: '🧾 Project wallets', url: LINKS.verify }, { text: '📊 Holder report', url: LINKS.solscanToken }]]))
+}
+
+async function showLocks(chatId) {
+  const health = await setting('lock_monitor_health')
+  if (!health?.records?.length) return send(chatId, 'Lock intelligence is initializing. Try again after the next holder-monitor run.')
+  const lines = health.records.map(item => {
+    const schedule = item.end_date ? ` · scheduled through ${item.end_date}` : item.cliff_date ? ` · unlock ${item.cliff_date}` : ' · unlock date pending verified record'
+    return `• <b>${escapeHtml(item.label)}</b> · ${escapeHtml(item.provider)}\n  ${Number(item.amount).toLocaleString('en-US', { maximumFractionDigits: 9 })} ${escapeHtml(item.asset)} · ${item.intact ? 'balance intact ✅' : 'review required ⚠️'}${schedule}\n  <a href="${walletExplorer(item.address)}"><code>${escapeHtml(compactWallet(item.address))}</code></a>`
+  })
+  const age = Math.max(0, Math.floor((Date.now() - Date.parse(health.last_run_at)) / 60000))
+  return send(chatId, `<b>MADGER LOCK MONITOR</b> 🔐
+
+${lines.join('\n\n')}
+
+Updated ${age} minute${age === 1 ? '' : 's'} ago. “Balance intact” confirms the monitored escrow balance, not an endorsement of the provider or a guarantee against every contract risk.`, keyboard([[{ text: '🔎 Verify official mint', url: LINKS.solscanToken }]]))
+}
+
+async function showHelp(chatId, args = '') {
+  return send(chatId, helpText(args.trim().toLowerCase() === 'all'))
+}
+
+async function faqResponderEnabled() {
+  return await setting('faq_responder_enabled') !== false
+}
+
+async function manageFaqMode(message, args) {
+  if (!ADMIN_IDS.has(String(message.from.id))) return send(message.chat.id, 'Admin command denied.')
+  if (message.chat.type !== 'private') {
+    await deleteQuietly(message.chat.id, message.message_id)
+    return send(message.from.id, 'FAQ controls are private. Use /faqmode here in your direct MADGERbot chat.')
+  }
+  const action = args.trim().toLowerCase() || 'status'
+  if (action === 'on' || action === 'off') {
+    const enabled = action === 'on'
+    await saveSetting('faq_responder_enabled', enabled)
+    await recordEvent('faq_mode_changed', message.from.id, { enabled })
+    return send(message.chat.id, `<b>MADGER FAQ responder:</b> ${enabled ? 'ON' : 'OFF'}.`)
+  }
+  if (action !== 'status') return send(message.chat.id, 'Use <code>/faqmode status</code>, <code>/faqmode on</code>, or <code>/faqmode off</code>.')
+  return send(message.chat.id, `<b>MADGER FAQ responder:</b> ${await faqResponderEnabled() ? 'ON' : 'OFF'}\nPer-topic group cooldown: ${FAQ_COOLDOWN_SECONDS / 60} minutes.`)
+}
+
+async function maybeAnswerFaq(message) {
+  if (!isGroupChat(message.chat) || !message.from || message.from.is_bot) return false
+  const intent = faqIntent(message.text ?? message.caption ?? '')
+  if (!intent || !await faqResponderEnabled()) return false
+  const cooldownKey = `faq_last_${message.chat.id}_${intent}`
+  const lastAnswer = Date.parse(String(await setting(cooldownKey) ?? ''))
+  if (Number.isFinite(lastAnswer) && Date.now() - lastAnswer < FAQ_COOLDOWN_SECONDS * 1000) return false
+  await saveSetting(cooldownKey, new Date().toISOString())
+
+  let posted
+  if (intent === 'price') posted = await showMarket(message.chat.id)
+  else if (intent === 'pool') posted = await showPool(message.chat.id)
+  else if (intent === 'risk') posted = await showRisk(message.chat.id)
+  else if (intent === 'contract') posted = await send(message.chat.id, `<b>OFFICIAL MADGER MINT</b> ✅\n<code>${OFFICIAL_MINT}</code>\n\nVerify the complete address—never a shortened match.`, keyboard([[{ text: 'Canonical verification', url: LINKS.verify }]]))
+  else if (intent === 'buy') posted = await send(message.chat.id, '<b>BUY $MADGER SAFELY</b> ⚡\nUse a verified route and choose your own amount and slippage. MADGERbot never asks for funds or wallet credentials.', keyboard([[{ text: '🧭 Beginner guide', url: LINKS.guide }, { text: '⚡ Open Raydium', url: LINKS.raydium }]]))
+  else posted = await showOfficialLinks(message.chat.id)
+  if (posted?.message_id) await scheduleCleanup(message.chat.id, posted.message_id, `faq_${intent}`, 4)
+  await recordEvent('faq_answered', message.from.id, { chat_id: message.chat.id, intent })
+  return true
+}
+
+async function chatSecurityInfo(chatId) {
+  try {
+    const chat = await telegram('getChat', { chat_id: chatId })
+    return {
+      aggressiveAntiSpam: chat.has_aggressive_anti_spam_enabled === true,
+      slowModeSeconds: Number(chat.slow_mode_delay ?? 0)
+    }
+  } catch {
+    return { aggressiveAntiSpam: null, slowModeSeconds: null }
+  }
+}
+
+async function manageRaidMode(message, args) {
+  if (!ADMIN_IDS.has(String(message.from.id))) return send(message.chat.id, 'Admin command denied.')
+  if (message.chat.type !== 'private') {
+    await deleteQuietly(message.chat.id, message.message_id)
+    return send(message.from.id, 'Raid Shield controls are private. Use /raidmode here in your direct MADGERbot chat.')
+  }
+  if (!BUY_CHAT_ID) return send(message.chat.id, 'The Burrow destination is not configured.')
+  const [action = 'status', minutesValue = ''] = args.trim().toLowerCase().split(/\s+/)
+  if (action === 'off') {
+    await saveSetting(raidModeKey(BUY_CHAT_ID), { until: null, source: 'manual', disabled_at: new Date().toISOString() })
+    await recordEvent('raid_mode_disabled', message.from.id, { chat_id: BUY_CHAT_ID })
+    return send(message.chat.id, '<b>MADGER Raid Shield:</b> automatic emergency mode is off. Standard join verification remains active.')
+  }
+  if (action === 'on') {
+    const requested = minutesValue ? Number(minutesValue) : RAID_MODE_MINUTES
+    if (!Number.isInteger(requested) || requested < 5 || requested > 180) return send(message.chat.id, 'Use <code>/raidmode on 30</code>. Duration must be 5–180 minutes.')
+    const activated = await activateRaidMode(BUY_CHAT_ID, requested, 'manual')
+    return send(message.chat.id, `<b>MADGER Raid Shield activated.</b> 🚨\nNew members have ${RAID_VERIFY_MINUTES} minutes to verify.\nEnds: ${escapeHtml(activated.until)}`)
+  }
+  if (action !== 'status') return send(message.chat.id, 'Use <code>/raidmode status</code>, <code>/raidmode on 30</code>, or <code>/raidmode off</code>.')
+  const current = await raidModeForChat(BUY_CHAT_ID)
+  return send(message.chat.id, `<b>MADGER Raid Shield</b>\nStatus: ${current.active ? 'ACTIVE 🚨' : 'normal'}${current.active ? `\nEnds: ${escapeHtml(current.until)}\nSource: ${escapeHtml(current.source ?? 'unknown')}` : `\nAutomatic trigger: ${RAID_JOIN_THRESHOLD} joins in ${RAID_JOIN_WINDOW_SECONDS} seconds`}`)
+}
+
+async function purgeUnverified(message) {
+  if (!ADMIN_IDS.has(String(message.from.id))) return send(message.chat.id, 'Admin command denied.')
+  if (message.chat.type !== 'private') {
+    await deleteQuietly(message.chat.id, message.message_id)
+    return send(message.from.id, 'Unverified-member controls are private. Use /purgeunverified here in your direct MADGERbot chat.')
+  }
+  if (!BUY_CHAT_ID) return send(message.chat.id, 'The Burrow destination is not configured.')
+  const rows = await db(`madger_bot_moderation_state?chat_id=eq.${encodeURIComponent(BUY_CHAT_ID)}&pending_verification=eq.true&select=chat_id,user_id,welcome_message_id&order=verification_deadline.asc&limit=25`)
+  let removed = 0
+  let failed = 0
+  for (const row of rows ?? []) {
+    try {
+      await removeMember(row.chat_id, row.user_id)
+      if (row.welcome_message_id) await deleteQuietly(row.chat_id, row.welcome_message_id)
+      await saveModerationState({ chat_id: row.chat_id, user_id: row.user_id, pending_verification: false, verification_deadline: null, removed_at: new Date().toISOString() })
+      await recordEvent('join_purged', row.user_id, { chat_id: row.chat_id, admin_id: message.from.id })
+      removed += 1
+    } catch { failed += 1 }
+  }
+  return send(message.chat.id, `<b>Unverified-member purge complete.</b>\nRemoved: ${removed}\nFailed: ${failed}${rows?.length === 25 ? '\nRun /purgeunverified again if more remain.' : ''}`)
+}
+
+async function showSafety(chatId) {
+  return send(chatId, `<b>MADGER SAFETY STANDARD</b> 🛡️\n\n• Official mint: <code>${OFFICIAL_MINT}</code>\n• Verify links through madgercoin.com\n• Admins never DM first\n• Never share seed phrases, private keys, recovery codes, or screen access\n• Never send a “verification” transfer\n• Reply to suspicious content with /report`)
+}
+
+async function showRules(chatId) {
+  return send(chatId, '<b>THE BURROW RULES</b>\n\n1. No scams, fake contracts, impersonation, or unsolicited wallet links.\n2. No flooding, repeated promotions, or coordinated harassment.\n3. Debate ideas without threatening or targeting members.\n4. Promotions require administrator approval.\n5. Use /report as a reply when something needs review.\n\nEnforcement: warning → temporary mute → removal. Credential theft attempts may be removed immediately.')
+}
+
+function teamLabel(team) {
+  return team === 'raid' ? 'Raid Team' : 'Outreach Team'
+}
+
+function teamCenterKeyboard() {
+  return keyboard([
+    [{ text: '⚡ Join Raid Team', callback_data: 'team_join:raid' }, { text: '📣 Join Outreach Team', callback_data: 'team_join:outreach' }],
+    [{ text: 'Leave Raid Team', callback_data: 'team_leave:raid' }, { text: 'Leave Outreach Team', callback_data: 'team_leave:outreach' }]
+  ])
+}
+
+async function showTeams(message) {
+  if (message.chat.type !== 'private') {
+    const username = BOT_USERNAME || (await telegram('getMe', {})).username
+    return send(message.chat.id, '<b>MADGER PROMOTION TEAMS</b>\n\nParticipation is voluntary. Open the private team center to join without exposing the member list.',
+      keyboard([[{ text: 'Open private team center', url: `https://t.me/${escapeHtml(username)}?start=teams` }]]))
+  }
+  const memberships = await db(`madger_bot_team_memberships?user_chat_id=eq.${encodeURIComponent(message.from.id)}&active=eq.true&select=team`)
+  const joined = new Set((memberships ?? []).map(row => row.team))
+  return send(message.chat.id,
+    `<b>MADGER PROMOTION TEAMS</b>\n\n⚡ Raid Team: ${joined.has('raid') ? 'JOINED' : 'not joined'}\nApproved MADGER posts; authentic, original engagement only.\n\n📣 Outreach Team: ${joined.has('outreach') ? 'JOINED' : 'not joined'}\nRelevant community opportunities; disclose your connection and never spam.\n\nNo scripts, copy-paste swarms, fake claims, harassment, or financial promises.`,
+    teamCenterKeyboard())
+}
+
+async function setTeamMembership(callback) {
+  const [actionValue, teamValue] = String(callback.data ?? '').split(':')
+  const team = normalizeTeam(teamValue)
+  const active = actionValue === 'team_join'
+  if (!team || (actionValue !== 'team_join' && actionValue !== 'team_leave')) {
+    return telegram('answerCallbackQuery', { callback_query_id: callback.id, text: 'Invalid team request.', show_alert: true })
+  }
+  if (callback.message.chat.type !== 'private') {
+    return telegram('answerCallbackQuery', { callback_query_id: callback.id, text: 'Open the private bot chat to manage teams.', show_alert: true })
+  }
+  await registerUser(callback.from, null)
+  await db('madger_bot_team_memberships?on_conflict=user_chat_id,team', {
+    method: 'POST', headers: { Prefer: 'resolution=merge-duplicates,return=minimal' },
+    body: JSON.stringify({ user_chat_id: callback.from.id, team, active, updated_at: new Date().toISOString() })
+  })
+  await telegram('answerCallbackQuery', { callback_query_id: callback.id, text: `${active ? 'Joined' : 'Left'} ${teamLabel(team)}.` })
+  await recordEvent(active ? 'team_joined' : 'team_left', callback.from.id, { team })
+  return showTeams({ chat: callback.message.chat, from: callback.from })
+}
+
+async function setTeamFromCommand(message, args, active) {
+  if (message.chat.type !== 'private') return showTeams(message)
+  const team = normalizeTeam(args)
+  if (!team) return send(message.chat.id, `Use: <code>/${active ? 'jointeam' : 'leaveteam'} raid</code> or <code>/${active ? 'jointeam' : 'leaveteam'} outreach</code>`)
+  await db('madger_bot_team_memberships?on_conflict=user_chat_id,team', {
+    method: 'POST', headers: { Prefer: 'resolution=merge-duplicates,return=minimal' },
+    body: JSON.stringify({ user_chat_id: message.from.id, team, active, updated_at: new Date().toISOString() })
+  })
+  await recordEvent(active ? 'team_joined' : 'team_left', message.from.id, { team })
+  return send(message.chat.id, `${active ? 'Joined' : 'Left'} <b>${teamLabel(team)}</b>. ${active ? 'You will receive private, administrator-approved alerts and can leave at any time.' : 'Alerts for this team are now off.'}`)
+}
+
+async function teamStats(message) {
+  if (!ADMIN_IDS.has(String(message.from.id))) return send(message.chat.id, 'Admin command denied.')
+  if (message.chat.type !== 'private') {
+    await deleteQuietly(message.chat.id, message.message_id)
+    return send(message.from.id, 'Team statistics are private. Use /teamstats here in your direct MADGERbot chat.')
+  }
+  const memberships = await db('madger_bot_team_memberships?active=eq.true&select=team')
+  const counts = (memberships ?? []).reduce((result, row) => ({ ...result, [row.team]: (result[row.team] ?? 0) + 1 }), {})
+  return send(message.chat.id, `<b>MADGER TEAM STATUS</b>\n\nRaid Team: ${counts.raid ?? 0}\nOutreach Team: ${counts.outreach ?? 0}`)
+}
+
+async function launchTeamAlert(message, args) {
+  if (!ADMIN_IDS.has(String(message.from.id))) return send(message.chat.id, 'Admin command denied.')
+  if (message.chat.type !== 'private') return send(message.chat.id, 'Launch team alerts only in your private chat with MADGERbot.')
+  const alert = parseTeamAlert(args)
+  if (!alert) return send(message.chat.id, 'Use: <code>/teamalert raid https://x.com/... | Write an original comment about the artwork.</code>\n\nAllowed targets: MADGER, X, Telegram, Instagram, Facebook, TikTok, Reddit, or YouTube HTTPS links.')
+  const cooldown = encodeURIComponent(new Date(Date.now() - 30 * 60000).toISOString())
+  const recent = await db(`madger_bot_team_alerts?team=eq.${alert.team}&created_at=gte.${cooldown}&select=id&limit=1`)
+  if (recent?.length) return send(message.chat.id, `${teamLabel(alert.team)} has already received an alert within the last 30 minutes.`)
+
+  const created = await insert('madger_bot_team_alerts?select=id', {
+    team: alert.team, target_url: alert.url, brief: alert.brief, created_by: message.from.id
+  }, 'return=representation')
+  const members = await db(`madger_bot_team_memberships?team=eq.${alert.team}&active=eq.true&select=user_chat_id&limit=500`)
+  let delivered = 0
+  let failed = 0
+  for (let index = 0; index < (members ?? []).length; index += 25) {
+    const batch = members.slice(index, index + 25)
+    const results = await Promise.all(batch.map(async member => {
+      try {
+        await send(member.user_chat_id,
+          `<b>MADGER ${alert.team === 'raid' ? 'RAID' : 'OUTREACH'} TEAM ALERT</b> ${alert.team === 'raid' ? '⚡' : '📣'}\n\n${escapeHtml(alert.brief)}\n\nUse your own words. Participate only if genuine. No copy-paste spam, harassment, misleading claims, or financial promises.`,
+          keyboard([[{ text: 'Open approved target', url: alert.url }], [{ text: 'Manage team alerts', callback_data: `team_leave:${alert.team}` }]]))
+        return true
+      } catch { return false }
+    }))
+    delivered += results.filter(Boolean).length
+    failed += results.filter(result => !result).length
+    if (index + 25 < members.length) await new Promise(resolve => setTimeout(resolve, 1000))
+  }
+  await db(`madger_bot_team_alerts?id=eq.${created?.[0]?.id}`, {
+    method: 'PATCH', body: JSON.stringify({ recipient_count: delivered, failure_count: failed })
+  })
+  await recordEvent('team_alert', message.from.id, { team: alert.team, alert_id: created?.[0]?.id, delivered, failed })
+  return send(message.chat.id, `<b>${teamLabel(alert.team)} alert complete.</b>\nDelivered: ${delivered}\nFailed/blocked: ${failed}`)
+}
+
+async function publishAnnouncement(message, args, pinRequested) {
+  if (!ADMIN_IDS.has(String(message.from.id))) return send(message.chat.id, 'Admin command denied.')
+  if (message.chat.type !== 'private') return send(message.chat.id, 'Publish official announcements only from your private MADGERbot chat.')
+  if (!BUY_CHAT_ID) return send(message.chat.id, 'The Burrow destination is not configured.')
+  const announcement = parseAnnouncement(args)
+  if (!announcement) return send(message.chat.id, `Use: <code>/${pinRequested ? 'announcepin' : 'announce'} Message text | https://trusted-link | Button label</code>\n\nThe link and button are optional. Messages must contain 5–1,000 characters.`)
+  const replyMarkup = announcement.url ? keyboard([[{ text: announcement.label, url: announcement.url }]]) : undefined
+  const posted = await send(BUY_CHAT_ID, `<b>MADGER OFFICIAL</b> 📣\n\n${escapeHtml(announcement.text)}`, replyMarkup)
+  let pinned = false
+  let pinFailure = ''
+  if (pinRequested) {
+    try {
+      await telegram('pinChatMessage', { chat_id: BUY_CHAT_ID, message_id: posted.message_id, disable_notification: false })
+      pinned = true
+    } catch (error) {
+      pinFailure = ' The announcement posted, but Telegram denied pinning; grant MADGERbot permission to pin messages.'
+    }
+  }
+  await insert('madger_bot_announcements', {
+    chat_id: Number(BUY_CHAT_ID), message_id: posted.message_id, body: announcement.text,
+    target_url: announcement.url, button_label: announcement.label, pinned, created_by: message.from.id
+  })
+  await recordEvent('announcement', message.from.id, { chat_id: BUY_CHAT_ID, message_id: posted.message_id, pinned })
+  return send(message.chat.id, `<b>Announcement published.</b>\nMessage ID: <code>${posted.message_id}</code>\nPinned: ${pinned ? 'yes' : 'no'}.${pinFailure}`)
+}
+
+async function adminDashboard(message) {
+  if (!ADMIN_IDS.has(String(message.from.id))) return send(message.chat.id, 'Admin command denied.')
+  if (message.chat.type !== 'private') {
+    await deleteQuietly(message.chat.id, message.message_id)
+    return send(message.from.id, 'The command dashboard is private. Use /dashboard here in your direct MADGERbot chat.')
+  }
+  const since = encodeURIComponent(new Date(Date.now() - 7 * 86400000).toISOString())
+  const [users, pendingJoins, events, memberships, alerts, announcements, snapshots, activeMissions, pendingSubmissions, raidMode, chatSecurity, faqEnabled, trades, subscriptions] = await Promise.all([
+    db('madger_bot_users?select=chat_id'),
+    db('madger_bot_moderation_state?pending_verification=eq.true&select=user_id'),
+    db(`madger_bot_events?created_at=gte.${since}&select=event_type`),
+    db('madger_bot_team_memberships?active=eq.true&select=team'),
+    db('madger_bot_team_alerts?select=recipient_count,failure_count&order=created_at.desc&limit=20'),
+    db('madger_bot_announcements?select=id&order=created_at.desc&limit=20'),
+    db('madger_bot_market_snapshots?select=price_usd,liquidity_usd&order=created_at.desc&limit=1'),
+    db('madger_bot_missions?active=eq.true&select=code'),
+    db('madger_bot_submissions?status=eq.pending&select=id'),
+    raidModeForChat(BUY_CHAT_ID),
+    chatSecurityInfo(BUY_CHAT_ID),
+    faqResponderEnabled(),
+    db(`madger_bot_alerts?created_at=gte.${since}&trade_side=in.(buy,sell)&select=trade_side,usd_value`),
+    db('madger_bot_alert_subscriptions?active=eq.true&select=id')
+  ])
+  const eventCounts = (events ?? []).reduce((result, row) => ({ ...result, [row.event_type]: (result[row.event_type] ?? 0) + 1 }), {})
+  const teamCounts = (memberships ?? []).reduce((result, row) => ({ ...result, [row.team]: (result[row.team] ?? 0) + 1 }), {})
+  const delivered = (alerts ?? []).reduce((sum, row) => sum + Number(row.recipient_count ?? 0), 0)
+  const failed = (alerts ?? []).reduce((sum, row) => sum + Number(row.failure_count ?? 0), 0)
+  const market = snapshots?.[0]
+  const tradeSide = name => (trades ?? []).filter(row => row.trade_side === name)
+  const flow = rows => rows.reduce((sum, row) => sum + Number(row.usd_value ?? 0), 0)
+  return send(message.chat.id, `<b>MADGER COMMAND DASHBOARD</b> 🦡\n\n<b>Community</b>\nRaid Shield: ${raidMode.active ? 'ACTIVE 🚨' : 'normal'}\nRaid link firewall: ${raidMode.active ? 'locked' : 'standby'}\nFAQ responder: ${faqEnabled ? 'on' : 'off'} · ${eventCounts.faq_answered ?? 0} answers (7d)\nTelegram native anti-spam: ${chatSecurity.aggressiveAntiSpam === null ? 'unknown' : chatSecurity.aggressiveAntiSpam ? 'enabled' : 'disabled'}\nTelegram slow mode: ${chatSecurity.slowModeSeconds === null ? 'unknown' : `${chatSecurity.slowModeSeconds}s`}\nTracked members: ${users?.length ?? 0}\nPending join checks: ${pendingJoins?.length ?? 0}\nVerified joins (7d): ${eventCounts.join_verified ?? 0}\nExpired/purged joins (7d): ${(eventCounts.join_expired ?? 0) + (eventCounts.join_purged ?? 0)}\nModeration actions (7d): ${eventCounts.moderation_action ?? 0}\nMember reports (7d): ${eventCounts.member_report ?? 0}\n\n<b>Contributor program</b>\nActive missions: ${activeMissions?.length ?? 0}\nPending reviews: ${pendingSubmissions?.length ?? 0}\nLeaderboard views (7d): ${eventCounts.leaderboard_viewed ?? 0}\n\n<b>Promotion teams</b>\nRaid: ${teamCounts.raid ?? 0}\nOutreach: ${teamCounts.outreach ?? 0}\nRecent deliveries: ${delivered}\nDelivery failures: ${failed}\n\n<b>Publishing</b>\nRecent announcements: ${announcements?.length ?? 0}\n\n<b>Market</b>\nPrice: ${market?.price_usd ?? 'unavailable'} USD\nLiquidity: ${market?.liquidity_usd ?? 'unavailable'} USD`)
+  return send(message.chat.id, `<b>MADGER COMMAND DASHBOARD</b> 🦡\n\n<b>Community</b>\nRaid Shield: ${raidMode.active ? 'ACTIVE 🚨' : 'normal'}\nFAQ responder: ${faqEnabled ? 'on' : 'off'}\nTracked members: ${users?.length ?? 0} · Pending joins: ${pendingJoins?.length ?? 0}\nVerified joins (7d): ${eventCounts.join_verified ?? 0}\nModeration actions (7d): ${eventCounts.moderation_action ?? 0}\n\n<b>Verified market flow · 7d</b>\nBuys: ${tradeSide('buy').length} · ${compactUsd(flow(tradeSide('buy')))}\nSells: ${tradeSide('sell').length} · ${compactUsd(flow(tradeSide('sell')))}\nNet: ${compactUsd(flow(tradeSide('buy')) - flow(tradeSide('sell')))}\nPersonal alerts armed: ${subscriptions?.length ?? 0}\n\n<b>Intelligence</b>\nPrice: ${market?.price_usd ?? 'unavailable'} USD\nLiquidity: ${market?.liquidity_usd ?? 'unavailable'} USD\nRPC endpoints: ${RPC_URLS.length}\n\n<b>Operations</b>\nActive missions: ${activeMissions?.length ?? 0} · Pending reviews: ${pendingSubmissions?.length ?? 0}\nPromotion teams: ${teamCounts.raid ?? 0} raid · ${teamCounts.outreach ?? 0} outreach\nTeam deliveries: ${delivered} · Failures: ${failed}\nAnnouncements: ${announcements?.length ?? 0}`, keyboard([
+    [{ text: '📊 Visual dashboard', web_app: { url: DASHBOARD_URL } }],
+    [{ text: '📈 Verified chart', url: LINKS.dex }, { text: '🔎 Token explorer', url: LINKS.solscanToken }]
+  ]))
+}
+
+async function showMissions(chatId, ephemeral = false) {
+  const missions = await db('madger_bot_missions?active=eq.true&select=code,title,instructions,points&order=points.desc&limit=10')
+  if (!missions?.length) {
+    const empty = await send(chatId, 'No missions are active right now. Quality beats filler.')
+    if (ephemeral && empty?.message_id) await scheduleCleanup(chatId, empty.message_id, 'mission_list', 15)
+    return empty
+  }
+  const lines = missions.map(m => `<b>${escapeHtml(m.title)}</b> · ${m.points} points\n<code>${escapeHtml(m.code)}</code> — ${escapeHtml(m.instructions)}`)
+  const posted = await send(chatId, `<b>ACTIVE CONTRIBUTOR MISSIONS</b> 🎯\n\n${lines.join('\n\n')}\n\nSubmit evidence with:\n<code>/submit mission-code https://your-public-link</code>${ephemeral ? '\n\nThis live list expires in 15 minutes.' : ''}`)
+  if (ephemeral && posted?.message_id) await scheduleCleanup(chatId, posted.message_id, 'mission_list', 15)
+  await recordEvent('missions_viewed', Number(chatId))
+  return posted
+}
+
+async function submitMission(chatId, args) {
+  const [missionCode, evidence] = args.trim().split(/\s+/, 2)
+  let parsed
+  try { parsed = new URL(evidence) } catch { parsed = null }
+  if (!missionCode || !parsed || parsed.protocol !== 'https:' || parsed.href.length > 500) {
+    return send(chatId, 'Use: <code>/submit mission-code https://your-public-evidence-link</code>')
+  }
+  const mission = await db(`madger_bot_missions?code=eq.${encodeURIComponent(missionCode)}&active=eq.true&select=code&limit=1`)
+  if (!mission?.length) return send(chatId, 'That mission is not active. Use /missions to see the current list.')
+  try {
+    const created = await insert('madger_bot_submissions?select=id', { mission_code: missionCode, user_chat_id: Number(chatId), evidence_url: parsed.href }, 'return=representation')
+    await send(chatId, 'Submitted for human review. Points are awarded only after the work is verified.')
+    await recordEvent('mission_submitted', Number(chatId), { mission_code: missionCode })
+    if (ADMIN_CHAT_ID) await send(ADMIN_CHAT_ID, `<b>New mission submission</b>\nID: <code>${created?.[0]?.id ?? 'unknown'}</code>\nMission: <code>${escapeHtml(missionCode)}</code>\nContributor: <code>${chatId}</code>\n<a href="${escapeHtml(parsed.href)}">Review evidence</a>`)
+  } catch (error) {
+    if (String(error).includes('duplicate')) return send(chatId, 'That exact evidence was already submitted.')
+    throw error
+  }
+}
+
+async function showRank(chatId) {
+  const users = await db(`madger_bot_users?chat_id=eq.${encodeURIComponent(chatId)}&select=points&limit=1`)
+  const points = Number(users?.[0]?.points ?? 0)
+  const rank = contributorRank(points)
+  await send(chatId, `<b>${rank}</b>\n${points} verified contribution points\n\nPoints measure approved work—not purchases, hype, or blind engagement.`)
+}
+
+async function showMyWork(message) {
+  if (message.chat.type !== 'private') {
+    await deleteQuietly(message.chat.id, message.message_id)
+    try {
+      return await send(message.from.id, 'Your contribution record is private. Use /mywork here to view it.')
+    } catch {
+      const username = BOT_USERNAME || (await telegram('getMe', {})).username
+      return send(message.chat.id, 'Open MADGERbot privately first, then use /mywork.',
+        keyboard([[{ text: 'Open private contribution record', url: `https://t.me/${escapeHtml(username)}` }]]))
+    }
+  }
+  const rows = await db(`madger_bot_submissions?user_chat_id=eq.${encodeURIComponent(message.from.id)}&select=id,mission_code,evidence_url,status,review_note,created_at,reviewed_at&order=created_at.desc&limit=5`)
+  if (!rows?.length) return send(message.chat.id, 'You have no mission submissions yet. Use /missions to find approved contribution work.')
+  const lines = rows.map(row => {
+    const status = row.status === 'approved' ? 'APPROVED ✅' : row.status === 'rejected' ? 'REJECTED' : 'PENDING ⏳'
+    const note = row.review_note ? `\nReview: ${escapeHtml(String(row.review_note).slice(0, 300))}` : ''
+    return `<b>#${row.id} · ${status}</b>\nMission: <code>${escapeHtml(row.mission_code)}</code>\n<a href="${escapeHtml(row.evidence_url)}">Open submitted evidence</a>${note}`
+  })
+  return send(message.chat.id, `<b>MY MADGER CONTRIBUTIONS</b>\n\n${lines.join('\n\n')}\n\nPoints are awarded only after administrator review.`)
+}
+
+async function showReviews(message) {
+  if (!ADMIN_IDS.has(String(message.from.id))) return send(message.chat.id, 'Admin command denied.')
+  if (message.chat.type !== 'private') {
+    await deleteQuietly(message.chat.id, message.message_id)
+    return send(message.from.id, 'The review queue is private. Use /reviews here in your direct MADGERbot chat.')
+  }
+  const rows = await db('madger_bot_submissions?status=eq.pending&select=id,mission_code,user_chat_id,evidence_url,created_at&order=created_at.asc&limit=5')
+  if (!rows?.length) return send(message.chat.id, '<b>MADGER REVIEW QUEUE</b>\n\nNo submissions are awaiting review.')
+  const lines = rows.map(row => `<b>Submission #${row.id}</b>\nMission: <code>${escapeHtml(row.mission_code)}</code>\nContributor: <code>${row.user_chat_id}</code>\n<a href="${escapeHtml(row.evidence_url)}">Open evidence</a>\nApprove: <code>/approve ${row.id} optional-note</code>\nReject: <code>/reject ${row.id} reason</code>`)
+  return send(message.chat.id, `<b>MADGER REVIEW QUEUE</b> 🧾\n\n${lines.join('\n\n')}\n\nShowing the oldest ${rows.length} pending submission${rows.length === 1 ? '' : 's'}.`)
+}
+
+async function showMissionList(message) {
+  if (!ADMIN_IDS.has(String(message.from.id))) return send(message.chat.id, 'Admin command denied.')
+  if (message.chat.type !== 'private') {
+    await deleteQuietly(message.chat.id, message.message_id)
+    return send(message.from.id, 'Mission administration is private. Use /missionlist here in your direct MADGERbot chat.')
+  }
+  const rows = await db('madger_bot_missions?select=code,title,points,active&order=active.desc,created_at.desc&limit=25')
+  if (!rows?.length) return send(message.chat.id, 'No missions exist.')
+  const lines = rows.map(row => `${row.active ? '🟢' : '⚫'} <code>${escapeHtml(row.code)}</code> · ${Number(row.points)} points\n${escapeHtml(row.title)}`)
+  return send(message.chat.id, `<b>MADGER MISSION CONTROL</b>\n\n${lines.join('\n\n')}\n\n🟢 active · ⚫ closed`)
+}
+
+async function showLeaderboard(chatId) {
+  const users = await db('madger_bot_users?points=gt.0&status=eq.active&select=username,points&order=points.desc,last_seen_at.asc&limit=10')
+  if (!users?.length) return send(chatId, 'The contributor leaderboard is empty. Complete an active mission and pass human review to appear here.')
+  const medals = ['🥇', '🥈', '🥉']
+  const lines = users.map((user, index) => {
+    const username = /^[A-Za-z0-9_]{5,32}$/.test(String(user.username ?? '')) ? `@${escapeHtml(user.username)}` : 'Anonymous contributor'
+    return `${medals[index] ?? `${index + 1}.`} <b>${username}</b> — ${Number(user.points ?? 0)} points`
+  })
+  await send(chatId, `<b>MADGER CONTRIBUTOR LEADERBOARD</b> 🏆\n\n${lines.join('\n')}\n\nPoints represent administrator-approved contributions—not purchases, holdings, or spam.`)
+  await recordEvent('leaderboard_viewed', Number(chatId))
+}
+
+async function manageMission(message, args, action) {
+  if (!ADMIN_IDS.has(String(message.from.id))) return send(message.chat.id, 'Admin command denied.')
+  if (message.chat.type !== 'private') {
+    await deleteQuietly(message.chat.id, message.message_id)
+    return send(message.from.id, 'Mission controls are private. Manage missions here in your direct MADGERbot chat.')
+  }
+  if (action === 'add') {
+    const mission = parseMissionDefinition(args)
+    if (!mission) return send(message.chat.id, 'Use: <code>/missionadd code | points | title | instructions</code>\n\nPoints: 10–1,000. Missions must reward genuine work—not purchases, wallet connections, spam, mass-tagging, harassment, or financial promises.')
+    try {
+      await insert('madger_bot_missions', { ...mission, active: true })
+    } catch (error) {
+      if (String(error).includes('duplicate')) return send(message.chat.id, 'That mission code already exists. Use /missionopen to reactivate it or choose a new code.')
+      throw error
+    }
+    await recordEvent('mission_created', message.from.id, { mission_code: mission.code, points: mission.points })
+    return send(message.chat.id, `<b>Mission activated.</b> 🎯\n<code>${escapeHtml(mission.code)}</code> · ${mission.points} points\n${escapeHtml(mission.title)}`)
+  }
+
+  const code = normalizeMissionCode(args)
+  if (!code) return send(message.chat.id, `Use: <code>/mission${action} mission-code</code>`)
+  const rows = await db(`madger_bot_missions?code=eq.${encodeURIComponent(code)}&select=code`, {
+    method: 'PATCH', headers: { Prefer: 'return=representation' }, body: JSON.stringify({ active: action === 'open' })
+  })
+  if (!rows?.length) return send(message.chat.id, 'Mission not found.')
+  await recordEvent(`mission_${action === 'open' ? 'opened' : 'closed'}`, message.from.id, { mission_code: code })
+  return send(message.chat.id, `<b>Mission ${action === 'open' ? 'reactivated' : 'closed'}.</b>\n<code>${escapeHtml(code)}</code>`)
+}
+
+async function showReferral(chatId) {
+  const code = await referralCodeFor(chatId)
+  const joins = await referralJoinCount(code)
+  let username = BOT_USERNAME
+  if (!username && BOT_TOKEN) username = (await telegram('getMe', {})).username ?? ''
+  if (!username) return send(chatId, `Your referral code is <code>${code}</code>. The shareable bot link becomes available when the bot username is configured.`)
+  await send(chatId, `<b>Your verified referral route</b>\n<code>https://t.me/${escapeHtml(username)}?start=ref_${code}</code>\n\nRecorded new members: ${joins}\nRewards require real participation or approved work; raw clicks and purchases do not earn points.`)
+}
+
+async function adminStats(chatId) {
+  if (!ADMIN_IDS.has(String(chatId))) return send(chatId, 'Admin command denied.')
+  const since = encodeURIComponent(new Date(Date.now() - 7 * 86400000).toISOString())
+  const [users, submissions, events, snapshots] = await Promise.all([
+    db('madger_bot_users?select=chat_id'),
+    db('madger_bot_submissions?status=eq.pending&select=id'),
+    db(`madger_bot_events?created_at=gte.${since}&select=event_type`),
+    db('madger_bot_market_snapshots?select=price_usd,liquidity_usd,created_at&order=created_at.desc&limit=1')
+  ])
+  const counts = (events ?? []).reduce((map, event) => ({ ...map, [event.event_type]: (map[event.event_type] ?? 0) + 1 }), {})
+  const market = snapshots?.[0]
+  await send(chatId, `<b>MADGER BOT — 7 DAY COMMAND REPORT</b>\n\nMembers tracked: ${users?.length ?? 0}\nPending submissions: ${submissions?.length ?? 0}\nWelcome sessions: ${counts.welcome ?? 0}\nMission views: ${counts.missions_viewed ?? 0}\nSubmissions: ${counts.mission_submitted ?? 0}\nReferral link opens: ${counts.referral_open ?? 0}\n\nLatest market snapshot:\nPrice: ${market?.price_usd ?? 'unavailable'} USD\nLiquidity: ${market?.liquidity_usd ?? 'unavailable'} USD`)
+}
+
+function buyAlertCaption({ amount, usdValue, buyer, tier, market, preview = false, paymentAmount = null, paymentSymbol = null, postMadgerBalance = null, milestone = '' }) {
+  const metric = value => value === null || value === undefined ? Number.NaN : Number(value)
+  const price = metric(market?.priceUsd)
+  const liquidity = metric(market?.liquidityUsd)
+  const marketCap = metric(market?.marketCapUsd)
+  return `${preview ? '<b>PREVIEW — NOT A LIVE BUY</b> 🧪\\n\\n' : ''}<b>MADGER BUY DETECTED</b> 🦡⚡
+
+${tier.emoji} <b>${escapeHtml(tier.label)}</b>
+<b>${Number(amount).toLocaleString('en-US', { maximumFractionDigits: 2 })} $MADGER</b>
+${paymentAmount && paymentSymbol ? `Spent: <b>${Number(paymentAmount).toLocaleString('en-US', { maximumFractionDigits: 9 })} ${escapeHtml(paymentSymbol)}</b>\n` : ''}${paymentSymbol === 'USDC' ? 'Executed value' : 'Reference value'}: <b>${compactUsd(Number(usdValue))}</b>
+${paymentAmount && paymentSymbol ? `Execution rate: ${Number(paymentAmount / amount).toLocaleString('en-US', { maximumSignificantDigits: 7 })} ${escapeHtml(paymentSymbol)}/MADGER\n` : ''}${postMadgerBalance !== null ? `Buyer balance after: ${Number(postMadgerBalance).toLocaleString('en-US', { maximumFractionDigits: 2 })} MADGER\n` : ''}${milestone ? `\n🏁 <b>${escapeHtml(milestone)}</b>\n` : ''}
+
+Price: ${compactUsd(price)}
+Market cap: ${compactUsd(marketCap, 0)}
+Liquidity: ${compactUsd(liquidity, 0)}
+Buyer: <code>${escapeHtml(compactWallet(buyer))}</code>
+
+✅ Verified against the official Raydium pool
+Mint: <code>${OFFICIAL_MINT}</code>`
+}
+
+async function buyPreview(message) {
+  if (!ADMIN_IDS.has(String(message.from.id))) return send(message.chat.id, 'Admin command denied.')
+  if (message.chat.type !== 'private') {
+    await deleteQuietly(message.chat.id, message.message_id)
+    return send(message.from.id, 'Buy-card previews are private. Use /buypreview in your direct MADGERbot chat.')
+  }
+  const rows = await db('madger_bot_market_snapshots?select=price_usd,liquidity_usd,raw,created_at&order=created_at.desc&limit=1')
+  const market = marketSnapshotSummary(rows?.[0] ?? {})
+  const usdValue = 250
+  const amount = market.priceUsd > 0 ? usdValue / market.priceUsd : 250000
+  await sendBuyCard(message.chat.id, buyAlertCaption({
+    amount, usdValue, buyer: OFFICIAL_POOL, tier: buyTier(usdValue), market, preview: true
+  }))
+  await recordEvent('buy_preview_viewed', message.from.id)
+}
+
+async function buyStats(message) {
+  if (!ADMIN_IDS.has(String(message.from.id))) return send(message.chat.id, 'Admin command denied.')
+  if (message.chat.type !== 'private') {
+    await deleteQuietly(message.chat.id, message.message_id)
+    return send(message.from.id, 'Buy performance is private. Use /buystats in your direct MADGERbot chat.')
+  }
+  const since = encodeURIComponent(new Date(Date.now() - 7 * 86400000).toISOString())
+  const rows = await db(`madger_bot_alerts?alert_type=eq.verified_buy&created_at=gte.${since}&select=token_amount,usd_value,metadata,created_at&order=created_at.desc&limit=1000`)
+  const now = Date.now()
+  const summarize = days => {
+    const cutoff = now - days * 86400000
+    const matches = (rows ?? []).filter(row => Date.parse(row.created_at) >= cutoff)
+    return {
+      count: matches.length,
+      tokens: matches.reduce((sum, row) => sum + Number(row.token_amount ?? 0), 0),
+      usd: matches.reduce((sum, row) => sum + Number(row.usd_value ?? 0), 0),
+      largest: Math.max(0, ...matches.map(row => Number(row.usd_value ?? 0))),
+      delivered: matches.filter(row => row.metadata?.delivery_status === 'delivered').length
+    }
+  }
+  const one = summarize(1)
+  const seven = summarize(7)
+  return send(message.chat.id, `<b>MADGER BUY PERFORMANCE</b> 📡
+
+<b>Last 24 hours</b>
+Verified buys: ${one.count}
+Cards delivered: ${one.delivered}/${one.count}
+MADGER bought: ${one.tokens.toLocaleString('en-US', { maximumFractionDigits: 2 })}
+Approx. volume: ${compactUsd(one.usd)}
+Largest buy: ${compactUsd(one.largest)}
+
+<b>Last 7 days</b>
+Verified buys: ${seven.count}
+Cards delivered: ${seven.delivered}/${seven.count}
+MADGER bought: ${seven.tokens.toLocaleString('en-US', { maximumFractionDigits: 2 })}
+Approx. volume: ${compactUsd(seven.usd)}
+Largest buy: ${compactUsd(seven.largest)}
+
+Only independently verified official-pool buys are counted.`)
+}
+
+async function checkTransaction(message, args) {
+  const signature = parseTransactionReference(args)
+  if (!signature) return send(message.chat.id, 'Use: <code>/checktx SOLANA_SIGNATURE_OR_SOLSCAN_LINK</code>')
+  const transaction = await solanaRpc('getTransaction', [signature, {
+    encoding: 'jsonParsed', maxSupportedTransactionVersion: 0, commitment: 'confirmed'
+  }])
+  if (!transaction) return send(message.chat.id, 'That transaction is not available at confirmed commitment yet. Check the signature and try again.')
+  const result = classifyMadgerTransaction(transaction)
+  const labels = {
+    buy: 'VERIFIED MADGER BUY ✅', sell: 'VERIFIED MADGER SELL ✅',
+    transfer_in: 'MADGER TRANSFER — NOT A BUY', transfer_out: 'MADGER TRANSFER — NOT A SELL',
+    liquidity_add: 'LIQUIDITY ADDED — NOT A SELL', liquidity_remove: 'LIQUIDITY REMOVED — NOT A BUY',
+    protected_wallet_movement: 'PROTECTED-WALLET MOVEMENT ⚠️', failed: 'FAILED TRANSACTION', unrelated: 'UNRELATED TO MADGER', unavailable: 'UNAVAILABLE'
+  }
+  const lines = result.events.slice(0, 4).map(event => {
+    const movement = `${event.madgerAmount.toLocaleString('en-US', { maximumFractionDigits: 6 })} MADGER`
+    const payment = event.paymentAmount ? `\nPayment side: ${Number(event.paymentAmount).toLocaleString('en-US', { maximumFractionDigits: 9 })} ${escapeHtml(event.paymentSymbol)}` : ''
+    return `<b>${escapeHtml(labels[event.category] ?? event.category)}</b>\n${movement}${payment}\nWallet: <code>${escapeHtml(compactWallet(event.actor))}</code>\nSigner proof: ${event.actorSigned ? 'present ✅' : 'absent'}\nBalance after: ${event.postMadgerBalance.toLocaleString('en-US', { maximumFractionDigits: 6 })} MADGER`
+  })
+  return send(message.chat.id, `<b>MADGER TRANSACTION CHECK</b> 🔎\n\nStatus: <b>${escapeHtml(labels[result.category] ?? result.category)}</b>\nOfficial pool proof: ${result.verifiedPool ? 'present ✅' : 'absent'}\nNetwork fee: ${Number(result.feeSol ?? 0).toLocaleString('en-US', { maximumFractionDigits: 9 })} SOL\n\n${lines.join('\n\n') || 'No official MADGER balance movement was found.'}\n\nRead-only verification. MADGERbot never asks you to connect a wallet.`, keyboard([[{ text: 'Open on Solscan', url: `https://solscan.io/tx/${encodeURIComponent(signature)}` }]]))
+}
+
+async function checkLink(message, args) {
+  const result = inspectLinkSafety(args)
+  const titles = { trusted: 'TRUSTED DOMAIN ✅', unverified: 'UNVERIFIED DOMAIN ⚠️', caution: 'HIGH CAUTION ⚠️', danger: 'DANGEROUS PATTERN 🚨', invalid: 'INVALID LINK' }
+  return send(message.chat.id, `<b>MADGER LINK INSPECTOR</b> 🛡️\n\nResult: <b>${titles[result.level]}</b>\nHost: <code>${escapeHtml(result.host ?? 'unavailable')}</code>\nReason: ${escapeHtml(result.reason)}\n\nThe inspector analyzes the text without opening the destination. An “unverified” result is not proof of fraud; never connect a wallet or enter credentials through an unverified link.`, keyboard([[{ text: 'Open official MADGER links', url: LINKS.official }]]))
+}
+
+async function inspectToken(message, args) {
+  const address = parseSolanaAddress(args)
+  if (!address) return send(message.chat.id, 'Use: <code>/tokencheck TOKEN_MINT_ADDRESS</code>\nThe address must be a complete valid 32-byte Solana public key.')
+  const userId = String(message.from.id)
+  const lastRun = Number(tokenInspectionCooldown.get(userId) ?? 0)
+  if (Date.now() - lastRun < 10000) return send(message.chat.id, 'Please wait 10 seconds between token inspections.')
+  tokenInspectionCooldown.set(userId, Date.now())
+  if (tokenInspectionCooldown.size > 2000) {
+    const cutoff = Date.now() - 60000
+    for (const [key, value] of tokenInspectionCooldown) if (Number(value) < cutoff) tokenInspectionCooldown.delete(key)
+  }
+  try {
+    const account = await solanaRpc('getAccountInfo', [address, { encoding: 'jsonParsed', commitment: 'confirmed' }])
+    const prelim = summarizeMintAccount(address, account, null)
+    const supplyResult = prelim.isMint ? await solanaRpc('getTokenSupply', [address, { commitment: 'confirmed' }]) : null
+    const audit = summarizeMintAccount(address, account, supplyResult)
+    const title = !audit.exists ? 'ACCOUNT NOT FOUND'
+      : audit.isOfficial && audit.isMint ? 'OFFICIAL MADGER TOKEN ✅'
+      : audit.isMint ? 'NOT THE OFFICIAL MADGER MINT ⚠️' : 'NOT A TOKEN MINT'
+    const details = audit.isMint
+      ? `Supply: <b>${audit.supply === null ? 'unavailable' : audit.supply.toLocaleString('en-US', { maximumFractionDigits: audit.decimals ?? 6 })}</b>\nDecimals: ${audit.decimals ?? 'unavailable'}\nMint authority: ${audit.mintAuthority ? `<code>${escapeHtml(compactWallet(audit.mintAuthority))}</code>` : 'disabled ✅'}\nFreeze authority: ${audit.freezeAuthority ? `<code>${escapeHtml(compactWallet(audit.freezeAuthority))}</code>` : 'disabled ✅'}\nInitialized: ${audit.initialized ? 'yes' : 'no'}`
+      : `Account program: <code>${escapeHtml(compactWallet(audit.ownerProgram))}</code>`
+    return send(message.chat.id, `<b>MADGER TOKEN AUTHENTICITY CHECK</b> 🧬\n\nResult: <b>${title}</b>\nChecked address:\n<code>${escapeHtml(address)}</code>\n\n${details}\n\nOfficial MADGER mint:\n<code>${OFFICIAL_MINT}</code>\n\nOnly an exact full-address match is official. A different mint is not MADGER; this result does not by itself determine whether another token is fraudulent.`, keyboard([[{ text: 'Inspect checked address', url: `https://solscan.io/token/${encodeURIComponent(address)}` }, { text: 'Verify MADGER', url: LINKS.verify }]]))
+  } catch {
+    return send(message.chat.id, 'Token data is temporarily unavailable across the configured Solana endpoints. No authenticity result was inferred—please try again shortly.')
+  }
+}
+
+async function showSupply(chatId) {
+  try {
+    const [account, supplyResult] = await Promise.all([
+      solanaRpc('getAccountInfo', [OFFICIAL_MINT, { encoding: 'jsonParsed', commitment: 'confirmed' }]),
+      solanaRpc('getTokenSupply', [OFFICIAL_MINT, { commitment: 'confirmed' }])
+    ])
+    const audit = summarizeMintAccount(OFFICIAL_MINT, account, supplyResult)
+    if (!audit.exists || !audit.isMint) return send(chatId, 'The official MADGER mint account could not be independently verified right now.')
+    return send(chatId, `<b>MADGER ON-CHAIN SUPPLY AUDIT</b> 🔬\n\nOfficial mint:\n<code>${OFFICIAL_MINT}</code>\n\nCurrent supply: <b>${Number(audit.supply ?? 0).toLocaleString('en-US', { maximumFractionDigits: audit.decimals ?? 6 })} MADGER</b>\nDecimals: ${audit.decimals}\nMint initialized: ${audit.initialized ? 'yes ✅' : 'no ⚠️'}\nMint authority: ${audit.mintAuthority ? `<code>${escapeHtml(compactWallet(audit.mintAuthority))}</code>` : 'disabled ✅'}\nFreeze authority: ${audit.freezeAuthority ? `<code>${escapeHtml(compactWallet(audit.freezeAuthority))}</code>` : 'disabled ✅'}\n\nRead directly from Solana at confirmed commitment. Supply can decrease through burns; MADGERbot does not infer burns without transaction evidence.`, keyboard([[{ text: 'Verify on Solscan', url: LINKS.solscanToken }]]))
+  } catch {
+    return send(chatId, 'The live supply audit is temporarily unavailable. No values were estimated or reused from an old snapshot.')
+  }
+}
+
+async function inspectWallet(message, args) {
+  if (message.chat.type !== 'private') return send(message.chat.id, 'Wallet inspection is private. Open MADGERbot directly and use <code>/walletcheck ADDRESS</code>.')
+  const address = parseSolanaAddress(args)
+  if (!address) return send(message.chat.id, 'Use: <code>/walletcheck SOLANA_ADDRESS</code>\nThe address must be a complete valid 32-byte Solana public key.')
+  const userId = String(message.from.id)
+  const lastRun = Number(walletInspectionCooldown.get(userId) ?? 0)
+  if (Date.now() - lastRun < 15000) return send(message.chat.id, 'Please wait 15 seconds between wallet inspections.')
+  walletInspectionCooldown.set(userId, Date.now())
+  try {
+    const [tokenAccounts, solBalance] = await Promise.all([
+      solanaRpc('getTokenAccountsByOwner', [address, { mint: OFFICIAL_MINT }, { encoding: 'jsonParsed', commitment: 'confirmed' }]),
+      solanaRpc('getBalance', [address, { commitment: 'confirmed' }])
+    ])
+    const madgerBalance = (tokenAccounts?.value ?? []).reduce((sum, item) => {
+      const amount = Number(item?.account?.data?.parsed?.info?.tokenAmount?.uiAmountString ?? item?.account?.data?.parsed?.info?.tokenAmount?.uiAmount ?? 0)
+      return sum + (Number.isFinite(amount) ? amount : 0)
+    }, 0)
+    const sol = Number(solBalance?.value ?? 0) / 1e9
+    const classification = classifyKnownAddress(address)
+    return send(message.chat.id, `<b>MADGER PRIVATE WALLET CHECK</b> 🔎\n\nAddress: <code>${escapeHtml(address)}</code>\nPublished classification: <b>${escapeHtml(classification.label)}</b>\nMADGER balance: <b>${madgerBalance.toLocaleString('en-US', { maximumFractionDigits: 6 })}</b>\nSOL balance: <b>${sol.toLocaleString('en-US', { maximumFractionDigits: 9 })}</b>\nToken accounts found: ${tokenAccounts?.value?.length ?? 0}\n\nRead-only confirmed-chain data. “Unclassified” does not imply misconduct or identify the owner. MADGERbot never connects to, signs for, or controls this wallet.`, keyboard([[{ text: 'Open address on Solscan', url: walletExplorer(address) }]]))
+  } catch {
+    return send(message.chat.id, 'Wallet data is temporarily unavailable across the configured Solana endpoints. No result was inferred—please try again shortly.')
+  }
+}
+
+async function showSystemStatus(chatId) {
+  const [marketRows, watcherHealth, holderHealth, lockHealth] = await Promise.all([
+    db('madger_bot_market_snapshots?select=created_at&order=created_at.desc&limit=1'),
+    setting('native_buy_watcher_health'), setting('holder_monitor_health'), setting('lock_monitor_health')
+  ])
+  const age = value => {
+    const parsed = Date.parse(String(value ?? ''))
+    return Number.isFinite(parsed) ? Math.max(0, Math.floor((Date.now() - parsed) / 60000)) : null
+  }
+  const marketAge = age(marketRows?.[0]?.created_at)
+  const watcherAge = age(watcherHealth?.last_run_at)
+  const holderAge = age(holderHealth?.last_run_at)
+  const locks = lockHealth?.records ?? []
+  const healthy = marketAge !== null && marketAge <= 10 && watcherAge !== null && watcherAge <= 2 && !watcherHealth?.error
+    && (holderAge === null || (holderAge <= 20 && !holderHealth?.error)) && (!locks.length || locks.every(item => item.intact))
+  return send(chatId, `<b>MADGER SYSTEM STATUS</b> ${healthy ? '✅' : '⚠️'}\n\nOverall: <b>${healthy ? 'OPERATIONAL' : 'DEGRADED'}</b>\nMarket feed: ${marketAge === null ? 'initializing' : `${marketAge}m old ${marketAge <= 10 ? '✅' : '⚠️'}`}\nVerified-buy watcher: ${watcherAge === null ? 'initializing' : `${watcherAge}m old ${watcherAge <= 2 && !watcherHealth?.error ? '✅' : '⚠️'}`}\nHolder monitor: ${holderAge === null ? 'initializing' : `${holderAge}m old ${holderAge <= 20 && !holderHealth?.error ? '✅' : '⚠️'}`}\nPublished locks: ${locks.length ? `${locks.filter(item => item.intact).length}/${locks.length} intact` : 'initializing'}\n\nStatus exposes aggregate health only—never private configuration or wallet credentials.`)
+}
+
+async function showRpcStatus(message) {
+  if (!ADMIN_IDS.has(String(message.from.id)) || message.chat.type !== 'private') return send(message.chat.id, 'RPC diagnostics are restricted to the private admin console.')
+  const checks = await Promise.all(RPC_URLS.map(async endpoint => {
+    const started = Date.now()
+    let host = 'invalid endpoint'
+    try {
+      host = new URL(endpoint).hostname
+      const response = await fetch(endpoint, {
+        method: 'POST', headers: { 'Content-Type': 'application/json' }, signal: AbortSignal.timeout(8000),
+        body: JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'getSlot', params: [{ commitment: 'confirmed' }] })
+      })
+      const payload = await response.json()
+      if (!response.ok || payload.error || !Number.isFinite(Number(payload.result))) throw new Error('unhealthy')
+      return { host, ok: true, latency: Date.now() - started, slot: Number(payload.result) }
+    } catch { return { host, ok: false, latency: Date.now() - started, slot: null } }
+  }))
+  const lines = checks.map((item, index) => `${index + 1}. <code>${escapeHtml(item.host)}</code> · ${item.ok ? `healthy ✅ · ${item.latency}ms · slot ${item.slot}` : `unavailable ⚠️ · ${item.latency}ms`}`)
+  return send(message.chat.id, `<b>MADGER RPC FAILOVER DIAGNOSTICS</b> 🛰️\n\n${lines.join('\n')}\n\nHealthy endpoints: ${checks.filter(item => item.ok).length}/${checks.length}\nMost recently selected: <code>${escapeHtml(activeRpcHost || 'awaiting a bot RPC call')}</code>\n\nRead-only health probes. Full endpoint URLs and credentials are never displayed.`)
+}
+
+async function managePriceAlert(message, args) {
+  if (message.chat.type !== 'private') return send(message.chat.id, 'Personal market alerts are private. Open MADGERbot directly and use /alert there.')
+  const parsed = parseAlertSubscription(args)
+  if (!parsed) return send(message.chat.id, '<b>Create a private alert</b>\n<code>/alert price above 0.002</code>\n<code>/alert liquidity below 8000</code>\n<code>/alert volume above 1000</code>\n<code>/alert holders above 500</code>\n<code>/alert whale above 500</code>\n\nThresholds are factual notifications, not trading instructions.')
+  await db('madger_bot_alert_subscriptions?on_conflict=chat_id,metric,direction,threshold', {
+    method: 'POST', headers: { Prefer: 'resolution=merge-duplicates,return=minimal' },
+    body: JSON.stringify({ chat_id: message.chat.id, ...parsed, active: true, updated_at: new Date().toISOString() })
+  })
+  return send(message.chat.id, `Private alert armed: <b>${escapeHtml(parsed.metric)}</b> ${parsed.direction} <b>${parsed.threshold.toLocaleString('en-US')}</b>.\n\nUse /alerts to manage it.`)
+}
+
+async function showPersonalAlerts(message) {
+  if (message.chat.type !== 'private') return send(message.chat.id, 'Personal alerts are shown only in your direct MADGERbot chat.')
+  const rows = await db(`madger_bot_alert_subscriptions?chat_id=eq.${message.chat.id}&active=eq.true&select=id,metric,direction,threshold,last_triggered_at&order=created_at.asc`)
+  if (!rows?.length) return send(message.chat.id, 'You have no active alerts. Use /alert to create one.')
+  const lines = rows.map(row => `<b>#${row.id}</b> · ${escapeHtml(row.metric)} ${row.direction} ${Number(row.threshold).toLocaleString('en-US')}\nDisable: <code>/alertoff ${row.id}</code>`)
+  return send(message.chat.id, `<b>YOUR PRIVATE MADGER ALERTS</b> 🔔\n\n${lines.join('\n\n')}`)
+}
+
+async function disablePersonalAlert(message, args) {
+  if (message.chat.type !== 'private') return send(message.chat.id, 'Manage personal alerts in your direct MADGERbot chat.')
+  const id = Number(args.trim())
+  if (!Number.isSafeInteger(id) || id <= 0) return send(message.chat.id, 'Use: <code>/alertoff ALERT_ID</code>')
+  const rows = await db(`madger_bot_alert_subscriptions?id=eq.${id}&chat_id=eq.${message.chat.id}&active=eq.true&select=id`, {
+    method: 'PATCH', headers: { Prefer: 'return=representation' }, body: JSON.stringify({ active: false, updated_at: new Date().toISOString() })
+  })
+  return send(message.chat.id, rows?.length ? `Alert #${id} disabled.` : 'That active alert was not found in your account.')
+}
+
+async function evaluateSubscriptions(metric, value, detail, url = LINKS.dex) {
+  const amount = Number(value)
+  if (!Number.isFinite(amount)) return 0
+  const cooldown = Date.now() - 6 * 3600000
+  const rows = await db(`madger_bot_alert_subscriptions?metric=eq.${encodeURIComponent(metric)}&active=eq.true&select=id,chat_id,direction,threshold,last_triggered_at&limit=500`)
+  let delivered = 0
+  for (const row of rows ?? []) {
+    const crossed = row.direction === 'above' ? amount >= Number(row.threshold) : amount <= Number(row.threshold)
+    if (!crossed || (row.last_triggered_at && Date.parse(row.last_triggered_at) > cooldown)) continue
+    try {
+      await send(row.chat_id, `<b>MADGER PRIVATE ALERT</b> 🔔\n\n${escapeHtml(detail)}\nTriggered: ${escapeHtml(metric)} ${row.direction} ${Number(row.threshold).toLocaleString('en-US')}\n\nInformational only. Verify live data before making any decision.`, keyboard([[{ text: 'Inspect verified data', url }]]))
+      await db(`madger_bot_alert_subscriptions?id=eq.${row.id}`, { method: 'PATCH', body: JSON.stringify({ last_triggered_at: new Date().toISOString(), updated_at: new Date().toISOString() }) })
+      delivered += 1
+    } catch { /* user may have blocked the bot */ }
+  }
+  return delivered
+}
+
+async function sellStats(message) {
+  if (!ADMIN_IDS.has(String(message.from.id)) || message.chat.type !== 'private') return send(message.chat.id, 'Sell intelligence is restricted to the private admin console.')
+  const since = encodeURIComponent(new Date(Date.now() - 86400000).toISOString())
+  const rows = await db(`madger_bot_alerts?created_at=gte.${since}&trade_side=in.(buy,sell)&select=trade_side,token_amount,usd_value,payment_amount,payment_asset&limit=2000`)
+  const buys = (rows ?? []).filter(row => row.trade_side === 'buy')
+  const sells = (rows ?? []).filter(row => row.trade_side === 'sell')
+  const sum = (items, field) => items.reduce((total, row) => total + Number(row[field] ?? 0), 0)
+  const buyUsd = sum(buys, 'usd_value')
+  const sellUsd = sum(sells, 'usd_value')
+  return send(message.chat.id, `<b>PRIVATE MADGER FLOW — 24H</b> 🔒\n\nVerified buys: ${buys.length} · ${compactUsd(buyUsd)}\nVerified sells: ${sells.length} · ${compactUsd(sellUsd)}\nBuy/sell count ratio: ${sells.length ? (buys.length / sells.length).toFixed(2) : buys.length ? 'buy-only' : 'no trades'}\nNet verified flow: <b>${compactUsd(buyUsd - sellUsd)}</b>\nMADGER bought: ${sum(buys, 'token_amount').toLocaleString('en-US', { maximumFractionDigits: 2 })}\nMADGER sold: ${sum(sells, 'token_amount').toLocaleString('en-US', { maximumFractionDigits: 2 })}\n\nOnly official-pool transactions the classifier can prove are included. This report stays private and does not shame wallets.`)
+}
+
+async function dailyBriefing(request = null, message = null) {
+  if (request && !await authenticateInternal(request)) return new Response('Unauthorized', { status: 401 })
+  if (message && (!ADMIN_IDS.has(String(message.from.id)) || message.chat.type !== 'private')) return send(message.chat.id, 'The daily briefing is restricted to the private admin console.')
+  const target = message?.chat.id ?? ADMIN_CHAT_ID
+  if (!target) return request ? Response.json({ ok: false, error: 'admin_chat_missing' }, { status: 409 }) : null
+  const since = encodeURIComponent(new Date(Date.now() - 86400000).toISOString())
+  const [trades, marketRows, holderRows, events, lockHealth] = await Promise.all([
+    db(`madger_bot_alerts?created_at=gte.${since}&trade_side=in.(buy,sell)&select=trade_side,usd_value&limit=2000`),
+    db('madger_bot_market_snapshots?select=price_usd,liquidity_usd,raw,created_at&order=created_at.desc&limit=1'),
+    db('madger_bot_holder_snapshots?select=holder_count,created_at&order=created_at.desc&limit=1'),
+    db(`madger_bot_events?created_at=gte.${since}&select=event_type`), setting('lock_monitor_health')
+  ])
+  const side = name => (trades ?? []).filter(row => row.trade_side === name)
+  const total = rows => rows.reduce((sum, row) => sum + Number(row.usd_value ?? 0), 0)
+  const counts = (events ?? []).reduce((map, event) => ({ ...map, [event.event_type]: (map[event.event_type] ?? 0) + 1 }), {})
+  const market = marketSnapshotSummary(marketRows?.[0] ?? {})
+  const locks = lockHealth?.records ?? []
+  await send(target, `<b>MADGER DAILY ADMIN BRIEFING</b> 🌅\n\n<b>Verified flow</b>\nBuys: ${side('buy').length} · ${compactUsd(total(side('buy')))}\nSells: ${side('sell').length} · ${compactUsd(total(side('sell')))}\nNet: ${compactUsd(total(side('buy')) - total(side('sell')))}\n\n<b>Market</b>\nPrice: ${compactUsd(market.priceUsd)}\nLiquidity: ${compactUsd(market.liquidityUsd, 0)}\n24h volume: ${compactUsd(marketRows?.[0]?.raw?.volume?.h24)}\nHolders: ${Number(holderRows?.[0]?.holder_count ?? 0).toLocaleString('en-US')}\n\n<b>Operations</b>\nVerified joins: ${counts.join_verified ?? 0}\nModeration actions: ${counts.moderation_action ?? 0}\nMember reports: ${counts.member_report ?? 0}\nLocks intact: ${locks.filter(item => item.intact).length}/${locks.length}\nRPC: ${escapeHtml(activeRpcHost || 'not used in this instance')}\n\nGenerated from stored verified data; missing values are not invented.`, keyboard([[{ text: 'Open visual dashboard', url: DASHBOARD_URL }]]))
+  return request ? Response.json({ ok: true, delivered: true }) : undefined
+}
+
+async function adminHealth(message) {
+  if (!ADMIN_IDS.has(String(message.from.id))) return send(message.chat.id, 'Admin command denied.')
+  if (message.chat.type !== 'private') {
+    await deleteQuietly(message.chat.id, message.message_id)
+    return send(message.from.id, 'System health is private. Use /health here in your direct MADGERbot chat.')
+  }
+  const bot = await telegram('getMe', {})
+  const telemetrySince = encodeURIComponent(new Date(Date.now() - 3600000).toISOString())
+  const [webhook, membership, snapshots, cleanup, raidMode, chatSecurity, watcherHealth, recentBuys, holderHealth, lockHealth, telemetryRows] = await Promise.all([
+    telegram('getWebhookInfo', {}),
+    BUY_CHAT_ID ? telegram('getChatMember', { chat_id: BUY_CHAT_ID, user_id: bot.id }).catch(() => null) : null,
+    db('madger_bot_market_snapshots?select=created_at&order=created_at.desc&limit=1'),
+    db('madger_bot_message_cleanup?deleted_at=is.null&select=message_id&limit=100'),
+    raidModeForChat(BUY_CHAT_ID),
+    chatSecurityInfo(BUY_CHAT_ID),
+    setting('native_buy_watcher_health'),
+    db('madger_bot_alerts?alert_type=eq.verified_buy&select=metadata,created_at&order=created_at.desc&limit=100'),
+    setting('holder_monitor_health'),
+    setting('lock_monitor_health'),
+    db(`madger_bot_events?event_type=eq.service_request&created_at=gte.${telemetrySince}&select=metadata&order=created_at.desc&limit=2000`)
+  ])
+  const snapshotAt = Date.parse(String(snapshots?.[0]?.created_at ?? ''))
+  const marketAge = Number.isFinite(snapshotAt) ? Math.max(0, Math.floor((Date.now() - snapshotAt) / 60000)) : null
+  const webhookError = webhook.last_error_message
+    ? `\nLast delivery error: ${escapeHtml(String(webhook.last_error_message).slice(0, 200))}`
+    : ''
+  const watcherAt = Date.parse(String(watcherHealth?.last_run_at ?? ''))
+  const watcherAge = Number.isFinite(watcherAt) ? Math.max(0, Math.floor((Date.now() - watcherAt) / 60000)) : null
+  const watcherFailures = (recentBuys ?? []).filter(row => row.metadata?.delivery_status === 'failed').length
+  const holderAt = Date.parse(String(holderHealth?.last_run_at ?? ''))
+  const holderAge = Number.isFinite(holderAt) ? Math.max(0, Math.floor((Date.now() - holderAt) / 60000)) : null
+  const telemetry = telemetrySummary(telemetryRows)
+  return send(message.chat.id, `<b>MADGERBOT SYSTEM HEALTH</b> 🩺
+
+Version: ${BOT_VERSION}
+Webhook: ${webhook.url ? 'connected ✅' : 'missing ❌'}
+Pending Telegram updates: ${Number(webhook.pending_update_count ?? 0)}
+Market monitor: ${marketAge === null ? 'no snapshot ❌' : marketAge <= 10 ? `current ✅ · ${marketAge}m old` : `stale ⚠️ · ${marketAge}m old`}
+Buy watcher: ${watcherAge === null ? 'no run recorded ❌' : watcherAge <= 2 && !watcherHealth?.error ? `current ✅ · ${watcherAge}m old` : `attention ⚠️ · ${watcherAge}m old`}
+Buy cadence: every minute
+Last scan: ${Number(watcherHealth?.scanned ?? 0)} transactions · ${Number(watcherHealth?.verified ?? 0)} buys · ${Number(watcherHealth?.posted ?? 0)} cards
+Recent card failures: ${watcherFailures}
+Requests (1h): ${telemetry.requests} · errors ${telemetry.errors} (${telemetry.errorRate.toFixed(1)}%)
+Request latency p95: ${telemetry.p95DurationMs === null ? 'collecting' : `${telemetry.p95DurationMs}ms`}
+Holder monitor: ${holderAge === null ? 'initializing' : holderAge <= 20 && !holderHealth?.error ? `current ✅ · ${holderAge}m old · ${holderHealth.holder_count} wallets` : `attention ⚠️ · ${holderAge}m old`}
+Lock monitor: ${lockHealth?.records?.length ? `${lockHealth.records.filter(item => item.intact).length}/${lockHealth.records.length} balances intact${lockHealth.records.every(item => item.intact) ? ' ✅' : ' ⚠️'}` : 'initializing'}
+RPC failover: ${RPC_URLS.length} endpoint${RPC_URLS.length === 1 ? '' : 's'} · active ${escapeHtml(activeRpcHost || 'awaiting call')}
+Cleanup backlog: ${cleanup?.length ?? 0}${cleanup?.length === 100 ? '+' : ''}
+Raid Shield: ${raidMode.active ? 'ACTIVE 🚨' : 'normal'}
+
+<b>Burrow permissions</b>
+Administrator: ${membership && ['administrator', 'creator'].includes(membership.status) ? 'yes ✅' : 'no ❌'}
+Delete messages: ${membership?.can_delete_messages ? 'yes ✅' : 'no ❌'}
+Restrict members: ${membership?.can_restrict_members ? 'yes ✅' : 'no ❌'}
+Pin messages: ${membership?.can_pin_messages ? 'yes ✅' : 'no ❌'}
+Native anti-spam: ${chatSecurity.aggressiveAntiSpam === null ? 'unknown' : chatSecurity.aggressiveAntiSpam ? 'on ✅' : 'off — enable manually in Telegram'}
+Slow mode: ${chatSecurity.slowModeSeconds ?? 'unknown'}s${webhookError}`)
+}
+
+async function moderationLog(message) {
+  if (!ADMIN_IDS.has(String(message.from.id))) return send(message.chat.id, 'Admin command denied.')
+  if (message.chat.type !== 'private') {
+    await deleteQuietly(message.chat.id, message.message_id)
+    return send(message.from.id, 'The safety log is private. Use /modlog here in your direct MADGERbot chat.')
+  }
+  const types = 'moderation_action,member_report,admin_cleanup,admin_warn,admin_mute,admin_ban,admin_unmute,admin_clearwarns,raid_mode_activated,join_purged'
+  const rows = await db(`madger_bot_events?event_type=in.(${types})&select=event_type,chat_id,metadata,created_at&order=created_at.desc&limit=10`)
+  if (!rows?.length) return send(message.chat.id, '<b>MADGER SAFETY LOG</b>\n\nNo recent safety actions.')
+  const lines = rows.map(row => {
+    const at = new Date(row.created_at).toISOString().replace('T', ' ').slice(0, 16)
+    const detail = row.metadata?.reason ?? row.metadata?.action ?? row.metadata?.mission_code ?? ''
+    return `• <b>${escapeHtml(String(row.event_type).replaceAll('_', ' '))}</b> · ${at} UTC${detail ? `\n  ${escapeHtml(String(detail).slice(0, 160))}` : ''}`
+  })
+  return send(message.chat.id, `<b>MADGER SAFETY LOG</b> 🛡️\n\n${lines.join('\n')}\n\nAggregate operational records only; wallet credentials and private message contents are never stored.`)
+}
+
+async function reviewSubmission(message, args, status) {
+  if (!ADMIN_IDS.has(String(message.from.id))) return send(message.chat.id, 'Admin command denied.')
+  if (message.chat.type !== 'private') {
+    await deleteQuietly(message.chat.id, message.message_id)
+    return send(message.from.id, 'Submission reviews are private. Use /reviews here in your direct MADGERbot chat.')
+  }
+  const review = parseReviewRequest(args)
+  if (!review) return send(message.chat.id, `Use: <code>/${status === 'approved' ? 'approve' : 'reject'} submission-id optional-note</code>\nReview notes may contain up to 300 characters.`)
+  const result = await db('rpc/madger_bot_review_submission', {
+    method: 'POST', body: JSON.stringify({ p_submission_id: review.id, p_status: status, p_reviewer_chat_id: Number(message.from.id), p_note: review.note })
+  })
+  const reviewed = result?.[0]
+  await send(message.chat.id, `Submission ${review.id} ${status}.${status === 'approved' ? ` Awarded ${reviewed?.awarded_points ?? 0} points.` : ''}`)
+  if (reviewed?.user_chat_id) await send(reviewed.user_chat_id, `Your mission submission ${review.id} was ${status}.${status === 'approved' ? ` +${reviewed.awarded_points} verified points.` : ''}${review.note ? `\nReview: ${escapeHtml(review.note)}` : ''}`)
+}
+
+async function reportMessage(message) {
+  const target = message.reply_to_message
+  if (!target?.from) return send(message.chat.id, 'Reply directly to the suspicious message with <code>/report</code>.')
+  await recordEvent('member_report', message.from.id, {
+    chat_id: message.chat.id, reported_user_id: target.from.id,
+    reported_message_id: target.message_id, reporter_username: message.from.username ?? null
+  })
+  if (ADMIN_CHAT_ID) {
+    const excerpt = escapeHtml(String(target.text ?? target.caption ?? '[media]').slice(0, 500))
+    await send(ADMIN_CHAT_ID, `<b>Member report</b> 🚨\nChat: <code>${message.chat.id}</code>\nReported user: <code>${target.from.id}</code> @${escapeHtml(target.from.username ?? 'none')}\nReporter: <code>${message.from.id}</code>\nMessage ID: <code>${target.message_id}</code>\n\n<blockquote>${excerpt}</blockquote>`)
+  }
+  return send(message.chat.id, 'Report recorded for administrator review. Do not engage with the suspicious account.')
+}
+
+async function adminModerationAction(message, command, args) {
+  if (!ADMIN_IDS.has(String(message.from.id)) && !await isChatAdmin(message.chat.id, message.from.id)) return send(message.chat.id, 'Admin command denied.')
+  const target = message.reply_to_message?.from
+  if (!target) return send(message.chat.id, `Reply to a member's message with <code>/${command}${command === 'mute' ? ' 10' : ''}</code>.`)
+  if (await isChatAdmin(message.chat.id, target.id)) return send(message.chat.id, 'MADGERbot will not moderate an administrator.')
+  if (command === 'warn') {
+    const state = await moderationState(message.chat.id, target.id)
+    const count = Number(state?.warning_count ?? 0) + 1
+    await saveModerationState({ chat_id: message.chat.id, user_id: target.id, warning_count: count })
+    await recordEvent('admin_warn', message.from.id, { chat_id: message.chat.id, target_user_id: target.id, warning_count: count })
+    return send(message.chat.id, `@${escapeHtml(target.username ?? target.first_name ?? String(target.id))} received an administrator warning (${count}).`)
+  }
+  if (command === 'mute') {
+    const minutes = Math.min(1440, Math.max(1, Number.parseInt(args, 10) || MUTE_MINUTES))
+    const until = Math.floor(Date.now() / 1000) + minutes * 60
+    await restrictMember(message.chat.id, target.id, until)
+    await saveModerationState({ chat_id: message.chat.id, user_id: target.id, restricted_until: new Date(until * 1000).toISOString() })
+    await recordEvent('admin_mute', message.from.id, { chat_id: message.chat.id, target_user_id: target.id, minutes })
+    return send(message.chat.id, `Member muted for ${minutes} minute${minutes === 1 ? '' : 's'}.`)
+  }
+  if (command === 'ban') {
+    await telegram('banChatMember', { chat_id: message.chat.id, user_id: target.id, revoke_messages: true })
+    await saveModerationState({ chat_id: message.chat.id, user_id: target.id, removed_at: new Date().toISOString() })
+    await recordEvent('admin_ban', message.from.id, { chat_id: message.chat.id, target_user_id: target.id })
+    return send(message.chat.id, 'Member banned and recent messages removed.')
+  }
+}
+
+async function memberInfo(message) {
+  if (!ADMIN_IDS.has(String(message.from.id)) && !await isChatAdmin(message.chat.id, message.from.id)) {
+    return send(message.chat.id, 'Admin command denied.')
+  }
+  if (!isGroupChat(message.chat)) return send(message.chat.id, 'Use /memberinfo as a reply to a member inside The Burrow.')
+  const target = message.reply_to_message?.from
+  if (!target) return send(message.chat.id, 'Reply directly to a member with <code>/memberinfo</code>.')
+  const state = await moderationState(message.chat.id, target.id)
+  await deleteQuietly(message.chat.id, message.message_id)
+  const username = target.username ? `@${escapeHtml(target.username)}` : escapeHtml(target.first_name ?? 'No public username')
+  const details = `<b>MADGER MEMBER INSPECTION</b>
+
+Member: ${username}
+User ID: <code>${target.id}</code>
+Warnings: ${Number(state?.warning_count ?? 0)}
+Pending verification: ${state?.pending_verification ? 'yes' : 'no'}
+Restricted until: ${state?.restricted_until ? escapeHtml(state.restricted_until) : 'not restricted'}
+Removed at: ${state?.removed_at ? escapeHtml(state.removed_at) : 'never'}
+Flood counter: ${Number(state?.flood_count ?? 0)}
+Repeat counter: ${Number(state?.duplicate_count ?? 0)}`
+  try {
+    return await send(message.from.id, details)
+  } catch {
+    return send(message.chat.id, 'Open MADGERbot privately before using /memberinfo.')
+  }
+}
+
+async function adminRecoveryAction(message, action) {
+  if (!ADMIN_IDS.has(String(message.from.id)) && !await isChatAdmin(message.chat.id, message.from.id)) {
+    return send(message.chat.id, 'Admin command denied.')
+  }
+  if (!isGroupChat(message.chat)) return send(message.chat.id, `Use /${action} as a reply to a member inside The Burrow.`)
+  const target = message.reply_to_message?.from
+  if (!target) return send(message.chat.id, `Reply directly to a member with <code>/${action}</code>.`)
+  if (await isChatAdmin(message.chat.id, target.id)) return send(message.chat.id, 'MADGERbot will not alter an administrator.')
+  if (action === 'unmute') {
+    await restoreMember(message.chat.id, target.id)
+    await saveModerationState({
+      chat_id: message.chat.id, user_id: target.id, restricted_until: null,
+      pending_verification: false, verification_deadline: null
+    })
+    await recordEvent('admin_unmute', message.from.id, { chat_id: message.chat.id, target_user_id: target.id })
+    return send(message.chat.id, `@${escapeHtml(target.username ?? target.first_name ?? String(target.id))} can speak again.`)
+  }
+  await saveModerationState({
+    chat_id: message.chat.id, user_id: target.id, warning_count: 0,
+    flood_count: 0, duplicate_count: 0, duplicate_hash: null
+  })
+  await recordEvent('admin_clearwarns', message.from.id, { chat_id: message.chat.id, target_user_id: target.id })
+  return send(message.chat.id, `Warnings and spam counters cleared for @${escapeHtml(target.username ?? target.first_name ?? String(target.id))}.`)
+}
+
+async function cleanupMessage(message) {
+  if (!ADMIN_IDS.has(String(message.from.id)) && !await isChatAdmin(message.chat.id, message.from.id)) {
+    return send(message.chat.id, 'Admin command denied.')
+  }
+  if (!isGroupChat(message.chat)) return send(message.chat.id, 'Use /cleanup as a reply to an obsolete message inside The Burrow.')
+  const target = message.reply_to_message
+  if (!target) return send(message.chat.id, 'Reply directly to the obsolete message with <code>/cleanup</code>.')
+  try {
+    await telegram('deleteMessage', { chat_id: message.chat.id, message_id: target.message_id })
+  } catch {
+    return send(message.chat.id, 'Telegram could not remove that message. Confirm MADGERbot still has permission to delete messages.')
+  }
+  await deleteQuietly(message.chat.id, message.message_id)
+  await recordEvent('admin_cleanup', message.from.id, {
+    chat_id: message.chat.id, deleted_message_id: target.message_id,
+    deleted_sender_id: target.from?.id ?? null, deleted_sender_is_bot: target.from?.is_bot ?? null
+  })
+  const confirmation = await send(message.chat.id, 'Obsolete message removed.')
+  if (confirmation?.message_id) await scheduleCleanup(message.chat.id, confirmation.message_id, 'cleanup_confirmation', 1)
+  return confirmation
+}
+
+async function handleCommand(message) {
+  const chatId = message.chat.id
+  const raw = message.text?.trim() ?? ''
+  const [commandWithBot, ...rest] = raw.split(/\s+/)
+  const command = normalizeTelegramCommand(commandWithBot)
+  const args = rest.join(' ')
+  const startIntent = command === '/start' ? args.trim().toLowerCase() : ''
+  const startRef = command === '/start' && startIntent !== 'teams' ? normalizeReferral(args) : null
+  await registerUser(message.from, startRef)
+
+  if (command === '/start' && startIntent === 'teams') return showTeams(message)
+  if (command === '/start') return showWelcome(chatId, message.from, startRef)
+  if (command === '/buy') return send(chatId, `<b>BUY $MADGER SAFELY</b>\n\nOfficial mint:\n<code>${OFFICIAL_MINT}</code>\n\nMADGER never presets your amount or slippage. Review every wallet prompt before approving.`, conversionKeyboard())
+  if (command === '/verify') return send(chatId, `<b>OFFICIAL MADGER MINT</b>\n<code>${OFFICIAL_MINT}</code>\n\nPool:\n<code>${OFFICIAL_POOL}</code>`, keyboard([[{ text: 'Open canonical verification', url: LINKS.verify }]]))
+  if (command === '/price') return showMarket(chatId)
+  if (command === '/pool') return showPool(chatId)
+  if (command === '/risk') return showRisk(chatId)
+  if (command === '/supply') return showSupply(chatId)
+  if (command === '/holders') return showHolders(chatId)
+  if (command === '/wallets') return showWallets(chatId)
+  if (command === '/distribution') return showDistribution(chatId)
+  if (command === '/locks') return showLocks(chatId)
+  if (command === '/chart') return send(chatId, '<b>MADGER VERIFIED CHART</b> 📈\nThis link is locked to the official Raydium pool.', keyboard([[{ text: 'Open live chart', url: LINKS.dex }]]))
+  if (command === '/checktx') return checkTransaction(message, args)
+  if (command === '/tokencheck') return inspectToken(message, args)
+  if (command === '/checklink') return checkLink(message, args)
+  if (command === '/walletcheck') return inspectWallet(message, args)
+  if (command === '/status') return showSystemStatus(chatId)
+  if (command === '/alert') return managePriceAlert(message, args)
+  if (command === '/alerts') return showPersonalAlerts(message)
+  if (command === '/alertoff') return disablePersonalAlert(message, args)
+  if (command === '/app') {
+    const appUrl = DASHBOARD_URL
+    const button = message.chat.type === 'private' ? { text: 'Open dashboard', web_app: { url: appUrl } } : { text: 'Open dashboard', url: appUrl }
+    return send(chatId, '<b>MADGER COMMAND CENTER</b> 🦡\nLive market, holder, and lock intelligence in one read-only dashboard. No wallet connection.', keyboard([[button]]))
+  }
+  if (command === '/links') return showOfficialLinks(chatId)
+  if (command === '/help') return showHelp(chatId, args)
+  if (command === '/missions') return showMissions(chatId, isGroupChat(message.chat))
+  if (command === '/submit' && message.chat.type !== 'private') return send(chatId, 'Submit evidence privately to MADGERbot so your contribution record stays tied to your account.')
+  if (command === '/submit') return submitMission(chatId, args)
+  if (command === '/mywork') return showMyWork(message)
+  if (command === '/rank' && message.chat.type !== 'private') return send(chatId, 'View your contribution rank privately in MADGERbot.')
+  if (command === '/rank') return showRank(chatId)
+  if (command === '/leaderboard') return showLeaderboard(chatId)
+  if (command === '/referral' && message.chat.type !== 'private') return send(chatId, 'Create your personal referral route privately in MADGERbot.')
+  if (command === '/referral') return showReferral(chatId)
+  if (command === '/rules') return showRules(chatId)
+  if (command === '/safety') return showSafety(chatId)
+  if (command === '/report') return reportMessage(message)
+  if (command === '/teams') return showTeams(message)
+  if (command === '/jointeam') return setTeamFromCommand(message, args, true)
+  if (command === '/leaveteam') return setTeamFromCommand(message, args, false)
+  if (command === '/teamalert') return launchTeamAlert(message, args)
+  if (command === '/teamstats') return teamStats(message)
+  if (command === '/announce') return publishAnnouncement(message, args, false)
+  if (command === '/announcepin') return publishAnnouncement(message, args, true)
+  if (command === '/dashboard') return adminDashboard(message)
+  if (command === '/health') return adminHealth(message)
+  if (command === '/rpcstatus') return showRpcStatus(message)
+  if (command === '/modlog') return moderationLog(message)
+  if (command === '/raidmode') return manageRaidMode(message, args)
+  if (command === '/purgeunverified') return purgeUnverified(message)
+  if (command === '/faqmode') return manageFaqMode(message, args)
+  if (command === '/whoami') return send(chatId, `Your Telegram user ID is <code>${message.from.id}</code>. Treat admin IDs as operational configuration, not public content.`)
+  if (command === '/chatid') return send(chatId, `This chat ID is <code>${message.chat.id}</code>. Use it only in the bot's secure runtime configuration.`)
+  if (command === '/stats') return adminStats(chatId)
+  if (command === '/buypreview') return buyPreview(message)
+  if (command === '/buystats') return buyStats(message)
+  if (command === '/retrycards') return retryFailedCards(message)
+  if (command === '/sellstats') return sellStats(message)
+  if (command === '/daily') return dailyBriefing(null, message)
+  if (command === '/holderintel') return showHolderIntel(message)
+  if (command === '/reviews') return showReviews(message)
+  if (command === '/missionlist') return showMissionList(message)
+  if (command === '/approve') return reviewSubmission(message, args, 'approved')
+  if (command === '/reject') return reviewSubmission(message, args, 'rejected')
+  if (command === '/missionadd') return manageMission(message, args, 'add')
+  if (command === '/missionclose') return manageMission(message, args, 'close')
+  if (command === '/missionopen') return manageMission(message, args, 'open')
+  if (command === '/warn') return adminModerationAction(message, 'warn', args)
+  if (command === '/mute') return adminModerationAction(message, 'mute', args)
+  if (command === '/ban') return adminModerationAction(message, 'ban', args)
+  if (command === '/unmute') return adminRecoveryAction(message, 'unmute')
+  if (command === '/clearwarns') return adminRecoveryAction(message, 'clearwarns')
+  if (command === '/memberinfo') return memberInfo(message)
+  if (command === '/cleanup') return cleanupMessage(message)
+  return send(chatId, unknownCommandText())
+}
+
+async function moderate(message) {
+  const text = message.text ?? message.caption ?? ''
+  if (!text || !message.from || message.from.is_bot || !isGroupChat(message.chat)) return false
+  if (await isChatAdmin(message.chat.id, message.from.id)) return false
+
+  const now = Date.now()
+  const state = await moderationState(message.chat.id, message.from.id)
+  const fingerprint = normalizedMessageFingerprint(text)
+  const hash = fingerprint ? await sha256Hex(fingerprint) : ''
+  const floodStarted = state?.flood_window_started_at ? Date.parse(state.flood_window_started_at) : 0
+  const inFloodWindow = now - floodStarted <= FLOOD_WINDOW_SECONDS * 1000
+  const floodCount = inFloodWindow ? Number(state?.flood_count ?? 0) + 1 : 1
+  const duplicateStarted = state?.duplicate_window_started_at ? Date.parse(state.duplicate_window_started_at) : 0
+  const sameDuplicateWindow = Boolean(hash && state?.duplicate_hash === hash && now - duplicateStarted <= DUPLICATE_WINDOW_SECONDS * 1000)
+  const duplicateCount = sameDuplicateWindow ? Number(state?.duplicate_count ?? 0) + 1 : 1
+  const strictLinks = /https?:\/\//i.test(text) && (await raidModeForChat(message.chat.id)).active
+  const reason = moderationReason(text, { strictLinks })
+    ?? (floodCount >= FLOOD_MESSAGE_LIMIT ? 'message flooding' : null)
+    ?? (fingerprint.length >= 8 && duplicateCount >= DUPLICATE_MESSAGE_LIMIT ? 'repeated-message spam' : null)
+
+  await saveModerationState({
+    chat_id: message.chat.id, user_id: message.from.id,
+    flood_count: floodCount, flood_window_started_at: inFloodWindow ? state.flood_window_started_at : new Date(now).toISOString(),
+    duplicate_hash: hash || null, duplicate_count: duplicateCount,
+    duplicate_window_started_at: sameDuplicateWindow ? state.duplicate_window_started_at : new Date(now).toISOString()
+  })
+  if (!reason) return false
+
+  await deleteQuietly(message.chat.id, message.message_id)
+  const credentialAttack = reason === 'wallet credential solicitation' || reason === 'admin/support impersonation'
+  const warningCount = Number(state?.warning_count ?? 0) + (credentialAttack ? 3 : 1)
+  const action = moderationEscalation(warningCount)
+  let publicAction = 'Message removed and warning recorded.'
+  if (action === 'mute') {
+    const until = Math.floor(Date.now() / 1000) + MUTE_MINUTES * 60
+    await restrictMember(message.chat.id, message.from.id, until)
+    await saveModerationState({ chat_id: message.chat.id, user_id: message.from.id, warning_count: warningCount, restricted_until: new Date(until * 1000).toISOString() })
+    publicAction = `Message removed. Member muted for ${MUTE_MINUTES} minutes.`
+  } else if (action === 'remove') {
+    await removeMember(message.chat.id, message.from.id)
+    await saveModerationState({ chat_id: message.chat.id, user_id: message.from.id, warning_count: warningCount, removed_at: new Date().toISOString() })
+    publicAction = 'Message removed. Account removed from The Burrow.'
+  } else {
+    await saveModerationState({ chat_id: message.chat.id, user_id: message.from.id, warning_count: warningCount })
+  }
+  const notice = await send(message.chat.id, `<b>MADGER Guard:</b> ${escapeHtml(reason)}. ${publicAction}\nUse /safety for the official protection standard.`)
+  await scheduleCleanup(message.chat.id, notice.message_id, 'moderation_notice', 5)
+  await recordEvent('moderation_action', message.from.id, { chat_id: message.chat.id, reason, action, warning_count: warningCount })
+  if (ADMIN_CHAT_ID) await send(ADMIN_CHAT_ID, `<b>MADGER Guard action</b> 🛡️\nChat: <code>${message.chat.id}</code>\nUser: <code>${message.from.id}</code> @${escapeHtml(message.from.username ?? 'none')}\nReason: ${escapeHtml(reason)}\nAction: ${escapeHtml(action)}\nMessage ID: <code>${message.message_id}</code>`)
+  return true
+}
+
+async function processTelegramUpdate(update) {
+  if (update.inline_query) return answerInlineQuery(update.inline_query)
+  if (update.callback_query) {
+    if (String(update.callback_query.data ?? '').startsWith('verify_join:')) return verifyNewMember(update.callback_query)
+    if (String(update.callback_query.data ?? '').startsWith('team_join:') || String(update.callback_query.data ?? '').startsWith('team_leave:')) return setTeamMembership(update.callback_query)
+    await telegram('answerCallbackQuery', { callback_query_id: update.callback_query.id })
+    if (update.callback_query.data === 'missions') await showMissions(update.callback_query.message.chat.id, isGroupChat(update.callback_query.message.chat))
+    return
+  }
+  const edited = update.edited_message ?? update.edited_channel_post
+  const message = update.message ?? update.channel_post ?? edited
+  if (!message) return
+  if (edited) {
+    await moderate(message)
+    return
+  }
+  if (message.new_chat_members?.length) return welcomeNewMembers(message)
+  if (await moderate(message)) return
+  if (message.text?.startsWith('/') && message.from) await handleCommand(message)
+  else if (message.from) {
+    await registerUser(message.from, null)
+    await maybeAnswerFaq(message)
+  }
+}
+
+async function handleUpdate(update) {
+  try {
+    await insert('madger_bot_processed_updates', { update_id: update.update_id })
+  } catch (error) {
+    if (isDuplicateUpdateError(error)) return
+    throw error
+  }
+
+  try {
+    return await processTelegramUpdate(update)
+  } catch (error) {
+    try { await db(`madger_bot_processed_updates?update_id=eq.${encodeURIComponent(update.update_id)}`, { method: 'DELETE' }) } catch { /* preserve original failure */ }
+    throw error
+  }
+}
+
+async function routeRedirect(request, url) {
+  const route = url.pathname.split('/').filter(Boolean).at(-1)
+  const target = LINKS[route]
+  if (!target) return new Response('Unknown route', { status: 404 })
+  const ref = normalizeReferral(url.searchParams.get('ref'))
+  try { await recordEvent('referral_open', null, { route }, ref) } catch { /* telemetry must never block a verified redirect */ }
+  return Response.redirect(target, 302)
+}
+
+async function answerInlineQuery(query) {
+  const [marketRows, holderRows] = await Promise.all([
+    db('madger_bot_market_snapshots?select=price_usd,liquidity_usd,raw,created_at&order=created_at.desc&limit=1'),
+    db('madger_bot_holder_snapshots?select=holder_count,created_at&order=created_at.desc&limit=1')
+  ])
+  const market = marketSnapshotSummary(marketRows?.[0] ?? {})
+  const results = [
+    { id: 'official-mint', title: '✅ Official MADGER contract', description: 'Share the verified mint and pool', text: `<b>OFFICIAL MADGER MINT</b> ✅\n<code>${OFFICIAL_MINT}</code>\n\nVerified pool:\n<code>${OFFICIAL_POOL}</code>` },
+    { id: 'market', title: '📊 MADGER market snapshot', description: `${compactUsd(market.priceUsd)} · ${compactUsd(market.liquidityUsd, 0)} liquidity`, text: `<b>MADGER MARKET SNAPSHOT</b> 📊\n\nPrice: ${compactUsd(market.priceUsd)}\nLiquidity: ${compactUsd(market.liquidityUsd, 0)}\nHolders: ${Number(holderRows?.[0]?.holder_count ?? 0).toLocaleString('en-US')}\n\nAlways verify the mint before trading.` },
+    { id: 'safety', title: '🛡️ MADGER safety standard', description: 'Share the anti-scam checklist', text: '<b>MADGER SAFETY STANDARD</b> 🛡️\n\nNever share seed phrases or private keys. Never complete a “verification transfer.” Verify the full official mint before every transaction.' },
+    { id: 'buy', title: '⚡ Safe purchase route', description: 'Share the official buying guide', text: `<b>BUY MADGER SAFELY</b>\n\nUse the official guide and verify this mint:\n<code>${OFFICIAL_MINT}</code>` }
+  ].map(item => ({
+    type: 'article', id: item.id, title: item.title, description: item.description,
+    input_message_content: { message_text: item.text, parse_mode: 'HTML', link_preview_options: { is_disabled: true } },
+    reply_markup: keyboard([[{ text: item.id === 'buy' ? 'Open official guide' : 'Open MADGER dashboard', url: item.id === 'buy' ? LINKS.guide : DASHBOARD_URL }]])
+  }))
+  await telegram('answerInlineQuery', { inline_query_id: query.id, results, cache_time: 60, is_personal: false })
+}
+
+async function publicDashboardData() {
+  const since = encodeURIComponent(new Date(Date.now() - 86400000).toISOString())
+  const [marketRows, historyRows, holderRows, lockHealth, watcherHealth] = await Promise.all([
+    db('madger_bot_market_snapshots?select=price_usd,liquidity_usd,volume_m5_usd,buys_m5,sells_m5,raw,created_at&order=created_at.desc&limit=1'),
+    db(`madger_bot_market_snapshots?created_at=gte.${since}&select=price_usd,liquidity_usd,created_at&order=created_at.asc&limit=500`),
+    db('madger_bot_holder_snapshots?select=holder_count,largest_percentage,top_10_percentage,created_at&order=created_at.desc&limit=1'),
+    setting('lock_monitor_health'), setting('native_buy_watcher_health')
+  ])
+  const market = marketSnapshotSummary(marketRows?.[0] ?? {})
+  const watcherAt = Date.parse(String(watcherHealth?.last_run_at ?? ''))
+  const watcherAgeMinutes = Number.isFinite(watcherAt) ? Math.max(0, Math.floor((Date.now() - watcherAt) / 60000)) : null
+  const locks = lockHealth?.records ?? []
+  return Response.json({
+    ok: true, mint: OFFICIAL_MINT, pool: OFFICIAL_POOL,
+    market: { ...market, volume24hUsd: Number(marketRows?.[0]?.raw?.volume?.h24 ?? 0), priceChange24h: Number(marketRows?.[0]?.raw?.priceChange?.h24 ?? 0) },
+    history24h: sampleMarketHistory(historyRows, 96),
+    holders: holderRows?.[0] ?? null,
+    locks: locks.map(item => ({ label: item.label, asset: item.asset, intact: item.intact, provider: item.provider, cliffDate: item.cliff_date, endDate: item.end_date })),
+    system: { operational: market.ageMinutes <= 10 && watcherAgeMinutes !== null && watcherAgeMinutes <= 2 && !watcherHealth?.error && (!locks.length || locks.every(item => item.intact)), watcherAgeMinutes },
+    links: { website: LINKS.home, chart: LINKS.dex, buy: LINKS.guide, verify: LINKS.verify },
+    generatedAt: new Date().toISOString()
+  }, { headers: { 'Access-Control-Allow-Origin': '*', 'Cache-Control': 'public, max-age=30', 'X-Content-Type-Options': 'nosniff' } })
+}
+
+async function publishVerifiedBuy(signature, trade, market, source) {
+  const buyer = trade.actor
+  const amount = trade.madgerAmount
+  const priceUsd = Number(typeof market === 'number' ? market : market?.priceUsd ?? 0)
+  const usdValue = trade.paymentSymbol === 'USDC' && trade.paymentAmount ? trade.paymentAmount : amount * priceUsd
+  const tier = buyTier(usdValue)
+  let inserted
+  let deliveryAttempts = 0
+  let retried = false
+  try {
+    inserted = await insert('madger_bot_alerts', {
+      alert_type: 'verified_buy', transaction_signature: signature, buyer_wallet: buyer,
+      trade_side: 'buy', actor_wallet: buyer, token_amount: amount, usd_value: usdValue,
+      payment_amount: trade.paymentAmount, payment_asset: trade.paymentSymbol,
+      post_token_balance: trade.postMadgerBalance,
+      metadata: { source, delivery_status: BUY_CHAT_ID ? 'pending' : 'skipped', delivery_attempts: 0 }
+    }, 'return=representation')
+  } catch (error) {
+    if (!String(error).includes('duplicate')) throw error
+    const existing = await db(`madger_bot_alerts?transaction_signature=eq.${encodeURIComponent(signature)}&select=id,metadata,created_at&limit=1`)
+    const alert = existing?.[0]
+    const status = alert?.metadata?.delivery_status
+    const age = Date.now() - Date.parse(String(alert?.created_at ?? ''))
+    if (!BUY_CHAT_ID || !alert || !['pending', 'failed'].includes(status) || !Number.isFinite(age) || age > 6 * 3600000) {
+      return { duplicate: true, instant: false, tier: tier.label }
+    }
+    inserted = existing
+    deliveryAttempts = Number(alert.metadata?.delivery_attempts ?? 0)
+    retried = true
+  }
+  const alertId = inserted?.[0]?.id
+  if (!retried) await evaluateSubscriptions('whale', usdValue, `Verified buy: ${compactUsd(usdValue)} · ${amount.toLocaleString('en-US', { maximumFractionDigits: 2 })} MADGER`, `https://solscan.io/tx/${encodeURIComponent(signature)}`)
+  if (BUY_CHAT_ID) {
+    try {
+      const day = encodeURIComponent(new Date(Date.now() - 86400000).toISOString())
+      const recent = await db(`madger_bot_alerts?alert_type=eq.verified_buy&created_at=gte.${day}&select=id,usd_value&order=created_at.asc&limit=1000`)
+      const count = recent?.length ?? 0
+      const previousLargest = Math.max(0, ...(recent ?? []).filter(row => row.id !== alertId).map(row => Number(row.usd_value ?? 0)))
+      const milestone = [10, 25, 50, 100].includes(count) ? `${count} verified buys in 24 hours` : usdValue > previousLargest && count > 1 ? 'Largest verified buy in the last 24 hours' : ''
+      const delivered = await sendBuyCard(BUY_CHAT_ID, buyAlertCaption({
+        amount, usdValue, buyer, tier, market, paymentAmount: trade.paymentAmount,
+        paymentSymbol: trade.paymentSymbol, postMadgerBalance: trade.postMadgerBalance, milestone
+      }), signature)
+      if (alertId) await db(`madger_bot_alerts?id=eq.${alertId}`, {
+        method: 'PATCH', body: JSON.stringify({
+          metadata: {
+            source, delivery_status: 'delivered', delivered_at: new Date().toISOString(),
+            telegram_message_id: delivered.message?.message_id ?? null,
+            delivery_attempts: deliveryAttempts + 1, delivery_method: delivered.deliveryMethod
+          }
+        })
+      })
+    } catch (error) {
+      if (alertId) await db(`madger_bot_alerts?id=eq.${alertId}`, {
+        method: 'PATCH', body: JSON.stringify({
+          metadata: {
+            source, delivery_status: 'failed', delivery_attempts: deliveryAttempts + 1,
+            last_delivery_error: String(error instanceof Error ? error.message : error).slice(0, 300)
+          }
+        })
+      })
+      throw error
+    }
+  }
+  return { duplicate: false, retried, instant: Boolean(BUY_CHAT_ID), tier: tier.label }
+}
+
+async function publishVerifiedSell(signature, trade, market, source) {
+  const priceUsd = Number(market?.priceUsd ?? 0)
+  const usdValue = trade.paymentSymbol === 'USDC' && trade.paymentAmount ? trade.paymentAmount : trade.madgerAmount * priceUsd
+  try {
+    await insert('madger_bot_alerts', {
+      alert_type: 'verified_sell', transaction_signature: signature, buyer_wallet: trade.actor,
+      trade_side: 'sell', actor_wallet: trade.actor, token_amount: trade.madgerAmount,
+      usd_value: usdValue, payment_amount: trade.paymentAmount, payment_asset: trade.paymentSymbol,
+      post_token_balance: trade.postMadgerBalance,
+      metadata: { source, visibility: 'admin_only' }
+    })
+  } catch (error) {
+    if (String(error).includes('duplicate')) return { duplicate: true }
+    throw error
+  }
+  await evaluateSubscriptions('whale', usdValue, `Verified sell: ${compactUsd(usdValue)} · ${trade.madgerAmount.toLocaleString('en-US', { maximumFractionDigits: 2 })} MADGER`, `https://solscan.io/tx/${encodeURIComponent(signature)}`)
+  if (ADMIN_CHAT_ID && usdValue >= 250) {
+    await send(ADMIN_CHAT_ID, `<b>PRIVATE VERIFIED SELL ALERT</b> 🔒\n\n${trade.madgerAmount.toLocaleString('en-US', { maximumFractionDigits: 2 })} MADGER\nReceived: ${trade.paymentAmount ? `${Number(trade.paymentAmount).toLocaleString('en-US', { maximumFractionDigits: 9 })} ${escapeHtml(trade.paymentSymbol)}` : 'payment asset unavailable'}\nReference value: ${compactUsd(usdValue)}\nWallet: <code>${escapeHtml(compactWallet(trade.actor))}</code>\n\nThis is private operational intelligence—not a public accusation.`, keyboard([[{ text: 'Inspect transaction', url: `https://solscan.io/tx/${encodeURIComponent(signature)}` }]]))
+  }
+  return { duplicate: false }
+}
+
+async function retryFailedCards(message) {
+  if (!ADMIN_IDS.has(String(message.from.id)) || message.chat.type !== 'private') return send(message.chat.id, 'Buy-card recovery is restricted to the private admin console.')
+  const since = encodeURIComponent(new Date(Date.now() - 6 * 3600000).toISOString())
+  const [rows, marketRows] = await Promise.all([
+    db(`madger_bot_alerts?alert_type=eq.verified_buy&created_at=gte.${since}&select=transaction_signature,actor_wallet,buyer_wallet,token_amount,payment_amount,payment_asset,post_token_balance,metadata,created_at&order=created_at.asc&limit=100`),
+    db('madger_bot_market_snapshots?select=price_usd,liquidity_usd,raw,created_at&order=created_at.desc&limit=1')
+  ])
+  const recoverable = (rows ?? []).filter(row => ['failed', 'pending'].includes(row.metadata?.delivery_status)).slice(0, 10)
+  if (!recoverable.length) return send(message.chat.id, 'No failed or pending buy cards require recovery.')
+  const market = marketSnapshotSummary(marketRows?.[0] ?? {})
+  let delivered = 0
+  let failed = 0
+  for (const row of recoverable) {
+    try {
+      const result = await publishVerifiedBuy(row.transaction_signature, {
+        actor: row.actor_wallet ?? row.buyer_wallet, madgerAmount: Number(row.token_amount),
+        paymentAmount: row.payment_amount === null ? null : Number(row.payment_amount),
+        paymentSymbol: row.payment_asset, postMadgerBalance: row.post_token_balance === null ? null : Number(row.post_token_balance)
+      }, market, 'admin_card_recovery')
+      if (result.instant) delivered += 1
+    } catch { failed += 1 }
+  }
+  await recordEvent('buy_card_recovery', message.from.id, { attempted: recoverable.length, delivered, failed })
+  return send(message.chat.id, `<b>BUY-CARD RECOVERY COMPLETE</b> 🛠️\n\nAttempted: ${recoverable.length}\nDelivered: ${delivered}\nStill failing: ${failed}`)
+}
+
+async function scanVerifiedBuys(market) {
+  const firstPage = await solanaRpc('getSignaturesForAddress', [
+    OFFICIAL_POOL, { commitment: 'confirmed', limit: 50 }
+  ]) ?? []
+  const signatures = [...firstPage]
+  const newestUsable = firstPage.find(item => item?.signature && !item.err)
+  if (!newestUsable) return { initialized: false, scanned: 0, verified: 0, posted: 0 }
+
+  const checkpointKey = 'native_buy_watcher_checkpoint'
+  const checkpoint = String(await setting(checkpointKey) ?? '')
+  if (!checkpoint) {
+    await saveSetting(checkpointKey, newestUsable.signature)
+    return { initialized: true, scanned: 0, verified: 0, posted: 0 }
+  }
+
+  let checkpointFound = signatures.some(item => item.signature === checkpoint)
+  let before = signatures.at(-1)?.signature
+  for (let page = 1; page < 4 && !checkpointFound && before; page += 1) {
+    const batch = await solanaRpc('getSignaturesForAddress', [
+      OFFICIAL_POOL, { commitment: 'confirmed', limit: 50, before }
+    ]) ?? []
+    if (!batch.length) break
+    signatures.push(...batch)
+    checkpointFound = batch.some(item => item.signature === checkpoint)
+    before = batch.at(-1)?.signature
+  }
+  const planned = pendingSignatures(signatures, checkpoint, 100)
+  const pending = planned.items
+  let scanned = 0
+  let verified = 0
+  let posted = 0
+  let sells = 0
+  let error = null
+  for (const item of pending) {
+    try {
+      const transaction = await solanaRpc('getTransaction', [item.signature, {
+        encoding: 'jsonParsed', maxSupportedTransactionVersion: 0, commitment: 'confirmed'
+      }])
+      if (!transaction) throw new Error('confirmed transaction was unavailable')
+      const classification = classifyMadgerTransaction(transaction)
+      const buyer = classification.events.find(event => event.category === 'buy')
+      const seller = classification.events.find(event => event.category === 'sell')
+      if (buyer) {
+        const result = await publishVerifiedBuy(item.signature, buyer, market, 'native_pool_watcher')
+        verified += 1
+        if (result.instant && !result.duplicate) posted += 1
+      } else if (seller) {
+        const result = await publishVerifiedSell(item.signature, seller, market, 'native_pool_watcher')
+        if (!result.duplicate) sells += 1
+      }
+      scanned += 1
+      await saveSetting(checkpointKey, item.signature)
+    } catch (cause) {
+      error = String(cause instanceof Error ? cause.message : cause)
+      break
+    }
+  }
+  return {
+    initialized: false, scanned, verified, sells, posted,
+    checkpoint_found: planned.checkpointFound,
+    catchup_truncated: planned.truncated,
+    ...(error ? { error } : {})
+  }
+}
+
+async function watchVerifiedBuys(request) {
+  if (!await authenticateInternal(request)) return new Response('Unauthorized', { status: 401 })
+  const startedAt = Date.now()
+  let result
+  try {
+    const latest = await db('madger_bot_market_snapshots?select=price_usd,liquidity_usd,raw,created_at&order=created_at.desc&limit=1')
+    result = await scanVerifiedBuys(marketSnapshotSummary(latest?.[0] ?? {}))
+  } catch (error) {
+    result = { scanned: 0, verified: 0, posted: 0, error: String(error instanceof Error ? error.message : error).slice(0, 300) }
+  }
+  await saveSetting('native_buy_watcher_health', {
+    last_run_at: new Date().toISOString(), duration_ms: Date.now() - startedAt, ...result
+  })
+  return Response.json({ ok: !result.error, buy_watcher: result }, { status: result.error ? 503 : 200 })
+}
+
+async function watchdog(request) {
+  if (!await authenticateInternal(request)) return new Response('Unauthorized', { status: 401 })
+  const [buyHealth, holderHealth, marketRows, previous] = await Promise.all([
+    setting('native_buy_watcher_health'), setting('holder_monitor_health'),
+    db('madger_bot_market_snapshots?select=created_at&order=created_at.desc&limit=1'), setting('watchdog_health')
+  ])
+  const issues = monitorIssues({
+    buyHealth,
+    marketCreatedAt: marketRows?.[0]?.created_at,
+    holderHealth
+  })
+  let attempted = null
+  let recovered = true
+  if (issues[0] === 'buy_watcher') {
+    attempted = 'buy_watcher'; recovered = (await watchVerifiedBuys(request)).ok
+  } else if (issues[0] === 'market_monitor') {
+    attempted = 'market_monitor'; recovered = (await monitorMarket(request)).ok
+  } else if (issues[0] === 'holder_monitor') {
+    attempted = 'holder_monitor'; recovered = (await monitorHolders(request)).ok
+  }
+  const health = { last_run_at: new Date().toISOString(), issues, attempted, recovered }
+  await saveSetting('watchdog_health', health)
+  const lastNotice = Date.parse(String(previous?.last_notice_at ?? ''))
+  if (attempted && ADMIN_CHAT_ID && (!recovered || !Number.isFinite(lastNotice) || Date.now() - lastNotice > 3600000)) {
+    await send(ADMIN_CHAT_ID, `<b>MADGER SELF-HEALING WATCHDOG</b> ${recovered ? '✅' : '⚠️'}\n\nDetected: ${escapeHtml(issues.join(', '))}\nRecovery attempted: ${escapeHtml(attempted)}\nResult: ${recovered ? 'recovered' : 'still unhealthy'}\n\nNo trading or wallet action was performed.`)
+    await saveSetting('watchdog_health', { ...health, last_notice_at: new Date().toISOString() })
+    await recordEvent('watchdog_recovery', null, { issues, attempted, recovered })
+  }
+  return Response.json({ ok: recovered, watchdog: health }, { status: recovered ? 200 : 503 })
+}
+
+async function monitorMarket(request) {
+  if (!await authenticateInternal(request)) return new Response('Unauthorized', { status: 401 })
+  await Promise.all([sweepExpiredJoins(), sweepMessageCleanup()])
+  const response = await fetch(`https://api.dexscreener.com/latest/dex/pairs/solana/${OFFICIAL_POOL}`)
+  const payload = await readJsonResponse(response, 'DEX Screener request')
+  const pair = payload.pair ?? payload.pairs?.find(item => item.pairAddress === OFFICIAL_POOL)
+  const pairHasMint = pair && (pair.baseToken?.address === OFFICIAL_MINT || pair.quoteToken?.address === OFFICIAL_MINT)
+  if (!pairHasMint || String(pair.pairAddress).toLowerCase() !== OFFICIAL_POOL.toLowerCase()) throw new Error('Official MADGER pair was not returned')
+  const cutoff = encodeURIComponent(new Date(Date.now() - 15 * 60000).toISOString())
+  const previousRows = await db(`madger_bot_market_snapshots?created_at=lte.${cutoff}&select=price_usd,liquidity_usd,created_at&order=created_at.desc&limit=1`)
+  const reasons = marketAlertReasons(pair, previousRows?.[0])
+  await insert('madger_bot_market_snapshots', {
+    price_usd: pair.priceUsd ?? null,
+    liquidity_usd: pair.liquidity?.usd ?? null,
+    volume_m5_usd: pair.volume?.m5 ?? null,
+    buys_m5: pair.txns?.m5?.buys ?? null,
+    sells_m5: pair.txns?.m5?.sells ?? null,
+    raw: pair
+  })
+  await Promise.all([
+    evaluateSubscriptions('price', Number(pair.priceUsd), `MADGER price: ${compactUsd(Number(pair.priceUsd))}`),
+    evaluateSubscriptions('liquidity', Number(pair.liquidity?.usd), `Official-pool liquidity: ${compactUsd(Number(pair.liquidity?.usd), 0)}`),
+    evaluateSubscriptions('volume24h', Number(pair.volume?.h24), `24h volume: ${compactUsd(Number(pair.volume?.h24), 0)}`)
+  ])
+  if (reasons.length && ADMIN_CHAT_ID) await send(ADMIN_CHAT_ID, `<b>MADGER MARKET ALERT</b> ⚠️\n\n${reasons.map(escapeHtml).join('\n')}\n\nPrice: $${escapeHtml(pair.priceUsd)}\nLiquidity: $${escapeHtml(pair.liquidity?.usd)}\n<a href="${LINKS.dex}">Inspect verified pair</a>`)
+  return Response.json({ ok: true, alerts: reasons.length })
+}
+
+async function monitorHolders(request) {
+  if (!await authenticateInternal(request)) return new Response('Unauthorized', { status: 401 })
+  const startedAt = Date.now()
+  try {
+    const [tokenAccounts, supplyResult, previousRows, marketRows, previousLockHealth] = await Promise.all([
+      solanaRpc('getProgramAccounts', [TOKEN_PROGRAM, {
+        encoding: 'jsonParsed', commitment: 'confirmed',
+        filters: [{ dataSize: 165 }, { memcmp: { offset: 0, bytes: OFFICIAL_MINT } }]
+      }]),
+      solanaRpc('getTokenSupply', [OFFICIAL_MINT, { commitment: 'confirmed' }]),
+      db('madger_bot_holder_snapshots?select=*&order=created_at.desc&limit=1'),
+      db('madger_bot_market_snapshots?select=price_usd&order=created_at.desc&limit=1'),
+      setting('lock_monitor_health')
+    ])
+    const totalSupply = Number(supplyResult?.value?.uiAmountString ?? supplyResult?.value?.uiAmount ?? 0)
+    const current = holderSnapshotFromAccounts(tokenAccounts, totalSupply)
+    if (!(current.totalSupply > 0) || !current.holderCount) throw new Error('holder RPC returned no positive MADGER balances')
+    const previous = previousRows?.[0]
+    const priceUsd = Number(marketRows?.[0]?.price_usd ?? 0)
+    const protectedMovements = protectedWalletMovements(current, previous?.raw)
+    const protectedAddresses = new Set([...PROJECT_WALLETS.map(item => item.address), ...LOCK_RECORDS.filter(item => item.asset === 'MADGER').map(item => item.address)])
+    const movements = significantHolderMovements(current, previous?.raw, { priceUsd }).filter(item => !protectedAddresses.has(item.owner))
+    const lockRecords = await Promise.all(LOCK_RECORDS.map(async record => {
+      let amount
+      if (record.asset === 'MADGER') amount = current.owners.find(item => item.owner === record.address)?.amount ?? 0
+      else {
+        const balance = await solanaRpc('getTokenAccountBalance', [record.address, { commitment: 'confirmed' }])
+        amount = Number(balance?.value?.uiAmountString ?? balance?.value?.uiAmount ?? 0)
+      }
+      const tolerance = record.asset === 'MADGER' ? 1 : 0.000001
+      return { ...record, amount, intact: amount + tolerance >= record.expectedAmount }
+    }))
+    await insert('madger_bot_holder_snapshots', {
+      holder_count: current.holderCount,
+      token_account_count: tokenAccounts.length,
+      total_supply: current.totalSupply,
+      largest_percentage: current.largestPercentage,
+      top_10_percentage: current.top10Percentage,
+      raw: { owners: current.owners }
+    })
+    await evaluateSubscriptions('holders', current.holderCount, `Positive-balance MADGER wallets: ${current.holderCount.toLocaleString('en-US')}`, LINKS.solscanToken)
+
+    const holderChange = previous ? current.holderCount - Number(previous.holder_count) : 0
+    if (ADMIN_CHAT_ID && previous && protectedMovements.length) {
+      const lines = protectedMovements.map(item =>
+        `• <b>${escapeHtml(item.label)}</b> · ${item.delta >= 0 ? '+' : ''}${item.delta.toLocaleString('en-US', { maximumFractionDigits: 2 })} MADGER\n  <code>${escapeHtml(compactWallet(item.address))}</code> · ${item.previousAmount.toLocaleString('en-US', { maximumFractionDigits: 2 })} → ${item.currentAmount.toLocaleString('en-US', { maximumFractionDigits: 2 })}`
+      )
+      await send(ADMIN_CHAT_ID, `<b>PROTECTED WALLET MOVEMENT</b> 🚨
+
+${lines.join('\n')}
+
+Review these on-chain balance movements against the authorized transaction record. The bot does not determine authorization or trade direction.`, keyboard([[{ text: 'Inspect official token', url: LINKS.solscanToken }]]))
+      await recordEvent('protected_wallet_movement', null, { movement_count: protectedMovements.length })
+    }
+    const priorLocks = new Map((previousLockHealth?.records ?? []).map(item => [item.id, Number(item.amount) || 0]))
+    const decreasedLocks = lockRecords.filter(item => priorLocks.has(item.id) && priorLocks.get(item.id) - item.amount > (item.asset === 'MADGER' ? 1 : 0.000001))
+    if (ADMIN_CHAT_ID && decreasedLocks.length) {
+      const lines = decreasedLocks.map(item => `• <b>${escapeHtml(item.label)}</b> · ${priorLocks.get(item.id).toLocaleString('en-US', { maximumFractionDigits: 9 })} → ${item.amount.toLocaleString('en-US', { maximumFractionDigits: 9 })} ${escapeHtml(item.asset)}`)
+      await send(ADMIN_CHAT_ID, `<b>LOCK BALANCE DECREASE</b> 🔐⚠️
+
+${lines.join('\n')}
+
+Verify the escrow account and the documented release schedule immediately.`)
+      await recordEvent('lock_balance_decrease', null, { lock_count: decreasedLocks.length })
+    }
+    if (ADMIN_CHAT_ID && previous && (movements.length || Math.abs(holderChange) >= 2)) {
+      const movementLines = movements.slice(0, 5).map(item =>
+        `• <code>${escapeHtml(compactWallet(item.owner))}</code> · ${item.delta >= 0 ? '+' : ''}${item.delta.toLocaleString('en-US', { maximumFractionDigits: 2 })} MADGER · ${item.supplyPercentage.toFixed(2)}% of supply${priceUsd > 0 ? ` · ~${compactUsd(item.approximateUsd)}` : ''}`
+      )
+      await send(ADMIN_CHAT_ID, `<b>MADGER HOLDER MOVEMENT</b> 🔬
+
+Wallet-count change: ${holderChange >= 0 ? '+' : ''}${holderChange}
+${movementLines.length ? movementLines.join('\n') : 'No individual movement crossed the alert threshold.'}
+
+These are on-chain balance movements—not classified buys or sells. Treasury, liquidity, exchange, and custodial activity may be included.`, keyboard([[{ text: 'Inspect official token', url: LINKS.solscanToken }]]))
+      await recordEvent('holder_movement_alert', null, {
+        holder_change: holderChange, movement_count: movements.length,
+        largest_movement_percentage: movements[0]?.supplyPercentage ?? 0
+      })
+    }
+    const health = {
+      last_run_at: new Date().toISOString(), duration_ms: Date.now() - startedAt,
+      holder_count: current.holderCount, token_account_count: tokenAccounts.length,
+      holder_change: holderChange, movement_count: movements.length
+    }
+    await saveSetting('holder_monitor_health', health)
+    const lockHealth = {
+      last_run_at: new Date().toISOString(),
+      records: lockRecords.map(item => ({
+        id: item.id, label: item.label, asset: item.asset, address: item.address,
+        expected_amount: item.expectedAmount, amount: item.amount, intact: item.intact,
+        provider: item.provider, cliff_date: item.cliffDate, end_date: item.endDate
+      }))
+    }
+    await saveSetting('lock_monitor_health', lockHealth)
+    return Response.json({ ok: true, holder_monitor: health, lock_monitor: { records: lockHealth.records.length, intact: lockHealth.records.filter(item => item.intact).length } })
+  } catch (error) {
+    const health = {
+      last_run_at: new Date().toISOString(), duration_ms: Date.now() - startedAt,
+      error: String(error instanceof Error ? error.message : error).slice(0, 300)
+    }
+    await saveSetting('holder_monitor_health', health)
+    await saveSetting('lock_monitor_health', { last_run_at: new Date().toISOString(), records: [], error: health.error })
+    return Response.json({ ok: false, holder_monitor: health }, { status: 503 })
+  }
+}
+
+async function verifyBuyAlert(request) {
+  if (!await authenticateInternal(request)) return new Response('Unauthorized', { status: 401 })
+  const body = await request.json()
+  const signature = String(body.signature ?? '')
+  const buyer = String(body.buyer ?? '')
+  if (!signature || !buyer) return new Response('Missing signature or buyer', { status: 400 })
+  const transaction = await solanaRpc('getTransaction', [signature, { encoding: 'jsonParsed', maxSupportedTransactionVersion: 0, commitment: 'confirmed' }])
+  if (!transaction || transaction.meta?.err) return new Response('Transaction not confirmed', { status: 422 })
+  const verifiedBuyer = classifyMadgerTransaction(transaction).events.find(item => item.category === 'buy' && item.actor === buyer)
+  if (!verifiedBuyer) return new Response('No verified MADGER purchase for buyer', { status: 422 })
+  const latest = await db('madger_bot_market_snapshots?select=price_usd,liquidity_usd,raw,created_at&order=created_at.desc&limit=1')
+  const market = marketSnapshotSummary(latest?.[0] ?? {})
+  const result = await publishVerifiedBuy(signature, verifiedBuyer, market, body.source ?? 'webhook')
+  return Response.json({ ok: true, verified: true, ...result })
+}
+
+async function setupTelegram(request) {
+  if (!await authenticateInternal(request)) return new Response('Unauthorized', { status: 401 })
+  if (!BOT_TOKEN || !WEBHOOK_SECRET) return Response.json({ ok: false, error: 'telegram_secrets_missing' }, { status: 409 })
+  const bot = await telegram('getMe', {})
+  await telegram('setWebhook', {
+    url: `${SUPABASE_URL}/functions/v1/madger-command-bot`,
+    secret_token: WEBHOOK_SECRET,
+    allowed_updates: ['message', 'edited_message', 'channel_post', 'edited_channel_post', 'callback_query', 'inline_query', 'my_chat_member'],
+    drop_pending_updates: false
+  })
+  const publicCommands = commandsForMenu(false)
+  const adminCommands = commandsForMenu(true)
+  await telegram('setMyCommands', { commands: publicCommands })
+  for (const adminId of ADMIN_IDS) {
+    await telegram('setMyCommands', { commands: adminCommands, scope: { type: 'chat', chat_id: Number(adminId) } })
+  }
+  await telegram('setChatMenuButton', { menu_button: { type: 'web_app', text: 'MADGER Dashboard', web_app: { url: DASHBOARD_URL } } })
+  let guard = { configured: false, can_delete_messages: false, can_restrict_members: false, can_pin_messages: false, aggressive_anti_spam: null, slow_mode_seconds: null }
+  if (BUY_CHAT_ID) {
+    try {
+      const [membership, security] = await Promise.all([
+        telegram('getChatMember', { chat_id: BUY_CHAT_ID, user_id: bot.id }),
+        chatSecurityInfo(BUY_CHAT_ID)
+      ])
+      guard = {
+        configured: membership.status === 'administrator' || membership.status === 'creator',
+        can_delete_messages: Boolean(membership.can_delete_messages),
+        can_restrict_members: Boolean(membership.can_restrict_members),
+        can_pin_messages: Boolean(membership.can_pin_messages),
+        aggressive_anti_spam: security.aggressiveAntiSpam,
+        slow_mode_seconds: security.slowModeSeconds
+      }
+    } catch { /* group may not be configured yet */ }
+  }
+  return Response.json({ ok: true, username: bot.username, webhook: 'registered', commands: 'registered', menu_button: 'registered', inline_mode: Boolean(bot.supports_inline_queries), guard })
+}
+
+async function serveRequest(request) {
+  try {
+    const url = new URL(request.url)
+    if (request.method === 'GET' && url.pathname.includes('/go/')) return routeRedirect(request, url)
+    if (request.method === 'GET' && url.pathname.endsWith('/public-data')) return publicDashboardData()
+    if (request.method === 'GET' && url.pathname.endsWith('/mini-app')) {
+      return Response.redirect(DASHBOARD_URL, 302)
+    }
+    if (request.method === 'GET') {
+      return Response.json({ ok: true, service: 'MADGER Command Bot', version: BOT_VERSION, configured: Boolean(BOT_TOKEN && WEBHOOK_SECRET), modular_runtime: true, structured_telemetry: true, failure_path_tests: true, static_dashboard: true, command_registry: true, compact_command_menus: true, token_authenticity_inspector: true, live_supply_audit: true, rpc_diagnostics: true, liquidity_history_chart: true, private_wallet_inspector: true, public_system_status: true, market_history_chart: true, signer_proof: true, liquidity_event_classification: true, safe_link_inspector: true, self_healing_watchdog: true, buy_card_recovery: true, transaction_classifier: true, buy_card_v2: true, private_sell_intelligence: true, personal_alerts: true, daily_briefing: true, rpc_failover: true, inline_sharing: true, mini_app: true, operations_console: true, moderation_log: true, member_inspection: true, moderation_recovery: true, community_guard: true, raid_shield: true, raid_link_firewall: true, stale_content_cleanup: true, faq_responder: true, market_commands: true, pool_intelligence: true, risk_snapshot: true, liquidity_trends: true, holder_intelligence: true, holder_growth: true, concentration_tracking: true, wallet_classification: true, distribution_intelligence: true, lock_monitoring: true, protected_wallet_alerts: true, wallet_movement_alerts: true, promotion_teams: true, announcements: true, contributor_leaderboard: true, contributor_history: true, mission_admin: true, review_queue: true, native_buy_watcher: true, one_minute_buy_watcher: true, catchup_scanner: true, watcher_health: true, every_verified_buy: true, branded_buy_cards: true, buy_delivery_telemetry: true })
+    }
+    if (url.pathname.endsWith('/setup')) return setupTelegram(request)
+    if (url.pathname.endsWith('/watch-buys')) return watchVerifiedBuys(request)
+    if (url.pathname.endsWith('/watchdog')) return watchdog(request)
+    if (url.pathname.endsWith('/monitor-holders')) return monitorHolders(request)
+    if (url.pathname.endsWith('/monitor')) return monitorMarket(request)
+    if (url.pathname.endsWith('/daily-briefing')) return dailyBriefing(request)
+    if (url.pathname.endsWith('/buy-alert')) return verifyBuyAlert(request)
+    if (!isWebhookAuthorized(request.headers.get('x-telegram-bot-api-secret-token'), WEBHOOK_SECRET)) return new Response('Unauthorized', { status: 401 })
+    await handleUpdate(await request.json())
+    return Response.json({ ok: true })
+  } catch (error) {
+    console.error(JSON.stringify(operationTelemetry('unhandled', 500, 0, error instanceof Error ? error.message : error)))
+    return Response.json({ ok: false, error: 'internal_error' }, { status: 500 })
+  }
+}
+
+Deno.serve(async request => {
+  const startedAt = Date.now()
+  const url = new URL(request.url)
+  const route = routeLabel(request.method, url.pathname)
+  const response = await serveRequest(request)
+  const telemetry = operationTelemetry(route, response.status, Date.now() - startedAt)
+  console.log(JSON.stringify(telemetry))
+  EdgeRuntime.waitUntil(
+    recordEvent('service_request', null, telemetry).catch(error =>
+      console.error(JSON.stringify(operationTelemetry('telemetry-write', 500, Date.now() - startedAt, error instanceof Error ? error.message : error)))
+    )
+  )
+  return response
+})

@@ -25,6 +25,8 @@ These files are the contributor source of truth. When implementation and documen
 
 Community operations are defined in [`docs/social-media.md`](docs/social-media.md), [`docs/community-operations.md`](docs/community-operations.md), and [`docs/community-platforms.md`](docs/community-platforms.md): the verified channel registry, engagement system, and Reddit/Discord controls.
 
+The separate [`docs/madger-command-bot.md`](docs/madger-command-bot.md) service provides Telegram onboarding, contributor missions, referral attribution, moderation, and verified market alerts without adding a wallet connection or transaction runtime to the static website.
+
 ## Production architecture
 
 The production application is deliberately small and static:
@@ -40,6 +42,7 @@ The production application is deliberately small and static:
 | Launch state | `launch-state.js` | Defines the four allowed public states for indexable project pages; the navigational 404 intentionally carries no launch disclosure |
 | Validation | `scripts/`, `.github/workflows/ci.yml` | Maintained content, artifact, syntax, secret, dependency, and Cloudflare checks run on every PR to `main` and push to `main` |
 | Hosting | `wrangler.json` | Cloudflare Workers Static Assets configuration, trailing-slash handling, and the custom 404 page |
+| Community bot | `supabase/functions/madger-command-bot/`, `supabase/migrations/` | Isolated Telegram webhook, service-role-only operational data, market monitoring, and verified alert controls |
 
 `dist/` is generated and ignored. Do not edit it. The explicit arrays in `site-config.mjs` are a deployment boundary: adding a source file does **not** publish it unless it is also added to the appropriate allowlist.
 

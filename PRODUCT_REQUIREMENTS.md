@@ -21,7 +21,7 @@ Public content must not announce or imply an unverified launch date, liquidity p
 
 ## Technical constraints
 
-Retain the static root architecture, explicit build allowlist, no runtime backend, minimal JavaScript, existing headers, responsive design, and approved assets. Core verification content must remain usable if clipboard access fails.
+Retain the static root website architecture, explicit build allowlist, no website runtime backend, minimal JavaScript, existing headers, responsive design, and approved assets. Core verification content must remain usable if clipboard access fails. Any operational bot or API must remain isolated from the website build, preserve the exact mint, avoid wallet custody and transaction execution, and keep credentials and operational data server-side.
 
 ## Acceptance criteria
 

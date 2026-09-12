@@ -29,3 +29,10 @@
 
 /*.html
   Cache-Control: public, max-age=300
+
+/bot-dashboard.html
+  Cache-Control: no-cache
+  X-Robots-Tag: noindex, nofollow
+
+/bot-dashboard.js
+  Cache-Control: public, max-age=300
