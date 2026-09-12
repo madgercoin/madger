@@ -2,7 +2,7 @@ import 'jsr:@supabase/functions-js/edge-runtime.d.ts'
 import {
   LINKS, OFFICIAL_MINT, OFFICIAL_POOL, buyTier, compactWallet, contributorRank, escapeHtml, faqIntent,
   findVerifiedMadgerBuyers, holderSnapshotFromAccounts,
-  marketAlertReasons, marketSnapshotSummary, moderationEscalation, moderationReason,
+  marketAlertReasons, marketSnapshotSummary, moderationEscalation, moderationReason, poolSnapshotSummary,
   normalizeMissionCode, normalizeReferral, normalizeTeam, normalizedMessageFingerprint,
   parseAnnouncement, parseMissionDefinition, parseRaidMode, parseReviewRequest, parseTeamAlert, pendingSignatures,
   shouldActivateRaidMode, significantHolderMovements
@@ -394,6 +394,68 @@ async function showMarket(chatId) {
   return send(chatId, `<b>MADGER MARKET SNAPSHOT</b> 📊\n\nPrice: ${compactUsd(market.priceUsd)}\nMarket cap: ${compactUsd(market.marketCapUsd, 0)}\nLiquidity: ${compactUsd(market.liquidityUsd, 0)}\n5m volume: ${compactUsd(market.volumeM5Usd)}\n5m trades: ${market.buysM5 ?? '—'} buys · ${market.sellsM5 ?? '—'} sells\nUpdated: ${market.ageMinutes === null ? 'unknown' : `${market.ageMinutes} minute${market.ageMinutes === 1 ? '' : 's'} ago`}\n\nAlways verify the mint before trading.`, keyboard([[{ text: '📈 Live verified chart', url: LINKS.dex }, { text: '⚡ Open Raydium', url: LINKS.raydium }]]))
 }
 
+async function marketSnapshots() {
+  const cutoff = encodeURIComponent(new Date(Date.now() - 24 * 3600000).toISOString())
+  return Promise.all([
+    db('madger_bot_market_snapshots?select=price_usd,liquidity_usd,volume_m5_usd,buys_m5,sells_m5,raw,created_at&order=created_at.desc&limit=1'),
+    db(`madger_bot_market_snapshots?created_at=lte.${cutoff}&select=liquidity_usd,created_at&order=created_at.desc&limit=1`)
+  ])
+}
+
+function signedPercentage(value) {
+  const amount = Number(value)
+  return Number.isFinite(amount) ? `${amount >= 0 ? '+' : ''}${amount.toFixed(2)}%` : 'building baseline'
+}
+
+async function showPool(chatId) {
+  const [latestRows, priorRows] = await marketSnapshots()
+  if (!latestRows?.length) return send(chatId, 'Pool intelligence is temporarily unavailable.', keyboard([[{ text: '📈 Open verified pool', url: LINKS.dex }]]))
+  const pool = poolSnapshotSummary(latestRows[0], priorRows?.[0])
+  return send(chatId, `<b>MADGER OFFICIAL POOL</b> 🌊
+
+DEX: <b>${escapeHtml(pool.dexId || 'Raydium')}</b> · ${escapeHtml(pool.poolLabel || 'CPMM')}
+Liquidity: <b>${compactUsd(pool.liquidityUsd, 0)}</b>
+24h liquidity change: <b>${signedPercentage(pool.liquidityChangePercentage)}</b>
+Liquidity / market cap: <b>${pool.liquidityToMarketCapPercentage === null ? 'unavailable' : `${pool.liquidityToMarketCapPercentage.toFixed(2)}%`}</b>
+24h volume: <b>${compactUsd(pool.volumeH24Usd)}</b>
+24h trades: <b>${pool.buysH24 ?? '—'} buys · ${pool.sellsH24 ?? '—'} sells</b>
+24h price move: <b>${signedPercentage(pool.priceChangeH24Percentage)}</b>
+Pool age: <b>${pool.pairAgeDays === null ? 'unknown' : `${pool.pairAgeDays} days`}</b>
+Updated: ${pool.ageMinutes === null ? 'unknown' : `${pool.ageMinutes} minute${pool.ageMinutes === 1 ? '' : 's'} ago`}
+
+This report verifies the configured pool; it is not a guarantee of liquidity or future price.`, keyboard([
+    [{ text: '📈 Inspect verified pool', url: LINKS.dex }, { text: '⚡ Open Raydium', url: LINKS.raydium }],
+    [{ text: '✅ Verify Mint', url: LINKS.verify }]
+  ]))
+}
+
+async function showRisk(chatId) {
+  const [[marketRows, priorMarketRows], [holderRows]] = await Promise.all([marketSnapshots(), holderSnapshots()])
+  const market = marketRows?.[0]
+  const holders = holderRows?.[0]
+  if (!market || !holders) return send(chatId, 'Risk intelligence is still building its verified market and holder baseline.')
+  const pool = poolSnapshotSummary(market, priorMarketRows?.[0])
+  const holderAge = Math.max(0, Math.floor((Date.now() - Date.parse(holders.created_at)) / 60000))
+  return send(chatId, `<b>MADGER RISK SNAPSHOT</b> 🛡️
+
+Official mint: <b>verified ✅</b>
+Official Raydium pool: <b>verified ✅</b>
+Market data age: <b>${pool.ageMinutes ?? 'unknown'}m</b>
+Holder data age: <b>${holderAge}m</b>
+
+Liquidity: <b>${compactUsd(pool.liquidityUsd, 0)}</b>
+Liquidity / market cap: <b>${pool.liquidityToMarketCapPercentage === null ? 'unavailable' : `${pool.liquidityToMarketCapPercentage.toFixed(2)}%`}</b>
+24h liquidity change: <b>${signedPercentage(pool.liquidityChangePercentage)}</b>
+Positive-balance wallets: <b>${Number(holders.holder_count).toLocaleString('en-US')}</b>
+Largest wallet: <b>${Number(holders.largest_percentage).toFixed(2)}%</b>
+Top 10 concentration: <b>${Number(holders.top_10_percentage).toFixed(2)}%</b>
+
+Concentration is raw on-chain ownership. Treasury, liquidity, locked, exchange, and custodial wallets may be included. This is a factual monitor—not a safety rating or financial advice.`, keyboard([
+    [{ text: '🌊 Pool details', url: LINKS.raydium }, { text: '🔎 Token accounts', url: LINKS.solscanToken }],
+    [{ text: '📈 Verified chart', url: LINKS.dex }]
+  ]))
+}
+
 async function showOfficialLinks(chatId) {
   return send(chatId, `<b>OFFICIAL MADGER LINKS</b> ✅\n\nWebsite: ${LINKS.home}\nOfficial mint:\n<code>${OFFICIAL_MINT}</code>\n\nTreat any conflicting contract, support account, or wallet link as suspicious.`, keyboard([
     [{ text: '🌐 Official website', url: LINKS.home }, { text: '🦡 The Burrow', url: LINKS.community }],
@@ -459,7 +521,7 @@ Movement alerts identify balance changes only. They never label a transfer as a 
 }
 
 async function showHelp(chatId) {
-  return send(chatId, '<b>MADGERBOT COMMANDS</b> 🦡\n\n<b>Market intelligence</b>\n/buy · /price · /holders · /chart · /ca · /verify · /links\n\n<b>Community</b>\n/rules · /safety · /report · /teams\n\n<b>Contribute</b>\n/missions · /submit · /mywork · /rank · /leaderboard · /referral\n\nMADGERbot never requests wallet credentials, payments, verification transfers, or remote access.')
+  return send(chatId, '<b>MADGERBOT COMMANDS</b> 🦡\n\n<b>Market intelligence</b>\n/buy · /price · /pool · /risk · /holders · /chart · /ca · /verify · /links\n\n<b>Community</b>\n/rules · /safety · /report · /teams\n\n<b>Contribute</b>\n/missions · /submit · /mywork · /rank · /leaderboard · /referral\n\nMADGERbot never requests wallet credentials, payments, verification transfers, or remote access.')
 }
 
 async function faqResponderEnabled() {
@@ -494,6 +556,8 @@ async function maybeAnswerFaq(message) {
 
   let posted
   if (intent === 'price') posted = await showMarket(message.chat.id)
+  else if (intent === 'pool') posted = await showPool(message.chat.id)
+  else if (intent === 'risk') posted = await showRisk(message.chat.id)
   else if (intent === 'contract') posted = await send(message.chat.id, `<b>OFFICIAL MADGER MINT</b> ✅\n<code>${OFFICIAL_MINT}</code>\n\nVerify the complete address—never a shortened match.`, keyboard([[{ text: 'Canonical verification', url: LINKS.verify }]]))
   else if (intent === 'buy') posted = await send(message.chat.id, '<b>BUY $MADGER SAFELY</b> ⚡\nUse a verified route and choose your own amount and slippage. MADGERbot never asks for funds or wallet credentials.', keyboard([[{ text: '🧭 Beginner guide', url: LINKS.guide }, { text: '⚡ Open Raydium', url: LINKS.raydium }]]))
   else posted = await showOfficialLinks(message.chat.id)
@@ -983,7 +1047,7 @@ async function adminHealth(message) {
   const holderAge = Number.isFinite(holderAt) ? Math.max(0, Math.floor((Date.now() - holderAt) / 60000)) : null
   return send(message.chat.id, `<b>MADGERBOT SYSTEM HEALTH</b> 🩺
 
-Version: 3.3.0
+Version: 3.4.0
 Webhook: ${webhook.url ? 'connected ✅' : 'missing ❌'}
 Pending Telegram updates: ${Number(webhook.pending_update_count ?? 0)}
 Market monitor: ${marketAge === null ? 'no snapshot ❌' : marketAge <= 10 ? `current ✅ · ${marketAge}m old` : `stale ⚠️ · ${marketAge}m old`}
@@ -1168,6 +1232,8 @@ async function handleCommand(message) {
   if (command === '/buy') return send(chatId, `<b>BUY $MADGER SAFELY</b>\n\nOfficial mint:\n<code>${OFFICIAL_MINT}</code>\n\nMADGER never presets your amount or slippage. Review every wallet prompt before approving.`, conversionKeyboard())
   if (command === '/mint' || command === '/verify' || command === '/ca' || command === '/contract') return send(chatId, `<b>OFFICIAL MADGER MINT</b>\n<code>${OFFICIAL_MINT}</code>\n\nPool:\n<code>${OFFICIAL_POOL}</code>`, keyboard([[{ text: 'Open canonical verification', url: LINKS.verify }]]))
   if (command === '/price') return showMarket(chatId)
+  if (command === '/pool' || command === '/liquidity') return showPool(chatId)
+  if (command === '/risk') return showRisk(chatId)
   if (command === '/holders') return showHolders(chatId)
   if (command === '/chart') return send(chatId, '<b>MADGER VERIFIED CHART</b> 📈\nThis link is locked to the official Raydium pool.', keyboard([[{ text: 'Open live chart', url: LINKS.dex }]]))
   if (command === '/links') return showOfficialLinks(chatId)
@@ -1214,7 +1280,7 @@ async function handleCommand(message) {
   if (command === '/clearwarns') return adminRecoveryAction(message, 'clearwarns')
   if (command === '/memberinfo') return memberInfo(message)
   if (command === '/cleanup') return cleanupMessage(message)
-  return send(chatId, 'Commands: /buy · /price · /holders · /verify · /missions · /submit · /mywork · /rank · /leaderboard · /referral · /teams · /rules · /safety · /report')
+  return send(chatId, 'Commands: /buy · /price · /pool · /risk · /holders · /verify · /missions · /submit · /mywork · /rank · /leaderboard · /referral · /teams · /rules · /safety · /report')
 }
 
 async function moderate(message) {
@@ -1547,6 +1613,8 @@ async function setupTelegram(request) {
   const publicCommands = [
     { command: 'buy', description: 'Open verified MADGER purchase routes' },
     { command: 'price', description: 'Latest MADGER market snapshot' },
+    { command: 'pool', description: 'Official pool liquidity and activity' },
+    { command: 'risk', description: 'Verified MADGER risk snapshot' },
     { command: 'holders', description: 'On-chain MADGER holder intelligence' },
     { command: 'chart', description: 'Open the verified live chart' },
     { command: 'ca', description: 'Copy the official MADGER mint' },
@@ -1625,7 +1693,7 @@ Deno.serve(async request => {
     const url = new URL(request.url)
     if (request.method === 'GET' && url.pathname.includes('/go/')) return routeRedirect(request, url)
     if (request.method === 'GET') {
-      return Response.json({ ok: true, service: 'MADGER Command Bot', version: '3.3.0', configured: Boolean(BOT_TOKEN && WEBHOOK_SECRET), operations_console: true, moderation_log: true, member_inspection: true, moderation_recovery: true, community_guard: true, raid_shield: true, raid_link_firewall: true, stale_content_cleanup: true, faq_responder: true, market_commands: true, holder_intelligence: true, holder_growth: true, concentration_tracking: true, wallet_movement_alerts: true, promotion_teams: true, announcements: true, contributor_leaderboard: true, contributor_history: true, mission_admin: true, review_queue: true, native_buy_watcher: true, one_minute_buy_watcher: true, catchup_scanner: true, watcher_health: true, every_verified_buy: true, branded_buy_cards: true, buy_delivery_telemetry: true })
+      return Response.json({ ok: true, service: 'MADGER Command Bot', version: '3.4.0', configured: Boolean(BOT_TOKEN && WEBHOOK_SECRET), operations_console: true, moderation_log: true, member_inspection: true, moderation_recovery: true, community_guard: true, raid_shield: true, raid_link_firewall: true, stale_content_cleanup: true, faq_responder: true, market_commands: true, pool_intelligence: true, risk_snapshot: true, liquidity_trends: true, holder_intelligence: true, holder_growth: true, concentration_tracking: true, wallet_movement_alerts: true, promotion_teams: true, announcements: true, contributor_leaderboard: true, contributor_history: true, mission_admin: true, review_queue: true, native_buy_watcher: true, one_minute_buy_watcher: true, catchup_scanner: true, watcher_health: true, every_verified_buy: true, branded_buy_cards: true, buy_delivery_telemetry: true })
     }
     if (url.pathname.endsWith('/setup')) return setupTelegram(request)
     if (url.pathname.endsWith('/watch-buys')) return watchVerifiedBuys(request)
