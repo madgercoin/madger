@@ -9,7 +9,7 @@ export const rootFiles = [
   "brand-system.css",
   "home-utility.css",
   "MADGER_community_creator_brief.txt",
-  "buy.html",
+  "buy.html",\n  "bot-dashboard.html",\n  "bot-dashboard.js",
   "purchase-path.css",
   "launch.html",
   "litepaper.html",
