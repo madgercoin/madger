@@ -1,9 +1,9 @@
 {
-  "generatedAt": "2026-09-12T12:16:45.366Z",
-  "previousGeneratedAt": "2026-09-11T12:55:45.593Z",
+  "generatedAt": "2026-09-13T13:23:54.304Z",
+  "previousGeneratedAt": "2026-09-12T12:16:45.366Z",
   "window": {
-    "start": "2026-08-13T12:16:45.366Z",
-    "end": "2026-09-12T12:16:45.366Z"
+    "start": "2026-08-14T13:23:54.304Z",
+    "end": "2026-09-13T13:23:54.304Z"
   },
   "organization": {
     "id": "6a67aceacff325d8d2d231e9",
@@ -20,14 +20,14 @@
       "state": "connected",
       "healthy": true,
       "queuePaused": false,
-      "metricsUpdatedAt": "2026-09-12T06:57:55.696Z",
+      "metricsUpdatedAt": "2026-09-13T05:58:08.202Z",
       "metrics": {
-        "postCount": 56,
-        "reactions": 34,
+        "postCount": 55,
+        "reactions": 27,
         "comments": 34,
-        "engagementRate": 5.7,
-        "impressions": 2682,
-        "shares": 1,
+        "engagementRate": 6.08,
+        "impressions": 2449,
+        "shares": 0,
         "clicks": 89
       },
       "requiresCommunityReview": true
@@ -42,15 +42,15 @@
       "state": "connected",
       "healthy": true,
       "queuePaused": false,
-      "metricsUpdatedAt": "2026-09-12T08:21:53.184Z",
+      "metricsUpdatedAt": "2026-09-13T01:35:51.105Z",
       "metrics": {
         "postCount": 96,
-        "reactions": 2522,
-        "comments": 1123,
-        "engagementRate": 15.61,
-        "reposts": 492,
-        "impressions": 63029,
-        "clicks": 613
+        "reactions": 2458,
+        "comments": 1063,
+        "engagementRate": 15.96,
+        "reposts": 466,
+        "impressions": 60330,
+        "clicks": 615
       },
       "requiresCommunityReview": true
     },
@@ -64,19 +64,19 @@
       "state": "connected",
       "healthy": true,
       "queuePaused": false,
-      "metricsUpdatedAt": "2026-09-11T21:52:55.773Z",
+      "metricsUpdatedAt": "2026-09-12T20:53:06.373Z",
       "metrics": {
-        "postCount": 54,
-        "reactions": 64,
-        "comments": 17,
-        "engagementRate": 21.26,
-        "views": 606,
+        "postCount": 53,
+        "reactions": 67,
+        "comments": 18,
+        "engagementRate": 33.46,
+        "views": 470,
         "shares": 0,
         "saves": 0,
         "follows": 0,
-        "reach": 381,
-        "totalTimeWatched": 65.14,
-        "averageTimeWatched": 16.64
+        "reach": 254,
+        "totalTimeWatched": 46.42,
+        "averageTimeWatched": 16.18
       },
       "requiresCommunityReview": true
     },
@@ -90,17 +90,17 @@
       "state": "connected",
       "healthy": true,
       "queuePaused": false,
-      "metricsUpdatedAt": "2026-09-12T08:52:21.366Z",
+      "metricsUpdatedAt": "2026-09-13T07:54:07.341Z",
       "metrics": {
-        "postCount": 51,
-        "reactions": 92,
+        "postCount": 50,
+        "reactions": 87,
         "comments": 7,
-        "engagementRate": 1.22,
-        "views": 8187,
+        "engagementRate": 1.18,
+        "views": 8047,
         "shares": 1,
-        "reach": 6901,
-        "totalTimeWatched": 342.93,
-        "averageTimeWatched": 2.39
+        "reach": 6904,
+        "totalTimeWatched": 375.75,
+        "averageTimeWatched": 2.8
       },
       "requiresCommunityReview": true
     }
@@ -613,7 +613,7 @@
         "status": "sent",
         "externalLink": "https://facebook.com/1279493098576451_122108036793423166",
         "publishingError": null,
-        "metricsUpdatedAt": "2026-09-12T06:57:55.695Z",
+        "metricsUpdatedAt": "2026-09-13T05:58:08.202Z",
         "metrics": {
           "reactions": 3,
           "comments": 0,
@@ -642,7 +642,7 @@
         "status": "sent",
         "externalLink": "https://www.instagram.com/p/DcFbFJPlFqB/",
         "publishingError": null,
-        "metricsUpdatedAt": "2026-09-11T21:52:55.773Z",
+        "metricsUpdatedAt": "2026-09-12T20:53:06.373Z",
         "metrics": {
           "reactions": 0,
           "comments": 0,
@@ -706,7 +706,7 @@
         "status": "sent",
         "externalLink": "https://facebook.com/1279493098576451_122108134587423166",
         "publishingError": null,
-        "metricsUpdatedAt": "2026-09-12T06:57:55.695Z",
+        "metricsUpdatedAt": "2026-09-13T05:58:08.202Z",
         "metrics": {
           "reactions": 2,
           "comments": 0,
@@ -736,7 +736,7 @@
         "status": "sent",
         "externalLink": "https://www.instagram.com/p/DcGOkg5ltva/",
         "publishingError": null,
-        "metricsUpdatedAt": "2026-09-11T21:52:55.773Z",
+        "metricsUpdatedAt": "2026-09-12T20:53:06.373Z",
         "metrics": {
           "reactions": 0,
           "comments": 0,
@@ -770,7 +770,7 @@
         "status": "sent",
         "externalLink": "https://www.tiktok.com/@themadgercoin/video/7674570062266666254?utm_campaign=tt4d_open_api&utm_source=7103819247981182978",
         "publishingError": null,
-        "metricsUpdatedAt": "2026-09-12T08:52:21.365Z",
+        "metricsUpdatedAt": "2026-09-13T07:54:07.341Z",
         "metrics": {
           "reactions": 0,
           "comments": 0,
@@ -834,7 +834,7 @@
         "status": "sent",
         "externalLink": "https://facebook.com/1279493098576451_122109624249423166",
         "publishingError": null,
-        "metricsUpdatedAt": "2026-09-12T06:57:55.695Z",
+        "metricsUpdatedAt": "2026-09-13T05:58:08.201Z",
         "metrics": {
           "reactions": 1,
           "comments": 0,
@@ -864,7 +864,7 @@
         "status": "sent",
         "externalLink": "https://www.instagram.com/p/DcUO7rak_qB/",
         "publishingError": null,
-        "metricsUpdatedAt": "2026-09-11T21:52:55.772Z",
+        "metricsUpdatedAt": "2026-09-12T20:53:06.373Z",
         "metrics": {
           "reactions": 1,
           "comments": 0,
@@ -898,7 +898,7 @@
         "status": "sent",
         "externalLink": "https://www.tiktok.com/@themadgercoin/video/7676590217716845838?utm_campaign=tt4d_open_api&utm_source=7103819247981182978",
         "publishingError": null,
-        "metricsUpdatedAt": "2026-09-12T08:52:21.365Z",
+        "metricsUpdatedAt": "2026-09-13T07:54:07.341Z",
         "metrics": {
           "reactions": 0,
           "comments": 0,
