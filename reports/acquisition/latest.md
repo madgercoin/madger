@@ -1,18 +1,18 @@
 # MADGER acquisition snapshot
 
-Generated: 2026-09-14T20:35:55.975Z
+Generated: 2026-09-14T23:29:15.030Z
 Label: `pre-liquidity-pre-proficy-2026-09-09`
 Mint: `BHauMX8akk2umqkQqnJwpYkCRkZmefGnEBFByeFXRKqv`
 Verified pool: `FVRpAmyDsdvKHQT2ds6ytZsJHt7SDDDbScQx3c4fu32h`
 
 | Metric | Value |
 |---|---:|
-| Price (USD) | 0.001085 |
-| Liquidity (USD) | $8,958.4 |
-| Market cap | $1,085,843 |
-| FDV | $1,085,843 |
-| 24h volume | $2.83 |
-| 24h buys | 0 |
+| Price (USD) | 0.001108 |
+| Liquidity (USD) | $9,143.01 |
+| Market cap | $1,108,379 |
+| FDV | $1,108,379 |
+| 24h volume | $3.49 |
+| 24h buys | 1 |
 | 24h sells | 1 |
 | Unique positive-balance owners | 32 |
 | Positive token accounts | 32 |
