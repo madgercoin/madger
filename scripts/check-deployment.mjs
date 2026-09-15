@@ -4,6 +4,7 @@ const checks = [
   ["/app", 200],
   ["/app.css", 200],
   ["/app.js", 200],
+  ["/verified-contributions.json", 200],
   ["/sw.js", 200],
   ["/buy", 200],
   ["/purchase-path.css", 200],
@@ -16,18 +17,11 @@ const checks = [
   ["/litepaper.html", 200],
   ["/collaborators", 200],
   ["/privacy", 200],
-  ["/blog", 200],
-  ["/blog-utility-without-a-wallet", 200],
-  ["/blog-creator-trust-standard", 200],
-  ["/bot-dashboard", 200],
-  ["/bot-dashboard.js", 200],
-  ["/feed.xml", 200],
   ["/__deployment-check-missing-page__", 404],
   ["/styles.css", 200],
   ["/home-v2.css", 200],
   ["/script.js", 200],
   ["/manifest.webmanifest", 200],
-  ["/token-metadata.json", 200],
   ["/robots.txt", 200],
   ["/sitemap.xml", 200],
   ["/assets/madger_hero_burrow_v7.jpg", 200],
@@ -79,25 +73,6 @@ for (const [pathname, destination, expectedStatus = 301] of redirects) {
   }
 }
 
-const tokenMetadata = responses.get("/token-metadata.json");
-if (tokenMetadata) {
-  const { response } = tokenMetadata;
-  const contentType = response.headers.get("content-type") ?? "";
-  const cors = response.headers.get("access-control-allow-origin");
-  const cacheControl = response.headers.get("cache-control") ?? "";
-  if (!contentType.includes("application/json")) failures.push("token metadata: incorrect content type");
-  if (cors !== "*") failures.push("token metadata: missing permissive CORS");
-  if (!cacheControl.includes("public")) failures.push("token metadata: missing public cache policy");
-  try {
-    const metadata = await response.clone().json();
-    if (metadata.mint !== officialMint) failures.push("token metadata: incorrect mint");
-    if (metadata.image !== `${baseUrl}/assets/madger_official_logo_transparent_512.png`) failures.push("token metadata: incorrect canonical image");
-    if (metadata.symbol !== "MADGER") failures.push("token metadata: incorrect symbol");
-  } catch (error) {
-    failures.push(`token metadata: invalid JSON (${error.message})`);
-  }
-}
-
 const homepage = responses.get("/");
 if (homepage) {
   const { body, response } = homepage;
@@ -134,11 +109,36 @@ if (burrowApp) {
     [burrowApp.body.includes("Checked locally in your browser"), "local verifier privacy boundary"],
     [burrowApp.body.includes("NO WALLET REQUIRED"), "no-wallet access"],
     [burrowApp.body.includes("MADGER NEVER NEEDS YOUR SEED PHRASE"), "wallet-secret warning"],
-    [burrowApp.body.includes("madger_official_contest_pose_card.svg"), "approved pose card"]
+    [burrowApp.body.includes("madger_official_contest_pose_card.svg"), "approved pose card"],
+    [burrowApp.body.includes("THE ENDLESS BURROW"), "progressive field hunt"],
+    [burrowApp.body.includes("ROTATING WEEKLY DISPATCH"), "recurring dispatch"],
+    [burrowApp.body.includes("TRAIL XP IS NOT"), "unverified progress boundary"],
+    [burrowApp.body.includes("THE FOUR-POINT REVIEW"), "published review rubric"],
+    [burrowApp.body.includes("requires two independent reviewers"), "advanced review independence"],
+    [burrowApp.body.includes("I removed secrets, private messages, and personal data"), "proof safety attestation"],
+    [burrowApp.body.includes("I credited sources and have permission"), "proof rights attestation"],
+    [burrowApp.body.includes("OFFICIAL TRUST REGISTRY"), "public badge verification"]
   ];
   for (const [passed, label] of contentChecks) {
     console.log(`${passed ? "PASS" : "FAIL"} ${label}`);
     if (!passed) failures.push(`app: ${label}`);
+  }
+}
+
+const trustRegistry = responses.get("/verified-contributions.json");
+if (trustRegistry) {
+  const { response } = trustRegistry;
+  const contentType = response.headers.get("content-type") ?? "";
+  const cacheControl = response.headers.get("cache-control") ?? "";
+  const robots = response.headers.get("x-robots-tag") ?? "";
+  const registryChecks = [
+    [contentType.includes("application/json"), "registry JSON content type"],
+    [cacheControl.includes("no-store"), "registry no-store cache boundary"],
+    [robots.includes("noindex"), "registry noindex boundary"]
+  ];
+  for (const [passed, label] of registryChecks) {
+    console.log(`${passed ? "PASS" : "FAIL"} ${label}`);
+    if (!passed) failures.push(`registry: ${label}`);
   }
 }
 

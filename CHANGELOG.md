@@ -1,5 +1,16 @@
 # Changelog
 
+## 2026-09-13 — Production release consolidation
+
+- Removed the temporary claim deployment so releases use one authenticated production path.
+- Added root JSON and redirect files to production triggers, ensuring trust-registry and routing updates publish automatically.
+- Added Wrangler's complete production dry run as a required pre-deployment gate.
+- Marked the public trust registry `no-store` and `noindex`, and added production checks for its content type and cache boundary so revoked badges cannot linger at the edge.
+
+## 2026-09-12 — Remove temporary claim deployment
+
+- Removed the temporary Cloudflare claim workflow and configuration. Production releases now use only the authenticated, validated deployment workflow, avoiding duplicate deployments and claim artifacts.
+
 ## 2026-09-11 — Signals From Below editorial cycle
 
 - Published two source-grounded dispatches on community utility and creator trust, expanding the archive from eight to ten entries.
