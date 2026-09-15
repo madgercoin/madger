@@ -9,6 +9,7 @@ const home = await readFile('index.html', 'utf8');
 const guide = await readFile('buy.html', 'utf8');
 const app = await readFile('app.html', 'utf8');
 const appScript = await readFile('app.js', 'utf8');
+const registry = JSON.parse(await readFile('verified-contributions.json', 'utf8'));
 const script = await readFile('script.js', 'utf8');
 
 const expectedDestinations = {
@@ -35,6 +36,25 @@ test('Burrow app is public, privacy-first, and served only through safe methods'
   assert.match(appScript, /RECOGNIZED PLATFORM — NOT YET VERIFIED/);
   assert.match(appScript, /host === "madgercoin\.com"/);
   assert.match(appScript, /url\.searchParams\.get\("outputMint"\) === MINT/);
+  assert.match(app, /THE ENDLESS BURROW/);
+  assert.match(app, /ROTATING WEEKLY DISPATCH/);
+  assert.match(app, /TRAIL XP IS NOT[\s\S]*A VERIFIED BADGE/);
+  assert.match(app, /THE FOUR-POINT REVIEW/);
+  assert.match(app, /one appeal/);
+  assert.equal((app.match(/data-mission=/g) || []).length, 9);
+  assert.match(appScript, /STATUS UNREVIEWED/);
+  assert.match(appScript, /dispatch === weekId/);
+  assert.match(appScript, /BURROWKEEPER", min: 690/);
+  assert.match(appScript, /Date\.UTC\(1970, 0, 5\)/);
+  assert.match(appScript, /xp - currentMinimum/);
+  assert.match(appScript, /URL\.revokeObjectURL/);
+  assert.match(app, /requires two independent reviewers/);
+  assert.match(app, /I removed secrets, private messages, and personal data/);
+  assert.match(app, /I credited sources and have permission/);
+  assert.match(appScript, /Confirm both safety and source-credit statements/);
+  assert.match(appScript, /eligible for review/);
+  assert.match(app, /OFFICIAL TRUST REGISTRY/);
+  assert.match(appScript, /NO ACTIVE VERIFIED RECORD/);
   const get = await worker.fetch(new Request('https://madgercoin.com/app'), {});
   assert.equal(get.status, 200);
   assert.equal(await get.text(), app);
@@ -44,6 +64,29 @@ test('Burrow app is public, privacy-first, and served only through safe methods'
   const post = await worker.fetch(new Request('https://madgercoin.com/app', { method: 'POST' }), {});
   assert.equal(post.status, 405);
   assert.equal(post.headers.get('allow'), 'GET, HEAD');
+});
+
+test('trust registry has unique, internally consistent active records', () => {
+  assert.equal(registry.schemaVersion, 1);
+  assert.equal(registry.ranks.at(-1).name, 'BURROWKEEPER');
+  assert.equal(registry.ranks.at(-1).minimumReviewedXp, 690);
+  const callsigns = new Set();
+  const references = new Set();
+  for (const record of registry.contributors) {
+    assert.match(record.callsign, /\S/);
+    assert.ok(['active', 'revoked'].includes(record.status));
+    const callsign = record.callsign.toLowerCase();
+    assert.ok(!callsigns.has(callsign), `duplicate callsign: ${record.callsign}`);
+    callsigns.add(callsign);
+    for (const reference of record.references) {
+      assert.match(reference, /^MGR-[A-F0-9]{8}$/);
+      assert.ok(!references.has(reference.toLowerCase()), `duplicate reference: ${reference}`);
+      references.add(reference.toLowerCase());
+    }
+    const expectedRank = registry.ranks.filter(rank => record.reviewedXp >= rank.minimumReviewedXp).at(-1).name;
+    assert.equal(record.rank, expectedRank);
+    if (['WARDEN', 'BURROWKEEPER'].includes(record.rank)) assert.ok(record.reviewers.length >= 2);
+  }
 });
 
 test('guide exposes four verified routes without financial presets', () => {

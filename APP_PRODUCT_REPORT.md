@@ -1,5 +1,27 @@
 # The Burrow app product review
 
+## Comprehensive v2 audit
+
+Two independent methods were used. A Nielsen-style heuristic review examined hierarchy, system status, feedback, user control, consistency, error prevention, accessibility, and cognitive load. An adversarial trust-system review modeled an honest contributor, a points farmer, an impersonator, and an inconsistent reviewer from mission discovery through evidence, decision, appeal, and revocation.
+
+Both methods agreed on the same weaknesses: four missions could not sustain the “ongoing” promise; checklist completion looked too close to earned status; no explicit trust ladder or review rubric existed; proof handoff depended on ad hoc email; recurring work had no identity; and an unchanged service-worker cache name could leave returning users on an obsolete release.
+
+The agreed implementation introduces nine progressively demanding core missions, five eligibility tiers, a six-week rotating dispatch deck, portable proof packets with deterministic references and an explicit `UNREVIEWED` status, a four-part evidence/usefulness/originality/safety rubric, conflict and appeal rules, badge revocation language, and a versioned offline cache. Trail XP remains local and self-reported. It can preview later work but never represents reviewed XP, guaranteed compensation, or a verified badge.
+
+### Post-release optimization audit
+
+The progression graph exposed a mathematical blocker: the maximum available pre-expedition Trail XP could not reach the original 800-XP Burrowkeeper gate. The final gate is now 690 XP, which remains demanding but is reachable after the first eight core missions and any current weekly dispatch, including the lowest-value 40-XP brief. Progress bars now measure advancement inside the current tier rather than dividing lifetime XP by the next threshold.
+
+The weekly rotation originally used Unix-epoch week boundaries, which change on Thursday despite the interface promising Monday releases. Week identity now uses the first Monday after the Unix epoch, and stored dispatch completion is compared with that exact week. Unknown or obsolete stored mission IDs no longer inflate the visible prepared count. Rebuilding a proof packet now revokes its previous temporary download URL to prevent an avoidable browser-memory leak. Advanced trust reviews explicitly require two independent reviewers and disclose the volunteer-capacity bottleneck instead of implying an instant or guaranteed decision.
+
+### Coherence and submission-safety pass
+
+The final language pass separates **Trail tiers** from **Trust Rank** everywhere the interface summarizes progress. Badge previews now expose their XP threshold and eligibility state to both visual and assistive-technology users. Progress changes are announced as status updates. Proof packaging requires two explicit attestations: removal of secrets and personal data, and source credit plus permission to share. These acknowledgements do not replace reviewer checks, but they prevent the interface from silently encouraging unsafe or unattributed submissions.
+
+### Completed verification lifecycle
+
+The final implementation closes the gap between submitting work and checking a claimed badge. A same-origin public registry now defines rank thresholds and active or revoked contributor records. The app searches it by exact callsign or `MGR-XXXXXXXX` review reference, renders only active records as verified, and fails closed when the registry is unavailable or malformed. The empty initial registry is intentional: no contributor is presented as verified before completing the published review process. Repository tests enforce unique case-insensitive callsigns and references, correct rank arithmetic, valid status values, and two-reviewer minimums for advanced ranks. The reviewer runbook defines approval, correction, appeal, and revocation operations.
+
 ## Objective
 
 Turn MADGER's existing safety, contribution, creator, and transparency work into one useful mobile-first product without introducing custody, financial promises, or a dependency-heavy application stack.

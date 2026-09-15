@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "updatedAt": "2026-09-12T00:00:00Z",
+  "policy": "https://madgercoin.com/app#missions",
+  "ranks": [
+    { "name": "SCOUT", "minimumReviewedXp": 0 },
+    { "name": "TRACKER", "minimumReviewedXp": 100 },
+    { "name": "BUILDER", "minimumReviewedXp": 250 },
+    { "name": "WARDEN", "minimumReviewedXp": 500 },
+    { "name": "BURROWKEEPER", "minimumReviewedXp": 690 }
+  ],
+  "contributors": []
+}

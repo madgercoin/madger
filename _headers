@@ -23,6 +23,11 @@
 /app.js
   Cache-Control: no-cache
 
+/verified-contributions.json
+  Cache-Control: no-store
+  Content-Type: application/json; charset=UTF-8
+  X-Robots-Tag: noindex
+
 /sw.js
   Cache-Control: no-cache
   Service-Worker-Allowed: /
