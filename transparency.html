@@ -59,18 +59,18 @@
 
       <div class="metric-grid" aria-label="Supply and liquidity summary">
         <div class="metric"><span>Current on-chain supply</span><strong>999,999,994.992751</strong><small>MADGER</small></div>
-        <div class="metric"><span>Provably locked</span><strong>659,999,999.999968</strong><small>66.00% of current supply</small></div>
-        <div class="metric"><span>Maximum circulating</span><strong>339,999,994.992783</strong><small>34.00% of current supply</small></div>
+        <div class="metric"><span>Provably locked</span><strong>774,999,999.999968</strong><small>77.50% of current supply</small></div>
+        <div class="metric"><span>Maximum circulating</span><strong>224,999,994.992783</strong><small>22.50% of current supply</small></div>
         <div class="metric"><span>LP supply escrowed</span><strong>99.50%</strong><small>419.939397081 of 422.039094066 LP</small></div>
       </div>
 
-      <p class="proof-note"><strong>Calculation standard:</strong> maximum circulating supply equals current on-chain supply minus only the balances in the two verified Jupiter Lock escrows below. No unlocked project wallet is excluded. Figures are a timestamped on-chain record, not a guarantee of market price or future liquidity.</p>
+      <p class="proof-note"><strong>Calculation standard:</strong> maximum circulating supply equals current on-chain supply minus only the balances in the five verified Jupiter Lock escrows below. No unlocked project wallet is excluded. Figures are a timestamped on-chain record, not a guarantee of market price or future liquidity.</p>
       <p class="proof-note"><strong>Third-party ticker status:</strong> some market-data services may continue displaying fully diluted valuation as “market cap” until their independent circulating-supply review is complete. MADGER cannot alter those interfaces. Verify whether a ticker has applied the documented maximum circulating supply before comparing valuations.</p>
     </section>
 
     <section class="section" aria-labelledby="token-locks-title">
       <p class="section-label">01 / TOKEN LOCKS</p>
-      <h2 id="token-locks-title">660M LOCKED.<br><span>TERMS VISIBLE.</span></h2>
+      <h2 id="token-locks-title">775M LOCKED.<br><span>TERMS VISIBLE.</span></h2>
       <div class="table-wrap">
         <table class="proof-table">
           <thead><tr><th>Purpose</th><th>Locked balance</th><th>Escrow address</th><th>Vesting configuration</th><th>Evidence</th></tr></thead>
@@ -89,10 +89,31 @@
               <td><strong>32,000,000.000020 MADGER</strong> cliff on <strong>2027-03-12 08:30 UTC</strong>; 36 monthly periods; 3,555,555.555555 MADGER per period; cancellation and recipient-update modes disabled.</td>
               <td><a href="https://solscan.io/tx/35UhnGW62eYR66qsQSJ82qMrrpyUsYgak6iBK53Ha2z5wDgMBX2ozgJKoz3y7Ns5mroNh25od6d2iQDgBP598QQ5" target="_blank" rel="noopener noreferrer">Creation transaction</a></td>
             </tr>
+            <tr>
+              <td><strong>Community Reserve</strong><br>Jupiter Lock program</td>
+              <td><strong>70,000,000 MADGER</strong><br>7.00% of current supply</td>
+              <td><a href="https://lock.jup.ag/escrow/6DoXr5WALTXN3wLPvnxQEP8LZtNiViuTxUcedXsSttMT" target="_blank" rel="noopener noreferrer"><code>6DoXr5WALTXN3wLPvnxQEP8LZtNiViuTxUcedXsSttMT</code></a></td>
+              <td><strong>14,000,000.000020 MADGER</strong> cliff on <strong>2027-03-12</strong>; 36 monthly periods; 1,555,555.555555 MADGER per period.</td>
+              <td><a href="https://lock.jup.ag/escrow/6DoXr5WALTXN3wLPvnxQEP8LZtNiViuTxUcedXsSttMT" target="_blank" rel="noopener noreferrer">Jupiter Lock record</a></td>
+            </tr>
+            <tr>
+              <td><strong>Operations and Marketing Reserve</strong><br>Jupiter Lock program</td>
+              <td><strong>25,000,000 MADGER</strong><br>2.50% of current supply</td>
+              <td><a href="https://lock.jup.ag/escrow/3aW5JEwSLrSLkSRjmKQ2dSQnowwNmSALX1vr6g4RKdPQ" target="_blank" rel="noopener noreferrer"><code>3aW5JEwSLrSLkSRjmKQ2dSQnowwNmSALX1vr6g4RKdPQ</code></a></td>
+              <td><strong>5,000,000.000020 MADGER</strong> cliff on <strong>2027-09-12</strong>; 36 monthly periods; 555,555.555555 MADGER per period.</td>
+              <td><a href="https://lock.jup.ag/escrow/3aW5JEwSLrSLkSRjmKQ2dSQnowwNmSALX1vr6g4RKdPQ" target="_blank" rel="noopener noreferrer">Jupiter Lock record</a></td>
+            </tr>
+            <tr>
+              <td><strong>Founder and Creator Allocation</strong><br>Jupiter Lock program</td>
+              <td><strong>20,000,000 MADGER</strong><br>2.00% of current supply</td>
+              <td><a href="https://lock.jup.ag/escrow/82wZ6Cmw76HbRqJqSJ1cSXVhhBXNtWSpdH4XR669j341" target="_blank" rel="noopener noreferrer"><code>82wZ6Cmw76HbRqJqSJ1cSXVhhBXNtWSpdH4XR669j341</code></a></td>
+              <td><strong>5,000,000.000024 MADGER</strong> cliff on <strong>2027-09-12</strong>; 36 monthly periods; 416,666.666666 MADGER per period; cancellation and recipient-update modes disabled.</td>
+              <td><a href="https://lock.jup.ag/escrow/82wZ6Cmw76HbRqJqSJ1cSXVhhBXNtWSpdH4XR669j341" target="_blank" rel="noopener noreferrer">Jupiter Lock record</a></td>
+            </tr>
           </tbody>
         </table>
       </div>
-      <p class="proof-note">Both escrows are owned by Jupiter Lock program <code class="address">LocpQgucEQHbqNABEYvBvwoxCPsSbG91A1QaQhQQqjn</code>. The displayed balance is what is excluded from the maximum circulating-supply calculation; scheduled release terms describe the on-chain configuration.</p>
+      <p class="proof-note">All five escrows use Jupiter Lock program <code class="address">LocpQgucEQHbqNABEYvBvwoxCPsSbG91A1QaQhQQqjn</code>. The displayed balances are what is excluded from the maximum circulating-supply calculation; scheduled release terms describe the on-chain configuration. Verify the complete set on the <a href="https://lock.jup.ag/token/BHauMX8akk2umqkQqnJwpYkCRkZmefGnEBFByeFXRKqv" target="_blank" rel="noopener noreferrer">MADGER Jupiter Lock directory</a>.</p>
     </section>
 
     <section class="section" aria-labelledby="lp-title">
@@ -117,7 +138,7 @@
       <p class="section-label">03 / METHOD AND LIMITS</p>
       <h2 id="method-title">COUNT ONLY<br><span>WHAT IS PROVABLE.</span></h2>
       <div class="method">
-        <article><h3>Supply method</h3><p><strong>999,999,994.992751 − 659,999,999.999968 = 339,999,994.992783 MADGER.</strong></p><p>“Maximum circulating” is used because unlocked balances may be held or inactive. This record makes no claim that every unlocked token is actively trading.</p></article>
+        <article><h3>Supply method</h3><p><strong>999,999,994.992751 − 774,999,999.999968 = 224,999,994.992783 MADGER.</strong></p><p>“Maximum circulating” is used because unlocked balances may be held or inactive. No unlocked wallet balance is excluded.</p></article>
         <article><h3>Verification boundary</h3><ul><li>Mint and freeze authorities are revoked.</li><li>No ordinary project wallet is removed from circulation.</li><li>Program balances and terms can be rechecked through the linked explorer records.</li><li>Market capitalization, price, pool reserves, and holder counts change continuously.</li></ul></article>
       </div>
       <div class="evidence-actions"><a class="button" href="https://solscan.io/token/BHauMX8akk2umqkQqnJwpYkCRkZmefGnEBFByeFXRKqv" target="_blank" rel="noopener noreferrer">Inspect Token on Solscan</a><a class="button ghost" href="https://solscan.io/account/FVRpAmyDsdvKHQT2ds6ytZsJHt7SDDDbScQx3c4fu32h" target="_blank" rel="noopener noreferrer">Inspect Raydium Pool</a><a class="button ghost" href="/launch.html">Read Launch Record</a></div>
