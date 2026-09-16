@@ -191,10 +191,10 @@ const transparency = responses.get("/transparency.html");
 if (transparency) {
   const contentChecks = [
     [transparency.body.includes('<link rel="canonical" href="https://madgercoin.com/transparency.html">'), "transparency canonical"],
-    [transparency.body.includes("659,999,999.999968"), "verified locked supply"],
-    [transparency.body.includes("339,999,994.992783"), "maximum circulating supply"],
+    [transparency.body.includes("774,999,999.999968"), "verified locked supply"],
+    [transparency.body.includes("224,999,994.992783"), "maximum circulating supply"],
     [transparency.body.includes("99.50% ESCROWED"), "LP escrow evidence"],
-    [transparency.body.includes("5LVpo5QrNJPuasud75CuF3gRtipFStkR2seyWMgg5E8V") && transparency.body.includes("hXgWwvwmaYkCyehaea1AzcbD156LmR2mQtYU18eTvrL"), "token-lock addresses"]
+    [["5LVpo5QrNJPuasud75CuF3gRtipFStkR2seyWMgg5E8V", "hXgWwvwmaYkCyehaea1AzcbD156LmR2mQtYU18eTvrL", "6DoXr5WALTXN3wLPvnxQEP8LZtNiViuTxUcedXsSttMT", "3aW5JEwSLrSLkSRjmKQ2dSQnowwNmSALX1vr6g4RKdPQ", "82wZ6Cmw76HbRqJqSJ1cSXVhhBXNtWSpdH4XR669j341"].every((address) => transparency.body.includes(address)), "token-lock addresses"]
   ];
   for (const [passed, label] of contentChecks) {
     console.log(`${passed ? "PASS" : "FAIL"} ${label}`);
