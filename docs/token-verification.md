@@ -11,7 +11,9 @@ This document provides permanent, public verification links for the official MAD
 | Symbol | MADGER |
 | Token program | Classic SPL Token |
 | Decimals | 6 |
-| Total supply | 1,000,000,000 MADGER |
+| Current on-chain supply (verified 2026-09-16) | 999,999,994.992751 MADGER |
+| Provably locked supply | 659,999,999.999968 MADGER (66.00%) |
+| Maximum circulating supply | 339,999,994.992783 MADGER (34.00%) |
 | Mint authority | Revoked |
 | Freeze authority | Revoked |
 | Official mint | `BHauMX8akk2umqkQqnJwpYkCRkZmefGnEBFByeFXRKqv` |
@@ -23,6 +25,7 @@ This document provides permanent, public verification links for the official MAD
 ## Independent verification links
 
 - [MADGER canonical launch record](https://madgercoin.com/launch.html)
+- [MADGER supply and liquidity transparency record](https://madgercoin.com/transparency.html)
 - [MADGER official website](https://madgercoin.com)
 - [Raydium market search by official mint](https://raydium.io/liquidity-pools/?token=BHauMX8akk2umqkQqnJwpYkCRkZmefGnEBFByeFXRKqv)
 - [DEX Screener live market](https://dexscreener.com/solana/fvrpamydsdvkhqt2ds6ytzsjht7sdddbscqx3c4fu32h)

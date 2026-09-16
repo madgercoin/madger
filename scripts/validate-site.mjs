@@ -1,13 +1,14 @@
 import { access, readFile } from "node:fs/promises";
 import path from "node:path";
 
-const htmlFiles = ["app.html", "buy.html", "index.html", "commons.html", "launch.html", "litepaper.html", "official-links.html", "collaborators.html", "privacy.html", "blog.html", "blog-utility-without-a-wallet.html", "blog-creator-trust-standard.html", "blog-madger-thesis.html", "blog-diligence-map.html", "blog-burrow-after-launch.html", "blog-character-outlives-chart.html", "blog-verify-live-market.html", "blog-building-foundations.html", "blog-honey-badger-standard.html", "blog-token-link-safety.html", "404.html"];
+const htmlFiles = ["app.html", "buy.html", "index.html", "commons.html", "launch.html", "transparency.html", "litepaper.html", "official-links.html", "collaborators.html", "privacy.html", "blog.html", "blog-utility-without-a-wallet.html", "blog-creator-trust-standard.html", "blog-madger-thesis.html", "blog-diligence-map.html", "blog-burrow-after-launch.html", "blog-character-outlives-chart.html", "blog-verify-live-market.html", "blog-building-foundations.html", "blog-honey-badger-standard.html", "blog-token-link-safety.html", "404.html"];
 const indexablePages = new Map([
   ["app.html", "https://madgercoin.com/app"],
   ["buy.html", "https://madgercoin.com/buy"],
   ["index.html", "https://madgercoin.com/"],
   ["commons.html", "https://madgercoin.com/commons"],
   ["launch.html", "https://madgercoin.com/launch.html"],
+  ["transparency.html", "https://madgercoin.com/transparency.html"],
   ["litepaper.html", "https://madgercoin.com/litepaper.html"],
   ["official-links.html", "https://madgercoin.com/official-links.html"],
   ["collaborators.html", "https://madgercoin.com/collaborators"],
@@ -304,7 +305,18 @@ const publishedAddresses = new Set([
   "ATFELs8fV9CthKDjVLfhMb756uD499nHVtzLr5i7XKPp",
   "EVSB7eT5ws43oi2ztWKNQvH4THXQD3k9z6Sk9NNFP1FT",
   officialPool,
-  officialPool.toLowerCase()
+  officialPool.toLowerCase(),
+  "5LVpo5QrNJPuasud75CuF3gRtipFStkR2seyWMgg5E8V",
+  "A8ipo29QM3BUqDaBzYHQBevP2DeHD9EDqHfStm6Tyh1t",
+  "hXgWwvwmaYkCyehaea1AzcbD156LmR2mQtYU18eTvrL",
+  "55FduFuEmEGmrAut4e2VqbRFHjKdhbKMN5zixkKzLAKd",
+  "LocpQgucEQHbqNABEYvBvwoxCPsSbG91A1QaQhQQqjn",
+  "rZbKNf3G2sLhNjaB5TSqy5TUbKPWgu2gBkw3VggqTkB",
+  "Ew1Gd4T1jk6wsG3Ea8sZoAu6DDZKokcgvg9jEPecHZ1e",
+  "9EVSaGAP7gDmuJAwzL4DWN6V7eHPVgd4UMzMmxnF2VkX",
+  "7D4sbC5hWf7AcwktjWjgnbu9UEo32zHhX17mzA87ppMy",
+  "5SEpbdjFK5FxwTvfsGMXVQTD2v4M2c5tyRTxhdsPkgDw",
+  "2VXW1Q4oEzEMPfMHHL2bjDE3BtKiDN8mT9jvAnem14CF"
 ]);
 const unexpectedMints = [...new Set(mintCandidates.filter(value => !publishedAddresses.has(value)))];
 if (unexpectedMints.length) failures.push(`unexpected mint-like value(s): ${unexpectedMints.join(", ")}`);

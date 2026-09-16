@@ -13,6 +13,7 @@ export const rootFiles = [
   "buy.html",
   "purchase-path.css",
   "launch.html",
+  "transparency.html",
   "litepaper.html",
   "roadmap.html",
   "roadmap.css",

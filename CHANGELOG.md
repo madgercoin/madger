@@ -200,6 +200,12 @@ Notable repository changes are recorded here. Dates use UTC. This project does n
 
 ## Unreleased
 
+### Transparency
+
+- Published a canonical on-chain transparency page with exact current supply, two Jupiter Lock escrows totaling 659,999,999.999968 MADGER, maximum circulating supply of 339,999,994.992783 MADGER, vesting terms, and creation transactions.
+- Published four noncancelable and nontransferable Streamflow LP escrows holding 99.50% of LP-token supply, including exact balances, unlock times, and creation transactions.
+- Replaced the launch page's obsolete pending LP-protection statements with the verified escrow record and added the transparency page to navigation, sitemap, production allowlist, and automated validation.
+
 ### Repository operations
 
 - Added dependency maintenance, pinned GitHub Actions, CODEOWNERS, structured issue and pull-request

@@ -3,7 +3,7 @@
 ## Security priorities
 
 1. Protect the integrity of the official mint: `BHauMX8akk2umqkQqnJwpYkCRkZmefGnEBFByeFXRKqv`.
-2. Prevent false claims that public trading, liquidity, listings, or purchases are available.
+2. Prevent false claims about public trading, liquidity, circulating supply, locks, listings, or purchase routes.
 3. Protect Cloudflare, repository, social-channel, email, and future wallet credentials.
 4. Minimize client attack surface, data collection, and third-party dependencies.
 
@@ -13,7 +13,7 @@ The application is static and collects no user data. `_headers` sets CSP, HSTS, 
 
 CI scans high-confidence secret patterns, validates the production artifact and mint, and runs a production-only dependency audit. Wrangler is pinned at `4.120.1`; the current non-major update closes the newly disclosed development-tree `undici` advisory inherited through Miniflare. `npm audit` reports zero findings across the complete dependency tree.
 
-The launch-state validator requires every indexable project page to load the same content-versioned controller, keeps `MINTED_NOT_TRADING` active, and rejects known trading hosts before launch. The no-index 404 is intentionally navigation-only and must not load the controller or repeat launch disclosures. Artifact validation proves launch-control documents and the five operational wallet addresses remain outside `dist/`. Public mint verification remains available; custody records and signing material never are.
+The launch-state and site validators require consistent token identity, canonical market links, accessible metadata, and an explicit production allowlist. The no-index 404 is intentionally navigation-only. Approved public wallets, program escrows, and transaction signatures may be published when needed to substantiate supply, vesting, or liquidity claims; signing material and private custody records never are.
 
 ## Purchase navigation review — September 3, 2026
 
@@ -21,7 +21,7 @@ The authorized purchase guide uses fixed external HTTPS links only. It adds no w
 
 ## Contributor rules
 
-Never commit seed phrases, keys, tokens, private wallet details, personal data, or unapproved addresses. Public operational addresses may appear only in the internal wallet runbook and transaction records, never the deployed artifact. Verify mint changes character by character and across official channels with multiple authorized reviewers. Avoid remote scripts, trackers, forms, wallet adapters, and dependencies unless threat-modeled and approved. Review generated `dist/` and Git diff for disclosure before release.
+Never commit seed phrases, keys, tokens, private wallet details, personal data, or unapproved addresses. Public addresses may appear in the deployed artifact only when their project role and disclosure are approved and the address is independently verified. Verify mint and escrow addresses character by character and across public on-chain evidence with multiple authorized reviewers. Avoid remote scripts, trackers, forms, wallet adapters, and dependencies unless threat-modeled and approved. Review generated `dist/` and Git diff for disclosure before release.
 
 ## Incident handling
 
