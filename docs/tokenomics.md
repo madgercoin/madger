@@ -25,11 +25,14 @@ Only balances held in verified program locks are excluded:
 |---|---|---:|---|
 | Strategic Treasury Reserve | `5LVpo5QrNJPuasud75CuF3gRtipFStkR2seyWMgg5E8V` | 499,999,999.999968 | Jupiter Lock; no cliff release before 2027-09-08 21:30 UTC; 36 monthly periods; cancellation and recipient-update modes disabled |
 | Core Treasury Reserve | `hXgWwvwmaYkCyehaea1AzcbD156LmR2mQtYU18eTvrL` | 160,000,000 | Jupiter Lock; 32,000,000.000020 cliff on 2027-03-12 08:30 UTC; 36 monthly periods; cancellation and recipient-update modes disabled |
-| **Total provably locked** | | **659,999,999.999968** | **66.00% of current supply** |
+| Community Reserve | `6DoXr5WALTXN3wLPvnxQEP8LZtNiViuTxUcedXsSttMT` | 70,000,000 | Jupiter Lock; 14,000,000.000020 cliff on 2027-03-12; 36 monthly periods |
+| Operations and Marketing Reserve | `3aW5JEwSLrSLkSRjmKQ2dSQnowwNmSALX1vr6g4RKdPQ` | 25,000,000 | Jupiter Lock; 5,000,000.000020 cliff on 2027-09-12; 36 monthly periods |
+| Founder and Creator Allocation | `82wZ6Cmw76HbRqJqSJ1cSXVhhBXNtWSpdH4XR669j341` | 20,000,000 | Jupiter Lock; 5,000,000.000024 cliff on 2027-09-12; 36 monthly periods; cancellation and recipient-update modes disabled |
+| **Total provably locked** | | **774,999,999.999968** | **77.50% of current supply** |
 
 Maximum circulating supply is:
 
-`999,999,994.992751 − 659,999,999.999968 = 339,999,994.992783 MADGER`
+`999,999,994.992751 − 774,999,999.999968 = 224,999,994.992783 MADGER`
 
 “Maximum circulating” is deliberate: unlocked balances may be held or inactive. No ordinary project wallet is excluded from this calculation.
 
