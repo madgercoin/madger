@@ -14,6 +14,7 @@ const checks = [
   ["/commons.css", 200],
   ["/home-utility.css", 200],
   ["/launch.html", 200],
+  ["/transparency.html", 200],
   ["/litepaper.html", 200],
   ["/collaborators", 200],
   ["/privacy", 200],
@@ -176,13 +177,28 @@ if (launch) {
     [launch.body.includes('<link rel="canonical" href="https://madgercoin.com/launch.html">'), "launch canonical"],
     [launch.body.includes("TRADING LIVE"), "trading-live status"],
     [launch.body.includes("The SOL–MADGER market is live on Raydium"), "live-market notice"],
-    [launch.body.includes("600,000,000 MADGER") && launch.body.includes("Awaiting public verification"), "launch allocation and LP-evidence boundary"],
+    [launch.body.includes("600,000,000 MADGER") && launch.body.includes("99.50% of LP supply escrowed") && launch.body.includes('href="/transparency.html"'), "launch allocation and LP-evidence boundary"],
     [launch.body.includes("0.25%"), "verified Raydium fee tier"],
     [launch.body.includes("https://raydium.io/liquidity-pools/?token=" + officialMint), "verified Raydium market destination"]
   ];
   for (const [passed, label] of contentChecks) {
     console.log(`${passed ? "PASS" : "FAIL"} ${label}`);
     if (!passed) failures.push(`launch: ${label}`);
+  }
+}
+
+const transparency = responses.get("/transparency.html");
+if (transparency) {
+  const contentChecks = [
+    [transparency.body.includes('<link rel="canonical" href="https://madgercoin.com/transparency.html">'), "transparency canonical"],
+    [transparency.body.includes("659,999,999.999968"), "verified locked supply"],
+    [transparency.body.includes("339,999,994.992783"), "maximum circulating supply"],
+    [transparency.body.includes("99.50% ESCROWED"), "LP escrow evidence"],
+    [transparency.body.includes("5LVpo5QrNJPuasud75CuF3gRtipFStkR2seyWMgg5E8V") && transparency.body.includes("hXgWwvwmaYkCyehaea1AzcbD156LmR2mQtYU18eTvrL"), "token-lock addresses"]
+  ];
+  for (const [passed, label] of contentChecks) {
+    console.log(`${passed ? "PASS" : "FAIL"} ${label}`);
+    if (!passed) failures.push(`transparency: ${label}`);
   }
 }
 

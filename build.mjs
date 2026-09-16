@@ -11,10 +11,11 @@ await Promise.all(assetFiles.map(async file => {
   await cp(file, destination);
 }));
 
-const [home, app, launch, litepaper, notFound, buy] = await Promise.all([
+const [home, app, launch, transparency, litepaper, notFound, buy] = await Promise.all([
   readFile("index.html", "utf8"),
   readFile("app.html", "utf8"),
   readFile("launch.html", "utf8"),
+  readFile("transparency.html", "utf8"),
   readFile("litepaper.html", "utf8"),
   readFile("404.html", "utf8"),
   readFile("buy.html", "utf8")
@@ -35,7 +36,7 @@ const campaigns = {
 };
 
 const workerSource = `/** Generated at build time. HTML is bundled to prevent stale or corrupted edge assets. */
-const pages = ${JSON.stringify({ home, app, launch, litepaper, notFound, buy })};
+const pages = ${JSON.stringify({ home, app, launch, transparency, litepaper, notFound, buy })};
 const redirectTargets = ${JSON.stringify(redirects)};
 const campaignTargets = ${JSON.stringify(campaigns)};
 const securityHeaders = Object.freeze({
@@ -142,6 +143,7 @@ export default {
       return new Response(request.method === "HEAD" ? null : pages.buy, html);
     }
     if (pathname === "/launch" || pathname === "/launch/") return permanentRedirect("/launch.html");
+    if (pathname === "/transparency" || pathname === "/transparency/") return permanentRedirect("/transparency.html");
     if (pathname === "/litepaper" || pathname === "/litepaper/") return permanentRedirect("/litepaper.html");
     if (pathname === "/launch-hunt" || pathname === "/launch-hunt/" || pathname === "/launch-hunt.html") return permanentRedirect("/");
     if (pathname === "/meme-contest" || pathname === "/meme-contest/" || pathname === "/meme-contest.html") return permanentRedirect("/");
@@ -151,6 +153,7 @@ export default {
       return new Response(request.method === "HEAD" ? null : pages.app, html);
     }
     if (pathname === "/launch.html") return new Response(pages.launch, html);
+    if (pathname === "/transparency.html") return new Response(pages.transparency, html);
     if (pathname === "/litepaper.html") return new Response(pages.litepaper, html);
     const asset = await env.ASSETS.fetch(request);
     if (asset.status !== 404) return asset;
