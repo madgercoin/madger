@@ -1,9 +1,9 @@
 {
-  "generatedAt": "2026-09-15T13:46:06.246Z",
-  "previousGeneratedAt": "2026-09-14T15:09:54.469Z",
+  "generatedAt": "2026-09-16T13:38:33.429Z",
+  "previousGeneratedAt": "2026-09-15T13:46:06.246Z",
   "window": {
-    "start": "2026-08-16T13:46:06.246Z",
-    "end": "2026-09-15T13:46:06.246Z"
+    "start": "2026-08-17T13:38:33.429Z",
+    "end": "2026-09-16T13:38:33.429Z"
   },
   "organization": {
     "id": "6a67aceacff325d8d2d231e9",
@@ -20,15 +20,15 @@
       "state": "connected",
       "healthy": true,
       "queuePaused": false,
-      "metricsUpdatedAt": "2026-09-15T03:58:27.021Z",
+      "metricsUpdatedAt": "2026-09-16T02:58:36.611Z",
       "metrics": {
         "postCount": 54,
-        "reactions": 19,
-        "comments": 24,
-        "engagementRate": 5.04,
-        "impressions": 2419,
+        "reactions": 14,
+        "comments": 18,
+        "engagementRate": 4.44,
+        "impressions": 2367,
         "shares": 0,
-        "clicks": 80
+        "clicks": 75
       },
       "requiresCommunityReview": true
     },
@@ -42,15 +42,15 @@
       "state": "connected",
       "healthy": true,
       "queuePaused": false,
-      "metricsUpdatedAt": "2026-09-14T23:36:11.169Z",
+      "metricsUpdatedAt": "2026-09-16T02:40:52.253Z",
       "metrics": {
         "postCount": 95,
-        "reactions": 2309,
-        "comments": 957,
-        "engagementRate": 16.4,
-        "reposts": 420,
-        "impressions": 53259,
-        "clicks": 406
+        "reactions": 2168,
+        "comments": 869,
+        "engagementRate": 16.78,
+        "reposts": 381,
+        "impressions": 49477,
+        "clicks": 407
       },
       "requiresCommunityReview": true
     },
@@ -64,19 +64,19 @@
       "state": "connected",
       "healthy": true,
       "queuePaused": false,
-      "metricsUpdatedAt": "2026-09-14T18:53:27.326Z",
+      "metricsUpdatedAt": "2026-09-15T17:53:37.116Z",
       "metrics": {
-        "postCount": 52,
-        "reactions": 73,
-        "comments": 18,
-        "engagementRate": 35.97,
-        "views": 474,
+        "postCount": 48,
+        "reactions": 72,
+        "comments": 13,
+        "engagementRate": 37.95,
+        "views": 437,
         "shares": 0,
         "saves": 0,
         "follows": 0,
-        "reach": 253,
-        "totalTimeWatched": 46.58,
-        "averageTimeWatched": 16.32
+        "reach": 224,
+        "totalTimeWatched": 46.27,
+        "averageTimeWatched": 17.12
       },
       "requiresCommunityReview": true
     },
@@ -90,17 +90,17 @@
       "state": "connected",
       "healthy": true,
       "queuePaused": false,
-      "metricsUpdatedAt": "2026-09-15T05:58:02.431Z",
+      "metricsUpdatedAt": "2026-09-16T05:00:07.502Z",
       "metrics": {
-        "postCount": 49,
-        "reactions": 87,
+        "postCount": 52,
+        "reactions": 85,
         "comments": 8,
-        "engagementRate": 1.24,
-        "views": 7754,
+        "engagementRate": 1.18,
+        "views": 7942,
         "shares": 1,
-        "reach": 7034,
-        "totalTimeWatched": 368.78,
-        "averageTimeWatched": 2.75
+        "reach": 6938,
+        "totalTimeWatched": 414.63,
+        "averageTimeWatched": 3.17
       },
       "requiresCommunityReview": true
     }
@@ -834,7 +834,7 @@
         "status": "sent",
         "externalLink": "https://facebook.com/1279493098576451_122109624249423166",
         "publishingError": null,
-        "metricsUpdatedAt": "2026-09-15T03:58:27.021Z",
+        "metricsUpdatedAt": "2026-09-16T02:58:36.610Z",
         "metrics": {
           "reactions": 1,
           "comments": 0,
@@ -864,7 +864,7 @@
         "status": "sent",
         "externalLink": "https://www.instagram.com/p/DcUO7rak_qB/",
         "publishingError": null,
-        "metricsUpdatedAt": "2026-09-14T18:53:27.325Z",
+        "metricsUpdatedAt": "2026-09-15T17:53:37.116Z",
         "metrics": {
           "reactions": 1,
           "comments": 0,
@@ -898,7 +898,7 @@
         "status": "sent",
         "externalLink": "https://www.tiktok.com/@themadgercoin/video/7676590217716845838?utm_campaign=tt4d_open_api&utm_source=7103819247981182978",
         "publishingError": null,
-        "metricsUpdatedAt": "2026-09-15T05:58:02.431Z",
+        "metricsUpdatedAt": "2026-09-16T05:00:07.501Z",
         "metrics": {
           "reactions": 0,
           "comments": 0,
