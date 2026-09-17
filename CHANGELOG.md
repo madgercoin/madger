@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-09-17 — Signals dispatch: proof you can open
+
+- Published Dispatch 011 on Burrow Run and the five-lock transparency record, with primary-source links and explicit evidence boundaries.
+- Updated the archive, homepage preview, RSS feed, sitemap dates, production allowlist, validation, and deployment smoke checks.
+- Preserved the separate beginner buying path and kept character secondary to reader utility and verifiable proof.
+
 ## 2026-09-13 — Production release consolidation
 
 - Removed the temporary claim deployment so releases use one authenticated production path.

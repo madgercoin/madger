@@ -22,6 +22,7 @@ const checks = [
   ["/collaborators", 200],
   ["/privacy", 200],
   ["/blog", 200],
+  ["/blog-proof-you-can-open", 200],
   ["/blog-utility-without-a-wallet", 200],
   ["/blog-creator-trust-standard", 200],
   ["/feed.xml", 200],
@@ -157,6 +158,12 @@ if (game) {
     console.log(`${passed ? "PASS" : "FAIL"} ${label}`);
     if (!passed) failures.push(`game: ${label}`);
   }
+}
+
+const latestDispatch = responses.get("/blog-proof-you-can-open");
+if (latestDispatch) {
+  const contentChecks = [[latestDispatch.body.includes("Dispatch 011"), "dispatch number"],[latestDispatch.body.includes("SEP 17, 2026"), "visible publication date"],[latestDispatch.body.includes('href="/game"'), "Burrow Run source"],[latestDispatch.body.includes('href="/transparency.html"'), "transparency source"],[latestDispatch.body.includes(officialMint), "official mint"],[latestDispatch.body.includes("does not prove"), "evidence boundary"]];
+  for (const [passed, label] of contentChecks) { console.log(`${passed ? "PASS" : "FAIL"} ${label}`); if (!passed) failures.push(`latest dispatch: ${label}`); }
 }
 
 const trustRegistry = responses.get("/verified-contributions.json");

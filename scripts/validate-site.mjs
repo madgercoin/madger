@@ -1,7 +1,7 @@
 import { access, readFile } from "node:fs/promises";
 import path from "node:path";
 
-const htmlFiles = ["app.html", "game.html", "buy.html", "index.html", "commons.html", "launch.html", "transparency.html", "litepaper.html", "official-links.html", "collaborators.html", "privacy.html", "blog.html", "blog-utility-without-a-wallet.html", "blog-creator-trust-standard.html", "blog-madger-thesis.html", "blog-diligence-map.html", "blog-burrow-after-launch.html", "blog-character-outlives-chart.html", "blog-verify-live-market.html", "blog-building-foundations.html", "blog-honey-badger-standard.html", "blog-token-link-safety.html", "404.html"];
+const htmlFiles = ["app.html", "game.html", "buy.html", "index.html", "commons.html", "launch.html", "transparency.html", "litepaper.html", "official-links.html", "collaborators.html", "privacy.html", "blog.html", "blog-proof-you-can-open.html", "blog-utility-without-a-wallet.html", "blog-creator-trust-standard.html", "blog-madger-thesis.html", "blog-diligence-map.html", "blog-burrow-after-launch.html", "blog-character-outlives-chart.html", "blog-verify-live-market.html", "blog-building-foundations.html", "blog-honey-badger-standard.html", "blog-token-link-safety.html", "404.html"];
 const indexablePages = new Map([
   ["app.html", "https://madgercoin.com/app"],
   ["game.html", "https://madgercoin.com/game"],
@@ -15,6 +15,7 @@ const indexablePages = new Map([
   ["collaborators.html", "https://madgercoin.com/collaborators"],
   ["privacy.html", "https://madgercoin.com/privacy.html"]
   ,["blog.html", "https://madgercoin.com/blog.html"]
+  ,["blog-proof-you-can-open.html", "https://madgercoin.com/blog-proof-you-can-open.html"]
   ,["blog-utility-without-a-wallet.html", "https://madgercoin.com/blog-utility-without-a-wallet.html"]
   ,["blog-creator-trust-standard.html", "https://madgercoin.com/blog-creator-trust-standard.html"]
   ,["blog-madger-thesis.html", "https://madgercoin.com/blog-madger-thesis.html"]
@@ -51,6 +52,7 @@ const socialPreview = "https://madgercoin.com/assets/madger_social_share_v10.jpg
 const homepageSocialPreview = "https://madgercoin.com/assets/madger_social_share_v10.jpg";
 const pageSocialPreviews = new Map([
   ["blog.html", "https://madgercoin.com/assets/madger_journal_social_v2.jpg"],
+  ["blog-proof-you-can-open.html", "https://madgercoin.com/assets/madger_social_share_v10.jpg"],
   ["blog-utility-without-a-wallet.html", "https://madgercoin.com/assets/madger_social_share_v10.jpg"],
   ["blog-creator-trust-standard.html", "https://madgercoin.com/assets/madger_social_share_v10.jpg"],
   ["blog-madger-thesis.html", "https://madgercoin.com/assets/madger_social_share_v10.jpg"],
@@ -291,6 +293,17 @@ if (JSON.stringify(sitemapUrls.sort()) !== JSON.stringify(expectedSitemapUrls.so
 if (!sitemap.includes("<lastmod>") || !sitemap.includes("<image:image>")) {
   failures.push("sitemap.xml: missing lastmod or image discovery data");
 }
+
+const latestDispatch = pages.get("blog-proof-you-can-open.html");
+const latestDispatchUrl = "https://madgercoin.com/blog-proof-you-can-open.html";
+const feed = await readFile("feed.xml", "utf8");
+if (!pages.get("blog.html").includes('href="/blog-proof-you-can-open.html"') || !pages.get("blog.html").includes("11 DISPATCHES")) failures.push("blog.html: latest dispatch archive parity is missing");
+if (!pages.get("index.html").includes('href="/blog-proof-you-can-open.html"') || !pages.get("index.html").includes("11 DISPATCHES")) failures.push("index.html: latest dispatch homepage parity is missing");
+if (!feed.includes(latestDispatchUrl) || !feed.includes("Thu, 17 Sep 2026 14:00:00 GMT")) failures.push("feed.xml: latest dispatch or publication date is missing");
+if (!sitemap.includes(latestDispatchUrl)) failures.push("sitemap.xml: latest dispatch is missing");
+if (!latestDispatch.includes('"datePublished":"2026-09-17"') || !latestDispatch.includes('"dateModified":"2026-09-17"')) failures.push("latest dispatch: structured dates are missing");
+if (!latestDispatch.includes('href="/game"') || !latestDispatch.includes('href="/transparency.html"')) failures.push("latest dispatch: primary project source links are missing");
+if (visibleText(latestDispatch).split(/\s+/).filter(Boolean).length < 900) failures.push("latest dispatch: substantial article threshold not met");
 
 const productionText = [...pages.values()].join("\n") + await readFile("manifest.webmanifest", "utf8");
 for (const requiredFile of indexablePages.keys()) {
