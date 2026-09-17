@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-16T23:15:22.837Z",
+  "generatedAt": "2026-09-12T22:33:37.609Z",
   "snapshotLabel": "pre-liquidity-pre-proficy-2026-09-09",
   "network": "solana",
   "mint": "BHauMX8akk2umqkQqnJwpYkCRkZmefGnEBFByeFXRKqv",
@@ -19,15 +19,15 @@
       "name": "Wrapped SOL",
       "symbol": "SOL"
     },
-    "priceUsd": 0.001046,
-    "priceNative": 0.00001062,
-    "liquidityUsd": 8653.08,
-    "liquidityBase": 4135076,
-    "liquidityQuote": 43.9555,
-    "fdv": 1046303,
-    "marketCap": 1046303,
-    "volume24h": 9.84,
-    "buys24h": 0,
+    "priceUsd": 0.001093,
+    "priceNative": 0.0000107,
+    "liquidityUsd": 9007.1,
+    "liquidityBase": 4120132,
+    "liquidityQuote": 44.1135,
+    "fdv": 1093060,
+    "marketCap": 1093060,
+    "volume24h": 4.5,
+    "buys24h": 1,
     "sells24h": 2,
     "pairCreatedAt": 1788193708000,
     "websites": [
@@ -38,10 +38,6 @@
       {
         "url": "https://madgercoin.com/roadmap",
         "label": "Docs"
-      },
-      {
-        "url": "https://madgercoin.com/transparency.html",
-        "label": "Supply & LP Transparency"
       }
     ],
     "socials": [
@@ -74,8 +70,8 @@
   "holders": {
     "status": "ok",
     "source": "Solana finalized RPC",
-    "uniqueOwnersWithPositiveBalance": 31,
-    "positiveTokenAccounts": 31
+    "uniqueOwnersWithPositiveBalance": 34,
+    "positiveTokenAccounts": 34
   },
   "interpretation": {
     "holderCount": "Unique SPL token-account owners with a positive raw token balance at finalized commitment.",

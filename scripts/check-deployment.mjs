@@ -8,6 +8,7 @@ const checks = [
   ["/game.css", 200],
   ["/game-core.js", 200],
   ["/game.js", 200],
+  ["/verified-contributions.json", 200],
   ["/sw.js", 200],
   ["/buy", 200],
   ["/purchase-path.css", 200],
@@ -155,6 +156,23 @@ if (game) {
   for (const [passed, label] of contentChecks) {
     console.log(`${passed ? "PASS" : "FAIL"} ${label}`);
     if (!passed) failures.push(`game: ${label}`);
+  }
+}
+
+const trustRegistry = responses.get("/verified-contributions.json");
+if (trustRegistry) {
+  const { response } = trustRegistry;
+  const contentType = response.headers.get("content-type") ?? "";
+  const cacheControl = response.headers.get("cache-control") ?? "";
+  const robots = response.headers.get("x-robots-tag") ?? "";
+  const registryChecks = [
+    [contentType.includes("application/json"), "registry JSON content type"],
+    [cacheControl.includes("no-store"), "registry no-store cache boundary"],
+    [robots.includes("noindex"), "registry noindex boundary"]
+  ];
+  for (const [passed, label] of registryChecks) {
+    console.log(`${passed ? "PASS" : "FAIL"} ${label}`);
+    if (!passed) failures.push(`registry: ${label}`);
   }
 }
 

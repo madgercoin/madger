@@ -11,11 +11,12 @@ await Promise.all(assetFiles.map(async file => {
   await cp(file, destination);
 }));
 
-const [home, app, game, launch, litepaper, notFound, buy] = await Promise.all([
+const [home, app, game, launch, transparency, litepaper, notFound, buy] = await Promise.all([
   readFile("index.html", "utf8"),
   readFile("app.html", "utf8"),
   readFile("game.html", "utf8"),
   readFile("launch.html", "utf8"),
+  readFile("transparency.html", "utf8"),
   readFile("litepaper.html", "utf8"),
   readFile("404.html", "utf8"),
   readFile("buy.html", "utf8")
@@ -36,7 +37,7 @@ const campaigns = {
 };
 
 const workerSource = `/** Generated at build time. HTML is bundled to prevent stale or corrupted edge assets. */
-const pages = ${JSON.stringify({ home, app, game, launch, litepaper, notFound, buy })};
+const pages = ${JSON.stringify({ home, app, game, launch, transparency, litepaper, notFound, buy })};
 const redirectTargets = ${JSON.stringify(redirects)};
 const campaignTargets = ${JSON.stringify(campaigns)};
 const securityHeaders = Object.freeze({
