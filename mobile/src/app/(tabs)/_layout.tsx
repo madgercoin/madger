@@ -10,6 +10,7 @@ const icon = (name: keyof typeof MaterialCommunityIcons.glyphMap) => function Ta
 export default function TabsLayout() {
   return <Tabs screenOptions={{ headerShown: false, tabBarActiveTintColor: COLORS.gold, tabBarInactiveTintColor: '#7B856F', tabBarStyle: { position: 'absolute', backgroundColor: '#080C05', borderTopColor: COLORS.border, height: 76, paddingTop: 7, paddingBottom: 10 }, tabBarLabelStyle: { fontSize: 10, fontWeight: '800' } }}>
     <Tabs.Screen name="index" options={{ title: 'Home', tabBarIcon: icon('home-variant') }} />
+    <Tabs.Screen name="play" options={{ title: 'Play', tabBarIcon: icon('gamepad-variant') }} />
     <Tabs.Screen name="buy" options={{ title: 'Buy', tabBarIcon: icon('wallet-outline') }} />
     <Tabs.Screen name="verify" options={{ title: 'Verify', tabBarIcon: icon('shield-check') }} />
     <Tabs.Screen name="community" options={{ title: 'Burrow', tabBarIcon: icon('account-group') }} />

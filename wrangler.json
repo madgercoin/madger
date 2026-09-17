@@ -1,6 +1,7 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "madger-badger",
+  "account_id": "e413c3cd38ff27d1dda8e5031d0618e8",
   "compatibility_date": "2026-07-23",
   "assets": {
     "directory": "./dist",

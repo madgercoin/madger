@@ -12,11 +12,14 @@ The official MADGER community companion.
 
 Enter the Burrow with the official MADGER app.
 
-Follow the official purchase path, learn how to buy safely if you are new to crypto, verify the exact official Solana mint, discover official community channels, and build a private Daily Dig streak that stays on your device.
+Play the native Burrow Run game, follow the official purchase path, learn how to buy safely if you are new to crypto, verify the exact official Solana mint, discover official community channels, and build private progress that stays on your device.
 
 MADGER never asks for a seed phrase or private key. The app does not connect to wallets, execute transactions, sell tokens, or provide financial advice.
 
 Highlights:
+- Native Burrow Run game with touch controls and haptic feedback
+- Three escalating tunnel zones and rotating daily field marks
+- Private local game record with an in-game reset
 - Equal direct-buy and beginner-guide actions
 - Step-by-step wallet, SOL, verification, and swap guidance
 - Exact mint copy and share tools
@@ -43,4 +46,4 @@ Secondary: Social Networking
 
 ## Review notes
 
-No login is required and no wallet is connected. The Daily Dig uses only on-device storage. All external links are user initiated. The Buy screen opens the official website guide or a fixed SOL-to-MADGER Raydium route; all transactions occur outside the app.
+No login is required and no wallet is connected. The Daily Dig and Burrow Run record use only on-device storage. Burrow Run has no ads, purchases, prizes, token rewards, remote leaderboard, or analytics. All external links are user initiated. The Buy screen opens the official website guide or a fixed SOL-to-MADGER Raydium route; all transactions occur outside the app.

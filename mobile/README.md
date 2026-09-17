@@ -9,6 +9,7 @@ The official native MADGER companion app, built with Expo SDK 57 and React Nativ
 - Dedicated Buy tab with wallet, SOL, mint-verification, swap, and risk guidance
 - Exact official Solana mint verification, copy, and sharing
 - Private on-device Daily Dig streak with no account or wallet
+- Native Burrow Run game with touch controls, escalating tunnel phases, rotating daily field marks, haptics, lifecycle pausing, and a private on-device record
 - Official Telegram, X, website, litepaper, and email directory
 - Android adaptive icon and opaque iOS store icon built from the official mark
 
@@ -20,6 +21,8 @@ npx expo start
 ```
 
 Open the project with Expo Go on Android or iPhone. Run `npm run validate` before committing.
+
+Before signed distribution, complete `RELEASE_CHECKLIST.md` and run `npm run release:distribution`. The strict gate rejects placeholder project linkage or missing physical-device attestations.
 
 ## Create signed builds
 
@@ -37,4 +40,5 @@ Store submission requires access to the MADGER Apple Developer and Google Play C
 - Confirm every URL in `src/constants/brand.ts` is official and reachable.
 - Test the buying guide and Raydium links on real Android and iPhone devices.
 - Verify the mint exactly matches madgercoin.com.
+- Complete a Burrow Run on both a physical Android device and iPhone; verify backgrounding pauses the run and local records survive restart.
 - Review `PRIVACY.md` and the live privacy-policy URL.

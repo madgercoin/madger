@@ -3,7 +3,6 @@ export const rootFiles = [
   "app.html",
   "app.css",
   "app.js",
-  "verified-contributions.json",
   "sw.js",
   "commons.html",
   "commons.css",
@@ -11,9 +10,14 @@ export const rootFiles = [
   "home-utility.css",
   "MADGER_community_creator_brief.txt",
   "buy.html",
+  "game.html",
+  "game.css",
+  "game.js",
+  "game-core.js",
+  "bot-dashboard.html",
+  "bot-dashboard.js",
   "purchase-path.css",
   "launch.html",
-  "transparency.html",
   "litepaper.html",
   "roadmap.html",
   "roadmap.css",
@@ -33,6 +37,8 @@ export const rootFiles = [
   "blog-verify-live-market.html",
   "blog-diligence-map.html",
   "blog-madger-thesis.html",
+  "blog-utility-without-a-wallet.html",
+  "blog-creator-trust-standard.html",
   "blog.css",
   "blog.js",
   "feed.xml",
@@ -45,11 +51,13 @@ export const rootFiles = [
   "robots.txt",
   "sitemap.xml",
   "manifest.webmanifest",
+  "token-metadata.json",
   "favicon.png",
   "favicon-spin.js",
   "madger_coin_spin_sprite.png",
   "madger_coin_spin_favicon.gif",
-  "_headers"
+  "_headers",
+  "_redirects"
 ];
 
 export const assetFiles = [
