@@ -22,8 +22,8 @@ const checks = [
   ["/collaborators", 200],
   ["/privacy", 200],
   ["/blog", 200],
-  ["/blog-utility-without-a-wallet.html", 200],
-  ["/blog-creator-trust-standard.html", 200],
+  ["/blog-utility-without-a-wallet", 200],
+  ["/blog-creator-trust-standard", 200],
   ["/feed.xml", 200],
   ["/__deployment-check-missing-page__", 404],
   ["/styles.css", 200],
@@ -210,7 +210,7 @@ if (launch) {
     [launch.body.includes('<link rel="canonical" href="https://madgercoin.com/launch.html">'), "launch canonical"],
     [launch.body.includes("TRADING LIVE"), "trading-live status"],
     [launch.body.includes("The SOL–MADGER market is live on Raydium"), "live-market notice"],
-    [launch.body.includes("600,000,000 MADGER") && launch.body.includes("Awaiting public verification"), "launch allocation and LP-evidence boundary"],
+    [launch.body.includes("600,000,000 MADGER") && launch.body.includes("99.50% of LP supply escrowed"), "launch allocation and LP-evidence boundary"],
     [launch.body.includes("0.25%"), "verified Raydium fee tier"],
     [launch.body.includes("https://raydium.io/liquidity-pools/?token=" + officialMint), "verified Raydium market destination"]
   ];
