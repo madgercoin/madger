@@ -1,5 +1,19 @@
 # Changelog
 
+## 2026-09-12 — Burrow Run first playable release
+
+- Launched Burrow Run, a free one-minute browser game that turns MADGER’s signal, noise, grit, and digging language into a responsive three-lane score challenge.
+- Added keyboard and touch controls, pause/resume, opt-in generated sound, reduced-motion handling, private local best-score storage, and explicit non-financial boundaries.
+- Added production routing, homepage and Burrow app discovery, sitemap metadata, a game design brief, and focused release validation.
+- Repaired malformed separators in the public build allowlist so the production configuration parses again.
+- Continued the first playable with three named difficulty zones, decision-oriented multi-item waves, rotating daily field marks, persistent local run statistics, and an expanded end-of-run debrief.
+- Extracted scoring, grit, progression, objective, and wave rules into a pure module with behavioral tests for balance-critical boundaries and safe-lane generation.
+- Promoted Burrow Run into the installable Burrow App with a home action, dated proof entry, manifest shortcut, direct service-worker registration, and complete offline precaching.
+- Added a visible private field record with guarded reset, bounded daily-mark history, defensive storage normalization, resilient audio fallback, and PWA deployment regression tests.
+- Finalized Burrow Run as a native Expo mobile game with its own Play tab, touch-first controls, haptic feedback, app-lifecycle pausing, native AsyncStorage records, and updated iOS/Android release metadata.
+- Aligned Expo SDK 57 patch dependencies and added source versus signed-distribution release gates with explicit EAS linkage and physical-device QA requirements.
+- Repaired corrupt native app-icon PNGs discovered by Android prebuild, removed an obsolete Android edge-to-edge option, and added PNG CRC validation to prevent broken release artwork from returning.
+
 ## 2026-09-11 — Signals From Below editorial cycle
 
 - Published two source-grounded dispatches on community utility and creator trust, expanding the archive from eight to ten entries.

@@ -11,9 +11,10 @@ await Promise.all(assetFiles.map(async file => {
   await cp(file, destination);
 }));
 
-const [home, app, launch, litepaper, notFound, buy] = await Promise.all([
+const [home, app, game, launch, litepaper, notFound, buy] = await Promise.all([
   readFile("index.html", "utf8"),
   readFile("app.html", "utf8"),
+  readFile("game.html", "utf8"),
   readFile("launch.html", "utf8"),
   readFile("litepaper.html", "utf8"),
   readFile("404.html", "utf8"),
@@ -35,7 +36,7 @@ const campaigns = {
 };
 
 const workerSource = `/** Generated at build time. HTML is bundled to prevent stale or corrupted edge assets. */
-const pages = ${JSON.stringify({ home, app, launch, litepaper, notFound, buy })};
+const pages = ${JSON.stringify({ home, app, game, launch, litepaper, notFound, buy })};
 const redirectTargets = ${JSON.stringify(redirects)};
 const campaignTargets = ${JSON.stringify(campaigns)};
 const securityHeaders = Object.freeze({
@@ -116,6 +117,7 @@ export default {
     const { pathname } = url;
     if (pathname === "/index.html") return permanentRedirect("/");
     if (pathname === "/app/" || pathname === "/app.html") return permanentRedirect("/app");
+    if (pathname === "/game/" || pathname === "/game.html") return permanentRedirect("/game");
     if (pathname === "/buy/" || pathname === "/buy.html") return permanentRedirect("/buy");
 
     if (pathname.startsWith("/r/")) {
@@ -149,6 +151,10 @@ export default {
     if (pathname === "/app") {
       if (request.method !== "GET" && request.method !== "HEAD") return new Response(null, { status: 405, headers: { ...html.headers, allow: "GET, HEAD" } });
       return new Response(request.method === "HEAD" ? null : pages.app, html);
+    }
+    if (pathname === "/game") {
+      if (request.method !== "GET" && request.method !== "HEAD") return new Response(null, { status: 405, headers: { ...html.headers, allow: "GET, HEAD" } });
+      return new Response(request.method === "HEAD" ? null : pages.game, html);
     }
     if (pathname === "/launch.html") return new Response(pages.launch, html);
     if (pathname === "/litepaper.html") return new Response(pages.litepaper, html);

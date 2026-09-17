@@ -1,11 +1,13 @@
 import { useEffect, useState } from 'react';
 import { ImageBackground, Linking, StyleSheet, Text, View } from 'react-native';
 import * as Haptics from 'expo-haptics';
+import { useRouter } from 'expo-router';
 import { ActionButton, BrandHeader, Card, Pill, Screen, SectionTitle, textStyles } from '@/components/ui';
 import { COLORS, LINKS } from '@/constants/brand';
 import { checkInDig, dayKey, readDig, type DigState } from '@/lib/dailyDig';
 
 export default function HomeScreen() {
+  const router = useRouter();
   const [dig, setDig] = useState<DigState>({ lastDate: '', streak: 0 });
   useEffect(() => { readDig().then(setDig); }, []);
   const checked = dig.lastDate === dayKey();
@@ -33,6 +35,7 @@ export default function HomeScreen() {
       <View style={styles.streakRow}><Text style={styles.streak}>{dig.streak}</Text><Text style={styles.streakLabel}>day streak</Text></View>
       <ActionButton label={checked ? 'Checked in today' : 'Dig in for today'} icon={checked ? 'check-circle' : 'shovel'} onPress={dailyDig} secondary={checked} />
     </Card>
+    <Card><Pill tone="gold">NATIVE GAME • NO WALLET</Pill><SectionTitle>Burrow Run</SectionTitle><Text style={textStyles.body}>Find the signal, dodge the noise, clear a daily field mark, and keep a private record on this device.</Text><ActionButton label="Play Burrow Run" icon="gamepad-variant" onPress={() => router.push('/play')} /></Card>
     <Card><SectionTitle>Official home</SectionTitle><Text style={textStyles.body}>News, the litepaper, safety notes, and every official link live at madgercoin.com.</Text><ActionButton label="Open madgercoin.com" icon="open-in-new" onPress={() => Linking.openURL(LINKS.website)} secondary /><ActionButton label="View verified Blockspot profile" icon="shield-check" onPress={() => Linking.openURL(LINKS.blockspot)} secondary /></Card>
   </Screen>;
 }

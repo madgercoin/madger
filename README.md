@@ -15,6 +15,7 @@ These files are the contributor source of truth. When implementation and documen
 - [`LAUNCH_PLAN.md`](LAUNCH_PLAN.md) — authoritative launch control index; its linked runbooks are internal source documents excluded from `dist/`.
 - [`LAUNCH_DECISIONS.md`](LAUNCH_DECISIONS.md) — the eight founder approvals that remain required before launch actions.
 - [`README_DEPLOY.txt`](README_DEPLOY.txt) — reproducible build, Cloudflare Workers deployment, rollback, and operations runbook.
+- [`docs/game-v1.md`](docs/game-v1.md) — Burrow Run gameplay, accessibility, privacy, persistence, and release boundaries.
 - [`IMPLEMENTATION_CHECKLIST.txt`](IMPLEMENTATION_CHECKLIST.txt) — release gates for content, engineering, security, launch, and future utility.
 - [`VISUAL_QA.txt`](VISUAL_QA.txt) — brand asset inventory and visual/accessibility review procedure.
 - [`litepaper.html`](litepaper.html) — public-facing project status, verified mint, roadmap, and risk disclosure; it is a deployed page, not internal engineering documentation.
@@ -34,6 +35,7 @@ The production application is deliberately small and static:
 | Pages | `index.html`, `blog*.html`, `litepaper.html`, `404.html` | Semantic content, journal articles, metadata, navigation, disclosures, and official links |
 | Presentation | `styles.css`, `blog.css` | Brand tokens, responsive layout, focus states, reduced-motion behavior, and journal/article styling |
 | Behavior | `script.js` | UTC-based Daily Dig copy, current footer year, and accessible mobile-navigation state |
+| Burrow Run | `game.html`, `game.css`, `game.js`, `game-core.js` | Dependency-free browser game, presentation, runtime, and pure testable rules; the Expo implementation lives under `mobile/src/` |
 | Brand assets | Root-level `madger_v5_*` images | Approved production imagery and purpose-built portrait/share derivatives copied to `/assets/` at build time |
 | Web metadata | `manifest.webmanifest`, `robots.txt`, `sitemap.xml`, `_headers` | Install metadata, crawler discovery, canonical URLs, security headers, and cache policy |
 | Build | `build.mjs`, `site-config.mjs` | Clears `dist/` and copies the centralized explicit allowlist without transformation |

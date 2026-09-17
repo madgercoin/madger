@@ -23,6 +23,13 @@
     <image:image><image:loc>https://madgercoin.com/assets/madger_v6_community_welcome.webp</image:loc><image:title>The Burrow app by MADGER</image:title></image:image>
   </url>
   <url>
+    <loc>https://madgercoin.com/game</loc>
+    <lastmod>2026-09-12</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <image:image><image:loc>https://madgercoin.com/assets/madger_social_share_v10.jpg</image:loc><image:title>Burrow Run browser game by MADGER</image:title></image:image>
+  </url>
+  <url>
     <loc>https://madgercoin.com/commons</loc>
     <lastmod>2026-09-06</lastmod>
     <changefreq>weekly</changefreq>

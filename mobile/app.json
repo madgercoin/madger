@@ -2,7 +2,7 @@
   "expo": {
     "name": "MADGER",
     "slug": "madger",
-    "version": "1.0.2",
+    "version": "1.1.0",
     "orientation": "portrait",
     "icon": "./assets/images/madger-app-icon.png",
     "scheme": "madger",
@@ -11,7 +11,7 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.madgercoin.app",
-      "buildNumber": "3",
+      "buildNumber": "4",
       "icon": "./assets/images/madger-app-icon.png",
       "infoPlist": {
         "NSAppTransportSecurity": {
@@ -21,8 +21,7 @@
     },
     "android": {
       "package": "com.madgercoin.app",
-      "versionCode": 3,
-      "edgeToEdgeEnabled": true,
+      "versionCode": 4,
       "adaptiveIcon": {
         "backgroundColor": "#030500",
         "foregroundImage": "./assets/images/madger-adaptive-foreground.png",
@@ -45,7 +44,9 @@
           "resizeMode": "contain"
         }
       ],
-      "expo-video"
+      "expo-video",
+      "expo-image",
+      "expo-web-browser"
     ],
     "experiments": {
       "typedRoutes": true,

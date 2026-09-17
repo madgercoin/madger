@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#090a08">
+<meta name="description" content="Play Burrow Run, MADGER’s free browser game. Switch tunnels, collect verified signals, dodge noise, and keep digging—no wallet or download required."><meta name="robots" content="index,follow,max-image-preview:large">
+<link rel="canonical" href="https://madgercoin.com/game"><link rel="manifest" href="/manifest.webmanifest"><link rel="icon" href="/favicon.png"><link rel="apple-touch-icon" href="/assets/madger_official_logo_transparent_180.png">
+<meta property="og:type" content="website"><meta property="og:site_name" content="MADGER"><meta property="og:title" content="Burrow Run | A MADGER Game"><meta property="og:description" content="Find the signal. Dodge the noise. Keep digging in MADGER’s free browser game."><meta property="og:url" content="https://madgercoin.com/game"><meta property="og:image" content="https://madgercoin.com/assets/madger_social_share_v10.jpg"><meta property="og:image:type" content="image/jpeg"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:alt" content="MADGER official character artwork">
+<meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="Burrow Run | A MADGER Game"><meta name="twitter:description" content="Find the signal. Dodge the noise. Keep digging."><meta name="twitter:image" content="https://madgercoin.com/assets/madger_social_share_v10.jpg"><meta name="twitter:image:alt" content="MADGER official character artwork">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"VideoGame","name":"Burrow Run","url":"https://madgercoin.com/game","gamePlatform":"Web browser","playMode":"SinglePlayer","applicationCategory":"Game","isAccessibleForFree":true,"publisher":{"@type":"Organization","name":"MADGER","url":"https://madgercoin.com/"}}</script>
+<link rel="stylesheet" href="/game.css"><title>Burrow Run | A MADGER Browser Game</title>
+</head><body>
+<a class="skip" href="#game-main">Skip to game</a>
+<header class="game-nav"><a class="game-brand" href="/"><img src="/assets/madger_official_logo_transparent_192.png" width="192" height="192" alt=""><span><b>MADGER</b><small>BURROW RUN // 001</small></span></a><div class="nav-actions"><button id="sound-toggle" type="button" aria-pressed="false">SOUND: OFF</button><a href="/app">THE BURROW APP</a><a href="/">EXIT ↗</a></div></header>
+<main id="game-main">
+ <section class="game-intro" aria-labelledby="game-title">
+  <div><p class="eyebrow">A MADGER FIELD GAME / FREE TO PLAY</p><h1 id="game-title">FIND THE <em>SIGNAL.</em><br>DODGE THE NOISE.</h1><p class="intro-copy">The Burrow is flooding with bad links, fake hype, and distractions. Switch tunnels, collect verified signals, and stay sharp for 60 seconds.</p></div>
+  <div class="brief"><span>FIELD BRIEF 001</span><dl><div><dt>MISSION</dt><dd>Collect signal</dd></div><div><dt>THREATS</dt><dd>Noise + traps</dd></div><div><dt>ACCESS</dt><dd>No wallet</dd></div></dl></div>
+ </section>
+
+ <section class="game-shell" aria-label="Burrow Run game">
+  <div class="scoreboard" aria-label="Current game statistics"><div><small>SCORE</small><strong id="score">0000</strong></div><div><small>MULTIPLIER</small><strong id="streak">×1</strong></div><div><small>TIME</small><strong id="time">60.0</strong></div><div><small>GRIT</small><strong id="grit" aria-label="3 grit remaining">◆ ◆ ◆</strong></div><div><small>BEST</small><strong id="best">0000</strong></div></div>
+  <div class="run-strip"><div><small>ZONE</small><b id="phase-label">UPPER TUNNEL</b></div><div class="phase-track" aria-hidden="true"><i id="phase-progress"></i></div><div class="objective-copy"><small>DAILY FIELD MARK</small><b id="objective-label">Loading objective…</b><span id="objective-progress">0 / 0</span></div></div>
+  <div class="playfield" id="playfield" tabindex="0" aria-label="Three-lane game field. Use left and right arrow keys or A and D to switch lanes." aria-describedby="game-instructions">
+   <div class="depth-lines" aria-hidden="true"></div><div class="lane lane-0" aria-hidden="true"></div><div class="lane lane-1" aria-hidden="true"></div><div class="lane lane-2" aria-hidden="true"></div>
+   <div class="distance" aria-hidden="true"><span id="distance-label">DEPTH 000M</span></div>
+   <div class="runner" id="runner" aria-hidden="true"><div class="runner-glow"></div><img src="/assets/madger_official_logo_transparent_192.png" width="192" height="192" alt=""></div>
+   <div class="start-panel" id="start-panel">
+    <p class="panel-kicker">THE BURROW NEEDS A CLEAN RUN.</p><h2 id="panel-title">READY TO DIG?</h2><p id="panel-copy">Move across three tunnels. Collect <b>gold signals</b>. Avoid <b>red noise</b>. Three hits ends the run.</p>
+    <div class="key-guide" id="game-instructions"><span><kbd>←</kbd><kbd>→</kbd> MOVE</span><span><kbd>A</kbd><kbd>D</kbd> MOVE</span><span><kbd>P</kbd> PAUSE</span></div>
+    <div class="run-report" id="run-report" hidden></div><button class="start-button" id="start-game" type="button">START RUN <span>→</span></button><small>60 SECONDS · LOCAL SCORE ONLY · NO WALLET</small>
+   </div>
+   <div class="pause-panel" id="pause-panel" hidden><p>FIELD RUN PAUSED</p><h2>STAY SHARP.</h2><button id="resume-game" type="button">RESUME RUN →</button></div>
+   <div class="event-flash" id="event-flash" aria-hidden="true"></div>
+  </div>
+  <div class="touch-controls" aria-label="Touch controls"><button id="move-left" type="button" aria-label="Move left">←<span>LEFT</span></button><button id="pause-game" type="button" aria-label="Pause game">Ⅱ<span>PAUSE</span></button><button id="move-right" type="button" aria-label="Move right">→<span>RIGHT</span></button></div>
+  <p class="live-status" id="game-status" role="status" aria-live="polite">Game ready. Press Start Run to play.</p>
+ </section>
+
+ <section class="legend" aria-labelledby="legend-title"><div><p class="eyebrow">FIELD INTELLIGENCE</p><h2 id="legend-title">KNOW WHAT<br>YOU’RE CHASING.</h2></div><article><i class="sample signal">✓</i><span><small>+100 / SIGNAL</small><b>Verified proof</b><p>Build a streak. Every five clean pickups increases the multiplier.</p></span></article><article><i class="sample noise">!</i><span><small>-1 / GRIT</small><b>Empty noise</b><p>Breaks your streak and costs grit. Three hits ends the run.</p></span></article><article><i class="sample boost">◆</i><span><small>RARE / BOOST</small><b>Burrow grit</b><p>Restores one grit when you need it. Maximum three.</p></span></article></section>
+ <section class="field-record" aria-labelledby="record-title"><div><p class="eyebrow">PRIVATE / ON THIS DEVICE</p><h2 id="record-title">YOUR FIELD<br>RECORD.</h2><p>No account. No leaderboard. No data leaves this browser.</p></div><dl><div><dt>RUNS</dt><dd id="record-runs">0</dd></div><div><dt>SIGNALS</dt><dd id="record-signals">0</dd></div><div><dt>BEST STREAK</dt><dd id="record-streak">0</dd></div><div><dt>FIELD MARKS</dt><dd id="record-marks">0</dd></div></dl><button id="reset-record" type="button">RESET LOCAL RECORD</button></section>
+ <section class="game-note"><p>BURROW RULE 01</p><blockquote>“Ticker, logo, hype: none of them are proof. Follow the full signal.”</blockquote><a href="/app#verify">OPEN THE REAL VERIFIER →</a><small>OFFICIAL SOLANA MINT <code>BHauMX8akk2umqkQqnJwpYkCRkZmefGnEBFByeFXRKqv</code></small></section>
+</main>
+<footer><span>MADGER // KEEP DIGGING</span><p>Burrow Run is a free brand game. Scores have no cash, token, prize, or financial value.</p><a href="/privacy.html">PRIVACY</a></footer>
+<script src="/game.js" type="module"></script>
+</body></html>

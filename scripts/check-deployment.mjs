@@ -4,6 +4,10 @@ const checks = [
   ["/app", 200],
   ["/app.css", 200],
   ["/app.js", 200],
+  ["/game", 200],
+  ["/game.css", 200],
+  ["/game-core.js", 200],
+  ["/game.js", 200],
   ["/sw.js", 200],
   ["/buy", 200],
   ["/purchase-path.css", 200],
@@ -137,6 +141,20 @@ if (burrowApp) {
   for (const [passed, label] of contentChecks) {
     console.log(`${passed ? "PASS" : "FAIL"} ${label}`);
     if (!passed) failures.push(`app: ${label}`);
+  }
+}
+
+const game = responses.get("/game");
+if (game) {
+  const contentChecks = [
+    [game.body.includes('href="https://madgercoin.com/game"'), "game canonical"],
+    [game.body.includes('src="/game.js"'), "game runtime"],
+    [game.body.includes('id="playfield"'), "game playfield"],
+    [game.body.includes("NO WALLET"), "no-wallet boundary"],
+  ];
+  for (const [passed, label] of contentChecks) {
+    console.log(`${passed ? "PASS" : "FAIL"} ${label}`);
+    if (!passed) failures.push(`game: ${label}`);
   }
 }
 
