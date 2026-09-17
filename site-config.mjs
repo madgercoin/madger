@@ -18,6 +18,8 @@ export const rootFiles = [
   "bot-dashboard.js",
   "purchase-path.css",
   "launch.html",
+  "transparency.html",
+  "verified-contributions.json",
   "litepaper.html",
   "roadmap.html",
   "roadmap.css",
