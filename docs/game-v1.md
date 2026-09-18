@@ -45,6 +45,8 @@ The game rules now live in a pure module so score boundaries, grit behavior, pha
 
 ## App deployment and hardening
 
+Touch controls remain visible at narrow widths and on devices with a coarse pointer or no hover, including wide tablets. Browser and native runs snapshot the UTC date and daily objective at each start/replay. Pausing or crossing midnight during a run preserves that run's objective and mark date; the next run uses the new day.
+
 Burrow Run is a first-class part of the installed Burrow App rather than only a linked web page. The App home and proof ledger expose it, the web-app manifest offers a Play shortcut, and the service worker precaches the route, styles, runtime, rules module, and character emblem for offline replay after installation. Opening the game directly also registers the same service worker.
 
 The private field record makes local persistence legible by showing total runs, signals, best streak, and distinct daily marks. Resetting requires a two-step confirmation. Persisted input is normalized before use, duplicate or malformed mark dates are removed, record history is bounded, negative best scores are rejected, and unavailable browser audio now degrades to a visible muted state instead of interrupting play.

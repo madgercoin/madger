@@ -18,6 +18,7 @@ const checks = [
   ["/commons.css", 200],
   ["/home-utility.css", 200],
   ["/launch.html", 200],
+  ["/transparency.html", 200],
   ["/litepaper.html", 200],
   ["/collaborators", 200],
   ["/privacy", 200],
@@ -47,6 +48,8 @@ const redirects = [
   ["/index.html", "/"],
   ["/launch", "/launch.html"],
   ["/launch/", "/launch.html"],
+  ["/transparency", "/transparency.html"],
+  ["/transparency/", "/transparency.html"],
   ["/litepaper", "/litepaper.html"],
   ["/litepaper/", "/litepaper.html"],
   ["/launch-hunt.html", "/"],
@@ -195,6 +198,19 @@ if (commons) {
   for (const [passed, label] of contentChecks) {
     console.log(`${passed ? "PASS" : "FAIL"} ${label}`);
     if (!passed) failures.push(`commons: ${label}`);
+  }
+}
+
+const transparency = responses.get("/transparency.html");
+if (transparency) {
+  const contentChecks = [
+    [transparency.body?.includes('<link rel="canonical" href="https://madgercoin.com/transparency.html">'), "transparency canonical"],
+    [transparency.body?.includes("MADGER Supply and Liquidity Transparency"), "transparency page content"],
+    [transparency.body?.includes(officialMint), "transparency official mint"]
+  ];
+  for (const [passed, label] of contentChecks) {
+    console.log(`${passed ? "PASS" : "FAIL"} ${label}`);
+    if (!passed) failures.push(`transparency: ${label}`);
   }
 }
 

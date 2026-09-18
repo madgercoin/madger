@@ -14,6 +14,8 @@ The detailed operational runbook is `README_DEPLOY.txt`. Production uses Node.js
 
 ## Public artifact boundary
 
+The generated Worker serves `/transparency.html` directly with a 200 response and redirects `/transparency` and `/transparency/` to that canonical URL. Keep this explicit route ahead of static asset handling, which otherwise redirects `.html` URLs. Deployment checks verify the canonical response, page identity, mint, and alias redirects without following redirects.
+
 Only files listed in `site-config.mjs` are intended for publication. `npm run validate:dist` enforces the exact built set. Internal Markdown and TXT files must never be added merely to make them web-readable.
 
 ## Future Decisions

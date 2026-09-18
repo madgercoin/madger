@@ -23,9 +23,8 @@ const resetRecordButton = document.getElementById("reset-record");
 const reducedMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
 const bestKey = "madger-burrow-run-best-v1";
 const statsKey = "madger-burrow-run-stats-v2";
-const today = new Date().toISOString().slice(0, 10);
-const dayNumber = Math.floor(Date.now() / 86400000);
-const objective = objectiveFor(dayNumber);
+let today = new Date().toISOString().slice(0, 10);
+let objective = objectiveFor(Math.floor(Date.parse(today) / 86400000));
 
 let state = "ready";
 let lane = 1;
@@ -180,6 +179,8 @@ function gameLoop(timestamp) {
 
 function clearItems() { items.forEach(item => item.node.remove()); items = []; }
 function startGame() {
+  today = new Date().toISOString().slice(0, 10);
+  objective = objectiveFor(Math.floor(Date.parse(today) / 86400000));
   cancelAnimationFrame(frameId);
   clearItems();
   state = "running";

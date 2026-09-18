@@ -31,6 +31,8 @@ jobs:
       - run: npm run test:buffer
       - run: npm run test:performance
       - run: npm run test:purchase
+      - run: npm run test:game
+      - run: npm run test:transparency
       - run: npm run validate:site
       - run: npm run validate:dist
       - run: npm run scan:secrets

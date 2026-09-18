@@ -29,7 +29,7 @@ export default function PlayScreen() {
   const lastTick = useRef(0);
   const phaseRef = useRef('surface');
   const endingRef = useRef(false);
-  const today = useMemo(() => new Date().toISOString().slice(0, 10), []);
+  const [today, setToday] = useState(() => new Date().toISOString().slice(0, 10));
   const objective = useMemo(() => objectiveFor(Math.floor(Date.parse(today) / 86400000)), [today]);
   const elapsed = ROUND_SECONDS - remaining;
   const phase = phaseFor(elapsed);
@@ -120,6 +120,7 @@ export default function PlayScreen() {
   }, []));
 
   function startRun() {
+    setToday(new Date().toISOString().slice(0, 10));
     const initial = freshRun();
     endingRef.current = false;
     laneRef.current = 1;

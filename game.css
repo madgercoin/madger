@@ -28,5 +28,6 @@
 .field-record dd{margin:8px 0 0;color:var(--gold);font:1.8rem var(--display);font-variant-numeric:tabular-nums}
 .field-record button{padding:13px;border:1px solid var(--line);background:transparent;color:var(--muted);font-size:.58rem;font-weight:900;letter-spacing:.1em;cursor:pointer}
 .field-record button:hover{color:var(--red);border-color:var(--red)}
+@media(pointer:coarse),(hover:none){.touch-controls{display:grid}}
 @media(max-width:900px){.field-record{grid-template-columns:1fr}.field-record button{justify-self:start}}
 @media(max-width:620px){.field-record{padding:22px}.field-record dl{grid-template-columns:1fr 1fr}.field-record dl div:nth-child(2){border-right:0}.field-record dl div:nth-child(-n+2){border-bottom:1px solid var(--line)}}

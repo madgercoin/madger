@@ -145,6 +145,7 @@ export default {
       return new Response(request.method === "HEAD" ? null : pages.buy, html);
     }
     if (pathname === "/launch" || pathname === "/launch/") return permanentRedirect("/launch.html");
+    if (pathname === "/transparency" || pathname === "/transparency/") return permanentRedirect("/transparency.html");
     if (pathname === "/litepaper" || pathname === "/litepaper/") return permanentRedirect("/litepaper.html");
     if (pathname === "/launch-hunt" || pathname === "/launch-hunt/" || pathname === "/launch-hunt.html") return permanentRedirect("/");
     if (pathname === "/meme-contest" || pathname === "/meme-contest/" || pathname === "/meme-contest.html") return permanentRedirect("/");
@@ -158,6 +159,10 @@ export default {
       return new Response(request.method === "HEAD" ? null : pages.game, html);
     }
     if (pathname === "/launch.html") return new Response(pages.launch, html);
+    if (pathname === "/transparency.html") {
+      if (request.method !== "GET" && request.method !== "HEAD") return new Response(null, { status: 405, headers: { ...html.headers, allow: "GET, HEAD" } });
+      return new Response(request.method === "HEAD" ? null : pages.transparency, html);
+    }
     if (pathname === "/litepaper.html") return new Response(pages.litepaper, html);
     const asset = await env.ASSETS.fetch(request);
     if (asset.status !== 404) return asset;
