@@ -1,5 +1,10 @@
 # Changelog
 
+## 2026-09-18 — Expo SDK 57 dependency alignment
+
+- Updated Expo, Expo UI, Constants, and Router to the compatible SDK 57 patch versions and regenerated the mobile lockfile.
+- Run the full source release check in Mobile CI before Android and iOS exports, covering dependency compatibility, web export, and release metadata.
+
 ## 2026-09-17 — Signals dispatch: proof you can open
 
 - Published Dispatch 011 on Burrow Run and the five-lock transparency record, with primary-source links and explicit evidence boundaries.
