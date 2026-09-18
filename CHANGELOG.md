@@ -1,5 +1,12 @@
 # Changelog
 
+## 2026-09-18 — Review fixes for Burrow Run and transparency
+
+- Restored direct serving of canonical `/transparency.html`, canonicalized its aliases, and restored deployment checks.
+- Made Burrow Run touch controls available on wide devices with a coarse pointer or no hover.
+- Refreshed the UTC daily objective and mark date at every browser/native run start while preserving them through pause/resume.
+- Added focused routing, deployment-check, input-capability, and midnight/replay regression coverage and wired it into CI.
+
 ## 2026-09-17 — Signals dispatch: proof you can open
 
 - Published Dispatch 011 on Burrow Run and the five-lock transparency record, with primary-source links and explicit evidence boundaries.
