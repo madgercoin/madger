@@ -91,14 +91,20 @@ if (articleBody) {
     });
     document.body.append(readingMap);
 
-    if ("IntersectionObserver" in window) {
-      const sectionObserver = new IntersectionObserver(entries => {
-        const visible = entries.filter(entry => entry.isIntersecting).sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top)[0];
-        if (!visible) return;
-        links.forEach(link => link.classList.toggle("is-active", link.hash === `#${visible.target.id}`));
-      }, { rootMargin: "-18% 0px -68%", threshold: 0 });
-      headings.forEach(heading => sectionObserver.observe(heading));
-    }
+    let mapFrame = 0;
+    const updateReadingMap = () => {
+      mapFrame = 0;
+      const marker = window.innerHeight * .32;
+      let activeIndex = 0;
+      headings.forEach((heading, index) => {
+        if (heading.getBoundingClientRect().top <= marker) activeIndex = index;
+      });
+      links.forEach((link, index) => link.classList.toggle("is-active", index === activeIndex));
+    };
+    updateReadingMap();
+    window.addEventListener("scroll", () => {
+      if (!mapFrame) mapFrame = requestAnimationFrame(updateReadingMap);
+    }, { passive: true });
   }
 }
 
