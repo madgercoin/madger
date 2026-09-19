@@ -6,6 +6,21 @@ import ts from 'typescript';
 const source = await readFile(new URL('../src/lib/burrowRun.ts', import.meta.url), 'utf8');
 const javascript = ts.transpileModule(source, { compilerOptions: { module: ts.ModuleKind.ESNext, target: ts.ScriptTarget.ES2022 } }).outputText;
 const rules = await import(`data:text/javascript;base64,${Buffer.from(javascript).toString('base64')}`);
+
+test('native daily courses, collision line, and recovery preserve fair retries', () => {
+  assert.deepEqual(rules.courseFor(20715), rules.courseFor(20715));
+  assert.notDeepEqual(rules.courseFor(20715), rules.courseFor(20716));
+  assert.ok(rules.courseFor(20715).filter(wave => wave.at < 6).every(wave => wave.items.every(item => item.type === 'signal')));
+  assert.equal(rules.crossesRunner(0.82, 0.86), true);
+  assert.equal(rules.crossesRunner(0.85, 0.9), false);
+  const hit = rules.resolvePickup(rules.freshRun(), 'noise', 10, 0);
+  assert.equal(rules.resolvePickup(hit.run, 'noise', 10.5, hit.protectedUntil).run.grit, 2);
+  assert.equal(rules.resolvePickup(hit.run, 'signal', 10.5, hit.protectedUntil).run.score, 100);
+  assert.equal(rules.resolvePickup(hit.run, 'noise', 11, hit.protectedUntil).run.grit, 1);
+  assert.equal(rules.scoreChase(3000).medal, 'BRONZE');
+  assert.equal(rules.scoreChase(8000).medal, 'SILVER');
+  assert.equal(rules.scoreChase(15000).medal, 'GOLD');
+});
 const [screen, layout, home] = await Promise.all([
   readFile(new URL('../src/app/(tabs)/play.tsx', import.meta.url), 'utf8'),
   readFile(new URL('../src/app/(tabs)/_layout.tsx', import.meta.url), 'utf8'),

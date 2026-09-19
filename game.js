@@ -1,6 +1,6 @@
-import { MAX_GRIT, ROUND_SECONDS, applyPickup, createWave, multiplierFor, objectiveFor, objectiveProgress, phaseFor, sanitizeStats } from "./game-core.js";
+import { MAX_GRIT, ROUND_SECONDS, courseFor, crossesRunner, resolvePickup, scoreChase, multiplierFor, objectiveFor, objectiveProgress, phaseFor, sanitizeStats } from "./game-core.js";
 
-const lanes = [25, 50, 75];
+const lanes = [100 / 6, 50, 500 / 6];
 const field = document.getElementById("playfield");
 const runner = document.getElementById("runner");
 const startPanel = document.getElementById("start-panel");
@@ -23,16 +23,27 @@ const resetRecordButton = document.getElementById("reset-record");
 const reducedMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
 const bestKey = "madger-burrow-run-best-v1";
 const statsKey = "madger-burrow-run-stats-v2";
-const today = new Date().toISOString().slice(0, 10);
-const dayNumber = Math.floor(Date.now() / 86400000);
-const objective = objectiveFor(dayNumber);
+let today;
+let objective;
+let course;
+let waveIndex = 0;
+let protectedUntil = 0;
+let best = readNumber(bestKey);
+let runBest = best;
+function prepareCourse() {
+  today = new Date().toISOString().slice(0, 10);
+  const dayNumber = Math.floor(Date.parse(today) / 86400000);
+  objective = objectiveFor(dayNumber);
+  course = courseFor(dayNumber);
+  document.getElementById("course-label").textContent = `DAILY COURSE · ${today} UTC`;
+}
+prepareCourse();
 
 let state = "ready";
 let lane = 1;
 let run = freshRun();
 let remaining = ROUND_SECONDS;
 let elapsed = 0;
-let spawnClock = 0;
 let lastFrame = 0;
 let activePhase = "surface";
 let items = [];
@@ -67,7 +78,14 @@ function updateHud() {
   timeNode.textContent = Math.max(0, remaining).toFixed(1);
   gritNode.textContent = `${"◆ ".repeat(run.grit)}${"◇ ".repeat(MAX_GRIT - run.grit)}`.trim();
   gritNode.setAttribute("aria-label", `${run.grit} grit remaining`);
-  bestNode.textContent = formatScore(Math.max(run.score, readNumber(bestKey)));
+  bestNode.textContent = formatScore(Math.max(run.score, best));
+  const chase = scoreChase(run.score, runBest);
+  document.getElementById("chase-label").textContent = `${chase.label} · ${chase.gap.toLocaleString()} TO GO`;
+  document.getElementById("combo-progress").style.width = `${multiplierFor(run.streak) === 5 ? 100 : run.streak % 5 * 20}%`;
+  document.getElementById("combo-label").textContent = multiplierFor(run.streak) === 5 ? "MAX COMBO" : `${5 - run.streak % 5} SIGNALS TO ×${multiplierFor(run.streak) + 1}`;
+  document.getElementById("move-left").disabled = state !== "running" || lane === 0;
+  document.getElementById("move-right").disabled = state !== "running" || lane === 2;
+  document.getElementById("pause-game").disabled = state !== "running" && state !== "paused";
   phaseNode.textContent = phase.label;
   phaseProgressNode.style.width = `${Math.min(100, elapsed / ROUND_SECONDS * 100)}%`;
   objectiveLabelNode.textContent = objective.label;
@@ -101,9 +119,14 @@ function tone(frequency, duration = .06, type = "sine") {
 
 function move(direction) {
   if (state !== "running") return;
-  lane = Math.max(0, Math.min(2, lane + direction));
+  selectLane(Math.max(0, Math.min(2, lane + direction)));
+}
+function selectLane(next) {
+  if (state !== "running" || next === lane) return;
+  lane = next;
   runner.style.left = `${lanes[lane]}%`;
   tone(180 + lane * 35, .04, "triangle");
+  updateHud();
 }
 function announce(text) { status.textContent = text; }
 function flash(text, kind) {
@@ -115,36 +138,42 @@ function flash(text, kind) {
 }
 function removeItem(item) { item.node.remove(); items = items.filter(candidate => candidate !== item); }
 
-function spawnItem(specification) {
+function spawnItem(specification, speed, age) {
   const node = document.createElement("div");
   node.className = `game-item ${specification.type}`;
   node.dataset.label = specification.type === "signal" ? "SIGNAL" : specification.type === "noise" ? "NOISE" : "GRIT";
   node.innerHTML = specification.type === "boost" ? "<span>◆</span>" : specification.type === "signal" ? "✓" : "!";
   node.style.left = `${lanes[specification.lane]}%`;
-  node.style.top = `${-10 + specification.offset}%`;
+  node.setAttribute("aria-hidden", "true");
+  const progress = -.1 + specification.offset + speed * age;
+  node.style.top = `${progress * 100}%`;
   field.appendChild(node);
-  items.push({ node, ...specification, progress: -10 + specification.offset });
+  items.push({ node, ...specification, speed, progress });
 }
-function spawnWave() { createWave(Math.random, elapsed).forEach(spawnItem); }
 
 function collect(item) {
   const previous = run;
-  run = applyPickup(run, item.type);
+  const result = resolvePickup(run, item.type, elapsed, protectedUntil);
+  run = result.run;
+  protectedUntil = result.protectedUntil;
+  removeItem(item);
+  if (result.ignored) return;
   if (item.type === "signal") {
     const earned = run.score - previous.score;
-    flash(`+${earned}`, "good");
+    const comboUp = multiplierFor(run.streak) > multiplierFor(previous.streak);
+    flash(comboUp ? `×${multiplierFor(run.streak)} COMBO!` : `+${earned}`, "good");
+    if (comboUp) announce(`Multiplier increased to ${multiplierFor(run.streak)}.`);
     tone(520 + multiplierFor(run.streak) * 65, .1);
   } else if (item.type === "boost") {
     flash(previous.grit === MAX_GRIT ? "+250" : "+1 GRIT", "good");
     tone(720, .16, "triangle");
   } else {
-    flash("NOISE!", "bad");
+    flash("HIT · RECOVER!", "bad");
     tone(90, .18, "sawtooth");
     field.classList.remove("hit");
     void field.offsetWidth;
     field.classList.add("hit");
   }
-  removeItem(item);
   updateHud();
   if (run.grit <= 0) endGame("grit");
 }
@@ -162,16 +191,18 @@ function gameLoop(timestamp) {
     flash(phase.label, "good");
     announce(`${phase.label} reached. Tunnel speed increased.`);
   }
-  spawnClock -= delta;
-  if (spawnClock <= 0) {
-    spawnWave();
-    spawnClock = phase.interval + Math.random() * .24;
+  while (waveIndex < course.length && course[waveIndex].at <= elapsed) {
+    const wave = course[waveIndex++];
+    wave.items.forEach(item => spawnItem(item, wave.speed, Math.max(0, elapsed - delta - wave.at)));
   }
+  runner.classList.toggle("recovering", elapsed < protectedUntil);
   for (const item of [...items]) {
-    item.progress += phase.speed * delta;
-    item.node.style.top = `${item.progress}%`;
-    if (item.progress >= 79 && item.progress <= 97 && item.lane === lane) collect(item);
-    else if (item.progress > 108) removeItem(item);
+    if (state !== "running") break;
+    const previous = item.progress;
+    item.progress += item.speed * delta;
+    item.node.style.top = `${item.progress * 100}%`;
+    if (crossesRunner(previous, item.progress) && item.lane === lane) collect(item);
+    else if (item.progress > 1.08) removeItem(item);
   }
   updateHud();
   if (remaining <= 0) endGame("time");
@@ -182,21 +213,27 @@ function clearItems() { items.forEach(item => item.node.remove()); items = []; }
 function startGame() {
   cancelAnimationFrame(frameId);
   clearItems();
+  prepareCourse();
   state = "running";
   lane = 1;
   run = freshRun();
   remaining = ROUND_SECONDS;
   elapsed = 0;
   activePhase = "surface";
-  spawnClock = .65;
+  waveIndex = 0;
+  protectedUntil = 0;
+  runBest = best;
   lastFrame = 0;
   runner.style.left = `${lanes[lane]}%`;
+  runner.classList.remove("recovering");
+  document.querySelector(".game-shell").classList.add("playing");
   reportNode.hidden = true;
   startPanel.hidden = true;
   pausePanel.hidden = true;
   updateHud();
   announce("Run started. Upper Tunnel, 60 seconds remaining, 3 grit.");
   field.focus();
+  document.querySelector(".game-shell").scrollIntoView({ block: "start", behavior: "instant" });
   frameId = requestAnimationFrame(gameLoop);
 }
 
@@ -205,19 +242,21 @@ function endGame(reason) {
   state = "ended";
   cancelAnimationFrame(frameId);
   clearItems();
-  const oldBest = readNumber(bestKey);
+  document.querySelector(".game-shell").classList.remove("playing");
+  const oldBest = best;
   const isBest = run.score > oldBest;
-  if (isBest) writeNumber(bestKey, run.score);
+  if (isBest) { best = run.score; writeNumber(bestKey, best); }
+  const chase = scoreChase(run.score, oldBest);
   const objectiveState = objectiveProgress(objective, run);
   const stats = readStats();
   const marks = objectiveState.complete ? [...new Set([...stats.marks, today])].slice(-30) : stats.marks;
   writeStats({ runs: stats.runs + 1, signals: stats.signals + run.signals, bestStreak: Math.max(stats.bestStreak, run.bestStreak), marks });
   drawRecord();
-  document.getElementById("panel-title").textContent = isBest ? "NEW DEEP MARK." : reason === "time" ? "RUN COMPLETE." : "BURIED IN NOISE.";
-  document.getElementById("panel-copy").innerHTML = `You recovered <b>${formatScore(run.score)} signal points</b>${isBest ? " and set a new local best." : ". The Burrow remembers your best on this device."}`;
+  document.getElementById("panel-title").textContent = isBest ? "PERSONAL BEST!" : reason === "time" ? "TUNNEL CLEARED!" : "ONE MORE DIG?";
+  document.getElementById("panel-copy").textContent = `${run.score.toLocaleString()} points · ${chase.medal}. ${chase.gap.toLocaleString()} more for ${chase.label.toLowerCase()}. Same course today. Learn the line and beat it.`;
   reportNode.innerHTML = `<span><small>SIGNALS</small><b>${run.signals}</b></span><span><small>BEST STREAK</small><b>${run.bestStreak}</b></span><span><small>FIELD MARK</small><b>${objectiveState.complete ? "CLEARED ✓" : "OPEN"}</b></span>`;
   reportNode.hidden = false;
-  startButton.innerHTML = "RUN AGAIN <span>→</span>";
+  startButton.innerHTML = "RETRY THIS COURSE <span>→</span>";
   startPanel.hidden = false;
   updateHud();
   announce(`Run complete. Score ${run.score}. ${run.signals} signals. Best streak ${run.bestStreak}.${objectiveState.complete ? " Daily field mark cleared." : ""}${isBest ? " New local best." : ""}`);
@@ -232,24 +271,36 @@ function togglePause() {
     pausePanel.hidden = false;
     announce("Game paused.");
     document.getElementById("resume-game").focus();
+    updateHud();
   } else if (state === "paused") {
     state = "running";
     pausePanel.hidden = true;
     lastFrame = 0;
     announce("Run resumed.");
     field.focus();
+    updateHud();
     frameId = requestAnimationFrame(gameLoop);
   }
 }
 
 document.addEventListener("keydown", event => {
+  if (state !== "running" && state !== "paused") return;
+  if (event.target.closest("button,a,input,textarea,select") && !["p", "P"].includes(event.key)) return;
   if (["ArrowLeft", "ArrowRight", "a", "A", "d", "D", "p", "P"].includes(event.key)) event.preventDefault();
   if (event.key === "ArrowLeft" || event.key.toLowerCase() === "a") move(-1);
   if (event.key === "ArrowRight" || event.key.toLowerCase() === "d") move(1);
   if (event.key.toLowerCase() === "p" && (state === "running" || state === "paused")) togglePause();
 });
-document.getElementById("move-left").addEventListener("pointerdown", () => move(-1));
-document.getElementById("move-right").addEventListener("pointerdown", () => move(1));
+for (const [id, direction] of [["move-left", -1], ["move-right", 1]]) {
+  const button = document.getElementById(id);
+  button.addEventListener("pointerdown", event => { if (event.button === 0) { event.preventDefault(); move(direction); } });
+  button.addEventListener("click", event => { if (event.detail === 0) move(direction); });
+}
+field.addEventListener("pointerdown", event => {
+  if (state !== "running" || event.button !== 0 || event.target.closest("button")) return;
+  const bounds = field.getBoundingClientRect();
+  selectLane(Math.max(0, Math.min(2, Math.floor((event.clientX - bounds.left) / bounds.width * 3))));
+});
 document.getElementById("pause-game").addEventListener("click", togglePause);
 document.getElementById("resume-game").addEventListener("click", togglePause);
 startButton.addEventListener("click", startGame);
@@ -271,6 +322,7 @@ resetRecordButton.addEventListener("click", () => {
   }
   clearTimeout(resetTimer);
   try { localStorage.removeItem(bestKey); localStorage.removeItem(statsKey); } catch {}
+  best = 0; runBest = 0;
   resetRecordButton.dataset.confirm = "false";
   resetRecordButton.textContent = "RESET LOCAL RECORD";
   drawRecord();

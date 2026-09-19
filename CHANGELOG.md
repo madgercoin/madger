@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026-09-18 — Burrow Run replay beta
+
+- Added matching, repeatable UTC daily courses on web and native, with a hazard-free opening and a clear retry target.
+- Aligned collisions with a visible catch line, added brief recovery after noise hits, and kept each wave's speed stable through phase changes.
+- Added direct lane taps, immediate movement controls, frame-scheduled native animation, combo feedback, and bronze/silver/gold score targets.
+- Kept mobile web controls within the active game view and refreshed offline game assets. Added rule and runtime regression coverage for pause, input, recovery, and replay.
+- Apple enrollment is paused while web and Android playtesting determines whether the game is enjoyable; physical-device release gates remain required.
+
 ## 2026-09-18 — Mobile release privacy alignment
 
 - Linked the existing `@madgercoins-team/dollarmadger` Expo project, preserving app display name and store identifiers.

@@ -39,6 +39,16 @@ Not included: wallet connection, token rewards, accounts, leaderboards, analytic
 
 ## What to learn next
 
+### Replay beta — September 18, 2026
+
+The web and native versions now generate the same course from the UTC date. Retrying before midnight repeats its waves; a new run after midnight uses the new course. The first wave starts in the middle, and the first six seconds of spawning contain only signals. Objects retain their spawn speed through zone changes. A pickup resolves once when its center crosses the visible line at the character; noise grants 0.9 seconds of recovery protection so clustered hazards cannot immediately consume all grit. Signals and grit remain collectible during recovery.
+
+Tap a lane or use the movement controls. Web also supports arrows and A/D, with P to pause. Native controls retain standard accessible button activation and the loop follows animation frames. The combo indicator counts down to the next multiplier; bronze starts at 3,000 points, silver at 8,000, and gold at 15,000. The debrief shows the next medal or a closer personal-best target and offers a direct retry. Medals are score labels, not rewards or additional stored personal data.
+
+Apple enrollment and paid store distribution are paused. Use the web beta first; Android preview builds can test native behavior. Do not infer physical-device acceptance or enjoyment from automated tests.
+
+For a five-minute playtest, let a player start without coaching, then observe three runs. Ask which object hurt them, whether movement followed their input, whether the next score target made sense, and whether they want another run. Record feedback voluntarily without adding telemetry. Prioritize unreadable hits, missed controls, and repeated early deaths before adding more content. Resume store investment only after real players choose to replay.
+
 Future iteration should depend on observed evidence: completion rate, replay intent from voluntary feedback, accessibility testing with actual assistive technology, comprehension of signal/noise/grit, difficulty across phone sizes, and whether players want deeper score chasing or a story-driven format. No telemetry was added in this release, so any measurement method needs a separate privacy and security decision.
 
 The game rules now live in a pure module so score boundaries, grit behavior, phases, daily-objective rotation, and late-game safe lanes can be tested behaviorally without a browser. This is the foundation for balancing from evidence rather than changing embedded magic numbers without regression coverage.

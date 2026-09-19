@@ -19,13 +19,15 @@
  <section class="game-shell" aria-label="Burrow Run game">
   <div class="scoreboard" aria-label="Current game statistics"><div><small>SCORE</small><strong id="score">0000</strong></div><div><small>MULTIPLIER</small><strong id="streak">×1</strong></div><div><small>TIME</small><strong id="time">60.0</strong></div><div><small>GRIT</small><strong id="grit" aria-label="3 grit remaining">◆ ◆ ◆</strong></div><div><small>BEST</small><strong id="best">0000</strong></div></div>
   <div class="run-strip"><div><small>ZONE</small><b id="phase-label">UPPER TUNNEL</b></div><div class="phase-track" aria-hidden="true"><i id="phase-progress"></i></div><div class="objective-copy"><small>DAILY FIELD MARK</small><b id="objective-label">Loading objective…</b><span id="objective-progress">0 / 0</span></div></div>
-  <div class="playfield" id="playfield" tabindex="0" aria-label="Three-lane game field. Use left and right arrow keys or A and D to switch lanes." aria-describedby="game-instructions">
+  <div class="chase-strip"><span id="course-label">DAILY COURSE</span><b id="chase-label">BRONZE · 3,000 TO GO</b><span id="combo-label">5 SIGNALS TO ×2</span><div class="combo-track" aria-hidden="true"><i id="combo-progress"></i></div></div>
+  <div class="playfield" id="playfield" tabindex="0" aria-label="Three-lane game field. Tap a lane or use left and right arrow keys or A and D to switch lanes." aria-describedby="game-instructions">
    <div class="depth-lines" aria-hidden="true"></div><div class="lane lane-0" aria-hidden="true"></div><div class="lane lane-1" aria-hidden="true"></div><div class="lane lane-2" aria-hidden="true"></div>
    <div class="distance" aria-hidden="true"><span id="distance-label">DEPTH 000M</span></div>
+   <div class="catch-line" aria-hidden="true"></div>
    <div class="runner" id="runner" aria-hidden="true"><div class="runner-glow"></div><img src="/assets/madger_official_logo_transparent_192.png" width="192" height="192" alt=""></div>
    <div class="start-panel" id="start-panel">
-    <p class="panel-kicker">THE BURROW NEEDS A CLEAN RUN.</p><h2 id="panel-title">READY TO DIG?</h2><p id="panel-copy">Move across three tunnels. Collect <b>gold signals</b>. Avoid <b>red noise</b>. Three hits ends the run.</p>
-    <div class="key-guide" id="game-instructions"><span><kbd>←</kbd><kbd>→</kbd> MOVE</span><span><kbd>A</kbd><kbd>D</kbd> MOVE</span><span><kbd>P</kbd> PAUSE</span></div>
+    <p class="panel-kicker">ONE COURSE. ONE MINUTE. ONE MORE TRY.</p><h2 id="panel-title">READY TO DIG?</h2><p id="panel-copy">Catch <b>gold signals</b> at the line. Dodge <b>red noise</b>. Chain five signals for a bigger multiplier. Aim for 3,000 points and bronze.</p>
+    <div class="key-guide" id="game-instructions"><span><kbd>←</kbd><kbd>→</kbd> MOVE</span><span>TAP A LANE</span><span><kbd>P</kbd> PAUSE</span></div>
     <div class="run-report" id="run-report" hidden></div><button class="start-button" id="start-game" type="button">START RUN <span>→</span></button><small>60 SECONDS · LOCAL SCORE ONLY · NO WALLET</small>
    </div>
    <div class="pause-panel" id="pause-panel" hidden><p>FIELD RUN PAUSED</p><h2>STAY SHARP.</h2><button id="resume-game" type="button">RESUME RUN →</button></div>
