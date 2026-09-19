@@ -1,0 +1,22 @@
+# Only the standalone mobile application belongs in EAS build uploads.
+/*
+!/mobile
+/mobile/node_modules
+/mobile/.expo
+/mobile/dist
+/mobile/web-build
+/mobile/android
+/mobile/ios
+/mobile/.env*
+/mobile/credentials.json
+**/*.jks
+**/*.keystore
+**/*.p8
+**/*.p12
+**/*.pem
+**/*.key
+**/*.mobileprovision
+**/*.log
+**/*.tsbuildinfo
+**/.DS_Store
+/mobile/dist-android

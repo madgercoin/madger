@@ -1,13 +1,13 @@
 {
   "expo": {
     "name": "MADGER",
-    "slug": "madger",
+    "slug": "dollarmadger",
+    "owner": "madgercoins-team",
     "version": "1.1.0",
     "orientation": "portrait",
     "icon": "./assets/images/madger-app-icon.png",
     "scheme": "madger",
     "userInterfaceStyle": "dark",
-    "newArchEnabled": true,
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.madgercoin.app",
@@ -22,6 +22,11 @@
     "android": {
       "package": "com.madgercoin.app",
       "versionCode": 4,
+      "blockedPermissions": [
+        "android.permission.READ_EXTERNAL_STORAGE",
+        "android.permission.WRITE_EXTERNAL_STORAGE",
+        "android.permission.SYSTEM_ALERT_WINDOW"
+      ],
       "adaptiveIcon": {
         "backgroundColor": "#030500",
         "foregroundImage": "./assets/images/madger-adaptive-foreground.png",
@@ -54,7 +59,7 @@
     },
     "extra": {
       "eas": {
-        "projectId": "REPLACE_WITH_EAS_PROJECT_ID"
+        "projectId": "e4c06d4a-4d6c-44da-b405-624382b15c56"
       }
     }
   }

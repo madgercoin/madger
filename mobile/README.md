@@ -27,12 +27,14 @@ Before signed distribution, complete `RELEASE_CHECKLIST.md` and run `npm run rel
 ## Create signed builds
 
 1. Install and authenticate EAS CLI: `npm install -g eas-cli && eas login`.
-2. Run `eas init`, then replace the placeholder project ID in `app.json`.
+2. Verify the existing linkage with `eas project:info`: owner `madgercoins-team`, slug `dollarmadger`, project ID `e4c06d4a-4d6c-44da-b405-624382b15c56`. See `RELEASE_CHECKLIST.md` before relinking.
 3. Build an Android preview APK: `eas build --platform android --profile preview`.
 4. Build both production apps: `eas build --platform all --profile production`.
 5. Submit after store listings and account agreements are complete with `eas submit`.
 
 Store submission requires access to the MADGER Apple Developer and Google Play Console accounts. Never commit signing keys or credentials.
+
+Run these commands from `mobile/`. The repository-root `.easignore` restricts normal Git-based uploads to the mobile application. `mobile/.easignore` also excludes local environment files, credentials, signing material, and generated output when `mobile/` itself is the upload root, such as a standalone checkout or `EAS_NO_VCS=1` with `EAS_PROJECT_ROOT` set to its absolute path. Keep both files aligned when changing upload exclusions.
 
 ## Release checks
 
