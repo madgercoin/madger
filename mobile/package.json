@@ -50,8 +50,9 @@
     "web": "expo start --web",
     "lint": "expo lint",
     "typecheck": "tsc --noEmit",
-    "validate": "npm run test:game && npm run typecheck && npm run lint",
+    "validate": "npm run test:game && npm run test:daily-dig && npm run typecheck && npm run lint",
     "test:game": "node --test scripts/test-burrow-run.mjs",
+    "test:daily-dig": "node --test scripts/test-daily-dig.mjs",
     "release:metadata": "node scripts/release-readiness.mjs",
     "release:check": "npm run validate && npx expo install --check && npx expo export --platform web && npm run release:metadata",
     "release:distribution": "npm run release:check && node scripts/release-readiness.mjs --distribution"

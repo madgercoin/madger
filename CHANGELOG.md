@@ -1,5 +1,12 @@
 # Changelog
 
+## 2026-09-18 — Mobile release privacy alignment
+
+- Linked the existing `@madgercoins-team/dollarmadger` Expo project, preserving app display name and store identifiers.
+- Carried forward the validated Android preview improvements: navigation and game controls, accessible action feedback, local-record reliability, Daily Dig regression tests, and removal of unused Android permissions.
+- Updated the canonical privacy page to describe Daily Dig and Burrow Run's on-device records, retention, and reset controls, matching the mobile privacy summary for store submission.
+- Physical Android and iPhone acceptance and signed store distribution remain gated by the existing release checklist.
+
 ## 2026-09-18 — Expo SDK 57 dependency alignment
 
 - Updated Expo, Expo UI, Constants, and Router to the compatible SDK 57 patch versions and regenerated the mobile lockfile.
