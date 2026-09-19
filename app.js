@@ -146,14 +146,21 @@ document.getElementById("proof-form").addEventListener("submit", event => {
 });
 document.getElementById("copy-packet").addEventListener("click", async () => { const status = document.getElementById("packet-status"); try { await navigator.clipboard.writeText(packetText); status.textContent = "Proof packet copied."; } catch { status.textContent = "Copy blocked. Download the .txt file instead."; } });
 
-let trustRegistry;
+function validateTrustRegistry(value) {
+  if (value.schemaVersion !== 1 || !Array.isArray(value.contributors) || !Array.isArray(value.ranks)) return false;
+  return value.contributors.every(record => {
+    if (!Array.isArray(record.reviewers)) return false;
+    if (!["WARDEN", "BURROWKEEPER"].includes(record.rank)) return true;
+    const reviewers = new Set(record.reviewers.map(reviewer => String(reviewer).trim().toLowerCase()).filter(Boolean));
+    return reviewers.size >= 2;
+  });
+}
+
 async function loadTrustRegistry() {
-  if (trustRegistry) return trustRegistry;
-  const response = await fetch("/verified-contributions.json", { cache: "no-cache" });
+  const response = await fetch("/verified-contributions.json", { cache: "no-store" });
   if (!response.ok) throw new Error("registry unavailable");
   const value = await response.json();
-  if (value.schemaVersion !== 1 || !Array.isArray(value.contributors) || !Array.isArray(value.ranks)) throw new Error("registry invalid");
-  trustRegistry = value;
+  if (!validateTrustRegistry(value)) throw new Error("registry invalid");
   return value;
 }
 document.getElementById("registry-form").addEventListener("submit", async event => {
