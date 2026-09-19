@@ -1,9 +1,9 @@
 {
-  "generatedAt": "2026-09-18T13:03:59.242Z",
-  "previousGeneratedAt": "2026-09-17T13:41:20.952Z",
+  "generatedAt": "2026-09-19T12:36:49.372Z",
+  "previousGeneratedAt": "2026-09-18T13:03:59.242Z",
   "window": {
-    "start": "2026-08-19T13:03:59.242Z",
-    "end": "2026-09-18T13:03:59.242Z"
+    "start": "2026-08-20T12:36:49.372Z",
+    "end": "2026-09-19T12:36:49.372Z"
   },
   "organization": {
     "id": "6a67aceacff325d8d2d231e9",
@@ -20,7 +20,7 @@
       "state": "connected",
       "healthy": true,
       "queuePaused": false,
-      "metricsUpdatedAt": "2026-09-18T00:58:51.871Z",
+      "metricsUpdatedAt": "2026-09-18T23:59:01.944Z",
       "metrics": {
         "postCount": 49,
         "reactions": 13,
@@ -42,15 +42,15 @@
       "state": "connected",
       "healthy": true,
       "queuePaused": false,
-      "metricsUpdatedAt": "2026-09-17T20:38:26.240Z",
+      "metricsUpdatedAt": "2026-09-18T19:38:37.896Z",
       "metrics": {
         "postCount": 90,
-        "reactions": 1883,
+        "reactions": 1888,
         "comments": 787,
         "engagementRate": 18.61,
         "reposts": 300,
-        "impressions": 37760,
-        "clicks": 311
+        "impressions": 37820,
+        "clicks": 312
       },
       "requiresCommunityReview": true
     },
@@ -64,19 +64,19 @@
       "state": "connected",
       "healthy": true,
       "queuePaused": false,
-      "metricsUpdatedAt": "2026-09-17T15:53:54.111Z",
+      "metricsUpdatedAt": "2026-09-19T12:23:22.674Z",
       "metrics": {
         "postCount": 47,
         "reactions": 69,
-        "comments": 14,
-        "engagementRate": 39.52,
-        "views": 409,
+        "comments": 15,
+        "engagementRate": 39.25,
+        "views": 415,
         "shares": 0,
         "saves": 0,
-        "follows": 0,
-        "reach": 210,
-        "totalTimeWatched": 45.8,
-        "averageTimeWatched": 17.91
+        "follows": 2,
+        "reach": 214,
+        "totalTimeWatched": 45.87,
+        "averageTimeWatched": 17.9
       },
       "requiresCommunityReview": true
     },
@@ -90,17 +90,17 @@
       "state": "connected",
       "healthy": true,
       "queuePaused": false,
-      "metricsUpdatedAt": "2026-09-18T03:11:25.693Z",
+      "metricsUpdatedAt": "2026-09-19T02:13:07.427Z",
       "metrics": {
         "postCount": 47,
         "reactions": 84,
         "comments": 9,
         "engagementRate": 1.3,
-        "views": 7235,
+        "views": 7236,
         "shares": 1,
-        "reach": 6597,
-        "totalTimeWatched": 393.07,
-        "averageTimeWatched": 3.21
+        "reach": 6605,
+        "totalTimeWatched": 392.72,
+        "averageTimeWatched": 3.2
       },
       "requiresCommunityReview": true
     }
@@ -834,7 +834,7 @@
         "status": "sent",
         "externalLink": "https://facebook.com/1279493098576451_122109624249423166",
         "publishingError": null,
-        "metricsUpdatedAt": "2026-09-18T00:58:51.870Z",
+        "metricsUpdatedAt": "2026-09-18T23:59:01.944Z",
         "metrics": {
           "reactions": 1,
           "comments": 0,
@@ -864,7 +864,7 @@
         "status": "sent",
         "externalLink": "https://www.instagram.com/p/DcUO7rak_qB/",
         "publishingError": null,
-        "metricsUpdatedAt": "2026-09-17T15:53:54.111Z",
+        "metricsUpdatedAt": "2026-09-18T14:54:05.143Z",
         "metrics": {
           "reactions": 1,
           "comments": 0,
@@ -898,7 +898,7 @@
         "status": "sent",
         "externalLink": "https://www.tiktok.com/@themadgercoin/video/7676590217716845838?utm_campaign=tt4d_open_api&utm_source=7103819247981182978",
         "publishingError": null,
-        "metricsUpdatedAt": "2026-09-18T03:11:25.693Z",
+        "metricsUpdatedAt": "2026-09-19T02:13:07.427Z",
         "metrics": {
           "reactions": 0,
           "comments": 0,
