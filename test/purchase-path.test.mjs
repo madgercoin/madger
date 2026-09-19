@@ -9,6 +9,7 @@ const home = await readFile('index.html', 'utf8');
 const guide = await readFile('buy.html', 'utf8');
 const app = await readFile('app.html', 'utf8');
 const appScript = await readFile('app.js', 'utf8');
+const serviceWorker = await readFile('sw.js', 'utf8');
 const registry = JSON.parse(await readFile('verified-contributions.json', 'utf8'));
 const script = await readFile('script.js', 'utf8');
 
