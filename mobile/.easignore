@@ -1,0 +1,31 @@
+# Used when mobile/ is the upload root (standalone or EAS_PROJECT_ROOT).
+# The repository-root .easignore covers normal Git monorepo uploads.
+node_modules/
+.expo/
+dist/
+dist-android/
+web-build/
+expo-env.d.ts
+.kotlin/
+*.orig.*
+.metro-health-check*
+npm-debug.*
+yarn-debug.*
+yarn-error.*
+.DS_Store
+*.tsbuildinfo
+example
+/ios
+/android
+
+# Local configuration and signing material must never enter the archive.
+.env*
+credentials.json
+*.jks
+*.keystore
+*.p8
+*.p12
+*.pem
+*.key
+*.mobileprovision
+*.log
