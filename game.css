@@ -30,3 +30,19 @@
 .field-record button:hover{color:var(--red);border-color:var(--red)}
 @media(max-width:900px){.field-record{grid-template-columns:1fr}.field-record button{justify-self:start}}
 @media(max-width:620px){.field-record{padding:22px}.field-record dl{grid-template-columns:1fr 1fr}.field-record dl div:nth-child(2){border-right:0}.field-record dl div:nth-child(-n+2){border-bottom:1px solid var(--line)}}
+
+/* Daily course: immediate lane selection and one visible collision line. */
+.game-shell{scroll-margin-top:8px}
+.lane-0{left:33.333%;transform:none}.lane-1{display:none}.lane-2{left:66.666%;transform:none}
+.runner{top:84%;bottom:auto;transform:translate(-50%,-50%);transition:none;width:clamp(60px,8vw,88px)}
+.runner.recovering{outline:3px solid var(--bone);outline-offset:2px;border-radius:50%;background:rgba(242,234,217,.12)}
+.catch-line{position:absolute;top:84%;left:0;right:0;border-top:2px dashed rgba(242,234,217,.38);pointer-events:none}
+.game-item.noise{border-radius:8px}.game-item{pointer-events:none}
+.game-item::after{color:var(--bone);text-shadow:0 1px 3px #000}
+.playfield{touch-action:pan-y}.event-flash{top:15%;font-size:clamp(1.6rem,4vw,3rem);white-space:nowrap}
+.touch-controls{display:grid}.touch-controls button{min-height:52px;cursor:pointer}.touch-controls button:disabled{opacity:.4;cursor:default}
+.chase-strip{display:grid;grid-template-columns:1fr auto;gap:6px 12px;padding:10px 16px;background:#171b10;font-size:.62rem;letter-spacing:.07em;color:var(--muted)}
+.chase-strip b{color:var(--gold);text-align:right}.combo-track{height:4px;align-self:center;background:#393b30;border-radius:2px;overflow:hidden}.combo-track i{display:block;height:100%;width:0;background:var(--gold)}
+.start-panel,.pause-panel{overflow-y:auto}.start-panel>small{color:var(--muted)}
+.start-button,.pause-panel button{min-width:0;width:min(220px,100%);flex-shrink:0}
+@media(max-width:620px){.game-shell.playing .playfield{height:calc(100svh - 265px);min-height:230px}.chase-strip{padding:8px;font-size:.55rem}.game-shell.playing .objective-copy{display:none}.game-shell.playing .run-strip{padding:8px}.start-panel h2{font-size:clamp(2rem,8vw,3.3rem)}.start-panel>p:nth-of-type(2){font-size:.85rem}.key-guide span:nth-child(2){display:block}.run-report{flex-shrink:0}.start-panel{justify-content:safe center}}

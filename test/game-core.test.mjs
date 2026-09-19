@@ -1,8 +1,48 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { MAX_GRIT, applyPickup, createWave, multiplierFor, objectiveFor, objectiveProgress, phaseFor, sanitizeStats } from "../game-core.js";
+import { MAX_GRIT, applyPickup, createWave, courseFor, crossesRunner, resolvePickup, scoreChase, multiplierFor, objectiveFor, objectiveProgress, phaseFor, sanitizeStats } from "../game-core.js";
 
 const fresh = () => ({ score: 0, streak: 0, bestStreak: 0, grit: MAX_GRIT, signals: 0, hits: 0 });
+
+test("daily courses repeat exactly, change by day, and give players a safe opening", () => {
+  const course = courseFor(20715);
+  assert.deepEqual(courseFor(20715), course);
+  assert.notDeepEqual(courseFor(20716), course);
+  assert.equal(course[0].items[0].lane, 1);
+  assert.ok(course.filter(wave => wave.at < 6).every(wave => wave.items.every(item => item.type === "signal")));
+  for (const wave of course) {
+    assert.ok(wave.items.some(item => item.type !== "noise"));
+    assert.ok(wave.items.every(item => item.lane >= 0 && item.lane <= 2));
+    assert.ok(.94 / wave.speed > 1.5, "at least 1.5 seconds to read a newly spawned threat");
+    assert.ok(wave.at + 1.12 / wave.speed < 60, "every pickup can arrive before the round ends");
+  }
+});
+
+test("collision happens once at the visible line, including a frame crossing it", () => {
+  assert.equal(crossesRunner(.81, .83), false);
+  assert.equal(crossesRunner(.83, .84), true);
+  assert.equal(crossesRunner(.82, .88), true);
+  assert.equal(crossesRunner(.84, .87), false);
+});
+
+test("recovery prevents stacked damage but still permits scoring and later hits", () => {
+  const first = resolvePickup(fresh(), "noise", 10, 0);
+  assert.equal(first.run.grit, 2);
+  const second = resolvePickup(first.run, "noise", 10.4, first.protectedUntil);
+  assert.equal(second.ignored, true);
+  assert.equal(second.run.hits, 1);
+  const signal = resolvePickup(second.run, "signal", 10.5, second.protectedUntil);
+  assert.equal(signal.run.score, 100);
+  assert.equal(resolvePickup(signal.run, "noise", 10.91, signal.protectedUntil).run.grit, 1);
+});
+
+test("score chase advances medals and offers an attainable next target", () => {
+  assert.deepEqual(scoreChase(2500, 2700), { medal: "FIRST DIG", target: 2800, label: "PERSONAL BEST", gap: 300 });
+  assert.equal(scoreChase(3000).medal, "BRONZE");
+  assert.equal(scoreChase(8000).medal, "SILVER");
+  assert.equal(scoreChase(15000).medal, "GOLD");
+  for (const score of [0, 3000, 8000, 15000, 25000]) assert.ok(scoreChase(score).gap > 0);
+});
 
 test("signal streaks increase scoring multiplier at five-pickup boundaries", () => {
   let run = fresh();

@@ -1,5 +1,7 @@
 export const ROUND_SECONDS = 60;
 export const MAX_GRIT = 3;
+export const CATCH_LINE = 0.84;
+export const HIT_RECOVERY = 0.9;
 
 export type PickupType = 'signal' | 'noise' | 'boost';
 export type RunState = { score: number; streak: number; bestStreak: number; grit: number; signals: number; hits: number };
@@ -13,9 +15,9 @@ export const emptyRecord = (): FieldRecord => ({ runs: 0, signals: 0, bestScore:
 export function multiplierFor(streak: number) { return Math.min(5, 1 + Math.floor(Math.max(0, streak) / 5)); }
 
 export function phaseFor(elapsed: number) {
-  if (elapsed >= 40) return { id: 'bedrock', label: 'BEDROCK', speed: 0.62, interval: 0.58 } as const;
-  if (elapsed >= 20) return { id: 'deep', label: 'DEEP BURROW', speed: 0.5, interval: 0.72 } as const;
-  return { id: 'surface', label: 'UPPER TUNNEL', speed: 0.39, interval: 0.88 } as const;
+  if (elapsed >= 40) return { id: 'bedrock', label: 'BEDROCK', speed: 0.57, interval: 0.58 } as const;
+  if (elapsed >= 20) return { id: 'deep', label: 'DEEP BURROW', speed: 0.46, interval: 0.72 } as const;
+  return { id: 'surface', label: 'UPPER TUNNEL', speed: 0.36, interval: 0.88 } as const;
 }
 
 export function applyPickup(run: RunState, type: PickupType): RunState {
@@ -44,6 +46,7 @@ export function objectiveValue(objective: Objective, run: RunState) {
 export function createWave(random = Math.random, elapsed = 0): WaveItem[] {
   const signalLane = Math.floor(random() * 3);
   const roll = random();
+  if (elapsed < 6) return [{ lane: signalLane, type: 'signal', offset: 0 }];
   if (roll < 0.1) return [{ lane: signalLane, type: 'boost', offset: 0 }];
   if (roll < 0.42) {
     const noiseLane = (signalLane + 1 + Math.floor(random() * 2)) % 3;
@@ -51,6 +54,37 @@ export function createWave(random = Math.random, elapsed = 0): WaveItem[] {
   }
   if (roll < 0.72 || elapsed / ROUND_SECONDS < 0.3) return [{ lane: signalLane, type: 'signal', offset: 0 }, { lane: (signalLane + 1) % 3, type: 'signal', offset: -0.18 }];
   return [0, 1, 2].map(lane => ({ lane, type: lane === signalLane ? 'signal' : 'noise', offset: 0 }));
+}
+
+// Keep these deterministic course and collision rules in parity with game-core.js.
+export function courseFor(dayNumber: number) {
+  let seed = dayNumber >>> 0;
+  const random = () => { seed = (Math.imul(seed, 1664525) + 1013904223) >>> 0; return seed / 4294967296; };
+  const course: { at: number; speed: number; items: WaveItem[] }[] = [];
+  for (let at = 0.65; at < ROUND_SECONDS - 3; ) {
+    const phase = phaseFor(at);
+    const items = createWave(random, at);
+    if (course.length === 0) items[0].lane = 1;
+    course.push({ at, speed: phase.speed, items });
+    at += phase.interval + random() * 0.24;
+  }
+  return course;
+}
+
+export function crossesRunner(previous: number, next: number) { return previous < CATCH_LINE && next >= CATCH_LINE; }
+
+export function resolvePickup(run: RunState, type: PickupType, elapsed: number, protectedUntil: number) {
+  if (type === 'noise' && elapsed < protectedUntil) return { run, protectedUntil, ignored: true };
+  return { run: applyPickup(run, type), protectedUntil: type === 'noise' ? elapsed + HIT_RECOVERY : protectedUntil, ignored: false };
+}
+
+export function scoreChase(score: number, previousBest = 0) {
+  const medals = [{ label: 'BRONZE', score: 3000 }, { label: 'SILVER', score: 8000 }, { label: 'GOLD', score: 15000 }];
+  const medal = [...medals].reverse().find(item => score >= item.score)?.label || 'FIRST DIG';
+  const nextMedal = medals.find(item => item.score > score);
+  const personalTarget = previousBest > score ? previousBest + 100 : Infinity;
+  const target = Math.min(nextMedal?.score ?? Math.ceil((score + 1) / 5000) * 5000, personalTarget);
+  return { medal, target, label: target === personalTarget ? 'PERSONAL BEST' : nextMedal?.label || 'DEEPER RECORD', gap: target - score };
 }
 
 export function sanitizeRecord(candidate: unknown): FieldRecord {

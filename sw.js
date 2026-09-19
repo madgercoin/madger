@@ -1,4 +1,4 @@
-const CACHE = "madger-burrow-v2";
+const CACHE = "madger-burrow-v3";
 const APP_SHELL = [
   "/app", "/app.css", "/app.js", "/verified-contributions.json", "/game", "/game.css", "/game.js", "/game-core.js",
   "/assets/madger_official_logo_transparent_192.png",
