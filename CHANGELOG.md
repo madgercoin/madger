@@ -1,5 +1,12 @@
 # Changelog
 
+## 2026-09-19 — Signals visual reading system
+
+- Rebuilt the Signals From Below entry points around approved MADGER imagery, with image-backed hero controls, four outcome-based reading paths, a full-card latest dispatch, and more obvious archive targets.
+- Upgraded the homepage publication preview with a visual archive entrance and image-led dispatch cards while preserving the separate beginner buying path.
+- Added image-backed next-reading controls, reading progress, local-only read history, and an automatically generated section navigator across all eleven dispatches.
+- Standardized the publication accent palette around ink, bone, moss, and brass-gold and extended automated validation to protect the new visual controls and shared article assets.
+
 ## 2026-09-18 — Mobile release privacy alignment
 
 - Linked the existing `@madgercoins-team/dollarmadger` Expo project, preserving app display name and store identifiers.

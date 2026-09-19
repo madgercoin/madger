@@ -305,6 +305,21 @@ if (!latestDispatch.includes('"datePublished":"2026-09-17"') || !latestDispatch.
 if (!latestDispatch.includes('href="/game"') || !latestDispatch.includes('href="/transparency.html"')) failures.push("latest dispatch: primary project source links are missing");
 if (visibleText(latestDispatch).split(/\s+/).filter(Boolean).length < 900) failures.push("latest dispatch: substantial article threshold not met");
 
+const signalsArchive = pages.get("blog.html");
+for (const marker of ["hero-visual-actions", "signal-path-grid", "feature-card-link", "story-card"]) {
+  if (!signalsArchive.includes(marker)) failures.push(`blog.html: visual reading control ${marker} is missing`);
+}
+if (!pages.get("index.html").includes("signal-entry-button") || !pages.get("index.html").includes('<div class="journal-stack"><a href="/blog-utility-without-a-wallet.html"><img')) {
+  failures.push("index.html: image-led Signals entry points are missing");
+}
+const dispatchFiles = htmlFiles.filter(file => file.startsWith("blog-") && file.endsWith(".html"));
+for (const file of dispatchFiles) {
+  const html = pages.get(file);
+  if (!html.includes('class="signal-article"') || !html.includes('class="journal-progress"')) failures.push(`${file}: visual article shell is missing`);
+  if (!html.includes('/blog.css?v=20260919-signal-console') || !html.includes('/blog.js?v=20260919-signal-console')) failures.push(`${file}: Signals asset version parity is missing`);
+  if (/\bhype\b/i.test(visibleText(html))) failures.push(`${file}: retired editorial wording is present`);
+}
+
 const productionText = [...pages.values()].join("\n") + await readFile("manifest.webmanifest", "utf8");
 for (const requiredFile of indexablePages.keys()) {
   if (!pages.get(requiredFile).includes(officialMint)) failures.push(`${requiredFile}: official mint is absent`);
