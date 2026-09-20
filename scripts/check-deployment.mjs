@@ -138,7 +138,7 @@ if (burrowApp) {
     [burrowApp.body.includes("Checked locally in your browser"), "local verifier privacy boundary"],
     [burrowApp.body.includes("NO WALLET REQUIRED"), "no-wallet access"],
     [burrowApp.body.includes("MADGER NEVER NEEDS YOUR SEED PHRASE"), "wallet-secret warning"],
-    [burrowApp.body.includes("madger_official_contest_pose_card.svg"), "approved pose card"]
+    [burrowApp.body.includes("madger_official_contest_pose_card.jpg"), "approved pose card"]
   ];
   for (const [passed, label] of contentChecks) {
     console.log(`${passed ? "PASS" : "FAIL"} ${label}`);
