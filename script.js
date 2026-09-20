@@ -55,7 +55,7 @@ nav?.addEventListener("click", event => {
       <div class="contest-home-actions"><a class="button primary" href="/video-contest.html">Contest Details →</a><a class="button secondary" href="/video-contest-rules.html">Official Rules</a></div>
       <p class="contest-home-deadline">Official intro/outro files are pending. Final submissions should wait for those exact masters. Winners announced by September 25, 2026.</p>
     </div>
-    <div class="contest-home-poster"><a href="/video-contest.html" aria-label="Open MADGER Video Creation Contest"><img src="/assets/madger_video_creation_contest_poster.svg" width="600" height="750" alt="Official MADGER Video Creation Contest poster showing a $120 prize pool and $50 first prize"></a><span class="contest-home-caption">Tap the poster for contest details, official resources, and submission requirements.</span></div>`;
+    <div class="contest-home-poster"><a href="/video-contest.html" aria-label="Open MADGER Video Creation Contest"><img src="/assets/madger_official_contest_pose_card.jpg" width="1536" height="864" alt="Official MADGER pose card showing ten approved character poses for contest creators"></a><span class="contest-home-caption">Tap the poster for contest details, official resources, and submission requirements.</span></div>`;
   main.insertBefore(banner, main.firstChild);
 
   if (nav && !nav.querySelector('a[href="/video-contest.html"]')) {
