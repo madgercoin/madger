@@ -35,7 +35,6 @@
   if (!form) return;
 
   const API = '/api/contest-entry';
-  const UPLOAD_API = '/api/contest-upload';
   const MAX_BYTES = 1024 * 1024 * 1024;
   const titleInput = document.getElementById('video_title');
   const fileInput = document.getElementById('original_file');
@@ -83,18 +82,17 @@
     return data;
   }
 
-  function uploadPart(url, token, blob, completedBytes, totalBytes) {
+  function uploadPart(url, blob, completedBytes, totalBytes) {
     return new Promise((resolve, reject) => {
       const xhr = new XMLHttpRequest();
       xhr.open('PUT', url, true);
-      xhr.setRequestHeader('x-upload-token', token);
-      xhr.setRequestHeader('content-type', 'application/octet-stream');
+      xhr.setRequestHeader('x-upsert', 'false');
       xhr.upload.addEventListener('progress', (event) => {
         if (event.lengthComputable) setProgress(Math.round(((completedBytes + event.loaded) / totalBytes) * 100));
       });
       xhr.addEventListener('load', () => {
         if (xhr.status >= 200 && xhr.status < 300) {
-          try { resolve(JSON.parse(xhr.responseText)); } catch { reject(new Error('The upload server returned an invalid response.')); }
+          resolve();
           return;
         }
         let detail = '';
@@ -107,42 +105,24 @@
       });
       xhr.addEventListener('error', () => reject(new Error('The original video upload was interrupted. Check your connection and try again.')));
       xhr.addEventListener('abort', () => reject(new Error('The original video upload was cancelled.')));
-      xhr.send(blob);
+      const body = new FormData();
+      body.append('cacheControl', '3600');
+      body.append('', blob);
+      xhr.send(body);
     });
   }
 
-  async function multipartUpload(entryId, token, file) {
-    const start = await fetch(`${UPLOAD_API}/init`, {
-      method: 'POST', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ entry_id: entryId, upload_token: token }), cache: 'no-store'
-    });
-    const startData = await start.json().catch(() => null);
-    if (!start.ok || !startData?.ok) throw new Error(startData?.error || 'The secure upload could not be started.');
-
-    const partSize = Number(startData.part_size);
-    const parts = [];
+  async function multipartUpload(init, file) {
+    if (!Array.isArray(init.uploads) || init.uploads.length < 1) throw new Error('The secure upload parts were not prepared.');
     let completedBytes = 0;
-    try {
-      for (let offset = 0, partNumber = 1; offset < file.size; offset += partSize, partNumber += 1) {
-        const blob = file.slice(offset, Math.min(offset + partSize, file.size));
-        const query = new URLSearchParams({ entry_id: entryId, upload_id: startData.upload_id, part_number: String(partNumber) });
-        const uploaded = await uploadPart(`${UPLOAD_API}/part?${query}`, token, blob, completedBytes, file.size);
-        parts.push({ partNumber: uploaded.part_number, etag: uploaded.etag });
-        completedBytes += blob.size;
-        setProgress(Math.round((completedBytes / file.size) * 100));
-      }
-      const complete = await fetch(`${UPLOAD_API}/complete`, {
-        method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ entry_id: entryId, upload_token: token, upload_id: startData.upload_id, parts }), cache: 'no-store'
-      });
-      const completeData = await complete.json().catch(() => null);
-      if (!complete.ok || !completeData?.ok) throw new Error(completeData?.error || 'The uploaded video could not be assembled.');
-    } catch (error) {
-      fetch(`${UPLOAD_API}/abort`, {
-        method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ entry_id: entryId, upload_token: token, upload_id: startData.upload_id }), keepalive: true
-      }).catch(() => {});
-      throw error;
+    for (const part of init.uploads) {
+      const offset = Number(part.offset);
+      const size = Number(part.size);
+      const blob = file.slice(offset, offset + size);
+      if (!part.signed_url || blob.size !== size) throw new Error('The secure upload manifest did not match the selected file.');
+      await uploadPart(part.signed_url, blob, completedBytes, file.size);
+      completedBytes += blob.size;
+      setProgress(Math.round((completedBytes / file.size) * 100));
     }
   }
 
@@ -170,9 +150,9 @@
       setStatus('Preparing your secure original-file upload…');
       const init = await api(payload);
       setStatus('Uploading the original video… keep this page open.');
-      await multipartUpload(init.entry_id, init.upload_token, file);
+      await multipartUpload(init, file);
       setProgress(100); setStatus('Upload complete. Finalizing your official entry…');
-      await api({ action:'finalize_r2', entry_id:init.entry_id, upload_token:init.upload_token });
+      await api({ action:'finalize_parts', entry_id:init.entry_id });
       window.location.assign(`/video-contest-thanks.html?entry=${encodeURIComponent(init.entry_id)}`);
     } catch (error) {
       console.error(error); setStatus(error instanceof Error ? error.message : 'Submission failed. Please try again.'); setBusy(false);
