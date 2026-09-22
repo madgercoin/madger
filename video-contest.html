@@ -89,7 +89,7 @@
     <section class="section" id="entry">
       <div class="form-shell">
         <p class="section-label">OFFICIAL ENTRY FORM</p><h2>SUBMIT YOUR VIDEO</h2>
-        <p class="form-note">Secure submissions are live. Complete every required field before <span class="deadline">September 22, 2026 at 11:59 PM Eastern Time</span>. Your original video uploads directly to MADGER's private contest storage. Maximum file size: <strong>1 GB</strong>. Keep this page open until the confirmation screen appears.</p>
+        <p class="form-note">Secure submissions are live. Complete every required field before <span class="deadline">September 22, 2026 at 11:59 PM Eastern Time</span>. Your original video uploads directly to MADGER's private contest storage. Maximum file size: <strong>50 MB</strong>. Videos above 50 MB must be exported or compressed below the limit before submission. Keep this page open until the confirmation screen appears.</p>
         <form class="contest-form" id="madger-contest-form" novalidate>
           <div class="field"><label for="entrant_name">Entrant / creator name *</label><input id="entrant_name" name="entrant_name" required maxlength="100"></div>
           <div class="field"><label for="contact_email">Contact email *</label><input id="contact_email" name="contact_email" type="email" required maxlength="200"></div>
@@ -97,7 +97,7 @@
           <div class="field"><label for="video_title">Official video title *</label><input id="video_title" name="video_title" required maxlength="160"><small>The original filename must match this title exactly.</small></div>
           <div class="field full"><label for="public_post_url">Public post URL *</label><input id="public_post_url" name="public_post_url" type="url" required placeholder="https://..."><small>The post must include #MadgerMeme and remain public through winner verification.</small></div>
           <div class="field"><label for="wallet_address">Solana wallet address *</label><input id="wallet_address" name="wallet_address" required minlength="32" maxlength="44" autocomplete="off"></div>
-          <div class="field"><label for="original_file">Original video file *</label><input id="original_file" name="original_file" type="file" required accept="video/mp4,video/quicktime,video/webm,video/x-m4v,video/mpeg"><small>MP4, MOV, WebM, M4V or MPEG · up to 1 GB.</small></div>
+          <div class="field"><label for="original_file">Original video file *</label><input id="original_file" name="original_file" type="file" required accept="video/mp4,video/quicktime,video/webm,video/x-m4v,video/mpeg"><small>MP4, MOV, WebM, M4V or MPEG · maximum 50 MB.</small></div>
 
           <fieldset class="checks"><legend>Required confirmations</legend>
             <label class="check"><input id="hashtag_confirmed" type="checkbox" required><span>I confirm that my public post includes the exact hashtag <strong>#MadgerMeme</strong> and will remain publicly viewable through winner verification.</span></label>
@@ -117,6 +117,6 @@
     </section>
   </main>
   <footer class="footer section"><div><strong>MADGER</strong><p>Official contact: <a href="mailto:madgercoin@gmail.com">madgercoin@gmail.com</a></p></div><div><a href="/video-contest-rules.html">Contest rules</a> · <a href="/official-links.html">Official links</a> · <a href="/privacy.html">Privacy</a></div></footer>
-  <script src="/video-contest.js?v=20260909-no-tg-boost" defer></script>
+  <script src="/video-contest.js?v=20260922-storage-limit-fix" defer></script>
 </body>
 </html>
