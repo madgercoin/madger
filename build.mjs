@@ -48,6 +48,11 @@ const securityHeaders = Object.freeze({
   "x-content-type-options": "nosniff",
   "x-frame-options": "DENY"
 });
+const contestApi = "https://wtqcolceuvlxrelugvjw.supabase.co/functions/v1/madger-video-contest";
+const contestPartSize = 16 * 1024 * 1024;
+const contestMaxParts = 64;
+const apiHeaders = { ...securityHeaders, "content-type": "application/json; charset=UTF-8", "cache-control": "no-store" };
+const apiJson = (body, status = 200) => new Response(JSON.stringify(body), { status, headers: apiHeaders });
 const html = { headers: { ...securityHeaders, "content-type": "text/html; charset=UTF-8", "cache-control": "no-cache" } };
 const permanentRedirect = location => new Response(null, {
   status: 301,
@@ -112,10 +117,121 @@ function writeFunnelEvent(env, request, eventName, destination = "none") {
   });
 }
 
+function validContestOrigin(request) {
+  const origin = request.headers.get("origin");
+  if (!origin) return true;
+  return origin === "https://madgercoin.com" || origin === "https://www.madgercoin.com";
+}
+
+async function contestApiCall(payload) {
+  const response = await fetch(contestApi, {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify(payload)
+  });
+  const data = await response.json().catch(() => null);
+  if (!response.ok || !data?.ok) throw new Error(data?.error || "Contest authorization failed.");
+  return data;
+}
+
+async function verifyContestUpload(entryId, token) {
+  if (!/^[0-9a-f-]{36}$/i.test(entryId || "") || !/^[0-9a-f]{64}$/i.test(token || "")) {
+    throw new Error("Invalid upload authorization.");
+  }
+  return contestApiCall({ action: "verify_r2_upload", entry_id: entryId, upload_token: token });
+}
+
+async function handleContestEntry(request) {
+  if (request.method !== "GET" && request.method !== "POST") return apiJson({ ok: false, error: "Method not allowed." }, 405);
+  const upstream = await fetch(contestApi, {
+    method: request.method,
+    headers: request.method === "POST" ? { "content-type": "application/json" } : undefined,
+    body: request.method === "POST" ? request.body : undefined
+  });
+  return new Response(upstream.body, { status: upstream.status, headers: apiHeaders });
+}
+
+async function handleContestUpload(request, env, pathname, url) {
+  if (!env.CONTEST_VIDEOS) return apiJson({ ok: false, error: "Contest storage is unavailable." }, 503);
+  if (!validContestOrigin(request)) return apiJson({ ok: false, error: "Origin not allowed." }, 403);
+  try {
+    if (pathname === "/api/contest-upload/init" && request.method === "POST") {
+      const body = await request.json();
+      const entry = await verifyContestUpload(body.entry_id, body.upload_token);
+      if (entry.upload_complete) return apiJson({ ok: false, error: "This entry has already been uploaded." }, 409);
+      const upload = await env.CONTEST_VIDEOS.createMultipartUpload(entry.storage_path, {
+        httpMetadata: { contentType: entry.content_type },
+        customMetadata: { entryId: entry.entry_id, fileName: entry.file_name }
+      });
+      return apiJson({ ok: true, upload_id: upload.uploadId, part_size: contestPartSize });
+    }
+
+    if (pathname === "/api/contest-upload/part" && request.method === "PUT") {
+      const entryId = url.searchParams.get("entry_id") || "";
+      const uploadId = url.searchParams.get("upload_id") || "";
+      const partNumber = Number(url.searchParams.get("part_number"));
+      const token = request.headers.get("x-upload-token") || "";
+      if (!uploadId || uploadId.length > 512 || !Number.isInteger(partNumber) || partNumber < 1 || partNumber > contestMaxParts) {
+        return apiJson({ ok: false, error: "Invalid upload part." }, 400);
+      }
+      const entry = await verifyContestUpload(entryId, token);
+      const contentLength = Number(request.headers.get("content-length") || 0);
+      if (contentLength > contestPartSize) return apiJson({ ok: false, error: "Upload part is too large." }, 413);
+      const multipart = env.CONTEST_VIDEOS.resumeMultipartUpload(entry.storage_path, uploadId);
+      const uploaded = await multipart.uploadPart(partNumber, request.body);
+      return apiJson({ ok: true, part_number: uploaded.partNumber, etag: uploaded.etag });
+    }
+
+    if ((pathname === "/api/contest-upload/complete" || pathname === "/api/contest-upload/abort") && request.method === "POST") {
+      const body = await request.json();
+      const entry = await verifyContestUpload(body.entry_id, body.upload_token);
+      if (typeof body.upload_id !== "string" || !body.upload_id || body.upload_id.length > 512) {
+        return apiJson({ ok: false, error: "Invalid multipart upload." }, 400);
+      }
+      const multipart = env.CONTEST_VIDEOS.resumeMultipartUpload(entry.storage_path, body.upload_id);
+      if (pathname.endsWith("/abort")) {
+        await multipart.abort();
+        return apiJson({ ok: true });
+      }
+      if (!Array.isArray(body.parts) || body.parts.length < 1 || body.parts.length > contestMaxParts) {
+        return apiJson({ ok: false, error: "Invalid multipart manifest." }, 400);
+      }
+      const parts = body.parts.map(part => ({ partNumber: Number(part.partNumber), etag: String(part.etag || "") }));
+      if (parts.some(part => !Number.isInteger(part.partNumber) || part.partNumber < 1 || part.partNumber > contestMaxParts || !part.etag)) {
+        return apiJson({ ok: false, error: "Invalid multipart manifest." }, 400);
+      }
+      await multipart.complete(parts);
+      const object = await env.CONTEST_VIDEOS.head(entry.storage_path);
+      if (!object || Number(object.size) !== Number(entry.file_size)) {
+        await env.CONTEST_VIDEOS.delete(entry.storage_path);
+        return apiJson({ ok: false, error: "The assembled upload did not match the original file size." }, 409);
+      }
+      return apiJson({ ok: true, size: object.size, etag: object.httpEtag || object.etag });
+    }
+
+    if (pathname === "/api/contest-upload/status" && request.method === "GET") {
+      const entryId = url.searchParams.get("entry_id") || "";
+      const token = request.headers.get("x-upload-token") || "";
+      const entry = await verifyContestUpload(entryId, token);
+      const object = await env.CONTEST_VIDEOS.head(entry.storage_path);
+      if (!object) return apiJson({ ok: false, error: "Uploaded video not found." }, 404);
+      return apiJson({ ok: true, size: object.size, etag: object.httpEtag || object.etag });
+    }
+
+    return apiJson({ ok: false, error: "Method not allowed." }, 405);
+  } catch (error) {
+    console.error("contest upload", error);
+    const message = error instanceof Error ? error.message : "Contest upload failed.";
+    return apiJson({ ok: false, error: message }, /authorization|not found/i.test(message) ? 403 : 500);
+  }
+}
+
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
     const { pathname } = url;
+    if (pathname === "/api/contest-entry") return handleContestEntry(request);
+    if (pathname.startsWith("/api/contest-upload/")) return handleContestUpload(request, env, pathname, url);
     if (pathname === "/index.html") return permanentRedirect("/");
     if (pathname === "/app/" || pathname === "/app.html") return permanentRedirect("/app");
     if (pathname === "/game/" || pathname === "/game.html") return permanentRedirect("/game");
