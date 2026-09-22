@@ -35,7 +35,7 @@
   if (!form) return;
 
   const API = 'https://wtqcolceuvlxrelugvjw.supabase.co/functions/v1/madger-video-contest';
-  const MAX_BYTES = 1024 * 1024 * 1024;
+  const MAX_BYTES = 50 * 1024 * 1024;
   const titleInput = document.getElementById('video_title');
   const fileInput = document.getElementById('original_file');
   const status = document.getElementById('form-status');
@@ -88,7 +88,16 @@
       xhr.open('PUT', signedUrl, true);
       xhr.setRequestHeader('x-upsert', 'false');
       xhr.upload.addEventListener('progress', (event) => { if (event.lengthComputable) setProgress(Math.round((event.loaded / event.total) * 100)); });
-      xhr.addEventListener('load', () => { if (xhr.status >= 200 && xhr.status < 300) resolve(); else reject(new Error('The original video upload failed. Check your connection and try again.')); });
+      xhr.addEventListener('load', () => {
+        if (xhr.status >= 200 && xhr.status < 300) { resolve(); return; }
+        let detail = '';
+        try {
+          const parsed = JSON.parse(xhr.responseText || '{}');
+          detail = parsed?.message || parsed?.error || parsed?.code || '';
+        } catch { detail = (xhr.responseText || '').trim(); }
+        const suffix = detail ? ` Server response: ${detail}` : '';
+        reject(new Error(`The original video upload failed (HTTP ${xhr.status}).${suffix}`));
+      });
       xhr.addEventListener('error', () => reject(new Error('The original video upload was interrupted. Check your connection and try again.')));
       xhr.addEventListener('abort', () => reject(new Error('The original video upload was cancelled.')));
       const body = new FormData(); body.append('cacheControl', '3600'); body.append('', file); xhr.send(body);
@@ -105,7 +114,11 @@
 
     const file = fileInput?.files?.[0]; const title = titleInput?.value.trim() || '';
     if (!file) { setStatus('Select the original video file.'); fileInput?.focus(); return; }
-    if (file.size <= 0 || file.size > MAX_BYTES) { setStatus('The original video must be 1 GB or smaller.'); fileInput?.focus(); return; }
+    if (file.size <= 0 || file.size > MAX_BYTES) {
+      const sizeMb = (file.size / (1024 * 1024)).toFixed(1);
+      setStatus(`This file is ${sizeMb} MB. The current upload limit is 50 MB. Export or compress the original below 50 MB, then submit it again.`);
+      fileInput?.focus(); return;
+    }
     if (fileStem(file.name) !== title) { setStatus(`Rename the original file to exactly “${title}” before submitting.`); fileInput?.focus(); return; }
 
     const payload = { action:'init', entrant_name:value('entrant_name'), contact_email:value('contact_email'), social_handle:value('social_handle'), video_title:title, public_post_url:value('public_post_url'), wallet_address:value('wallet_address'), file_name:file.name, file_size:file.size, content_type:file.type||'video/mp4', hashtag_confirmed:checked('hashtag_confirmed'), dex_rocket_confirmed:checked('dex_rocket_confirmed'), likeness_assets_confirmed:checked('likeness_assets_confirmed'), originality_rights_confirmed:checked('originality_rights_confirmed'), ownership_transfer_confirmed:checked('ownership_transfer_confirmed'), vesting_confirmed:checked('vesting_confirmed'), eligibility_confirmed:checked('eligibility_confirmed') };
