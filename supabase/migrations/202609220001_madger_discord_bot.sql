@@ -62,6 +62,7 @@ create table if not exists public.madger_discord_settings (
 create index if not exists madger_discord_members_rank_idx on public.madger_discord_members(guild_id, contribution_points desc, xp desc);
 create index if not exists madger_discord_events_recent_idx on public.madger_discord_events(guild_id, created_at desc);
 create index if not exists madger_discord_events_user_idx on public.madger_discord_events(guild_id, user_id, created_at desc) where user_id is not null;
+create index if not exists madger_discord_submissions_mission_idx on public.madger_discord_submissions(mission_code);
 create index if not exists madger_discord_submissions_pending_idx on public.madger_discord_submissions(guild_id, created_at) where status = 'pending';
 
 alter table public.madger_discord_members enable row level security;
@@ -87,7 +88,7 @@ create or replace function public.madger_discord_review_submission(
 ) returns public.madger_discord_submissions
 language plpgsql
 security definer
-set search_path = public
+set search_path = ''
 as $$
 declare
   v_submission public.madger_discord_submissions%rowtype;
