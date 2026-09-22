@@ -3,7 +3,7 @@ import { createClient } from 'npm:@supabase/supabase-js@2.57.4'
 
 const BUCKET = 'madger-video-contest-sept-2026'
 const CLOSES_AT = '2026-09-23T03:59:00.000Z'
-const MAX_BYTES = 1024 * 1024 * 1024
+const MAX_BYTES = 50 * 1024 * 1024
 const ALLOWED_TYPES = new Set(['video/mp4', 'video/quicktime', 'video/webm', 'video/x-m4v', 'video/mpeg'])
 const ALLOWED_ORIGINS = new Set(['https://madgercoin.com', 'https://www.madgercoin.com'])
 
@@ -73,7 +73,7 @@ Deno.serve(async (req: Request) => {
         !fileName || !safeName || stem(fileName) !== videoTitle ||
         !Number.isSafeInteger(fileSize) || fileSize <= 0 || fileSize > MAX_BYTES ||
         !contentType || !ALLOWED_TYPES.has(contentType)) {
-      return json(req, { ok: false, error: 'Check every entry field and select a supported video file no larger than 1 GB. The file name must exactly match the video title.' }, 400)
+      return json(req, { ok: false, error: 'Check every entry field and select a supported video file no larger than 50 MB. The file name must exactly match the video title.' }, 400)
     }
 
     const confirmations = [
@@ -92,7 +92,7 @@ Deno.serve(async (req: Request) => {
     const { count, error: countError } = await db.from('madger_video_contest_entries')
       .select('id', { count: 'exact', head: true }).eq('submitted_ip_hash', ipHash).gte('created_at', since)
     if (countError) return json(req, { ok: false, error: 'The contest server could not prepare this submission.' }, 500)
-    if ((count || 0) >= 10) return json(req, { ok: false, error: 'Too many submission attempts. Please wait and try again.' }, 429)
+    if ((count || 0) >= 30) return json(req, { ok: false, error: 'Too many submission attempts. Please wait and try again.' }, 429)
 
     const entryId = crypto.randomUUID()
     const storagePath = `${entryId}/${fileName}`
@@ -137,7 +137,7 @@ Deno.serve(async (req: Request) => {
     }
 
     const { error: updateError } = await db.from('madger_video_contest_entries')
-      .update({ upload_complete: true, sync_status: 'pending', updated_at: new Date().toISOString() }).eq('id', entryId)
+      .update({ upload_complete: true, sync_status: 'ready', updated_at: new Date().toISOString() }).eq('id', entryId)
     if (updateError) return json(req, { ok: false, error: 'The entry upload succeeded but final confirmation failed. Please try again.' }, 500)
     return json(req, { ok: true, entry_id: entryId })
   }
