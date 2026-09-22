@@ -16,11 +16,5 @@
       "dataset": "madger_acquisition_funnel"
     }
   ],
-  "r2_buckets": [
-    {
-      "binding": "CONTEST_VIDEOS",
-      "bucket_name": "madger-video-contest-originals"
-    }
-  ],
   "main": "./worker.generated.js"
 }
