@@ -34,8 +34,9 @@
   const form = document.getElementById('madger-contest-form');
   if (!form) return;
 
-  const API = 'https://wtqcolceuvlxrelugvjw.supabase.co/functions/v1/madger-video-contest';
-  const MAX_BYTES = 50 * 1024 * 1024;
+  const API = '/api/contest-entry';
+  const UPLOAD_API = '/api/contest-upload';
+  const MAX_BYTES = 1024 * 1024 * 1024;
   const titleInput = document.getElementById('video_title');
   const fileInput = document.getElementById('original_file');
   const status = document.getElementById('form-status');
@@ -82,26 +83,67 @@
     return data;
   }
 
-  function uploadToSignedUrl(signedUrl, file) {
+  function uploadPart(url, token, blob, completedBytes, totalBytes) {
     return new Promise((resolve, reject) => {
       const xhr = new XMLHttpRequest();
-      xhr.open('PUT', signedUrl, true);
-      xhr.setRequestHeader('x-upsert', 'false');
-      xhr.upload.addEventListener('progress', (event) => { if (event.lengthComputable) setProgress(Math.round((event.loaded / event.total) * 100)); });
+      xhr.open('PUT', url, true);
+      xhr.setRequestHeader('x-upload-token', token);
+      xhr.setRequestHeader('content-type', 'application/octet-stream');
+      xhr.upload.addEventListener('progress', (event) => {
+        if (event.lengthComputable) setProgress(Math.round(((completedBytes + event.loaded) / totalBytes) * 100));
+      });
       xhr.addEventListener('load', () => {
-        if (xhr.status >= 200 && xhr.status < 300) { resolve(); return; }
+        if (xhr.status >= 200 && xhr.status < 300) {
+          try { resolve(JSON.parse(xhr.responseText)); } catch { reject(new Error('The upload server returned an invalid response.')); }
+          return;
+        }
         let detail = '';
         try {
           const parsed = JSON.parse(xhr.responseText || '{}');
           detail = parsed?.message || parsed?.error || parsed?.code || '';
         } catch { detail = (xhr.responseText || '').trim(); }
         const suffix = detail ? ` Server response: ${detail}` : '';
-        reject(new Error(`The original video upload failed (HTTP ${xhr.status}).${suffix}`));
+        reject(new Error(`A video upload part failed (HTTP ${xhr.status}).${suffix}`));
       });
       xhr.addEventListener('error', () => reject(new Error('The original video upload was interrupted. Check your connection and try again.')));
       xhr.addEventListener('abort', () => reject(new Error('The original video upload was cancelled.')));
-      const body = new FormData(); body.append('cacheControl', '3600'); body.append('', file); xhr.send(body);
+      xhr.send(blob);
     });
+  }
+
+  async function multipartUpload(entryId, token, file) {
+    const start = await fetch(`${UPLOAD_API}/init`, {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ entry_id: entryId, upload_token: token }), cache: 'no-store'
+    });
+    const startData = await start.json().catch(() => null);
+    if (!start.ok || !startData?.ok) throw new Error(startData?.error || 'The secure upload could not be started.');
+
+    const partSize = Number(startData.part_size);
+    const parts = [];
+    let completedBytes = 0;
+    try {
+      for (let offset = 0, partNumber = 1; offset < file.size; offset += partSize, partNumber += 1) {
+        const blob = file.slice(offset, Math.min(offset + partSize, file.size));
+        const query = new URLSearchParams({ entry_id: entryId, upload_id: startData.upload_id, part_number: String(partNumber) });
+        const uploaded = await uploadPart(`${UPLOAD_API}/part?${query}`, token, blob, completedBytes, file.size);
+        parts.push({ partNumber: uploaded.part_number, etag: uploaded.etag });
+        completedBytes += blob.size;
+        setProgress(Math.round((completedBytes / file.size) * 100));
+      }
+      const complete = await fetch(`${UPLOAD_API}/complete`, {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ entry_id: entryId, upload_token: token, upload_id: startData.upload_id, parts }), cache: 'no-store'
+      });
+      const completeData = await complete.json().catch(() => null);
+      if (!complete.ok || !completeData?.ok) throw new Error(completeData?.error || 'The uploaded video could not be assembled.');
+    } catch (error) {
+      fetch(`${UPLOAD_API}/abort`, {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ entry_id: entryId, upload_token: token, upload_id: startData.upload_id }), keepalive: true
+      }).catch(() => {});
+      throw error;
+    }
   }
 
   refreshAvailability();
@@ -116,7 +158,7 @@
     if (!file) { setStatus('Select the original video file.'); fileInput?.focus(); return; }
     if (file.size <= 0 || file.size > MAX_BYTES) {
       const sizeMb = (file.size / (1024 * 1024)).toFixed(1);
-      setStatus(`This file is ${sizeMb} MB. The current upload limit is 50 MB. Export or compress the original below 50 MB, then submit it again.`);
+      setStatus(`This file is ${sizeMb} MB. The upload limit is 1 GB.`);
       fileInput?.focus(); return;
     }
     if (fileStem(file.name) !== title) { setStatus(`Rename the original file to exactly “${title}” before submitting.`); fileInput?.focus(); return; }
@@ -128,9 +170,9 @@
       setStatus('Preparing your secure original-file upload…');
       const init = await api(payload);
       setStatus('Uploading the original video… keep this page open.');
-      await uploadToSignedUrl(init.signed_url, file);
+      await multipartUpload(init.entry_id, init.upload_token, file);
       setProgress(100); setStatus('Upload complete. Finalizing your official entry…');
-      await api({ action:'finalize', entry_id:init.entry_id });
+      await api({ action:'finalize_r2', entry_id:init.entry_id, upload_token:init.upload_token });
       window.location.assign(`/video-contest-thanks.html?entry=${encodeURIComponent(init.entry_id)}`);
     } catch (error) {
       console.error(error); setStatus(error instanceof Error ? error.message : 'Submission failed. Please try again.'); setBusy(false);
