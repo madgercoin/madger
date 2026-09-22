@@ -3,7 +3,8 @@ import { createClient } from 'npm:@supabase/supabase-js@2.57.4'
 
 const BUCKET = 'madger-video-contest-sept-2026'
 const CLOSES_AT = '2026-09-23T03:59:00.000Z'
-const MAX_BYTES = 50 * 1024 * 1024
+const MAX_BYTES = 1024 * 1024 * 1024
+const R2_STATUS_URL = 'https://madgercoin.com/api/contest-upload/status'
 const ALLOWED_TYPES = new Set(['video/mp4', 'video/quicktime', 'video/webm', 'video/x-m4v', 'video/mpeg'])
 const ALLOWED_ORIGINS = new Set(['https://madgercoin.com', 'https://www.madgercoin.com'])
 
@@ -37,14 +38,28 @@ async function hash(value: string) {
   return Array.from(new Uint8Array(digest), b => b.toString(16).padStart(2, '0')).join('')
 }
 
+async function uploadToken(key: string, entry: { id: string, file_size: number, file_name: string }) {
+  const cryptoKey = await crypto.subtle.importKey(
+    'raw', new TextEncoder().encode(key), { name: 'HMAC', hash: 'SHA-256' }, false, ['sign'],
+  )
+  const message = `${entry.id}:${entry.file_size}:${entry.file_name}`
+  const signature = await crypto.subtle.sign('HMAC', cryptoKey, new TextEncoder().encode(message))
+  return Array.from(new Uint8Array(signature), b => b.toString(16).padStart(2, '0')).join('')
+}
+
+function constantTimeEqual(left: string, right: string) {
+  if (left.length !== right.length) return false
+  let difference = 0
+  for (let index = 0; index < left.length; index += 1) difference |= left.charCodeAt(index) ^ right.charCodeAt(index)
+  return difference === 0
+}
+
 Deno.serve(async (req: Request) => {
   if (req.method === 'OPTIONS') return new Response(null, { status: 204, headers: cors(req) })
   if (req.method === 'GET') {
     return json(req, { ok: true, assets_ready: true, accepting: isOpen(), closes_at: CLOSES_AT })
   }
   if (req.method !== 'POST') return json(req, { ok: false, error: 'Method not allowed.' }, 405)
-  if (!isOpen()) return json(req, { ok: false, error: 'The contest entry window has closed.' }, 410)
-
   const url = Deno.env.get('SUPABASE_URL')
   const key = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')
   if (!url || !key) return json(req, { ok: false, error: 'The contest server is temporarily unavailable.' }, 503)
@@ -54,6 +69,7 @@ Deno.serve(async (req: Request) => {
   const db = createClient(url, key, { auth: { persistSession: false, autoRefreshToken: false } })
 
   if (body.action === 'init') {
+    if (!isOpen()) return json(req, { ok: false, error: 'The contest entry window has closed.' }, 410)
     const entrantName = clean(body.entrant_name, 120)
     const contactEmail = clean(body.contact_email, 254)
     const socialHandle = clean(body.social_handle, 120)
@@ -73,7 +89,7 @@ Deno.serve(async (req: Request) => {
         !fileName || !safeName || stem(fileName) !== videoTitle ||
         !Number.isSafeInteger(fileSize) || fileSize <= 0 || fileSize > MAX_BYTES ||
         !contentType || !ALLOWED_TYPES.has(contentType)) {
-      return json(req, { ok: false, error: 'Check every entry field and select a supported video file no larger than 50 MB. The file name must exactly match the video title.' }, 400)
+      return json(req, { ok: false, error: 'Check every entry field and select a supported video file no larger than 1 GB. The file name must exactly match the video title.' }, 400)
     }
 
     const confirmations = [
@@ -96,13 +112,6 @@ Deno.serve(async (req: Request) => {
 
     const entryId = crypto.randomUUID()
     const storagePath = `${entryId}/${fileName}`
-    const { data: upload, error: uploadError } = await db.storage.from(BUCKET)
-      .createSignedUploadUrl(storagePath, { upsert: false })
-    if (uploadError || !upload?.signedUrl) {
-      console.error('signed upload:', uploadError?.message)
-      return json(req, { ok: false, error: 'The contest server could not prepare the secure upload.' }, 500)
-    }
-
     const { error: insertError } = await db.from('madger_video_contest_entries').insert({
       id: entryId, entrant_name: entrantName, contact_email: contactEmail.toLowerCase(),
       social_handle: socialHandle, video_title: videoTitle, public_post_url: publicPostUrl,
@@ -118,7 +127,48 @@ Deno.serve(async (req: Request) => {
       console.error('entry insert:', insertError.message)
       return json(req, { ok: false, error: 'The contest server could not save the entry details.' }, 500)
     }
-    return json(req, { ok: true, entry_id: entryId, signed_url: upload.signedUrl })
+    const token = await uploadToken(key, { id: entryId, file_size: fileSize, file_name: fileName })
+    return json(req, { ok: true, entry_id: entryId, upload_token: token, storage_provider: 'r2' })
+  }
+
+  if (body.action === 'verify_r2_upload' || body.action === 'finalize_r2') {
+    if (!isUuid(body.entry_id) || typeof body.upload_token !== 'string') {
+      return json(req, { ok: false, error: 'Invalid upload authorization.' }, 400)
+    }
+    const entryId = body.entry_id as string
+    const { data: entry, error: entryError } = await db.from('madger_video_contest_entries')
+      .select('id,file_name,file_size,content_type,storage_path,upload_complete').eq('id', entryId).single()
+    if (entryError || !entry) return json(req, { ok: false, error: 'Contest entry not found.' }, 404)
+    const expectedToken = await uploadToken(key, entry)
+    if (!constantTimeEqual(body.upload_token, expectedToken)) {
+      return json(req, { ok: false, error: 'Invalid upload authorization.' }, 403)
+    }
+
+    if (body.action === 'verify_r2_upload') {
+      return json(req, {
+        ok: true, entry_id: entry.id, storage_path: entry.storage_path,
+        file_name: entry.file_name, file_size: entry.file_size,
+        content_type: entry.content_type, upload_complete: entry.upload_complete,
+      })
+    }
+
+    if (entry.upload_complete) return json(req, { ok: true, entry_id: entryId })
+    let statusResponse: Response
+    try {
+      statusResponse = await fetch(`${R2_STATUS_URL}?entry_id=${encodeURIComponent(entryId)}`, {
+        headers: { 'x-upload-token': body.upload_token },
+      })
+    } catch {
+      return json(req, { ok: false, error: 'The uploaded video could not be verified. Please try again.' }, 503)
+    }
+    const object = await statusResponse.json().catch(() => null)
+    if (!statusResponse.ok || !object?.ok || Number(object.size) !== Number(entry.file_size)) {
+      return json(req, { ok: false, error: 'The uploaded video could not be verified. Please retry the upload.' }, 409)
+    }
+    const { error: updateError } = await db.from('madger_video_contest_entries')
+      .update({ upload_complete: true, sync_status: 'ready', updated_at: new Date().toISOString() }).eq('id', entryId)
+    if (updateError) return json(req, { ok: false, error: 'The entry upload succeeded but final confirmation failed. Please try again.' }, 500)
+    return json(req, { ok: true, entry_id: entryId })
   }
 
   if (body.action === 'finalize') {
