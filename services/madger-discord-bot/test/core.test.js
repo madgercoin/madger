@@ -14,7 +14,8 @@ test('official MADGER links are trusted and lookalikes are blocked', () => {
 
 test('moderation catches a fake MADGER mint but preserves the official mint', () => {
   assert.equal(moderationFinding(`Official MADGER mint: ${OFFICIAL_MINT}`), null)
-  assert.equal(moderationFinding('Buy $MADGER at 4J48uQqrHEfDjvJwG3kpoQMPbsyGe5yWLmjBPDiJ4vZu').reason, 'unverified MADGER contract address')
+  assert.equal(moderationFinding('MADGER contract: 4J48uQqrHEfDjvJwG3kpoQMPbsyGe5yWLmjBPDiJ4vZu').reason, 'unverified MADGER contract address')
+  assert.equal(moderationFinding('My MADGER wallet is 4J48uQqrHEfDjvJwG3kpoQMPbsyGe5yWLmjBPDiJ4vZu'), null)
 })
 
 test('wallet safety education is not mistaken for credential theft', () => {

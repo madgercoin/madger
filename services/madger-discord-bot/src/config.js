@@ -17,6 +17,7 @@ const schema = z.object({
   DISCORD_QUARANTINE_ROLE_ID: optionalSnowflake,
   DISCORD_ANNOUNCEMENT_CHANNEL_ID: optionalSnowflake,
   DISCORD_SUPPORT_CATEGORY_ID: optionalSnowflake,
+  DISCORD_SUPPORT_ROLE_IDS: z.string().default(''),
   DISCORD_STARBOARD_CHANNEL_ID: optionalSnowflake,
   DISCORD_MEMBER_ROLE_ID: optionalSnowflake,
   DISCORD_CONTRIBUTOR_ROLE_ID: optionalSnowflake,
@@ -38,6 +39,7 @@ export function loadConfig(env = process.env) {
 
   return Object.freeze({
     ...parsed.data,
-    adminUserIds: new Set(parsed.data.DISCORD_ADMIN_USER_IDS.split(',').map(value => value.trim()).filter(Boolean))
+    adminUserIds: new Set(parsed.data.DISCORD_ADMIN_USER_IDS.split(',').map(value => value.trim()).filter(Boolean)),
+    supportRoleIds: new Set(parsed.data.DISCORD_SUPPORT_ROLE_IDS.split(',').map(value => value.trim()).filter(Boolean))
   })
 }

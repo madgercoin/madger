@@ -79,13 +79,16 @@ async function handleMadger(interaction, store) {
   if (command === 'help') return safeReply(interaction, helpPayload())
   if (command === 'verify') return safeReply(interaction, { embeds: [baseEmbed('Official MADGER Verification').addFields({ name: 'Mint', value: `\`${OFFICIAL_MINT}\`` }, { name: 'Raydium CPMM pool', value: `\`${OFFICIAL_POOL}\`` }, { name: 'Rule', value: 'Compare the complete mint. Never trust a shortened address.' })], components: [officialButtons()] })
   if (command === 'buy') return safeReply(interaction, { embeds: [baseEmbed('Buy $MADGER Safely', 'Use the fixed official guide. MADGER_Bot never asks for a seed phrase, private key, verification transfer, preset slippage, or remote access.')], components: [officialButtons()], ephemeral: true })
-  if (command === 'price' || command === 'pool') return safeReply(interaction, await marketPayload(store))
+  if (command === 'price' || command === 'pool') {
+    await interaction.deferReply()
+    return safeReply(interaction, await marketPayload(store))
+  }
   if (command === 'chart') return safeReply(interaction, { content: `Verified chart: ${LINKS.chart}`, ephemeral: true })
   if (command === 'links') return safeReply(interaction, { embeds: [baseEmbed('Official MADGER Links', `[Website](${LINKS.home}) • [Verification](${LINKS.launch}) • [Official links](${LINKS.official}) • [Chart](${LINKS.chart}) • [Dashboard](${LINKS.dashboard})`)], ephemeral: true })
   if (command === 'supply') return safeReply(interaction, { embeds: [baseEmbed('Verified Supply', '**Supply:** 1,000,000,000 MADGER\n**Decimals:** 6\n**Transfer tax:** 0%\n\nUse the official verification record for current authority evidence.')], components: [officialButtons()] })
   if (command === 'holders') {
     const holders = await store.latestHolders()
-    const description = holders ? `Positive-balance wallets: **${formatCompact(holders.holder_count)}**\nLargest-wallet share: **${Number(holders.largest_holder_percentage ?? 0).toFixed(2)}%**\nTop-10 concentration: **${Number(holders.top_10_percentage ?? 0).toFixed(2)}%**` : 'Holder intelligence is temporarily unavailable.'
+    const description = holders ? `Positive-balance wallets: **${formatCompact(holders.holder_count)}**\nLargest-wallet share: **${Number(holders.largest_percentage ?? 0).toFixed(2)}%**\nTop-10 concentration: **${Number(holders.top_10_percentage ?? 0).toFixed(2)}%**` : 'Holder intelligence is temporarily unavailable.'
     return safeReply(interaction, { embeds: [baseEmbed('Holder Intelligence', description)] })
   }
   if (command === 'risk') return safeReply(interaction, { embeds: [baseEmbed('Risk Inputs — Not a Safety Score', 'MADGER_Bot verifies the exact mint and pool, then reports liquidity depth, data freshness, holder count, and raw concentration. It does not predict returns or declare any token safe.')], components: [officialButtons()] })
@@ -137,6 +140,7 @@ async function handleCommunity(interaction, config, store) {
     let url
     try { url = new URL(evidence) } catch { return safeReply(interaction, { content: 'Evidence must be a valid public HTTPS URL.', ephemeral: true }) }
     if (url.protocol !== 'https:') return safeReply(interaction, { content: 'Evidence must use HTTPS.', ephemeral: true })
+    if (!await store.activeMission(code)) return safeReply(interaction, { content: 'That mission is closed or does not exist. Use `/community missions` for the current list.', ephemeral: true })
     const row = await store.createSubmission({ guildId: interaction.guildId, userId: interaction.user.id, missionCode: code, evidenceUrl: url.href })
     return safeReply(interaction, { content: `Submission #${row.id} is queued for human review.`, ephemeral: true })
   }
@@ -172,6 +176,14 @@ async function handleSupport(interaction, config, store) {
     if (!config.FEATURE_TICKETS) return safeReply(interaction, { content: 'Tickets are currently disabled.', ephemeral: true })
     const topic = truncate(interaction.options.getString('topic', true), 200)
     const guild = interaction.guild
+    const supportOverwrites = [...config.supportRoleIds].map(id => ({
+      id,
+      allow: [PermissionFlagsBits.ViewChannel, PermissionFlagsBits.SendMessages, PermissionFlagsBits.ReadMessageHistory]
+    }))
+    const adminOverwrites = [...config.adminUserIds].map(id => ({
+      id,
+      allow: [PermissionFlagsBits.ViewChannel, PermissionFlagsBits.SendMessages, PermissionFlagsBits.ReadMessageHistory]
+    }))
     const channel = await guild.channels.create({
       name: `ticket-${safeChannelName(interaction.user.username)}`,
       type: ChannelType.GuildText,
@@ -180,7 +192,9 @@ async function handleSupport(interaction, config, store) {
       permissionOverwrites: [
         { id: guild.roles.everyone, deny: [PermissionFlagsBits.ViewChannel] },
         { id: interaction.user.id, allow: [PermissionFlagsBits.ViewChannel, PermissionFlagsBits.SendMessages, PermissionFlagsBits.ReadMessageHistory] },
-        { id: guild.members.me.id, allow: [PermissionFlagsBits.ViewChannel, PermissionFlagsBits.SendMessages, PermissionFlagsBits.ManageChannels, PermissionFlagsBits.ReadMessageHistory] }
+        { id: guild.members.me.id, allow: [PermissionFlagsBits.ViewChannel, PermissionFlagsBits.SendMessages, PermissionFlagsBits.ManageChannels, PermissionFlagsBits.ReadMessageHistory] },
+        ...supportOverwrites,
+        ...adminOverwrites
       ]
     })
     await store.createTicket({ guildId: guild.id, channelId: channel.id, ownerUserId: interaction.user.id, topic })
@@ -240,7 +254,7 @@ async function handleAdmin(interaction, client, config, store, logger) {
   }
   if (command === 'setup') {
     const me = interaction.guild.members.me
-    const required = [PermissionFlagsBits.ViewChannel, PermissionFlagsBits.SendMessages, PermissionFlagsBits.EmbedLinks, PermissionFlagsBits.ManageMessages, PermissionFlagsBits.ModerateMembers, PermissionFlagsBits.ManageRoles, PermissionFlagsBits.ManageChannels, PermissionFlagsBits.ViewAuditLog, PermissionFlagsBits.ManageGuildExpressions, PermissionFlagsBits.CreateInstantInvite]
+    const required = [PermissionFlagsBits.ViewChannel, PermissionFlagsBits.SendMessages, PermissionFlagsBits.EmbedLinks, PermissionFlagsBits.AddReactions, PermissionFlagsBits.ReadMessageHistory, PermissionFlagsBits.ManageMessages, PermissionFlagsBits.ModerateMembers, PermissionFlagsBits.KickMembers, PermissionFlagsBits.BanMembers, PermissionFlagsBits.ManageRoles, PermissionFlagsBits.ManageChannels, PermissionFlagsBits.ViewAuditLog, PermissionFlagsBits.ManageGuildExpressions, PermissionFlagsBits.CreateInstantInvite]
     const missing = required.filter(permission => !me.permissions.has(permission)).map(permission => String(permission))
     return safeReply(interaction, { embeds: [baseEmbed('Server Setup Audit', missing.length ? `Missing ${missing.length} required permission flag(s):\n\`${missing.join(', ')}\`` : 'All required least-privilege permissions are present. Administrator permission is not required.')], ephemeral: true })
   }

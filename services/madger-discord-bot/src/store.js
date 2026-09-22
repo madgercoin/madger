@@ -71,6 +71,10 @@ export function createStore(config) {
       return unwrap(await db.from('madger_bot_missions').select('code,title,instructions,points').eq('active', true).order('points', { ascending: false }), 'read active missions')
     },
 
+    async activeMission(code) {
+      return unwrap(await db.from('madger_bot_missions').select('code').eq('code', code).eq('active', true).maybeSingle(), 'read active mission')
+    },
+
     async createSubmission({ guildId, userId, missionCode, evidenceUrl }) {
       return unwrap(await db.from('madger_discord_submissions').insert({
         guild_id: guildId, user_id: userId, mission_code: missionCode, evidence_url: evidenceUrl

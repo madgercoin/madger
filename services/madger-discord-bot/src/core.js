@@ -34,6 +34,15 @@ export function extractSolanaCandidates(text) {
   return String(text ?? '').match(/\b[1-9A-HJ-NP-Za-km-z]{32,44}\b/g) ?? []
 }
 
+export function extractExplicitContractCandidates(text) {
+  const value = String(text ?? '')
+  return extractSolanaCandidates(value).filter(candidate => {
+    const index = value.indexOf(candidate)
+    const context = value.slice(Math.max(0, index - 64), index + candidate.length + 24)
+    return /\b(?:ca|contract|mint)(?:\s+address)?\b/i.test(context)
+  })
+}
+
 export function inspectLink(value) {
   let url
   try { url = new URL(String(value ?? '').trim()) } catch { return { level: 'invalid', reason: 'not a valid URL', host: null } }
@@ -53,7 +62,7 @@ export function inspectLink(value) {
 
 export function moderationFinding(text, { strictLinks = false } = {}) {
   const value = String(text ?? '')
-  const candidates = extractSolanaCandidates(value)
+  const candidates = extractExplicitContractCandidates(value)
   if (/madger|\$madger/i.test(value) && candidates.some(candidate => candidate !== OFFICIAL_MINT && candidate !== OFFICIAL_POOL)) {
     return { severity: 'critical', reason: 'unverified MADGER contract address' }
   }
