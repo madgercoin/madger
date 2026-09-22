@@ -4,7 +4,7 @@ import { createClient } from 'npm:@supabase/supabase-js@2.57.4'
 const BUCKET = 'madger-video-contest-sept-2026'
 const CLOSES_AT = '2026-09-23T03:59:00.000Z'
 const MAX_BYTES = 1024 * 1024 * 1024
-const R2_STATUS_URL = 'https://madgercoin.com/api/contest-upload/status'
+const CHUNK_BYTES = 40 * 1024 * 1024
 const ALLOWED_TYPES = new Set(['video/mp4', 'video/quicktime', 'video/webm', 'video/x-m4v', 'video/mpeg'])
 const ALLOWED_ORIGINS = new Set(['https://madgercoin.com', 'https://www.madgercoin.com'])
 
@@ -36,22 +36,6 @@ const isUuid = (value: unknown) =>
 async function hash(value: string) {
   const digest = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(value))
   return Array.from(new Uint8Array(digest), b => b.toString(16).padStart(2, '0')).join('')
-}
-
-async function uploadToken(key: string, entry: { id: string, file_size: number, file_name: string }) {
-  const cryptoKey = await crypto.subtle.importKey(
-    'raw', new TextEncoder().encode(key), { name: 'HMAC', hash: 'SHA-256' }, false, ['sign'],
-  )
-  const message = `${entry.id}:${entry.file_size}:${entry.file_name}`
-  const signature = await crypto.subtle.sign('HMAC', cryptoKey, new TextEncoder().encode(message))
-  return Array.from(new Uint8Array(signature), b => b.toString(16).padStart(2, '0')).join('')
-}
-
-function constantTimeEqual(left: string, right: string) {
-  if (left.length !== right.length) return false
-  let difference = 0
-  for (let index = 0; index < left.length; index += 1) difference |= left.charCodeAt(index) ^ right.charCodeAt(index)
-  return difference === 0
 }
 
 Deno.serve(async (req: Request) => {
@@ -111,7 +95,7 @@ Deno.serve(async (req: Request) => {
     if ((count || 0) >= 30) return json(req, { ok: false, error: 'Too many submission attempts. Please wait and try again.' }, 429)
 
     const entryId = crypto.randomUUID()
-    const storagePath = `${entryId}/${fileName}`
+    const storagePath = `${entryId}/parts`
     const { error: insertError } = await db.from('madger_video_contest_entries').insert({
       id: entryId, entrant_name: entrantName, contact_email: contactEmail.toLowerCase(),
       social_handle: socialHandle, video_title: videoTitle, public_post_url: publicPostUrl,
@@ -127,44 +111,53 @@ Deno.serve(async (req: Request) => {
       console.error('entry insert:', insertError.message)
       return json(req, { ok: false, error: 'The contest server could not save the entry details.' }, 500)
     }
-    const token = await uploadToken(key, { id: entryId, file_size: fileSize, file_name: fileName })
-    return json(req, { ok: true, entry_id: entryId, upload_token: token, storage_provider: 'r2' })
+    const partCount = Math.ceil(fileSize / CHUNK_BYTES)
+    const uploads = []
+    for (let index = 0; index < partCount; index += 1) {
+      const partNumber = index + 1
+      const partName = `part-${String(partNumber).padStart(3, '0')}`
+      const partPath = `${storagePath}/${partName}`
+      const { data: upload, error: uploadError } = await db.storage.from(BUCKET)
+        .createSignedUploadUrl(partPath, { upsert: false })
+      if (uploadError || !upload?.signedUrl) {
+        console.error('chunk upload URL:', uploadError?.message)
+        return json(req, { ok: false, error: 'The contest server could not prepare every secure upload part.' }, 500)
+      }
+      uploads.push({
+        part_number: partNumber,
+        offset: index * CHUNK_BYTES,
+        size: Math.min(CHUNK_BYTES, fileSize - (index * CHUNK_BYTES)),
+        signed_url: upload.signedUrl,
+      })
+    }
+    return json(req, { ok: true, entry_id: entryId, uploads, chunk_size: CHUNK_BYTES, storage_provider: 'supabase-segmented' })
   }
 
-  if (body.action === 'verify_r2_upload' || body.action === 'finalize_r2') {
-    if (!isUuid(body.entry_id) || typeof body.upload_token !== 'string') {
-      return json(req, { ok: false, error: 'Invalid upload authorization.' }, 400)
-    }
+  if (body.action === 'finalize_parts') {
+    if (!isUuid(body.entry_id)) return json(req, { ok: false, error: 'Invalid entry reference.' }, 400)
     const entryId = body.entry_id as string
     const { data: entry, error: entryError } = await db.from('madger_video_contest_entries')
-      .select('id,file_name,file_size,content_type,storage_path,upload_complete').eq('id', entryId).single()
+      .select('id,file_size,upload_complete').eq('id', entryId).single()
     if (entryError || !entry) return json(req, { ok: false, error: 'Contest entry not found.' }, 404)
-    const expectedToken = await uploadToken(key, entry)
-    if (!constantTimeEqual(body.upload_token, expectedToken)) {
-      return json(req, { ok: false, error: 'Invalid upload authorization.' }, 403)
-    }
-
-    if (body.action === 'verify_r2_upload') {
-      return json(req, {
-        ok: true, entry_id: entry.id, storage_path: entry.storage_path,
-        file_name: entry.file_name, file_size: entry.file_size,
-        content_type: entry.content_type, upload_complete: entry.upload_complete,
-      })
-    }
-
     if (entry.upload_complete) return json(req, { ok: true, entry_id: entryId })
-    let statusResponse: Response
-    try {
-      statusResponse = await fetch(`${R2_STATUS_URL}?entry_id=${encodeURIComponent(entryId)}`, {
-        headers: { 'x-upload-token': body.upload_token },
-      })
-    } catch {
-      return json(req, { ok: false, error: 'The uploaded video could not be verified. Please try again.' }, 503)
+
+    const expectedParts = Math.ceil(Number(entry.file_size) / CHUNK_BYTES)
+    const { data: objects, error: listError } = await db.storage.from(BUCKET)
+      .list(`${entryId}/parts`, { limit: 100, sortBy: { column: 'name', order: 'asc' } })
+    const parts = (objects || []).filter(item => /^part-\d{3}$/.test(item.name))
+    let totalSize = 0
+    let partsValid = parts.length === expectedParts
+    for (let index = 0; index < parts.length; index += 1) {
+      const expectedName = `part-${String(index + 1).padStart(3, '0')}`
+      const expectedSize = Math.min(CHUNK_BYTES, Number(entry.file_size) - (index * CHUNK_BYTES))
+      const actualSize = Number(parts[index].metadata?.size ?? -1)
+      if (parts[index].name !== expectedName || actualSize !== expectedSize) partsValid = false
+      totalSize += actualSize
     }
-    const object = await statusResponse.json().catch(() => null)
-    if (!statusResponse.ok || !object?.ok || Number(object.size) !== Number(entry.file_size)) {
-      return json(req, { ok: false, error: 'The uploaded video could not be verified. Please retry the upload.' }, 409)
+    if (listError || !partsValid || totalSize !== Number(entry.file_size)) {
+      return json(req, { ok: false, error: 'The uploaded video parts could not be verified. Please retry the upload.' }, 409)
     }
+
     const { error: updateError } = await db.from('madger_video_contest_entries')
       .update({ upload_complete: true, sync_status: 'ready', updated_at: new Date().toISOString() }).eq('id', entryId)
     if (updateError) return json(req, { ok: false, error: 'The entry upload succeeded but final confirmation failed. Please try again.' }, 500)
