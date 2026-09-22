@@ -118,7 +118,7 @@
     for (const part of init.uploads) {
       const offset = Number(part.offset);
       const size = Number(part.size);
-      const blob = file.slice(offset, offset + size);
+      const blob = file.slice(offset, offset + size, file.type || 'video/mp4');
       if (!part.signed_url || blob.size !== size) throw new Error('The secure upload manifest did not match the selected file.');
       await uploadPart(part.signed_url, blob, completedBytes, file.size);
       completedBytes += blob.size;
