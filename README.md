@@ -27,6 +27,8 @@ Community operations are defined in [`docs/social-media.md`](docs/social-media.m
 
 The separate [`docs/madger-command-bot.md`](docs/madger-command-bot.md) service provides Telegram onboarding, contributor missions, referral attribution, moderation, and verified market alerts without adding a wallet connection or transaction runtime to the static website.
 
+The persistent [`docs/madger-discord-bot.md`](docs/madger-discord-bot.md) service extends the same verified identity, mission catalog, market records, and safety boundaries into the existing official MADGER Community Discord with slash commands, context menus, edited-message moderation, onboarding, tickets, roles, and community operations.
+
 ## Production architecture
 
 The production application is deliberately small and static:

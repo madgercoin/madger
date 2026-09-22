@@ -1,0 +1,13 @@
+{
+  "$schema": "https://railway.com/railway.schema.json",
+  "build": {
+    "builder": "DOCKERFILE",
+    "dockerfilePath": "services/madger-discord-bot/Dockerfile",
+    "watchPatterns": ["services/madger-discord-bot/**"]
+  },
+  "deploy": {
+    "startCommand": "node src/index.js",
+    "restartPolicyType": "ON_FAILURE",
+    "restartPolicyMaxRetries": 10
+  }
+}

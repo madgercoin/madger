@@ -17,7 +17,8 @@
     "test:performance": "node --test test/buffer-performance.test.mjs",
     "test:purchase": "node --test test/purchase-path.test.mjs",
     "test:bot": "node --test test/madger-command-bot-*.test.mjs",
-    "validate": "npm run test:purchase && npm run test:bot && npm run validate:js && npm run test:buffer && npm run test:performance && npm run validate:launch && npm run validate:site && npm run validate:dist && npm run scan:secrets",
+    "test:discord": "node --test services/madger-discord-bot/test/*.test.js",
+    "validate": "npm run test:purchase && npm run test:bot && npm run test:discord && npm run validate:js && npm run test:buffer && npm run test:performance && npm run validate:launch && npm run validate:site && npm run validate:dist && npm run scan:secrets",
     "check:deployment": "node scripts/check-deployment.mjs",
     "validate:launch": "node scripts/validate-launch.mjs"
   },

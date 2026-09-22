@@ -10,6 +10,8 @@ root sources -> node build.mjs -> dist/ allowlist -> Cloudflare Worker -> madger
 Telegram -> signed Edge Function webhook -> service-role-only bot tables
 pg_cron -> Vault-authenticated market monitor -> DEX Screener -> private admin alerts
 verified buy candidate -> Solana RPC confirmation -> thresholded Telegram alert
+Discord Gateway -> persistent MADGER_Bot service -> commands, safety, onboarding, and community operations
+Discord service -> service-role-only Discord tables + shared verified market and mission records
 ```
 
 `index.html`, `litepaper.html`, and `404.html` provide documents. `styles.css` provides shared homepage presentation; auxiliary pages use inline styles. `script.js` rotates Daily Dig content by UTC day, updates the year, manages mobile navigation, and progressively enhances mint copying. Metadata files provide crawling/install behavior. `_headers` supplies security/cache headers.
@@ -23,6 +25,8 @@ verified buy candidate -> Solana RPC confirmation -> thresholded Telegram alert
 `wrangler.json` names `madger-badger`, points assets to `dist`, enables automatic trailing-slash handling, and uses the custom 404 page. See `README_DEPLOY.txt` and `DEPLOYMENT.md`.
 
 The bot source lives under `supabase/functions/madger-command-bot/`; its schema and schedules live under `supabase/migrations/`. Telegram and Solana credentials are runtime secrets and never belong in the repository. The bot's tables have RLS enabled, no public policies, and explicit service-role-only access. Five-minute market polling and daily data-retention jobs are database-scheduled.
+
+The Discord transport lives under `services/madger-discord-bot/` as an isolated long-running Node.js service. Gateway access is limited to guild, member, moderation, message, message-content, and reaction events; presence access is not requested. It reuses the official mint, pool, mission catalog, and stored market/holder records while keeping Discord member, ticket, audit, and configuration state in separate service-role-only tables.
 
 ## Security and performance posture
 
