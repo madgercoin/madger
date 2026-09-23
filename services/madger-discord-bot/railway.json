@@ -6,7 +6,7 @@
     "watchPatterns": ["services/madger-discord-bot/**"]
   },
   "deploy": {
-    "startCommand": "node src/index.js",
+    "startCommand": "node src/register-commands.js && node src/index.js",
     "restartPolicyType": "ON_FAILURE",
     "restartPolicyMaxRetries": 10
   }
