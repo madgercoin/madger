@@ -29,6 +29,12 @@ Bot tables use RLS with no public policies; `anon` and `authenticated` privilege
 
 Never commit seed phrases, keys, tokens, private wallet details, personal data, or unapproved addresses. Public operational addresses may appear only in the internal wallet runbook and transaction records, never the deployed artifact. Verify mint changes character by character and across official channels with multiple authorized reviewers. Avoid remote scripts, trackers, forms, wallet adapters, and dependencies unless threat-modeled and approved. Review generated `dist/` and Git diff for disclosure before release.
 
+## Discord Bot review — September 22, 2026
+
+The Discord transport uses a persistent Gateway connection only for capabilities that interaction webhooks cannot supply: edited-message moderation, onboarding, join-raid detection, reaction workflows, and bounded social XP. Server Members and Message Content are the only privileged intents requested; Presence is not requested. The application should receive the enumerated operational permissions in `docs/madger-discord-bot.md`, never Administrator.
+
+All slash-command administration is rechecked against configured administrator IDs or Discord Manage Server authority. The bot disallows ambient mentions, bounds stored excerpts, keeps transient spam fingerprints in memory, times out external market requests, and stores durable Discord state in RLS-protected service-role-only tables. Native Discord AutoMod reinforces—but does not replace—the exact-mint and edited-message safety logic. Tokens, service-role keys, guild IDs, private channel IDs, and role IDs remain runtime configuration.
+
 ## Incident handling
 
 For a false address/status or compromise, halt releases, roll back to a known-good artifact, preserve evidence, rotate affected credentials, correct all official channels, and document the incident without exposing secrets. Do not improvise financial guidance.

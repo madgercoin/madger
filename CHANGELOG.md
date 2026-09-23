@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026-09-22 — MADGER_Bot Discord platform
+
+- Added a production Discord Gateway service that extends MADGER_Bot into the existing official community without creating a duplicate server or separate source of truth.
+- Added five command groups and two context menus covering verified token intelligence, safety checks, human-reviewed contributions, community recognition, private support tickets, moderation, native AutoMod synchronization, announcements, and operational health.
+- Added edited-message and join-raid protection, exact-mint enforcement, scam-link and credential-solicitation detection, bounded flood/repeat controls, quarantine verification, least-privilege permission auditing, and private safety logs.
+- Added service-role-only Discord member, event, ticket, submission, and configuration tables plus atomic human review of contribution evidence.
+- Added isolated package, pinned dependencies, Docker/Railway deployment files, unit tests, environment contract, architecture documentation, and explicit no-custody/no-signing/no-purchase-reward boundaries.
+
 ## 2026-09-11 — MADGER Command Bot
 
 - Shipped the v4.5 reliability release with modular Telegram transport, a static official-site Mini App, monitor policy, RPC failover, webhook policy, and structured request telemetry.
