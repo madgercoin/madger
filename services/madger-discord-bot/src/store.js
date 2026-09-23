@@ -62,6 +62,19 @@ export function createStore(config) {
       return unwrap(await db.from('madger_discord_members').select('*').eq('guild_id', guildId).eq('user_id', userId).maybeSingle(), 'read Discord member')
     },
 
+    async incrementWarning({ guildId, userId, username }) {
+      const { data: current, error } = await db.from('madger_discord_members')
+        .select('warning_count').eq('guild_id', guildId).eq('user_id', userId).maybeSingle()
+      if (error) throw new Error(`read warning count: ${error.message}`)
+      return unwrap(await db.from('madger_discord_members').upsert({
+        guild_id: guildId,
+        user_id: userId,
+        username: username ?? null,
+        warning_count: Number(current?.warning_count ?? 0) + 1,
+        updated_at: new Date().toISOString()
+      }, { onConflict: 'guild_id,user_id' }).select().single(), 'increment warning count')
+    },
+
     async leaderboard(guildId, limit = 10) {
       return unwrap(await db.from('madger_discord_members').select('user_id,username,xp,contribution_points,message_count')
         .eq('guild_id', guildId).order('contribution_points', { ascending: false }).order('xp', { ascending: false }).limit(limit), 'read Discord leaderboard')

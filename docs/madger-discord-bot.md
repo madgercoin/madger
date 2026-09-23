@@ -19,9 +19,9 @@ The Discord bot never holds funds, connects wallets, signs transactions, request
 1. Create or reuse the **MADGER_Bot** application in Discord Developer Portal. Do not create another community server.
 2. Under **Bot**, enable the Server Members Intent and Message Content Intent. Presence Intent is not required.
 3. Install to the official MADGER Community with `applications.commands` and `bot` scopes.
-4. Grant only these permissions: View Channels, Send Messages, Embed Links, Read Message History, Add Reactions, Manage Messages, Moderate Members, Kick Members, Ban Members, Manage Roles, Manage Channels, Create Invite, View Audit Log, and Manage Guild Expressions. Do not grant Administrator.
+4. Grant only these permissions: View Channels, Send Messages, Embed Links, Read Message History, Add Reactions, Manage Messages, Moderate Members, Kick Members, Ban Members, Manage Roles, Manage Channels, Manage Server, Create Invite, View Audit Log, and Manage Guild Expressions. Do not grant Administrator.
 5. Place the bot role above the quarantine, verified, member, and contributor roles it manages, but below owner and senior administrator roles.
-6. Apply `supabase/migrations/202609220001_madger_discord_bot.sql` to the same Supabase project used by Telegram.
+6. Apply `supabase/migrations/202609220001_madger_discord_bot.sql`, followed by `supabase/migrations/202609220002_discord_active_mission_review.sql`, to the same Supabase project used by Telegram.
 7. Configure the environment variables from `services/madger-discord-bot/.env.example` in the host secret manager.
 8. From the service directory, run `npm ci`, `npm run check`, and `npm run register` once. Start with `npm start`.
 9. In Discord, run `/admin setup`, `/admin sync-automod`, `/admin health`, `/madger verify`, `/madger price`, `/safety check-link`, and `/support ticket` as smoke tests.

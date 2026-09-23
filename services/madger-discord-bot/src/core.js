@@ -36,11 +36,12 @@ export function extractSolanaCandidates(text) {
 
 export function extractExplicitContractCandidates(text) {
   const value = String(text ?? '')
-  return extractSolanaCandidates(value).filter(candidate => {
-    const index = value.indexOf(candidate)
-    const context = value.slice(Math.max(0, index - 64), index + candidate.length + 24)
+  const pattern = /\b[1-9A-HJ-NP-Za-km-z]{32,44}\b/g
+  return [...value.matchAll(pattern)].filter(match => {
+    const index = match.index ?? 0
+    const context = value.slice(Math.max(0, index - 64), index + match[0].length + 24)
     return /\b(?:ca|contract|mint)(?:\s+address)?\b/i.test(context)
-  })
+  }).map(match => match[0])
 }
 
 export function inspectLink(value) {
@@ -67,9 +68,15 @@ export function moderationFinding(text, { strictLinks = false } = {}) {
     return { severity: 'critical', reason: 'unverified MADGER contract address' }
   }
 
-  const credential = /(?:send|share|enter|provide|paste|submit|dm|message).{0,45}(?:seed phrase|recovery phrase|private key|secret key)|(?:seed phrase|recovery phrase|private key|secret key).{0,45}(?:send|share|enter|provide|paste|submit|dm|message)/i
-  const education = /(?:never|do\s+not|don't)\s+(?:send|share|enter|provide|paste|submit).{0,45}(?:seed phrase|recovery phrase|private key|secret key)/i
-  if (credential.test(value) && !education.test(value)) return { severity: 'critical', reason: 'wallet credential solicitation' }
+  const credential = /(?:send|share|enter|provide|paste|submit|dm|message).{0,45}(?:seed phrase|recovery phrase|private key|secret key)|(?:seed phrase|recovery phrase|private key|secret key).{0,45}(?:send|share|enter|provide|paste|submit|dm|message)/gi
+  const education = /(?:never|do\s+not|don't)\s+(?:send|share|enter|provide|paste|submit)[^.!?\n]{0,45}(?:seed phrase|recovery phrase|private key|secret key)/gi
+  const educationalRanges = [...value.matchAll(education)].map(match => ({ start: match.index ?? 0, end: (match.index ?? 0) + match[0].length }))
+  const unsafe = [...value.matchAll(credential)].some(match => {
+    const start = match.index ?? 0
+    const end = start + match[0].length
+    return !educationalRanges.some(range => start >= range.start && end <= range.end)
+  })
+  if (unsafe) return { severity: 'critical', reason: 'wallet credential solicitation' }
 
   const urls = extractHttpUrls(value)
   const inspections = urls.map(inspectLink)

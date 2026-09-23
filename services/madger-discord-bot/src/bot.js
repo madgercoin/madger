@@ -140,6 +140,7 @@ async function handleCommunity(interaction, config, store) {
     let url
     try { url = new URL(evidence) } catch { return safeReply(interaction, { content: 'Evidence must be a valid public HTTPS URL.', ephemeral: true }) }
     if (url.protocol !== 'https:') return safeReply(interaction, { content: 'Evidence must use HTTPS.', ephemeral: true })
+    await interaction.deferReply({ ephemeral: true })
     if (!await store.activeMission(code)) return safeReply(interaction, { content: 'That mission is closed or does not exist. Use `/community missions` for the current list.', ephemeral: true })
     const row = await store.createSubmission({ guildId: interaction.guildId, userId: interaction.user.id, missionCode: code, evidenceUrl: url.href })
     return safeReply(interaction, { content: `Submission #${row.id} is queued for human review.`, ephemeral: true })
@@ -254,7 +255,7 @@ async function handleAdmin(interaction, client, config, store, logger) {
   }
   if (command === 'setup') {
     const me = interaction.guild.members.me
-    const required = [PermissionFlagsBits.ViewChannel, PermissionFlagsBits.SendMessages, PermissionFlagsBits.EmbedLinks, PermissionFlagsBits.AddReactions, PermissionFlagsBits.ReadMessageHistory, PermissionFlagsBits.ManageMessages, PermissionFlagsBits.ModerateMembers, PermissionFlagsBits.KickMembers, PermissionFlagsBits.BanMembers, PermissionFlagsBits.ManageRoles, PermissionFlagsBits.ManageChannels, PermissionFlagsBits.ViewAuditLog, PermissionFlagsBits.ManageGuildExpressions, PermissionFlagsBits.CreateInstantInvite]
+    const required = [PermissionFlagsBits.ViewChannel, PermissionFlagsBits.SendMessages, PermissionFlagsBits.EmbedLinks, PermissionFlagsBits.AddReactions, PermissionFlagsBits.ReadMessageHistory, PermissionFlagsBits.ManageMessages, PermissionFlagsBits.ModerateMembers, PermissionFlagsBits.KickMembers, PermissionFlagsBits.BanMembers, PermissionFlagsBits.ManageRoles, PermissionFlagsBits.ManageChannels, PermissionFlagsBits.ManageGuild, PermissionFlagsBits.ViewAuditLog, PermissionFlagsBits.ManageGuildExpressions, PermissionFlagsBits.CreateInstantInvite]
     const missing = required.filter(permission => !me.permissions.has(permission)).map(permission => String(permission))
     return safeReply(interaction, { embeds: [baseEmbed('Server Setup Audit', missing.length ? `Missing ${missing.length} required permission flag(s):\n\`${missing.join(', ')}\`` : 'All required least-privilege permissions are present. Administrator permission is not required.')], ephemeral: true })
   }
@@ -291,7 +292,10 @@ async function handleAdmin(interaction, client, config, store, logger) {
     const user = interaction.options.getUser('member', true)
     const member = await interaction.guild.members.fetch(user.id)
     const reason = truncate(interaction.options.getString('reason', true), 400)
-    if (command === 'warn') await user.send(`MADGER Community warning: ${reason}`).catch(() => {})
+    if (command === 'warn') {
+      await user.send(`MADGER Community warning: ${reason}`).catch(() => {})
+      await store.incrementWarning({ guildId: interaction.guildId, userId: user.id, username: user.username })
+    }
     if (command === 'timeout') await member.timeout(interaction.options.getInteger('minutes', true) * 60_000, reason)
     if (command === 'kick') await member.kick(reason)
     if (command === 'ban') await member.ban({ reason, deleteMessageSeconds: 86400 })
@@ -313,7 +317,8 @@ async function handleAdmin(interaction, client, config, store, logger) {
   }
   if (command === 'reviews') {
     const rows = await store.pendingSubmissions(interaction.guildId)
-    return safeReply(interaction, { embeds: [baseEmbed('Pending Contribution Reviews', rows.length ? rows.map(row => `#${row.id} • <@${row.user_id}> • **${row.mission_code}**\n${row.evidence_url}`).join('\n\n') : 'No pending submissions.')], ephemeral: true })
+    const description = rows.length ? truncate(rows.map(row => `#${row.id} • <@${row.user_id}> • **${row.mission_code}**\n${truncate(row.evidence_url, 500)}`).join('\n\n'), 4000) : 'No pending submissions.'
+    return safeReply(interaction, { embeds: [baseEmbed('Pending Contribution Reviews', description)], ephemeral: true })
   }
   if (command === 'approve' || command === 'reject') {
     const result = await store.reviewSubmission({ id: interaction.options.getInteger('id', true), status: command === 'approve' ? 'approved' : 'rejected', reviewerUserId: interaction.user.id, note: interaction.options.getString('note') })
@@ -346,7 +351,7 @@ async function handleMessage(message, client, config, store, logger, edited = fa
     return
   }
 
-  if (config.FEATURE_LEVELING && !XP_LIMITER.hit(`${message.guild.id}:${message.author.id}`).blocked) {
+  if (!edited && config.FEATURE_LEVELING && !XP_LIMITER.hit(`${message.guild.id}:${message.author.id}`).blocked) {
     const amount = xpForMessage({ content: message.content, hasAttachment: message.attachments.size > 0, isThread: message.channel.isThread() })
     if (amount) await store.addXp({ guildId: message.guild.id, userId: message.author.id, username: message.author.username, amount }).catch(error => logger.error({ error }, 'XP update failed'))
   }

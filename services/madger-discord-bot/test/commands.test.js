@@ -15,6 +15,11 @@ test('command groups stay below Discord option limits', () => {
   for (const command of COMMANDS) assert.ok((command.options?.length ?? 0) <= 25)
 })
 
+test('admin commands allow configured user IDs through runtime authorization', () => {
+  const admin = COMMANDS.find(command => command.name === 'admin')
+  assert.equal(admin.default_member_permissions, undefined)
+})
+
 test('capability directory states the safety boundary', () => {
   const directory = capabilityDirectory()
   assert.match(directory, /edited-message scanning/)

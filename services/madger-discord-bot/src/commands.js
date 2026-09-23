@@ -55,7 +55,6 @@ export const COMMANDS = Object.freeze([
   },
   {
     name: 'admin', description: 'MADGER_Bot administration and operations', type: 1,
-    default_member_permissions: '32',
     dm_permission: false,
     options: [
       sub('dashboard', 'Open the command center'),
