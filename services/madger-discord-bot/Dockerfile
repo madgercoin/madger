@@ -4,4 +4,4 @@ COPY services/madger-discord-bot/package.json services/madger-discord-bot/packag
 RUN npm ci --omit=dev
 COPY services/madger-discord-bot/src ./src
 USER node
-CMD ["node", "src/index.js"]
+CMD ["sh", "-c", "node src/register-commands.js && exec node src/index.js"]
