@@ -1,5 +1,12 @@
 # Changelog
 
+## 2026-09-24 — Signals dispatch: market cap is not FDV
+
+- Published Dispatch 012 as a source-linked, reproducible audit of total supply, documented locks, maximum circulating supply, market capitalization, and fully diluted value.
+- Reconciled the automated token guard to the finalized on-chain supply of 999,999,994.992751 MADGER while preserving exact-change detection for future review.
+- Refreshed the transparency record with separate supply-check and lock-record dates instead of implying every evidence set was checked at the same time.
+- Updated the image-led archive and homepage preview, RSS feed, sitemap, build allowlist, article navigation, validation, and deployment checks while preserving the separate beginner buying path.
+
 ## 2026-09-19 — Signals visual reading system
 
 - Rebuilt the Signals From Below entry points around approved MADGER imagery, with image-backed hero controls, four outcome-based reading paths, a full-card latest dispatch, and more obvious archive targets.

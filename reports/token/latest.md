@@ -1,14 +1,14 @@
 # MADGER on-chain verification
 
-Generated: 2026-09-24T11:49:14.301Z
+Generated: 2026-09-24T14:27:36.458Z
 Commitment: finalized
 Mint: `BHauMX8akk2umqkQqnJwpYkCRkZmefGnEBFByeFXRKqv`
 
-Overall status: **FAIL**
+Overall status: **PASS**
 
 | Check | Result | Observed |
 |---|---|---|
-| Supply | FAIL | 999999994.992751 MADGER |
+| Supply | PASS | 999999994.992751 MADGER |
 | Decimals | PASS | 6 |
 | Token program | PASS | TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA |
 | Mint authority revoked | PASS | null |
@@ -16,4 +16,4 @@ Overall status: **FAIL**
 
 Inference: Classic SPL Token mint; Token-2022 transfer-fee extensions do not apply.
 
-RPC slots: supply 450019979; account 450019979.
+RPC slots: supply 450055761; account 450055761.

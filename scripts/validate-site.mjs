@@ -1,7 +1,7 @@
 import { access, readFile } from "node:fs/promises";
 import path from "node:path";
 
-const htmlFiles = ["app.html", "game.html", "buy.html", "index.html", "commons.html", "launch.html", "transparency.html", "litepaper.html", "official-links.html", "collaborators.html", "privacy.html", "blog.html", "blog-proof-you-can-open.html", "blog-utility-without-a-wallet.html", "blog-creator-trust-standard.html", "blog-madger-thesis.html", "blog-diligence-map.html", "blog-burrow-after-launch.html", "blog-character-outlives-chart.html", "blog-verify-live-market.html", "blog-building-foundations.html", "blog-honey-badger-standard.html", "blog-token-link-safety.html", "404.html"];
+const htmlFiles = ["app.html", "game.html", "buy.html", "index.html", "commons.html", "launch.html", "transparency.html", "litepaper.html", "official-links.html", "collaborators.html", "privacy.html", "blog.html", "blog-market-cap-is-not-fdv.html", "blog-proof-you-can-open.html", "blog-utility-without-a-wallet.html", "blog-creator-trust-standard.html", "blog-madger-thesis.html", "blog-diligence-map.html", "blog-burrow-after-launch.html", "blog-character-outlives-chart.html", "blog-verify-live-market.html", "blog-building-foundations.html", "blog-honey-badger-standard.html", "blog-token-link-safety.html", "404.html"];
 const indexablePages = new Map([
   ["app.html", "https://madgercoin.com/app"],
   ["game.html", "https://madgercoin.com/game"],
@@ -15,6 +15,7 @@ const indexablePages = new Map([
   ["collaborators.html", "https://madgercoin.com/collaborators"],
   ["privacy.html", "https://madgercoin.com/privacy.html"]
   ,["blog.html", "https://madgercoin.com/blog.html"]
+  ,["blog-market-cap-is-not-fdv.html", "https://madgercoin.com/blog-market-cap-is-not-fdv.html"]
   ,["blog-proof-you-can-open.html", "https://madgercoin.com/blog-proof-you-can-open.html"]
   ,["blog-utility-without-a-wallet.html", "https://madgercoin.com/blog-utility-without-a-wallet.html"]
   ,["blog-creator-trust-standard.html", "https://madgercoin.com/blog-creator-trust-standard.html"]
@@ -52,6 +53,7 @@ const socialPreview = "https://madgercoin.com/assets/madger_social_share_v10.jpg
 const homepageSocialPreview = "https://madgercoin.com/assets/madger_social_share_v10.jpg";
 const pageSocialPreviews = new Map([
   ["blog.html", "https://madgercoin.com/assets/madger_journal_social_v2.jpg"],
+  ["blog-market-cap-is-not-fdv.html", "https://madgercoin.com/assets/madger_social_share_v10.jpg"],
   ["blog-proof-you-can-open.html", "https://madgercoin.com/assets/madger_social_share_v10.jpg"],
   ["blog-utility-without-a-wallet.html", "https://madgercoin.com/assets/madger_social_share_v10.jpg"],
   ["blog-creator-trust-standard.html", "https://madgercoin.com/assets/madger_social_share_v10.jpg"],
@@ -294,30 +296,35 @@ if (!sitemap.includes("<lastmod>") || !sitemap.includes("<image:image>")) {
   failures.push("sitemap.xml: missing lastmod or image discovery data");
 }
 
-const latestDispatch = pages.get("blog-proof-you-can-open.html");
-const latestDispatchUrl = "https://madgercoin.com/blog-proof-you-can-open.html";
+const latestDispatch = pages.get("blog-market-cap-is-not-fdv.html");
+const latestDispatchUrl = "https://madgercoin.com/blog-market-cap-is-not-fdv.html";
 const feed = await readFile("feed.xml", "utf8");
-if (!pages.get("blog.html").includes('href="/blog-proof-you-can-open.html"') || !pages.get("blog.html").includes("11 DISPATCHES")) failures.push("blog.html: latest dispatch archive parity is missing");
-if (!pages.get("index.html").includes('href="/blog-proof-you-can-open.html"') || !pages.get("index.html").includes("11 DISPATCHES")) failures.push("index.html: latest dispatch homepage parity is missing");
-if (!feed.includes(latestDispatchUrl) || !feed.includes("Thu, 17 Sep 2026 14:00:00 GMT")) failures.push("feed.xml: latest dispatch or publication date is missing");
+if (!pages.get("blog.html").includes('href="/blog-market-cap-is-not-fdv.html"') || !pages.get("blog.html").includes("12 DISPATCHES")) failures.push("blog.html: latest dispatch archive parity is missing");
+if (!pages.get("index.html").includes('href="/blog-market-cap-is-not-fdv.html"') || !pages.get("index.html").includes("12 DISPATCHES")) failures.push("index.html: latest dispatch homepage parity is missing");
+if (!feed.includes(latestDispatchUrl) || !feed.includes("Thu, 24 Sep 2026 14:30:00 GMT")) failures.push("feed.xml: latest dispatch or publication date is missing");
 if (!sitemap.includes(latestDispatchUrl)) failures.push("sitemap.xml: latest dispatch is missing");
-if (!latestDispatch.includes('"datePublished":"2026-09-17"') || !latestDispatch.includes('"dateModified":"2026-09-17"')) failures.push("latest dispatch: structured dates are missing");
-if (!latestDispatch.includes('href="/game"') || !latestDispatch.includes('href="/transparency.html"')) failures.push("latest dispatch: primary project source links are missing");
+if (!latestDispatch.includes('"datePublished":"2026-09-24"') || !latestDispatch.includes('"dateModified":"2026-09-24"') || !latestDispatch.includes("PUBLISHED") || !latestDispatch.includes("REVISED")) failures.push("latest dispatch: visible or structured dates are missing");
+if (!latestDispatch.includes('href="/transparency.html"') || !latestDispatch.includes("reports/token/latest.json") || !latestDispatch.includes("lock.jup.ag/token/")) failures.push("latest dispatch: primary project source links are missing");
+if (!latestDispatch.includes(officialMint) || !latestDispatch.includes("does not guarantee") || !latestDispatch.includes('href="/buy"')) failures.push("latest dispatch: mint, risk boundary, or separate beginner path is missing");
 if (visibleText(latestDispatch).split(/\s+/).filter(Boolean).length < 900) failures.push("latest dispatch: substantial article threshold not met");
 
 const signalsArchive = pages.get("blog.html");
 for (const marker of ["hero-visual-actions", "signal-path-grid", "feature-card-link", "story-card"]) {
   if (!signalsArchive.includes(marker)) failures.push(`blog.html: visual reading control ${marker} is missing`);
 }
-if (!pages.get("index.html").includes("signal-entry-button") || !pages.get("index.html").includes('<div class="journal-stack"><a href="/blog-utility-without-a-wallet.html"><img')) {
+if (!pages.get("index.html").includes("signal-entry-button") || !pages.get("index.html").includes('<div class="journal-stack"><a href="/blog-proof-you-can-open.html"><img')) {
   failures.push("index.html: image-led Signals entry points are missing");
 }
 const dispatchFiles = htmlFiles.filter(file => file.startsWith("blog-") && file.endsWith(".html"));
 for (const file of dispatchFiles) {
   const html = pages.get(file);
+  const url = indexablePages.get(file);
   if (!html.includes('class="signal-article"') || !html.includes('class="journal-progress"')) failures.push(`${file}: visual article shell is missing`);
   if (!html.includes('/blog.css?v=20260919-signal-console') || !html.includes('/blog.js?v=20260919-signal-console')) failures.push(`${file}: Signals asset version parity is missing`);
   if (/\bhype\b/i.test(visibleText(html))) failures.push(`${file}: retired editorial wording is present`);
+  if (!pages.get("blog.html").includes(`href="/${file}"`)) failures.push(`${file}: archive parity is missing`);
+  if (!feed.includes(url)) failures.push(`${file}: RSS parity is missing`);
+  if (!sitemap.includes(url)) failures.push(`${file}: sitemap parity is missing`);
 }
 
 const productionText = [...pages.values()].join("\n") + await readFile("manifest.webmanifest", "utf8");

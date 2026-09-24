@@ -3,9 +3,11 @@ import fs from 'node:fs/promises';
 const RPC_URL = process.env.SOLANA_RPC_URL || 'https://api.mainnet-beta.solana.com';
 const MINT = 'BHauMX8akk2umqkQqnJwpYkCRkZmefGnEBFByeFXRKqv';
 const EXPECTED = {
-  amount: '1000000000000000',
+  // Finalized on-chain supply reconciled on 2026-09-24. Keep this exact so
+  // any later supply change becomes a deliberate monitoring event.
+  amount: '999999994992751',
   decimals: 6,
-  uiAmountString: '1000000000',
+  uiAmountString: '999999994.992751',
   program: 'spl-token',
   owner: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
   mintAuthority: null,

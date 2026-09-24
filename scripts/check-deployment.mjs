@@ -22,6 +22,7 @@ const checks = [
   ["/collaborators", 200],
   ["/privacy", 200],
   ["/blog", 200],
+  ["/blog-market-cap-is-not-fdv", 200],
   ["/blog-proof-you-can-open", 200],
   ["/blog-utility-without-a-wallet", 200],
   ["/blog-creator-trust-standard", 200],
@@ -160,9 +161,9 @@ if (game) {
   }
 }
 
-const latestDispatch = responses.get("/blog-proof-you-can-open");
+const latestDispatch = responses.get("/blog-market-cap-is-not-fdv");
 if (latestDispatch) {
-  const contentChecks = [[latestDispatch.body.includes("Dispatch 011"), "dispatch number"],[latestDispatch.body.includes("SEP 17, 2026"), "visible publication date"],[latestDispatch.body.includes('href="/game"'), "Burrow Run source"],[latestDispatch.body.includes('href="/transparency.html"'), "transparency source"],[latestDispatch.body.includes(officialMint), "official mint"],[latestDispatch.body.includes("does not prove"), "evidence boundary"]];
+  const contentChecks = [[latestDispatch.body.includes("Dispatch 012"), "dispatch number"],[latestDispatch.body.includes("SEP 24, 2026") && latestDispatch.body.includes("REVISED"), "visible publication and revision dates"],[latestDispatch.body.includes('href="/transparency.html"'), "transparency source"],[latestDispatch.body.includes("reports/token/latest.json"), "finalized token report"],[latestDispatch.body.includes("lock.jup.ag/token/"), "Jupiter Lock source"],[latestDispatch.body.includes(officialMint), "official mint"],[latestDispatch.body.includes("does not guarantee"), "risk boundary"],[latestDispatch.body.includes('href="/buy"'), "separate beginner buying path"]];
   for (const [passed, label] of contentChecks) { console.log(`${passed ? "PASS" : "FAIL"} ${label}`); if (!passed) failures.push(`latest dispatch: ${label}`); }
 }
 

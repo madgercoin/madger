@@ -33,7 +33,7 @@
     "name": "MADGER Supply and Liquidity Transparency",
     "url": "https://madgercoin.com/transparency.html",
     "description": "On-chain evidence for MADGER circulating supply, token locks, LP escrows, vesting schedules, and wallet addresses.",
-    "dateModified": "2026-09-16",
+    "dateModified": "2026-09-24",
     "isPartOf": { "@type": "WebSite", "name": "MADGER", "url": "https://madgercoin.com/" }
   }
   </script>
@@ -52,10 +52,10 @@
 
   <main class="transparency-main" id="main">
     <section class="section transparency-hero">
-      <p class="eyebrow">ON-CHAIN TRANSPARENCY · VERIFIED SEPTEMBER 16, 2026</p>
+      <p class="eyebrow">ON-CHAIN TRANSPARENCY · SUPPLY CHECKED SEPTEMBER 24, 2026</p>
       <h1>VERIFY THE<br><span>SUPPLY.</span></h1>
-      <p class="lede">This record separates total supply, provably locked supply, maximum circulating supply, and liquidity-provider custody. Every exclusion from circulation is backed by a public program account and creation transaction.</p>
-      <p class="audit-stamp">✓ Five lock addresses and balances checked on Solana mainnet</p>
+      <p class="lede">This record separates total supply, provably locked supply, maximum circulating supply, and liquidity-provider custody. The mint supply was rechecked at finalized commitment on September 24; the five-lock evidence set and schedules were last fully reconciled on September 16.</p>
+      <p class="audit-stamp">✓ Supply rechecked Sep 24 · five-lock record reconciled Sep 16</p>
 
       <div class="metric-grid" aria-label="Supply and liquidity summary">
         <div class="metric"><span>Current on-chain supply</span><strong>999,999,994.992751</strong><small>MADGER</small></div>
@@ -66,6 +66,7 @@
 
       <p class="proof-note"><strong>Calculation standard:</strong> maximum circulating supply equals current on-chain supply minus only the balances in the five verified Jupiter Lock escrows below. No unlocked project wallet is excluded. Figures are a timestamped on-chain record, not a guarantee of market price or future liquidity.</p>
       <p class="proof-note"><strong>Third-party ticker status:</strong> some market-data services may continue displaying fully diluted valuation as “market cap” until their independent circulating-supply review is complete. MADGER cannot alter those interfaces. Verify whether a ticker has applied the documented maximum circulating supply before comparing valuations.</p>
+      <p class="proof-note"><strong>Automated check:</strong> the <a href="https://github.com/madgercoin/madger/blob/main/reports/token/latest.json" target="_blank" rel="noopener noreferrer">latest machine-readable report</a> records the finalized supply, RPC slots, token program, decimals, initialization, and authority status. Read <a href="/blog-market-cap-is-not-fdv.html">Dispatch 012</a> to reproduce the market-cap and FDV calculations.</p>
     </section>
 
     <section class="section" aria-labelledby="token-locks-title">
