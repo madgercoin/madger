@@ -1,5 +1,12 @@
 # Changelog
 
+## 2026-09-25 — Reclaim the Block combat foundation
+
+- Locked the gameplay rules, screen flow, MVP content, progression boundaries, and release sequence for **MADGER: Burrow Heist — Reclaim the Block**.
+- Added **Last Claw Out**, a two-minute Phaser and TypeScript combat slice with independent movement and aim, dash, burrow, six enemy roles, the Block Warden, a protected proof cache, fifteen temporary upgrades, local records, and keyboard, pointer, and touch controls.
+- Added a dedicated `/reclaim` route, installable-app shortcut, offline resources, production routing, sitemap discovery, and focused gameplay and deployment tests.
+- Kept gameplay off-chain and local: no wallet, account, network request, leaderboard, purchase, or token reward is used.
+
 ## 2026-09-24 — Signals dispatch: market cap is not FDV
 
 - Published Dispatch 012 as a source-linked, reproducible audit of total supply, documented locks, maximum circulating supply, market capitalization, and fully diluted value.
