@@ -1,9 +1,9 @@
 {
-  "generatedAt": "2026-09-24T13:41:26.659Z",
-  "previousGeneratedAt": "2026-09-23T13:46:17.962Z",
+  "generatedAt": "2026-09-25T14:03:08.450Z",
+  "previousGeneratedAt": "2026-09-24T13:41:26.659Z",
   "window": {
-    "start": "2026-08-25T13:41:26.659Z",
-    "end": "2026-09-24T13:41:26.659Z"
+    "start": "2026-08-26T14:03:08.450Z",
+    "end": "2026-09-25T14:03:08.450Z"
   },
   "organization": {
     "id": "6a67aceacff325d8d2d231e9",
@@ -20,13 +20,13 @@
       "state": "connected",
       "healthy": true,
       "queuePaused": false,
-      "metricsUpdatedAt": "2026-09-23T18:59:54.281Z",
+      "metricsUpdatedAt": "2026-09-24T18:00:02.440Z",
       "metrics": {
-        "postCount": 48,
+        "postCount": 47,
         "reactions": 7,
-        "comments": 10,
-        "engagementRate": 2.95,
-        "impressions": 2371,
+        "comments": 11,
+        "engagementRate": 2.99,
+        "impressions": 2374,
         "shares": 0,
         "clicks": 54
       },
@@ -37,20 +37,20 @@
       "channel": "MadgerCoin",
       "service": "twitter",
       "externalLink": "https://twitter.com/MadgerCoin",
-      "disconnected": false,
+      "disconnected": true,
       "locked": false,
-      "state": "connected",
-      "healthy": true,
+      "state": "disconnected",
+      "healthy": false,
       "queuePaused": false,
       "metricsUpdatedAt": "2026-09-24T13:39:37.136Z",
       "metrics": {
-        "postCount": 86,
-        "reactions": 1769,
-        "comments": 751,
-        "engagementRate": 18.77,
-        "reposts": 285,
-        "impressions": 37204,
-        "clicks": 389
+        "postCount": 83,
+        "reactions": 1675,
+        "comments": 710,
+        "engagementRate": 19.36,
+        "reposts": 270,
+        "impressions": 34174,
+        "clicks": 387
       },
       "requiresCommunityReview": true
     },
@@ -64,19 +64,19 @@
       "state": "connected",
       "healthy": true,
       "queuePaused": false,
-      "metricsUpdatedAt": "2026-09-24T08:55:05.892Z",
+      "metricsUpdatedAt": "2026-09-25T07:55:14.655Z",
       "metrics": {
-        "postCount": 49,
-        "reactions": 79,
-        "comments": 17,
-        "engagementRate": 41.92,
-        "views": 443,
+        "postCount": 47,
+        "reactions": 77,
+        "comments": 18,
+        "engagementRate": 42.73,
+        "views": 423,
         "shares": 0,
         "saves": 0,
         "follows": 2,
-        "reach": 229,
-        "totalTimeWatched": 50.16,
-        "averageTimeWatched": 17.09
+        "reach": 220,
+        "totalTimeWatched": 49.2,
+        "averageTimeWatched": 17.86
       },
       "requiresCommunityReview": true
     },
@@ -90,17 +90,17 @@
       "state": "connected",
       "healthy": true,
       "queuePaused": false,
-      "metricsUpdatedAt": "2026-09-23T22:54:04.074Z",
+      "metricsUpdatedAt": "2026-09-24T20:35:17.827Z",
       "metrics": {
-        "postCount": 46,
-        "reactions": 89,
+        "postCount": 44,
+        "reactions": 79,
         "comments": 9,
-        "engagementRate": 1.46,
-        "views": 6794,
+        "engagementRate": 1.36,
+        "views": 6536,
         "shares": 1,
-        "reach": 6117,
-        "totalTimeWatched": 379.33,
-        "averageTimeWatched": 3.2
+        "reach": 5853,
+        "totalTimeWatched": 368.42,
+        "averageTimeWatched": 3.22
       },
       "requiresCommunityReview": true
     }
@@ -115,14 +115,29 @@
       "errors": 1,
       "needsAttention": [
         "madger-002-x",
+        "madger-003-x",
+        "madger-004-x",
+        "madger-002-x-recovery-2026-07-31",
         "telegram-200-x-2026-08-16",
         "telegram-200-facebook-2026-08-16",
-        "telegram-200-instagram-2026-08-16"
+        "telegram-200-instagram-2026-08-16",
+        "meme-contest-launch-x-2026-08-17",
+        "aura-unmeasurable-x-2026-08-21"
       ],
       "attentionReasons": {
         "madger-002-x": [
           "monitor_error",
+          "channel_disconnected",
           "overdue"
+        ],
+        "madger-003-x": [
+          "channel_disconnected"
+        ],
+        "madger-004-x": [
+          "channel_disconnected"
+        ],
+        "madger-002-x-recovery-2026-07-31": [
+          "channel_disconnected"
         ],
         "telegram-200-x-2026-08-16": [
           "channel_missing"
@@ -132,10 +147,20 @@
         ],
         "telegram-200-instagram-2026-08-16": [
           "channel_missing"
+        ],
+        "meme-contest-launch-x-2026-08-17": [
+          "channel_disconnected"
+        ],
+        "aura-unmeasurable-x-2026-08-21": [
+          "channel_disconnected"
         ]
       },
-      "atRiskPosts": [],
-      "unhealthyChannelIds": [],
+      "atRiskPosts": [
+        "madger-002-x"
+      ],
+      "unhealthyChannelIds": [
+        "6a67af8a4b2d03035f4e91f4"
+      ],
       "totals": {
         "reactions": 224,
         "comments": 105,
@@ -182,7 +207,7 @@
         "title": "MADGER 002 — Keep Digging",
         "service": "twitter",
         "channelId": "6a67af8a4b2d03035f4e91f4",
-        "channelState": "connected",
+        "channelState": "disconnected",
         "dueAt": "2026-07-29T14:00:00.000Z",
         "status": "monitor_error",
         "metrics": {},
@@ -293,7 +318,7 @@
         "title": "MADGER 003 — No Slowing Down",
         "service": "twitter",
         "channelId": "6a67af8a4b2d03035f4e91f4",
-        "channelState": "connected",
+        "channelState": "disconnected",
         "dueAt": "2026-07-30T13:00:00.000Z",
         "sentAt": "2026-07-30T13:01:33.267Z",
         "status": "sent",
@@ -519,7 +544,7 @@
         "title": "MADGER 004 — Join the Burrow",
         "service": "twitter",
         "channelId": "6a67af8a4b2d03035f4e91f4",
-        "channelState": "connected",
+        "channelState": "disconnected",
         "dueAt": "2026-08-04T13:00:00.000Z",
         "sentAt": "2026-08-04T13:02:03.668Z",
         "status": "sent",
@@ -549,7 +574,7 @@
         "title": "MADGER 002 — Keep Digging (X Recovery)",
         "service": "twitter",
         "channelId": "6a67af8a4b2d03035f4e91f4",
-        "channelState": "connected",
+        "channelState": "disconnected",
         "dueAt": "2026-07-31T13:15:00.000Z",
         "sentAt": "2026-07-31T13:15:13.024Z",
         "status": "sent",
@@ -670,7 +695,7 @@
         "title": "The Great Burrow Meme Contest",
         "service": "twitter",
         "channelId": "6a67af8a4b2d03035f4e91f4",
-        "channelState": "connected",
+        "channelState": "disconnected",
         "dueAt": "2026-08-16T10:09:33.282Z",
         "sentAt": "2026-08-16T10:09:34.738Z",
         "status": "sent",
@@ -798,7 +823,7 @@
         "title": "Aura: Unmeasurable",
         "service": "twitter",
         "channelId": "6a67af8a4b2d03035f4e91f4",
-        "channelState": "connected",
+        "channelState": "disconnected",
         "dueAt": "2026-08-21T20:45:00.000Z",
         "sentAt": "2026-08-21T20:45:06.427Z",
         "status": "sent",
