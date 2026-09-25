@@ -45,3 +45,15 @@ test("the route is discoverable, bundled, installable, and cached offline", () =
   assert.ok(manifest.shortcuts.some(shortcut => shortcut.url === "/reclaim"));
   for (const resource of ["/reclaim", "/reclaim.css", "/reclaim-game.js", "/reclaim-core.js"]) assert.match(serviceWorker, new RegExp(`"${resource.replace(".", "\\.")}"`));
 });
+
+test("combat input and boss telegraphs preserve their gameplay guarantees", () => {
+  assert.match(source, /this\.pointerAimActive = true/);
+  assert.match(source, /movement\.lengthSq\(\) && !this\.pointerAimActive/);
+
+  const updateLoop = source.slice(source.indexOf("  update(_time"), source.indexOf("  updatePhase()"));
+  assert.ok(updateLoop.indexOf("pauseRun();") < updateLoop.indexOf("this.elapsed += delta"));
+
+  const warden = source.slice(source.indexOf("  updateWarden("), source.indexOf("  resolveEnemyContact("));
+  assert.match(warden, /enemy\.state === "warning"[\s\S]*enemy\.state = "charging"/);
+  assert.match(warden, /enemy\.state === "charging"[\s\S]*enemy\.targetX \* enemy\.speed \* 3\.4/);
+});

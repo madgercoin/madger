@@ -169,6 +169,7 @@ class ReclaimScene extends Phaser.Scene {
   random = createSeededRandom(Date.now());
   nextEnemyId = 1;
   aim = new Phaser.Math.Vector2(0, -1);
+  pointerAimActive = false;
 
   constructor() { super("Reclaim"); }
 
@@ -230,7 +231,10 @@ class ReclaimScene extends Phaser.Scene {
 
   updatePointerAim(pointer: Phaser.Input.Pointer) {
     const vector = new Phaser.Math.Vector2(pointer.worldX - this.player.x, pointer.worldY - this.player.y);
-    if (vector.lengthSq() > 64) this.aim.copy(vector.normalize());
+    if (vector.lengthSq() > 64) {
+      this.aim.copy(vector.normalize());
+      this.pointerAimActive = true;
+    }
   }
 
   startRun() {
@@ -262,6 +266,7 @@ class ReclaimScene extends Phaser.Scene {
     this.decoyLife = 0;
     this.random = createSeededRandom(Math.floor(Date.now() / 86400000) ^ readRecord().runs);
     this.nextEnemyId = 1;
+    this.pointerAimActive = false;
     this.player.setPosition(480, 418).setAlpha(1).setVisible(true);
     this.cacheNode.setVisible(true);
     ui.brief.hidden = true;
@@ -288,6 +293,10 @@ class ReclaimScene extends Phaser.Scene {
 
   update(_time: number, deltaMs: number) {
     if (!this.running) return;
+    if (Phaser.Input.Keyboard.JustDown(this.keys.pause)) {
+      pauseRun();
+      return;
+    }
     const delta = deltaMs / 1000;
     const step = Math.min(delta, .05);
     this.elapsed += delta;
@@ -317,7 +326,6 @@ class ReclaimScene extends Phaser.Scene {
   }
 
   updatePlayer(step: number, delta: number) {
-    if (Phaser.Input.Keyboard.JustDown(this.keys.pause)) { pauseRun(); return; }
     if (Phaser.Input.Keyboard.JustDown(this.keys.dash)) this.beginDash();
     if (Phaser.Input.Keyboard.JustDown(this.keys.burrow)) this.beginBurrow();
 
@@ -344,7 +352,7 @@ class ReclaimScene extends Phaser.Scene {
     }
     this.player.x = Phaser.Math.Clamp(this.player.x, 67, 893);
     this.player.y = Phaser.Math.Clamp(this.player.y, 59, 481);
-    if (movement.lengthSq()) this.aim.copy(movement);
+    if (movement.lengthSq() && !this.pointerAimActive) this.aim.copy(movement);
 
     const pointer = this.input.activePointer;
     const pointerAttack = pointer.isDown && pointer.x >= 0 && pointer.x <= WIDTH && pointer.y >= 0 && pointer.y <= HEIGHT;
@@ -555,11 +563,30 @@ class ReclaimScene extends Phaser.Scene {
   }
 
   updateWarden(enemy: Enemy, step: number) {
-    this.moveEnemyTowardTarget(enemy, step, enemy.state === "charging" ? 3.4 : 1);
-    if (enemy.actionTimer > 0) return;
-    if (enemy.state === "charging") {
-      enemy.state = "normal"; enemy.actionTimer = 2.3; enemy.core.setStrokeStyle(4, 0xef604f, .9); return;
+    if (enemy.state === "warning") {
+      if (enemy.actionTimer <= 0) {
+        const vector = this.targetFor(enemy).subtract(new Phaser.Math.Vector2(enemy.node.x, enemy.node.y)).normalize();
+        enemy.targetX = vector.x;
+        enemy.targetY = vector.y;
+        enemy.state = "charging";
+        enemy.actionTimer = .62;
+        enemy.core.setStrokeStyle(6, 0xef604f, 1);
+        tone(76, .18, "sawtooth");
+      }
+      return;
     }
+    if (enemy.state === "charging") {
+      enemy.node.x += enemy.targetX * enemy.speed * 3.4 * step;
+      enemy.node.y += enemy.targetY * enemy.speed * 3.4 * step;
+      if (enemy.actionTimer <= 0) {
+        enemy.state = "normal";
+        enemy.actionTimer = 2.3;
+        enemy.core.setStrokeStyle(4, 0xef604f, .9);
+      }
+      return;
+    }
+    this.moveEnemyTowardTarget(enemy, step);
+    if (enemy.actionTimer > 0) return;
     if (this.random() < .5) {
       for (let index = 0; index < 10; index += 1) {
         const angle = index / 10 * Math.PI * 2;
@@ -568,7 +595,7 @@ class ReclaimScene extends Phaser.Scene {
       enemy.actionTimer = 3.4;
       tone(86, .22, "sawtooth");
     } else {
-      enemy.state = "charging"; enemy.actionTimer = .8; enemy.core.setStrokeStyle(6, 0xf2cf60, 1);
+      enemy.state = "warning"; enemy.actionTimer = .8; enemy.core.setStrokeStyle(6, 0xf2cf60, 1);
     }
   }
 
