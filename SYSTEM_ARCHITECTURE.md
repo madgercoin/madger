@@ -2,13 +2,15 @@
 
 ## Runtime model
 
-MADGER is a static Cloudflare Workers Static Assets site. There is no application server, database, API, authentication, wallet connection, analytics runtime, or payment integration in production.
+MADGER is a static Cloudflare Workers Static Assets site. There is no application server, database, authentication, wallet connection, or payment integration in the games. The existing contest proxy and bounded acquisition measurement remain separate website capabilities.
 
 ```text
 root sources -> node build.mjs -> dist/ allowlist -> Cloudflare Worker -> madgercoin.com
 ```
 
 `index.html`, `litepaper.html`, and `404.html` provide documents. `styles.css` provides shared homepage presentation; auxiliary pages use inline styles. `script.js` rotates Daily Dig content by UTC day, updates the year, manages mobile navigation, and progressively enhances mint copying. Metadata files provide crawling/install behavior. `_headers` supplies security/cache headers.
+
+`reclaim/src/main.ts` and `reclaim/src/core.ts` are bundled locally with pinned Phaser, TypeScript, and esbuild versions into `dist/reclaim-game.js` and `dist/reclaim-core.js`. The combat slice makes no runtime network request and stores only a bounded device-local field record.
 
 ## Build boundary
 

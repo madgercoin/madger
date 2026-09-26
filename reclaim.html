@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#090a08">
+  <meta name="description" content="Play Last Claw Out, the first combat operation from MADGER: Burrow Heist — Reclaim the Block. Defend the proof cache and defeat the Block Warden.">
+  <meta name="robots" content="index,follow,max-image-preview:large">
+  <link rel="canonical" href="https://madgercoin.com/reclaim">
+  <link rel="manifest" href="/manifest.webmanifest">
+  <link rel="icon" href="/favicon.png">
+  <link rel="apple-touch-icon" href="/assets/madger_official_logo_transparent_180.png">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="MADGER">
+  <meta property="og:title" content="Reclaim the Block | MADGER: Burrow Heist">
+  <meta property="og:description" content="Hold Signal Row. Protect the proof cache. Defeat the Block Warden.">
+  <meta property="og:url" content="https://madgercoin.com/reclaim">
+  <meta property="og:image" content="https://madgercoin.com/assets/madger_social_share_v10.jpg">
+  <meta property="og:image:type" content="image/jpeg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="MADGER official character artwork">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Reclaim the Block | MADGER: Burrow Heist">
+  <meta name="twitter:description" content="Hold Signal Row. Protect the proof cache. Defeat the Block Warden.">
+  <meta name="twitter:image" content="https://madgercoin.com/assets/madger_social_share_v10.jpg">
+  <meta name="twitter:image:alt" content="MADGER official character artwork">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"VideoGame","name":"MADGER: Burrow Heist — Reclaim the Block","url":"https://madgercoin.com/reclaim","gamePlatform":"Web browser","playMode":"SinglePlayer","applicationCategory":"Game","isAccessibleForFree":true,"publisher":{"@type":"Organization","name":"MADGER","url":"https://madgercoin.com/"}}</script>
+  <link rel="stylesheet" href="/reclaim.css">
+  <title>Reclaim the Block | MADGER: Burrow Heist</title>
+</head>
+<body>
+  <a class="skip" href="#operation">Skip to operation</a>
+  <header class="topbar">
+    <a class="brand" href="/" aria-label="MADGER home">
+      <img src="/assets/madger_official_logo_transparent_192.png" width="192" height="192" alt="">
+      <span><b>MADGER</b><small>BURROW HEIST // SIGNAL ROW</small></span>
+    </a>
+    <nav aria-label="Game navigation">
+      <button id="sound-toggle" type="button" aria-pressed="false">SOUND: OFF</button>
+      <a href="/game">BURROW RUN</a>
+      <a href="/app">BURROW APP</a>
+      <a href="/">EXIT ↗</a>
+    </nav>
+  </header>
+
+  <main id="operation">
+    <section class="operation-head" aria-labelledby="game-title">
+      <div>
+        <p class="eyebrow">OPERATION 01 · LAST CLAW OUT</p>
+        <h1 id="game-title">RECLAIM <em>THE BLOCK.</em></h1>
+      </div>
+      <p>Hold Signal Row for two minutes. Protect the proof cache. The route opens only after the Block Warden falls.</p>
+      <dl aria-label="Operation rules">
+        <div><dt>ACCESS</dt><dd>Free · no wallet</dd></div>
+        <div><dt>OBJECTIVE</dt><dd>Cache + Warden</dd></div>
+        <div><dt>RECORD</dt><dd>This device only</dd></div>
+      </dl>
+    </section>
+
+    <section class="game-frame" aria-label="Last Claw Out combat operation">
+      <div class="hud" aria-label="Current operation status">
+        <div class="meter-block"><span><small>MADGER</small><b id="health-value">100</b></span><i class="meter"><u id="health-meter"></u></i></div>
+        <div class="meter-block cache"><span><small>PROOF CACHE</small><b id="cache-value">100</b></span><i class="meter"><u id="cache-meter"></u></i></div>
+        <div><small>PHASE</small><b id="phase-label">SWEEP</b></div>
+        <div><small>ROUTE</small><b id="timer-value">02:00</b></div>
+        <div><small>LEVEL</small><b id="level-value">01</b></div>
+        <div><small>CLEARED</small><b id="cleared-value">000</b></div>
+      </div>
+
+      <div class="arena-shell">
+        <div id="reclaim-game" class="arena" tabindex="0" role="application" aria-label="Top-down combat arena. Move with WASD or arrow keys, aim with the pointer, hold click or Space to strike, Shift to dash, Q to burrow, and P to pause." aria-describedby="control-instructions"></div>
+
+        <section class="brief-panel" id="brief-panel" aria-labelledby="brief-title">
+          <p>FIELD BRIEF // SIGNAL ROW</p>
+          <h2 id="brief-title">THE PROOF IS OUT.<br>SO ARE THEY.</h2>
+          <div class="brief-objective"><span>01</span><p><b>Protect the cache.</b> If its integrity reaches zero, the proof is lost.</p></div>
+          <div class="brief-objective"><span>02</span><p><b>Break the Warden.</b> Survival alone will not open the route.</p></div>
+          <div class="brief-objective"><span>03</span><p><b>Build for the fight.</b> Choose one field upgrade whenever you level.</p></div>
+          <div class="brief-controls" id="control-instructions">
+            <span><kbd>WASD</kbd> MOVE</span><span><kbd>POINTER</kbd> AIM</span><span><kbd>CLICK</kbd> STRIKE</span><span><kbd>SHIFT</kbd> DASH</span><span><kbd>Q</kbd> BURROW</span><span><kbd>P</kbd> PAUSE</span>
+          </div>
+          <button class="primary-action" id="start-operation" type="button">BEGIN OPERATION <span>→</span></button>
+          <small>LOCAL PROTOTYPE · SCORES HAVE NO CASH, TOKEN, PRIZE, OR FINANCIAL VALUE</small>
+        </section>
+
+        <section class="upgrade-panel" id="upgrade-panel" aria-labelledby="upgrade-title" hidden>
+          <p>FIELD ADAPTATION</p>
+          <h2 id="upgrade-title">CHOOSE ONE.</h2>
+          <div id="upgrade-options" class="upgrade-options"></div>
+        </section>
+
+        <section class="pause-panel" id="pause-panel" aria-labelledby="pause-title" hidden>
+          <p>OPERATION PAUSED</p>
+          <h2 id="pause-title">STAY SHARP.</h2>
+          <button class="primary-action" id="resume-operation" type="button">RESUME <span>→</span></button>
+        </section>
+
+        <section class="result-panel" id="result-panel" aria-labelledby="result-title" hidden>
+          <p id="result-kicker">OPERATION COMPLETE</p>
+          <h2 id="result-title">SIGNAL ROW HOLDS.</h2>
+          <div class="result-grid" id="result-grid"></div>
+          <button class="primary-action" id="run-again" type="button">RUN AGAIN <span>→</span></button>
+          <small>PROOF POINTS ARE LOCAL GAME PROGRESSION ONLY. THEY HAVE NO FINANCIAL VALUE.</small>
+        </section>
+
+        <div class="boss-banner" id="boss-banner" hidden aria-hidden="true"><small>DISTRICT AUTHORITY</small><b>THE BLOCK WARDEN</b></div>
+      </div>
+
+      <div class="ability-row" aria-label="Ability status">
+        <div><small>EXPERIENCE</small><i class="xp-meter"><u id="xp-meter"></u></i><b id="xp-value">0 / 55</b></div>
+        <div><small>DASH</small><b id="dash-status">READY</b></div>
+        <div><small>BURROW</small><b id="burrow-status">READY</b></div>
+        <button id="pause-operation" type="button">Ⅱ <span>PAUSE</span></button>
+      </div>
+
+      <div class="touch-controls" aria-label="Touch controls">
+        <div class="dpad" aria-label="Movement pad">
+          <button data-control="up" type="button" aria-label="Move up">↑</button>
+          <button data-control="left" type="button" aria-label="Move left">←</button>
+          <button data-control="down" type="button" aria-label="Move down">↓</button>
+          <button data-control="right" type="button" aria-label="Move right">→</button>
+        </div>
+        <div class="action-pad">
+          <button class="strike" data-control="attack" type="button"><b>STRIKE</b><span>AUTO-AIM</span></button>
+          <button data-control="dash" type="button"><b>DASH</b><span>BURST</span></button>
+          <button data-control="burrow" type="button"><b>BURROW</b><span>BREAK LOCK</span></button>
+        </div>
+      </div>
+      <p class="live-status" id="game-status" role="status" aria-live="polite">Operation ready. Begin when you are prepared.</p>
+    </section>
+
+    <section class="field-record" aria-labelledby="record-title">
+      <div><p class="eyebrow">PRIVATE FIELD RECORD</p><h2 id="record-title">WHAT THIS DEVICE REMEMBERS.</h2><p>No account. No leaderboard. No gameplay data leaves this browser.</p></div>
+      <dl>
+        <div><dt>RUNS</dt><dd id="record-runs">0</dd></div>
+        <div><dt>EXTRACTIONS</dt><dd id="record-extractions">0</dd></div>
+        <div><dt>BEST PROOF</dt><dd id="record-proof">0</dd></div>
+        <div><dt>WARDENS</dt><dd id="record-wardens">0</dd></div>
+        <div><dt>TOP LEVEL</dt><dd id="record-level">0</dd></div>
+      </dl>
+      <button id="reset-record" type="button">RESET LOCAL RECORD</button>
+    </section>
+  </main>
+
+  <footer>
+    <span>MADGER // BURROW HEIST</span>
+    <p>Last Claw Out is a free local combat prototype. No wallet, purchase, account, or token reward is used. Official mint: <code>BHauMX8akk2umqkQqnJwpYkCRkZmefGnEBFByeFXRKqv</code>.</p>
+    <a href="/privacy.html">PRIVACY</a>
+  </footer>
+  <script src="/reclaim-game.js" type="module"></script>
+</body>
+</html>

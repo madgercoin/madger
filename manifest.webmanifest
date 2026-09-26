@@ -1,1 +1,22 @@
-{"name":"The Burrow by MADGER","short_name":"The Burrow","description":"Verify sources, learn Solana safety, complete useful missions, play Burrow Run, create with MADGER, and inspect the public record.","id":"/app","start_url":"/app","scope":"/","display":"standalone","background_color":"#090a08","theme_color":"#090a08","icons":[{"src":"/assets/madger_official_logo_transparent_192.png","sizes":"192x192","type":"image/png","purpose":"any"},{"src":"/favicon.png?v=20260829-coin3d","sizes":"512x512","type":"image/png","purpose":"any"}],"shortcuts":[{"name":"Verify a source","short_name":"Verify","description":"Check a MADGER mint, URL, or official account.","url":"/app#verify","icons":[{"src":"/assets/madger_official_logo_transparent_192.png","sizes":"192x192","type":"image/png"}]},{"name":"Open missions","short_name":"Missions","description":"Complete useful work for The Burrow.","url":"/app#missions","icons":[{"src":"/assets/madger_official_logo_transparent_192.png","sizes":"192x192","type":"image/png"}]},{"name":"Creator desk","short_name":"Create","description":"Use approved MADGER assets and contributor standards.","url":"/app#create","icons":[{"src":"/assets/madger_official_logo_transparent_192.png","sizes":"192x192","type":"image/png"}]},{"name":"Play Burrow Run","short_name":"Play","description":"Collect signal, dodge noise, and set a private local field mark.","url":"/game","icons":[{"src":"/assets/madger_official_logo_transparent_192.png","sizes":"192x192","type":"image/png"}]}]}
+{
+  "name": "The Burrow by MADGER",
+  "short_name": "The Burrow",
+  "description": "Verify sources, learn Solana safety, complete useful missions, play MADGER games, create with MADGER, and inspect the public record.",
+  "id": "/app",
+  "start_url": "/app",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#090a08",
+  "theme_color": "#090a08",
+  "icons": [
+    {"src": "/assets/madger_official_logo_transparent_192.png", "sizes": "192x192", "type": "image/png", "purpose": "any"},
+    {"src": "/favicon.png?v=20260829-coin3d", "sizes": "512x512", "type": "image/png", "purpose": "any"}
+  ],
+  "shortcuts": [
+    {"name": "Verify a source", "short_name": "Verify", "description": "Check a MADGER mint, URL, or official account.", "url": "/app#verify", "icons": [{"src": "/assets/madger_official_logo_transparent_192.png", "sizes": "192x192", "type": "image/png"}]},
+    {"name": "Open missions", "short_name": "Missions", "description": "Complete useful work for The Burrow.", "url": "/app#missions", "icons": [{"src": "/assets/madger_official_logo_transparent_192.png", "sizes": "192x192", "type": "image/png"}]},
+    {"name": "Creator desk", "short_name": "Create", "description": "Use approved MADGER assets and contributor standards.", "url": "/app#create", "icons": [{"src": "/assets/madger_official_logo_transparent_192.png", "sizes": "192x192", "type": "image/png"}]},
+    {"name": "Play Reclaim the Block", "short_name": "Reclaim", "description": "Protect the proof cache and defeat the Block Warden.", "url": "/reclaim", "icons": [{"src": "/assets/madger_official_logo_transparent_192.png", "sizes": "192x192", "type": "image/png"}]},
+    {"name": "Play Burrow Run", "short_name": "Burrow Run", "description": "Collect signal, dodge noise, and set a private local field mark.", "url": "/game", "icons": [{"src": "/assets/madger_official_logo_transparent_192.png", "sizes": "192x192", "type": "image/png"}]}
+  ]
+}

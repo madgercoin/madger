@@ -1,10 +1,12 @@
 import { access, readFile } from "node:fs/promises";
 import path from "node:path";
+import { generatedFiles } from "../site-config.mjs";
 
-const htmlFiles = ["app.html", "game.html", "buy.html", "index.html", "commons.html", "launch.html", "transparency.html", "litepaper.html", "official-links.html", "collaborators.html", "privacy.html", "blog.html", "blog-market-cap-is-not-fdv.html", "blog-proof-you-can-open.html", "blog-utility-without-a-wallet.html", "blog-creator-trust-standard.html", "blog-madger-thesis.html", "blog-diligence-map.html", "blog-burrow-after-launch.html", "blog-character-outlives-chart.html", "blog-verify-live-market.html", "blog-building-foundations.html", "blog-honey-badger-standard.html", "blog-token-link-safety.html", "404.html"];
+const htmlFiles = ["app.html", "game.html", "reclaim.html", "buy.html", "index.html", "commons.html", "launch.html", "transparency.html", "litepaper.html", "official-links.html", "collaborators.html", "privacy.html", "blog.html", "blog-market-cap-is-not-fdv.html", "blog-proof-you-can-open.html", "blog-utility-without-a-wallet.html", "blog-creator-trust-standard.html", "blog-madger-thesis.html", "blog-diligence-map.html", "blog-burrow-after-launch.html", "blog-character-outlives-chart.html", "blog-verify-live-market.html", "blog-building-foundations.html", "blog-honey-badger-standard.html", "blog-token-link-safety.html", "404.html"];
 const indexablePages = new Map([
   ["app.html", "https://madgercoin.com/app"],
   ["game.html", "https://madgercoin.com/game"],
+  ["reclaim.html", "https://madgercoin.com/reclaim"],
   ["buy.html", "https://madgercoin.com/buy"],
   ["index.html", "https://madgercoin.com/"],
   ["commons.html", "https://madgercoin.com/commons"],
@@ -161,6 +163,7 @@ for (const [file, html] of pages) {
     try {
       await access(resolved);
     } catch {
+      if (generatedFiles.includes(resolved.replaceAll("\\", "/"))) continue;
       if (!path.extname(resolved)) {
         const htmlCandidate = `${resolved}.html`;
         try {
