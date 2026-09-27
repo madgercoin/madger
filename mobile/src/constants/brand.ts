@@ -12,7 +12,7 @@ export const LINKS = {
   jupiterSwap: 'https://madgercoin.com/r/jupiter?utm_source=madger_app&utm_medium=app&utm_campaign=buy_screen&utm_content=jupiter',
   bonkbotBuy: 'https://madgercoin.com/r/bonkbot?utm_source=madger_app&utm_medium=app&utm_campaign=buy_screen&utm_content=bonkbot',
   trojanBuy: 'https://madgercoin.com/r/trojan?utm_source=madger_app&utm_medium=app&utm_campaign=buy_screen&utm_content=trojan',
-  x: 'https://x.com/madgercoin', telegramNews: 'https://t.me/madgercoin',
+  telegramNews: 'https://t.me/madgercoin',
   telegramCommunity: 'https://t.me/madgerburrow', email: 'mailto:madgercoin@gmail.com',
   litepaper: 'https://madgercoin.com/litepaper.html', privacy: 'https://madgercoin.com/privacy.html',
 } as const;

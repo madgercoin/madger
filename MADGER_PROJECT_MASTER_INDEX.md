@@ -28,7 +28,6 @@ The positioning is:
 | Network | Solana | CONFIRMED |
 | Mint address | `BHauMX8akk2umqkQqnJwpYkCRkZmefGnEBFByeFXRKqv` | CONFIRMED in project files; re-verify on-chain before public launch/trading instructions |
 | Website | https://madgercoin.com | CONFIRMED |
-| X | https://x.com/madgercoin / `@madgercoin` | CONFIRMED |
 | Telegram announcement channel | https://t.me/madgercoin / `@madgercoin` | CONFIRMED |
 | Telegram community | https://t.me/madgerburrow / `@madgerburrow` | CONFIRMED |
 | General email | `hello@madgercoin.com` | CONFIRMED |
@@ -269,7 +268,7 @@ Before production launch, test end-to-end submission, admin approval, gallery pu
 
 ### 10.1 Confirmed persistent distribution map
 
-1. Buffer publishes platform-adapted content to X `@madgercoin`, Instagram `@madgercoin`, TikTok `@themadgercoin`, and the MADGER Facebook Page.
+1. Buffer publishes platform-adapted content to Instagram `@madgercoin`, TikTok `@themadgercoin`, and the MADGER Facebook Page.
 2. Telegram remains separate: publish to the `Madgercoin` announcement channel, then forward into the `Madgerburrow` community group.
 3. Reddit and Discord remain intended distribution channels, but no current autonomous account authorization is recorded.
 

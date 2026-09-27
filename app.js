@@ -1,8 +1,7 @@
 const MINT = "BHauMX8akk2umqkQqnJwpYkCRkZmefGnEBFByeFXRKqv";
-const recognizedHosts = new Set(["madgercoin.com", "www.madgercoin.com", "x.com", "t.me", "www.instagram.com", "instagram.com", "www.tiktok.com", "tiktok.com", "www.facebook.com", "facebook.com", "www.reddit.com", "reddit.com", "discord.gg", "raydium.io"]);
+const recognizedHosts = new Set(["madgercoin.com", "www.madgercoin.com", "t.me", "www.instagram.com", "instagram.com", "www.tiktok.com", "tiktok.com", "www.facebook.com", "facebook.com", "www.reddit.com", "reddit.com", "discord.gg", "raydium.io"]);
 const officialValues = new Set([MINT.toLowerCase(), "@madgercoin", "@themadgercoin"]);
 const officialSocialPaths = new Map([
-  ["x.com", new Set(["/madgercoin"])],
   ["t.me", new Set(["/madgercoin", "/madgerburrow"])],
   ["instagram.com", new Set(["/madgercoin"])],
   ["tiktok.com", new Set(["/@themadgercoin"])],

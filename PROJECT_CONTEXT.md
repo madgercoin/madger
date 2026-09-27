@@ -23,7 +23,6 @@ Quality, transparency, safety, accessibility, performance, maintainability, and 
 ## Official channels
 
 - Website: https://madgercoin.com
-- X: https://x.com/madgercoin
 - Announcements: https://t.me/madgercoin
 - Community: https://t.me/madgerburrow
 - General email: hello@madgercoin.com

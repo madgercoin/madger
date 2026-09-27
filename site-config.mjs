@@ -81,7 +81,6 @@ export const assetFiles = [
   "Madger_Productions_Presents_Intro_clip.mp4",
   "Madger_Official_Outro_Clip.mp4",
   "social_telegram.svg",
-  "social_x.svg",
   "social_instagram.svg",
   "social_facebook.svg",
   "social_tiktok.svg",

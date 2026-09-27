@@ -111,7 +111,6 @@ Every change should optimize for long-term ownership rather than fastest deliver
 Only these endpoints are verified by the current repository:
 
 - Website: [madgercoin.com](https://madgercoin.com)
-- X: [@madgercoin](https://x.com/madgercoin)
 - Instagram: [@madgercoin](https://www.instagram.com/madgercoin/)
 - Facebook: [Madger Coin](https://www.facebook.com/1279493098576451)
 - TikTok: [@themadgercoin](https://www.tiktok.com/@themadgercoin)

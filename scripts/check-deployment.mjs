@@ -109,7 +109,7 @@ if (homepage) {
   const contentChecks = [
     [body.includes(officialMint), "exact official mint"],
     [!/no official token contract/i.test(body), "obsolete no-contract language absent"],
-    [body.includes('href="https://x.com/madgercoin"'), "official X link"],
+    [!body.includes('href="https://x.com/madgercoin"'), "suspended X link absent"],
     [body.includes('href="https://t.me/madgercoin"'), "official Telegram announcement link"],
     [body.includes('href="https://t.me/madgerburrow"'), "official Telegram community link"],
     [body.includes('<link rel="canonical" href="https://madgercoin.com/">'), "homepage canonical"],

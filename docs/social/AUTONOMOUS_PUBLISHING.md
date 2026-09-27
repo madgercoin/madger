@@ -2,7 +2,6 @@
 
 This repository contains a guarded Buffer publishing workflow for the confirmed MADGER destinations:
 
-- X `@madgercoin`
 - Instagram `@madgercoin`
 - TikTok `@themadgercoin`
 - the MADGER Facebook Page
@@ -32,7 +31,7 @@ Open **Actions → Publish MADGER social campaign → Run workflow**.
 - `asset_kind`: `video` for the standard animated social asset; `image` for a static fallback
 - `publish_mode`: `shareNow`, `addToQueue`, `shareNext`, or `customScheduled`
 - `due_at`: required for `customScheduled`, in ISO-8601 UTC format
-- `dry_run`: leave on for the first run; it validates the exact five destinations without publishing
+- `dry_run`: leave on for the first run; it validates the configured destinations without publishing
 
 The script refuses disconnected, locked, missing, or ambiguous channel matches. It requires exactly one destination for each MADGER service and will not silently choose a different account.
 
