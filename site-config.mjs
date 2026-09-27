@@ -14,6 +14,8 @@ export const rootFiles = [
   "game.css",
   "game.js",
   "game-core.js",
+  "reclaim.html",
+  "reclaim.css",
   "bot-dashboard.html",
   "bot-dashboard.js",
   "purchase-path.css",
@@ -64,6 +66,11 @@ export const rootFiles = [
   "_redirects"
 ];
 
+export const generatedFiles = [
+  "reclaim-game.js",
+  "reclaim-core.js"
+];
+
 export const assetFiles = [
   "MADGER_Roadmap_2026_2026-09-03.pdf",
   "madger_hero_burrow_v7.jpg",
@@ -99,5 +106,6 @@ export const assetFiles = [
 
 export const distAllowlist = [
   ...rootFiles,
+  ...generatedFiles,
   ...assetFiles.map(file => `assets/${file}`)
 ].sort();

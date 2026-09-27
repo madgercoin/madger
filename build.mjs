@@ -1,6 +1,7 @@
 import { cp, mkdir, readFile, rm, writeFile } from "node:fs/promises";
 import path from "node:path";
-import { assetFiles, rootFiles } from "./site-config.mjs";
+import { build as bundle } from "esbuild";
+import { assetFiles, generatedFiles, rootFiles } from "./site-config.mjs";
 
 await rm("dist", { recursive: true, force: true });
 await mkdir("dist/assets", { recursive: true });
@@ -11,10 +12,26 @@ await Promise.all(assetFiles.map(async file => {
   await cp(file, destination);
 }));
 
-const [home, app, game, launch, transparency, litepaper, notFound, buy] = await Promise.all([
+await bundle({
+  entryPoints: {
+    "reclaim-game": "reclaim/src/main.ts",
+    "reclaim-core": "reclaim/src/core.ts"
+  },
+  bundle: true,
+  format: "esm",
+  platform: "browser",
+  target: "es2022",
+  minify: true,
+  sourcemap: false,
+  outdir: "dist",
+  logLevel: "warning"
+});
+
+const [home, app, game, reclaim, launch, transparency, litepaper, notFound, buy] = await Promise.all([
   readFile("index.html", "utf8"),
   readFile("app.html", "utf8"),
   readFile("game.html", "utf8"),
+  readFile("reclaim.html", "utf8"),
   readFile("launch.html", "utf8"),
   readFile("transparency.html", "utf8"),
   readFile("litepaper.html", "utf8"),
@@ -37,7 +54,7 @@ const campaigns = {
 };
 
 const workerSource = `/** Generated at build time. HTML is bundled to prevent stale or corrupted edge assets. */
-const pages = ${JSON.stringify({ home, app, game, launch, transparency, litepaper, notFound, buy })};
+const pages = ${JSON.stringify({ home, app, game, reclaim, launch, transparency, litepaper, notFound, buy })};
 const redirectTargets = ${JSON.stringify(redirects)};
 const campaignTargets = ${JSON.stringify(campaigns)};
 const securityHeaders = Object.freeze({
@@ -133,6 +150,7 @@ export default {
     if (pathname === "/index.html") return permanentRedirect("/");
     if (pathname === "/app/" || pathname === "/app.html") return permanentRedirect("/app");
     if (pathname === "/game/" || pathname === "/game.html") return permanentRedirect("/game");
+    if (pathname === "/reclaim/" || pathname === "/reclaim.html") return permanentRedirect("/reclaim");
     if (pathname === "/buy/" || pathname === "/buy.html") return permanentRedirect("/buy");
 
     if (pathname.startsWith("/r/")) {
@@ -171,6 +189,10 @@ export default {
       if (request.method !== "GET" && request.method !== "HEAD") return new Response(null, { status: 405, headers: { ...html.headers, allow: "GET, HEAD" } });
       return new Response(request.method === "HEAD" ? null : pages.game, html);
     }
+    if (pathname === "/reclaim") {
+      if (request.method !== "GET" && request.method !== "HEAD") return new Response(null, { status: 405, headers: { ...html.headers, allow: "GET, HEAD" } });
+      return new Response(request.method === "HEAD" ? null : pages.reclaim, html);
+    }
     if (pathname === "/launch.html") return new Response(pages.launch, html);
     if (pathname === "/litepaper.html") return new Response(pages.litepaper, html);
     const asset = await env.ASSETS.fetch(request);
@@ -181,4 +203,4 @@ export default {
 `;
 
 await writeFile("worker.generated.js", workerSource);
-console.log(`Built MADGER static site with ${rootFiles.length + assetFiles.length} files, bundled HTML routes, and fixed acquisition redirects.`);
+console.log(`Built MADGER static site with ${rootFiles.length + generatedFiles.length + assetFiles.length} files, bundled HTML routes, and fixed acquisition redirects.`);

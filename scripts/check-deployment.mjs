@@ -8,6 +8,10 @@ const checks = [
   ["/game.css", 200],
   ["/game-core.js", 200],
   ["/game.js", 200],
+  ["/reclaim", 200],
+  ["/reclaim.css", 200],
+  ["/reclaim-game.js", 200],
+  ["/reclaim-core.js", 200],
   ["/verified-contributions.json", 200],
   ["/sw.js", 200],
   ["/buy", 200],
@@ -43,6 +47,8 @@ const checks = [
 const redirects = [
   ["/app.html", "/app"],
   ["/app/", "/app"],
+  ["/reclaim.html", "/reclaim"],
+  ["/reclaim/", "/reclaim"],
   ["/buy.html", "/buy"],
   ["/buy/", "/buy"],
   ["/index.html", "/"],
@@ -158,6 +164,20 @@ if (game) {
   for (const [passed, label] of contentChecks) {
     console.log(`${passed ? "PASS" : "FAIL"} ${label}`);
     if (!passed) failures.push(`game: ${label}`);
+  }
+}
+
+const reclaim = responses.get("/reclaim");
+if (reclaim) {
+  const contentChecks = [
+    [reclaim.body.includes('href="https://madgercoin.com/reclaim"'), "reclaim canonical"],
+    [reclaim.body.includes('src="/reclaim-game.js"'), "reclaim runtime"],
+    [reclaim.body.includes('id="reclaim-game"'), "reclaim arena"],
+    [reclaim.body.includes("NO WALLET") || reclaim.body.includes("no wallet"), "reclaim no-wallet boundary"]
+  ];
+  for (const [passed, label] of contentChecks) {
+    console.log(`${passed ? "PASS" : "FAIL"} ${label}`);
+    if (!passed) failures.push(`reclaim: ${label}`);
   }
 }
 
