@@ -16,6 +16,9 @@ import { operationTelemetry, routeLabel, telemetrySummary } from './observabilit
 import { firstSuccessful } from './resilience.js'
 import { createTelegramClient, isGroupChat, keyboard } from './telegram-client.js'
 import { isDuplicateUpdateError, isWebhookAuthorized } from './webhook-policy.js'
+import {
+  PUBLIC_BUY_ALERT_MINIMUM_USD, buyAlertHighlights, formatBuyAlert, shouldPublishBuyAlert
+} from './buy-alert-policy.js'
 
 const BOT_TOKEN = Deno.env.get('TELEGRAM_BOT_TOKEN') ?? ''
 const WEBHOOK_SECRET = Deno.env.get('TELEGRAM_WEBHOOK_SECRET') ?? ''
@@ -999,27 +1002,6 @@ async function adminStats(chatId) {
   await send(chatId, `<b>MADGER BOT — 7 DAY COMMAND REPORT</b>\n\nMembers tracked: ${users?.length ?? 0}\nPending submissions: ${submissions?.length ?? 0}\nWelcome sessions: ${counts.welcome ?? 0}\nMission views: ${counts.missions_viewed ?? 0}\nSubmissions: ${counts.mission_submitted ?? 0}\nReferral link opens: ${counts.referral_open ?? 0}\n\nLatest market snapshot:\nPrice: ${market?.price_usd ?? 'unavailable'} USD\nLiquidity: ${market?.liquidity_usd ?? 'unavailable'} USD`)
 }
 
-function buyAlertCaption({ amount, usdValue, buyer, tier, market, preview = false, paymentAmount = null, paymentSymbol = null, postMadgerBalance = null, milestone = '' }) {
-  const metric = value => value === null || value === undefined ? Number.NaN : Number(value)
-  const price = metric(market?.priceUsd)
-  const liquidity = metric(market?.liquidityUsd)
-  const marketCap = metric(market?.marketCapUsd)
-  return `${preview ? '<b>PREVIEW — NOT A LIVE BUY</b> 🧪\\n\\n' : ''}<b>MADGER BUY DETECTED</b> 🦡⚡
-
-${tier.emoji} <b>${escapeHtml(tier.label)}</b>
-<b>${Number(amount).toLocaleString('en-US', { maximumFractionDigits: 2 })} $MADGER</b>
-${paymentAmount && paymentSymbol ? `Spent: <b>${Number(paymentAmount).toLocaleString('en-US', { maximumFractionDigits: 9 })} ${escapeHtml(paymentSymbol)}</b>\n` : ''}${paymentSymbol === 'USDC' ? 'Executed value' : 'Reference value'}: <b>${compactUsd(Number(usdValue))}</b>
-${paymentAmount && paymentSymbol ? `Execution rate: ${Number(paymentAmount / amount).toLocaleString('en-US', { maximumSignificantDigits: 7 })} ${escapeHtml(paymentSymbol)}/MADGER\n` : ''}${postMadgerBalance !== null ? `Buyer balance after: ${Number(postMadgerBalance).toLocaleString('en-US', { maximumFractionDigits: 2 })} MADGER\n` : ''}${milestone ? `\n🏁 <b>${escapeHtml(milestone)}</b>\n` : ''}
-
-Price: ${compactUsd(price)}
-Market cap: ${compactUsd(marketCap, 0)}
-Liquidity: ${compactUsd(liquidity, 0)}
-Buyer: <code>${escapeHtml(compactWallet(buyer))}</code>
-
-✅ Verified against the official Raydium pool
-Mint: <code>${OFFICIAL_MINT}</code>`
-}
-
 async function buyPreview(message) {
   if (!ADMIN_IDS.has(String(message.from.id))) return send(message.chat.id, 'Admin command denied.')
   if (message.chat.type !== 'private') {
@@ -1030,8 +1012,9 @@ async function buyPreview(message) {
   const market = marketSnapshotSummary(rows?.[0] ?? {})
   const usdValue = 250
   const amount = market.priceUsd > 0 ? usdValue / market.priceUsd : 250000
-  await sendBuyCard(message.chat.id, buyAlertCaption({
-    amount, usdValue, buyer: OFFICIAL_POOL, tier: buyTier(usdValue), market, preview: true
+  await sendBuyCard(message.chat.id, formatBuyAlert({
+    amount, usdValue, tier: buyTier(usdValue), preview: true,
+    highlights: ['🏆 LARGEST BUY — LAST 24 HOURS']
   }))
   await recordEvent('buy_preview_viewed', message.from.id)
 }
@@ -1048,12 +1031,15 @@ async function buyStats(message) {
   const summarize = days => {
     const cutoff = now - days * 86400000
     const matches = (rows ?? []).filter(row => Date.parse(row.created_at) >= cutoff)
+    const publishable = matches.filter(row => shouldPublishBuyAlert(row.usd_value))
     return {
       count: matches.length,
+      publishable: publishable.length,
+      suppressed: matches.length - publishable.length,
       tokens: matches.reduce((sum, row) => sum + Number(row.token_amount ?? 0), 0),
       usd: matches.reduce((sum, row) => sum + Number(row.usd_value ?? 0), 0),
       largest: Math.max(0, ...matches.map(row => Number(row.usd_value ?? 0))),
-      delivered: matches.filter(row => row.metadata?.delivery_status === 'delivered').length
+      delivered: publishable.filter(row => row.metadata?.delivery_status === 'delivered').length
     }
   }
   const one = summarize(1)
@@ -1062,14 +1048,16 @@ async function buyStats(message) {
 
 <b>Last 24 hours</b>
 Verified buys: ${one.count}
-Cards delivered: ${one.delivered}/${one.count}
+Public alerts: ${one.delivered}/${one.publishable}
+Below $${PUBLIC_BUY_ALERT_MINIMUM_USD.toFixed(0)} (recorded, not displayed): ${one.suppressed}
 MADGER bought: ${one.tokens.toLocaleString('en-US', { maximumFractionDigits: 2 })}
 Approx. volume: ${compactUsd(one.usd)}
 Largest buy: ${compactUsd(one.largest)}
 
 <b>Last 7 days</b>
 Verified buys: ${seven.count}
-Cards delivered: ${seven.delivered}/${seven.count}
+Public alerts: ${seven.delivered}/${seven.publishable}
+Below $${PUBLIC_BUY_ALERT_MINIMUM_USD.toFixed(0)} (recorded, not displayed): ${seven.suppressed}
 MADGER bought: ${seven.tokens.toLocaleString('en-US', { maximumFractionDigits: 2 })}
 Approx. volume: ${compactUsd(seven.usd)}
 Largest buy: ${compactUsd(seven.largest)}
@@ -1737,8 +1725,11 @@ async function publishVerifiedBuy(signature, trade, market, source) {
   const buyer = trade.actor
   const amount = trade.madgerAmount
   const priceUsd = Number(typeof market === 'number' ? market : market?.priceUsd ?? 0)
-  const usdValue = trade.paymentSymbol === 'USDC' && trade.paymentAmount ? trade.paymentAmount : amount * priceUsd
-  const tier = buyTier(usdValue)
+  let usdValue = Number.isFinite(Number(trade.usdValue))
+    ? Number(trade.usdValue)
+    : trade.paymentSymbol === 'USDC' && trade.paymentAmount ? trade.paymentAmount : amount * priceUsd
+  let tier = buyTier(usdValue)
+  let publishable = shouldPublishBuyAlert(usdValue)
   let inserted
   let deliveryAttempts = 0
   let retried = false
@@ -1748,12 +1739,22 @@ async function publishVerifiedBuy(signature, trade, market, source) {
       trade_side: 'buy', actor_wallet: buyer, token_amount: amount, usd_value: usdValue,
       payment_amount: trade.paymentAmount, payment_asset: trade.paymentSymbol,
       post_token_balance: trade.postMadgerBalance,
-      metadata: { source, delivery_status: BUY_CHAT_ID ? 'pending' : 'skipped', delivery_attempts: 0 }
+      metadata: {
+        source,
+        delivery_status: BUY_CHAT_ID ? (publishable ? 'pending' : 'suppressed_below_minimum') : 'skipped',
+        delivery_attempts: 0,
+        public_minimum_usd: PUBLIC_BUY_ALERT_MINIMUM_USD
+      }
     }, 'return=representation')
   } catch (error) {
     if (!String(error).includes('duplicate')) throw error
-    const existing = await db(`madger_bot_alerts?transaction_signature=eq.${encodeURIComponent(signature)}&select=id,metadata,created_at&limit=1`)
+    const existing = await db(`madger_bot_alerts?transaction_signature=eq.${encodeURIComponent(signature)}&select=id,usd_value,metadata,created_at&limit=1`)
     const alert = existing?.[0]
+    if (Number.isFinite(Number(alert?.usd_value))) {
+      usdValue = Number(alert.usd_value)
+      tier = buyTier(usdValue)
+      publishable = shouldPublishBuyAlert(usdValue)
+    }
     const status = alert?.metadata?.delivery_status
     const age = Date.now() - Date.parse(String(alert?.created_at ?? ''))
     if (!BUY_CHAT_ID || !alert || !['pending', 'failed'].includes(status) || !Number.isFinite(age) || age > 6 * 3600000) {
@@ -1764,17 +1765,29 @@ async function publishVerifiedBuy(signature, trade, market, source) {
     retried = true
   }
   const alertId = inserted?.[0]?.id
+  if (!publishable) {
+    if (alertId && retried) {
+      await db(`madger_bot_alerts?id=eq.${alertId}`, {
+        method: 'PATCH', body: JSON.stringify({
+          metadata: {
+            source, delivery_status: 'suppressed_below_minimum',
+            delivery_attempts: deliveryAttempts,
+            public_minimum_usd: PUBLIC_BUY_ALERT_MINIMUM_USD
+          }
+        })
+      })
+    }
+    return { duplicate: false, retried, suppressed: true, instant: false, tier: tier.label }
+  }
   if (!retried) await evaluateSubscriptions('whale', usdValue, `Verified buy: ${compactUsd(usdValue)} · ${amount.toLocaleString('en-US', { maximumFractionDigits: 2 })} MADGER`, `https://solscan.io/tx/${encodeURIComponent(signature)}`)
   if (BUY_CHAT_ID) {
     try {
       const day = encodeURIComponent(new Date(Date.now() - 86400000).toISOString())
       const recent = await db(`madger_bot_alerts?alert_type=eq.verified_buy&created_at=gte.${day}&select=id,usd_value&order=created_at.asc&limit=1000`)
-      const count = recent?.length ?? 0
-      const previousLargest = Math.max(0, ...(recent ?? []).filter(row => row.id !== alertId).map(row => Number(row.usd_value ?? 0)))
-      const milestone = [10, 25, 50, 100].includes(count) ? `${count} verified buys in 24 hours` : usdValue > previousLargest && count > 1 ? 'Largest verified buy in the last 24 hours' : ''
-      const delivered = await sendBuyCard(BUY_CHAT_ID, buyAlertCaption({
-        amount, usdValue, buyer, tier, market, paymentAmount: trade.paymentAmount,
-        paymentSymbol: trade.paymentSymbol, postMadgerBalance: trade.postMadgerBalance, milestone
+      const highlights = buyAlertHighlights(recent, alertId, usdValue)
+      const delivered = await sendBuyCard(BUY_CHAT_ID, formatBuyAlert({
+        amount, usdValue, tier, paymentAmount: trade.paymentAmount,
+        paymentSymbol: trade.paymentSymbol, highlights
       }), signature)
       if (alertId) await db(`madger_bot_alerts?id=eq.${alertId}`, {
         method: 'PATCH', body: JSON.stringify({
@@ -1826,7 +1839,7 @@ async function retryFailedCards(message) {
   if (!ADMIN_IDS.has(String(message.from.id)) || message.chat.type !== 'private') return send(message.chat.id, 'Buy-card recovery is restricted to the private admin console.')
   const since = encodeURIComponent(new Date(Date.now() - 6 * 3600000).toISOString())
   const [rows, marketRows] = await Promise.all([
-    db(`madger_bot_alerts?alert_type=eq.verified_buy&created_at=gte.${since}&select=transaction_signature,actor_wallet,buyer_wallet,token_amount,payment_amount,payment_asset,post_token_balance,metadata,created_at&order=created_at.asc&limit=100`),
+    db(`madger_bot_alerts?alert_type=eq.verified_buy&created_at=gte.${since}&select=transaction_signature,actor_wallet,buyer_wallet,token_amount,usd_value,payment_amount,payment_asset,post_token_balance,metadata,created_at&order=created_at.asc&limit=100`),
     db('madger_bot_market_snapshots?select=price_usd,liquidity_usd,raw,created_at&order=created_at.desc&limit=1')
   ])
   const recoverable = (rows ?? []).filter(row => ['failed', 'pending'].includes(row.metadata?.delivery_status)).slice(0, 10)
@@ -1838,6 +1851,7 @@ async function retryFailedCards(message) {
     try {
       const result = await publishVerifiedBuy(row.transaction_signature, {
         actor: row.actor_wallet ?? row.buyer_wallet, madgerAmount: Number(row.token_amount),
+        usdValue: Number(row.usd_value),
         paymentAmount: row.payment_amount === null ? null : Number(row.payment_amount),
         paymentSymbol: row.payment_asset, postMadgerBalance: row.post_token_balance === null ? null : Number(row.post_token_balance)
       }, market, 'admin_card_recovery')
@@ -2157,7 +2171,7 @@ async function serveRequest(request) {
       return Response.redirect(DASHBOARD_URL, 302)
     }
     if (request.method === 'GET') {
-      return Response.json({ ok: true, service: 'MADGER Command Bot', version: BOT_VERSION, configured: Boolean(BOT_TOKEN && WEBHOOK_SECRET), modular_runtime: true, structured_telemetry: true, failure_path_tests: true, static_dashboard: true, command_registry: true, compact_command_menus: true, token_authenticity_inspector: true, live_supply_audit: true, rpc_diagnostics: true, liquidity_history_chart: true, private_wallet_inspector: true, public_system_status: true, market_history_chart: true, signer_proof: true, liquidity_event_classification: true, safe_link_inspector: true, self_healing_watchdog: true, buy_card_recovery: true, transaction_classifier: true, buy_card_v2: true, private_sell_intelligence: true, personal_alerts: true, daily_briefing: true, rpc_failover: true, inline_sharing: true, mini_app: true, operations_console: true, moderation_log: true, member_inspection: true, moderation_recovery: true, community_guard: true, raid_shield: true, raid_link_firewall: true, stale_content_cleanup: true, faq_responder: true, market_commands: true, pool_intelligence: true, risk_snapshot: true, liquidity_trends: true, holder_intelligence: true, holder_growth: true, concentration_tracking: true, wallet_classification: true, distribution_intelligence: true, lock_monitoring: true, protected_wallet_alerts: true, wallet_movement_alerts: true, promotion_teams: true, announcements: true, contributor_leaderboard: true, contributor_history: true, mission_admin: true, review_queue: true, native_buy_watcher: true, one_minute_buy_watcher: true, catchup_scanner: true, watcher_health: true, every_verified_buy: true, branded_buy_cards: true, buy_delivery_telemetry: true })
+      return Response.json({ ok: true, service: 'MADGER Command Bot', version: BOT_VERSION, configured: Boolean(BOT_TOKEN && WEBHOOK_SECRET), modular_runtime: true, structured_telemetry: true, failure_path_tests: true, static_dashboard: true, command_registry: true, compact_command_menus: true, token_authenticity_inspector: true, live_supply_audit: true, rpc_diagnostics: true, liquidity_history_chart: true, private_wallet_inspector: true, public_system_status: true, market_history_chart: true, signer_proof: true, liquidity_event_classification: true, safe_link_inspector: true, self_healing_watchdog: true, buy_card_recovery: true, transaction_classifier: true, buy_card_v3: true, minimum_public_buy_usd: PUBLIC_BUY_ALERT_MINIMUM_USD, private_sell_intelligence: true, personal_alerts: true, daily_briefing: true, rpc_failover: true, inline_sharing: true, mini_app: true, operations_console: true, moderation_log: true, member_inspection: true, moderation_recovery: true, community_guard: true, raid_shield: true, raid_link_firewall: true, stale_content_cleanup: true, faq_responder: true, market_commands: true, pool_intelligence: true, risk_snapshot: true, liquidity_trends: true, holder_intelligence: true, holder_growth: true, concentration_tracking: true, wallet_classification: true, distribution_intelligence: true, lock_monitoring: true, protected_wallet_alerts: true, wallet_movement_alerts: true, promotion_teams: true, announcements: true, contributor_leaderboard: true, contributor_history: true, mission_admin: true, review_queue: true, native_buy_watcher: true, one_minute_buy_watcher: true, catchup_scanner: true, watcher_health: true, verified_buy_recording: true, branded_buy_cards: true, buy_delivery_telemetry: true })
     }
     if (url.pathname.endsWith('/setup')) return setupTelegram(request)
     if (url.pathname.endsWith('/watch-buys')) return watchVerifiedBuys(request)

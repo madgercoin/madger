@@ -1,5 +1,12 @@
 # Changelog
 
+## 2026-09-27 — Buy Card v3 hierarchy
+
+- Rebuilt Telegram buy alerts around the purchase itself: the USD value and MADGER amount now lead the card, while market cap, liquidity, execution rate, resulting balance, buyer wallet, and repeated mint copy were removed.
+- Added evidence-backed 24-hour highlights for the largest and top-three buys plus selected public-buy count milestones.
+- Continued recording verified sub-dollar buys for aggregate operations while suppressing every individual public or private whale alert below $1.
+- Updated private buy-performance reporting to separate recorded buys, eligible public alerts, delivered cards, and sub-dollar suppressions.
+
 ## 2026-09-11 — MADGER Command Bot
 
 - Shipped the v4.5 reliability release with modular Telegram transport, a static official-site Mini App, monitor policy, RPC failover, webhook policy, and structured request telemetry.

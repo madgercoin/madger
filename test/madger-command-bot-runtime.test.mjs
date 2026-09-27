@@ -7,6 +7,9 @@ import { operationTelemetry, routeLabel, telemetrySummary } from '../supabase/fu
 import { firstSuccessful } from '../supabase/functions/madger-command-bot/resilience.js'
 import { createTelegramClient, isGroupChat, keyboard } from '../supabase/functions/madger-command-bot/telegram-client.js'
 import { isDuplicateUpdateError, isWebhookAuthorized, secureStringEqual } from '../supabase/functions/madger-command-bot/webhook-policy.js'
+import {
+  PUBLIC_BUY_ALERT_MINIMUM_USD, buyAlertHighlights, formatBuyAlert, shouldPublishBuyAlert
+} from '../supabase/functions/madger-command-bot/buy-alert-policy.js'
 
 test('Telegram client sends JSON and returns successful API results', async () => {
   let request
@@ -36,6 +39,39 @@ test('Telegram helpers preserve group and keyboard behavior', () => {
   assert.deepEqual(keyboard([[{ text: 'Open', url: 'https://madgercoin.com/' }]]), {
     inline_keyboard: [[{ text: 'Open', url: 'https://madgercoin.com/' }]]
   })
+})
+
+test('suppresses sub-dollar public buy alerts at the exact boundary', () => {
+  assert.equal(PUBLIC_BUY_ALERT_MINIMUM_USD, 1)
+  assert.equal(shouldPublishBuyAlert(0.99), false)
+  assert.equal(shouldPublishBuyAlert(1), true)
+  assert.equal(shouldPublishBuyAlert('25.50'), true)
+  assert.equal(shouldPublishBuyAlert('unavailable'), false)
+})
+
+test('prioritizes evidence-backed 24-hour buy superlatives', () => {
+  const rows = [
+    { id: 1, usd_value: 0.25 },
+    { id: 2, usd_value: 20 },
+    { id: 3, usd_value: 50 },
+    { id: 4, usd_value: 75 }
+  ]
+  assert.deepEqual(buyAlertHighlights(rows, 4, 75), ['🏆 LARGEST BUY — LAST 24 HOURS'])
+  assert.deepEqual(buyAlertHighlights([...rows, { id: 5, usd_value: 60 }], 5, 60), ['🔥 TOP 2 BUY — LAST 24 HOURS'])
+  assert.deepEqual(buyAlertHighlights(rows, 1, 0.25), [])
+})
+
+test('keeps buy cards concise and makes the purchase amount dominant', () => {
+  const caption = formatBuyAlert({
+    amount: 123456.78, usdValue: 250, tier: { emoji: '🦡', label: 'HEAVY CLAW' },
+    paymentAmount: 1.25, paymentSymbol: 'SOL',
+    highlights: ['🏆 LARGEST BUY — LAST 24 HOURS']
+  })
+  assert.match(caption, /💰 <b>≈\$250\.00 BUY<\/b>/)
+  assert.match(caption, /🦡 <b>123,456\.78 \$MADGER PURCHASED<\/b>/)
+  assert.match(caption, /LARGEST BUY — LAST 24 HOURS/)
+  assert.match(caption, /Paid: 1\.25 SOL/)
+  assert.doesNotMatch(caption, /Market cap|Liquidity|Buyer balance|Execution rate|Mint:/)
 })
 
 test('RPC failover recovers from a failed primary endpoint', async () => {
