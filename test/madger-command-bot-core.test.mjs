@@ -2,7 +2,7 @@ import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
 import test from 'node:test'
 import {
-  OFFICIAL_MINT, OFFICIAL_POOL, PROJECT_WALLETS, RAYDIUM_CPMM_PROGRAM, SPL_TOKEN_PROGRAM, buyTier, classifiedDistribution, compactWallet, contributorRank, escapeHtml, faqIntent,
+  LINKS, OFFICIAL_MINT, OFFICIAL_POOL, PROJECT_WALLETS, RAYDIUM_CPMM_PROGRAM, SPL_TOKEN_PROGRAM, buyTier, classifiedDistribution, compactWallet, contributorRank, escapeHtml, faqIntent,
   classifyKnownAddress, classifyMadgerTransaction, findVerifiedMadgerBuyers, inspectLinkSafety, isSuspiciousMadgerMessage,
   holderSnapshotFromAccounts,
   marketAlertReasons, marketSnapshotSummary, moderationEscalation, moderationReason, poolSnapshotSummary,
@@ -17,13 +17,32 @@ import {
 } from '../supabase/functions/madger-command-bot/command-registry.js'
 
 test('keeps compact Telegram menus backed by one command registry', () => {
-  assert.equal(BOT_VERSION, '4.6.0')
+  assert.equal(BOT_VERSION, '4.6.1')
   assert.equal(PUBLIC_MENU_NAMES.length, 12)
   assert.equal(ADMIN_MENU_NAMES.length, 15)
   assert.equal(new Set(PUBLIC_MENU_NAMES).size, PUBLIC_MENU_NAMES.length)
   assert.equal(new Set(ADMIN_MENU_NAMES).size, ADMIN_MENU_NAMES.length)
   assert.ok(commandsForMenu().every(item => item.description === COMMAND_DEFINITIONS[item.command]))
   assert.ok(commandsForMenu(true).every(item => item.description === COMMAND_DEFINITIONS[item.command]))
+})
+
+test('keeps every bot purchase route on the canonical token-specific handoff', () => {
+  assert.deepEqual({
+    raydium: LINKS.raydium,
+    jupiter: LINKS.jupiter,
+    bonkbot: LINKS.bonkbot,
+    trojan: LINKS.trojan
+  }, {
+    raydium: 'https://madgercoin.com/r/raydium',
+    jupiter: 'https://madgercoin.com/r/jupiter',
+    bonkbot: 'https://madgercoin.com/r/bonkbot',
+    trojan: 'https://madgercoin.com/r/trojan'
+  })
+  const source = readFileSync(new URL('../supabase/functions/madger-command-bot/index.ts', import.meta.url), 'utf8')
+  for (const label of ['Buy on Raydium', 'Buy on Jupiter', 'Buy with BONKbot', 'Buy with Trojan']) {
+    assert.match(source, new RegExp(label))
+  }
+  assert.match(source, /intent === 'buy'.*conversionKeyboard\(\)/)
 })
 
 test('preserves legacy command aliases while canonicalizing Telegram mentions', () => {

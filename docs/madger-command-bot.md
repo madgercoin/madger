@@ -58,7 +58,7 @@ The bot classifies the five full wallet addresses published in MADGER's official
 
 ## Commands
 
-- `/buy` — neutral, verified purchase routes
+- `/buy` — neutral, verified purchase routes for Raydium, Jupiter, BONKbot, and Trojan; every button uses the canonical token-specific redirect maintained at `madgercoin.com`
 - `/price` — latest stored price, market cap, liquidity, five-minute volume, and buy/sell counts
 - `/pool` or `/liquidity` — official-pool liquidity depth, 24-hour trend, activity, and age
 - `/risk` — combined verified-pool, freshness, liquidity, and raw concentration snapshot

@@ -196,9 +196,10 @@ async function sweepMessageCleanup() {
 function conversionKeyboard(referralCode = '') {
   return keyboard([
     [{ text: '🧭 New to crypto: Start Here', url: trackedUrl('guide', referralCode) }],
-    [{ text: '⚡ Open Raydium', url: trackedUrl('raydium', referralCode) }, { text: '📈 Live Chart', url: trackedUrl('dex', referralCode) }],
-    [{ text: '🤖 BONKbot', url: trackedUrl('bonkbot', referralCode) }, { text: '⚔️ Trojan', url: trackedUrl('trojan', referralCode) }],
-    [{ text: '✅ Verify MADGER', url: LINKS.verify }, { text: '🦡 Join The Burrow', url: LINKS.community }],
+    [{ text: '⚡ Buy on Raydium', url: trackedUrl('raydium', referralCode) }, { text: '🪐 Buy on Jupiter', url: trackedUrl('jupiter', referralCode) }],
+    [{ text: '🤖 Buy with BONKbot', url: trackedUrl('bonkbot', referralCode) }, { text: '⚔️ Buy with Trojan', url: trackedUrl('trojan', referralCode) }],
+    [{ text: '📈 Live Chart', url: trackedUrl('dex', referralCode) }, { text: '✅ Verify MADGER', url: LINKS.verify }],
+    [{ text: '🦡 Join The Burrow', url: LINKS.community }],
     [{ text: '🎯 Contributor Missions', callback_data: 'missions' }]
   ])
 }
@@ -453,7 +454,7 @@ Largest wallet: <b>${Number(holders.largest_percentage).toFixed(2)}%</b>
 Top 10 concentration: <b>${Number(holders.top_10_percentage).toFixed(2)}%</b>
 
 Concentration is raw on-chain ownership. Treasury, liquidity, locked, exchange, and custodial wallets may be included. This is a factual monitor—not a safety rating or financial advice.`, keyboard([
-    [{ text: '🌊 Pool details', url: LINKS.raydium }, { text: '🔎 Token accounts', url: LINKS.solscanToken }],
+    [{ text: '🌊 Pool details', url: LINKS.raydiumPool }, { text: '🔎 Token accounts', url: LINKS.solscanToken }],
     [{ text: '📈 Verified chart', url: LINKS.dex }]
   ]))
 }
@@ -613,7 +614,7 @@ async function maybeAnswerFaq(message) {
   else if (intent === 'pool') posted = await showPool(message.chat.id)
   else if (intent === 'risk') posted = await showRisk(message.chat.id)
   else if (intent === 'contract') posted = await send(message.chat.id, `<b>OFFICIAL MADGER MINT</b> ✅\n<code>${OFFICIAL_MINT}</code>\n\nVerify the complete address—never a shortened match.`, keyboard([[{ text: 'Canonical verification', url: LINKS.verify }]]))
-  else if (intent === 'buy') posted = await send(message.chat.id, '<b>BUY $MADGER SAFELY</b> ⚡\nUse a verified route and choose your own amount and slippage. MADGERbot never asks for funds or wallet credentials.', keyboard([[{ text: '🧭 Beginner guide', url: LINKS.guide }, { text: '⚡ Open Raydium', url: LINKS.raydium }]]))
+  else if (intent === 'buy') posted = await send(message.chat.id, '<b>BUY $MADGER SAFELY</b> ⚡\nUse a verified route and choose your own amount and slippage. MADGERbot never asks for funds or wallet credentials.', conversionKeyboard())
   else posted = await showOfficialLinks(message.chat.id)
   if (posted?.message_id) await scheduleCleanup(message.chat.id, posted.message_id, `faq_${intent}`, 4)
   await recordEvent('faq_answered', message.from.id, { chat_id: message.chat.id, intent })

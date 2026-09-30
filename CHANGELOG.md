@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-09-30 — Direct bot purchase routes
+
+- Replaced the MADGERbot Raydium search page and generic BONKbot/Trojan homepages with the canonical token-specific purchase routes maintained at `madgercoin.com`.
+- Added Jupiter to the `/buy`, welcome, and automatic buy-answer keyboards so buyers can choose among Raydium, Jupiter, BONKbot, and Trojan without manually pasting the mint.
+- Kept the separate Raydium liquidity-pool inspection link for risk reporting and added regression coverage for every direct purchase destination.
+
 ## 2026-09-27 — Buy Card v3 hierarchy
 
 - Rebuilt Telegram buy alerts around the purchase itself: the USD value and MADGER amount now lead the card, while market cap, liquidity, execution rate, resulting balance, buyer wallet, and repeated mint copy were removed.

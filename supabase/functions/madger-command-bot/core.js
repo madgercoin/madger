@@ -34,15 +34,17 @@ export const LOCK_RECORDS = Object.freeze([
 export const LINKS = Object.freeze({
   home: 'https://madgercoin.com/',
   guide: 'https://madgercoin.com/buy',
-  raydium: `https://raydium.io/liquidity-pools/?token=${OFFICIAL_MINT}`,
+  raydium: 'https://madgercoin.com/r/raydium',
+  jupiter: 'https://madgercoin.com/r/jupiter',
+  raydiumPool: `https://raydium.io/liquidity-pools/?token=${OFFICIAL_MINT}`,
   dex: `https://dexscreener.com/solana/${OFFICIAL_POOL.toLowerCase()}`,
   verify: 'https://madgercoin.com/launch.html',
   official: 'https://madgercoin.com/official-links.html',
   buyCard: 'https://madgercoin.com/assets/madger_social_share_v10.jpg',
   solscanToken: `https://solscan.io/token/${OFFICIAL_MINT}`,
   community: 'https://t.me/madgerburrow',
-  bonkbot: 'https://bonkbot.io/',
-  trojan: 'https://trojan.com/'
+  bonkbot: 'https://madgercoin.com/r/bonkbot',
+  trojan: 'https://madgercoin.com/r/trojan'
 })
 
 export function escapeHtml(value) {
