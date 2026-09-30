@@ -1,16 +1,16 @@
 # MADGER social performance
 
-Generated: 2026-09-29T14:57:09.816Z
-Previous snapshot: 2026-09-28T16:52:41.909Z
+Generated: 2026-09-30T15:05:51.761Z
+Previous snapshot: 2026-09-29T14:57:09.816Z
 
 ## 30-day channel rollup
 
 | Channel | Health | Posts | Impressions | Reach | Views | Eng. rate | Clicks | Follows | Review |
 |---|---|---:|---:|---:|---:|---:|---:|---:|---|
-| facebook: Madger Coin | Connected | 41 | 1244 | — | — | 1.13% | 4 | — | Check Buffer Community |
-| twitter: MadgerCoin | Disconnected | 57 | 24250 | — | — | 20.44% | 221 | — | Check Buffer Community |
-| instagram: madgercoin | Connected | 39 | — | 143 | 312 | 59.44% | — | 2 | Check Buffer Community |
-| tiktok: themadgercoin | Connected | 38 | — | 4340 | 5027 | 0.93% | — | — | Check Buffer Community |
+| facebook: Madger Coin | Connected | 40 | 1040 | — | — | 1.25% | 3 | — | Check Buffer Community |
+| twitter: MadgerCoin | Disconnected | 49 | 21993 | — | — | 21.27% | 207 | — | Check Buffer Community |
+| instagram: madgercoin | Connected | 38 | — | 137 | 304 | 65.69% | — | 2 | Check Buffer Community |
+| tiktok: themadgercoin | Connected | 38 | — | 4502 | 4983 | 0.94% | — | — | Check Buffer Community |
 
 ## Scheduled campaign
 
