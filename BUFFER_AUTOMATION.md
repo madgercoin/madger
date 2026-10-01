@@ -45,7 +45,11 @@ Set `mediaType` to `image` for a static image or `video` for a video. Legacy ent
 - To rotate authorization, regenerate the Buffer key and replace the `BUFFER_API_TOKEN` repository secret.
 - Do not change a scheduled post's caption or time solely to defeat duplicate detection. Verify the Buffer queue before resubmitting altered content.
 
-## Verified production channel registry
+## Current X account — October 1, 2026
+
+The official X account is `@MadgerDaBadger` at https://x.com/MadgerDaBadger. The old `MadgerCoin` Buffer channel below is disconnected and belongs to the retired account. Do not publish to its channel ID. Connecting the replacement account requires authenticating as `@MadgerDaBadger`; record its new channel ID only after Buffer confirms the connection. Facebook, Instagram, and TikTok remain connected.
+
+## Historical production channel registry
 
 The successful discovery run at `2026-08-16T01:17:51Z` returned the following values. Publishing entries should use the immutable `channelId`; `channelName` is descriptive only.
 

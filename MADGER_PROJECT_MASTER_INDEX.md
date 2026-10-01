@@ -27,6 +27,7 @@ The positioning is:
 | Founder | James Dean | CONFIRMED |
 | Network | Solana | CONFIRMED |
 | Mint address | `BHauMX8akk2umqkQqnJwpYkCRkZmefGnEBFByeFXRKqv` | CONFIRMED in project files; re-verify on-chain before public launch/trading instructions |
+| X | https://x.com/MadgerDaBadger / `@MadgerDaBadger` | CONFIRMED by founder October 1, 2026 |
 | Website | https://madgercoin.com | CONFIRMED |
 | Telegram announcement channel | https://t.me/madgercoin / `@madgercoin` | CONFIRMED |
 | Telegram community | https://t.me/madgerburrow / `@madgerburrow` | CONFIRMED |

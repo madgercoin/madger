@@ -7,7 +7,7 @@ This file is the repository-level channel registry. It complements `docs/communi
 | Platform | Canonical URL | Primary job |
 | --- | --- | --- |
 | Website | `https://madgercoin.com` | Identity, status, exact mint, safety, and official link source |
-| X | `https://x.com/madgercoin` | Public conversation, concise updates, and ecosystem participation |
+| X | `https://x.com/MadgerDaBadger` | Public conversation, concise updates, and ecosystem participation |
 | Instagram | `https://www.instagram.com/madgercoin/` | Character-led visual storytelling |
 | Facebook | `https://www.facebook.com/1279493098576451` | Native video and broader community conversation |
 | TikTok | `https://www.tiktok.com/@themadgercoin` | Native short-form character hooks |

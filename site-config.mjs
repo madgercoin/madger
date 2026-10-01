@@ -77,6 +77,7 @@ export const assetFiles = [
   "madger_official_contest_pose_card.jpg",
   "Madger_Productions_Presents_Intro_clip.mp4",
   "Madger_Official_Outro_Clip.mp4",
+  "social_x.svg",
   "social_telegram.svg",
   "social_instagram.svg",
   "social_facebook.svg",

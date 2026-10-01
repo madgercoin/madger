@@ -3,19 +3,25 @@
     {
       "service": "instagram",
       "label": "Instagram @madgercoin",
-      "selectors": ["madgercoin"],
+      "selectors": [
+        "madgercoin"
+      ],
       "expectedType": "business"
     },
     {
       "service": "tiktok",
       "label": "TikTok @themadgercoin",
-      "selectors": ["themadgercoin"],
+      "selectors": [
+        "themadgercoin"
+      ],
       "expectedType": "profile"
     },
     {
       "service": "facebook",
       "label": "MADGER Facebook Page",
-      "selectors": ["madger"],
+      "selectors": [
+        "madger"
+      ],
       "expectedType": "page"
     }
   ],
@@ -30,5 +36,12 @@
     "rejectDisconnectedChannels": true,
     "rejectLockedChannels": true,
     "rejectAmbiguousMatches": true
+  },
+  "x": {
+    "officialAccount": "MadgerDaBadger",
+    "officialUrl": "https://x.com/MadgerDaBadger",
+    "service": "twitter",
+    "connectionStatus": "requires-authentication",
+    "retiredChannelId": "6a67af8a4b2d03035f4e91f4"
   }
 }

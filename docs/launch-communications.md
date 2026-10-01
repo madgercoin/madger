@@ -65,7 +65,7 @@ Replace bracketed fields only from the signed launch record. Every draft remains
 
 > **DO NOT PUBLISH BEFORE AUTHORIZED PUBLIC LAUNCH.**
 >
-> **PINNED SAFETY NOTICE** — Trust only https://madgercoin.com, https://x.com/madgercoin, and https://t.me/madgercoin. Official mint: `BHauMX8akk2umqkQqnJwpYkCRkZmefGnEBFByeFXRKqv`. Admins do not DM first. Never reveal a seed phrase/private key, sign an unexplained transaction, connect through a reply, or send a “verification” payment. Report and block impersonators.
+> **PINNED SAFETY NOTICE** — Trust only https://madgercoin.com, https://x.com/MadgerDaBadger, and https://t.me/madgercoin. Official mint: `BHauMX8akk2umqkQqnJwpYkCRkZmefGnEBFByeFXRKqv`. Admins do not DM first. Never reveal a seed phrase/private key, sign an unexplained transaction, connect through a reply, or send a “verification” payment. Report and block impersonators.
 
 ## Mint-verification warning
 

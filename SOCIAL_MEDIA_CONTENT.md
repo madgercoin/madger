@@ -3,7 +3,7 @@
 **Campaign state:** Trading live
 **Primary posting workflow:** Post to Instagram first, cross-post to Facebook, then use the platform-specific copy for X, Telegram, TikTok, and Threads.  
 **Official website:** https://madgercoin.com  
-**Official X:** https://x.com/madgercoin  
+**Official X:** https://x.com/MadgerDaBadger
 **Announcements:** https://t.me/madgercoin  
 **Community:** https://t.me/madgerburrow  
 **Official Solana mint:** `BHauMX8akk2umqkQqnJwpYkCRkZmefGnEBFByeFXRKqv`
@@ -80,7 +80,7 @@ MADGER is the grumpiest badger on Solana: persistent, skeptical of noise, loyal 
 **Official links**
 
 Website: https://madgercoin.com  
-X: https://x.com/madgercoin  
+X: https://x.com/MadgerDaBadger
 Community: https://t.me/madgerburrow  
 Announcements: https://t.me/madgercoin
 
@@ -254,7 +254,7 @@ The Burrow isn’t waiting for perfect conditions.
 
 We’re creating them.
 
-Follow @madgercoin and join:
+Follow @MadgerDaBadger and join:
 t.me/madgerburrow
 
 #MADGER #BuildTogether #CryptoCommunity
@@ -316,7 +316,7 @@ Your turn. ⬇️
 
 THE BURROW CHALLENGE:
 
-Create your best MADGER meme. Tag @madgercoin and use #MADGER.
+Create your best MADGER meme. Tag @MadgerDaBadger and use #MADGER.
 
 The badger is watching. Probably judging. Definitely digging.
 

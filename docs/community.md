@@ -4,7 +4,7 @@
 
 Trust only links published at **https://madgercoin.com**. Current official accounts:
 
-- X: https://x.com/madgercoin
+- X: https://x.com/MadgerDaBadger
 - Instagram: https://instagram.com/madgercoin
 - Facebook: https://facebook.com/1279493098576451
 - TikTok: https://tiktok.com/@themadgercoin

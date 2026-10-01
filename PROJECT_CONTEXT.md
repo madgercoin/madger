@@ -26,6 +26,7 @@ Quality, transparency, safety, accessibility, performance, maintainability, and 
 
 ## Official channels
 
+- X: [@MadgerDaBadger](https://x.com/MadgerDaBadger)
 - Website: https://madgercoin.com
 - Announcements: https://t.me/madgercoin
 - Community: https://t.me/madgerburrow

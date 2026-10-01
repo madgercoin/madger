@@ -24,7 +24,7 @@ Status: **post-launch listing packet**. Public trading is live and the website s
 
 ## Official channels
 
-- X: https://x.com/madgercoin
+- X: https://x.com/MadgerDaBadger
 - Instagram: https://instagram.com/madgercoin
 - Facebook: https://facebook.com/1279493098576451
 - TikTok: https://tiktok.com/@themadgercoin

@@ -15,6 +15,13 @@
 - Updated the image-led archive and homepage preview, RSS feed, sitemap dates, build allowlist, article navigation, automated parity checks, and production smoke test.
 - Preserved the separate beginner buying path and linked the exact mint, finalized token report, public source files, on-chain explorer, uncertainty boundaries, and active community routes.
 
+## 2026-10-01 — Official X account replacement
+
+- Restored `@MadgerDaBadger` throughout the homepage, official-link directory, litepaper, creator brief, token metadata, X cards, and current community/listing materials.
+- Updated the local source verifier and refreshed its offline cache so the new exact X handle and URL are recognized.
+- Recorded the disconnected retired Buffer channel separately from the replacement account awaiting authentication.
+
+
 ## 2026-09-24 — Signals dispatch: market cap is not FDV
 
 - Published Dispatch 012 as a source-linked, reproducible audit of total supply, documented locks, maximum circulating supply, market capitalization, and fully diluted value.
