@@ -13,7 +13,7 @@ Canonical identity used for every comparison:
 - Website: `https://madgercoin.com`
 - Telegram announcements: `https://t.me/madgercoin`
 - Telegram community: `https://t.me/madgerburrow`
-- X: `https://x.com/madgercoin`
+- X: `https://x.com/MadgerDaBadger`
 
 ## Findings
 

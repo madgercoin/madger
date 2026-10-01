@@ -24,7 +24,7 @@ During the Contest Period:
 
 1. Create an original MADGER or honey-badger meme that you have the right to submit.
 2. Post it publicly on X during the Contest Period.
-3. Tag **@madgercoin** and include the exact hashtag **#MadgerMemeContest** in the same post.
+3. Tag **@MadgerDaBadger** and include the exact hashtag **#MadgerMemeContest** in the same post.
 4. Submit the public X post link through the official entry form at **https://madgercoin.com/meme-contest#entry-form**.
 5. Keep the X post publicly visible through the winner announcement.
 
@@ -57,7 +57,7 @@ The SOL amount for each SOL-eligible prize will be calculated using the displaye
 
 ## 7. Selection and verification
 
-MADGER will announce the three provisional winners publicly through **https://t.me/madgercoin** and **https://x.com/madgercoin**, and reply to each original X entry. MADGER administrators do not initiate private messages and will never request a seed phrase, private key, wallet connection, wallet signature, payment, or “verification” transfer.
+MADGER will announce the three provisional winners publicly through **https://t.me/madgercoin** and **https://x.com/MadgerDaBadger**, and reply to each original X entry. MADGER administrators do not initiate private messages and will never request a seed phrase, private key, wallet connection, wallet signature, payment, or “verification” transfer.
 
 Each provisional winner must respond publicly within 72 hours to accept the placement. A SOL-eligible winner must also post a valid Solana public address from an account they control. A public address and its transactions are visible on the blockchain; entrants should use an address they are comfortable disclosing. MADGER never needs a seed phrase, private key, wallet connection, signature, or payment to deliver a prize. After verification, MADGER will send each lawful SOL prize within seven days and publish the transaction signature through an official channel. An entrant is responsible for the accuracy and compatibility of the supplied address. If eligibility or authorship cannot be verified, or an entrant does not respond on time, that entrant forfeits the placement and the next highest-scoring eligible entrant may advance. Inability to receive SOL because of the country or jurisdiction restriction above does not forfeit the placement or non-monetary recognition.
 

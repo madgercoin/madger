@@ -9,7 +9,7 @@ This file records the production social campaign associated with the Launch Hunt
 - Maximum entries: 3 per natural person
 - Official rules/entry: https://madgercoin.com/launch-hunt.html
 - Official Telegram community: https://t.me/madgerburrow
-- Official X: @madgercoin
+- Official X: @MadgerDaBadger
 
 Canonical image alt text:
 MADGER Launch Hunt contest poster in black, gold, and neon green. $75 prize pool paid in SOL with six winners. To enter: visit madgercoin.com, find the hidden Burrow Field Mark, join The Burrow on Telegram, and submit privately. One X bonus and one verified-friend bonus allow up to three entries per person. Contest ends September 1 at 14:00 UTC.

@@ -399,7 +399,7 @@ MADGER has been minted on Solana, but public trading has not launched.
 If someone claims otherwise, verify through:
 madgercoin.com
 t.me/madgercoin
-@madgercoin
+@MadgerDaBadger
 
 Stay sharp. Protect The Burrow.
 
