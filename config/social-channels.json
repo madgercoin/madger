@@ -47,6 +47,29 @@
     "publishingStatus": "Please reauthorize your channel connection.",
     "lastPublishingCheckAt": "2026-10-01T22:24:35Z",
     "automationEnabled": false,
-    "welcomeDraftId": "6abedb6363de9e09a27eb0ce"
+    "welcomeDraftId": "6abedb6363de9e09a27eb0ce",
+    "nativePublishing": {
+      "status": "verified",
+      "welcomeUrl": "https://x.com/MadgerDaBadger/status/2105791731308679374",
+      "welcomePinned": true,
+      "followups": [
+        {
+          "topic": "Verify the mint",
+          "dueAt": "2026-10-02T14:00:00Z",
+          "timezone": "America/New_York"
+        },
+        {
+          "topic": "Creator invitation",
+          "dueAt": "2026-10-03T16:00:00Z",
+          "timezone": "America/New_York"
+        },
+        {
+          "topic": "Community question",
+          "dueAt": "2026-10-04T22:00:00Z",
+          "timezone": "America/New_York"
+        }
+      ],
+      "bufferDraftsAreReferenceOnly": true
+    }
   }
 }
