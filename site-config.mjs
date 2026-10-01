@@ -40,6 +40,7 @@ export const rootFiles = [
   "blog-diligence-map.html",
   "blog-madger-thesis.html",
   "blog-market-cap-is-not-fdv.html",
+  "blog-verify-without-social.html",
   "blog-proof-you-can-open.html",
   "blog-utility-without-a-wallet.html",
   "blog-creator-trust-standard.html",

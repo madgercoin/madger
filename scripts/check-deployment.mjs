@@ -19,9 +19,11 @@ const checks = [
   ["/home-utility.css", 200],
   ["/launch.html", 200],
   ["/litepaper.html", 200],
+  ["/official-links.html", 200],
   ["/collaborators", 200],
   ["/privacy", 200],
   ["/blog", 200],
+  ["/blog-verify-without-social", 200],
   ["/blog-market-cap-is-not-fdv", 200],
   ["/blog-proof-you-can-open", 200],
   ["/blog-utility-without-a-wallet", 200],
@@ -161,10 +163,16 @@ if (game) {
   }
 }
 
-const latestDispatch = responses.get("/blog-market-cap-is-not-fdv");
+const latestDispatch = responses.get("/blog-verify-without-social");
 if (latestDispatch) {
-  const contentChecks = [[latestDispatch.body.includes("Dispatch 012"), "dispatch number"],[latestDispatch.body.includes("SEP 24, 2026") && latestDispatch.body.includes("REVISED"), "visible publication and revision dates"],[latestDispatch.body.includes('href="/transparency.html"'), "transparency source"],[latestDispatch.body.includes("reports/token/latest.json"), "finalized token report"],[latestDispatch.body.includes("lock.jup.ag/token/"), "Jupiter Lock source"],[latestDispatch.body.includes(officialMint), "official mint"],[latestDispatch.body.includes("does not guarantee"), "risk boundary"],[latestDispatch.body.includes('href="/buy"'), "separate beginner buying path"]];
+  const contentChecks = [[latestDispatch.body.includes("Dispatch 013"), "dispatch number"],[latestDispatch.body.includes("OCT 1, 2026") && latestDispatch.body.includes("REVISED"), "visible publication and revision dates"],[latestDispatch.body.includes('href="/official-links.html"'), "official directory source"],[latestDispatch.body.includes("reports/token/latest.json"), "finalized token report"],[latestDispatch.body.includes("config/social-channels.json"), "active publishing configuration"],[latestDispatch.body.includes("solscan.io/token/"), "independent explorer source"],[latestDispatch.body.includes(officialMint), "official mint"],[latestDispatch.body.includes("does not guarantee"), "risk boundary"],[latestDispatch.body.includes('href="/buy"'), "separate beginner buying path"],[latestDispatch.body.includes('href="/commons"'), "no-purchase community utility"]];
   for (const [passed, label] of contentChecks) { console.log(`${passed ? "PASS" : "FAIL"} ${label}`); if (!passed) failures.push(`latest dispatch: ${label}`); }
+}
+
+const officialDirectory = responses.get("/official-links.html");
+if (officialDirectory) {
+  const contentChecks = [[officialDirectory.body.includes("Last reviewed October 1, 2026"), "visible review date"],[officialDirectory.body.includes("An account absent from this current directory is not an official destination"), "absent-account trust rule"],[officialDirectory.body.includes('href="/blog-verify-without-social.html"'), "verification drill path"],[officialDirectory.body.includes(officialMint), "official mint"]];
+  for (const [passed, label] of contentChecks) { console.log(`${passed ? "PASS" : "FAIL"} ${label}`); if (!passed) failures.push(`official directory: ${label}`); }
 }
 
 const trustRegistry = responses.get("/verified-contributions.json");

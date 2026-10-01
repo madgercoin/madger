@@ -1,5 +1,12 @@
 # Changelog
 
+## 2026-10-01 — Signals dispatch: verify without social media
+
+- Published Dispatch 013 as a practical source-recovery drill for verifying MADGER when any social account becomes unavailable.
+- Added a dated trust rule to the official directory: an account absent from the current list is not an official destination.
+- Updated the image-led archive and homepage preview, RSS feed, sitemap dates, build allowlist, article navigation, automated parity checks, and production smoke test.
+- Preserved the separate beginner buying path and linked the exact mint, finalized token report, public source files, on-chain explorer, uncertainty boundaries, and active community routes.
+
 ## 2026-09-24 — Signals dispatch: market cap is not FDV
 
 - Published Dispatch 012 as a source-linked, reproducible audit of total supply, documented locks, maximum circulating supply, market capitalization, and fully diluted value.
