@@ -40,6 +40,7 @@ export const LINKS = Object.freeze({
   dex: `https://dexscreener.com/solana/${OFFICIAL_POOL.toLowerCase()}`,
   verify: 'https://madgercoin.com/launch.html',
   official: 'https://madgercoin.com/official-links.html',
+  x: 'https://x.com/MadgerDaBadger',
   buyCard: 'https://madgercoin.com/assets/madger_social_share_v10.jpg',
   solscanToken: `https://solscan.io/token/${OFFICIAL_MINT}`,
   community: 'https://t.me/madgerburrow',

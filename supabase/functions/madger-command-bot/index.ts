@@ -199,7 +199,7 @@ function conversionKeyboard(referralCode = '') {
     [{ text: '⚡ Buy on Raydium', url: trackedUrl('raydium', referralCode) }, { text: '🪐 Buy on Jupiter', url: trackedUrl('jupiter', referralCode) }],
     [{ text: '🤖 Buy with BONKbot', url: trackedUrl('bonkbot', referralCode) }, { text: '⚔️ Buy with Trojan', url: trackedUrl('trojan', referralCode) }],
     [{ text: '📈 Live Chart', url: trackedUrl('dex', referralCode) }, { text: '✅ Verify MADGER', url: LINKS.verify }],
-    [{ text: '🦡 Join The Burrow', url: LINKS.community }],
+    [{ text: '🦡 Join The Burrow', url: LINKS.community }, { text: 'Follow MADGER on X', url: LINKS.x }],
     [{ text: '🎯 Contributor Missions', callback_data: 'missions' }]
   ])
 }
@@ -460,9 +460,10 @@ Concentration is raw on-chain ownership. Treasury, liquidity, locked, exchange, 
 }
 
 async function showOfficialLinks(chatId) {
-  return send(chatId, `<b>OFFICIAL MADGER LINKS</b> ✅\n\nWebsite: ${LINKS.home}\nOfficial mint:\n<code>${OFFICIAL_MINT}</code>\n\nTreat any conflicting contract, support account, or wallet link as suspicious.`, keyboard([
+  return send(chatId, `<b>OFFICIAL MADGER LINKS</b> ✅\n\nWebsite: ${LINKS.home}\nOfficial X: ${LINKS.x}\nOfficial mint:\n<code>${OFFICIAL_MINT}</code>\n\nTreat any conflicting contract, support account, or wallet link as suspicious.`, keyboard([
     [{ text: '🌐 Official website', url: LINKS.home }, { text: '🦡 The Burrow', url: LINKS.community }],
-    [{ text: '✅ Verify MADGER', url: LINKS.verify }, { text: '📈 Verified chart', url: LINKS.dex }]
+    [{ text: '✅ Verify MADGER', url: LINKS.verify }, { text: '📈 Verified chart', url: LINKS.dex }],
+    [{ text: 'Follow MADGER on X', url: LINKS.x }, { text: 'All official accounts', url: LINKS.official }]
   ]))
 }
 
@@ -1717,7 +1718,7 @@ async function publicDashboardData() {
     holders: holderRows?.[0] ?? null,
     locks: locks.map(item => ({ label: item.label, asset: item.asset, intact: item.intact, provider: item.provider, cliffDate: item.cliff_date, endDate: item.end_date })),
     system: { operational: market.ageMinutes <= 10 && watcherAgeMinutes !== null && watcherAgeMinutes <= 2 && !watcherHealth?.error && (!locks.length || locks.every(item => item.intact)), watcherAgeMinutes },
-    links: { website: LINKS.home, chart: LINKS.dex, buy: LINKS.guide, verify: LINKS.verify },
+    links: { website: LINKS.home, chart: LINKS.dex, buy: LINKS.guide, verify: LINKS.verify, x: LINKS.x },
     generatedAt: new Date().toISOString()
   }, { headers: { 'Access-Control-Allow-Origin': '*', 'Cache-Control': 'public, max-age=30', 'X-Content-Type-Options': 'nosniff' } })
 }
