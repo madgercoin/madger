@@ -48,7 +48,6 @@ const securityHeaders = Object.freeze({
   "x-content-type-options": "nosniff",
   "x-frame-options": "DENY"
 });
-const contestApi = "https://wtqcolceuvlxrelugvjw.supabase.co/functions/v1/madger-video-contest";
 const apiHeaders = { ...securityHeaders, "content-type": "application/json; charset=UTF-8", "cache-control": "no-store" };
 const apiJson = (body, status = 200) => new Response(JSON.stringify(body), { status, headers: apiHeaders });
 const html = { headers: { ...securityHeaders, "content-type": "text/html; charset=UTF-8", "cache-control": "no-cache" } };
@@ -115,21 +114,12 @@ function writeFunnelEvent(env, request, eventName, destination = "none") {
   });
 }
 
-async function handleContestEntry(request) {
-  if (request.method !== "GET" && request.method !== "POST") return apiJson({ ok: false, error: "Method not allowed." }, 405);
-  const upstream = await fetch(contestApi, {
-    method: request.method,
-    headers: request.method === "POST" ? { "content-type": "application/json" } : undefined,
-    body: request.method === "POST" ? request.body : undefined
-  });
-  return new Response(upstream.body, { status: upstream.status, headers: apiHeaders });
-}
-
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
     const { pathname } = url;
-    if (pathname === "/api/contest-entry") return handleContestEntry(request);
+    if (pathname === "/api/contest-entry" || pathname === "/api/contest-entry/") return apiJson({ ok: false, open: false, error: "The video contest has ended. Entries are closed." }, 410);
+    if (["/video-contest", "/video-contest-rules", "/video-contest-thanks"].some(route => pathname === route || pathname === route + "/" || pathname === route + ".html")) return permanentRedirect("/");
     if (pathname === "/index.html") return permanentRedirect("/");
     if (pathname === "/app/" || pathname === "/app.html") return permanentRedirect("/app");
     if (pathname === "/game/" || pathname === "/game.html") return permanentRedirect("/game");

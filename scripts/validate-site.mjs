@@ -257,7 +257,7 @@ if (!homepage.includes('class="hero-actions hero-actions--purchase"') || !homepa
 if (/id="film"|Launch film|Watch the film|official launch film|instagram\.com\/reel\/DcotYCFDD3p/i.test(homepage)) failures.push("index.html: retired launch film is still present");
 if (!homepage.includes("UTILITY FIRST · CHARACTER WITH PURPOSE")) failures.push("index.html: utility-first brand line is absent");
 if (!homepage.includes('href="/launch.html">Open launch record')) failures.push("index.html: verified post-launch record is absent");
-if (/Launch Hunt|Meme Contest|SEEKPASTNOISE27|MLH26|ENDS SEP/i.test(homepage)) failures.push("index.html: expired contest material is present");
+if (/Launch Hunt|Meme Contest|Video Contest|video-contest|SEEKPASTNOISE27|MLH26|ENDS SEP/i.test(homepage)) failures.push("index.html: expired contest material is present");
 if (!homepage.includes(officialFacebook) || homepage.includes("facebook.com/share/")) failures.push("index.html: Facebook links must use the canonical page URL");
 if (!homepage.includes(officialReddit)) failures.push("index.html: Reddit must use the verified u/Madgercoin profile");
 if (!homepage.includes(officialDiscord)) failures.push("index.html: Discord must use the verified permanent MADGER invite");

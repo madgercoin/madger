@@ -33,6 +33,8 @@ const checks = [
   ["/styles.css", 200],
   ["/home-v2.css", 200],
   ["/script.js", 200],
+  ["/api/contest-entry", 410],
+  ["/video-contest.js", 404],
   ["/manifest.webmanifest", 200],
   ["/token-metadata.json", 200],
   ["/robots.txt", 200],
@@ -54,6 +56,7 @@ const redirects = [
   ["/litepaper/", "/litepaper.html"],
   ["/launch-hunt.html", "/"],
   ["/meme-contest.html", "/"],
+  ...["/video-contest", "/video-contest-rules", "/video-contest-thanks"].flatMap(route => [route, route + "/", route + ".html"].map(pathname => [pathname, "/"])),
   ["/collaborators.html", "/collaborators", 307],
   ["/privacy.html", "/privacy", 307],
   ["/official-links.html", "/official-links", 307]
@@ -121,7 +124,7 @@ if (homepage) {
     ,[body.includes('class="hero hero-showcase utility-first-hero"') && body.includes("YOUR WAY INTO THE BURROW"), "utility-first hero"]
     ,[body.includes("Beginner Guide") && body.includes("Buy on Raydium"), "separate beginner and experienced purchase paths"]
     ,[body.includes('href="/launch.html">Open launch record'), "post-launch verification record"]
-    ,[!/Launch Hunt|Meme Contest|MLH26|ENDS SEP/i.test(body), "expired contest content absent"]
+    ,[!/Launch Hunt|Meme Contest|Video Contest|video-contest|MLH26|ENDS SEP/i.test(body), "expired contest content absent"]
   ];
   for (const [passed, label] of contentChecks) {
     console.log(`${passed ? "PASS" : "FAIL"} ${label}`);

@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026-10-01 — Retire the expired video contest
+
+- Removed the homepage contest feature, navigation, hero shortcut, footer link, and dynamically injected campaign banner.
+- Removed the expired contest pages and submission script from source and the public build; their old page URLs now permanently redirect home.
+- Closed the website entry endpoint with HTTP 410 without forwarding submissions or changing stored entries.
+- Refreshed shared script references and the app cache version; preserved the creator pose card and general creator resources.
+- Extended release and production checks to detect expired video contest promotion and verify retired routes.
+
 ## 2026-10-01 — Signals dispatch: verify without social media
 
 - Published Dispatch 013 as a practical source-recovery drill for verifying MADGER when any social account becomes unavailable.

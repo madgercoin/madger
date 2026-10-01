@@ -19,8 +19,8 @@ if (/id="film"|Launch film|Watch the film|official launch film|instagram\.com\/r
 if (!launch.includes(pool) || !launch.includes("0.25%")) failures.push("launch.html: verified pool record is incomplete");
 if (!launch.includes(`href="${dexScreenerPair}"`)) failures.push("launch.html: exact DEX Screener pair link is absent");
 if (!links.includes(`href="${dexScreenerPair}"`)) failures.push("official-links.html: exact DEX Screener pair link is absent");
-if (/Launch Hunt|Meme Contest|MLH26|SEEKPASTNOISE27|ENDS SEP/i.test(home)) failures.push("index.html: expired campaign content is present");
-for (const retired of ["launch-hunt.html", "meme-contest.html"]) {
+if (/Launch Hunt|Meme Contest|Video Contest|video-contest|MLH26|SEEKPASTNOISE27|ENDS SEP/i.test(home)) failures.push("index.html: expired campaign content is present");
+for (const retired of ["launch-hunt.html", "meme-contest.html", "video-contest.html", "video-contest-rules.html", "video-contest-thanks.html", "video-contest.js"]) {
   try { await access(retired); failures.push(`${retired}: retired contest page must be removed`); } catch {}
 }
 if (failures.length) {
