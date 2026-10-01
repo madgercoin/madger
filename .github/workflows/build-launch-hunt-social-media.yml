@@ -15,7 +15,7 @@ jobs:
     env:
       SOURCE_URL: "https://media.canva.com/v2/document-image/hash:1666899057/height:500/id:DAHTdT6Snkc/type:B/width:400?brand=BAFLvgiVPWg&csig=AAAAAAAAAAAAAAAAAAAAAOPR3B5r19KOqcsRlaC3tWkg6F-F6kFog-FoXmTINTaA&disableexport=T&exp=1787811536&fallback=https%3A%2F%2Fs3.amazonaws.com%2Fdocument-export.canva.com%2F6Snkc%2FDAHTdT6Snkc%2F1%2Fthumbnail%2F0001.png%3FX-Amz-Algorithm%3DAWS4-HMAC-SHA256%26X-Amz-Credential%3DAKIAQYCGKMUH4GDRW44L%252F20260826%252Fus-east-1%252Fs3%252Faws4_request%26X-Amz-Date%3D20260826T204200Z%26X-Amz-Expires%3D34616%26X-Amz-Signature%3D78e26d691f5885ccc7aaf7a22be1cfc8e47ce4f678bc794bc52d60646b31ca1c%26X-Amz-SignedHeaders%3Dhost%26response-expires%3DThu%252C%252027%2520Aug%25202026%252006%253A18%253A56%2520GMT&osig=AAAAAAAAAAAAAAAAAAAAAAuXZXEmrgT-muaZohZ1QEzKOLxKyrn6yzmS65COVNTP&page=1&signed=brand%2Cdisableexport%2Cfallback%2Cpage%2Cversion&signer=document-rpc&version=1"
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0
       - name: Install media tools
