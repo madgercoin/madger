@@ -1,5 +1,7 @@
 # MADGER Friday DEX Screener + Proficy activation packet
 
+Official X updated October 1, 2026: `@MadgerDaBadger`. The original campaign dates and historical commercial details below are retained; this account correction does not reactivate the campaign.
+
 Date: **Friday, September 11, 2026**  
 Timezone: **America/New_York (ET)**  
 Status: **PREPARED — PRODUCTION ROUTE BLOCKER OPEN**
@@ -33,7 +35,7 @@ Do not add a DEX boost, Telegram view package, longer Proficy placement, KOL pay
 - Telegram pin tracking: https://madgercoin.com/c/telegram-pin
 - The Burrow: https://t.me/madgerburrow
 - Announcements: https://t.me/madgercoin
-- X: https://x.com/madgercoin
+- X: https://x.com/MadgerDaBadger
 
 ## DEX Screener order fields
 
@@ -59,7 +61,7 @@ Do not add a DEX boost, Telegram view package, longer Proficy placement, KOL pay
 
 **X**
 
-`https://x.com/madgercoin`
+`https://x.com/MadgerDaBadger`
 
 Never use “100x,” “moonshot,” guaranteed-return language, price targets, fake scarcity or time-sensitive market numbers in the creative.
 
@@ -72,7 +74,7 @@ Never use “100x,” “moonshot,” guaranteed-return language, price targets,
 - Token / CA: `BHauMX8akk2umqkQqnJwpYkCRkZmefGnEBFByeFXRKqv`
 - Website / campaign URL: `https://madgercoin.com/c/proficy-4h`
 - Telegram: `https://t.me/madgerburrow`
-- X: `https://x.com/madgercoin`
+- X: `https://x.com/MadgerDaBadger`
 
 ### Direct fallbacks while the Worker routes return 404
 

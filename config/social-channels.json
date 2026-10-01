@@ -41,7 +41,12 @@
     "officialAccount": "MadgerDaBadger",
     "officialUrl": "https://x.com/MadgerDaBadger",
     "service": "twitter",
-    "connectionStatus": "requires-authentication",
-    "retiredChannelId": "6a67af8a4b2d03035f4e91f4"
+    "connectionStatus": "connected-publishing-blocked",
+    "retiredChannelId": "6a67af8a4b2d03035f4e91f4",
+    "channelId": "6abebd4dea19ca0bde48a35c",
+    "publishingStatus": "Please reauthorize your channel connection.",
+    "lastPublishingCheckAt": "2026-10-01T22:24:35Z",
+    "automationEnabled": false,
+    "welcomeDraftId": "6abedb6363de9e09a27eb0ce"
   }
 }

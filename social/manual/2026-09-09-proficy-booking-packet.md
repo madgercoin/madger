@@ -1,5 +1,7 @@
 # Proficy Trending — paste-ready booking packet
 
+Official X updated October 1, 2026: `@MadgerDaBadger`. The original campaign dates and historical commercial details below are retained; this account correction does not reactivate the campaign.
+
 Status: **READY AFTER LIQUIDITY + PRODUCTION PREFLIGHT**
 
 ## First test
@@ -15,7 +17,7 @@ Status: **READY AFTER LIQUIDITY + PRODUCTION PREFLIGHT**
 - Website: `https://madgercoin.com`
 - Community: `https://t.me/madgerburrow`
 - Announcements: `https://t.me/madgercoin`
-- X: `https://x.com/madgercoin`
+- X: `https://x.com/MadgerDaBadger`
 
 ## Copy/paste fields
 
@@ -33,7 +35,7 @@ Status: **READY AFTER LIQUIDITY + PRODUCTION PREFLIGHT**
 
 **X**
 
-`https://x.com/madgercoin`
+`https://x.com/MadgerDaBadger`
 
 ## Short description if Proficy asks for one
 

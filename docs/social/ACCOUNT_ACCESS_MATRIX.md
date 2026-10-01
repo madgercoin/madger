@@ -1,23 +1,25 @@
 # MADGER social account access matrix
 
-**Checked:** 2026-08-24  
-**Rule:** A destination is not called autonomous until a harmless live API check succeeds through the durable publisher.
+**Checked:** October 1, 2026. A connected flag alone does not prove that publishing works.
 
-| Destination | Recorded account | Durable route | Current state |
+| Destination | Official account | Route | Verified state |
 |---|---|---|---|
-| Instagram | `@madgercoin` | Buffer API | Account was recorded as connected in prior setup; live API validation awaits the encrypted secret |
-| TikTok | `@themadgercoin` | Buffer API | Account was recorded as connected in prior setup; live API validation awaits the encrypted secret |
-| Facebook | MADGER Page only | Buffer API | Page was the recorded destination; personal Facebook is permanently excluded; live API validation awaits the encrypted secret |
-| Telegram announcements | `Madgercoin` | Separate Telegram automation | No durable Telegram connector or bot authorization is available in this project yet |
-| Telegram community | `Madgerburrow` | Forward from announcements | No durable Telegram connector or bot authorization is available in this project yet |
-| Reddit | Not verified | None | No authorized account recovered |
-| Discord | Not verified | None | No authorized server/bot recovered |
-| GitHub | `madgercoin/madger` | Connected GitHub app | Connected with repository admin access; social automation files are committed |
+| X | `@MadgerDaBadger` | Buffer channel `6abebd4dea19ca0bde48a35c` | New profile bio and website saved. Buffer refresh succeeded, but publishing still failed with a reauthorization error. Welcome and three follow-ups are drafts. X automation remains disabled. |
+| Instagram | `@madgercoin` | Buffer / native account | Connected in Buffer. Native bio already links `x.com/MadgerDaBadger`. |
+| TikTok | `@themadgercoin` | Buffer | Connected in Buffer. Native profile editing requires sign-in; X is not yet in its public bio. |
+| Facebook | MADGER Page | Buffer channel `6a67ecc14b2d03035f50dbad` | New X announcement sent October 1. Page's About link still needs an administrator session. Never publish to the personal profile. |
+| Reddit | `u/Madgercoin` | Native account | Profile social link already points to `@MadgerDaBadger`. `r/madgercoin` is banned and was not modified. |
+| Telegram announcements | `Madgercoin` | Telegram / existing bot deployment | Browser requires sign-in. Live description and pins not verified in this pass. |
+| Telegram community | `Madgerburrow` | Forward from announcements | Browser requires sign-in. Live description and pins not verified in this pass. |
+| Discord | The Burrow | Native server administration | Browser requires sign-in; live official-links channel not verified in this pass. |
+| GitHub | `madgercoin/madger` | Git | Website sources already contain the new X link. Current publishing registry updated with replacement Buffer channel and actual failure status. |
 
-## ChatGPT Buffer plugin state
+## Publishing records
 
-The exact custom plugin identifier shown in the August 24 ChatGPT settings URL, `plugin_asdk_app_6a8cc08f56548191986db5746bf71c8e`, reported **not installed** when checked through ChatGPT's connection manager. No Buffer posting tools are exposed in the active conversation. This is why the repository publisher uses Buffer's official API instead of pretending the chat plugin can post.
+- Retired X channel: `6a67af8a4b2d03035f4e91f4`, disconnected. Do not reuse it for new content.
+- Welcome draft: `6abedb6363de9e09a27eb0ce`.
+- Follow-up drafts: `6abedfc1c07bdc2fc25d1297`, `6abedfc222215530c706a8e1`, `6abedfc222215530c706a905`.
+- Facebook announcement: `6abedcb7c07bdc2fc25cc1da`, sent at `2026-10-01T22:20:42Z`.
+- Historical disabled manifest entries retain their original channel and post IDs as evidence. They must not be reenabled or treated as replacement-account posts.
 
-## Meaning of one-time authorization
-
-The Buffer API key is stored only as the encrypted GitHub Actions secret `BUFFER_API_KEY`. Buffer then retains the remaining social connections and posts automatically. A social network may still force an occasional reconnection if it expires or revokes its own authorization; no legitimate system can guarantee that platform-controlled sessions will never expire.
+Credentials belong only in the authorized connector or encrypted deployment secrets, never in this registry.

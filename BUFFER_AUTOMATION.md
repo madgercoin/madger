@@ -47,7 +47,7 @@ Set `mediaType` to `image` for a static image or `video` for a video. Legacy ent
 
 ## Current X account — October 1, 2026
 
-The official X account is `@MadgerDaBadger` at https://x.com/MadgerDaBadger. The old `MadgerCoin` Buffer channel below is disconnected and belongs to the retired account. Do not publish to its channel ID. Connecting the replacement account requires authenticating as `@MadgerDaBadger`; record its new channel ID only after Buffer confirms the connection. Facebook, Instagram, and TikTok remain connected.
+The official X account is `@MadgerDaBadger` at https://x.com/MadgerDaBadger. The old `MadgerCoin` Buffer channel below is disconnected and belongs to the retired account. Do not publish to its channel ID. The replacement account is connected as `MadgerDaBadger`, channel ID `6abebd4dea19ca0bde48a35c`. A connection refresh completed successfully on October 1, but a live publishing check still returned `Please reauthorize your channel connection.` The welcome post (`6abedb6363de9e09a27eb0ce`) was moved to draft to prevent retries or duplicates. Keep X automation disabled until a post has actually been sent and verified. Facebook, Instagram, and TikTok remain connected; the official Facebook Page successfully published the new-account announcement on October 1.
 
 ## Historical production channel registry
 
