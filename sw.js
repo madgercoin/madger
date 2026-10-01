@@ -1,6 +1,6 @@
-const CACHE = "madger-burrow-v2";
+const CACHE = "madger-burrow-v3";
 const APP_SHELL = [
-  "/app", "/app.css", "/app.js", "/verified-contributions.json", "/game", "/game.css", "/game.js", "/game-core.js",
+  "/app", "/app.css", "/app.js", "/game", "/game.css", "/game.js", "/game-core.js",
   "/assets/madger_official_logo_transparent_192.png",
   "/assets/madger_v6_community_welcome_640.webp",
   "/assets/madger_official_contest_pose_card.jpg"
@@ -16,6 +16,11 @@ self.addEventListener("activate", event => {
 
 self.addEventListener("fetch", event => {
   if (event.request.method !== "GET" || new URL(event.request.url).origin !== location.origin) return;
+  const url = new URL(event.request.url);
+  if (url.pathname === "/verified-contributions.json") {
+    event.respondWith(fetch(event.request, { cache: "no-store" }));
+    return;
+  }
   event.respondWith((async () => {
     try {
       const response = await fetch(event.request);

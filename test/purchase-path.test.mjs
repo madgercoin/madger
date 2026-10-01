@@ -9,6 +9,7 @@ const home = await readFile('index.html', 'utf8');
 const guide = await readFile('buy.html', 'utf8');
 const app = await readFile('app.html', 'utf8');
 const appScript = await readFile('app.js', 'utf8');
+const serviceWorker = await readFile('sw.js', 'utf8');
 const registry = JSON.parse(await readFile('verified-contributions.json', 'utf8'));
 const script = await readFile('script.js', 'utf8');
 
@@ -66,6 +67,15 @@ test('Burrow app is public, privacy-first, and served only through safe methods'
   assert.equal(post.headers.get('allow'), 'GET, HEAD');
 });
 
+test('trust registry verification is network-only and fail-closed', () => {
+  assert.doesNotMatch(serviceWorker, /verified-contributions\.json["']?\s*,/);
+  assert.match(serviceWorker, /pathname === "\/verified-contributions\.json"/);
+  assert.match(serviceWorker, /fetch\(event\.request, \{ cache: "no-store" \}\)/);
+  assert.doesNotMatch(appScript, /if \(trustRegistry\) return trustRegistry/);
+  assert.match(appScript, /fetch\("\/verified-contributions\.json", \{ cache: "no-store" \}\)/);
+  assert.match(appScript, /reviewers\.size >= 2/);
+});
+
 test('trust registry has unique, internally consistent active records', () => {
   assert.equal(registry.schemaVersion, 1);
   assert.equal(registry.ranks.at(-1).name, 'BURROWKEEPER');
@@ -85,7 +95,10 @@ test('trust registry has unique, internally consistent active records', () => {
     }
     const expectedRank = registry.ranks.filter(rank => record.reviewedXp >= rank.minimumReviewedXp).at(-1).name;
     assert.equal(record.rank, expectedRank);
-    if (['WARDEN', 'BURROWKEEPER'].includes(record.rank)) assert.ok(record.reviewers.length >= 2);
+    if (['WARDEN', 'BURROWKEEPER'].includes(record.rank)) {
+      const independentReviewers = new Set(record.reviewers.map(reviewer => reviewer.trim().toLowerCase()).filter(Boolean));
+      assert.ok(independentReviewers.size >= 2, `${record.rank} requires two independent reviewers`);
+    }
   }
 });
 
