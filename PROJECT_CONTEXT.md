@@ -16,6 +16,10 @@ This is an identity and verification fact, not financial advice or a promise of 
 
 The deployed product is a dependency-free static website at `madgercoin.com`, built from root HTML/CSS/JavaScript by `build.mjs` and hosted with Cloudflare Workers Static Assets. It communicates brand, status, official channels, mint safety, roadmap, community links, and risk disclosures. Root files are production; obsolete Astro starter content has been removed.
 
+## Retired video contest
+
+The September 2026 video contest is closed and removed from public website navigation and content. Old contest and rules URLs redirect home, and `/api/contest-entry` returns HTTP 410 without forwarding submissions. Existing entries and review workflows remain intact. Approved pose-card and creator resources remain available in the app.
+
 ## Direction
 
 Quality, transparency, safety, accessibility, performance, maintainability, and long-term sustainability take priority over speed. The long-term vision includes practical cryptocurrency payments for ordinary activities, but payments are not a present capability or promise.

@@ -17,9 +17,6 @@
 /script.js
   Cache-Control: no-cache
 
-/video-contest.js
-  Cache-Control: no-cache
-
 /app.js
   Cache-Control: no-cache
 
