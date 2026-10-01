@@ -19,7 +19,7 @@ const checks = [
   ["/home-utility.css", 200],
   ["/launch.html", 200],
   ["/litepaper.html", 200],
-  ["/official-links.html", 200],
+  ["/official-links", 200],
   ["/collaborators", 200],
   ["/privacy", 200],
   ["/blog", 200],
@@ -55,7 +55,8 @@ const redirects = [
   ["/launch-hunt.html", "/"],
   ["/meme-contest.html", "/"],
   ["/collaborators.html", "/collaborators", 307],
-  ["/privacy.html", "/privacy", 307]
+  ["/privacy.html", "/privacy", 307],
+  ["/official-links.html", "/official-links", 307]
 ];
 const failures = [];
 const responses = new Map();
@@ -169,7 +170,7 @@ if (latestDispatch) {
   for (const [passed, label] of contentChecks) { console.log(`${passed ? "PASS" : "FAIL"} ${label}`); if (!passed) failures.push(`latest dispatch: ${label}`); }
 }
 
-const officialDirectory = responses.get("/official-links.html");
+const officialDirectory = responses.get("/official-links");
 if (officialDirectory) {
   const contentChecks = [[officialDirectory.body.includes("Last reviewed October 1, 2026"), "visible review date"],[officialDirectory.body.includes("An account absent from this current directory is not an official destination"), "absent-account trust rule"],[officialDirectory.body.includes('href="/blog-verify-without-social.html"'), "verification drill path"],[officialDirectory.body.includes(officialMint), "official mint"]];
   for (const [passed, label] of contentChecks) { console.log(`${passed ? "PASS" : "FAIL"} ${label}`); if (!passed) failures.push(`official directory: ${label}`); }
