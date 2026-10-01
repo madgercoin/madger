@@ -81,7 +81,7 @@ async function handleMadger(interaction, store) {
   if (command === 'buy') return safeReply(interaction, { embeds: [baseEmbed('Buy $MADGER Safely', 'Use the fixed official guide. MADGER_Bot never asks for a seed phrase, private key, verification transfer, preset slippage, or remote access.')], components: [officialButtons()], ephemeral: true })
   if (command === 'price' || command === 'pool') return safeReply(interaction, await marketPayload(store))
   if (command === 'chart') return safeReply(interaction, { content: `Verified chart: ${LINKS.chart}`, ephemeral: true })
-  if (command === 'links') return safeReply(interaction, { embeds: [baseEmbed('Official MADGER Links', `[Website](${LINKS.home}) • [Verification](${LINKS.launch}) • [Official links](${LINKS.official}) • [Chart](${LINKS.chart}) • [Dashboard](${LINKS.dashboard})`)], ephemeral: true })
+  if (command === 'links') return safeReply(interaction, { embeds: [baseEmbed('Official MADGER Links', `[Website](${LINKS.home}) • [Official X: @MadgerDaBadger](${LINKS.x}) • [Verification](${LINKS.launch}) • [Official links](${LINKS.official}) • [Chart](${LINKS.chart}) • [Dashboard](${LINKS.dashboard})`)], ephemeral: true })
   if (command === 'supply') return safeReply(interaction, { embeds: [baseEmbed('Verified Supply', '**Supply:** 1,000,000,000 MADGER\n**Decimals:** 6\n**Transfer tax:** 0%\n\nUse the official verification record for current authority evidence.')], components: [officialButtons()] })
   if (command === 'holders') {
     const holders = await store.latestHolders()

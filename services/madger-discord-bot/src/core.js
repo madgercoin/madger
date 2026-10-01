@@ -6,6 +6,7 @@ export const LINKS = Object.freeze({
   buy: 'https://madgercoin.com/buy',
   launch: 'https://madgercoin.com/launch.html',
   official: 'https://madgercoin.com/official-links.html',
+  x: 'https://x.com/MadgerDaBadger',
   chart: `https://dexscreener.com/solana/${OFFICIAL_POOL.toLowerCase()}`,
   raydium: `https://raydium.io/liquidity-pools/?token=${OFFICIAL_MINT}`,
   solscan: `https://solscan.io/token/${OFFICIAL_MINT}`,
