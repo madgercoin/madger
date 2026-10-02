@@ -70,6 +70,7 @@ export const assetFiles = [
   "madger_social_share_v9.jpg",
   "madger_launch_hunt_backlink_v1.png",
   "madger_social_share_v10.jpg",
+  "madger_buy_alert_pro_v1.png",
   "madger_trading_live_launch_poster_v1.png",
   "madger_trading_live_launch_poster_vertical_v1.png",
   "madger_v6_community_welcome.webp",
