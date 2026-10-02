@@ -1,6 +1,6 @@
 # MADGER social account access matrix
 
-**Checked:** October 1, 2026. A connected flag alone does not prove that publishing works.
+**Checked:** October 1, 2026 for native profile access; listing corrections extended October 2. A connected flag alone does not prove that publishing works.
 
 | Destination | Official account | Route | Verified state |
 |---|---|---|---|
@@ -18,6 +18,7 @@
 
 - Retired X channel: `6a67af8a4b2d03035f4e91f4`, disconnected. Do not reuse it for new content.
 - Native welcome: https://x.com/MadgerDaBadger/status/2105791731308679374, live and pinned.
+- CMC verification post: https://x.com/MadgerDaBadger/status/2105844165586153491, published October 2 UTC; references application 1452987 and authorizes the new X correction.
 - Buffer reference welcome draft: `6abedb6363de9e09a27eb0ce`.
 - Native follow-ups: October 2 at 10 AM, October 3 at noon, October 4 at 6 PM, America/New_York; all three verified in X Scheduled posts. Do not publish the matching Buffer copies again.
 - Buffer reference follow-up drafts: `6abedfc1c07bdc2fc25d1297`, `6abedfc222215530c706a8e1`, `6abedfc222215530c706a905`.
@@ -29,3 +30,5 @@
 - Historical disabled manifest entries retain their original channel and post IDs as evidence. They must not be reenabled or treated as replacement-account posts.
 
 Credentials belong only in the authorized connector or encrypted deployment secrets, never in this registry.
+
+Birdeye ticket 2695, CMC application 1452987, Solscan ticket 73560 and GeckoTerminal ticket 138773 have current correction requests. See [X-account listing corrections](../x-account-listing-corrections.md) for submitted evidence, exact provider status and the remaining Top100Token block.

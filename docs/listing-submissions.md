@@ -19,4 +19,6 @@ Maintain one versioned packet: exact mint; Solana network; MADGER name/symbol; s
 
 ## Submission log and maintenance
 
+Current X-account corrections and provider tickets are tracked in [X-account listing corrections](x-account-listing-corrections.md).
+
 Record provider, official submission URL, account owner, UTC submission/update dates, exact fields and evidence version, ticket ID, response, reviewer, and final public verification. Publish a provider claim only after independently observing it. Recheck canonical data after metadata/authority/LP changes; correct inconsistencies across the website and official channels without overstating provider status.
