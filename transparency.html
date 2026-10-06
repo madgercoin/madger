@@ -33,7 +33,7 @@
     "name": "MADGER Supply and Liquidity Transparency",
     "url": "https://madgercoin.com/transparency.html",
     "description": "On-chain evidence for MADGER circulating supply, token locks, LP escrows, vesting schedules, and wallet addresses.",
-    "dateModified": "2026-09-24",
+    "dateModified": "2026-10-06",
     "isPartOf": { "@type": "WebSite", "name": "MADGER", "url": "https://madgercoin.com/" }
   }
   </script>
@@ -52,21 +52,21 @@
 
   <main class="transparency-main" id="main">
     <section class="section transparency-hero">
-      <p class="eyebrow">ON-CHAIN TRANSPARENCY · SUPPLY CHECKED SEPTEMBER 24, 2026</p>
+      <p class="eyebrow">ON-CHAIN TRANSPARENCY · SUPPLY CHECKED OCTOBER 6, 2026</p>
       <h1>VERIFY THE<br><span>SUPPLY.</span></h1>
-      <p class="lede">This record separates total supply, provably locked supply, maximum circulating supply, and liquidity-provider custody. The mint supply was rechecked at finalized commitment on September 24; the five-lock evidence set and schedules were last fully reconciled on September 16.</p>
-      <p class="audit-stamp">✓ Supply rechecked Sep 24 · five-lock record reconciled Sep 16</p>
+      <p class="lede">This record separates total supply, provably locked supply, maximum circulating supply, and liquidity-provider custody. The mint supply and balances in all five documented lock escrows were rechecked at finalized commitment on October 6. Vesting schedules and LP custody were last fully reconciled on September 16; this balance check does not imply those terms were re-decoded.</p>
+      <p class="audit-stamp">✓ Mint and five escrow balances rechecked Oct 6 · terms reconciled Sep 16</p>
 
       <div class="metric-grid" aria-label="Supply and liquidity summary">
-        <div class="metric"><span>Current on-chain supply</span><strong>999,999,994.992751</strong><small>MADGER</small></div>
+        <div class="metric"><span>Current on-chain supply</span><strong>999,999,994.992711</strong><small>MADGER</small></div>
         <div class="metric"><span>Provably locked</span><strong>774,999,999.999968</strong><small>77.50% of current supply</small></div>
-        <div class="metric"><span>Maximum circulating</span><strong>224,999,994.992783</strong><small>22.50% of current supply</small></div>
+        <div class="metric"><span>Maximum circulating</span><strong>224,999,994.992743</strong><small>22.50% of current supply</small></div>
         <div class="metric"><span>LP supply escrowed</span><strong>99.50%</strong><small>419.939397081 of 422.039094066 LP</small></div>
       </div>
 
       <p class="proof-note"><strong>Calculation standard:</strong> maximum circulating supply equals current on-chain supply minus only the balances in the five verified Jupiter Lock escrows below. No unlocked project wallet is excluded. Figures are a timestamped on-chain record, not a guarantee of market price or future liquidity.</p>
       <p class="proof-note"><strong>Third-party ticker status:</strong> some market-data services may continue displaying fully diluted valuation as “market cap” until their independent circulating-supply review is complete. MADGER cannot alter those interfaces. Verify whether a ticker has applied the documented maximum circulating supply before comparing valuations.</p>
-      <p class="proof-note"><strong>Automated check:</strong> the <a href="https://github.com/madgercoin/madger/blob/main/reports/token/latest.json" target="_blank" rel="noopener noreferrer">latest machine-readable report</a> records the finalized supply, RPC slots, token program, decimals, initialization, and authority status. Read <a href="/blog-market-cap-is-not-fdv.html">Dispatch 012</a> to reproduce the market-cap and FDV calculations.</p>
+      <p class="proof-note"><strong>Automated check:</strong> the <a href="https://github.com/madgercoin/madger/blob/main/reports/token/latest.json" target="_blank" rel="noopener noreferrer">latest machine-readable report</a> records the finalized supply, RPC slots, token program, decimals, initialization, and authority status. The <a href="https://github.com/madgercoin/madger/blob/main/reports/token/circulating-2026-10-06.json" target="_blank" rel="noopener noreferrer">October 6 circulating-supply evidence</a> records each escrow balance and observation slot. The mint decreased by 0.000040 MADGER from the September 24 snapshot; this check does not attribute the underlying transaction. The exact monitoring baseline was reconciled without relaxing future change detection. Read <a href="/blog-market-cap-is-not-fdv.html">Dispatch 012</a> to reproduce the market-cap and FDV calculations.</p>
     </section>
 
     <section class="section" aria-labelledby="token-locks-title">
@@ -139,7 +139,7 @@
       <p class="section-label">03 / METHOD AND LIMITS</p>
       <h2 id="method-title">COUNT ONLY<br><span>WHAT IS PROVABLE.</span></h2>
       <div class="method">
-        <article><h3>Supply method</h3><p><strong>999,999,994.992751 − 774,999,999.999968 = 224,999,994.992783 MADGER.</strong></p><p>“Maximum circulating” is used because unlocked balances may be held or inactive. No unlocked wallet balance is excluded.</p></article>
+        <article><h3>Supply method</h3><p><strong>999,999,994.992711 − 774,999,999.999968 = 224,999,994.992743 MADGER.</strong></p><p>“Maximum circulating” is used because unlocked balances may be held or inactive. No unlocked wallet balance is excluded.</p></article>
         <article><h3>Verification boundary</h3><ul><li>Mint and freeze authorities are revoked.</li><li>No ordinary project wallet is removed from circulation.</li><li>Program balances and terms can be rechecked through the linked explorer records.</li><li>Market capitalization, price, pool reserves, and holder counts change continuously.</li></ul></article>
       </div>
       <div class="evidence-actions"><a class="button" href="https://solscan.io/token/BHauMX8akk2umqkQqnJwpYkCRkZmefGnEBFByeFXRKqv" target="_blank" rel="noopener noreferrer">Inspect Token on Solscan</a><a class="button ghost" href="https://solscan.io/account/FVRpAmyDsdvKHQT2ds6ytZsJHt7SDDDbScQx3c4fu32h" target="_blank" rel="noopener noreferrer">Inspect Raydium Pool</a><a class="button ghost" href="/launch.html">Read Launch Record</a></div>
