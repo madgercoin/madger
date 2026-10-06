@@ -1,0 +1,45 @@
+{
+  "checkedAt": "2026-10-06T15:23:16.332Z",
+  "commitment": "finalized",
+  "rpc": "https://api.mainnet-beta.solana.com",
+  "mint": "BHauMX8akk2umqkQqnJwpYkCRkZmefGnEBFByeFXRKqv",
+  "totalSupply": "999999994.992711",
+  "totalSupplySlot": 453940747,
+  "lockedBalanceSum": "774999999.999968",
+  "maximumCirculating": "224999994.992743",
+  "decimals": 6,
+  "method": "Subtract only balances of the five previously documented Jupiter Lock escrow-owned token accounts. Amounts computed using integer base units; no unlocked project wallet excluded.",
+  "boundary": "Balances and mint rechecked October 6. Vesting schedules and LP custody remain the September 16 documented evidence set; not re-decoded in this balance check.",
+  "escrows": [
+    {
+      "owner": "5LVpo5QrNJPuasud75CuF3gRtipFStkR2seyWMgg5E8V",
+      "tokenAccount": "A8ipo29QM3BUqDaBzYHQBevP2DeHD9EDqHfStm6Tyh1t",
+      "amount": "499999999999968",
+      "slot": 453940343
+    },
+    {
+      "owner": "hXgWwvwmaYkCyehaea1AzcbD156LmR2mQtYU18eTvrL",
+      "tokenAccount": "55FduFuEmEGmrAut4e2VqbRFHjKdhbKMN5zixkKzLAKd",
+      "amount": "160000000000000",
+      "slot": 453940343
+    },
+    {
+      "owner": "6DoXr5WALTXN3wLPvnxQEP8LZtNiViuTxUcedXsSttMT",
+      "tokenAccount": "CikoF6N2s5k32rRNrWCdwfonnvTQaH7xgJRPX1GiJH9m",
+      "amount": "70000000000000",
+      "slot": 453940385
+    },
+    {
+      "owner": "3aW5JEwSLrSLkSRjmKQ2dSQnowwNmSALX1vr6g4RKdPQ",
+      "tokenAccount": "GzgvnZ8KSVnkPdU6ovLtAjjAW9K7xDa78ikf914DUsyx",
+      "amount": "25000000000000",
+      "slot": 453940385
+    },
+    {
+      "owner": "82wZ6Cmw76HbRqJqSJ1cSXVhhBXNtWSpdH4XR669j341",
+      "tokenAccount": "DcX6yJGexVwwvq24etRek4znWtV24Ce1gCZQX96BFwbA",
+      "amount": "20000000000000",
+      "slot": 453940433
+    }
+  ]
+}
