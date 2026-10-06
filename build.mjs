@@ -36,7 +36,8 @@ const campaigns = {
   "telegram-pin": "/buy?utm_source=telegram&utm_medium=community&utm_campaign=burrow_buy_pin&utm_content=pinned_message"
 };
 
-const workerSource = `/** Generated at build time. HTML is bundled to prevent stale or corrupted edge assets. */
+const workerSource = `import { supplyResponse } from "./supply-endpoint.mjs";
+/** Generated at build time. HTML is bundled to prevent stale or corrupted edge assets. */
 const pages = ${JSON.stringify({ home, app, game, launch, transparency, litepaper, notFound, buy })};
 const redirectTargets = ${JSON.stringify(redirects)};
 const campaignTargets = ${JSON.stringify(campaigns)};
@@ -118,6 +119,11 @@ export default {
   async fetch(request, env) {
     const url = new URL(request.url);
     const { pathname } = url;
+    if (pathname === "/api/circulating-supply" || pathname === "/api/circulating-supply/") {
+      if (request.method !== "GET" && request.method !== "HEAD") return new Response(null, { status: 405, headers: { allow: "GET, HEAD", "cache-control": "no-store" } });
+      const result = await supplyResponse({ rpcUrl: env.SOLANA_RPC_URL || "https://api.mainnet-beta.solana.com" });
+      return request.method === "HEAD" ? new Response(null, { status: result.status, headers: result.headers }) : result;
+    }
     if (pathname === "/api/contest-entry" || pathname === "/api/contest-entry/") return apiJson({ ok: false, open: false, error: "The video contest has ended. Entries are closed." }, 410);
     if (["/video-contest", "/video-contest-rules", "/video-contest-thanks"].some(route => pathname === route || pathname === route + "/" || pathname === route + ".html")) return permanentRedirect("/");
     if (pathname === "/index.html") return permanentRedirect("/");
