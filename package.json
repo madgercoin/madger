@@ -23,7 +23,7 @@
     "test:supply": "node --test test/supply-endpoint.test.mjs"
   },
   "devDependencies": {
-    "wrangler": "4.125.0"
+    "wrangler": "4.147.0"
   },
   "engines": {
     "node": ">=22"
