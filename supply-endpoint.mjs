@@ -22,7 +22,7 @@ async function rpc(fetcher, url, method, params) {
     method: "POST",
     headers: { "content-type": "application/json" },
     body: JSON.stringify({ jsonrpc: "2.0", id: 1, method, params }),
-    signal: AbortSignal.timeout(8000)
+    signal: AbortSignal.timeout(20000)
   });
   if (!response.ok) throw new Error("RPC HTTP failure");
   const payload = await response.json();
@@ -32,7 +32,7 @@ async function rpc(fetcher, url, method, params) {
 
 export async function calculateCirculatingSupply({
   fetcher = fetch,
-  rpcUrl = "https://api.mainnet.solana.com",
+  rpcUrl = "https://rpc.solanatracker.io/public",
   now = Date.now()
 } = {}) {
   // Once vesting starts, an unclaimed token can remain in an escrow while
