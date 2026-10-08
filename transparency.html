@@ -33,7 +33,7 @@
     "name": "MADGER Supply and Liquidity Transparency",
     "url": "https://madgercoin.com/transparency.html",
     "description": "On-chain evidence for MADGER circulating supply, token locks, LP escrows, vesting schedules, and wallet addresses.",
-    "dateModified": "2026-10-06",
+    "dateModified": "2026-10-08",
     "isPartOf": { "@type": "WebSite", "name": "MADGER", "url": "https://madgercoin.com/" }
   }
   </script>
@@ -66,7 +66,7 @@
 
       <p class="proof-note"><strong>Calculation standard:</strong> maximum circulating supply equals current on-chain supply minus only the balances in the five verified Jupiter Lock escrows below. No unlocked project wallet is excluded. Figures are a timestamped on-chain record, not a guarantee of market price or future liquidity.</p>
       <p class="proof-note"><strong>Third-party ticker status:</strong> some market-data services may continue displaying fully diluted valuation as “market cap” until their independent circulating-supply review is complete. MADGER cannot alter those interfaces. Verify whether a ticker has applied the documented maximum circulating supply before comparing valuations.</p>
-      <p class="proof-note"><strong>Automated check:</strong> the <a href="https://github.com/madgercoin/madger/blob/main/reports/token/latest.json" target="_blank" rel="noopener noreferrer">latest machine-readable report</a> records the finalized supply, RPC slots, token program, decimals, initialization, and authority status. The <a href="https://github.com/madgercoin/madger/blob/main/reports/token/circulating-2026-10-06.json" target="_blank" rel="noopener noreferrer">October 6 circulating-supply evidence</a> records each escrow balance and observation slot. The mint decreased by 0.000040 MADGER from the September 24 snapshot; this check does not attribute the underlying transaction. The exact monitoring baseline was reconciled without relaxing future change detection. Read <a href="/blog-market-cap-is-not-fdv.html">Dispatch 012</a> to reproduce the market-cap and FDV calculations.</p>
+      <p class="proof-note"><strong>Automated check:</strong> the <a href="https://github.com/madgercoin/madger/blob/main/reports/token/latest.json" target="_blank" rel="noopener noreferrer">latest machine-readable report</a> records the finalized supply, RPC slots, token program, decimals, initialization, and authority status. The <a href="https://github.com/madgercoin/madger/blob/main/reports/token/circulating-2026-10-06.json" target="_blank" rel="noopener noreferrer">October 6 circulating-supply evidence</a> records each escrow balance and observation slot. The <a href="/api/circulating-supply" target="_blank" rel="noopener noreferrer">live circulating-supply endpoint</a> reruns the five-account calculation and fails closed when its evidence checks cannot complete. The mint decreased by 0.000040 MADGER from the September 24 snapshot; this check does not attribute the underlying transaction. Read <a href="/blog-circulating-supply-endpoint.html">Dispatch 014</a> for the endpoint method and limits, or <a href="/blog-market-cap-is-not-fdv.html">Dispatch 012</a> to reproduce the valuation calculations.</p>
     </section>
 
     <section class="section" aria-labelledby="token-locks-title">

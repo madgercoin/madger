@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#0d0d0d">
+<meta name="description" content="Use and audit MADGER’s live circulating-supply endpoint: a fail-closed calculation built from finalized Solana supply and five documented Jupiter Lock escrows.">
+<meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1"><link rel="canonical" href="https://madgercoin.com/blog-circulating-supply-endpoint.html"><link rel="alternate" type="application/rss+xml" title="Signals From Below" href="https://madgercoin.com/feed.xml">
+<link rel="icon" type="image/png" sizes="192x192" href="/assets/madger_official_logo_transparent_192.png"><link rel="apple-touch-icon" sizes="180x180" href="/assets/madger_official_logo_transparent_180.png"><link rel="manifest" href="/manifest.webmanifest?v=20261008-signals"><link rel="stylesheet" href="/blog.css?v=20260919-signal-console">
+<meta property="og:type" content="article"><meta property="og:site_name" content="MADGER"><meta property="og:title" content="A Number That Can Explain Itself: MADGER’s Live Supply Endpoint"><meta property="og:description" content="Open the API, reproduce the five-lock calculation, and understand exactly when the endpoint refuses to publish a number."><meta property="og:url" content="https://madgercoin.com/blog-circulating-supply-endpoint.html"><meta property="og:image" content="https://madgercoin.com/assets/madger_fieldnote_foundations_v1_social.jpg"><meta property="og:image:type" content="image/jpeg"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:alt" content="MADGER measures a durable underground foundation"><meta property="article:published_time" content="2026-10-08T14:10:00Z"><meta property="article:modified_time" content="2026-10-08T14:10:00Z"><meta property="article:section" content="Proof Infrastructure">
+<meta name="twitter:site" content="@MadgerDaBadger"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="A Number That Can Explain Itself: MADGER’s Live Supply Endpoint"><meta name="twitter:description" content="Audit the live API, its five-lock calculation, and its fail-closed boundaries."><meta name="twitter:image" content="https://madgercoin.com/assets/madger_fieldnote_foundations_v1_social.jpg"><meta name="twitter:image:alt" content="MADGER measures a durable underground foundation">
+<title>MADGER’s Live Circulating-Supply Endpoint | MADGER</title>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","headline":"A Number That Can Explain Itself: MADGER’s Live Supply Endpoint","description":"Use and audit MADGER’s live circulating-supply endpoint: a fail-closed calculation built from finalized Solana supply and five documented Jupiter Lock escrows.","datePublished":"2026-10-08","dateModified":"2026-10-08","mainEntityOfPage":"https://madgercoin.com/blog-circulating-supply-endpoint.html","image":"https://madgercoin.com/assets/madger_fieldnote_foundations_v1_social.jpg","author":{"@type":"Organization","name":"MADGER Editorial"},"publisher":{"@type":"Organization","name":"MADGER","url":"https://madgercoin.com/","logo":{"@type":"ImageObject","url":"https://madgercoin.com/assets/madger_official_logo_transparent_512.png"}},"articleSection":"Proof Infrastructure","inLanguage":"en-US","about":["circulating supply","Solana token verification","Jupiter Lock","fail-closed API","investor diligence"]}</script><link rel="stylesheet" href="/brand-system.css?v=20260906">
+</head>
+<body class="signal-article"><div class="journal-progress" aria-hidden="true"></div><a class="skip-link" href="#article">Skip to article</a>
+<header class="site-header"><a class="brand" href="/" aria-label="MADGER home"><img src="/assets/madger_official_logo_transparent_512.png" width="512" height="512" alt=""><span><strong>MADGER</strong><small>SIGNALS FROM BELOW</small></span></a><nav aria-label="Primary navigation"><a aria-current="page" href="/blog.html">Signals</a><a href="/commons">Utility</a><a href="/roadmap">Roadmap</a><a href="/litepaper.html">Litepaper</a><a href="/official-links.html">Official links</a><a class="nav-cta" href="https://t.me/madgerburrow" target="_blank" rel="noopener noreferrer">Enter The Burrow ↗</a></nav></header>
+<main class="article-main" id="article">
+<header class="article-hero"><p class="eyebrow">Proof infrastructure / Dispatch 014</p><h1>A number that can explain itself: MADGER’s live supply endpoint</h1><p class="article-deck">A market-data number is more useful when readers and listing providers can inspect the method behind it. MADGER’s new public endpoint calculates maximum circulating supply from finalized Solana data—and refuses to answer when its evidence checks fail.</p><div class="article-byline"><span>MADGER EDITORIAL</span><span>PUBLISHED <time datetime="2026-10-08">OCT 8, 2026</time></span><span>REVISED <time datetime="2026-10-08">OCT 8, 2026</time></span><span>12 MIN READ</span></div></header>
+<figure class="article-cover"><img src="/assets/madger_fieldnote_foundations_v1.webp" width="1536" height="1024" alt="MADGER measures a durable underground foundation before building on it"><figcaption>THE NUMBER IS THE OUTPUT. THE METHOD IS THE PRODUCT.</figcaption></figure>
+<div class="article-layout"><article class="article-body">
+<p>MADGER now publishes a machine-readable <a href="/api/circulating-supply" target="_blank" rel="noopener noreferrer">circulating-supply endpoint</a> at its canonical domain. When every verification step succeeds, the endpoint returns one deliberately small JSON object:</p>
+<pre><code>{"circulatingSupply":224999994.992743}</code></pre>
+<p>The useful part is not the formatting. It is the chain of evidence behind the number. The endpoint reads finalized Solana state, checks the identity of five documented Jupiter Lock token accounts, performs the calculation in integer base units, and rereads supply before responding. Its <a href="https://github.com/madgercoin/madger/blob/main/supply-endpoint.mjs" target="_blank" rel="noopener noreferrer">complete source</a> and <a href="https://github.com/madgercoin/madger/blob/main/test/supply-endpoint.test.mjs" target="_blank" rel="noopener noreferrer">behavioral tests</a> are public.</p>
+<p>This is shipped verification infrastructure, not a claim that a listing provider has accepted the value. MADGER’s current Jupiter metadata update remains pending and cannot be amended while it is under review. Other services make independent decisions about whether, when, and how they use submitted supply data.</p>
+
+<h2>The reader benefit: one number, three ways to challenge it</h2>
+<p>You do not have to trust a screenshot or a ticker label. You can inspect the live response, read the exact code that produced it, and reproduce the last dated calculation from the underlying accounts.</p>
+<ol>
+<li><strong>Use it.</strong> Open <a href="/api/circulating-supply" target="_blank" rel="noopener noreferrer">madgercoin.com/api/circulating-supply</a>. A successful response contains only the numeric <code>circulatingSupply</code> field.</li>
+<li><strong>Audit it.</strong> Read the <a href="https://github.com/madgercoin/madger/blob/main/supply-endpoint.mjs" target="_blank" rel="noopener noreferrer">production calculation</a>, including every account identity and every condition that can stop publication.</li>
+<li><strong>Reproduce it.</strong> Compare the <a href="https://github.com/madgercoin/madger/blob/main/reports/token/circulating-2026-10-06.json" target="_blank" rel="noopener noreferrer">October 6 evidence record</a> with the mint and five escrow token accounts on an independent explorer.</li>
+</ol>
+<p>The exact official Solana mint is <code>BHauMX8akk2umqkQqnJwpYkCRkZmefGnEBFByeFXRKqv</code>. Match the entire address before using any supply figure. A copied ticker or logo can point to a different asset.</p>
+
+<h2>Reproduce the October 6 snapshot</h2>
+<p>The dated evidence record used finalized commitment and six-decimal integer amounts. It did not remove balances from ordinary unlocked project wallets and did not estimate whether unlocked holders were actively selling.</p>
+<table>
+<thead><tr><th>Input</th><th>MADGER</th><th>Meaning</th></tr></thead>
+<tbody>
+<tr><td>Current on-chain supply</td><td><strong>999,999,994.992711</strong></td><td>Finalized mint supply observed October 6</td></tr>
+<tr><td>Five verified lock balances</td><td><strong>774,999,999.999968</strong></td><td>Tokens held in the five documented Jupiter Lock token accounts</td></tr>
+<tr><td>Maximum circulating supply</td><td><strong>224,999,994.992743</strong></td><td>Total supply minus only those five verified locked balances</td></tr>
+</tbody>
+</table>
+<p>The equation is:</p>
+<p><strong>999,999,994.992711 − 774,999,999.999968 = 224,999,994.992743 MADGER.</strong></p>
+<p>The calculation runs in base units first: <code>999999994992711 − 774999999999968 = 224999994992743</code>. Dividing by one million happens only after subtraction. That avoids silently rounding large token values before the answer is known.</p>
+<p>The latest <a href="https://github.com/madgercoin/madger/blob/main/reports/token/latest.json" target="_blank" rel="noopener noreferrer">automated mint report</a>, generated October 8, still records total supply of <strong>999,999,994.992711 MADGER</strong>, six decimals, the classic SPL Token program, initialization, and revoked mint and freeze authorities. Those checks describe the mint; they do not establish demand, liquidity, price stability, or custody safety.</p>
+
+<h2>What happens on every successful request</h2>
+<p>A short response can hide a weak method. This endpoint is intentionally more demanding than “read one balance and subtract a hard-coded number.”</p>
+<ol>
+<li><strong>Read total supply at finalized commitment.</strong> The endpoint asks Solana for the official mint’s current supply and records the response slot.</li>
+<li><strong>Require six decimals.</strong> An unexpected decimal count stops the request instead of producing a mis-scaled number.</li>
+<li><strong>Read all five escrow token accounts together.</strong> The request uses the first supply read’s slot as a minimum, preventing an older account snapshot from being mixed into a newer supply snapshot.</li>
+<li><strong>Verify every identity.</strong> Each account must belong to the classic SPL Token program, hold the exact MADGER mint, have the documented Jupiter Lock owner, and report six decimals.</li>
+<li><strong>Sum integer balances.</strong> Only the five publicly documented escrow token accounts are excluded.</li>
+<li><strong>Read supply again.</strong> If supply changed while the escrow accounts were being read, the endpoint retries the complete sequence once.</li>
+<li><strong>Check the result’s bounds.</strong> The answer cannot be negative or greater than total supply.</li>
+</ol>
+<p>This does not make the endpoint an oracle or an audit firm. It makes the assumptions visible and machine-checkable.</p>
+
+<h2>Why a refusal can be the most trustworthy answer</h2>
+<p>If the Solana RPC fails, returns incomplete data, reports a mismatched account identity, changes supply during both attempts, or produces an invalid result, the endpoint returns HTTP 503 with <code>{"error":"Supply temporarily unavailable"}</code>. It does not reuse an old successful number and present it as current.</p>
+<p>The endpoint also contains a scheduled safety boundary. The earliest documented cliff begins on <strong>March 12, 2027 at 08:30 UTC</strong>. From that moment, a token can remain inside an escrow account while becoming withdrawable. Account balance alone would no longer prove every token is locked. The current code therefore stops serving the calculation at that cliff until the vesting logic and evidence method are reviewed.</p>
+<p>Temporary unavailability is inconvenient. Publishing a number after the method stops proving it would be worse. “Fail closed” means uncertainty becomes visible instead of being converted into false precision.</p>
+
+<h2>Maximum circulating is not the same as active float</h2>
+<p>The endpoint uses <strong>maximum circulating supply</strong> because it excludes only tokens that the documented locks prevent from circulating at the observation time. It does not claim every remaining token is trading, liquid, for sale, or controlled by unrelated parties.</p>
+<p>Four terms should stay separate:</p>
+<ul>
+<li><strong>Total supply</strong> is the current quantity recorded by the mint.</li>
+<li><strong>Provably locked supply</strong> is the balance excluded under the documented lock evidence and current time boundary.</li>
+<li><strong>Maximum circulating supply</strong> is total supply minus that provably locked amount.</li>
+<li><strong>Active market float</strong> is a looser market concept and cannot be proven merely by reading token-account balances.</li>
+</ul>
+<p>A service may use a different definition, evidence policy, or review schedule. That difference should be named rather than hidden behind the same label.</p>
+
+<h2>A five-minute independent audit</h2>
+<ol>
+<li>Open the <a href="/api/circulating-supply" target="_blank" rel="noopener noreferrer">live endpoint</a> and record the HTTP status and response.</li>
+<li>Open the <a href="https://solscan.io/token/BHauMX8akk2umqkQqnJwpYkCRkZmefGnEBFByeFXRKqv" target="_blank" rel="noopener noreferrer">official mint on Solscan</a> and match all 44 characters.</li>
+<li>Open the <a href="https://lock.jup.ag/token/BHauMX8akk2umqkQqnJwpYkCRkZmefGnEBFByeFXRKqv" target="_blank" rel="noopener noreferrer">Jupiter Lock directory</a> and compare it with MADGER’s five-account evidence record.</li>
+<li>Read the <a href="https://github.com/madgercoin/madger/blob/main/reports/token/circulating-2026-10-06.json" target="_blank" rel="noopener noreferrer">timestamped inputs</a>, including each token account, owner, amount, and observed slot.</li>
+<li>Inspect the <a href="https://github.com/madgercoin/madger/blob/main/supply-endpoint.mjs" target="_blank" rel="noopener noreferrer">source</a> and confirm that its mint and five account pairs match the evidence.</li>
+<li>Run or read the <a href="https://github.com/madgercoin/madger/blob/main/test/supply-endpoint.test.mjs" target="_blank" rel="noopener noreferrer">tests</a>, which cover a successful calculation, an escrow-owner mismatch, RPC failure, and the first-cliff shutdown.</li>
+</ol>
+<p>If the live endpoint returns 503, do not substitute a cached screenshot and call it current. Use the dated evidence for historical reproduction, then wait for a successful fresh response or investigate the failing source.</p>
+
+<h2>The listing-provider boundary</h2>
+<p>This endpoint was shaped for a future circulating-supply submission, but deployment is not acceptance. MADGER cannot state that Jupiter, CoinMarketCap, Birdeye, DEXTools, or another provider has adopted the value unless that provider’s public surface or direct response confirms it.</p>
+<p>The same boundary applies to MADGER’s replacement X account. The <a href="/official-links.html">official directory</a> now identifies <a href="https://x.com/MadgerDaBadger" target="_blank" rel="noopener noreferrer">@MadgerDaBadger</a>, while the <a href="https://github.com/madgercoin/madger/blob/main/docs/x-account-listing-corrections.md" target="_blank" rel="noopener noreferrer">dated correction log</a> separates submitted requests from confirmed provider changes. A correction request is work performed; it is not proof that every third-party profile has changed.</p>
+
+<h2>What this release proves—and what it does not</h2>
+<p>It proves that MADGER has deployed a public, source-visible method for computing maximum circulating supply from finalized mint data and five identified lock accounts. It proves that the method has automated tests and explicit stop conditions. The dated evidence lets another reader reproduce the current baseline without taking a market ticker on faith.</p>
+<p>It does not guarantee that the API, Solana RPC, Cloudflare, an explorer, or a listing provider will always be available. It does not guarantee token price, liquidity, future lock balances, holder behavior, project execution, or investment returns. It does not convert a maximum-circulating calculation into a promise about active float.</p>
+<p>If you are new to Solana, keep technical verification separate from purchase execution. The <a href="/buy">beginner buying guide</a> remains the dedicated path for wallet setup, SOL network fees, mint matching, slippage, and transaction risk. The <a href="/commons">Burrow Commons</a> remains available without a wallet or token purchase.</p>
+
+<h2>The signal</h2>
+<p>A trustworthy number should arrive with a method, a timestamp, a failure mode, and a way for someone else to disagree using the same evidence. That is the utility of this endpoint: not “believe our supply,” but “open the process that calculates it.”</p>
+<div class="share-panel" aria-label="Share this dispatch"><div><small>PASS THE SIGNAL</small><strong>Share the method, not just the number.</strong></div><a href="https://x.com/intent/post?text=A%20number%20that%20can%20explain%20itself%3A%20MADGER%E2%80%99s%20live%20supply%20endpoint&amp;url=https%3A%2F%2Fmadgercoin.com%2Fblog-circulating-supply-endpoint.html" target="_blank" rel="noopener noreferrer">Share on X ↗</a><a href="https://t.me/share/url?url=https%3A%2F%2Fmadgercoin.com%2Fblog-circulating-supply-endpoint.html&amp;text=A%20number%20that%20can%20explain%20itself%3A%20MADGER%E2%80%99s%20live%20supply%20endpoint" target="_blank" rel="noopener noreferrer">Share on Telegram ↗</a><a href="https://www.linkedin.com/sharing/share-offsite/?url=https%3A%2F%2Fmadgercoin.com%2Fblog-circulating-supply-endpoint.html" target="_blank" rel="noopener noreferrer">Share on LinkedIn ↗</a></div>
+</article><aside class="article-aside" aria-label="Article sources and notes"><div class="aside-card"><small>TEST THE NUMBER</small><p>Open the response.<br>Match the mint.<br>Inspect the accounts.<br>Read the stop conditions.</p><a href="/api/circulating-supply" target="_blank" rel="noopener noreferrer">Open live endpoint →</a><a href="/transparency.html">Open supply record →</a></div><div class="aside-card"><small>PRIMARY SOURCES</small><p><a href="https://github.com/madgercoin/madger/blob/main/supply-endpoint.mjs" target="_blank" rel="noopener noreferrer">Production source ↗</a><br><a href="https://github.com/madgercoin/madger/blob/main/test/supply-endpoint.test.mjs" target="_blank" rel="noopener noreferrer">Behavioral tests ↗</a><br><a href="https://github.com/madgercoin/madger/blob/main/reports/token/circulating-2026-10-06.json" target="_blank" rel="noopener noreferrer">Five-lock evidence ↗</a><br><a href="https://github.com/madgercoin/madger/blob/main/reports/token/latest.json" target="_blank" rel="noopener noreferrer">Latest mint report ↗</a></p></div><a class="next-read" href="/blog-verify-without-social.html"><span>PREVIOUS DISPATCH</span><strong>Verify MADGER without social media →</strong></a></aside></div>
+<nav class="article-footer-nav" aria-label="Article navigation"><a href="/blog.html">← Signals From Below</a><a href="/blog-verify-without-social.html">Verify without social media →</a></nav></main>
+<footer class="site-footer"><div class="footer-brand"><img src="/assets/madger_official_logo_transparent_512.png" width="512" height="512" alt=""><span><strong>MADGER</strong><small>SIGNALS FROM BELOW</small></span></div><p>Written in The Burrow. Verified above ground.</p><div><a href="/feed.xml">RSS</a><a href="https://t.me/madgercoin" target="_blank" rel="noopener noreferrer">Announcements</a><a href="/privacy.html">Privacy</a></div><small>© 2026 MADGER. Crypto assets involve risk. This dispatch is informational, not financial advice.</small></footer>
+<script src="/blog.js?v=20260919-signal-console" defer></script></body></html>

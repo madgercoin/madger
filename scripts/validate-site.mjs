@@ -1,7 +1,7 @@
 import { access, readFile } from "node:fs/promises";
 import path from "node:path";
 
-const htmlFiles = ["app.html", "game.html", "buy.html", "index.html", "commons.html", "launch.html", "transparency.html", "litepaper.html", "official-links.html", "collaborators.html", "privacy.html", "blog.html", "blog-verify-without-social.html", "blog-market-cap-is-not-fdv.html", "blog-proof-you-can-open.html", "blog-utility-without-a-wallet.html", "blog-creator-trust-standard.html", "blog-madger-thesis.html", "blog-diligence-map.html", "blog-burrow-after-launch.html", "blog-character-outlives-chart.html", "blog-verify-live-market.html", "blog-building-foundations.html", "blog-honey-badger-standard.html", "blog-token-link-safety.html", "404.html"];
+const htmlFiles = ["app.html", "game.html", "buy.html", "index.html", "commons.html", "launch.html", "transparency.html", "litepaper.html", "official-links.html", "collaborators.html", "privacy.html", "blog.html", "blog-circulating-supply-endpoint.html", "blog-verify-without-social.html", "blog-market-cap-is-not-fdv.html", "blog-proof-you-can-open.html", "blog-utility-without-a-wallet.html", "blog-creator-trust-standard.html", "blog-madger-thesis.html", "blog-diligence-map.html", "blog-burrow-after-launch.html", "blog-character-outlives-chart.html", "blog-verify-live-market.html", "blog-building-foundations.html", "blog-honey-badger-standard.html", "blog-token-link-safety.html", "404.html"];
 const indexablePages = new Map([
   ["app.html", "https://madgercoin.com/app"],
   ["game.html", "https://madgercoin.com/game"],
@@ -15,6 +15,7 @@ const indexablePages = new Map([
   ["collaborators.html", "https://madgercoin.com/collaborators"],
   ["privacy.html", "https://madgercoin.com/privacy.html"]
   ,["blog.html", "https://madgercoin.com/blog.html"]
+  ,["blog-circulating-supply-endpoint.html", "https://madgercoin.com/blog-circulating-supply-endpoint.html"]
   ,["blog-verify-without-social.html", "https://madgercoin.com/blog-verify-without-social.html"]
   ,["blog-market-cap-is-not-fdv.html", "https://madgercoin.com/blog-market-cap-is-not-fdv.html"]
   ,["blog-proof-you-can-open.html", "https://madgercoin.com/blog-proof-you-can-open.html"]
@@ -54,6 +55,7 @@ const socialPreview = "https://madgercoin.com/assets/madger_social_share_v10.jpg
 const homepageSocialPreview = "https://madgercoin.com/assets/madger_social_share_v10.jpg";
 const pageSocialPreviews = new Map([
   ["blog.html", "https://madgercoin.com/assets/madger_journal_social_v2.jpg"],
+  ["blog-circulating-supply-endpoint.html", "https://madgercoin.com/assets/madger_fieldnote_foundations_v1_social.jpg"],
   ["blog-verify-without-social.html", "https://madgercoin.com/assets/madger_fieldnote_safety_v1_social.jpg"],
   ["blog-market-cap-is-not-fdv.html", "https://madgercoin.com/assets/madger_social_share_v10.jpg"],
   ["blog-proof-you-can-open.html", "https://madgercoin.com/assets/madger_social_share_v10.jpg"],
@@ -70,6 +72,7 @@ const pageSocialPreviews = new Map([
 ]);
 const failures = [];
 const pages = new Map();
+const virtualRoutes = new Set(["/api/circulating-supply"]);
 
 function escapeRegExp(value) {
   return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
@@ -155,6 +158,7 @@ for (const [file, html] of pages) {
     if (/^(?:https?:|mailto:|tel:|data:)/i.test(reference)) continue;
     const [beforeFragment, fragment] = reference.split("#", 2);
     const pathname = beforeFragment.split("?", 1)[0];
+    if (virtualRoutes.has(pathname)) continue;
     let target = pathname
       ? path.normalize(path.join(path.dirname(file), pathname.replace(/^\//, "")))
       : file;
@@ -298,23 +302,23 @@ if (!sitemap.includes("<lastmod>") || !sitemap.includes("<image:image>")) {
   failures.push("sitemap.xml: missing lastmod or image discovery data");
 }
 
-const latestDispatch = pages.get("blog-verify-without-social.html");
-const latestDispatchUrl = "https://madgercoin.com/blog-verify-without-social.html";
+const latestDispatch = pages.get("blog-circulating-supply-endpoint.html");
+const latestDispatchUrl = "https://madgercoin.com/blog-circulating-supply-endpoint.html";
 const feed = await readFile("feed.xml", "utf8");
-if (!pages.get("blog.html").includes('href="/blog-verify-without-social.html"') || !pages.get("blog.html").includes("13 DISPATCHES")) failures.push("blog.html: latest dispatch archive parity is missing");
-if (!pages.get("index.html").includes('href="/blog-verify-without-social.html"') || !pages.get("index.html").includes("13 DISPATCHES")) failures.push("index.html: latest dispatch homepage parity is missing");
-if (!feed.includes(latestDispatchUrl) || !feed.includes("Thu, 01 Oct 2026 14:50:00 GMT")) failures.push("feed.xml: latest dispatch or publication date is missing");
+if (!pages.get("blog.html").includes('href="/blog-circulating-supply-endpoint.html"') || !pages.get("blog.html").includes("14 DISPATCHES")) failures.push("blog.html: latest dispatch archive parity is missing");
+if (!pages.get("index.html").includes('href="/blog-circulating-supply-endpoint.html"') || !pages.get("index.html").includes("14 DISPATCHES")) failures.push("index.html: latest dispatch homepage parity is missing");
+if (!feed.includes(latestDispatchUrl) || !feed.includes("Thu, 08 Oct 2026 14:10:00 GMT")) failures.push("feed.xml: latest dispatch or publication date is missing");
 if (!sitemap.includes(latestDispatchUrl)) failures.push("sitemap.xml: latest dispatch is missing");
-if (!latestDispatch.includes('"datePublished":"2026-10-01"') || !latestDispatch.includes('"dateModified":"2026-10-01"') || !latestDispatch.includes("PUBLISHED") || !latestDispatch.includes("REVISED")) failures.push("latest dispatch: visible or structured dates are missing");
-if (!latestDispatch.includes('href="/official-links.html"') || !latestDispatch.includes("reports/token/latest.json") || !latestDispatch.includes("config/social-channels.json") || !latestDispatch.includes("solscan.io/token/")) failures.push("latest dispatch: primary project source links are missing");
-if (!latestDispatch.includes(officialMint) || !latestDispatch.includes("does not guarantee") || !latestDispatch.includes('href="/buy"') || !latestDispatch.includes('href="/commons"')) failures.push("latest dispatch: mint, risk boundary, utility, or separate beginner path is missing");
+if (!latestDispatch.includes('"datePublished":"2026-10-08"') || !latestDispatch.includes('"dateModified":"2026-10-08"') || !latestDispatch.includes("PUBLISHED") || !latestDispatch.includes("REVISED")) failures.push("latest dispatch: visible or structured dates are missing");
+if (!latestDispatch.includes("/api/circulating-supply") || !latestDispatch.includes("supply-endpoint.mjs") || !latestDispatch.includes("test/supply-endpoint.test.mjs") || !latestDispatch.includes("reports/token/circulating-2026-10-06.json") || !latestDispatch.includes("reports/token/latest.json") || !latestDispatch.includes("solscan.io/token/") || !latestDispatch.includes("lock.jup.ag/token/")) failures.push("latest dispatch: primary project source links are missing");
+if (!latestDispatch.includes(officialMint) || !latestDispatch.includes("does not guarantee") || !latestDispatch.includes("temporarily unavailable") || !latestDispatch.includes("March 12, 2027") || !latestDispatch.includes('href="/buy"') || !latestDispatch.includes('href="/commons"')) failures.push("latest dispatch: mint, risk boundary, failure boundary, utility, or separate beginner path is missing");
 if (visibleText(latestDispatch).split(/\s+/).filter(Boolean).length < 900) failures.push("latest dispatch: substantial article threshold not met");
 
 const signalsArchive = pages.get("blog.html");
 for (const marker of ["hero-visual-actions", "signal-path-grid", "feature-card-link", "story-card"]) {
   if (!signalsArchive.includes(marker)) failures.push(`blog.html: visual reading control ${marker} is missing`);
 }
-if (!pages.get("index.html").includes("signal-entry-button") || !pages.get("index.html").includes('<div class="journal-stack"><a href="/blog-market-cap-is-not-fdv.html"><img')) {
+if (!pages.get("index.html").includes("signal-entry-button") || !pages.get("index.html").includes('<div class="journal-stack"><a href="/blog-verify-without-social.html"><img')) {
   failures.push("index.html: image-led Signals entry points are missing");
 }
 const dispatchFiles = htmlFiles.filter(file => file.startsWith("blog-") && file.endsWith(".html"));
@@ -330,8 +334,9 @@ for (const file of dispatchFiles) {
 }
 
 const officialDirectory = pages.get("official-links.html");
-if (!officialDirectory.includes('"dateModified": "2026-10-01"') || !officialDirectory.includes("Last reviewed October 1, 2026")) failures.push("official-links.html: review date is missing");
+if (!officialDirectory.includes('"dateModified": "2026-10-08"') || !officialDirectory.includes("Last reviewed October 8, 2026")) failures.push("official-links.html: review date is missing");
 if (!officialDirectory.includes("An account absent from this current directory is not an official destination") || !officialDirectory.includes('href="/blog-verify-without-social.html"')) failures.push("official-links.html: channel-outage trust rule or dispatch link is missing");
+if (!officialDirectory.includes('href="/api/circulating-supply"')) failures.push("official-links.html: live circulating-supply endpoint is missing");
 
 const productionText = [...pages.values()].join("\n") + await readFile("manifest.webmanifest", "utf8");
 for (const requiredFile of indexablePages.keys()) {
