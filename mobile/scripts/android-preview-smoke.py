@@ -5,11 +5,17 @@ import re
 import subprocess
 import time
 import xml.etree.ElementTree as ET
+import atexit
+import uiautomator2 as u2
 
 PACKAGE = 'com.madgercoin.preview'
 OUT = Path('android-smoke')
 OUT.mkdir(exist_ok=True)
 checks = []
+device = u2.connect()
+# A running game deliberately redraws continuously. Scan its accessibility tree
+# without waiting for an idle window, using the instrumentation configurator.
+device.jsonrpc.setConfigurator({'waitForIdleTimeout': 0, 'waitForSelectorTimeout': 0})
 
 
 def adb(*args):
@@ -17,9 +23,8 @@ def adb(*args):
 
 
 def hierarchy():
-    adb('shell', 'uiautomator', 'dump', '/sdcard/madger-ui.xml')
-    data = adb('shell', 'cat', '/sdcard/madger-ui.xml')
-    OUT.joinpath('latest-ui.xml').write_bytes(data)
+    data = device.dump_hierarchy(compressed=False)
+    OUT.joinpath('latest-ui.xml').write_text(data)
     return ET.fromstring(data)
 
 
@@ -46,6 +51,17 @@ def capture(name):
 def passed(name):
     checks.append(name)
     print('PASS', name, flush=True)
+
+
+def collect_debug():
+    try:
+        capture('last-screen')
+        OUT.joinpath('logcat.txt').write_bytes(adb('logcat', '-d'))
+    except (OSError, subprocess.SubprocessError):
+        pass
+
+
+atexit.register(collect_debug)
 
 
 adb('install', '-r', 'android/app/build/outputs/apk/release/app-release.apk')
