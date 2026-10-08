@@ -32,7 +32,7 @@ async function rpc(fetcher, url, method, params) {
 
 export async function calculateCirculatingSupply({
   fetcher = fetch,
-  rpcUrl = "https://api.mainnet-beta.solana.com",
+  rpcUrl = "https://api.mainnet.solana.com",
   now = Date.now()
 } = {}) {
   // Once vesting starts, an unclaimed token can remain in an escrow while

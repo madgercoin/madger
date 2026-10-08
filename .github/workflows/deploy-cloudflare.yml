@@ -54,13 +54,6 @@ jobs:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN || secrets.CF_API_TOKEN }}
         run: |
           test -n "$CLOUDFLARE_API_TOKEN" || { echo "Missing Cloudflare API token secret" >&2; exit 1; }
-      - name: Configure private Solana RPC binding
-        env:
-          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN || secrets.CF_API_TOKEN }}
-          SOLANA_RPC_URL: ${{ secrets.SOLANA_RPC_URL }}
-        run: |
-          test -n "$SOLANA_RPC_URL" || { echo "Missing Solana RPC URL secret" >&2; exit 1; }
-          printf '%s' "$SOLANA_RPC_URL" | npx wrangler secret put SOLANA_RPC_URL
       - name: Deploy to Cloudflare Workers
         run: npm run deploy
         env:
