@@ -9,7 +9,7 @@ The official native MADGER companion app, built with Expo SDK 57 and React Nativ
 - Dedicated Buy tab with wallet, SOL, mint-verification, swap, and risk guidance
 - Exact official Solana mint verification, copy, and sharing
 - Private on-device Daily Dig streak with no account or wallet
-- Native Burrow Run game with touch controls, escalating tunnel phases, rotating daily field marks, haptics, lifecycle pausing, and a private on-device record
+- Native Burrow Run arcade game with cinematic tunnel art, an animated running MADGER, swipe and button controls, signal trails, shield/magnet pickups, charged Dig Burst, close-dodge bonuses, opt-in sound, haptics, rotating daily field marks, and a private on-device record
 - Official Telegram, X, website, litepaper, and email directory
 - Android adaptive icon and opaque iOS store icon built from the official mark
 
@@ -44,3 +44,9 @@ Run these commands from `mobile/`. The repository-root `.easignore` restricts no
 - Verify the mint exactly matches madgercoin.com.
 - Complete a Burrow Run on both a physical Android device and iPhone; verify backgrounding pauses the run and local records survive restart.
 - Review `PRIVACY.md` and the live privacy-policy URL.
+
+## Burrow Run 1.2
+
+The Home screen leads into the game and community. Runs last 60 seconds and cross three increasingly fast tunnel zones. Collect signal trails to build the multiplier and charge a three-second Dig Burst: it doubles signal points and smashes noise. Shields cover one hit for up to eight seconds; magnets collect signals in every lane for six seconds. The first six seconds teach collecting before hazards spawn. Movement, pause/resume, countdown, power timers, and persistence are covered by rule and browser checks. Sound is off by default; haptics and calm effects are player controlled. System reduced motion is respected.
+
+The Mobile CI workflow exports Android/iOS bundles and uploads a web preview. Its Android preview job builds a standalone ARM64 APK with the generated development key and inspects the actual permission manifest. That artifact is for internal testing, installs separately as `com.madgercoin.preview` / MADGER Preview, is not signed with the production store key, and must not be described as store released or physically accepted. It leaves the installed official app and its record intact. Official EAS production builds still follow `RELEASE_CHECKLIST.md`.

@@ -6,7 +6,7 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { COLORS } from '@/constants/brand';
 
 export function Screen({ children, footer, scroll = true }: PropsWithChildren<{ footer?: ReactNode; scroll?: boolean }>) {
-  return <LinearGradient colors={[COLORS.background, '#101A05', COLORS.background]} style={styles.flex}><SafeAreaView style={styles.flex} edges={['top', 'left', 'right']}>{scroll ? <ScrollView contentContainerStyle={styles.scroll}>{children}</ScrollView> : <View style={[styles.scroll, styles.flex]}>{children}</View>}{footer ? <View style={styles.footer}>{footer}</View> : null}</SafeAreaView></LinearGradient>;
+  return <LinearGradient colors={[COLORS.background, '#181A0D', COLORS.background]} style={styles.flex}><SafeAreaView style={styles.flex} edges={['top', 'left', 'right']}>{scroll ? <ScrollView contentContainerStyle={styles.scroll}>{children}</ScrollView> : <View style={[styles.scroll, styles.flex]}>{children}</View>}{footer ? <View style={styles.footer}>{footer}</View> : null}</SafeAreaView></LinearGradient>;
 }
 
 export function BrandHeader({ eyebrow, title, subtitle }: { eyebrow?: string; title: string; subtitle?: string }) {
@@ -44,7 +44,7 @@ const styles = StyleSheet.create({
   flex: { flex: 1 }, scroll: { padding: 20, paddingBottom: 28, gap: 20, width: '100%', maxWidth: 760, alignSelf: 'center' },
   footer: { paddingHorizontal: 20, paddingVertical: 10, borderTopWidth: 1, borderColor: COLORS.border, backgroundColor: COLORS.background, width: '100%', maxWidth: 760, alignSelf: 'center' },
   header: { flexDirection: 'row', alignItems: 'center', gap: 14, paddingTop: 4 }, logo: { width: 68, height: 68, resizeMode: 'contain' }, headerCopy: { flex: 1 },
-  eyebrow: { color: COLORS.lime, fontSize: 11, fontWeight: '900', letterSpacing: 1.8, textTransform: 'uppercase' }, title: { color: COLORS.cream, fontSize: 30, lineHeight: 34, fontWeight: '900', letterSpacing: -0.8 }, subtitle: { color: COLORS.muted, fontSize: 14, lineHeight: 20, marginTop: 3 },
+  eyebrow: { color: COLORS.gold, fontSize: 9, fontWeight: '900', letterSpacing: 1.4, textTransform: 'uppercase' }, title: { color: COLORS.cream, fontSize: 30, lineHeight: 34, fontWeight: '900', letterSpacing: -0.8 }, subtitle: { color: COLORS.muted, fontSize: 14, lineHeight: 20, marginTop: 3 },
   card: { backgroundColor: 'rgba(11,16,6,0.94)', borderWidth: 1, borderColor: COLORS.border, borderRadius: 22, padding: 18, gap: 12, overflow: 'hidden' },
   sectionRow: { flexDirection: 'row', flexWrap: 'wrap', gap: 8, alignItems: 'center', justifyContent: 'space-between' }, sectionTitle: { color: COLORS.cream, flexShrink: 1, fontSize: 21, fontWeight: '900', letterSpacing: -0.35 },
   button: { minHeight: 52, minWidth: 48, borderRadius: 15, paddingHorizontal: 17, paddingVertical: 14, backgroundColor: COLORS.gold, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 9 }, buttonSecondary: { backgroundColor: COLORS.surfaceRaised, borderWidth: 1, borderColor: COLORS.border }, buttonLabel: { color: COLORS.background, flexShrink: 1, textAlign: 'center', fontSize: 15, fontWeight: '900' }, buttonLabelSecondary: { color: COLORS.cream }, disabled: { opacity: 0.65 }, pressed: { opacity: 0.72 },

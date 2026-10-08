@@ -6,7 +6,7 @@ MADGER
 
 ## Subtitle / short description
 
-The official MADGER community companion.
+Run the Burrow. Find your people.
 
 ## Full description
 
@@ -17,7 +17,11 @@ Play the native Burrow Run game, follow the official purchase path, learn how to
 MADGER never asks for a seed phrase or private key. The app does not connect to wallets, execute transactions, sell tokens, or provide financial advice.
 
 Highlights:
-- Native Burrow Run game with touch controls and haptic feedback
+- Cinematic Burrow Run arcade game with a running MADGER character
+- Swipe or tap to dodge noise and collect glowing signal trails
+- Shield and magnet pickups, close-dodge bonuses, and a charged Dig Burst
+- Opt-in original sound effects, haptics, and calm effects
+- Personal-best celebrations, run ranks, and instant replay
 - Three escalating tunnel zones and rotating daily field marks
 - Private local game record with an in-game reset
 - Equal direct-buy and beginner-guide actions
@@ -30,7 +34,7 @@ Dig past the noise.
 
 ## Keywords
 
-MADGER, community, Solana, crypto guide, badger, verification
+MADGER, arcade, runner, badger, Burrow Run, community, verification
 
 ## Category
 

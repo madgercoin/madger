@@ -1,0 +1,25 @@
+{
+  "checks": [
+    "Lobby loads with an enabled start action",
+    "390px lobby has no horizontal overflow",
+    "Sound and calm-effects controls toggle",
+    "Movement switches lanes and respects field boundaries",
+    "Swipe gesture moves the runner",
+    "Pause freezes countdown, powers, and gameplay",
+    "Leaving the Play tab automatically pauses the run",
+    "A completed run produces a debrief and saves a field record",
+    "Replay starts a fresh run",
+    "Field record survives a reload",
+    "Home offers a direct game entry",
+    "320px lobby, gameplay, controls, and pause dialog fit",
+    "768px lobby, gameplay, controls, and pause dialog fit"
+  ],
+  "errors": [],
+  "saved_record": {
+    "runs": 1,
+    "signals": 8,
+    "bestScore": 1250,
+    "bestStreak": 3,
+    "marks": []
+  }
+}

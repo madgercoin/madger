@@ -1,4 +1,4 @@
-# MADGER mobile 1.1.0 release checklist
+# MADGER mobile 1.2.0 release checklist
 
 ## Automated source gate
 
@@ -23,7 +23,9 @@ Use `PREVIEW_QA.md` for the research baseline, preview workflow, and device test
 
 - Install a preview build on a supported physical Android device.
 - Complete a 60-second Burrow Run using both movement buttons.
-- Confirm signal, noise, grit, multiplier, phase, pause, and haptic behavior.
+- Confirm signal trails, close-dodge bonuses, grit restoration, multipliers, three zone transitions, and haptics.
+- Collect shield and magnet pickups; confirm their timers freeze when paused and effects expire correctly. Charge and activate Dig Burst; verify double signal points and hazard protection.
+- Check swipe, movement buttons, countdown, opt-in sound/muting, calm effects, debrief rank, personal-best state, and one-tap replay.
 - Background and foreground during a run; confirm time does not advance while inactive.
 - Leave and return to the Play tab; confirm the run is paused.
 - Restart the app; confirm the field record persists, then confirm Reset removes it.

@@ -3,13 +3,13 @@ name: Mobile CI
 on:
   pull_request:
     paths:
-      - 'mobile/**'
-      - '.github/workflows/mobile-ci.yml'
+      - "mobile/**"
+      - ".github/workflows/mobile-ci.yml"
   push:
     branches: [main]
     paths:
-      - 'mobile/**'
-      - '.github/workflows/mobile-ci.yml'
+      - "mobile/**"
+      - ".github/workflows/mobile-ci.yml"
 
 permissions:
   contents: read
@@ -31,3 +31,53 @@ jobs:
       - run: npm run release:check
       - run: npx expo export --platform android --output-dir dist/android
       - run: npx expo export --platform ios --output-dir dist/ios
+      - uses: actions/upload-artifact@v4
+        with:
+          name: madger-web-preview
+          path: mobile/dist
+          retention-days: 14
+
+  android-preview:
+    name: Android preview APK
+    needs: validate
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    defaults:
+      run:
+        working-directory: mobile
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: mobile/package-lock.json
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+      - uses: android-actions/setup-android@v3
+      - run: npm ci
+      - run: npx expo prebuild --platform android --no-install
+        env:
+          MADGER_ANDROID_PREVIEW: '1'
+      - name: Build a standalone preview using the generated development key
+        env:
+          NODE_ENV: production
+          MADGER_ANDROID_PREVIEW: '1'
+        run: ./android/gradlew -p android assembleRelease -PreactNativeArchitectures=arm64-v8a --max-workers=2 --no-daemon
+      - name: Inspect permissions on the actual APK
+        run: |
+          apk=android/app/build/outputs/apk/release/app-release.apk
+          "$ANDROID_HOME/build-tools/36.0.0/aapt" dump permissions "$apk" > android-permissions.txt
+          cat android-permissions.txt
+          if rg 'RECORD_AUDIO|READ_EXTERNAL_STORAGE|WRITE_EXTERNAL_STORAGE|SYSTEM_ALERT_WINDOW' android-permissions.txt; then
+            exit 1
+          fi
+      - uses: actions/upload-artifact@v4
+        with:
+          name: madger-android-preview
+          path: |
+            mobile/android/app/build/outputs/apk/release/app-release.apk
+            mobile/android-permissions.txt
+          retention-days: 14
