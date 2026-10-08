@@ -3,13 +3,13 @@ name: Mobile CI
 on:
   pull_request:
     paths:
-      - 'mobile/**'
-      - '.github/workflows/mobile-ci.yml'
+      - "mobile/**"
+      - ".github/workflows/mobile-ci.yml"
   push:
     branches: [main]
     paths:
-      - 'mobile/**'
-      - '.github/workflows/mobile-ci.yml'
+      - "mobile/**"
+      - ".github/workflows/mobile-ci.yml"
 
 permissions:
   contents: read
@@ -29,5 +29,143 @@ jobs:
           cache-dependency-path: mobile/package-lock.json
       - run: npm ci
       - run: npm run release:check
+      - run: npx expo-doctor
       - run: npx expo export --platform android --output-dir dist/android
       - run: npx expo export --platform ios --output-dir dist/ios
+      - uses: actions/upload-artifact@v4
+        with:
+          name: madger-web-preview
+          path: mobile/dist
+          retention-days: 14
+
+  android-preview:
+    name: Android preview APK
+    needs: validate
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    defaults:
+      run:
+        working-directory: mobile
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: mobile/package-lock.json
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+      - uses: android-actions/setup-android@v3
+        with:
+          packages: platform-tools platforms;android-36 build-tools;36.0.0
+      - run: npm ci
+      - run: npx expo prebuild --platform android --no-install
+        env:
+          MADGER_ANDROID_PREVIEW: '1'
+      - name: Build a standalone preview using the generated development key
+        env:
+          NODE_ENV: production
+          MADGER_ANDROID_PREVIEW: '1'
+        run: ./android/gradlew -p android assembleRelease -PreactNativeArchitectures=arm64-v8a,x86_64 --max-workers=2 --no-daemon
+      - name: Inspect permissions on the actual APK
+        run: |
+          apk=android/app/build/outputs/apk/release/app-release.apk
+          "$ANDROID_HOME/build-tools/36.0.0/aapt" dump permissions "$apk" > android-permissions.txt
+          cat android-permissions.txt
+          if rg 'RECORD_AUDIO|READ_EXTERNAL_STORAGE|WRITE_EXTERNAL_STORAGE|SYSTEM_ALERT_WINDOW' android-permissions.txt; then
+            exit 1
+          fi
+      - uses: actions/upload-artifact@v4
+        with:
+          name: madger-android-preview
+          path: |
+            mobile/android/app/build/outputs/apk/release/app-release.apk
+            mobile/android-permissions.txt
+          retention-days: 14
+
+  android-runtime:
+    name: Android runtime smoke
+    needs: android-preview
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: mobile
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+      - uses: android-actions/setup-android@v3
+        with:
+          packages: platform-tools platforms;android-35 build-tools;36.0.0
+      - uses: actions/download-artifact@v4
+        with:
+          name: madger-android-preview
+          path: mobile
+      - name: Enable emulator acceleration
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+      - name: Smoke test the standalone APK on Android
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 35
+          emulator-build: 16428233
+          arch: x86_64
+          profile: pixel_6
+          disable-animations: true
+          working-directory: mobile
+          script: |
+            python3 -m venv /tmp/madger-android-qa
+            /tmp/madger-android-qa/bin/pip install 'uiautomator2==3.7.0'
+            /tmp/madger-android-qa/bin/python scripts/android-preview-smoke.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: madger-android-smoke
+          path: mobile/android-smoke
+          overwrite: true
+          retention-days: 14
+
+  publish-preview:
+    name: Publish tested Android preview
+    if: github.event_name == 'push'
+    needs: android-runtime
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      actions: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: madger-android-preview
+          path: mobile
+      - uses: actions/download-artifact@v4
+        with:
+          name: madger-android-smoke
+          path: preview-qa/android
+      - name: Publish the verified APK and source as a prerelease
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          preview_version=$(node -p 'require("./mobile/package.json").version')
+          preview_tag="mobile-v${preview_version}-preview.${GITHUB_RUN_NUMBER}"
+          mkdir -p preview-release
+          cp mobile/android/app/build/outputs/apk/release/app-release.apk "preview-release/madger-${preview_version}-preview.apk"
+          git archive --format=zip --prefix="MADGER-${preview_version}/" --output="preview-release/madger-native-${preview_version}-source.zip" HEAD mobile .github/workflows/mobile-ci.yml .github/preview-release-notes.md reports/game-upgrade
+          (cd preview-release
+            sha256sum "madger-${preview_version}-preview.apk" > "madger-${preview_version}-preview.apk.sha256"
+          )
+          zip -q "preview-release/madger-${preview_version}-verification.zip" preview-qa/android/report.json preview-qa/android/*.png mobile/android-permissions.txt reports/game-upgrade/browser-qa.json
+          if gh release view "$preview_tag" --repo "$GITHUB_REPOSITORY" > /dev/null 2>&1; then
+            gh release upload "$preview_tag" preview-release/* --clobber --repo "$GITHUB_REPOSITORY"
+          else
+            gh release create "$preview_tag" preview-release/* --draft --prerelease --target "$GITHUB_SHA" --title "MADGER ${preview_version} Android Preview" --notes-file .github/preview-release-notes.md --repo "$GITHUB_REPOSITORY"
+          fi
+          gh release edit "$preview_tag" --draft=false --prerelease --latest=false --repo "$GITHUB_REPOSITORY"

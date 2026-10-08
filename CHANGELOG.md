@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026-10-08 — Burrow Run arcade and native app 1.2.0
+
+- Replaced the native game’s falling-symbol board with a cinematic tunnel, perspective collectibles, approved running-pose artwork, smooth lane movement, score feedback, and distinct zone colors.
+- Added swipe controls, a countdown, shield and magnet pickups, charged Dig Burst, close-dodge bonuses, opt-in original local sound cues, haptic controls, and reduced-motion effects.
+- Rebuilt the lobby, live HUD, daily-objective progress, pause dialog, personal-best debrief, run ranks, and replay flow; retained private field records and lifecycle pausing.
+- Made the app Home screen lead into play and community while keeping existing verification and purchase destinations available.
+- Advanced native version metadata to 1.2.0 (build 5), added behavioral mechanics tests, and prepared web/Android preview artifacts through Mobile CI. Preview APKs use a development key; physical-device acceptance and production-store signing remain separate release gates.
+
 ## 2026-10-08 — Signals dispatch: live circulating-supply endpoint
 
 - Published Dispatch 014 as a reader-facing audit of MADGER’s deployed, machine-readable maximum-circulating-supply calculation.

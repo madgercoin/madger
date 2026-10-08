@@ -1,3 +1,4 @@
+import { Buffer } from 'node:buffer';
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import test from 'node:test';

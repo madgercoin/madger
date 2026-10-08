@@ -3,7 +3,7 @@
     "name": "MADGER",
     "slug": "dollarmadger",
     "owner": "madgercoins-team",
-    "version": "1.1.0",
+    "version": "1.2.0",
     "orientation": "portrait",
     "icon": "./assets/images/madger-app-icon.png",
     "scheme": "madger",
@@ -11,7 +11,7 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.madgercoin.app",
-      "buildNumber": "4",
+      "buildNumber": "5",
       "icon": "./assets/images/madger-app-icon.png",
       "infoPlist": {
         "NSAppTransportSecurity": {
@@ -21,7 +21,7 @@
     },
     "android": {
       "package": "com.madgercoin.app",
-      "versionCode": 4,
+      "versionCode": 5,
       "blockedPermissions": [
         "android.permission.READ_EXTERNAL_STORAGE",
         "android.permission.WRITE_EXTERNAL_STORAGE",
@@ -51,7 +51,15 @@
       ],
       "expo-video",
       "expo-image",
-      "expo-web-browser"
+      "expo-web-browser",
+      [
+        "expo-audio",
+        {
+          "microphonePermission": false,
+          "recordAudioAndroid": false,
+          "enableBackgroundPlayback": false
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true,
