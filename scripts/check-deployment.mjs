@@ -23,6 +23,7 @@ const checks = [
   ["/collaborators", 200],
   ["/privacy", 200],
   ["/blog", 200],
+  ["/blog-circulating-supply-endpoint", 200],
   ["/blog-verify-without-social", 200],
   ["/blog-market-cap-is-not-fdv", 200],
   ["/blog-proof-you-can-open", 200],
@@ -88,6 +89,19 @@ for (const [pathname, destination, expectedStatus = 301] of redirects) {
   } catch (error) {
     failures.push(`${pathname}: ${error.message}`);
   }
+}
+
+try {
+  const response = await fetch(`${baseUrl}/api/circulating-supply`, { redirect: "manual" });
+  const body = await response.json();
+  const validSuccess = response.status === 200 && Number.isFinite(body.circulatingSupply) && body.circulatingSupply > 0;
+  const validFailClosed = response.status === 503 && body.error === "Supply temporarily unavailable";
+  const headersPass = response.headers.get("cache-control")?.includes("no-store") && response.headers.get("access-control-allow-origin") === "*";
+  const passed = (validSuccess || validFailClosed) && headersPass;
+  console.log(`${passed ? "PASS" : "FAIL"} /api/circulating-supply (${response.status}, ${validSuccess ? "verified value" : "fail closed"})`);
+  if (!passed) failures.push(`/api/circulating-supply: invalid status, payload, or cache/CORS boundary`);
+} catch (error) {
+  failures.push(`/api/circulating-supply: ${error.message}`);
 }
 
 const tokenMetadata = responses.get("/token-metadata.json");
@@ -168,15 +182,15 @@ if (game) {
   }
 }
 
-const latestDispatch = responses.get("/blog-verify-without-social");
+const latestDispatch = responses.get("/blog-circulating-supply-endpoint");
 if (latestDispatch) {
-  const contentChecks = [[latestDispatch.body.includes("Dispatch 013"), "dispatch number"],[latestDispatch.body.includes("OCT 1, 2026") && latestDispatch.body.includes("REVISED"), "visible publication and revision dates"],[latestDispatch.body.includes('href="/official-links.html"'), "official directory source"],[latestDispatch.body.includes("reports/token/latest.json"), "finalized token report"],[latestDispatch.body.includes("config/social-channels.json"), "active publishing configuration"],[latestDispatch.body.includes("solscan.io/token/"), "independent explorer source"],[latestDispatch.body.includes(officialMint), "official mint"],[latestDispatch.body.includes("does not guarantee"), "risk boundary"],[latestDispatch.body.includes('href="/buy"'), "separate beginner buying path"],[latestDispatch.body.includes('href="/commons"'), "no-purchase community utility"]];
+  const contentChecks = [[latestDispatch.body.includes("Dispatch 014"), "dispatch number"],[latestDispatch.body.includes("OCT 8, 2026") && latestDispatch.body.includes("REVISED"), "visible publication and revision dates"],[latestDispatch.body.includes("/api/circulating-supply"), "live endpoint"],[latestDispatch.body.includes("supply-endpoint.mjs"), "production source"],[latestDispatch.body.includes("test/supply-endpoint.test.mjs"), "behavioral tests"],[latestDispatch.body.includes("reports/token/circulating-2026-10-06.json"), "five-lock evidence"],[latestDispatch.body.includes("reports/token/latest.json"), "finalized token report"],[latestDispatch.body.includes("solscan.io/token/"), "independent explorer source"],[latestDispatch.body.includes("lock.jup.ag/token/"), "Jupiter Lock source"],[latestDispatch.body.includes(officialMint), "official mint"],[latestDispatch.body.includes("does not guarantee"), "risk boundary"],[latestDispatch.body.includes("temporarily unavailable") && latestDispatch.body.includes("March 12, 2027"), "failure and vesting boundaries"],[latestDispatch.body.includes('href="/buy"'), "separate beginner buying path"],[latestDispatch.body.includes('href="/commons"'), "no-purchase community utility"]];
   for (const [passed, label] of contentChecks) { console.log(`${passed ? "PASS" : "FAIL"} ${label}`); if (!passed) failures.push(`latest dispatch: ${label}`); }
 }
 
 const officialDirectory = responses.get("/official-links");
 if (officialDirectory) {
-  const contentChecks = [[officialDirectory.body.includes("Last reviewed October 1, 2026"), "visible review date"],[officialDirectory.body.includes("An account absent from this current directory is not an official destination"), "absent-account trust rule"],[officialDirectory.body.includes('href="/blog-verify-without-social.html"'), "verification drill path"],[officialDirectory.body.includes(officialMint), "official mint"]];
+  const contentChecks = [[officialDirectory.body.includes("Last reviewed October 8, 2026"), "visible review date"],[officialDirectory.body.includes("An account absent from this current directory is not an official destination"), "absent-account trust rule"],[officialDirectory.body.includes('href="/blog-verify-without-social.html"'), "verification drill path"],[officialDirectory.body.includes('href="/api/circulating-supply"'), "live supply endpoint path"],[officialDirectory.body.includes(officialMint), "official mint"]];
   for (const [passed, label] of contentChecks) { console.log(`${passed ? "PASS" : "FAIL"} ${label}`); if (!passed) failures.push(`official directory: ${label}`); }
 }
 

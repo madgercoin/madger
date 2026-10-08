@@ -8,6 +8,14 @@
 - Made the app Home screen lead into play and community while keeping existing verification and purchase destinations available.
 - Advanced native version metadata to 1.2.0 (build 5), added behavioral mechanics tests, and prepared web/Android preview artifacts through Mobile CI. Preview APKs use a development key; physical-device acceptance and production-store signing remain separate release gates.
 
+## 2026-10-08 — Signals dispatch: live circulating-supply endpoint
+
+- Published Dispatch 014 as a reader-facing audit of MADGER’s deployed, machine-readable maximum-circulating-supply calculation.
+- Linked the production endpoint, public source, behavioral tests, October 6 five-lock evidence, latest finalized mint report, Solscan record, and Jupiter Lock directory.
+- Explained integer base-unit arithmetic, finalized-slot consistency, account-identity checks, supply rereads, HTTP 503 failure behavior, and the mandatory March 2027 vesting review boundary.
+- Updated the image-led archive and homepage preview, RSS feed, sitemap, transparency record, build allowlist, article navigation, automated parity checks, and production smoke test.
+- Preserved the separate beginner buying path, no-purchase Commons path, exact mint, explicit listing-provider uncertainty, and investment-risk boundaries.
+
 ## 2026-10-01 — Retire the expired video contest
 
 - Removed the homepage contest feature, navigation, hero shortcut, footer link, and dynamically injected campaign banner.

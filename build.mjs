@@ -121,7 +121,7 @@ export default {
     const { pathname } = url;
     if (pathname === "/api/circulating-supply" || pathname === "/api/circulating-supply/") {
       if (request.method !== "GET" && request.method !== "HEAD") return new Response(null, { status: 405, headers: { allow: "GET, HEAD", "cache-control": "no-store" } });
-      const result = await supplyResponse({ rpcUrl: env.SOLANA_RPC_URL || "https://api.mainnet-beta.solana.com" });
+      const result = await supplyResponse({ rpcUrl: env.SOLANA_RPC_URL || "https://rpc.solanatracker.io/public" });
       return request.method === "HEAD" ? new Response(null, { status: result.status, headers: result.headers }) : result;
     }
     if (pathname === "/api/contest-entry" || pathname === "/api/contest-entry/") return apiJson({ ok: false, open: false, error: "The video contest has ended. Entries are closed." }, 410);
