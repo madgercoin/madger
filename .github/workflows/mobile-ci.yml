@@ -28,6 +28,15 @@ jobs:
           cache: npm
           cache-dependency-path: mobile/package-lock.json
       - run: npm ci
+      - name: Refresh compatible Expo patches
+        run: npm install @expo/ui@~57.0.22 expo@~57.0.27 expo-constants@~57.0.21 expo-glass-effect@~57.0.4 expo-linking@~57.0.12 expo-router@~57.0.25 expo-video@~57.0.5
+      - uses: actions/upload-artifact@v4
+        with:
+          name: madger-dependency-lock
+          path: |
+            mobile/package.json
+            mobile/package-lock.json
+          retention-days: 2
       - run: npm run release:check
       - run: npx expo export --platform android --output-dir dist/android
       - run: npx expo export --platform ios --output-dir dist/ios
@@ -58,6 +67,8 @@ jobs:
           java-version: "17"
       - uses: android-actions/setup-android@v3
       - run: npm ci
+      - name: Refresh compatible Expo patches
+        run: npm install @expo/ui@~57.0.22 expo@~57.0.27 expo-constants@~57.0.21 expo-glass-effect@~57.0.4 expo-linking@~57.0.12 expo-router@~57.0.25 expo-video@~57.0.5
       - run: npx expo prebuild --platform android --no-install
         env:
           MADGER_ANDROID_PREVIEW: '1'
