@@ -290,6 +290,9 @@ export const BurrowScene = memo(function BurrowScene({
             );
           })}
         <Animated.View
+          accessible
+          accessibilityRole="image"
+          accessibilityLabel={`MADGER in the ${["left", "center", "right"][lane]} lane`}
           style={[
             styles.runner,
             {

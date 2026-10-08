@@ -158,7 +158,7 @@ jobs:
           preview_tag="mobile-v${preview_version}-preview.${GITHUB_RUN_NUMBER}"
           mkdir -p preview-release
           cp mobile/android/app/build/outputs/apk/release/app-release.apk "preview-release/madger-${preview_version}-preview.apk"
-          git archive --format=zip --prefix="MADGER-${preview_version}/" --output="preview-release/madger-native-${preview_version}-source.zip" HEAD mobile .github/workflows/mobile-ci.yml reports/game-upgrade
+          git archive --format=zip --prefix="MADGER-${preview_version}/" --output="preview-release/madger-native-${preview_version}-source.zip" HEAD mobile .github/workflows/mobile-ci.yml .github/preview-release-notes.md reports/game-upgrade
           (cd preview-release
             sha256sum "madger-${preview_version}-preview.apk" > "madger-${preview_version}-preview.apk.sha256"
           )

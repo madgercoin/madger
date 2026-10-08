@@ -12,6 +12,7 @@ PACKAGE = 'com.madgercoin.preview'
 OUT = Path('android-smoke')
 OUT.mkdir(exist_ok=True)
 checks = []
+last_root = None
 device = u2.connect()
 # A running game deliberately redraws continuously. Scan its accessibility tree
 # without waiting for an idle window, using the instrumentation configurator.
@@ -23,9 +24,11 @@ def adb(*args):
 
 
 def hierarchy():
+    global last_root
     data = device.dump_hierarchy(compressed=False)
     OUT.joinpath('latest-ui.xml').write_text(data)
-    return ET.fromstring(data)
+    last_root = ET.fromstring(data)
+    return last_root
 
 
 def wait_for(label, seconds=30):
@@ -53,7 +56,13 @@ def tap(label):
 
 def click_node(node):
     bounds = list(map(int, re.findall(r'\d+', node.get('bounds'))))
-    adb('shell', 'input', 'tap', str((bounds[0] + bounds[2]) // 2), str((bounds[1] + bounds[3]) // 2))
+    device.click((bounds[0] + bounds[2]) // 2, (bounds[1] + bounds[3]) // 2)
+
+
+def cached_node(label):
+    node = next((node for node in last_root.iter('node') if label in (node.get('content-desc'), node.get('text'))), None)
+    assert node is not None, f'Action missing from the running screen: {label}'
+    return node
 
 
 def capture(name):
@@ -86,18 +95,25 @@ tap('Play Burrow Run')
 wait_for('Let’s dig')
 capture('02-lobby')
 passed('Game lobby loads with an enabled start action')
+started = time.monotonic()
 tap('Let’s dig')
-wait_for('Pause run')
-time.sleep(3)
-tap('Move left')
-tap('Move right')
+pause_node = wait_for('Pause run')
+# Live hierarchy scans on busy emulator graphics can take several seconds.
+# Cache the controls from one snapshot and use their stable screen coordinates.
+left_node, right_node = cached_node('Move left'), cached_node('Move right')
+time.sleep(max(0, 3 - (time.monotonic() - started)))
+click_node(left_node)
+time.sleep(0.2)
+click_node(right_node)
+time.sleep(0.2)
 capture('03-gameplay')
-passed('Countdown finishes and native movement controls respond')
-tap('Pause run')
+click_node(pause_node)
 wait_for('Back to the run')
+wait_for('MADGER in the center lane')
+passed('Countdown finishes and movement returns MADGER to the center lane')
 capture('04-paused')
 tap('Back to the run')
-wait_for('Pause run')
+time.sleep(0.3)
 passed('Pause and resume work in the standalone app')
 adb('shell', 'input', 'keyevent', 'KEYCODE_HOME')
 time.sleep(1)
