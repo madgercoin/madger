@@ -129,4 +129,43 @@ jobs:
         with:
           name: madger-android-smoke
           path: mobile/android-smoke
+          overwrite: true
           retention-days: 14
+
+  publish-preview:
+    name: Publish tested Android preview
+    if: github.event_name == 'push'
+    needs: android-runtime
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      actions: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: madger-android-preview
+          path: mobile
+      - uses: actions/download-artifact@v4
+        with:
+          name: madger-android-smoke
+          path: preview-qa/android
+      - name: Publish the verified APK and source as a prerelease
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          preview_version=$(node -p 'require("./mobile/package.json").version')
+          preview_tag="mobile-v${preview_version}-preview.${GITHUB_RUN_NUMBER}"
+          mkdir -p preview-release
+          cp mobile/android/app/build/outputs/apk/release/app-release.apk "preview-release/madger-${preview_version}-preview.apk"
+          git archive --format=zip --prefix="MADGER-${preview_version}/" --output="preview-release/madger-native-${preview_version}-source.zip" HEAD mobile .github/workflows/mobile-ci.yml reports/game-upgrade
+          (cd preview-release
+            sha256sum "madger-${preview_version}-preview.apk" > "madger-${preview_version}-preview.apk.sha256"
+          )
+          zip -q "preview-release/madger-${preview_version}-verification.zip" preview-qa/android/report.json preview-qa/android/*.png mobile/android-permissions.txt reports/game-upgrade/browser-qa.json
+          if gh release view "$preview_tag" --repo "$GITHUB_REPOSITORY" > /dev/null 2>&1; then
+            gh release upload "$preview_tag" preview-release/* --clobber --repo "$GITHUB_REPOSITORY"
+          else
+            gh release create "$preview_tag" preview-release/* --draft --prerelease --target "$GITHUB_SHA" --title "MADGER ${preview_version} Android Preview" --notes-file .github/preview-release-notes.md --repo "$GITHUB_REPOSITORY"
+          fi
+          gh release edit "$preview_tag" --draft=false --prerelease --latest=false --repo "$GITHUB_REPOSITORY"
