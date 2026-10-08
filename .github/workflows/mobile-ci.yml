@@ -28,15 +28,6 @@ jobs:
           cache: npm
           cache-dependency-path: mobile/package-lock.json
       - run: npm ci
-      - name: Refresh compatible Expo patches
-        run: npm install @expo/ui@~57.0.22 expo@~57.0.27 expo-constants@~57.0.21 expo-glass-effect@~57.0.4 expo-linking@~57.0.12 expo-router@~57.0.25 expo-video@~57.0.5
-      - uses: actions/upload-artifact@v4
-        with:
-          name: madger-dependency-lock
-          path: |
-            mobile/package.json
-            mobile/package-lock.json
-          retention-days: 2
       - run: npm run release:check
       - run: npx expo export --platform android --output-dir dist/android
       - run: npx expo export --platform ios --output-dir dist/ios
@@ -50,7 +41,7 @@ jobs:
     name: Android preview APK
     needs: validate
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 45
     defaults:
       run:
         working-directory: mobile
@@ -66,9 +57,9 @@ jobs:
           distribution: temurin
           java-version: "17"
       - uses: android-actions/setup-android@v3
+        with:
+          packages: platform-tools platforms;android-36 build-tools;36.0.0
       - run: npm ci
-      - name: Refresh compatible Expo patches
-        run: npm install @expo/ui@~57.0.22 expo@~57.0.27 expo-constants@~57.0.21 expo-glass-effect@~57.0.4 expo-linking@~57.0.12 expo-router@~57.0.25 expo-video@~57.0.5
       - run: npx expo prebuild --platform android --no-install
         env:
           MADGER_ANDROID_PREVIEW: '1'
@@ -76,7 +67,7 @@ jobs:
         env:
           NODE_ENV: production
           MADGER_ANDROID_PREVIEW: '1'
-        run: ./android/gradlew -p android assembleRelease -PreactNativeArchitectures=arm64-v8a --max-workers=2 --no-daemon
+        run: ./android/gradlew -p android assembleRelease -PreactNativeArchitectures=arm64-v8a,x86_64 --max-workers=2 --no-daemon
       - name: Inspect permissions on the actual APK
         run: |
           apk=android/app/build/outputs/apk/release/app-release.apk
@@ -91,4 +82,24 @@ jobs:
           path: |
             mobile/android/app/build/outputs/apk/release/app-release.apk
             mobile/android-permissions.txt
+          retention-days: 14
+      - name: Enable emulator acceleration
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+      - name: Smoke test the standalone APK on Android
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 35
+          arch: x86_64
+          profile: pixel_6
+          disable-animations: true
+          working-directory: mobile
+          script: python3 scripts/android-preview-smoke.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: madger-android-smoke
+          path: mobile/android-smoke
           retention-days: 14
