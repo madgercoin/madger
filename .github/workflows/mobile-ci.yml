@@ -29,6 +29,7 @@ jobs:
           cache-dependency-path: mobile/package-lock.json
       - run: npm ci
       - run: npm run release:check
+      - run: npx expo-doctor
       - run: npx expo export --platform android --output-dir dist/android
       - run: npx expo export --platform ios --output-dir dist/ios
       - uses: actions/upload-artifact@v4

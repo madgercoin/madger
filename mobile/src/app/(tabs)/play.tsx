@@ -411,7 +411,15 @@ export default function PlayScreen() {
       if (modeRef.current === "ready" || modeRef.current === "ended") return;
       if (
         event.target instanceof HTMLElement &&
-        /INPUT|TEXTAREA|BUTTON/.test(event.target.tagName)
+        /INPUT|TEXTAREA/.test(event.target.tagName)
+      )
+        return;
+      // Space retains normal activation for a focused accessibility button.
+      // Arrow keys still steer after using an on-screen movement control.
+      if (
+        event.key === " " &&
+        event.target instanceof HTMLElement &&
+        event.target.closest('[role="button"], button')
       )
         return;
       if (

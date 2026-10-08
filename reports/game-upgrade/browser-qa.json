@@ -4,6 +4,7 @@
     "390px lobby has no horizontal overflow",
     "Sound and calm-effects controls toggle",
     "Movement switches lanes and respects field boundaries",
+    "Keyboard arrows keep steering after a movement button is focused",
     "Swipe gesture moves the runner",
     "Pause freezes countdown, powers, and gameplay",
     "Leaving the Play tab automatically pauses the run",
@@ -17,9 +18,11 @@
   "errors": [],
   "saved_record": {
     "runs": 1,
-    "signals": 8,
-    "bestScore": 1250,
-    "bestStreak": 3,
-    "marks": []
+    "signals": 23,
+    "bestScore": 4750,
+    "bestStreak": 15,
+    "marks": [
+      "2026-10-08"
+    ]
   }
 }
