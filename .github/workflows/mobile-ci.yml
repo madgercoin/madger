@@ -122,7 +122,7 @@ jobs:
           working-directory: mobile
           script: |
             python3 -m venv /tmp/madger-android-qa
-            /tmp/madger-android-qa/bin/pip install 'uiautomator2>=3,<4'
+            /tmp/madger-android-qa/bin/pip install 'uiautomator2==3.7.0'
             /tmp/madger-android-qa/bin/python scripts/android-preview-smoke.py
       - uses: actions/upload-artifact@v4
         if: always()

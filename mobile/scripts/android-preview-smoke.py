@@ -32,6 +32,14 @@ def wait_for(label, seconds=30):
     deadline = time.monotonic() + seconds
     while time.monotonic() < deadline:
         root = hierarchy()
+        # Cold emulator boots can stall Quickstep, the system launcher. Dismiss
+        # only that launcher dialog; a MADGER ANR must still fail the test.
+        if any(node.get('text') == "Quickstep isn't responding" for node in root.iter('node')):
+            close = next((node for node in root.iter('node') if node.get('text') == 'Close app'), None)
+            if close is not None:
+                click_node(close)
+                print('Dismissed emulator launcher ANR', flush=True)
+                continue
         for node in root.iter('node'):
             if label in (node.get('content-desc'), node.get('text')) and node.get('enabled') == 'true':
                 return node
@@ -40,7 +48,11 @@ def wait_for(label, seconds=30):
 
 
 def tap(label):
-    bounds = list(map(int, re.findall(r'\d+', wait_for(label).get('bounds'))))
+    click_node(wait_for(label))
+
+
+def click_node(node):
+    bounds = list(map(int, re.findall(r'\d+', node.get('bounds'))))
     adb('shell', 'input', 'tap', str((bounds[0] + bounds[2]) // 2), str((bounds[1] + bounds[3]) // 2))
 
 
@@ -96,6 +108,6 @@ passed('Backgrounding automatically pauses the native run')
 assert adb('shell', 'pidof', PACKAGE).strip(), 'App process stopped'
 logs = adb('logcat', '-d').decode(errors='replace')
 OUT.joinpath('logcat.txt').write_text(logs)
-assert not re.search(r'FATAL EXCEPTION|ReactNativeJS.*(?:TypeError|ReferenceError|Invariant Violation)', logs), 'Native runtime failure; inspect logcat.txt'
+assert not re.search(r'FATAL EXCEPTION|ANR in com\.madgercoin\.preview|ReactNativeJS.*(?:TypeError|ReferenceError|Invariant Violation)', logs), 'Native runtime failure; inspect logcat.txt'
 passed('App stays running with no fatal native or JavaScript errors')
 OUT.joinpath('report.json').write_text(json.dumps({'checks': checks, 'package': PACKAGE}, indent=2))
