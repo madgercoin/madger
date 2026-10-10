@@ -27,7 +27,7 @@
 - TikTok announcement: `6abee5c122215530c707241f`, sent at `2026-10-01T23:01:01Z`, https://www.tiktok.com/@themadgercoin/photo/7691837755621461261.
 - Telegram production bot: Supabase Edge Function `madger-command-bot`, deployment 39, v4.6.2. Existing webhook authentication retained; public-data `links.x` verified.
 - Discord bot link commit: `da91762b8860f4de874274393ac1a18b4093b973`; deployment not verified.
-- Historical disabled manifest entries retain their original channel and post IDs as evidence. They must not be reenabled or treated as replacement-account posts.
+- Retired X manifest entries are archived in `content/archive/2026-10-10-retired-x.json`, retaining their original channel and post IDs as evidence. They are excluded from active publishing and monitoring and must not be reenabled or treated as replacement-account posts.
 
 Credentials belong only in the authorized connector or encrypted deployment secrets, never in this registry.
 

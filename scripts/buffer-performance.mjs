@@ -1,5 +1,5 @@
 import fs from "node:fs/promises";
-import { channelState, metricsToObject, metricDeltas, summarizeCampaign } from "./buffer-performance-core.mjs";
+import { channelState, metricsToObject, metricDeltas, summarizeCampaign, monitoredChannels, monitoredCampaignEntries } from "./buffer-performance-core.mjs";
 
 const API_URL = "https://api.buffer.com";
 const token = process.env.BUFFER_API_TOKEN;
@@ -29,6 +29,7 @@ async function readJson(path, fallback) {
 
 const priorReport = await readJson("reports/social/latest.json", null);
 const manifest = await readJson("content/buffer-schedule.json", { posts: [] });
+const registry = await readJson("config/social-channels.json", {});
 const account = await graphql(`query { account { organizations { id name } } }`);
 const organizations = account.account.organizations;
 const requestedId = process.env.BUFFER_ORGANIZATION_ID;
@@ -48,7 +49,7 @@ const channelData = await graphql(`
 const end = new Date();
 const start = new Date(end.getTime() - 30 * 24 * 60 * 60 * 1000);
 const channelRows = [];
-for (const channel of channelData.channels) {
+for (const channel of monitoredChannels(channelData.channels, registry)) {
   const state = channelState(channel);
   try {
     const data = await graphql(`
@@ -99,7 +100,7 @@ const channelsById = new Map(channelRows.map((channel) => [channel.channelId, ch
 const previousCampaignPosts = priorReport?.campaign?.posts ?? [];
 const previousCampaignById = new Map(previousCampaignPosts.map((post) => [post.id, post]));
 const campaignPosts = [];
-for (const entry of manifest.posts.filter((post) => post.bufferPostId)) {
+for (const entry of monitoredCampaignEntries(manifest, registry)) {
   const campaignChannel = channelsById.get(entry.channelId);
   const connectionState = campaignChannel?.state ?? "unknown";
   try {

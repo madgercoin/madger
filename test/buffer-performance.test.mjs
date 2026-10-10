@@ -1,11 +1,14 @@
 import assert from "node:assert/strict";
 import test from "node:test";
+import fs from "node:fs";
 
 import {
   channelState,
   metricsToObject,
   metricDeltas,
-  summarizeCampaign
+  summarizeCampaign,
+  monitoredChannels,
+  monitoredCampaignEntries
 } from "../scripts/buffer-performance-core.mjs";
 
 test("converts Buffer metrics into keyed values", () => {
@@ -86,4 +89,35 @@ test("campaign deltas ignore missing queries, new posts, and newly available met
   assert.equal(summary.deltaCohorts.views, 1);
   assert.equal(summary.deltas.follows, null);
   assert.equal(summary.deltaCohorts.follows, 0);
+});
+
+test("retired channels and campaign entries are excluded without hiding active unhealthy channels", () => {
+  const registry = { x: { retiredChannelId: "retired" } };
+  assert.deepEqual(monitoredChannels([
+    { id: "retired", isDisconnected: true },
+    { id: "current", isDisconnected: true }
+  ], registry), [{ id: "current", isDisconnected: true }]);
+  const entries = monitoredCampaignEntries({ posts: [
+    { id: "obsolete", channelId: "retired", bufferPostId: "old", enabled: false },
+    { id: "active", channelId: "current", bufferPostId: "new", enabled: false },
+    { id: "draft", channelId: "current" }
+  ] }, registry);
+  assert.deepEqual(entries.map((entry) => entry.id), ["active"]);
+  const summary = summarizeCampaign(entries.map((entry) => ({
+    ...entry, channelState: "disconnected", status: "monitor_error", metrics: {}
+  })));
+  assert.deepEqual(summary.atRiskPosts, ["active"]);
+});
+
+test("retired X manifest records retain their IDs in an audit-only archive", () => {
+  const read = (path) => JSON.parse(fs.readFileSync(new URL(path, import.meta.url), "utf8"));
+  const manifest = read("../content/buffer-schedule.json");
+  const registry = read("../config/social-channels.json");
+  const archive = read("../content/archive/2026-10-10-retired-x.json");
+  assert.equal(manifest.posts.some((entry) => entry.channelId === registry.x.retiredChannelId), false);
+  assert.equal(manifest.posts.some((entry) => entry.service === "twitter" && entry.channelName?.toLowerCase() === "madgercoin"), false);
+  assert.equal(archive.posts.find((entry) => entry.id === "madger-002-x").bufferPostId, "6a6872fa7c69e407413f994b");
+  assert.ok(archive.posts.every((entry) => entry.enabled === false));
+  const snapshot = read("../reports/social/archive/2026-10-10-before-x-retirement.json");
+  assert.ok(snapshot.campaign.summary.atRiskPosts.includes("madger-002-x"));
 });

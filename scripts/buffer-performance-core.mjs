@@ -112,3 +112,12 @@ export function summarizeCampaign(posts, previousPosts = [], now = Date.now()) {
     priorSnapshotAvailable: previousById.size > 0
   };
 }
+
+export function monitoredChannels(channels, registry) {
+  return channels.filter((channel) => channel.id !== registry.x?.retiredChannelId);
+}
+
+export function monitoredCampaignEntries(manifest, registry) {
+  return manifest.posts.filter((entry) => entry.bufferPostId &&
+    (!entry.channelId || entry.channelId !== registry.x?.retiredChannelId));
+}

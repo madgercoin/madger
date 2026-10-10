@@ -49,6 +49,10 @@ Set `mediaType` to `image` for a static image or `video` for a video. Legacy ent
 
 The official X account is `@MadgerDaBadger` at https://x.com/MadgerDaBadger. The old `MadgerCoin` Buffer channel below is disconnected and belongs to the retired account. Do not publish to its channel ID. The replacement account is connected as `MadgerDaBadger`, channel ID `6abebd4dea19ca0bde48a35c`. A connection refresh completed successfully on October 1, but a live publishing check still returned `Please reauthorize your channel connection.` The welcome post (`6abedb6363de9e09a27eb0ce`) was moved to draft to prevent retries or duplicates. Keep Buffer X automation disabled until a Buffer post has actually been sent and verified. Native X publishing works: the welcome https://x.com/MadgerDaBadger/status/2105791731308679374 is live and pinned, and three follow-ups are scheduled natively for October 2 at 10 AM, October 3 at noon, and October 4 at 6 PM (America/New_York). The four Buffer drafts are reference copies; do not publish them again. The official Facebook Page, Instagram, and TikTok successfully published the new-account announcement on October 1.
 
+## Retired monitoring — October 10, 2026
+
+Retired X campaign entries are preserved in `content/archive/2026-10-10-retired-x.json`, outside the active manifest. The pre-retirement performance snapshot is preserved under `reports/social/archive/`. Neither archive is consumed by publishing or performance monitoring. The monitor excludes `config/social-channels.json`'s retired channel ID before requesting metrics; active disconnected or locked channels still trigger the existing health gate. Disabled posts on current channels remain monitored because `enabled` controls submission, not performance tracking. Do not reassign historical posts to the replacement account or reconnect/repost them.
+
 ## Historical production channel registry
 
 The successful discovery run at `2026-08-16T01:17:51Z` returned the following values. Publishing entries should use the immutable `channelId`; `channelName` is descriptive only.
