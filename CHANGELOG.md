@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-10-10 — Roadmap PDF official X correction
+
+- Corrected page 8 of the downloadable roadmap to identify X as `@MadgerDaBadger`, with Instagram `@madgercoin` and TikTok `@themadgercoin` kept distinct.
+- Preserved the eight-page layout, other text, dates, metadata, and existing document links.
+- Added the roadmap PDF to production deployment triggers so document-only corrections publish through the validated release workflow.
+
 ## 2026-10-10 — Retire obsolete X monitoring
 
 - Moved retired X campaign entries out of the active Buffer manifest into an audit-only archive; preserved post IDs, captions, timestamps, and the pre-retirement report.
