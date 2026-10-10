@@ -116,6 +116,7 @@ export default function PlayScreen() {
       setSimulation(initial);
       modeRef.current = "ready";
       setMode("ready");
+      setMessage("Swipe to find your line.");
       setNotice(null);
       setFeedback([]);
       setNewBest(false);

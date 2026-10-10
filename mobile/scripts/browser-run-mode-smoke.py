@@ -71,6 +71,8 @@ with sync_playwright() as p:
             expect(page.get_by_role("button", name="Let’s dig", exact=True)).to_be_enabled()
             expect(page.get_by_role("button", name="Dig again", exact=True)).to_have_count(0)
             expect(page.get_by_role("button", name="See high scores", exact=True)).to_have_count(0)
+            expect(page.get_by_text("Swipe to find your line.", exact=True)).to_be_visible()
+            expect(page.get_by_text("Score banked. Come back for a new line.", exact=True)).to_have_count(0)
             assert page.evaluate('JSON.parse(localStorage.getItem("madger-arcade-profile-v2"))') == before
             assert not page.evaluate("document.documentElement.scrollWidth > innerWidth")
             route = "scores" if launch else "selector"
