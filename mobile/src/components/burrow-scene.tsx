@@ -53,6 +53,7 @@ export const BurrowScene = memo(function BurrowScene({
   playing,
   reducedMotion,
   feedback,
+  trailColor = COLORS.gold,
   children,
 }: {
   elapsed: number;
@@ -62,6 +63,7 @@ export const BurrowScene = memo(function BurrowScene({
   playing: boolean;
   reducedMotion: boolean;
   feedback: Feedback[];
+  trailColor?: string;
   children?: ReactNode;
 }) {
   const [size, setSize] = useState({ width: 320, height: 440 });
@@ -334,6 +336,7 @@ export const BurrowScene = memo(function BurrowScene({
           />
           {run.shield > 0 ? <View style={styles.shieldRing} /> : null}
           {run.magnet > 0 ? <View style={styles.magnetRing} /> : null}
+          <View pointerEvents="none" style={{ position: "absolute", width: runnerSize * 0.7, height: runnerSize * 0.32, borderRadius: 30, backgroundColor: `${trailColor}28`, bottom: 0, borderBottomWidth: 2, borderColor: `${trailColor}99` }} />
           <RunningMadger width={runnerSize} />
         </Animated.View>
         {feedback.map((item) => (

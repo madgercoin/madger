@@ -133,7 +133,7 @@ export function objectiveFor(dayNumber: number): Objective {
   ][Math.abs(dayNumber) % 3] as Objective;
 }
 
-export function objectiveValue(objective: Objective, run: RunState) {
+export function objectiveValue(objective: Objective, run: Pick<RunState, "signals" | "score" | "bestStreak">) {
   if (objective.id === "signals") return run.signals;
   if (objective.id === "score") return run.score;
   return run.bestStreak;
@@ -209,6 +209,7 @@ export function stepSimulation(
   state: Simulation,
   seconds: number,
   random = Math.random,
+  scheduledSpawns = false,
 ): { state: Simulation; events: GameEvent[]; ended: "time" | "grit" | null } {
   if (state.run.grit <= 0) return { state, events: [], ended: "grit" };
   if (state.elapsed >= ROUND_SECONDS)
@@ -232,15 +233,18 @@ export function stepSimulation(
   let nextId = state.nextId;
   const items = [...state.entities];
   if (spawnIn <= 0) {
+    // Daily routes use the scheduled instant, independent of frame overshoot.
+    // Classic keeps its existing frame-based wave and interval selection.
+    const spawnAt = scheduledSpawns ? elapsed + spawnIn : elapsed;
     items.push(
-      ...createWave(random, elapsed).map((item) => ({
+      ...createWave(random, spawnAt).map((item) => ({
         ...item,
         id: nextId++,
         y: -0.05 + item.offset,
         passed: false,
       })),
     );
-    spawnIn = phase.interval;
+    spawnIn += phaseFor(spawnAt).interval;
   }
   const entities: Entity[] = [];
   for (const entity of items) {
@@ -284,7 +288,7 @@ export function stepSimulation(
   };
 }
 
-export function runRank(run: RunState) {
+export function runRank(run: Pick<RunState, "score" | "hits">) {
   if (run.score >= 15000 && run.hits === 0) return "S";
   if (run.score >= 10000) return "A";
   if (run.score >= 5000) return "B";
