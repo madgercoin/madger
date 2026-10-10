@@ -215,7 +215,7 @@ with sync_playwright() as p:
     failed.get_by_role('button',name='Retry loading scores',exact=True).click()
     expect(failed.get_by_role('button',name='Let’s dig',exact=True)).to_be_enabled()
     passed('A failed score load blocks play safely and retry restores the lobby')
-    failed.evaluate('window.__qaFailWrites=true;window.__qaSet=Storage.prototype.setItem;Storage.prototype.setItem=function(k,v){if(window.__qaFailWrites&&k.startsWith("madger-"))throw new Error("storage full");return window.__qaSet.call(this,k,v);};')
+    failed.evaluate('() => {window.__qaFailWrites=true;window.__qaSet=Storage.prototype.setItem;Storage.prototype.setItem=function(k,v){if(window.__qaFailWrites&&typeof k==="string"&&k.startsWith("madger-"))throw new Error("storage full");return window.__qaSet.call(this,k,v);};}')
     failed.clock.install()
     failed.get_by_role('button',name='Let’s dig',exact=True).click()
     failed.clock.run_for(9000)
