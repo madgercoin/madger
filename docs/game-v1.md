@@ -2,7 +2,7 @@
 
 ## Native run categories and launch behavior
 
-Classic and Daily runs bank scores into separate on-device tables. A new launch entry from Scores returns a finished run to a fresh lobby, preserving the previous run's stored category. Active or paused runs keep their current mode. Only a qualifying Daily run earns its UTC field mark; Classic runs still earn their normal score and progression.
+Classic and Daily runs bank scores into separate on-device tables. A launch entry from Scores or a mode selection returns a finished run to a fresh lobby, preserving the previous run's stored category. Active or paused runs keep their current mode. Only a qualifying Daily run earns its UTC field mark; Classic runs still earn their normal score and progression.
 
 Daily routes select wave contents and the next interval at nominal spawn time, so the same date produces the same lanes, pickup types and authored offsets across normal, slow and jittered update frames. Movement and collision processing retain their frame-based behavior; matching a route does not guarantee identical scores across devices.
 

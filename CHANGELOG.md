@@ -2,7 +2,7 @@
 
 ## 2026-10-10 - Run mode and daily achievement corrections
 
-- New launch entries return an ended run to a fresh lobby without relabeling its banked result or changing its saved category.
+- Launch links and mode selections return an ended run to a fresh lobby without relabeling its banked result or changing its saved category.
 - Daily field marks and their achievement require qualifying Daily runs; Classic scores still contribute to normal progression.
 - Added profile eligibility and small-screen browser regressions for both directions of score-category switching.
 

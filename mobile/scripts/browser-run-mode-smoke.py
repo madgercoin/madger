@@ -50,6 +50,8 @@ with sync_playwright() as p:
         for current, target, category, launch in [
             ("CLASSIC", "TODAY’S", "Today’s run", "Play today’s run"),
             ("TODAY’S", "CLASSIC", "Classic", "Beat your best"),
+            ("CLASSIC", "TODAY’S", "Today’s run", None),
+            ("TODAY’S", "CLASSIC", "Classic run", None),
         ]:
             page.get_by_role("button", name="Let’s dig", exact=True).click()
             page.clock.run_for(9000)
@@ -59,17 +61,21 @@ with sync_playwright() as p:
             before = page.evaluate('JSON.parse(localStorage.getItem("madger-arcade-profile-v2"))')
             expected_mode = "classic" if current == "CLASSIC" else "daily"
             assert before["recentRuns"][0]["mode"] == expected_mode
-            page.get_by_role("button", name="See high scores", exact=True).click()
-            page.get_by_role("button", name=category, exact=True).click()
-            page.get_by_role("button", name=launch, exact=True).click()
+            if launch:
+                page.get_by_role("button", name="See high scores", exact=True).click()
+                page.get_by_role("button", name=category, exact=True).click()
+                page.get_by_role("button", name=launch, exact=True).click()
+            else:
+                page.get_by_role("button", name=category, exact=True).click()
             expect(page.get_by_text(f"MADGER / {target} RUN", exact=True)).to_be_visible()
             expect(page.get_by_role("button", name="Let’s dig", exact=True)).to_be_enabled()
             expect(page.get_by_role("button", name="Dig again", exact=True)).to_have_count(0)
             expect(page.get_by_role("button", name="See high scores", exact=True)).to_have_count(0)
             assert page.evaluate('JSON.parse(localStorage.getItem("madger-arcade-profile-v2"))') == before
             assert not page.evaluate("document.documentElement.scrollWidth > innerWidth")
-            page.screenshot(path=str(OUT / f"{width}-{expected_mode}-to-lobby.png"))
-            passed(f"{width}px {current} debrief launches fresh {target} lobby without rewriting scores")
+            route = "scores" if launch else "selector"
+            page.screenshot(path=str(OUT / f"{width}-{expected_mode}-{route}-to-lobby.png"))
+            passed(f"{width}px {current} debrief launches fresh {target} lobby via {route} without rewriting scores")
         context.close()
     assert not report["errors"], report["errors"]
     report["completed"] = True

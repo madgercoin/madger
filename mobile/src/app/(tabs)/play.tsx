@@ -105,11 +105,11 @@ export default function PlayScreen() {
   const comboProgress = run.streak >= 20 ? 1 : (run.streak % 5) / 5;
   const burstReady = run.energy >= BURST_COST;
 
-  useEffect(() => {
+  const selectRunMode = useCallback((nextMode: RunMode) => {
     if (modeRef.current !== "ready" && modeRef.current !== "ended") return;
-    setRunMode(params.challenge === "daily" ? "daily" : "classic");
+    setRunMode(nextMode);
     if (modeRef.current === "ended") {
-      // A launch entry requests a fresh lobby; the banked result retains its
+      // Choosing a mode or launching a run requests a fresh lobby; the result retains its
       // original category in storage instead of becoming another mode's result.
       const initial = freshSimulation();
       simulationRef.current = initial;
@@ -122,7 +122,10 @@ export default function PlayScreen() {
       setEarnedXp(0);
       setUnlocks([]);
     }
-  }, [params.challenge, params.entry]);
+  }, []);
+  useEffect(() => {
+    selectRunMode(params.challenge === "daily" ? "daily" : "classic");
+  }, [params.challenge, params.entry, selectRunMode]);
   useEffect(() => { setRunActive(activeRun); return () => setRunActive(false); }, [activeRun, setRunActive]);
 
   useEffect(() => {
@@ -542,7 +545,7 @@ export default function PlayScreen() {
         )}
       </View>
       {!activeRun ? <>          <SaveStatus />
-          <Segments label="Choose a run" selected={runMode} onSelect={setRunMode} options={[{ value: "classic", label: "Classic run" }, { value: "daily", label: "Today’s run" }]} />
+          <Segments label="Choose a run" selected={runMode} onSelect={selectRunMode} options={[{ value: "classic", label: "Classic run" }, { value: "daily", label: "Today’s run" }]} />
           <Text style={styles.privateNote}>{runMode === "daily" ? "Same daily route. Learn your line and beat today’s best." : "A fresh route every run. Chase your all-time best."}</Text>
 </> : null}
       {activeRun ? (
