@@ -58,7 +58,9 @@ jobs:
           /tmp/madger-browser-qa/bin/pip install playwright pillow
           /tmp/madger-browser-qa/bin/python -m playwright install --with-deps chromium
       - name: Exercise the game, scores, history, settings, and recovery
-        run: /tmp/madger-browser-qa/bin/python scripts/browser-preview-smoke.py
+        run: |
+          /tmp/madger-browser-qa/bin/python scripts/browser-preview-smoke.py
+          /tmp/madger-browser-qa/bin/python scripts/browser-run-mode-smoke.py
       - name: Record visual review thumbnails
         if: always()
         run: |
@@ -78,6 +80,12 @@ jobs:
         with:
           name: madger-browser-smoke
           path: mobile/browser-smoke
+          retention-days: 14
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: madger-mode-smoke
+          path: mobile/mode-smoke
           retention-days: 14
 
   android-preview:

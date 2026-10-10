@@ -105,9 +105,28 @@ export default function PlayScreen() {
   const comboProgress = run.streak >= 20 ? 1 : (run.streak % 5) / 5;
   const burstReady = run.energy >= BURST_COST;
 
+  const selectRunMode = useCallback((nextMode: RunMode) => {
+    if (modeRef.current !== "ready" && modeRef.current !== "ended") return;
+    setRunMode(nextMode);
+    if (modeRef.current === "ended") {
+      // Choosing a mode or launching a run requests a fresh lobby; the result retains its
+      // original category in storage instead of becoming another mode's result.
+      const initial = freshSimulation();
+      simulationRef.current = initial;
+      setSimulation(initial);
+      modeRef.current = "ready";
+      setMode("ready");
+      setMessage("Swipe to find your line.");
+      setNotice(null);
+      setFeedback([]);
+      setNewBest(false);
+      setEarnedXp(0);
+      setUnlocks([]);
+    }
+  }, []);
   useEffect(() => {
-    if (modeRef.current === "ready" || modeRef.current === "ended") setRunMode(params.challenge === "daily" ? "daily" : "classic");
-  }, [params.challenge, params.entry]);
+    selectRunMode(params.challenge === "daily" ? "daily" : "classic");
+  }, [params.challenge, params.entry, selectRunMode]);
   useEffect(() => { setRunActive(activeRun); return () => setRunActive(false); }, [activeRun, setRunActive]);
 
   useEffect(() => {
@@ -527,7 +546,7 @@ export default function PlayScreen() {
         )}
       </View>
       {!activeRun ? <>          <SaveStatus />
-          <Segments label="Choose a run" selected={runMode} onSelect={setRunMode} options={[{ value: "classic", label: "Classic run" }, { value: "daily", label: "Today’s run" }]} />
+          <Segments label="Choose a run" selected={runMode} onSelect={selectRunMode} options={[{ value: "classic", label: "Classic run" }, { value: "daily", label: "Today’s run" }]} />
           <Text style={styles.privateNote}>{runMode === "daily" ? "Same daily route. Learn your line and beat today’s best." : "A fresh route every run. Chase your all-time best."}</Text>
 </> : null}
       {activeRun ? (
@@ -628,7 +647,7 @@ export default function PlayScreen() {
                   color={COLORS.gold}
                 />
                 <Text style={styles.goalText}>
-                  {progress >= 1 ? "DAILY MARK CLEARED" : objective.label}
+                  {runMode === "daily" && progress >= 1 ? "DAILY MARK CLEARED" : objective.label}
                 </Text>
                 <Text style={styles.goalCount}>
                   {Math.min(objectiveCurrent, objective.target)}/
@@ -803,7 +822,7 @@ export default function PlayScreen() {
                   <Text style={styles.resultTip}>+{earnedXp} XP{unlocks.length ? ` · ${unlocks.join(" · ")} unlocked` : " · Keep digging"}</Text>
                   <Text accessibilityLiveRegion="polite" style={styles.privateNote}>{recordSaving ? "Saving your score…" : recordError ? "Score is in memory. Retry saving below." : "Score saved on this device ✓"}</Text>
                   <Text style={styles.resultTip}>
-                    {progress >= 1
+                    {runMode === "daily" && progress >= 1
                       ? "Daily mark cleared. The Burrow remembers."
                       : run.hits > 0
                         ? "Tip: save your burst for a crowded tunnel."
