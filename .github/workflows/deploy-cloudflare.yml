@@ -17,6 +17,7 @@ on:
       - "*.svg"
       - "*.gif"
       - "*.mp4"
+      - "MADGER_Roadmap_2026_2026-09-03.pdf"
       - "assets/**"
       - "scripts/**"
       - "package.json"
