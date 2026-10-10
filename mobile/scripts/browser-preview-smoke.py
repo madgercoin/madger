@@ -1,7 +1,7 @@
 from playwright.sync_api import sync_playwright, expect
 from pathlib import Path
 import os
-import json, re
+import json, re, atexit
 from http.server import ThreadingHTTPServer, SimpleHTTPRequestHandler
 from urllib.parse import urlsplit
 from threading import Thread
@@ -17,7 +17,8 @@ server=ThreadingHTTPServer(('127.0.0.1',8125),Preview)
 Thread(target=server.serve_forever,daemon=True).start()
 OUT=Path(os.environ.get('MADGER_QA_OUTPUT', 'browser-smoke'))
 OUT.mkdir(exist_ok=True)
-report={'checks':[], 'errors':[]}
+report={'checks':[], 'errors':[], 'completed':False}
+atexit.register(lambda: OUT.joinpath('browser-qa.json').write_text(json.dumps(report,indent=2)))
 def passed(name):
     report['checks'].append(name)
     print('PASS',name,flush=True)
@@ -115,6 +116,66 @@ with sync_playwright() as p:
     page.get_by_role('button',name='Play Burrow Run').click()
     expect(page.get_by_role('button',name='Let’s dig')).to_be_enabled()
     passed('Home offers a direct game entry')
+    profile=page.evaluate('JSON.parse(localStorage.getItem("madger-arcade-profile-v2"))')
+    assert profile['record']==saved
+    assert len(profile['highScores'])==1 and len(profile['recentRuns'])==1
+    assert profile['highScores'][0]['score']==saved['bestScore']
+    page.get_by_role('tab',name='Scores',exact=True).click()
+    expect(page.get_by_role('heading',name='Your scores',exact=True)).to_be_visible()
+    expect(page.get_by_label(re.compile(r'^Rank 1, '))).to_be_visible()
+    page.screenshot(path=str(OUT/'madger-scores-390.png'))
+    passed('A real completed run appears in the ranked high-score table')
+    page.get_by_role('button',name='Run history',exact=True).click()
+    assert 'signals' in page.locator('body').inner_text()
+    assert 'Classic' in page.locator('body').inner_text()
+    page.screenshot(path=str(OUT/'madger-history-390.png'))
+    passed('Run history shows the banked run and its details')
+    page.get_by_role('button',name='Progress',exact=True).click()
+    expect(page.get_by_text(f'Digger level {int((profile["xp"]/250)**0.5)+1}',exact=True)).to_be_visible()
+    expect(page.get_by_role('button',name='Original gold equipped')).to_be_disabled()
+    assert page.get_by_text('Unlocked',exact=True).count()>=1
+    page.screenshot(path=str(OUT/'madger-progress-390.png'))
+    passed('XP, achievements, and locked/equipped trails reflect earned progress')
+    page.get_by_role('tab',name='Settings',exact=True).click()
+    expect(page.get_by_role('switch',name='Sound',exact=True)).to_have_attribute('aria-checked','true')
+    page.get_by_role('switch',name='Haptics',exact=True).click()
+    expect(page.get_by_role('switch',name='Haptics',exact=True)).to_have_attribute('aria-checked','false')
+    page.screenshot(path=str(OUT/'madger-settings-390.png'))
+    page.reload()
+    expect(page.get_by_role('switch',name='Haptics',exact=True)).to_have_attribute('aria-checked','false')
+    expect(page.get_by_role('switch',name='Sound',exact=True)).to_have_attribute('aria-checked','true')
+    expect(page.get_by_role('switch',name='Calm effects',exact=True)).to_have_attribute('aria-checked','true')
+    assert page.evaluate('JSON.parse(localStorage.getItem("madger-arcade-profile-v2")).record')==saved
+    passed('Scores and sound/haptic/calm preferences survive a full page reload')
+    page.get_by_role('tab',name='Scores',exact=True).click()
+    page.get_by_role('button',name='High scores',exact=True).click()
+    page.get_by_role('button',name='Today’s run',exact=True).click()
+    expect(page.get_by_text('Today’s board is yours.',exact=True)).to_be_visible()
+    page.get_by_role('button',name='Play today’s run',exact=True).click()
+    expect(page.get_by_text('MADGER / TODAY’S RUN',exact=True)).to_be_visible()
+    page.get_by_role('button',name='Let’s dig').click()
+    page.clock.run_for(9000)
+    page.get_by_role('button',name='Pause run').click()
+    page.get_by_role('tab',name='Settings',exact=True).click()
+    expect(page.get_by_role('button',name='Reset game progress',exact=True)).to_be_disabled()
+    passed('Progress cannot be reset underneath an active paused run')
+    page.get_by_role('tab',name='Play',exact=True).click()
+    page.get_by_role('button',name='End run & save score',exact=True).click()
+    expect(page.get_by_text('Score saved on this device ✓',exact=True)).to_be_visible()
+    daily_profile=page.evaluate('JSON.parse(localStorage.getItem("madger-arcade-profile-v2"))')
+    assert daily_profile['record']['runs']==2
+    assert daily_profile['recentRuns'][0]['mode']=='daily' and daily_profile['recentRuns'][0]['reason']=='quit'
+    page.get_by_role('button',name='See high scores').click()
+    expect(page.get_by_label(re.compile(r'^Rank 1, '))).to_be_visible()
+    page.screenshot(path=str(OUT/'madger-daily-scores-390.png'))
+    passed('Daily runs bank separately, and ending early saves the current score')
+    page.reload()
+    expect(page.get_by_role('heading',name='Your scores',exact=True)).to_be_visible()
+    assert page.evaluate('JSON.parse(localStorage.getItem("madger-arcade-profile-v2"))')==daily_profile
+    passed('Both score categories and run history survive cold navigation reload')
+    page.get_by_role('tab',name='Home',exact=True).click()
+    page.get_by_role('button',name='Play Burrow Run',exact=True).click()
+    expect(page.get_by_role('button',name='Let’s dig')).to_be_enabled()
     for width in [320,768]:
         page.set_viewport_size({'width':width,'height':844 if width==320 else 1024})
         page.wait_for_timeout(150)
@@ -130,6 +191,59 @@ with sync_playwright() as p:
         page.reload()
         expect(page.get_by_role('button',name='Let’s dig')).to_be_enabled()
         passed(f'{width}px lobby, gameplay, controls, and pause dialog fit')
+    # A fresh browser context reproduces a real upgrade from v1 data.
+    legacy=context.browser.new_context(viewport={'width':390,'height':844})
+    legacy.add_init_script('localStorage.setItem("madger-burrow-run-native-v1",JSON.stringify({runs:4,signals:140,bestScore:25600,bestStreak:36,marks:["2026-10-09"]}));')
+    old=legacy.new_page()
+    old.on('pageerror',lambda e:report['errors'].append(str(e)))
+    old.goto('http://127.0.0.1:8125/scores')
+    expect(old.get_by_text('Previous best',exact=True)).to_be_visible()
+    expect(old.get_by_label('Best score 25600')).to_be_visible()
+    migrated=old.evaluate('localStorage.getItem("madger-burrow-run-native-v1")')
+    assert json.loads(migrated)['bestScore']==25600
+    passed('A v1 upgrade preserves the previous best without inventing run history')
+    legacy.close()
+    # Fail only game storage reads, leaving navigation/font storage intact.
+    recovery=context.browser.new_context(viewport={'width':390,'height':844})
+    recovery.add_init_script('window.__qaFailReads=true;window.__qaGet=Storage.prototype.getItem;Storage.prototype.getItem=function(k){if(window.__qaFailReads&&k.startsWith("madger-"))throw new Error("read unavailable");return window.__qaGet.call(this,k);};')
+    failed=recovery.new_page()
+    failed.on('pageerror',lambda e:report['errors'].append(str(e)))
+    failed.goto('http://127.0.0.1:8125/play')
+    expect(failed.get_by_role('button',name='Retry loading scores',exact=True)).to_be_enabled()
+    expect(failed.get_by_role('button',name='Loading record…',exact=True)).to_be_disabled()
+    failed.evaluate('window.__qaFailReads=false')
+    failed.get_by_role('button',name='Retry loading scores',exact=True).click()
+    expect(failed.get_by_role('button',name='Let’s dig',exact=True)).to_be_enabled()
+    passed('A failed score load blocks play safely and retry restores the lobby')
+    failed.evaluate('window.__qaFailWrites=true;window.__qaSet=Storage.prototype.setItem;Storage.prototype.setItem=function(k,v){if(window.__qaFailWrites&&k.startsWith("madger-"))throw new Error("storage full");return window.__qaSet.call(this,k,v);};')
+    failed.clock.install()
+    failed.get_by_role('button',name='Let’s dig',exact=True).click()
+    failed.clock.run_for(9000)
+    failed.get_by_role('button',name='Pause run',exact=True).click()
+    failed.get_by_role('button',name='End run & save score',exact=True).click()
+    expect(failed.get_by_role('button',name='Retry saving scores',exact=True)).to_be_enabled()
+    expect(failed.get_by_role('button',name='Dig again',exact=True)).to_be_disabled()
+    failed.evaluate('window.__qaFailWrites=false')
+    failed.get_by_role('button',name='Retry saving scores',exact=True).click()
+    expect(failed.get_by_role('button',name='Dig again',exact=True)).to_be_enabled()
+    persisted=failed.evaluate('JSON.parse(localStorage.getItem("madger-arcade-profile-v2"))')
+    assert persisted['record']['runs']==1 and len(persisted['highScores'])==1
+    passed('A failed save retains the score and retry persists it before replay')
+    failed.get_by_role('tab',name='Settings',exact=True).click()
+    failed.get_by_role('switch',name='Sound',exact=True).click()
+    expect(failed.get_by_role('button',name='Reset game progress',exact=True)).to_be_enabled()
+    failed.once('dialog',lambda d:d.dismiss())
+    failed.get_by_role('button',name='Reset game progress',exact=True).click()
+    assert failed.evaluate('JSON.parse(localStorage.getItem("madger-arcade-profile-v2")).record.runs')==1
+    failed.once('dialog',lambda d:d.accept())
+    failed.get_by_role('button',name='Reset game progress',exact=True).click()
+    expect(failed.get_by_role('button',name='Reset game progress',exact=True)).to_be_enabled()
+    reset=failed.evaluate('JSON.parse(localStorage.getItem("madger-arcade-profile-v2"))')
+    assert reset['record']['runs']==0 and reset['highScores']==[] and reset['recentRuns']==[]
+    assert reset['preferences']['sound'] is True
+    passed('Reset confirmation can cancel, then clears scores while keeping preferences')
+    recovery.close()
+    report['completed']=True
     report['saved_record']=saved
     browser.close()
 OUT.joinpath('browser-qa.json').write_text(json.dumps(report,indent=2))

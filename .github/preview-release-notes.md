@@ -1,12 +1,13 @@
-Play the redesigned Burrow Run in MADGER.
+MADGER now opens as a game app: Home, Play, Scores, and Settings.
 
-- Cinematic tunnel art and a running MADGER character
-- Three zones, signal trails, shields, magnets, close-dodge bonuses, and charged Dig Burst
-- Swipe and button controls, opt-in sound, haptics, calm effects, pause, and instant replay
-- A redesigned Home screen and private on-device field records
+- Cinematic three-zone Burrow Run with swipes, power-ups, close calls, and Dig Burst
+- Saved Classic and daily high scores, the last 20 runs, and personal-best sharing
+- A repeatable daily route, XP levels, eight achievements, and four earned trails
+- Persistent sound, haptics, and calm settings, plus pause and end-and-save controls
+- Earlier field records kept on upgrade, with retry actions for storage failures
 
-Download the preview APK for Android. It supports ARM64 phones and x86_64 emulators and installs separately as **MADGER Preview**, preserving the official app. This preview uses a generated development signing key.
+Download the **preview APK** for Android, or download the **android-install ZIP**, extract it, and open the APK. It installs separately as **MADGER Preview** and supports ARM64 phones and x86_64 emulators. This preview uses a generated development signing key.
 
-Publication follows passing rule tests, TypeScript and lint checks, Expo Doctor, Android/iOS bundle exports, standalone Android compilation, APK permission inspection, and Android emulator launch/movement/pause/background checks. The attached verification archive includes native screenshots, a native test report, and the browser playthrough report. Source and an APK SHA-256 checksum are also attached.
+Publication follows passing game/persistence tests, TypeScript and lint, Expo Doctor, Android/iOS exports, browser playthroughs, standalone Android compilation, permission inspection, and Android emulator checks including a saved score surviving a full app restart. The verification archive includes reports and screenshots. Source and the APK SHA-256 checksum are attached.
 
-Google Play and Apple App Store distribution still require the official signing accounts and physical-device acceptance. No store publication or physical iPhone testing is claimed by this preview.
+This is an Android preview, not an App Store or Google Play release. Official store signing and physical-device acceptance remain required for store distribution.

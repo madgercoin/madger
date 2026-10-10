@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   AccessibilityInfo,
-  Alert,
   AppState,
   PanResponder,
   Platform,
@@ -12,35 +11,33 @@ import {
   View,
   useWindowDimensions,
 } from "react-native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as Haptics from "expo-haptics";
 import { LinearGradient } from "expo-linear-gradient";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { useFocusEffect } from "expo-router";
+import { useFocusEffect, useLocalSearchParams, useRouter } from "expo-router";
 import { ActionButton, Card, Screen } from "@/components/ui";
 import { BurrowScene, type Feedback } from "@/components/burrow-scene";
 import { COLORS } from "@/constants/brand";
+import { useGameProfile, useGameDay } from "@/components/game-profile";
+import { SaveStatus, Segments } from "@/components/game-ui";
+import { achievementsFor, addCompletedRun, bestFor, makeSavedRun, randomFromSeed, seedForDay, TRAILS, type RunMode } from "@/lib/gameProfile";
 import { useGameAudio } from "@/lib/gameAudio";
 import {
   BURST_COST,
   MAX_GRIT,
   ROUND_SECONDS,
   activateBurst,
-  emptyRecord,
   freshSimulation,
   multiplierFor,
   objectiveFor,
   objectiveValue,
   phaseFor,
   runRank,
-  sanitizeRecord,
   stepSimulation,
   type Entity,
-  type FieldRecord,
   type GameEvent,
 } from "@/lib/burrowRun";
 
-const RECORD_KEY = "madger-burrow-run-native-v1";
 type Mode = "ready" | "countdown" | "running" | "paused" | "ended";
 type Notice = {
   title: string;
@@ -56,6 +53,19 @@ const DEMO: Entity[] = [
 ];
 
 export default function PlayScreen() {
+  const { profile, ready: recordReady, saving: recordSaving, error: recordError, bankRun, setPreferences, setRunActive } = useGameProfile();
+  const router = useRouter();
+  const calendarDay = useGameDay();
+  const params = useLocalSearchParams<{ challenge?: string; entry?: string }>();
+  const [runMode, setRunMode] = useState<RunMode>(params.challenge === "daily" ? "daily" : "classic");
+  const runModeRef = useRef<RunMode>(runMode);
+  const randomRef = useRef(randomFromSeed(1));
+  const runIdRef = useRef("");
+  const [earnedXp, setEarnedXp] = useState(0);
+  const [unlocks, setUnlocks] = useState<string[]>([]);
+  const record = profile.record;
+  const { sound, haptics, calm } = profile.preferences;
+  const trailColor = TRAILS.find(trail => trail.id === profile.preferences.trail)?.color ?? COLORS.gold;
   const [mode, setMode] = useState<Mode>("ready");
   const modeRef = useRef<Mode>("ready");
   const simulationRef = useRef(freshSimulation());
@@ -65,19 +75,13 @@ export default function PlayScreen() {
   const [notice, setNotice] = useState<Notice | null>(null);
   const [feedback, setFeedback] = useState<Feedback[]>([]);
   const feedbackId = useRef(0);
-  const [haptics, setHaptics] = useState(true);
-  const [sound, setSound] = useState(false);
   const { cue, stop: stopAudio } = useGameAudio(sound);
-  const hapticsRef = useRef(true);
-  const [reducedMotion, setReducedMotion] = useState(false);
-  const [record, setRecord] = useState<FieldRecord>(emptyRecord);
-  const [recordReady, setRecordReady] = useState(false);
-  const [recordSaving, setRecordSaving] = useState(false);
-  const savingRef = useRef(false);
-  const [recordError, setRecordError] = useState("");
-  const recordRef = useRef<FieldRecord>(emptyRecord());
+  const hapticsRef = useRef(haptics);
+  useEffect(() => { hapticsRef.current = haptics; }, [haptics]);
+  const [systemReducedMotion, setSystemReducedMotion] = useState(false);
+  const reducedMotion = calm || systemReducedMotion;
   const [newBest, setNewBest] = useState(false);
-  const [finishReason, setFinishReason] = useState<"time" | "grit">("time");
+  const [finishReason, setFinishReason] = useState<"time" | "grit" | "quit">("time");
   const [message, setMessage] = useState("Swipe to find your line.");
   const endingRef = useRef(false);
   const pausedFrom = useRef<"countdown" | "running">("running");
@@ -91,50 +95,29 @@ export default function PlayScreen() {
   const activeRun =
     mode === "countdown" || mode === "running" || mode === "paused";
   const scrollRun = activeRun && (fontScale > 1.5 || height < 640);
+  const objectiveDay = activeRun ? today : calendarDay;
   const objective = useMemo(
-    () => objectiveFor(Math.floor(Date.parse(today) / 86400000)),
-    [today],
+    () => objectiveFor(Math.floor(Date.parse(objectiveDay) / 86400000)),
+    [objectiveDay],
   );
   const objectiveCurrent = objectiveValue(objective, run);
   const progress = Math.min(1, objectiveCurrent / objective.target);
   const comboProgress = run.streak >= 20 ? 1 : (run.streak % 5) / 5;
   const burstReady = run.energy >= BURST_COST;
 
-  const loadRecord = useCallback(
-    () =>
-      AsyncStorage.getItem(RECORD_KEY)
-        .then((value) => {
-          let saved: unknown = null;
-          try {
-            saved = value ? JSON.parse(value) : null;
-          } catch {
-            /* Malformed local data starts a fresh record. */
-          }
-          const next = sanitizeRecord(saved);
-          recordRef.current = next;
-          setRecord(next);
-          setRecordReady(true);
-          setRecordError("");
-        })
-        .catch(() =>
-          setRecordError(
-            "Your field record could not be loaded. Retry before starting a run.",
-          ),
-        ),
-    [],
-  );
   useEffect(() => {
-    void loadRecord();
-  }, [loadRecord]);
+    if (modeRef.current === "ready" || modeRef.current === "ended") setRunMode(params.challenge === "daily" ? "daily" : "classic");
+  }, [params.challenge, params.entry]);
+  useEffect(() => { setRunActive(activeRun); return () => setRunActive(false); }, [activeRun, setRunActive]);
 
   useEffect(() => {
     let active = true;
     void AccessibilityInfo.isReduceMotionEnabled().then((value) => {
-      if (active) setReducedMotion(value);
+      if (active) setSystemReducedMotion(value);
     });
     const subscription = AccessibilityInfo.addEventListener(
       "reduceMotionChanged",
-      setReducedMotion,
+      setSystemReducedMotion,
     );
     return () => {
       active = false;
@@ -153,61 +136,28 @@ export default function PlayScreen() {
     ).catch(() => {});
   }, []);
 
-  const saveRecord = useCallback(async (next: FieldRecord) => {
-    if (savingRef.current) return;
-    savingRef.current = true;
-    setRecordSaving(true);
-    try {
-      await AsyncStorage.setItem(RECORD_KEY, JSON.stringify(next));
-      setRecordError("");
-    } catch {
-      setRecordError(
-        "Your latest record is only in memory. Retry saving before closing the app.",
-      );
-    } finally {
-      savingRef.current = false;
-      setRecordSaving(false);
-    }
-  }, []);
-
-  const finishRun = useCallback(
-    (reason: "time" | "grit") => {
-      if (endingRef.current) return;
-      endingRef.current = true;
-      const finalRun = simulationRef.current.run;
-      const previous = recordRef.current;
-      const runDay = runDayRef.current;
-      const runObjective = objectiveFor(
-        Math.floor(Date.parse(runDay) / 86400000),
-      );
-      const markCleared =
-        objectiveValue(runObjective, finalRun) >= runObjective.target;
-      modeRef.current = "ended";
-      setMode("ended");
-      setFinishReason(reason);
-      setNewBest(finalRun.score > previous.bestScore);
-      setMessage(
-        reason === "time"
-          ? "Run complete. Keep digging."
-          : "Shake it off. Find a new line.",
-      );
-      setNotice(null);
-      setFeedback([]);
-      const next = sanitizeRecord({
-        runs: previous.runs + 1,
-        signals: previous.signals + finalRun.signals,
-        bestScore: Math.max(previous.bestScore, finalRun.score),
-        bestStreak: Math.max(previous.bestStreak, finalRun.bestStreak),
-        marks: markCleared ? [...previous.marks, runDay] : previous.marks,
-      });
-      recordRef.current = next;
-      setRecord(next);
-      void saveRecord(next);
-      pulse(reason === "time" ? "success" : "hit");
-      cue(reason === "time" ? "finish" : "hit");
-    },
-    [cue, pulse, saveRecord],
-  );
+  const finishRun = useCallback((reason: "time" | "grit" | "quit") => {
+    if (endingRef.current) return;
+    endingRef.current = true;
+    const current = simulationRef.current;
+    const finalRun = current.run;
+    const day = runDayRef.current;
+    const saved = makeSavedRun(finalRun, { id: runIdRef.current, mode: runModeRef.current, day, finishedAt: new Date().toISOString(), seconds: current.elapsed, reason });
+    const next = addCompletedRun(profile, saved);
+    const previousAchievements = achievementsFor(profile).filter(item => item.value >= item.target).map(item => item.id);
+    setEarnedXp(next.xp - profile.xp);
+    setUnlocks(achievementsFor(next).filter(item => item.value >= item.target && !previousAchievements.includes(item.id)).map(item => item.title));
+    setNewBest(finalRun.score > bestFor(profile, runModeRef.current, runModeRef.current === "daily" ? day : undefined));
+    modeRef.current = "ended";
+    setMode("ended");
+    setFinishReason(reason);
+    setMessage(reason === "time" ? "Run complete. Your score is banked." : reason === "quit" ? "Score banked. Come back for a new line." : "Shake it off. Your score is banked.");
+    setNotice(null);
+    setFeedback([]);
+    void bankRun(saved);
+    pulse(reason === "time" ? "success" : "hit");
+    cue(reason === "time" ? "finish" : "hit");
+  }, [profile, bankRun, pulse, cue]);
 
   const showEvents = useCallback(
     (events: GameEvent[]) => {
@@ -319,7 +269,7 @@ export default function PlayScreen() {
         }
         return;
       }
-      const result = stepSimulation(simulationRef.current, delta);
+      const result = stepSimulation(simulationRef.current, delta, randomRef.current);
       simulationRef.current = result.state;
       setSimulation(result.state);
       showEvents(result.events);
@@ -441,10 +391,13 @@ export default function PlayScreen() {
   }, [burst, move, pause, resume]);
 
   function startRun() {
-    if (!recordReady || savingRef.current || recordError) return;
+    if (!recordReady || recordSaving || recordError) return;
     const day = new Date().toISOString().slice(0, 10);
     setToday(day);
     runDayRef.current = day;
+    runModeRef.current = runMode;
+    randomRef.current = randomFromSeed(runMode === "daily" ? seedForDay(day) : Math.floor(Math.random() * 4294967296));
+    runIdRef.current = `${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
     endingRef.current = false;
     countdownRef.current = 2.4;
     const initial = freshSimulation();
@@ -454,42 +407,11 @@ export default function PlayScreen() {
     setNotice(null);
     setFeedback([]);
     setNewBest(false);
+    setEarnedXp(0);
+    setUnlocks([]);
     modeRef.current = "countdown";
     setMode("countdown");
     setMessage("Get ready. Swipe or use the arrows to move.");
-  }
-
-  function resetRecord() {
-    if (!recordReady || savingRef.current || activeRun) return;
-    Alert.alert(
-      "Reset field record?",
-      "This permanently removes Burrow Run progress stored on this device.",
-      [
-        { text: "Cancel", style: "cancel" },
-        {
-          text: "Reset",
-          style: "destructive",
-          onPress: async () => {
-            savingRef.current = true;
-            setRecordSaving(true);
-            try {
-              await AsyncStorage.removeItem(RECORD_KEY);
-              recordRef.current = emptyRecord();
-              setRecord(recordRef.current);
-              setRecordError("");
-            } catch {
-              Alert.alert(
-                "Record not reset",
-                "Your field record has been kept. Please try again.",
-              );
-            } finally {
-              savingRef.current = false;
-              setRecordSaving(false);
-            }
-          },
-        },
-      ],
-    );
   }
 
   const visibleNotice = notice && elapsed < notice.until ? notice : null;
@@ -564,7 +486,7 @@ export default function PlayScreen() {
     >
       <View style={styles.topbar}>
         <View>
-          <Text style={styles.eyebrow}>MADGER / FIELD ARCADE</Text>
+          <Text style={styles.eyebrow}>{runMode === "daily" ? "MADGER / TODAY’S RUN" : "MADGER / CLASSIC RUN"}</Text>
           <Text accessibilityRole="header" style={styles.screenTitle}>
             Burrow Run<Text style={styles.titleDot}>.</Text>
           </Text>
@@ -590,11 +512,15 @@ export default function PlayScreen() {
               color={COLORS.gold}
             />
             <Text style={styles.bestText}>
-              {recordReady ? record.bestScore.toLocaleString() : "—"}
+              {recordReady ? bestFor(profile, runMode, runMode === "daily" ? today : undefined).toLocaleString() : "—"}
             </Text>
           </View>
         )}
       </View>
+      {!activeRun ? <>          <SaveStatus />
+          <Segments label="Choose a run" selected={runMode} onSelect={setRunMode} options={[{ value: "classic", label: "Classic run" }, { value: "daily", label: "Today’s run" }]} />
+          <Text style={styles.privateNote}>{runMode === "daily" ? "Same daily route. Learn your line and beat today’s best." : "A fresh route every run. Chase your all-time best."}</Text>
+</> : null}
       {activeRun ? (
         <View style={styles.liveHud}>
           <View style={styles.scoreBlock}>
@@ -682,6 +608,7 @@ export default function PlayScreen() {
           playing={mode === "running"}
           reducedMotion={reducedMotion}
           feedback={feedback}
+          trailColor={trailColor}
         >
           {mode === "running" ? (
             <View pointerEvents="none" style={styles.arenaHud}>
@@ -787,7 +714,7 @@ export default function PlayScreen() {
                 <View style={styles.modeTag}>
                   <View style={styles.tagDot} />
                   <Text style={styles.tagText}>
-                    60 SECONDS. ZERO HESITATION.
+{runMode === "daily" ? "TODAY’S ROUTE. YOUR BEST LINE." : "60 SECONDS. ZERO HESITATION."}
                   </Text>
                 </View>
                 <Text style={styles.heroTitle}>
@@ -841,11 +768,8 @@ export default function PlayScreen() {
                   <Text style={styles.heroCopy}>
                     Your run is frozen. Pick up where you left off.
                   </Text>
-                  <ActionButton
-                    label="Back to the run"
-                    icon="play"
-                    onPress={resume}
-                  />
+                  <ActionButton label="Back to the run" icon="play" onPress={resume} />
+                  <ActionButton label="End run & save score" icon="flag-checkered" secondary onPress={() => finishRun("quit")} />
                 </>
               ) : (
                 <>
@@ -856,7 +780,7 @@ export default function PlayScreen() {
                   <Text style={styles.resultTitle}>
                     {finishReason === "time"
                       ? "Made your mark."
-                      : "Dust off. Dig again."}
+                      : finishReason === "quit" ? "Score banked." : "Dust off. Dig again."}
                   </Text>
                   <Text style={styles.resultScore}>
                     {run.score.toLocaleString()}
@@ -867,6 +791,8 @@ export default function PlayScreen() {
                     <ResultStat value={run.bestStreak} label="BEST STREAK" />
                     <ResultStat value={run.dodges} label="CLOSE CALLS" />
                   </View>
+                  <Text style={styles.resultTip}>+{earnedXp} XP{unlocks.length ? ` · ${unlocks.join(" · ")} unlocked` : " · Keep digging"}</Text>
+                  <Text accessibilityLiveRegion="polite" style={styles.privateNote}>{recordSaving ? "Saving your score…" : recordError ? "Score is in memory. Retry saving below." : "Score saved on this device ✓"}</Text>
                   <Text style={styles.resultTip}>
                     {progress >= 1
                       ? "Daily mark cleared. The Burrow remembers."
@@ -880,6 +806,7 @@ export default function PlayScreen() {
                     disabled={startDisabled}
                     onPress={startRun}
                   />
+                  <ActionButton label="See high scores" icon="podium" secondary onPress={() => router.push({ pathname: "/scores", params: { section: "scores", category: runMode } })} />
                 </>
               )}
             </ScrollView>
@@ -891,24 +818,6 @@ export default function PlayScreen() {
       </Text>
       {!activeRun ? (
         <>
-          {recordError ? (
-            <Card>
-              <Text accessibilityRole="alert" style={styles.body}>
-                {recordError}
-              </Text>
-              <ActionButton
-                label={
-                  recordReady ? "Retry saving record" : "Retry loading record"
-                }
-                icon="refresh"
-                onPress={() =>
-                  recordReady ? saveRecord(recordRef.current) : loadRecord()
-                }
-                disabled={recordSaving}
-                secondary
-              />
-            </Card>
-          ) : null}
           <View style={styles.dailyCard}>
             <View style={styles.dailyIcon}>
               <MaterialCommunityIcons
@@ -921,14 +830,14 @@ export default function PlayScreen() {
               <Text style={styles.micro}>TODAY’S FIELD MARK</Text>
               <Text style={styles.dailyTitle}>{objective.label}</Text>
               <Text style={styles.dailyNote}>
-                {record.marks.includes(today)
+                {record.marks.includes(calendarDay)
                   ? "Cleared today. Go beat your best."
                   : "A fresh challenge every day · midnight UTC"}
               </Text>
             </View>
             <MaterialCommunityIcons
               name={
-                record.marks.includes(today) ? "check-circle" : "chevron-right"
+                record.marks.includes(calendarDay) ? "check-circle" : "chevron-right"
               }
               size={23}
               color={COLORS.gold}
@@ -970,23 +879,21 @@ export default function PlayScreen() {
               icon={sound ? "volume-high" : "volume-off"}
               label="Sound"
               enabled={sound}
-              onPress={() => setSound((value) => !value)}
+              onPress={() => { void setPreferences({ sound: !sound }); }}
             />
             <Setting
               icon="vibrate"
               label="Haptics"
               enabled={haptics}
               onPress={() => {
-                const next = !haptics;
-                hapticsRef.current = next;
-                setHaptics(next);
+                void setPreferences({ haptics: !haptics });
               }}
             />
             <Setting
               icon="motion-pause-outline"
               label="Calm effects"
               enabled={reducedMotion}
-              onPress={() => setReducedMotion((value) => !value)}
+              onPress={() => { void setPreferences({ calm: !calm }); }}
             />
           </View>
           <Card>
@@ -995,29 +902,14 @@ export default function PlayScreen() {
                 <Text style={styles.micro}>YOUR PRIVATE FIELD RECORD</Text>
                 <Text style={styles.sectionTitle}>Progress worth keeping.</Text>
               </View>
-              <Pressable
-                accessibilityRole="button"
-                accessibilityLabel="Reset field record"
-                accessibilityState={{ disabled: !recordReady || recordSaving }}
-                disabled={!recordReady || recordSaving}
-                onPress={resetRecord}
-                style={styles.resetButton}
-              >
-                <MaterialCommunityIcons
-                  name="delete-outline"
-                  size={21}
-                  color={COLORS.muted}
-                />
-              </Pressable>
             </View>
             <View style={styles.recordGrid}>
               <ResultStat value={record.runs} label="RUNS" />
               <ResultStat value={record.bestScore} label="BEST SCORE" />
               <ResultStat value={record.marks.length} label="MARKS" />
             </View>
-            <Text style={styles.privateNote}>
-              Offline. No wallet. Your record stays on this device.
-            </Text>
+            <Text style={styles.privateNote}>High scores and your last 20 runs stay in the app.</Text>
+            <ActionButton label="View all high scores" icon="podium" secondary onPress={() => router.push({ pathname: "/scores", params: { section: "scores", category: runMode } })} />
           </Card>
         </>
       ) : null}

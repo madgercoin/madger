@@ -1,16 +1,16 @@
 # MADGER for Android and iPhone
 
-The official native MADGER companion app, built with Expo SDK 57 and React Native.
+The native MADGER arcade app, built with Expo SDK 57 and React Native.
 
 ## Included
 
-- Official transparent MADGER logo and custom branded character art
-- Prominent direct-buy and beginner buying-guide paths
-- Dedicated Buy tab with wallet, SOL, mint-verification, swap, and risk guidance
-- Exact official Solana mint verification, copy, and sharing
-- Private on-device Daily Dig streak with no account or wallet
-- Native Burrow Run arcade game with cinematic tunnel art, an animated running MADGER, swipe and button controls, signal trails, shield/magnet pickups, charged Dig Burst, close-dodge bonuses, opt-in sound, haptics, rotating daily field marks, and a private on-device record
-- Official Telegram, X, website, litepaper, and email directory
+- Home game launcher, Play, Scores, and Settings tabs
+- Three-zone Burrow Run with approved animated character art, swipe/button controls, shield and magnet pickups, Dig Burst, close-call bonuses, pause, and instant replay
+- Separate Classic and daily seeded high scores, 20-run history, personal-best sharing, XP levels, eight achievements, and four earned cosmetic trails
+- Private on-device scores and preferences that survive app restarts; earlier field records are preserved on upgrade
+- Persistent sound, haptic, and calm settings, with system reduced motion respected
+- Safe progress reset and recovery actions for storage failures
+- Official community links available in Settings; no account, wallet, ads, or purchase needed to play
 - Android adaptive icon and opaque iOS store icon built from the official mark
 
 ## Run locally
@@ -45,8 +45,8 @@ Run these commands from `mobile/`. The repository-root `.easignore` restricts no
 - Complete a Burrow Run on both a physical Android device and iPhone; verify backgrounding pauses the run and local records survive restart.
 - Review `PRIVACY.md` and the live privacy-policy URL.
 
-## Burrow Run 1.2
+## Burrow Run 1.3
 
-The Home screen leads into the game and community. Runs last 60 seconds and cross three increasingly fast tunnel zones. Collect signal trails to build the multiplier and charge a three-second Dig Burst: it doubles signal points and smashes noise. Shields cover one hit for up to eight seconds; magnets collect signals in every lane for six seconds. The first six seconds teach collecting before hazards spawn. Movement, pause/resume, countdown, power timers, and persistence are covered by rule and browser checks. Sound is off by default; haptics and calm effects are player controlled. System reduced motion is respected.
+The Home screen leads directly into Classic play, the seeded daily route, saved scores, and earned rewards. Runs last 60 seconds and cross three increasingly fast tunnel zones. Collect signal trails to build the multiplier and charge a three-second Dig Burst: it doubles signal points and smashes noise. Shields cover one hit for up to eight seconds; magnets collect signals in every lane for six seconds. The first six seconds teach collecting before hazards spawn. Movement, pause/resume, countdown, power timers, and persistence are covered by rule and browser checks. Classic and daily scores are separate; the last 20 runs, XP, achievements, and trails are saved locally. End a paused run to bank its current score. Sound is off by default; haptics and calm effects are player controlled and persist across restarts. System reduced motion is respected.
 
-The Mobile CI workflow exports Android/iOS bundles and uploads a web preview. Its Android preview job builds a standalone ARM64/x86_64 APK with the generated development key and inspects the actual permission manifest, and runs launch, movement, pause/resume, and backgrounding checks on an Android emulator. That artifact is for internal testing, installs separately as `com.madgercoin.preview` / MADGER Preview, is not signed with the production store key, and must not be described as store released or physically accepted. It leaves the installed official app and its record intact. Official EAS production builds still follow `RELEASE_CHECKLIST.md`.
+The Mobile CI workflow exports Android/iOS bundles and uploads a web preview. Its Android preview job builds a standalone ARM64/x86_64 APK with the generated development key and inspects the actual permission manifest, and runs launch, movement, pause/resume, backgrounding, score banking, and cold-restart checks on an Android emulator. Browser CI checks scores, settings, migration, and storage recovery alongside gameplay. That artifact is for internal testing, installs separately as `com.madgercoin.preview` / MADGER Preview, is not signed with the production store key, and must not be described as store released or physically accepted. It leaves the installed official app and its record intact. Official EAS production builds still follow `RELEASE_CHECKLIST.md`.

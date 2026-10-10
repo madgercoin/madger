@@ -1,7 +1,7 @@
 {
   "name": "madger-mobile",
   "main": "expo-router/entry",
-  "version": "1.2.0",
+  "version": "1.3.0",
   "dependencies": {
     "@expo/ui": "~57.0.22",
     "@expo/vector-icons": "^15.0.2",
@@ -52,12 +52,13 @@
     "web": "expo start --web",
     "lint": "expo lint",
     "typecheck": "tsc --noEmit",
-    "validate": "npm run test:game && npm run test:daily-dig && npm run typecheck && npm run lint",
+    "validate": "npm run test:game && npm run test:daily-dig && npm run test:profile && npm run typecheck && npm run lint",
     "test:game": "node --test scripts/test-burrow-run.mjs",
     "test:daily-dig": "node --test scripts/test-daily-dig.mjs",
     "release:metadata": "node scripts/release-readiness.mjs",
     "release:check": "npm run validate && npx expo install --check && npx expo export --platform web && npm run release:metadata",
-    "release:distribution": "npm run release:check && node scripts/release-readiness.mjs --distribution"
+    "release:distribution": "npm run release:check && node scripts/release-readiness.mjs --distribution",
+    "test:profile": "node --test scripts/test-game-profile.mjs"
   },
   "private": true
 }

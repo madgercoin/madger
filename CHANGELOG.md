@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026-10-10 — Game-first native app 1.3.0
+
+- Made Home, Play, Scores, and Settings the main app navigation, with a direct game launcher and daily seeded challenge.
+- Added persistent Classic and daily high-score tables, the last 20 runs, score sharing, XP levels, eight achievements, and four earned cosmetic trails.
+- Preserved earlier field records on upgrade and serialized storage writes so replay and settings changes cannot overwrite new scores. Failed loads and saves have recovery actions.
+- Added an explicit end-and-save action for paused runs, persistent sound/haptics/calm preferences, safe progress reset, and UTC daily-route rollover.
+- Extended behavioral persistence tests and browser/native playthroughs to cover ranking, migration, cold restarts, daily categories, settings, and storage recovery. Native metadata is 1.3.0 (build 6).
+
 ## 2026-10-10 — Roadmap PDF official X correction
 
 - Corrected page 8 of the downloadable roadmap to identify X as `@MadgerDaBadger`, with Instagram `@madgercoin` and TikTok `@themadgercoin` kept distinct.

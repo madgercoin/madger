@@ -15,9 +15,10 @@ export default function TabsLayout() {
   return <Tabs backBehavior="history" screenOptions={{ headerShown: false, tabBarActiveTintColor: COLORS.gold, tabBarInactiveTintColor: COLORS.muted, tabBarLabelPosition: 'below-icon', tabBarStyle: { backgroundColor: '#080C05', borderTopColor: COLORS.border, height: 60 + bottom + Math.max(0, fontScale - 1) * 16, paddingTop: 7, paddingBottom: bottom }, tabBarLabelStyle: { fontSize: 11, fontWeight: '800' } }}>
     <Tabs.Screen name="index" options={{ title: 'Home', tabBarAccessibilityLabel: 'Home', tabBarIcon: icon('home-variant') }} />
     <Tabs.Screen name="play" options={{ title: 'Play', tabBarAccessibilityLabel: 'Play', tabBarIcon: icon('gamepad-variant') }} />
-    <Tabs.Screen name="buy" options={{ title: 'Buy', tabBarAccessibilityLabel: 'Buy', tabBarIcon: icon('wallet-outline') }} />
-    <Tabs.Screen name="verify" options={{ title: 'Verify', tabBarAccessibilityLabel: 'Verify', tabBarIcon: icon('shield-check') }} />
+    <Tabs.Screen name="scores" options={{ title: 'Scores', tabBarAccessibilityLabel: 'Scores', tabBarIcon: icon('podium') }} />
+    <Tabs.Screen name="buy" options={{ title: 'Buy', href: null }} />
+    <Tabs.Screen name="verify" options={{ title: 'Verify', href: null }} />
     <Tabs.Screen name="community" options={{ title: 'Burrow', href: null }} />
-    <Tabs.Screen name="more" options={{ title: 'More', tabBarAccessibilityLabel: 'More', tabBarIcon: icon('dots-horizontal-circle') }} />
+    <Tabs.Screen name="more" options={{ title: 'Settings', tabBarAccessibilityLabel: 'Settings', tabBarIcon: icon('cog-outline') }} />
   </Tabs>;
 }

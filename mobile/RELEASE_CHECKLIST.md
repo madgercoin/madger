@@ -1,4 +1,4 @@
-# MADGER mobile 1.2.0 release checklist
+# MADGER mobile 1.3.0 release checklist
 
 ## Automated source gate
 
@@ -28,7 +28,7 @@ Use `PREVIEW_QA.md` for the research baseline, preview workflow, and device test
 - Check swipe, movement buttons, countdown, opt-in sound/muting, calm effects, debrief rank, personal-best state, and one-tap replay.
 - Background and foreground during a run; confirm time does not advance while inactive.
 - Leave and return to the Play tab; confirm the run is paused.
-- Restart the app; confirm the field record persists, then confirm Reset removes it.
+- Restart the app; confirm Classic and daily high scores, run history, unlocks, and preferences persist. Confirm Settings reset requires confirmation, clears game progress, keeps preferences, and is disabled during an active run.
 - Verify the control row clears the system navigation and app tab bar at large text sizes.
 - After passing, run with `MADGER_ANDROID_DEVICE_QA=passed` in the release environment.
 

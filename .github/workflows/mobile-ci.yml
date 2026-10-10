@@ -38,6 +38,48 @@ jobs:
           path: mobile/dist
           retention-days: 14
 
+  browser-runtime:
+    name: Game and score browser playthrough
+    needs: validate
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    defaults:
+      run:
+        working-directory: mobile
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/download-artifact@v4
+        with:
+          name: madger-web-preview
+          path: mobile/dist
+      - name: Install browser test tools
+        run: |
+          python3 -m venv /tmp/madger-browser-qa
+          /tmp/madger-browser-qa/bin/pip install playwright pillow
+          /tmp/madger-browser-qa/bin/python -m playwright install --with-deps chromium
+      - name: Exercise the game, scores, history, settings, and recovery
+        run: /tmp/madger-browser-qa/bin/python scripts/browser-preview-smoke.py
+      - name: Record visual review thumbnails
+        if: always()
+        run: |
+          /tmp/madger-browser-qa/bin/python - <<'PY'
+          from PIL import Image
+          from pathlib import Path
+          import base64, io
+          for file in sorted(Path('browser-smoke').glob('*390.png')):
+              preview = Image.open(file).convert('RGB')
+              preview.thumbnail((390, 844))
+              buffer = io.BytesIO()
+              preview.save(buffer, format='JPEG', quality=55)
+              print('VISUAL_QA ' + file.name + ' ' + base64.b64encode(buffer.getvalue()).decode())
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: madger-browser-smoke
+          path: mobile/browser-smoke
+          retention-days: 14
+
   android-preview:
     name: Android preview APK
     needs: validate
@@ -135,7 +177,7 @@ jobs:
   publish-preview:
     name: Publish tested Android preview
     if: github.event_name == 'push'
-    needs: android-runtime
+    needs: [android-runtime, browser-runtime]
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -150,6 +192,10 @@ jobs:
         with:
           name: madger-android-smoke
           path: preview-qa/android
+      - uses: actions/download-artifact@v4
+        with:
+          name: madger-browser-smoke
+          path: preview-qa/browser
       - name: Publish the verified APK and source as a prerelease
         env:
           GH_TOKEN: ${{ github.token }}
@@ -158,11 +204,12 @@ jobs:
           preview_tag="mobile-v${preview_version}-preview.${GITHUB_RUN_NUMBER}"
           mkdir -p preview-release
           cp mobile/android/app/build/outputs/apk/release/app-release.apk "preview-release/madger-${preview_version}-preview.apk"
-          git archive --format=zip --prefix="MADGER-${preview_version}/" --output="preview-release/madger-native-${preview_version}-source.zip" HEAD mobile .github/workflows/mobile-ci.yml .github/preview-release-notes.md reports/game-upgrade
+          git archive --format=zip --prefix="MADGER-${preview_version}/" --output="preview-release/madger-native-${preview_version}-source.zip" HEAD mobile .github/workflows/mobile-ci.yml .github/preview-release-notes.md reports/game-upgrade reports/game-first
           (cd preview-release
             sha256sum "madger-${preview_version}-preview.apk" > "madger-${preview_version}-preview.apk.sha256"
           )
-          zip -q "preview-release/madger-${preview_version}-verification.zip" preview-qa/android/report.json preview-qa/android/*.png mobile/android-permissions.txt reports/game-upgrade/browser-qa.json
+          zip -q -j "preview-release/madger-${preview_version}-android-install.zip" "preview-release/madger-${preview_version}-preview.apk"
+          zip -q "preview-release/madger-${preview_version}-verification.zip" preview-qa/android/report.json preview-qa/android/*.png mobile/android-permissions.txt preview-qa/browser/browser-qa.json preview-qa/browser/*.png
           if gh release view "$preview_tag" --repo "$GITHUB_REPOSITORY" > /dev/null 2>&1; then
             gh release upload "$preview_tag" preview-release/* --clobber --repo "$GITHUB_REPOSITORY"
           else

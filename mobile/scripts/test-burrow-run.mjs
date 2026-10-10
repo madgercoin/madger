@@ -17,12 +17,6 @@ const javascript = ts.transpileModule(source, {
 const rules = await import(
   `data:text/javascript;base64,${Buffer.from(javascript).toString("base64")}`
 );
-const [screen, layout, home] = await Promise.all([
-  readFile(new URL("../src/app/(tabs)/play.tsx", import.meta.url), "utf8"),
-  readFile(new URL("../src/app/(tabs)/_layout.tsx", import.meta.url), "utf8"),
-  readFile(new URL("../src/app/(tabs)/index.tsx", import.meta.url), "utf8"),
-]);
-
 test("native rules preserve scoring, grit, and phase boundaries", () => {
   let run = rules.freshRun();
   for (let index = 0; index < 5; index += 1)
@@ -50,20 +44,6 @@ test("native record normalization rejects corrupt values and bounds mark history
   assert.equal(record.signals, 0);
   assert.equal(record.bestScore, 900);
   assert.equal(record.marks.length, 30);
-});
-
-test("native game is a first-class tab with mobile lifecycle and privacy controls", () => {
-  assert.match(layout, /name="play"/);
-  assert.match(home, /router\.push\(['"]\/play['"]\)/);
-  assert.match(screen, /AppState\.addEventListener/);
-  assert.match(screen, /useFocusEffect/);
-  assert.match(screen, /AsyncStorage/);
-  assert.match(screen, /Alert\.alert\(\s*['"]Reset field record\?['"]/);
-  assert.match(screen, /Haptics/);
-  assert.doesNotMatch(
-    screen,
-    /WebView|fetch\s*\(|WalletAdapter|solana\.connect/i,
-  );
 });
 
 test("shield covers one hit without breaking the combo; recovery prevents stacked damage", () => {

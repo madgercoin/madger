@@ -133,7 +133,7 @@ export function objectiveFor(dayNumber: number): Objective {
   ][Math.abs(dayNumber) % 3] as Objective;
 }
 
-export function objectiveValue(objective: Objective, run: RunState) {
+export function objectiveValue(objective: Objective, run: Pick<RunState, "signals" | "score" | "bestStreak">) {
   if (objective.id === "signals") return run.signals;
   if (objective.id === "score") return run.score;
   return run.bestStreak;
@@ -240,7 +240,7 @@ export function stepSimulation(
         passed: false,
       })),
     );
-    spawnIn = phase.interval;
+    spawnIn += phase.interval;
   }
   const entities: Entity[] = [];
   for (const entity of items) {
@@ -284,7 +284,7 @@ export function stepSimulation(
   };
 }
 
-export function runRank(run: RunState) {
+export function runRank(run: Pick<RunState, "score" | "hits">) {
   if (run.score >= 15000 && run.hits === 0) return "S";
   if (run.score >= 10000) return "A";
   if (run.score >= 5000) return "B";

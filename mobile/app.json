@@ -3,7 +3,7 @@
     "name": "MADGER",
     "slug": "dollarmadger",
     "owner": "madgercoins-team",
-    "version": "1.2.0",
+    "version": "1.3.0",
     "orientation": "portrait",
     "icon": "./assets/images/madger-app-icon.png",
     "scheme": "madger",
@@ -11,7 +11,7 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.madgercoin.app",
-      "buildNumber": "5",
+      "buildNumber": "6",
       "icon": "./assets/images/madger-app-icon.png",
       "infoPlist": {
         "NSAppTransportSecurity": {
@@ -21,7 +21,7 @@
     },
     "android": {
       "package": "com.madgercoin.app",
-      "versionCode": 5,
+      "versionCode": 6,
       "blockedPermissions": [
         "android.permission.READ_EXTERNAL_STORAGE",
         "android.permission.WRITE_EXTERNAL_STORAGE",
