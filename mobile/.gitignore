@@ -23,6 +23,8 @@ expo-env.d.ts
 .metro-health-check*
 
 # debug
+mode-smoke/
+scripts/__pycache__/
 npm-debug.*
 yarn-debug.*
 yarn-error.*

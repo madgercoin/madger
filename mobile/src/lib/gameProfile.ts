@@ -77,7 +77,7 @@ export function makeSavedRun(run: RunState, details: { id: string; mode: RunMode
 export function addCompletedRun(profile: GameProfile, run: SavedRun): GameProfile {
   if (profile.recentRuns.some(r => r.id === run.id) || profile.highScores.some(r => r.id === run.id)) return profile;
   const objective = objectiveFor(Math.floor(Date.parse(run.day) / 86400000));
-  const cleared = objectiveValue(objective, { score: run.score, signals: run.signals, bestStreak: run.bestStreak }) >= objective.target;
+  const cleared = run.mode === "daily" && objectiveValue(objective, { score: run.score, signals: run.signals, bestStreak: run.bestStreak }) >= objective.target;
   const earned = run.seconds >= 5 ? 20 + Math.floor(run.score / 100) + (run.reason === "time" ? 100 : 0) : 0;
   return { ...profile, record: { runs: profile.record.runs + 1, signals: profile.record.signals + run.signals,
     bestScore: Math.max(profile.record.bestScore, run.score), bestStreak: Math.max(profile.record.bestStreak, run.bestStreak),

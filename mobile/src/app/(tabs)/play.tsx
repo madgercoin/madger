@@ -106,7 +106,22 @@ export default function PlayScreen() {
   const burstReady = run.energy >= BURST_COST;
 
   useEffect(() => {
-    if (modeRef.current === "ready" || modeRef.current === "ended") setRunMode(params.challenge === "daily" ? "daily" : "classic");
+    if (modeRef.current !== "ready" && modeRef.current !== "ended") return;
+    setRunMode(params.challenge === "daily" ? "daily" : "classic");
+    if (modeRef.current === "ended") {
+      // A launch entry requests a fresh lobby; the banked result retains its
+      // original category in storage instead of becoming another mode's result.
+      const initial = freshSimulation();
+      simulationRef.current = initial;
+      setSimulation(initial);
+      modeRef.current = "ready";
+      setMode("ready");
+      setNotice(null);
+      setFeedback([]);
+      setNewBest(false);
+      setEarnedXp(0);
+      setUnlocks([]);
+    }
   }, [params.challenge, params.entry]);
   useEffect(() => { setRunActive(activeRun); return () => setRunActive(false); }, [activeRun, setRunActive]);
 
@@ -628,7 +643,7 @@ export default function PlayScreen() {
                   color={COLORS.gold}
                 />
                 <Text style={styles.goalText}>
-                  {progress >= 1 ? "DAILY MARK CLEARED" : objective.label}
+                  {runMode === "daily" && progress >= 1 ? "DAILY MARK CLEARED" : objective.label}
                 </Text>
                 <Text style={styles.goalCount}>
                   {Math.min(objectiveCurrent, objective.target)}/
@@ -803,7 +818,7 @@ export default function PlayScreen() {
                   <Text style={styles.resultTip}>+{earnedXp} XP{unlocks.length ? ` · ${unlocks.join(" · ")} unlocked` : " · Keep digging"}</Text>
                   <Text accessibilityLiveRegion="polite" style={styles.privateNote}>{recordSaving ? "Saving your score…" : recordError ? "Score is in memory. Retry saving below." : "Score saved on this device ✓"}</Text>
                   <Text style={styles.resultTip}>
-                    {progress >= 1
+                    {runMode === "daily" && progress >= 1
                       ? "Daily mark cleared. The Burrow remembers."
                       : run.hits > 0
                         ? "Tip: save your burst for a crowded tunnel."
