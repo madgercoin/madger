@@ -1,21 +1,21 @@
 # MADGER acquisition snapshot
 
-Generated: 2026-10-10T06:23:35.849Z
+Generated: 2026-10-10T14:44:50.159Z
 Label: `pre-liquidity-pre-proficy-2026-09-09`
 Mint: `BHauMX8akk2umqkQqnJwpYkCRkZmefGnEBFByeFXRKqv`
 Verified pool: `FVRpAmyDsdvKHQT2ds6ytZsJHt7SDDDbScQx3c4fu32h`
 
 | Metric | Value |
 |---|---:|
-| Price (USD) | 0.001226 |
-| Liquidity (USD) | $9,910.11 |
-| Market cap | $275,998 |
-| FDV | $1,226,656 |
-| 24h volume | $2.49 |
-| 24h buys | 49 |
-| 24h sells | 0 |
-| Unique positive-balance owners | 34 |
-| Positive token accounts | 34 |
+| Price (USD) | 0.001213 |
+| Liquidity (USD) | $9,836.36 |
+| Market cap | $273,068 |
+| FDV | $1,213,637 |
+| 24h volume | $19.07 |
+| 24h buys | 48 |
+| 24h sells | 1 |
+| Unique positive-balance owners | 33 |
+| Positive token accounts | 33 |
 
 Market source: DEX Screener API.
 Holder source: Solana finalized RPC.
