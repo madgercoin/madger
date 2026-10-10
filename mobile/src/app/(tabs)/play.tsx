@@ -481,6 +481,15 @@ export default function PlayScreen() {
               onPress={() => move(1)}
             />
           </View>
+        ) : mode === "ended" ? (
+          <View style={{ flexDirection: "row", gap: 10 }}>
+            <View style={{ flex: 1 }}>
+              <ActionButton label={startLabel} icon="refresh" disabled={startDisabled} onPress={startRun} />
+            </View>
+            <View style={{ flex: 1 }}>
+              <ActionButton label="See high scores" icon="podium" secondary onPress={() => router.push({ pathname: "/scores", params: { section: "scores", category: runMode } })} />
+            </View>
+          </View>
         ) : undefined
       }
     >
@@ -800,13 +809,6 @@ export default function PlayScreen() {
                         ? "Tip: save your burst for a crowded tunnel."
                         : "Tip: follow signal trails to build your multiplier."}
                   </Text>
-                  <ActionButton
-                    label={startLabel}
-                    icon="refresh"
-                    disabled={startDisabled}
-                    onPress={startRun}
-                  />
-                  <ActionButton label="See high scores" icon="podium" secondary onPress={() => router.push({ pathname: "/scores", params: { section: "scores", category: runMode } })} />
                 </>
               )}
             </ScrollView>

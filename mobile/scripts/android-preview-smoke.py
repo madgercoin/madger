@@ -78,6 +78,14 @@ def collect_debug():
     try:
         capture('last-screen')
         OUT.joinpath('logcat.txt').write_bytes(adb('logcat', '-d'))
+        from PIL import Image
+        import base64, io
+        for file in sorted(OUT.glob('*.png')):
+            preview = Image.open(file).convert('RGB')
+            preview.thumbnail((390, 844))
+            buffer = io.BytesIO()
+            preview.save(buffer, format='JPEG', quality=55)
+            print('NATIVE_VISUAL_QA ' + file.name + ' ' + base64.b64encode(buffer.getvalue()).decode(), flush=True)
     except (OSError, subprocess.SubprocessError):
         pass
 
