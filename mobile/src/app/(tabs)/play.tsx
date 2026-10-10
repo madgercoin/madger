@@ -269,7 +269,7 @@ export default function PlayScreen() {
         }
         return;
       }
-      const result = stepSimulation(simulationRef.current, delta, randomRef.current);
+      const result = stepSimulation(simulationRef.current, delta, randomRef.current, runModeRef.current === "daily");
       simulationRef.current = result.state;
       setSimulation(result.state);
       showEvents(result.events);

@@ -21,6 +21,76 @@ const memoryStorage = () => {
   return { values, async getItem(key) { return values.get(key) ?? null; }, async multiSet(entries) { for (const [key, value] of entries) values.set(key, value); } };
 };
 
+// Observe actual spawns from stepSimulation. Undo only the movement applied in
+// that frame to recover authored offsets; scores and collisions are not compared.
+function spawnedRoute(day, frames, scheduledSpawns = true, until = 45) {
+  const random = p.randomFromSeed(p.seedForDay(day));
+  let state = rules.freshSimulation();
+  const waves = [];
+  for (let frame = 0; state.elapsed < until; frame++) {
+    const seconds = Math.min(frames[frame % frames.length], until - state.elapsed);
+    const before = state;
+    // Keep the route running through hazards without altering its RNG or clock.
+    const result = rules.stepSimulation(
+      { ...state, run: { ...state.run, invulnerable: 1 } },
+      seconds,
+      random,
+      scheduledSpawns,
+    );
+    state = result.state;
+    if (state.nextId > before.nextId) {
+      const movement = rules.phaseFor(state.elapsed).speed * (state.elapsed - before.elapsed);
+      waves.push({
+        at: Number((before.elapsed + before.spawnIn).toFixed(9)),
+        items: state.entities.filter(item => item.id >= before.nextId).map(item => ({
+          lane: item.lane,
+          type: item.type,
+          offset: Number((item.y - movement + 0.05).toFixed(9)) + 0,
+        })),
+      });
+    }
+    assert.equal(result.ended, null);
+  }
+  return waves;
+}
+
+test("daily simulation preserves spawned lanes, types, offsets and schedule across frame rates", () => {
+  const normal = spawnedRoute("2026-10-10", [0.033]);
+  for (const frames of [[0.09], [0.016, 0.09, 0.047, 0.1, 0.023]]) {
+    assert.deepEqual(spawnedRoute("2026-10-10", frames), normal);
+  }
+  assert.deepEqual(normal[4], {
+    at: 5.95,
+    items: [0, -0.15, -0.3].map(offset => ({ lane: 0, type: "signal", offset })),
+  });
+  // The 19.95-second wave still uses the surface interval despite a frame
+  // ending after 20 seconds. Then the next scheduled wave switches to deep.
+  assert.equal(normal[14].at, 19.95);
+  assert.equal(normal[15].at, 21.35);
+  assert.equal(normal[16].at, 22.5);
+  assert.ok(normal.some(wave => wave.at > 40));
+  assert.notDeepEqual(spawnedRoute("2026-10-11", [0.033]), normal);
+});
+
+test("daily threshold selection uses spawn time while Classic retains frame timing", () => {
+  for (const [elapsed, spawnIn, interval, expectedType] of [
+    [5.94, 0.01, 1.4, "signal"],
+    [19.94, 0.01, 1.4, "signal"],
+    [39.94, 0.01, 1.15, "noise"],
+  ]) {
+    const state = { ...rules.freshSimulation(), elapsed, spawnIn };
+    const random = () => elapsed < 6 ? 0.15 : 0.85;
+    const daily = rules.stepSimulation(state, 0.09, random, true).state;
+    assert.ok(Math.abs(daily.spawnIn - (spawnIn - 0.09 + interval)) < 1e-9);
+    assert.equal(daily.entities[0].type, expectedType);
+    if (elapsed < 20) assert.ok(daily.entities.every(item => item.type === "signal"));
+    const classic = rules.stepSimulation(state, 0.09, random).state;
+    assert.deepEqual(classic, rules.stepSimulation(state, 0.09, random, false).state);
+    assert.ok(Math.abs(classic.spawnIn - (spawnIn - 0.09 + rules.phaseFor(classic.elapsed).interval)) < 1e-9);
+    if (elapsed < 20) assert.ok(classic.entities.some(item => item.type !== "signal"));
+  }
+});
+
 test("legacy migration keeps the real best and lifetime totals without inventing old runs", () => {
   const profile = p.sanitizeProfile(null, { runs: 8, signals: 140, bestScore: 25600, bestStreak: 36, marks: ["2026-10-09"] });
   assert.equal(profile.legacyBest, 25600); assert.equal(profile.record.runs, 8);
