@@ -21,8 +21,8 @@ jobs:
       run:
         working-directory: mobile
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v6
         with:
           node-version: 22
           cache: npm
@@ -32,7 +32,7 @@ jobs:
       - run: npx expo-doctor
       - run: npx expo export --platform android --output-dir dist/android
       - run: npx expo export --platform ios --output-dir dist/ios
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v6
         with:
           name: madger-web-preview
           path: mobile/dist
@@ -47,13 +47,13 @@ jobs:
       run:
         working-directory: mobile
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v6
         with:
           node-version: 22
           cache: npm
           cache-dependency-path: mobile/package-lock.json
-      - uses: actions/setup-java@v4
+      - uses: actions/setup-java@v6
         with:
           distribution: temurin
           java-version: "17"
@@ -77,7 +77,7 @@ jobs:
           if rg 'RECORD_AUDIO|READ_EXTERNAL_STORAGE|WRITE_EXTERNAL_STORAGE|SYSTEM_ALERT_WINDOW' android-permissions.txt; then
             exit 1
           fi
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v6
         with:
           name: madger-android-preview
           path: |
@@ -94,15 +94,15 @@ jobs:
       run:
         working-directory: mobile
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-java@v4
+      - uses: actions/checkout@v7
+      - uses: actions/setup-java@v6
         with:
           distribution: temurin
           java-version: "17"
       - uses: android-actions/setup-android@v3
         with:
           packages: platform-tools platforms;android-35 build-tools;36.0.0
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v7
         with:
           name: madger-android-preview
           path: mobile
@@ -124,7 +124,7 @@ jobs:
             python3 -m venv /tmp/madger-android-qa
             /tmp/madger-android-qa/bin/pip install 'uiautomator2==3.7.0'
             /tmp/madger-android-qa/bin/python scripts/android-preview-smoke.py
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v6
         if: always()
         with:
           name: madger-android-smoke
@@ -141,12 +141,12 @@ jobs:
       contents: write
       actions: read
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/download-artifact@v4
+      - uses: actions/checkout@v7
+      - uses: actions/download-artifact@v7
         with:
           name: madger-android-preview
           path: mobile
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v7
         with:
           name: madger-android-smoke
           path: preview-qa/android
