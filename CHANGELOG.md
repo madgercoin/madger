@@ -4,6 +4,7 @@
 
 - Corrected page 8 of the downloadable roadmap to identify X as `@MadgerDaBadger`, with Instagram `@madgercoin` and TikTok `@themadgercoin` kept distinct.
 - Preserved the eight-page layout, other text, dates, metadata, and existing document links.
+- Restored the original PDF 1.4 header with a one-byte correction to match retained transparency features; all page content and document structure remain byte-identical.
 - Added the roadmap PDF to production deployment triggers so document-only corrections publish through the validated release workflow.
 
 ## 2026-10-10 — Retire obsolete X monitoring
