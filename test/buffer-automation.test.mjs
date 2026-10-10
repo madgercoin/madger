@@ -118,12 +118,18 @@ test("omits unsupported AI disclosure metadata for TikTok photo posts", () => {
   });
 });
 
-test("scheduled meme contest launch covers every Buffer channel", () => {
+test("historical meme contest covers every channel while retired X stays archived", () => {
   const manifest = JSON.parse(fs.readFileSync(new URL(
     "../content/buffer-schedule.json",
     import.meta.url
   )));
-  const posts = manifest.posts.filter(({ id }) => id.startsWith("meme-contest-launch-"));
+  const archive = JSON.parse(fs.readFileSync(new URL(
+    "../content/archive/2026-10-10-retired-x.json", import.meta.url
+  )));
+  const posts = [...manifest.posts, ...archive.posts]
+    .filter(({ id }) => id.startsWith("meme-contest-launch-"));
+  assert.equal(manifest.posts.some(({ id }) => id === "meme-contest-launch-x-2026-08-17"), false);
+  assert.equal(archive.posts.some(({ id }) => id === "meme-contest-launch-x-2026-08-17"), true);
 
   assert.equal(posts.length, 4);
   assert.deepEqual(new Set(posts.map(({ service }) => service)), new Set([

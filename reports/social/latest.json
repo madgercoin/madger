@@ -55,28 +55,6 @@
       "requiresCommunityReview": true
     },
     {
-      "channelId": "6a67af8a4b2d03035f4e91f4",
-      "channel": "MadgerCoin",
-      "service": "twitter",
-      "externalLink": "https://twitter.com/MadgerCoin",
-      "disconnected": true,
-      "locked": false,
-      "state": "disconnected",
-      "healthy": false,
-      "queuePaused": false,
-      "metricsUpdatedAt": "2026-09-24T13:39:37.134Z",
-      "metrics": {
-        "postCount": 20,
-        "reactions": 359,
-        "comments": 152,
-        "engagementRate": 13.65,
-        "reposts": 48,
-        "impressions": 8724,
-        "clicks": 112
-      },
-      "requiresCommunityReview": true
-    },
-    {
       "channelId": "6a67aebb4b2d03035f4e8b45",
       "channel": "madgercoin",
       "service": "instagram",
@@ -130,68 +108,34 @@
   "campaign": {
     "source": "content/buffer-schedule.json",
     "summary": {
-      "totalPosts": 24,
-      "sent": 23,
+      "totalPosts": 17,
+      "sent": 17,
       "scheduled": 0,
       "sending": 0,
-      "errors": 1,
+      "errors": 0,
       "needsAttention": [
-        "madger-002-x",
-        "madger-003-x",
-        "madger-004-x",
-        "madger-002-x-recovery-2026-07-31",
-        "telegram-200-x-2026-08-16",
         "telegram-200-facebook-2026-08-16",
-        "telegram-200-instagram-2026-08-16",
-        "meme-contest-launch-x-2026-08-17",
-        "aura-unmeasurable-x-2026-08-21"
+        "telegram-200-instagram-2026-08-16"
       ],
       "attentionReasons": {
-        "madger-002-x": [
-          "monitor_error",
-          "channel_disconnected",
-          "overdue"
-        ],
-        "madger-003-x": [
-          "channel_disconnected"
-        ],
-        "madger-004-x": [
-          "channel_disconnected"
-        ],
-        "madger-002-x-recovery-2026-07-31": [
-          "channel_disconnected"
-        ],
-        "telegram-200-x-2026-08-16": [
-          "channel_missing"
-        ],
         "telegram-200-facebook-2026-08-16": [
           "channel_missing"
         ],
         "telegram-200-instagram-2026-08-16": [
           "channel_missing"
-        ],
-        "meme-contest-launch-x-2026-08-17": [
-          "channel_disconnected"
-        ],
-        "aura-unmeasurable-x-2026-08-21": [
-          "channel_disconnected"
         ]
       },
-      "atRiskPosts": [
-        "madger-002-x"
-      ],
-      "unhealthyChannelIds": [
-        "6a67af8a4b2d03035f4e91f4"
-      ],
+      "atRiskPosts": [],
+      "unhealthyChannelIds": [],
       "totals": {
-        "reactions": 224,
-        "comments": 105,
+        "reactions": 28,
+        "comments": 0,
         "shares": 0,
-        "reposts": 47,
+        "reposts": null,
         "reach": 810,
-        "impressions": 6363,
+        "impressions": 47,
         "views": 951,
-        "clicks": 192,
+        "clicks": 3,
         "saves": 0,
         "follows": 0
       },
@@ -199,7 +143,7 @@
         "reactions": 0,
         "comments": 0,
         "shares": 0,
-        "reposts": 0,
+        "reposts": null,
         "reach": 0,
         "impressions": 0,
         "views": 0,
@@ -208,34 +152,21 @@
         "follows": 0
       },
       "deltaCohorts": {
-        "reactions": 23,
-        "comments": 23,
+        "reactions": 17,
+        "comments": 17,
         "shares": 17,
-        "reposts": 6,
+        "reposts": 0,
         "reach": 11,
-        "impressions": 12,
+        "impressions": 6,
         "views": 11,
-        "clicks": 12,
+        "clicks": 6,
         "saves": 6,
         "follows": 6
       },
-      "averageEngagementRate": 14.846521739130434,
+      "averageEngagementRate": 16.770000000000003,
       "priorSnapshotAvailable": true
     },
     "posts": [
-      {
-        "id": "madger-002-x",
-        "bufferPostId": "6a6872fa7c69e407413f994b",
-        "title": "MADGER 002 — Keep Digging",
-        "service": "twitter",
-        "channelId": "6a67af8a4b2d03035f4e91f4",
-        "channelState": "disconnected",
-        "dueAt": "2026-07-29T14:00:00.000Z",
-        "status": "monitor_error",
-        "metrics": {},
-        "metricDeltas": {},
-        "monitorError": "Buffer API error: [{\"message\":\"Post not found for id: 6a6872fa7c69e407413f994b\",\"path\":[\"post\"],\"extensions\":{\"code\":\"NOT_FOUND\"}}]"
-      },
       {
         "id": "madger-002-facebook",
         "bufferPostId": "6a6873562dcd5a840df33d2e",
@@ -332,36 +263,6 @@
           "reach": 0,
           "totalTimeWatched": 0,
           "averageTimeWatched": 0
-        }
-      },
-      {
-        "id": "madger-003-x",
-        "bufferPostId": "6a687491197e3612e830cb59",
-        "title": "MADGER 003 — No Slowing Down",
-        "service": "twitter",
-        "channelId": "6a67af8a4b2d03035f4e91f4",
-        "channelState": "disconnected",
-        "dueAt": "2026-07-30T13:00:00.000Z",
-        "sentAt": "2026-07-30T13:01:33.267Z",
-        "status": "sent",
-        "externalLink": "https://x.com/2080142722153816065/status/2082813848843657418",
-        "publishingError": null,
-        "metricsUpdatedAt": "2026-08-19T03:31:30.936Z",
-        "metrics": {
-          "reactions": 2,
-          "comments": 0,
-          "engagementRate": 7.14,
-          "reposts": 0,
-          "impressions": 28,
-          "clicks": 0
-        },
-        "metricDeltas": {
-          "reactions": 0,
-          "comments": 0,
-          "engagementRate": 0,
-          "reposts": 0,
-          "impressions": 0,
-          "clicks": 0
         }
       },
       {
@@ -561,95 +462,6 @@
         }
       },
       {
-        "id": "madger-004-x",
-        "bufferPostId": "6a6874957e8cbcebb3b53a21",
-        "title": "MADGER 004 — Join the Burrow",
-        "service": "twitter",
-        "channelId": "6a67af8a4b2d03035f4e91f4",
-        "channelState": "disconnected",
-        "dueAt": "2026-08-04T13:00:00.000Z",
-        "sentAt": "2026-08-04T13:02:03.668Z",
-        "status": "sent",
-        "externalLink": "https://x.com/2080142722153816065/status/2084625915720437828",
-        "publishingError": null,
-        "metricsUpdatedAt": "2026-08-23T22:32:20.967Z",
-        "metrics": {
-          "reactions": 2,
-          "comments": 0,
-          "engagementRate": 4.65,
-          "reposts": 0,
-          "impressions": 43,
-          "clicks": 0
-        },
-        "metricDeltas": {
-          "reactions": 0,
-          "comments": 0,
-          "engagementRate": 0,
-          "reposts": 0,
-          "impressions": 0,
-          "clicks": 0
-        }
-      },
-      {
-        "id": "madger-002-x-recovery-2026-07-31",
-        "bufferPostId": "6a6be2d4369d7a6b6a31aafa",
-        "title": "MADGER 002 — Keep Digging (X Recovery)",
-        "service": "twitter",
-        "channelId": "6a67af8a4b2d03035f4e91f4",
-        "channelState": "disconnected",
-        "dueAt": "2026-07-31T13:15:00.000Z",
-        "sentAt": "2026-07-31T13:15:13.024Z",
-        "status": "sent",
-        "externalLink": "https://x.com/2080142722153816065/status/2083179674784411732",
-        "publishingError": null,
-        "metricsUpdatedAt": "2026-08-20T02:31:41.061Z",
-        "metrics": {
-          "reactions": 2,
-          "comments": 0,
-          "engagementRate": 14.29,
-          "reposts": 0,
-          "impressions": 28,
-          "clicks": 0
-        },
-        "metricDeltas": {
-          "reactions": 0,
-          "comments": 0,
-          "engagementRate": 0,
-          "reposts": 0,
-          "impressions": 0,
-          "clicks": 0
-        }
-      },
-      {
-        "id": "telegram-200-x-2026-08-16",
-        "bufferPostId": "6a811f82b989c1db86ebf516",
-        "title": "The Burrow hits 200 Telegram members",
-        "service": "twitter",
-        "channelState": "unknown",
-        "dueAt": "2026-08-16T02:46:25.753Z",
-        "sentAt": "2026-08-16T02:46:27.438Z",
-        "status": "sent",
-        "externalLink": "https://x.com/2080142722153816065/status/2088819648166813808",
-        "publishingError": null,
-        "metricsUpdatedAt": "2026-08-16T02:46:36.443Z",
-        "metrics": {
-          "reactions": 0,
-          "comments": 0,
-          "engagementRate": 0,
-          "reposts": 0,
-          "impressions": 0,
-          "clicks": 0
-        },
-        "metricDeltas": {
-          "reactions": 0,
-          "comments": 0,
-          "engagementRate": 0,
-          "reposts": 0,
-          "impressions": 0,
-          "clicks": 0
-        }
-      },
-      {
         "id": "telegram-200-facebook-2026-08-16",
         "bufferPostId": "6a811f831dbfebd7710d6363",
         "title": "The Burrow hits 200 Telegram members",
@@ -709,36 +521,6 @@
           "saves": 0,
           "follows": 0,
           "reach": 0
-        }
-      },
-      {
-        "id": "meme-contest-launch-x-2026-08-17",
-        "bufferPostId": "6a813ec913afe87ec8ab2fbc",
-        "title": "The Great Burrow Meme Contest",
-        "service": "twitter",
-        "channelId": "6a67af8a4b2d03035f4e91f4",
-        "channelState": "disconnected",
-        "dueAt": "2026-08-16T10:09:33.282Z",
-        "sentAt": "2026-08-16T10:09:34.738Z",
-        "status": "sent",
-        "externalLink": "https://x.com/2080142722153816065/status/2088931163230376000",
-        "publishingError": null,
-        "metricsUpdatedAt": "2026-09-05T09:34:31.274Z",
-        "metrics": {
-          "reactions": 157,
-          "comments": 91,
-          "engagementRate": 15.28,
-          "reposts": 42,
-          "impressions": 5538,
-          "clicks": 188
-        },
-        "metricDeltas": {
-          "reactions": 0,
-          "comments": 0,
-          "engagementRate": 0,
-          "reposts": 0,
-          "impressions": 0,
-          "clicks": 0
         }
       },
       {
@@ -837,36 +619,6 @@
           "reach": 0,
           "totalTimeWatched": 0,
           "averageTimeWatched": 0
-        }
-      },
-      {
-        "id": "aura-unmeasurable-x-2026-08-21",
-        "bufferPostId": "6a88b45c5b4a6e681b30c6a4",
-        "title": "Aura: Unmeasurable",
-        "service": "twitter",
-        "channelId": "6a67af8a4b2d03035f4e91f4",
-        "channelState": "disconnected",
-        "dueAt": "2026-08-21T20:45:00.000Z",
-        "sentAt": "2026-08-21T20:45:06.427Z",
-        "status": "sent",
-        "externalLink": "https://x.com/2080142722153816065/status/2090903038424736251",
-        "publishingError": null,
-        "metricsUpdatedAt": "2026-09-10T04:35:21.162Z",
-        "metrics": {
-          "reactions": 33,
-          "comments": 14,
-          "engagementRate": 15.02,
-          "reposts": 5,
-          "impressions": 679,
-          "clicks": 1
-        },
-        "metricDeltas": {
-          "reactions": 0,
-          "comments": 0,
-          "engagementRate": 0,
-          "reposts": 0,
-          "impressions": 0,
-          "clicks": 0
         }
       },
       {
@@ -974,5 +726,10 @@
     "The follows metric is Instagram followers attributed to a post, not total account followers.",
     "Website visitor analytics are not included in Buffer data.",
     "A comment count identifies engagement but does not expose message text through the documented public API."
-  ]
+  ],
+  "scopeAdjustment": {
+    "adjustedAt": "2026-10-10",
+    "source": "reports/social/archive/2026-10-10-before-x-retirement.json",
+    "note": "Recomputed from recorded observations after retired X monitoring was removed; no new Buffer query. Generated timestamps refer to the original observation."
+  }
 }

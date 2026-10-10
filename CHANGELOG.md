@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-10-10 — Retire obsolete X monitoring
+
+- Moved retired X campaign entries out of the active Buffer manifest into an audit-only archive; preserved post IDs, captions, timestamps, and the pre-retirement report.
+- Excluded the retired Buffer channel from active rollups and post monitoring while retaining health checks for current campaigns.
+- Recomputed the latest report from its recorded observations without querying Buffer or publishing posts. Website X links and metadata already use `@MadgerDaBadger`; other platform handles and the official mint remain unchanged.
+
 ## 2026-10-08 — Burrow Run arcade and native app 1.2.0
 
 - Replaced the native game’s falling-symbol board with a cinematic tunnel, perspective collectibles, approved running-pose artwork, smooth lane movement, score feedback, and distinct zone colors.
