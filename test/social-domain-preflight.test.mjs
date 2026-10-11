@@ -10,6 +10,29 @@ import { MADGER_WEBSITE, preflightPost, validateMadgerLinks } from '../scripts/s
 const media = 'https://media.example/post.jpg';
 const review = { mediaUrls: [media], reviewedBy: 'Test reviewer', reviewedAt: '2026-10-11T00:00:00Z', website: MADGER_WEBSITE, confirmed: true };
 
+test('MADGER links require canonical HTTPS origins and standard ports', () => {
+  for (const url of ['https://madgercoin.com/', 'https://madgercoin.com:443/buy?x=1', 'https://www.madgercoin.com:443/', 'madgercoin.com:443/buy']) {
+    assert.doesNotThrow(() => validateMadgerLinks({ text: `Visit ${url}, join us!` }));
+  }
+  for (const url of ['https://madgercoin.com:444/', 'https://www.madgercoin.com:8080/', 'http://madgercoin.com/', 'http://www.madgercoin.com:80/', 'ftp://madgercoin.com/', 'ws://madgercoin.com/', '//madgercoin.com:444/', 'madgercoin.com:444/buy']) {
+    for (const field of ['text', 'link', 'altText', 'artworkText']) {
+      assert.throws(() => validateMadgerLinks({ [field]: url }), /HTTPS on the standard port 443/);
+    }
+  }
+  assert.doesNotThrow(() => validateMadgerLinks({ websiteUrl: 'https://madgercoin.com:443/buy' }));
+  assert.throws(() => validateMadgerLinks({ websiteUrl: 'https://madgercoin.com:444/' }), /standard port 443/);
+  assert.doesNotThrow(() => validateMadgerLinks({ text: 'http://example.org:8080/article https://x.com/MadgerDaBadger' }));
+});
+
+test('review timestamps require real calendar dates and retain valid offsets', () => {
+  for (const reviewedAt of ['2026-02-31T00:00:00Z', '2026-02-29T00:00:00Z', '1900-02-29T00:00:00Z', '2026-04-31T00:00:00+05:30', '2026-00-10T00:00:00Z', '2026-10-00T00:00:00Z', '2026-10-11T24:00:00Z', '2026-10-11T12:60:00Z', '2026-10-11T12:00:60Z']) {
+    assert.throws(() => preflightPost({ artworkUrlReview: { ...review, reviewedAt } }, { mediaUrls: [media] }), /visual artwork URL check required/, reviewedAt);
+  }
+  for (const reviewedAt of ['2024-02-29T23:59:59Z', '2000-02-29T00:00:00Z', '2026-02-28T23:59:59.123Z', '2026-10-11T00:00:00+05:30', '2026-10-11T00:00:00-04:00', '2026-12-31T23:59:59+14:00']) {
+    assert.doesNotThrow(() => preflightPost({ artworkUrlReview: { ...review, reviewedAt } }, { mediaUrls: [media] }), reviewedAt);
+  }
+});
+
 test('canonical website, paths, www, case and third-party accounts remain allowed', () => {
   validateMadgerLinks({ text: 'MADGERCOIN.COM, https://www.madgercoin.com/buy?x=1 https://x.com/MadgerDaBadger https://www.instagram.com/madgercoin/ https://youtube.com/@madger https://example.org/article', mediaUrl: 'https://raw.githubusercontent.com/madgercoin/madger/main/image.jpg' });
   preflightPost({ artworkUrlReview: review }, { mediaUrls: [media] });

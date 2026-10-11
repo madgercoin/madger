@@ -18,6 +18,26 @@ function checkHost(host, context, field, owned = false, media = false) {
   }
 }
 
+function checkUrl(url, context, field, owned = false, media = false) {
+  checkHost(url.hostname, context, field, owned, media);
+  const host = url.hostname.toLowerCase().replace(/\.$/, '');
+  if ((host === canonicalHost || host === `www.${canonicalHost}`) &&
+      (url.protocol !== 'https:' || url.port)) {
+    fail(context, field, 'MADGER website requires HTTPS on the standard port 443');
+  }
+}
+
+function validReviewTimestamp(value) {
+  if (typeof value !== 'string') return false;
+  const parts = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})(?:\.\d+)?(?:Z|[+-]\d{2}:\d{2})$/.exec(value);
+  if (!parts || !Number.isFinite(Date.parse(value))) return false;
+  const [, year, month, day, hour, minute, second] = parts.map(Number);
+  const leap = year % 4 === 0 && (year % 100 !== 0 || year % 400 === 0);
+  const days = [31, leap ? 29 : 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+  return month >= 1 && month <= 12 && day >= 1 && day <= days[month - 1] &&
+    hour < 24 && minute < 60 && second < 60;
+}
+
 export function validateMadgerLinks(value, context = 'post', field = 'post') {
   walkLinks(value, context, field, typeof value === 'string', false);
 }
@@ -41,28 +61,30 @@ function walkLinks(value, context, field, scan, media) {
     const normalized = value.normalize('NFKC');
     // Parse complete URLs first so MADGER account names in third-party paths
     // (x.com/madger, raw.githubusercontent.com/madgercoin/...) stay allowed.
-    const remaining = normalized.replace(/(?:https?:)?\/\/[^\s<>"'`]+/gi, (raw) => {
+    const remaining = normalized.replace(/(?:[a-z][a-z0-9+.-]*:)?\/\/[^\s<>"'`]+/gi, (raw) => {
       try {
         // Remove only trailing prose delimiters, never an internal delimiter
         // or domain suffix. Explicit website fields remain strict below.
         const candidate = raw.replace(/[.,!?;:)\]}]+$/, '');
         const url = new URL(candidate.startsWith('//') ? `https:${candidate}` : candidate);
         if (url.username || url.password) fail(context, field, 'URL credentials are not allowed');
-        checkHost(url.hostname, context, field, owned, media);
+        checkUrl(url, context, field, owned, media);
       } catch (error) {
         if (error.message.startsWith('MADGER preflight')) throw error;
         fail(context, field, 'malformed URL');
       }
       return ' ';
     });
-    for (const match of remaining.matchAll(/(?:[a-z0-9-]+\.)+[a-z]{2,}(?:\.)?/gi)) {
-      checkHost(match[0], context, field, owned, media);
+    for (const match of remaining.matchAll(/(?:[a-z0-9-]+\.)+[a-z]{2,}(?:\.)?(?::\d+)?/gi)) {
+      let url;
+      try { url = new URL(`https://${match[0]}`); } catch { fail(context, field, 'malformed website URL or port'); }
+      checkUrl(url, context, field, owned, media);
     }
     if (owned) {
       let url;
       try { url = new URL(normalized); } catch { fail(context, field, 'website field requires an absolute HTTPS URL'); }
       if (url.protocol !== 'https:' || url.username || url.password) fail(context, field, 'website field requires an absolute HTTPS URL without credentials');
-      checkHost(url.hostname, context, field, true);
+      checkUrl(url, context, field, true);
     }
   }
 }
@@ -84,8 +106,7 @@ export function preflightPost(post, { context = post.id || 'post', mediaUrls = [
   for (const url of new Set(mediaUrls)) {
     if (!review || !Array.isArray(review.mediaUrls) || !review.mediaUrls.every(validMedia) || !review.mediaUrls.includes(url) ||
         typeof review.reviewedBy !== 'string' || !review.reviewedBy.trim() ||
-        typeof review.reviewedAt !== 'string' || !/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:Z|[+-]\d{2}:\d{2})$/.test(review.reviewedAt) ||
-        !Number.isFinite(Date.parse(review.reviewedAt)) ||
+        !validReviewTimestamp(review.reviewedAt) ||
         review.website !== MADGER_WEBSITE || review.confirmed !== true) {
       fail(context, 'artworkUrlReview', `visual artwork URL check required for "${url}"; inspect final pixels/video frames and record mediaUrls, reviewedBy, reviewedAt, website and confirmed: true`);
     }

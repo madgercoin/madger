@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-10-11 - Social preflight origin and calendar checks
+
+- Reject nonstandard ports and HTTP for MADGER website references; retain explicit HTTPS port 443, approved www alias and third-party links.
+- Reject impossible visual-review calendar dates and times while preserving leap days and valid timezone offsets.
+- Add focused regressions for the two post-merge review findings; these are validator gaps, not evidence about queued campaign content.
+
 ## 2026-10-11 - Social website domain preflight
 
 - Validate MADGER website references across all repository Buffer publishers before API calls; preserve third-party links.

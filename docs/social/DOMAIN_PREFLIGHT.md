@@ -6,6 +6,8 @@ The scheduled and immediate Buffer automation, campaign/outbox publisher (includ
 
 ## Preflight checklist
 
+MADGER website URLs must use HTTPS and the standard port 443 (omitted or explicit); custom ports and HTTP are rejected. Review timestamps must name a real calendar date and time, with `Z` or a valid numeric timezone offset. Impossible dates and normalized next-day times do not count as review evidence.
+
 1. Compare every MADGER website reference to https://madgercoin.com. Label an owned website link with `websiteUrl` so even an unrelated misspelling is checked. Owned website fields accept a single absolute HTTPS URL string; arrays, objects and other shapes are rejected. Verify third-party destinations independently.
 2. Check all platform captions, link fields, alt text, titles and declared `artworkText`. Declare the full visible artwork copy, including any website text; do not infer it from a caption.
 3. Open each exact final public media URL. Inspect the image at readable resolution, or every video frame/scene with text (including outro, thumbnail and QR destinations). Confirm MADGER website references show `madgercoin.com` and match the caption. Check accessibility text too.
