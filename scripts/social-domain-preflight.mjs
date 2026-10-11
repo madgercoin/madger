@@ -61,7 +61,9 @@ function walkLinks(value, context, field, scan, media) {
     const normalized = value.normalize('NFKC');
     // Parse complete URLs first so MADGER account names in third-party paths
     // (x.com/madger, raw.githubusercontent.com/madgercoin/...) stay allowed.
-    const remaining = normalized.replace(/(?:[a-z][a-z0-9+.-]*:)?\/\/[^\s<>"'`]+/gi, (raw) => {
+    // WHATWG special schemes also accept missing slashes or backslashes.
+    // Consume their original scheme before the bare-domain fallback.
+    const remaining = normalized.replace(/(?:(?:https?|ftp|wss?):|(?:[a-z][a-z0-9+.-]*:)?\/\/)[^\s<>"'`]+/gi, (raw) => {
       try {
         // Remove only trailing prose delimiters, never an internal delimiter
         // or domain suffix. Explicit website fields remain strict below.

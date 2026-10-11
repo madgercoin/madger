@@ -24,6 +24,18 @@ test('MADGER links require canonical HTTPS origins and standard ports', () => {
   assert.doesNotThrow(() => validateMadgerLinks({ text: 'http://example.org:8080/article https://x.com/MadgerDaBadger' }));
 });
 
+test('WHATWG special-scheme forms retain their original protocol before validation', () => {
+  for (const text of ['http:madgercoin.com', 'http:/madgercoin.com', String.raw`http:\madgercoin.com`, String.raw`http:\\madgercoin.com`, 'http:madgercoin.com:444', 'ftp:madgercoin.com', 'ws:madgercoin.com']) {
+    for (const field of ['text', 'link', 'altText', 'artworkText']) {
+      assert.throws(() => validateMadgerLinks({ [field]: text }), /HTTPS on the standard port 443/, text);
+    }
+  }
+  for (const text of ['https:madgercoin.com', 'https:/madgercoin.com', String.raw`https:\madgercoin.com`, 'https:madgercoin.com:443/buy', 'http:example.org:8080/path']) {
+    assert.doesNotThrow(() => validateMadgerLinks({ text }), text);
+  }
+  assert.throws(() => validateMadgerLinks({ text: 'https:madgerbadgercoin.com' }), /unapproved MADGER/);
+});
+
 test('review timestamps require real calendar dates and retain valid offsets', () => {
   for (const reviewedAt of ['2026-02-31T00:00:00Z', '2026-02-29T00:00:00Z', '1900-02-29T00:00:00Z', '2026-04-31T00:00:00+05:30', '2026-00-10T00:00:00Z', '2026-10-00T00:00:00Z', '2026-10-11T24:00:00Z', '2026-10-11T12:60:00Z', '2026-10-11T12:00:60Z']) {
     assert.throws(() => preflightPost({ artworkUrlReview: { ...review, reviewedAt } }, { mediaUrls: [media] }), /visual artwork URL check required/, reviewedAt);
