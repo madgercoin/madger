@@ -13,7 +13,7 @@
 - Daily field marks and their achievement require qualifying Daily runs; Classic scores still contribute to normal progression.
 - Added profile eligibility and small-screen browser regressions for both directions of score-category switching.
 
-## 2026-10-10 - Game-first native app 1.3.0
+## 2026-10-10 — Game-first native app 1.3.0
 
 - Made Home, Play, Scores, and Settings the main app navigation, with a direct game launcher and daily seeded challenge.
 - Added persistent Classic and daily high-score tables, the last 20 runs, score sharing, XP levels, eight achievements, and four earned cosmetic trails.
@@ -21,36 +21,36 @@
 - Added an explicit end-and-save action for paused runs, persistent sound/haptics/calm preferences, safe progress reset, and UTC daily-route rollover.
 - Extended behavioral persistence tests and browser/native playthroughs to cover ranking, migration, cold restarts, daily categories, settings, and storage recovery. Native metadata is 1.3.0 (build 6).
 
-## 2026-10-10 - Roadmap PDF official X correction
+## 2026-10-10 — Roadmap PDF official X correction
 
 - Corrected page 8 of the downloadable roadmap to identify X as `@MadgerDaBadger`, with Instagram `@madgercoin` and TikTok `@themadgercoin` kept distinct.
 - Preserved the eight-page layout, other text, dates, metadata, and existing document links.
 - Restored the original PDF 1.4 header with a one-byte correction to match retained transparency features; all page content and document structure remain byte-identical.
 - Added the roadmap PDF to production deployment triggers so document-only corrections publish through the validated release workflow.
 
-## 2026-10-10 - Retire obsolete X monitoring
+## 2026-10-10 — Retire obsolete X monitoring
 
 - Moved retired X campaign entries out of the active Buffer manifest into an audit-only archive; preserved post IDs, captions, timestamps, and the pre-retirement report.
 - Excluded the retired Buffer channel from active rollups and post monitoring while retaining health checks for current campaigns.
 - Recomputed the latest report from its recorded observations without querying Buffer or publishing posts. Website X links and metadata already use `@MadgerDaBadger`; other platform handles and the official mint remain unchanged.
 
-## 2026-10-08 - Burrow Run arcade and native app 1.2.0
+## 2026-10-08 — Burrow Run arcade and native app 1.2.0
 
-- Replaced the native game's falling-symbol board with a cinematic tunnel, perspective collectibles, approved running-pose artwork, smooth lane movement, score feedback, and distinct zone colors.
+- Replaced the native game’s falling-symbol board with a cinematic tunnel, perspective collectibles, approved running-pose artwork, smooth lane movement, score feedback, and distinct zone colors.
 - Added swipe controls, a countdown, shield and magnet pickups, charged Dig Burst, close-dodge bonuses, opt-in original local sound cues, haptic controls, and reduced-motion effects.
 - Rebuilt the lobby, live HUD, daily-objective progress, pause dialog, personal-best debrief, run ranks, and replay flow; retained private field records and lifecycle pausing.
 - Made the app Home screen lead into play and community while keeping existing verification and purchase destinations available.
 - Advanced native version metadata to 1.2.0 (build 5), added behavioral mechanics tests, and prepared web/Android preview artifacts through Mobile CI. Preview APKs use a development key; physical-device acceptance and production-store signing remain separate release gates.
 
-## 2026-10-08 - Signals dispatch: live circulating-supply endpoint
+## 2026-10-08 — Signals dispatch: live circulating-supply endpoint
 
-- Published Dispatch 014 as a reader-facing audit of MADGER's deployed, machine-readable maximum-circulating-supply calculation.
+- Published Dispatch 014 as a reader-facing audit of MADGER’s deployed, machine-readable maximum-circulating-supply calculation.
 - Linked the production endpoint, public source, behavioral tests, October 6 five-lock evidence, latest finalized mint report, Solscan record, and Jupiter Lock directory.
 - Explained integer base-unit arithmetic, finalized-slot consistency, account-identity checks, supply rereads, HTTP 503 failure behavior, and the mandatory March 2027 vesting review boundary.
 - Updated the image-led archive and homepage preview, RSS feed, sitemap, transparency record, build allowlist, article navigation, automated parity checks, and production smoke test.
 - Preserved the separate beginner buying path, no-purchase Commons path, exact mint, explicit listing-provider uncertainty, and investment-risk boundaries.
 
-## 2026-10-01 - Retire the expired video contest
+## 2026-10-01 — Retire the expired video contest
 
 - Removed the homepage contest feature, navigation, hero shortcut, footer link, and dynamically injected campaign banner.
 - Removed the expired contest pages and submission script from source and the public build; their old page URLs now permanently redirect home.
@@ -58,35 +58,35 @@
 - Refreshed shared script references and the app cache version; preserved the creator pose card and general creator resources.
 - Extended release and production checks to detect expired video contest promotion and verify retired routes.
 
-## 2026-10-01 - Signals dispatch: verify without social media
+## 2026-10-01 — Signals dispatch: verify without social media
 
 - Published Dispatch 013 as a practical source-recovery drill for verifying MADGER when any social account becomes unavailable.
 - Added a dated trust rule to the official directory: an account absent from the current list is not an official destination.
 - Updated the image-led archive and homepage preview, RSS feed, sitemap dates, build allowlist, article navigation, automated parity checks, and production smoke test.
 - Preserved the separate beginner buying path and linked the exact mint, finalized token report, public source files, on-chain explorer, uncertainty boundaries, and active community routes.
 
-## 2026-10-01 - Official X account replacement
+## 2026-10-01 — Official X account replacement
 
 - Restored `@MadgerDaBadger` throughout the homepage, official-link directory, litepaper, creator brief, token metadata, X cards, and current community/listing materials.
 - Updated the local source verifier and refreshed its offline cache so the new exact X handle and URL are recognized.
 - Recorded the disconnected retired Buffer channel separately from the replacement account awaiting authentication.
 
 
-## 2026-09-24 - Signals dispatch: market cap is not FDV
+## 2026-09-24 — Signals dispatch: market cap is not FDV
 
 - Published Dispatch 012 as a source-linked, reproducible audit of total supply, documented locks, maximum circulating supply, market capitalization, and fully diluted value.
 - Reconciled the automated token guard to the finalized on-chain supply of 999,999,994.992751 MADGER while preserving exact-change detection for future review.
 - Refreshed the transparency record with separate supply-check and lock-record dates instead of implying every evidence set was checked at the same time.
 - Updated the image-led archive and homepage preview, RSS feed, sitemap, build allowlist, article navigation, validation, and deployment checks while preserving the separate beginner buying path.
 
-## 2026-09-19 - Signals visual reading system
+## 2026-09-19 — Signals visual reading system
 
 - Rebuilt the Signals From Below entry points around approved MADGER imagery, with image-backed hero controls, four outcome-based reading paths, a full-card latest dispatch, and more obvious archive targets.
 - Upgraded the homepage publication preview with a visual archive entrance and image-led dispatch cards while preserving the separate beginner buying path.
 - Added image-backed next-reading controls, reading progress, local-only read history, and an automatically generated section navigator across all eleven dispatches.
 - Standardized the publication accent palette around ink, bone, moss, and brass-gold and extended automated validation to protect the new visual controls and shared article assets.
 
-## 2026-09-18 - Mobile release privacy alignment
+## 2026-09-18 — Mobile release privacy alignment
 
 - Linked the existing `@madgercoins-team/dollarmadger` Expo project, preserving app display name and store identifiers.
 - Carried forward the validated Android preview improvements: navigation and game controls, accessible action feedback, local-record reliability, Daily Dig regression tests, and removal of unused Android permissions.
@@ -94,31 +94,31 @@
 - Physical Android and iPhone acceptance and signed store distribution remain gated by the existing release checklist.
 - Excluded local environment files and signing credentials from both repository-root and standalone mobile EAS uploads.
 
-## 2026-09-18 - Expo SDK 57 dependency alignment
+## 2026-09-18 — Expo SDK 57 dependency alignment
 
 - Updated Expo, Expo UI, Constants, and Router to the compatible SDK 57 patch versions and regenerated the mobile lockfile.
 - Run the full source release check in Mobile CI before Android and iOS exports, covering dependency compatibility, web export, and release metadata.
 
-## 2026-09-17 - Signals dispatch: proof you can open
+## 2026-09-17 — Signals dispatch: proof you can open
 
 - Published Dispatch 011 on Burrow Run and the five-lock transparency record, with primary-source links and explicit evidence boundaries.
 - Updated the archive, homepage preview, RSS feed, sitemap dates, production allowlist, validation, and deployment smoke checks.
 - Preserved the separate beginner buying path and kept character secondary to reader utility and verifiable proof.
 
-## 2026-09-13 - Production release consolidation
+## 2026-09-13 — Production release consolidation
 
 - Removed the temporary claim deployment so releases use one authenticated production path.
 - Added root JSON and redirect files to production triggers, ensuring trust-registry and routing updates publish automatically.
 - Added Wrangler's complete production dry run as a required pre-deployment gate.
 - Marked the public trust registry `no-store` and `noindex`, and added production checks for its content type and cache boundary so revoked badges cannot linger at the edge.
 
-## 2026-09-12 - Remove temporary claim deployment
+## 2026-09-12 — Remove temporary claim deployment
 
 - Removed the temporary Cloudflare claim workflow and configuration. Production releases now use only the authenticated, validated deployment workflow, avoiding duplicate deployments and claim artifacts.
 
-## 2026-09-12 - Burrow Run first playable release
+## 2026-09-12 — Burrow Run first playable release
 
-- Launched Burrow Run, a free one-minute browser game that turns MADGER's signal, noise, grit, and digging language into a responsive three-lane score challenge.
+- Launched Burrow Run, a free one-minute browser game that turns MADGER’s signal, noise, grit, and digging language into a responsive three-lane score challenge.
 - Added keyboard and touch controls, pause/resume, opt-in generated sound, reduced-motion handling, private local best-score storage, and explicit non-financial boundaries.
 - Added production routing, homepage and Burrow app discovery, sitemap metadata, a game design brief, and focused release validation.
 - Repaired malformed separators in the public build allowlist so the production configuration parses again.
@@ -130,31 +130,31 @@
 - Aligned Expo SDK 57 patch dependencies and added source versus signed-distribution release gates with explicit EAS linkage and physical-device QA requirements.
 - Repaired corrupt native app-icon PNGs discovered by Android prebuild, removed an obsolete Android edge-to-edge option, and added PNG CRC validation to prevent broken release artwork from returning.
 
-## 2026-09-11 - Signals From Below editorial cycle
+## 2026-09-11 — Signals From Below editorial cycle
 
 - Published two source-grounded dispatches on community utility and creator trust, expanding the archive from eight to ten entries.
 - Made the Commons utility the lead story without mixing community participation into the dedicated beginner purchase path.
 - Added a public Thursday publishing target and evidence, correction, RSS, sitemap, homepage, and social-distribution standards.
 - Extended archive, homepage, feed, sitemap, build allowlist, validation, and production checks for the new release.
 
-## 2026-09-10 - Blockspot verification backlink
+## 2026-09-10 — Blockspot verification backlink
 
 - Added a compact homepage-footer badge linking to MADGER's verified Blockspot profile.
 
-## 2026-09-09 - Homepage hierarchy and contest separation
+## 2026-09-09 — Homepage hierarchy and contest separation
 
-- Restored MADGER's brand story as the first homepage experience with a vivid cinematic Burrow hero, the established "Small Badger. Big Crypto." headline, and clear beginner and experienced-buyer paths.
+- Restored MADGER's brand story as the first homepage experience with a vivid cinematic Burrow hero, the established “Small Badger. Big Crypto.” headline, and clear beginner and experienced-buyer paths.
 - Reorganized the primary navigation into compact page tabs for Home, Start Here, Utility, Contest, Creators, Signals, and Verify while preserving the direct Raydium action.
 - Reduced the contest from a page-dominating homepage takeover to a focused featured card; complete requirements, official resources, rules, prizes, and the active submission form remain on the dedicated contest page.
 - Preserved the homepage utility, roadmap, character, Signals, verification, and community sections and added direct contest access to the footer.
 
-## 2026-09-06 - Clear newcomer purchase decision
+## 2026-09-06 — Clear newcomer purchase decision
 
 - Separated the purchase decision from The Burrow Commons so community utility no longer competes with beginner onboarding.
 - Added an above-the-fold choice between a guided first-crypto walkthrough and a direct Raydium route for visitors who already have SOL.
 - Added plain-language context explaining exactly what the beginner guide covers and reinforced the wallet, mint-verification, and loss-risk boundaries.
 
-## 2026-09-06 - Utility-first brand and Burrow Commons
+## 2026-09-06 — Utility-first brand and Burrow Commons
 
 - Repositioned MADGER around practical community utility, with the character serving as the memorable identity layer rather than the full value proposition.
 - Launched The Burrow Commons with safer onboarding, a verified source desk, open missions, creator resources, a community compact, and a dated proof ledger available without token ownership.
@@ -176,46 +176,46 @@
 - Added roadmap metadata, sitemap entry, and focused checks for PDF availability, source links, stages, and non-guarantee language.
 - Preserved existing launch facts, safety records, unrelated content, and social-preview assets.
 
-## 2026-09-03 - Verified purchase navigation
+## 2026-09-03 — Verified purchase navigation
 
 - Added a fixed SOL-to-MADGER Raydium swap route to homepage purchase buttons and an accessible `/buy` guide.
 - Added full-mint verification, beginner/mobile instructions, quote and fee checks, transaction recovery, and prominent loss-risk information.
 - Kept pool research links and current liquidity disclosures; added no wallet connections, tracking, referral fees, or transaction execution.
 - Added purchase-path integrity and clipboard regression tests. Research and security review are documented in `docs/purchase-path.md`.
 
-## 2026-09-01 - DEX Screener verification and discovery
+## 2026-09-01 — DEX Screener verification and discovery
 
-- Added the exact verified SOL-MADGER DEX Screener pair to the canonical launch record and official-links directory.
+- Added the exact verified SOL–MADGER DEX Screener pair to the canonical launch record and official-links directory.
 - Added automated checks that reject missing or substituted DEX Screener pair links.
 - Kept market data external and dynamic, with no paid boosts, embedded third-party code, wallet connection, or purchase flow.
 
-## 2026-08-31 - Trading live transition
+## 2026-08-31 — Trading live transition
 
 - Switched the centralized public state to `TRADING_LIVE` and replaced the launch countdown with a verified live-market banner.
-- Published the official SOL-MADGER Raydium market link using the complete MADGER mint and recorded the observed 0.25% pool fee.
+- Published the official SOL–MADGER Raydium market link using the complete MADGER mint and recorded the observed 0.25% pool fee.
 - Updated the homepage, launch record, litepaper, official-links directory, Journal surfaces, metadata, manifest, and active project guidance to reflect the launch.
 - Kept LP-protection evidence, finalized balances, transaction records, and material wallet labels explicitly unverified until their public evidence is available.
 
-## 2026-08-29 - Sharper MADGER voice
+## 2026-08-29 — Sharper MADGER voice
 
 - Replaced every public-facing digging slogan with stronger language centered on signal, focus, momentum, and clean execution.
 - Updated the active Burrow Field Mark from `DIGPASTNOISE27` to `SEEKPASTNOISE27` so the Launch Hunt matches the refreshed voice.
 
-## 2026-08-29 - Countdown collision fix
+## 2026-08-29 — Countdown collision fix
 
 - Prevented the Launch Countdown label from crossing into the days tile at tablet and compact-desktop widths while preserving the phone and full-desktop layouts.
 
-## 2026-08-29 - CPMM terminology correction
+## 2026-08-29 — CPMM terminology correction
 
 - Removed the remaining public reference to the superseded bonding-curve venue from the launch record and consistently identifies the planned venue as a direct Raydium CPMM pool.
 
-## 2026-08-29 - Cross-device Journal delivery
+## 2026-08-29 — Cross-device Journal delivery
 
 - Added installable-app metadata to Signals From Below and every dispatch, plus app shortcuts for the archive, launch status, and official links.
 - Added a 192px app icon alongside the existing 512px icon and cache-bumped the app manifest and Journal stylesheet.
 - Removed the last tiny horizontal-overflow edge from the animated Journal layout without changing Launch Hunt content.
 
-## 2026-08-29 - Canonical scheduled-launch status
+## 2026-08-29 — Canonical scheduled-launch status
 
 - Preserved the active Launch Hunt homepage and August 31 countdown while adding a dedicated, indexable launch-status record.
 - Reconciled the launch-control date with the founder-controlled August 31, 2026 at 14:00 UTC reschedule campaign.
@@ -223,47 +223,47 @@
 - Kept exact opening pool funding, trading destinations, transaction evidence, and LP-protection proof unpublished until authorization and finalization.
 - Extended build, site, launch, and live-deployment checks for the new canonical route and pre-live safety boundary.
 
-## 2026-08-29 - Purpose-built dispatch artwork
+## 2026-08-29 — Purpose-built dispatch artwork
 
 - Replaced reused mascot portraits with three story-specific MADGER scenes: foundation planning, the lantern standard, and link verification.
 - Added article-specific social previews and refreshed article discovery metadata.
 - Removed the Journal from the Launch Hunt's primary navigation and added a restrained entry point below all hunt and community content.
 - Preserved the Launch Hunt countdown, contest content, rules, and primary calls to action unchanged.
 
-## 2026-08-29 - Journal writer artwork refinement
+## 2026-08-29 — Journal writer artwork refinement
 
 - Updated the Journal hero so MADGER wears brass writer's glasses and looks down at the notebook while actively writing.
 
-## 2026-08-29 - Kinetic Journal redesign
+## 2026-08-29 — Kinetic Journal redesign
 
 - Rebuilt Signals From Below around an original MADGER-at-the-writer's-desk hero composition.
 - Added a layered editorial type system, continuous field ticker, reactive depth, reading progress, card tilt, and accessible scroll reveals.
-- Added a Journal-specific 1200x630 social card and refreshed image discovery metadata.
+- Added a Journal-specific 1200×630 social card and refreshed image discovery metadata.
 
-## 2026-08-28 - Signals From Below
+## 2026-08-28 — Signals From Below
 
 - Added a responsive, accessible MADGER blog homepage under `/blog.html`.
 - Published three source-grounded launch articles covering project foundations, character standards, and token-link safety.
 - Added site navigation, article metadata, structured data, social previews, and sitemap discovery for the journal.
 - Extended the explicit build allowlist and validation coverage to include every new journal page.
 
-## 2026-08-28 - Contributor Program label and CTA contrast
+## 2026-08-28 — Contributor Program label and CTA contrast
 
 - Renamed the public navigation label from Collaborators to Contributor Program, matching the page's broader creator, moderator, KOL, and community-operator scope without implying employment or partnership.
 - Corrected the proposal button's text contrast so its label remains readable against the gold action background.
 
-## 2026-08-28 - Creator-focused collaborator FAQ
+## 2026-08-28 — Creator-focused collaborator FAQ
 
 - Replaced the internal-curiosity Raydium fee questions on the Collaborators page with practical FAQs for creators covering proposals, project scope, starting compensation, content rights, creative review, performance evidence, disclosures, payment terms, authority, and future growth.
 - Clarified that the complete MCCP is MADGER's long-term operating goal, while the launch-stage starting point is selected, affordable, written creator projects without assumed salaries or automatic token awards.
 
-## 2026-08-28 - Public collaborator framework
+## 2026-08-28 — Public collaborator framework
 
 - Added a dedicated Collaborators page covering compensation structure, performance incentives, MADGER vesting, contribution points, role and pay principles, approvals, treasury/liquidity separation, emissions controls, KOL/referral standards, anti-abuse rules, transparency, and implementation expectations.
 - Published the Raydium fee-tier clarification: selecting a 0.30% trade-fee tier does not automatically create a 0.05% MADGER creator fee; creator-fee enablement is a separate creation-time setting.
 - Added the Collaborators tab to the Launch Hunt navigation and footer, included the page in the production allowlist and sitemap, and extended validation and deployment checks to cover it.
 
-## 2026-08-28 - Launch Hunt homepage and app
+## 2026-08-28 — Launch Hunt homepage and app
 
 - Removed the white field from the official MADGER emblem and moved every published homepage, footer, app-manifest, browser-icon, Apple-touch, Launch Hunt, and official-links logo surface to exact transparent-background derivatives.
 - Replaced the crossed-arms community portrait with a custom canonical welcoming Madger pose, restored the official logo in the page footer, and moved the installed app, browser, and Apple touch icons to official-logo artwork.
@@ -274,7 +274,7 @@
 - Preserved the exact official Solana mint, centralized launch-state disclosure, verified community links, reduced-motion support, keyboard navigation, and mobile reflow.
 - Allowed only the dedicated public Launch Hunt media origin through the production image and media content-security policy.
 
-## 2026-08-26 - Direct CPMM launch correction
+## 2026-08-26 — Direct CPMM launch correction
 
 - Replaced the stale bonding-curve campaign assumption with the founder-selected direct MADGER/SOL Raydium CPMM design.
 - Recorded August 27, 2026 at 14:00 UTC as the conditional worldwide launch target.
@@ -285,19 +285,19 @@
 - Replaced the stale two-day/bonding-curve/GMT homepage poster with a one-day/direct-CPMM/UTC version while preserving the canonical Madger artwork.
 - Preserved the minted-not-trading public state; no pool, trading link, or transaction is represented as live.
 
-## 2026-08-26 - Launch-eve artwork
+## 2026-08-26 — Launch-eve artwork
 
 - Integrated the corrected one-day direct-CPMM artwork as the centerpiece of a responsive launch showcase.
 - Paired the poster with the live countdown and a concise website-first verification briefing.
 - Preserved the conditional-launch warning, full-mint verification path, intrinsic image dimensions, and mobile reflow.
 - Corrected the rotated Daily Dig stamp so it no longer creates horizontal overflow on phone-width screens.
 
-## 2026-08-25 - Brand tagline refresh
+## 2026-08-25 — Brand tagline refresh
 
 - Replaced both retired legacy taglines across the public homepage, brand source of truth, social copy, campaign schedules, and listing materials.
-- Established "Small Badger. Big Crypto." as the primary MADGER tagline and added regression protection against the retired phrases returning to indexable pages.
+- Established “Small Badger. Big Crypto.” as the primary MADGER tagline and added regression protection against the retired phrases returning to indexable pages.
 
-## 2026-08-25 - Pre-launch countdown hub
+## 2026-08-25 — Pre-launch countdown hub
 
 - Removed the concluded meme contest from the production homepage, navigation, sitemap, and build.
 - Added a responsive live countdown to the conditional August 27, 2026 at 14:00 UTC launch target.
@@ -335,12 +335,12 @@ Notable repository changes are recorded here. Dates use UTC. This project does n
 - Added a contribution-first Reddit/Discord operating model, channel architecture, moderation controls, launch communication adaptations, and release gates while keeping Discord publication blocked until the authenticated server and durable invite are verified.
 - Made local asset-link validation path-separator independent so the same source checks run correctly on Windows and Linux.
 
-- Tightened the homepage mascot composition with a crop-only, cache-safe 900x1184 portrait derivative and responsive natural-ratio layout.
-- Added a broadly compatible 1200x630 JPEG social card, wired it into Open Graph/X metadata, and strengthened regression checks for preview dimensions, portrait framing, the community anchor, and the canonical Facebook URL.
+- Tightened the homepage mascot composition with a crop-only, cache-safe 900×1184 portrait derivative and responsive natural-ratio layout.
+- Added a broadly compatible 1200×630 JPEG social card, wired it into Open Graph/X metadata, and strengthened regression checks for preview dimensions, portrait framing, the community anchor, and the canonical Facebook URL.
 - Reconciled the V5 asset manifest, brand guidance, visual QA, deployment inventory, architecture counts, and SEO documentation with the production allowlist.
 - Activated safe hourly Buffer publishing with disabled-by-default entries, duplicate detection, and an idle no-post path.
-- Scheduled and instrumented a refreshed X community post after channel reauthorization, replacing the failed campaign entry with new "Keep Digging" copy.
-- Added the authoritative launch plan plus T-7-to-T+72 runbook, liquidity-method comparison, five-wallet custody controls, embargoed communications, post-launch listing preparation, and a founder-only decision register.
+- Scheduled and instrumented a refreshed X community post after channel reauthorization, replacing the failed campaign entry with new “Keep Digging” copy.
+- Added the authoritative launch plan plus T−7-to-T+72 runbook, liquidity-method comparison, five-wallet custody controls, embargoed communications, post-launch listing preparation, and a founder-only decision register.
 - Added a four-value public launch-state controller with `MINTED_NOT_TRADING` active on every page and no trading/purchase links.
 - Added automated gates for exact mint integrity, consistent public state, pre-launch trading-link prohibition, launch-document exclusion, and operational-wallet/private-material exclusion from `dist/`.
 
@@ -359,7 +359,7 @@ Notable repository changes are recorded here. Dates use UTC. This project does n
 
 ### Security
 
-- Replaced obsolete "no contract" language with exact mint verification guidance and explicit warnings that minting does not imply public trading.
+- Replaced obsolete “no contract” language with exact mint verification guidance and explicit warnings that minting does not imply public trading.
 
 ## 2026-07-25
 
