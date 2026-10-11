@@ -30,6 +30,57 @@ test('nested assets and declared text are checked; explicit owned URLs reject un
   assert.throws(() => validateMadgerLinks({ websiteUrl: 'http://madgercoin.com' }), /HTTPS/);
 });
 
+test('ordinary prose punctuation allows canonical and third-party links without suffix bypasses', () => {
+  for (const url of ['https://madgercoin.com', 'https://www.madgercoin.com/buy', 'https://x.com/MadgerDaBadger', 'https://instagram.com/madgercoin', 'https://youtube.com/@madger', 'https://example.org']) {
+    for (const text of [`Visit ${url}, join us!`, `(${url})`, `[${url}]`, `${url}.`, `${url}!`, `${url};`]) {
+      assert.doesNotThrow(() => validateMadgerLinks({ text }), text);
+    }
+  }
+  for (const text of ['(https://madgercoin.com.evil.org)', 'https://madgercoin.com.evil.org,', 'https://madgercoin.com,evil.org', '(https://madgerbadgercoin.com)', 'https://madgerbadgercoin.com!']) {
+    assert.throws(() => validateMadgerLinks({ text }), /unapproved MADGER/, text);
+  }
+});
+
+test('owned website fields reject unsupported shapes instead of losing ownership context', () => {
+  for (const field of ['websiteUrl', 'officialWebsite', 'madgerWebsiteUrl']) {
+    for (const value of [['https://example.org'], { url: 'https://example.org' }, { nested: ['https://example.org'] }, ['https://madgercoin.com'], [], {}, null, false, 123]) {
+      assert.throws(() => validateMadgerLinks({ posts: [{ [field]: value }] }), (error) => error.message.includes(field) && error.message.includes('single absolute HTTPS URL string'));
+    }
+    assert.doesNotThrow(() => validateMadgerLinks({ posts: [{ [field]: 'https://madgercoin.com/buy' }] }));
+  }
+});
+
+test('encoded and ordinary URL credentials are rejected', () => {
+  for (const text of ['https://mad%67ercoin.com@evil.org', 'https://user:password@example.org', 'https://user@madgercoin.com']) {
+    assert.throws(() => validateMadgerLinks({ text }), /URL credentials are not allowed/);
+  }
+});
+
+test('internal campaign identifiers are not scanned as published prose', () => {
+  assert.doesNotThrow(() => validateMadgerLinks({ campaign: 'madger-weekly.json', campaignFile: 'social/madger-weekly.json', id: 'madger-weekly.json', text: 'Visit https://madgercoin.com, join us!' }));
+  assert.throws(() => validateMadgerLinks({ campaign: 'madger-weekly.json', posts: { instagram: { text: 'madgerbadgercoin.com' } } }), /unapproved MADGER/);
+});
+
+test('known provider media buckets remain valid without allowing website claims', () => {
+  for (const url of ['https://madger-assets.s3.amazonaws.com/post.jpg', 'https://madger-assets.s3.us-east-1.amazonaws.com/post.jpg', 'https://madger-assets.r2.dev/post.jpg']) {
+    const artworkUrlReview = { ...review, mediaUrls: [url] };
+    assert.doesNotThrow(() => preflightPost({ mediaUrl: url, artworkUrlReview }, { mediaUrls: [url] }));
+    assert.doesNotThrow(() => preflightPost({ assets: [{ image: { url } }], artworkUrlReview }, { mediaUrls: [url] }));
+    assert.throws(() => validateMadgerLinks({ websiteUrl: url }), /unapproved MADGER/);
+  }
+  assert.throws(() => validateMadgerLinks({ mediaUrl: 'https://madger-assets.s3.amazonaws.com.evil.org/post.jpg' }), /unapproved MADGER/);
+});
+
+test('media URLs and visual review timestamps require valid string types', () => {
+  for (const url of [null, 123, {}, [], 'http://media.example/post.jpg', 'not-a-url', 'https://user@example.org/post.jpg']) {
+    assert.throws(() => preflightPost({ artworkUrlReview: { ...review, mediaUrls: [url] } }, { mediaUrls: [url] }), /absolute HTTPS URL strings|URL credentials are not allowed/);
+  }
+  for (const reviewedAt of [123, ['2026-10-11T00:00:00Z'], '2026-10-11', 'invalid']) {
+    assert.throws(() => preflightPost({ artworkUrlReview: { ...review, reviewedAt } }, { mediaUrls: [media] }), /visual artwork URL check required/);
+  }
+  assert.throws(() => preflightPost({ artworkUrlReview: { ...review, mediaUrls: [media, null] } }, { mediaUrls: [media] }), /visual artwork URL check required/);
+});
+
 test('media review is mandatory and bound to every exact asset URL', () => {
   for (const artworkUrlReview of [undefined, { ...review, confirmed: false }, { ...review, reviewedBy: '' }, { ...review, reviewedAt: 'bad' }, { ...review, mediaUrls: ['https://media.example/old.jpg'] }]) {
     assert.throws(() => preflightPost({ artworkUrlReview }, { mediaUrls: [media] }), /visual artwork URL check required/);

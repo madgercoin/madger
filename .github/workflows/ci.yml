@@ -29,6 +29,7 @@ jobs:
       - run: npm run check
       - run: npm run validate:js
       - run: npm run test:buffer
+      - run: npm run test:social-domain
       - run: npm run test:performance
       - run: npm run test:purchase
       - run: npm run test:supply
