@@ -25,7 +25,7 @@ test('MADGER links require canonical HTTPS origins and standard ports', () => {
 });
 
 test('WHATWG special-scheme forms retain their original protocol before validation', () => {
-  for (const text of ['http:madgercoin.com', 'http:/madgercoin.com', String.raw`http:\madgercoin.com`, String.raw`http:\\madgercoin.com`, 'http:madgercoin.com:444', 'ftp:madgercoin.com', 'ws:madgercoin.com']) {
+  for (const text of ['http:madgercoin.com', 'http:/madgercoin.com', String.raw`http:\madgercoin.com`, String.raw`http:\\madgercoin.com`, 'http:madgercoin.com:444', 'ftp:madgercoin.com', 'ws:madgercoin.com', 'file:madgercoin.com', 'file:/madgercoin.com', String.raw`file:\madgercoin.com`, 'file:///madgercoin.com', 'file://madgercoin.com/path']) {
     for (const field of ['text', 'link', 'altText', 'artworkText']) {
       assert.throws(() => validateMadgerLinks({ [field]: text }), /HTTPS on the standard port 443/, text);
     }
@@ -34,6 +34,8 @@ test('WHATWG special-scheme forms retain their original protocol before validati
     assert.doesNotThrow(() => validateMadgerLinks({ text }), text);
   }
   assert.throws(() => validateMadgerLinks({ text: 'https:madgerbadgercoin.com' }), /unapproved MADGER/);
+  assert.throws(() => validateMadgerLinks({ text: 'file:madgerbadgercoin.com' }), /HTTPS on the standard port 443/);
+  assert.doesNotThrow(() => validateMadgerLinks({ text: 'file:example.org' }));
 });
 
 test('review timestamps require real calendar dates and retain valid offsets', () => {
