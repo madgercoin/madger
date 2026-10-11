@@ -17,10 +17,11 @@
     "test:performance": "node --test test/buffer-performance.test.mjs",
     "test:purchase": "node --test test/purchase-path.test.mjs",
     "test:game": "node --test test/game.test.mjs test/game-core.test.mjs",
-    "validate": "npm run build && npm run test:purchase && npm run test:supply && npm run test:game && npm run validate:js && npm run test:buffer && npm run test:performance && npm run validate:launch && npm run validate:site && npm run validate:dist && npm run scan:secrets",
+    "validate": "npm run build && npm run test:purchase && npm run test:supply && npm run test:game && npm run validate:js && npm run test:social-domain && npm run test:buffer && npm run test:performance && npm run validate:launch && npm run validate:site && npm run validate:dist && npm run scan:secrets",
     "check:deployment": "node scripts/check-deployment.mjs",
     "validate:launch": "node scripts/validate-launch.mjs",
-    "test:supply": "node --test test/supply-endpoint.test.mjs"
+    "test:supply": "node --test test/supply-endpoint.test.mjs",
+    "test:social-domain": "node --test test/social-domain-preflight.test.mjs"
   },
   "devDependencies": {
     "wrangler": "4.125.0"

@@ -70,3 +70,7 @@ The successful discovery run at `2026-08-16T01:17:51Z` returned the following va
 - Scheduled posts: https://developers.buffer.com/examples/create-scheduled-post.html
 - Video posts: https://developers.buffer.com/examples/create-video-post.html
 - Media hosting: https://support.buffer.com/article/859-does-buffer-have-an-api#hosting-media
+
+## Website and artwork preflight
+
+Follow [the domain preflight checklist](docs/social/DOMAIN_PREFLIGHT.md) before publishing. All media needs an exact-URL visual review record; the guard checks declared text, not pixels.

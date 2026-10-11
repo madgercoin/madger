@@ -42,3 +42,7 @@ Use the approved 1080×1350 H.264 MADGER animation as a locked composition. Do n
 ## API source
 
 The implementation follows Buffer's current GraphQL API and uses `SchedulingType: automatic` so publishing does not require a manual notification step.
+
+## Website and artwork preflight
+
+Follow [the domain preflight checklist](DOMAIN_PREFLIGHT.md) before publishing. All media needs an exact-URL visual review record; the guard checks declared text, not pixels.
