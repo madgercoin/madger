@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-11T06:28:01.595Z",
+  "generatedAt": "2026-10-11T15:05:11.839Z",
   "snapshotLabel": "pre-liquidity-pre-proficy-2026-09-09",
   "network": "solana",
   "mint": "BHauMX8akk2umqkQqnJwpYkCRkZmefGnEBFByeFXRKqv",
@@ -19,16 +19,16 @@
       "name": "Wrapped SOL",
       "symbol": "SOL"
     },
-    "priceUsd": 0.001215,
+    "priceUsd": 0.001217,
     "priceNative": 0.00001111,
-    "liquidityUsd": 9830.8,
-    "liquidityBase": 4044760,
-    "liquidityQuote": 44.9469,
-    "fdv": 1215251,
-    "marketCap": 273432,
-    "volume24h": 26.83,
+    "liquidityUsd": 9846,
+    "liquidityBase": 4044057,
+    "liquidityQuote": 44.9548,
+    "fdv": 1217342,
+    "marketCap": 273902,
+    "volume24h": 10.2,
     "buys24h": 55,
-    "sells24h": 1,
+    "sells24h": 0,
     "pairCreatedAt": 1788193708000,
     "websites": [
       {

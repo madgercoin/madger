@@ -1,0 +1,84 @@
+{
+  "generatedAt": "2026-10-11T15:05:11.839Z",
+  "snapshotLabel": "pre-liquidity-pre-proficy-2026-09-09",
+  "network": "solana",
+  "mint": "BHauMX8akk2umqkQqnJwpYkCRkZmefGnEBFByeFXRKqv",
+  "pool": "FVRpAmyDsdvKHQT2ds6ytZsJHt7SDDDbScQx3c4fu32h",
+  "market": {
+    "source": "DEX Screener API",
+    "pairUrl": "https://dexscreener.com/solana/fvrpamydsdvkhqt2ds6ytzsjht7sdddbscqx3c4fu32h",
+    "dexId": "raydium",
+    "pairAddress": "FVRpAmyDsdvKHQT2ds6ytZsJHt7SDDDbScQx3c4fu32h",
+    "baseToken": {
+      "address": "BHauMX8akk2umqkQqnJwpYkCRkZmefGnEBFByeFXRKqv",
+      "name": "MADGER",
+      "symbol": "MADGER"
+    },
+    "quoteToken": {
+      "address": "So11111111111111111111111111111111111111112",
+      "name": "Wrapped SOL",
+      "symbol": "SOL"
+    },
+    "priceUsd": 0.001217,
+    "priceNative": 0.00001111,
+    "liquidityUsd": 9846,
+    "liquidityBase": 4044057,
+    "liquidityQuote": 44.9548,
+    "fdv": 1217342,
+    "marketCap": 273902,
+    "volume24h": 10.2,
+    "buys24h": 55,
+    "sells24h": 0,
+    "pairCreatedAt": 1788193708000,
+    "websites": [
+      {
+        "url": "https://madgercoin.com/",
+        "label": "Website"
+      },
+      {
+        "url": "https://madgercoin.com/roadmap",
+        "label": "Docs"
+      },
+      {
+        "url": "https://madgercoin.com/transparency.html",
+        "label": "Supply & LP Transparency"
+      }
+    ],
+    "socials": [
+      {
+        "url": "https://x.com/MadgerDaBadger",
+        "type": "twitter"
+      },
+      {
+        "url": "https://t.me/madgerburrow",
+        "type": "telegram"
+      },
+      {
+        "url": "https://discord.gg/NcuPzSNz9e",
+        "type": "discord"
+      },
+      {
+        "url": "https://www.tiktok.com/@themadgercoin",
+        "type": "tiktok"
+      },
+      {
+        "url": "https://www.instagram.com/madgercoin/",
+        "type": "instagram"
+      },
+      {
+        "url": "https://www.reddit.com/user/Madgercoin/",
+        "type": "reddit"
+      }
+    ]
+  },
+  "holders": {
+    "status": "ok",
+    "source": "Solana finalized RPC",
+    "uniqueOwnersWithPositiveBalance": 33,
+    "positiveTokenAccounts": 33
+  },
+  "interpretation": {
+    "holderCount": "Unique SPL token-account owners with a positive raw token balance at finalized commitment.",
+    "attribution": "Campaign attribution is aggregate. It does not identify a purchaser or prove that an individual click caused an on-chain purchase."
+  }
+}
