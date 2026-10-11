@@ -1,4 +1,5 @@
 import fs from 'node:fs/promises';
+import { preflightPost } from './social-domain-preflight.mjs';
 import { assetFor, evaluateScheduledEntry, metadataFor } from './buffer-automation-core.mjs';
 
 const API_URL = 'https://api.buffer.com';
@@ -101,6 +102,7 @@ async function publish() {
     console.log('No enabled posts. Automation is safely idle without calling Buffer.');
     return;
   }
+  active.forEach((entry) => preflightPost(entry, { mediaUrls: [entry.mediaUrl] }));
   const { organization, channels } = await discover();
   const resolved = active.map((entry) => ({ entry, channel: findChannel(channels, entry) }));
   const existing = await scheduledPosts(organization.id, [...new Set(resolved.map(({ channel }) => channel.id))]);
@@ -149,6 +151,7 @@ async function publishNow() {
     console.log('No posts flagged for immediate publishing. Automation is safely idle.');
     return;
   }
+  active.forEach((entry) => preflightPost(entry, { mediaUrls: [entry.mediaUrl] }));
   const mutation = `
     mutation PublishPostNow($input: EditPostInput!) {
       editPost(input: $input) {

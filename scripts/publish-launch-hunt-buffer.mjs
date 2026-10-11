@@ -1,3 +1,4 @@
+import { preflightPost } from './social-domain-preflight.mjs';
 const API_URL = 'https://api.buffer.com';
 const token = process.env.BUFFER_API_TOKEN;
 const requestedOrganizationId = process.env.BUFFER_ORGANIZATION_ID;
@@ -46,6 +47,10 @@ async function graphql(query, variables = {}) {
   return payload.data;
 }
 
+// Historical artwork needs an actual recorded review before a deliberate rerun.
+posts.forEach((post) => preflightPost(post, {
+  mediaUrls: post.assets.map((asset) => asset.image?.url || asset.video?.url),
+}));
 const accountData = await graphql(`query Account { account { organizations { id name } } }`);
 const organizations = accountData.account.organizations;
 const organization = requestedOrganizationId

@@ -1,5 +1,12 @@
 # Changelog
 
+## 2026-10-11 - Social website domain preflight
+
+- Validate MADGER website references across all repository Buffer publishers before API calls; preserve third-party links.
+- Require recorded visual artwork URL checks; declared text validation does not inspect pixels.
+- Add regression tests and the checklist in `docs/social/DOMAIN_PREFLIGHT.md`. Existing schedules, content and credentials are unchanged.
+- Accept ordinary caption URL punctuation, reject unsupported owned-website field shapes, and run domain regressions in PR CI and Buffer validation before publishing.
+
 ## 2026-10-10 - Run mode and daily achievement corrections
 
 - Launch links and mode selections return an ended run to a fresh lobby without relabeling its banked result or changing its saved category.

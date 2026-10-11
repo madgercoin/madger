@@ -2,6 +2,7 @@
 
 import fs from "node:fs/promises";
 import path from "node:path";
+import { preflightPost } from "./social-domain-preflight.mjs";
 
 const API_URL = "https://api.buffer.com";
 const root = process.cwd();
@@ -32,6 +33,12 @@ const [campaign, channelConfig] = await Promise.all([
   readJson(settings.channelsFile),
 ]);
 
+// Validate every variant before API calls, including dry runs. Review records
+// are local preflight evidence and are never forwarded to Buffer.
+preflightPost({ ...campaign, outbox, assetUrl: settings.assetUrl }, {
+  context: campaign.campaign || settings.campaignFile,
+  mediaUrls: [settings.assetUrl],
+});
 const organizationId = process.env.BUFFER_ORGANIZATION_ID || await discoverOrganizationId();
 const channels = await gql(
   `query Channels($input: ChannelsInput!) {

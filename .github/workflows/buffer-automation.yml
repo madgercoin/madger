@@ -42,6 +42,7 @@ jobs:
           node --check scripts/buffer-automation.mjs
           node --check scripts/buffer-automation-core.mjs
           node --test test/buffer-automation.test.mjs
+          npm run test:social-domain
           node -e "JSON.parse(require('fs').readFileSync('content/buffer-schedule.json','utf8'))"
 
   buffer:
