@@ -1,5 +1,10 @@
 # Changelog
 
+## 2026-10-11 - Social preflight special-scheme parsing
+
+- Preserve the original protocol of WHATWG shorthand/backslash URL forms before validating MADGER website origins, closing the PR #120 follow-up review finding.
+- Added regressions for shorthand HTTP, HTTPS and third-party URL forms; no campaign or website content changed.
+
 ## 2026-10-11 - Social preflight origin and calendar checks
 
 - Reject nonstandard ports and HTTP for MADGER website references; retain explicit HTTPS port 443, approved www alias and third-party links.

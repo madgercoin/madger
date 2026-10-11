@@ -20,6 +20,12 @@ function checkHost(host, context, field, owned = false, media = false) {
 
 function checkUrl(url, context, field, owned = false, media = false) {
   checkHost(url.hostname, context, field, owned, media);
+  // Hostless file shorthand puts the apparent website in the pathname.
+  // It must not be reinterpreted as a bare HTTPS domain.
+  if (url.protocol === 'file:' &&
+      [...url.pathname.matchAll(/(?:[a-z0-9-]+\.)+[a-z]{2,}/gi)].some(([host]) => /madger/i.test(host))) {
+    fail(context, field, 'MADGER website requires HTTPS on the standard port 443');
+  }
   const host = url.hostname.toLowerCase().replace(/\.$/, '');
   if ((host === canonicalHost || host === `www.${canonicalHost}`) &&
       (url.protocol !== 'https:' || url.port)) {
@@ -61,7 +67,9 @@ function walkLinks(value, context, field, scan, media) {
     const normalized = value.normalize('NFKC');
     // Parse complete URLs first so MADGER account names in third-party paths
     // (x.com/madger, raw.githubusercontent.com/madgercoin/...) stay allowed.
-    const remaining = normalized.replace(/(?:[a-z][a-z0-9+.-]*:)?\/\/[^\s<>"'`]+/gi, (raw) => {
+    // WHATWG special schemes also accept missing slashes or backslashes.
+    // Consume their original scheme before the bare-domain fallback.
+    const remaining = normalized.replace(/(?:(?:https?|ftp|wss?|file):|(?:[a-z][a-z0-9+.-]*:)?\/\/)[^\s<>"'`]+/gi, (raw) => {
       try {
         // Remove only trailing prose delimiters, never an internal delimiter
         // or domain suffix. Explicit website fields remain strict below.
