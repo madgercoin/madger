@@ -1,9 +1,9 @@
 {
-  "generatedAt": "2026-10-10T14:35:38.452Z",
-  "previousGeneratedAt": "2026-10-09T15:28:09.754Z",
+  "generatedAt": "2026-10-11T15:00:09.392Z",
+  "previousGeneratedAt": "2026-10-10T14:35:38.452Z",
   "window": {
-    "start": "2026-09-10T14:35:38.452Z",
-    "end": "2026-10-10T14:35:38.452Z"
+    "start": "2026-09-11T15:00:09.392Z",
+    "end": "2026-10-11T15:00:09.392Z"
   },
   "organization": {
     "id": "6a67aceacff325d8d2d231e9",
@@ -20,14 +20,14 @@
       "state": "connected",
       "healthy": true,
       "queuePaused": false,
-      "metricsUpdatedAt": "2026-10-10T11:08:00.554Z",
+      "metricsUpdatedAt": "2026-10-11T14:30:19.787Z",
       "metrics": {
-        "postCount": 29,
-        "reactions": 15,
+        "postCount": 31,
+        "reactions": 17,
         "comments": 9,
-        "engagementRate": 14.95,
+        "engagementRate": 13.6,
         "reposts": 4,
-        "impressions": 368,
+        "impressions": 419,
         "clicks": 2
       },
       "requiresCommunityReview": true
@@ -42,13 +42,13 @@
       "state": "connected",
       "healthy": true,
       "queuePaused": false,
-      "metricsUpdatedAt": "2026-10-10T02:02:39.382Z",
+      "metricsUpdatedAt": "2026-10-11T01:02:50.651Z",
       "metrics": {
-        "postCount": 32,
-        "reactions": 3,
-        "comments": 6,
-        "engagementRate": 1.43,
-        "impressions": 489,
+        "postCount": 31,
+        "reactions": 2,
+        "comments": 7,
+        "engagementRate": 2.03,
+        "impressions": 395,
         "shares": 0,
         "clicks": 1
       },
@@ -64,19 +64,19 @@
       "state": "connected",
       "healthy": true,
       "queuePaused": false,
-      "metricsUpdatedAt": "2026-10-09T18:11:42.909Z",
+      "metricsUpdatedAt": "2026-10-11T14:58:04.203Z",
       "metrics": {
-        "postCount": 28,
-        "reactions": 64,
-        "comments": 18,
-        "engagementRate": 68.33,
-        "views": 307,
+        "postCount": 29,
+        "reactions": 65,
+        "comments": 19,
+        "engagementRate": 69.75,
+        "views": 310,
         "shares": 0,
         "saves": 0,
-        "follows": 2,
-        "reach": 120,
-        "totalTimeWatched": 228.46,
-        "averageTimeWatched": 255.31
+        "follows": 0,
+        "reach": 119,
+        "totalTimeWatched": 836.63,
+        "averageTimeWatched": 470.24
       },
       "requiresCommunityReview": true
     },
@@ -90,17 +90,17 @@
       "state": "connected",
       "healthy": true,
       "queuePaused": false,
-      "metricsUpdatedAt": "2026-10-10T04:51:35.468Z",
+      "metricsUpdatedAt": "2026-10-11T03:52:36.446Z",
       "metrics": {
         "postCount": 29,
-        "reactions": 27,
+        "reactions": 24,
         "comments": 3,
-        "engagementRate": 0.9,
-        "views": 3463,
+        "engagementRate": 0.87,
+        "views": 3228,
         "shares": 1,
-        "reach": 3151,
-        "totalTimeWatched": 273.18,
-        "averageTimeWatched": 4.17
+        "reach": 2909,
+        "totalTimeWatched": 257.35,
+        "averageTimeWatched": 4.12
       },
       "requiresCommunityReview": true
     }
@@ -726,10 +726,5 @@
     "The follows metric is Instagram followers attributed to a post, not total account followers.",
     "Website visitor analytics are not included in Buffer data.",
     "A comment count identifies engagement but does not expose message text through the documented public API."
-  ],
-  "scopeAdjustment": {
-    "adjustedAt": "2026-10-10",
-    "source": "reports/social/archive/2026-10-10-before-x-retirement.json",
-    "note": "Recomputed from recorded observations after retired X monitoring was removed; no new Buffer query. Generated timestamps refer to the original observation."
-  }
+  ]
 }
