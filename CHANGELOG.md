@@ -6,6 +6,7 @@
 - Advance ordinary delayed frames without dropping game time, pause foreground stalls longer than half a second, and keep Daily debrief objectives tied to the run date across midnight.
 - Clarify the 60-second completion goal and keyboard controls, expose unfinished runs on Home, and keep pause/resume/banking actions visible on small screens.
 - Add interrupted-run, win/loss/restart, midnight, slow-frame and corrupt-storage regressions, including repeated Android process restart. No new dependencies, permissions, telemetry or artwork.
+- Refresh four existing Expo SDK patch versions required by the current compatibility gate; preserve the SDK and signing configuration.
 
 ## 2026-10-11 - Social preflight special-scheme parsing
 
