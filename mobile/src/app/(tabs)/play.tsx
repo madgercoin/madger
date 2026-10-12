@@ -33,7 +33,8 @@ import {
   objectiveValue,
   phaseFor,
   runRank,
-  stepSimulation,
+  advanceSimulation,
+  MAX_FRAME_GAP,
   type Entity,
   type GameEvent,
 } from "@/lib/burrowRun";
@@ -53,25 +54,36 @@ const DEMO: Entity[] = [
 ];
 
 export default function PlayScreen() {
-  const { profile, ready: recordReady, saving: recordSaving, error: recordError, bankRun, setPreferences, setRunActive } = useGameProfile();
+  const { ready } = useGameProfile();
+  if (!ready) return <Screen><Text accessibilityRole="header" style={styles.screenTitle}>Burrow Run.</Text><SaveStatus /><ActionButton label="Loading record…" icon="play" disabled onPress={() => {}} /></Screen>;
+  return <LoadedPlayScreen />;
+}
+
+function LoadedPlayScreen() {
+  const { profile, ready: recordReady, saving: recordSaving, error: recordError, bankRun, checkpointRun, setPreferences, setRunActive } = useGameProfile();
+  const [initialCheckpoint] = useState(() => profile.checkpoint);
+  const profileRef = useRef(profile);
+  useEffect(() => { profileRef.current = profile; }, [profile]);
+  const checkpointAt = useRef(0);
+  const focused = useRef(false);
   const router = useRouter();
   const calendarDay = useGameDay();
   const params = useLocalSearchParams<{ challenge?: string; entry?: string }>();
-  const [runMode, setRunMode] = useState<RunMode>(params.challenge === "daily" ? "daily" : "classic");
+  const [runMode, setRunMode] = useState<RunMode>(initialCheckpoint?.mode ?? (params.challenge === "daily" ? "daily" : "classic"));
   const runModeRef = useRef<RunMode>(runMode);
-  const randomRef = useRef(randomFromSeed(1));
-  const runIdRef = useRef("");
+  const randomRef = useRef(randomFromSeed(initialCheckpoint?.randomState ?? 1));
+  const runIdRef = useRef(initialCheckpoint?.id ?? "");
   const [earnedXp, setEarnedXp] = useState(0);
   const [unlocks, setUnlocks] = useState<string[]>([]);
   const record = profile.record;
   const { sound, haptics, calm } = profile.preferences;
   const trailColor = TRAILS.find(trail => trail.id === profile.preferences.trail)?.color ?? COLORS.gold;
-  const [mode, setMode] = useState<Mode>("ready");
-  const modeRef = useRef<Mode>("ready");
-  const simulationRef = useRef(freshSimulation());
-  const [simulation, setSimulation] = useState(freshSimulation);
-  const [countdown, setCountdown] = useState(3);
-  const countdownRef = useRef(2.4);
+  const [mode, setMode] = useState<Mode>(initialCheckpoint ? "paused" : "ready");
+  const modeRef = useRef<Mode>(initialCheckpoint ? "paused" : "ready");
+  const simulationRef = useRef(initialCheckpoint?.simulation ?? freshSimulation());
+  const [simulation, setSimulation] = useState(() => initialCheckpoint?.simulation ?? freshSimulation());
+  const [countdown, setCountdown] = useState(initialCheckpoint ? Math.max(1, Math.ceil(initialCheckpoint.countdown / 0.8)) : 3);
+  const countdownRef = useRef(initialCheckpoint?.countdown ?? 2.4);
   const [notice, setNotice] = useState<Notice | null>(null);
   const [feedback, setFeedback] = useState<Feedback[]>([]);
   const feedbackId = useRef(0);
@@ -82,11 +94,11 @@ export default function PlayScreen() {
   const reducedMotion = calm || systemReducedMotion;
   const [newBest, setNewBest] = useState(false);
   const [finishReason, setFinishReason] = useState<"time" | "grit" | "quit">("time");
-  const [message, setMessage] = useState("Swipe to find your line.");
+  const [message, setMessage] = useState(initialCheckpoint ? "Interrupted run recovered. Resume when you're ready." : "Swipe to find your line.");
   const endingRef = useRef(false);
-  const pausedFrom = useRef<"countdown" | "running">("running");
+  const pausedFrom = useRef<"countdown" | "running">(initialCheckpoint?.stage ?? "running");
   const [today, setToday] = useState(() =>
-    new Date().toISOString().slice(0, 10),
+    initialCheckpoint?.day ?? new Date().toISOString().slice(0, 10),
   );
   const runDayRef = useRef(today);
   const { height, fontScale } = useWindowDimensions();
@@ -94,16 +106,27 @@ export default function PlayScreen() {
   const phase = phaseFor(elapsed);
   const activeRun =
     mode === "countdown" || mode === "running" || mode === "paused";
-  const scrollRun = activeRun && (fontScale > 1.5 || height < 640);
-  const objectiveDay = activeRun ? today : calendarDay;
+  const compactRun = activeRun && height < 640 && fontScale <= 1.2;
+  const scrollRun = activeRun && (fontScale > 1.5 || (height < 640 && !compactRun));
+  const objectiveDay = runMode === "daily" && mode !== "ready" ? today : calendarDay;
   const objective = useMemo(
     () => objectiveFor(Math.floor(Date.parse(objectiveDay) / 86400000)),
     [objectiveDay],
   );
   const objectiveCurrent = objectiveValue(objective, run);
-  const progress = Math.min(1, objectiveCurrent / objective.target);
+  const goalCurrent = runMode === "daily" ? objectiveCurrent : Math.floor(elapsed);
+  const goalTarget = runMode === "daily" ? objective.target : ROUND_SECONDS;
+  const progress = Math.min(1, goalCurrent / goalTarget);
   const comboProgress = run.streak >= 20 ? 1 : (run.streak % 5) / 5;
   const burstReady = run.energy >= BURST_COST;
+
+  const saveCheckpoint = useCallback(() => {
+    const stage = modeRef.current === "paused" ? pausedFrom.current : modeRef.current;
+    if (stage !== "countdown" && stage !== "running") return;
+    void checkpointRun({ version: 1, id: runIdRef.current, mode: runModeRef.current,
+      day: runDayRef.current, stage, countdown: stage === "countdown" ? countdownRef.current : 0,
+      randomState: randomRef.current.getState(), simulation: simulationRef.current });
+  }, [checkpointRun]);
 
   const selectRunMode = useCallback((nextMode: RunMode) => {
     if (modeRef.current !== "ready" && modeRef.current !== "ended") return;
@@ -162,6 +185,7 @@ export default function PlayScreen() {
     const finalRun = current.run;
     const day = runDayRef.current;
     const saved = makeSavedRun(finalRun, { id: runIdRef.current, mode: runModeRef.current, day, finishedAt: new Date().toISOString(), seconds: current.elapsed, reason });
+    const profile = profileRef.current;
     const next = addCompletedRun(profile, saved);
     const previousAchievements = achievementsFor(profile).filter(item => item.value >= item.target).map(item => item.id);
     setEarnedXp(next.xp - profile.xp);
@@ -176,7 +200,7 @@ export default function PlayScreen() {
     void bankRun(saved);
     pulse(reason === "time" ? "success" : "hit");
     cue(reason === "time" ? "finish" : "hit");
-  }, [profile, bankRun, pulse, cue]);
+  }, [bankRun, pulse, cue]);
 
   const showEvents = useCallback(
     (events: GameEvent[]) => {
@@ -276,8 +300,17 @@ export default function PlayScreen() {
       if (modeRef.current !== "running" && modeRef.current !== "countdown")
         return;
       const now = performance.now();
-      const delta = Math.max(0, Math.min((now - lastTick) / 1000, 0.1));
+      const delta = Math.max(0, (now - lastTick) / 1000);
       lastTick = now;
+      if (delta > MAX_FRAME_GAP) {
+        pausedFrom.current = modeRef.current;
+        modeRef.current = "paused";
+        setMode("paused");
+        stopAudio();
+        setMessage("Run paused while your device caught up. Resume when you're ready.");
+        saveCheckpoint();
+        return;
+      }
       if (modeRef.current === "countdown") {
         countdownRef.current -= delta;
         setCountdown(Math.max(1, Math.ceil(countdownRef.current / 0.8)));
@@ -286,16 +319,18 @@ export default function PlayScreen() {
           setMode("running");
           setMessage("Go! Follow the gold trail.");
         }
+        if (now - checkpointAt.current >= 1000) { checkpointAt.current = now; saveCheckpoint(); }
         return;
       }
-      const result = stepSimulation(simulationRef.current, delta, randomRef.current, runModeRef.current === "daily");
+      const result = advanceSimulation(simulationRef.current, delta, randomRef.current, runModeRef.current === "daily");
       simulationRef.current = result.state;
       setSimulation(result.state);
       showEvents(result.events);
       if (result.ended) finishRun(result.ended);
+      else if (now - checkpointAt.current >= 1000) { checkpointAt.current = now; saveCheckpoint(); }
     }, 33);
     return () => clearInterval(timer);
-  }, [finishRun, mode, showEvents]);
+  }, [finishRun, mode, showEvents, saveCheckpoint, stopAudio]);
 
   const pause = useCallback(() => {
     stopAudio();
@@ -305,9 +340,10 @@ export default function PlayScreen() {
     modeRef.current = "paused";
     setMode("paused");
     setMessage("Run paused. Resume when you’re ready.");
-  }, [stopAudio]);
+    saveCheckpoint();
+  }, [stopAudio, saveCheckpoint]);
   const resume = useCallback(() => {
-    if (modeRef.current !== "paused") return;
+    if (modeRef.current !== "paused" || !focused.current || AppState.currentState === "background" || AppState.currentState === "inactive") return;
     modeRef.current = pausedFrom.current;
     setMode(pausedFrom.current);
     setMessage("Back to the Burrow.");
@@ -321,9 +357,10 @@ export default function PlayScreen() {
   }, [pause]);
   useFocusEffect(
     useCallback(() => {
-      if (modeRef.current === "ready" || modeRef.current === "ended")
+      focused.current = true;
+      if (modeRef.current === "ready")
         setToday(new Date().toISOString().slice(0, 10));
-      return pause;
+      return () => { focused.current = false; pause(); };
     }, [pause]),
   );
 
@@ -377,6 +414,7 @@ export default function PlayScreen() {
   useEffect(() => {
     if (Platform.OS !== "web") return;
     function key(event: KeyboardEvent) {
+      if (!focused.current) return;
       if (modeRef.current === "ready" || modeRef.current === "ended") return;
       if (
         event.target instanceof HTMLElement &&
@@ -410,6 +448,7 @@ export default function PlayScreen() {
   }, [burst, move, pause, resume]);
 
   function startRun() {
+    if (modeRef.current !== "ready" && modeRef.current !== "ended") return;
     if (!recordReady || recordSaving || recordError) return;
     const day = new Date().toISOString().slice(0, 10);
     setToday(day);
@@ -431,6 +470,8 @@ export default function PlayScreen() {
     modeRef.current = "countdown";
     setMode("countdown");
     setMessage("Get ready. Swipe or use the arrows to move.");
+    checkpointAt.current = performance.now();
+    saveCheckpoint();
   }
 
   const visibleNotice = notice && elapsed < notice.until ? notice : null;
@@ -441,17 +482,23 @@ export default function PlayScreen() {
       : mode === "ended"
         ? "Dig again"
         : "Let’s dig";
-  const startDisabled = !recordReady || recordSaving || !!recordError;
+  const startDisabled = !recordReady || recordSaving || !!recordError || (mode === "ready" && !!profile.checkpoint);
   return (
     <Screen
+      compact={compactRun}
       scroll={!activeRun || scrollRun}
       footer={
-        activeRun ? (
+        mode === "paused" ? (
+          <View style={{ flexDirection: "row", gap: 10 }}>
+            <View style={{ flex: 1 }}><ActionButton label="Back to the run" icon="play" onPress={resume} /></View>
+            <View style={{ flex: 1 }}><ActionButton label="End run & save score" icon="flag-checkered" secondary onPress={() => finishRun("quit")} /></View>
+          </View>
+        ) : activeRun ? (
           <View style={styles.controls}>
             <Control
               icon="chevron-left"
               label="LEFT"
-              disabled={mode === "paused" || lane === 0}
+              disabled={lane === 0}
               onPress={() => move(-1)}
             />
             <Pressable
@@ -496,7 +543,7 @@ export default function PlayScreen() {
             <Control
               icon="chevron-right"
               label="RIGHT"
-              disabled={mode === "paused" || lane === 2}
+              disabled={lane === 2}
               onPress={() => move(1)}
             />
           </View>
@@ -506,15 +553,15 @@ export default function PlayScreen() {
               <ActionButton label={startLabel} icon="refresh" disabled={startDisabled} onPress={startRun} />
             </View>
             <View style={{ flex: 1 }}>
-              <ActionButton label="See high scores" icon="podium" secondary onPress={() => router.push({ pathname: "/scores", params: { section: "scores", category: runMode } })} />
+              <ActionButton label={runMode === "daily" && objectiveDay !== calendarDay ? "See run history" : "See high scores"} icon="podium" secondary onPress={() => router.push({ pathname: "/scores", params: { section: runMode === "daily" && objectiveDay !== calendarDay ? "history" : "scores", category: runMode } })} />
             </View>
           </View>
         ) : undefined
       }
     >
       <View style={styles.topbar}>
-        <View>
-          <Text style={styles.eyebrow}>{runMode === "daily" ? "MADGER / TODAY’S RUN" : "MADGER / CLASSIC RUN"}</Text>
+        <View style={{ flex: 1 }}>
+          <Text style={styles.eyebrow}>{runMode === "daily" ? objectiveDay === calendarDay ? "MADGER / TODAY\u2019S RUN" : `MADGER / DAILY RUN ${objectiveDay}` : "MADGER / CLASSIC RUN"}</Text>
           <Text accessibilityRole="header" style={styles.screenTitle}>
             Burrow Run<Text style={styles.titleDot}>.</Text>
           </Text>
@@ -540,7 +587,7 @@ export default function PlayScreen() {
               color={COLORS.gold}
             />
             <Text style={styles.bestText}>
-              {recordReady ? bestFor(profile, runMode, runMode === "daily" ? today : undefined).toLocaleString() : "—"}
+              {recordReady ? bestFor(profile, runMode, runMode === "daily" ? objectiveDay : undefined).toLocaleString() : "-"}
             </Text>
           </View>
         )}
@@ -553,7 +600,7 @@ export default function PlayScreen() {
         <View style={styles.liveHud}>
           <View style={styles.scoreBlock}>
             <Text style={styles.micro}>SCORE</Text>
-            <Text style={styles.score}>{run.score.toLocaleString()}</Text>
+            <Text accessibilityLabel={`Current score ${run.score}`} style={styles.score}>{run.score.toLocaleString()}</Text>
           </View>
           <View style={styles.comboBlock}>
             <Text style={styles.combo}>
@@ -647,11 +694,11 @@ export default function PlayScreen() {
                   color={COLORS.gold}
                 />
                 <Text style={styles.goalText}>
-                  {runMode === "daily" && progress >= 1 ? "DAILY MARK CLEARED" : objective.label}
+                  {runMode === "daily" ? progress >= 1 ? "DAILY MARK CLEARED" : objective.label : "FINISH THE 60-SECOND RUN"}
                 </Text>
                 <Text style={styles.goalCount}>
-                  {Math.min(objectiveCurrent, objective.target)}/
-                  {objective.target}
+                  {Math.min(goalCurrent, goalTarget)}/
+                  {goalTarget}
                 </Text>
               </View>
               <View style={styles.goalTrack}>
@@ -659,7 +706,7 @@ export default function PlayScreen() {
                   style={[styles.goalFill, { width: `${progress * 100}%` }]}
                 />
               </View>
-              {visibleNotice ? (
+              {visibleNotice && !compactRun ? (
                 <View
                   style={[
                     styles.notice,
@@ -711,7 +758,7 @@ export default function PlayScreen() {
                   />
                 ) : null}
               </View>
-              {elapsed < 5 ? (
+              {elapsed < 5 && !compactRun ? (
                 <Text style={styles.swipeHint}>
                   ← SWIPE TO FOLLOW THE GOLD →
                 </Text>
@@ -749,8 +796,7 @@ export default function PlayScreen() {
                   SMALL BADGER.{"\n"}BIG <Text style={styles.gold}>RUN.</Text>
                 </Text>
                 <Text style={styles.heroCopy}>
-                  Chase the signal. Cut through the noise.{"\n"}How deep can you
-                  dig?
+                  Collect gold. Avoid red noise.{"\n"}Reach 60 seconds. Three hits end your run.
                 </Text>
                 <View style={styles.lobbyFacts}>
                   <Fact icon="routes" label="3 zones" />
@@ -764,7 +810,7 @@ export default function PlayScreen() {
                   onPress={startRun}
                 />
                 <Text style={styles.lobbyHint}>
-                  Swipe or tap arrows to switch lanes
+                  {Platform.OS === "web" ? "Arrows / swipe to steer. Space for Burst. P to pause." : "Swipe or tap arrows to switch lanes"}
                 </Text>
               </View>
             </View>
@@ -796,8 +842,8 @@ export default function PlayScreen() {
                   <Text style={styles.heroCopy}>
                     Your run is frozen. Pick up where you left off.
                   </Text>
-                  <ActionButton label="Back to the run" icon="play" onPress={resume} />
-                  <ActionButton label="End run & save score" icon="flag-checkered" secondary onPress={() => finishRun("quit")} />
+                  <Text style={styles.privateNote} accessibilityLiveRegion="polite">{recordSaving ? "Saving recovery point." : recordError ? "Recovery is only in memory. Retry before closing." : "Run saved for recovery."}</Text>
+                  <SaveStatus />
                 </>
               ) : (
                 <>
@@ -837,6 +883,7 @@ export default function PlayScreen() {
       <Text accessibilityLiveRegion="polite" style={styles.status}>
         {message}
       </Text>
+      {activeRun && recordError ? <Text accessibilityRole="alert" style={styles.privateNote}>Recovery is not saved. Pause to retry before closing the app.</Text> : null}
       {!activeRun ? (
         <>
           <View style={styles.dailyCard}>
@@ -848,17 +895,17 @@ export default function PlayScreen() {
               />
             </View>
             <View style={styles.dailyCopy}>
-              <Text style={styles.micro}>TODAY’S FIELD MARK</Text>
+              <Text style={styles.micro}>{objectiveDay === calendarDay ? "TODAY'S FIELD MARK" : `FIELD MARK / ${objectiveDay}`}</Text>
               <Text style={styles.dailyTitle}>{objective.label}</Text>
               <Text style={styles.dailyNote}>
-                {record.marks.includes(calendarDay)
-                  ? "Cleared today. Go beat your best."
+                {record.marks.includes(objectiveDay)
+                  ? "Field mark cleared. Go beat your best."
                   : "A fresh challenge every day · midnight UTC"}
               </Text>
             </View>
             <MaterialCommunityIcons
               name={
-                record.marks.includes(calendarDay) ? "check-circle" : "chevron-right"
+                record.marks.includes(objectiveDay) ? "check-circle" : "chevron-right"
               }
               size={23}
               color={COLORS.gold}

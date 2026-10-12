@@ -1,4 +1,4 @@
-# MADGER mobile 1.3.0 release checklist
+# MADGER mobile 1.4.0 release checklist
 
 ## Automated source gate
 

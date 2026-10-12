@@ -1,5 +1,19 @@
 # Burrow Run — first playable release
 
+## Native 1.4 completion and recovery
+
+The complete loop remains a 60-second three-zone run, ending on the deadline, loss of all grit, or the player's explicit bank-and-exit action. Classic's HUD shows its completion goal; Daily keeps its optional field mark and original UTC date through recovery and debrief. Replay starts a fresh route for the current date.
+
+The existing private v2 profile now includes one bounded unfinished-run snapshot. Every second and on pause, it records simulation state, countdown, category, date and RNG state without earning scores, XP or achievements. A cold launch offers Continue interrupted run and restores paused. Banking the run clears its snapshot in the same profile write; completed IDs cannot be resurrected, invalid snapshots are discarded while historical scores survive, and reset remains blocked while a recoverable run exists. A sudden foreground termination can rewind to the last one-second checkpoint. Failed writes are reported and retry preserves the current in-memory state.
+
+Ordinary foreground delays up to 500 ms advance in steps no larger than 100 ms, retaining elapsed time and collision checks. Longer stalls pause with no unseen catch-up damage. App/tab backgrounding still pauses, and power timers stay frozen while paused or restored. Matching route content still does not establish identical collision or score outcomes across arbitrary input/frame patterns.
+
+Web shortcuts are accepted only while Play is focused, and resuming requires a focused foreground game. A Daily result from a previous date opens its saved run history instead of an empty new-day board.
+
+At short portrait sizes with standard text scaling, the active game uses compact spacing and a flexible arena so MADGER stays above the controls. Redundant arena notices move to the existing status line; large-text layouts retain scrolling and persistent actions.
+
+Browser regression coverage exercises repeated recovery, persistent small-screen actions, a real controller deadline win and final-grit loss, fresh replay, countdown restoration, UTC rollover and delayed timer callbacks. Android CI additionally force-stops and reopens an unfinished run twice before banking it. Physical Android/iPhone and assistive-technology acceptance remain separate release checks; no attestation is fabricated.
+
 ## Native run categories and launch behavior
 
 Classic and Daily runs bank scores into separate on-device tables. A launch entry from Scores or a mode selection returns a finished run to a fresh lobby, preserving the previous run's stored category. Active or paused runs keep their current mode. Only a qualifying Daily run earns its UTC field mark; Classic runs still earn their normal score and progression.

@@ -8,7 +8,7 @@ import ts from "typescript";
 
 const directory = await mkdtemp(join(tmpdir(), "madger-mode-tests-"));
 after(() => rm(directory, { recursive: true, force: true }));
-for (const name of ["burrowRun", "gameProfile"]) {
+for (const name of ["burrowRun", "runRecovery", "gameProfile"]) {
   const source = await readFile(new URL(`../src/lib/${name}.ts`, import.meta.url), "utf8");
   const compiled = ts.transpileModule(source, { compilerOptions: { module: ts.ModuleKind.ESNext, target: ts.ScriptTarget.ES2022 } }).outputText.replace(/from "\.\/(\w+)"/g, 'from "./$1.mjs"');
   await writeFile(join(directory, name + ".mjs"), compiled);

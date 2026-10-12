@@ -135,6 +135,31 @@ adb('shell', 'am', 'start', '-W', '-n', PACKAGE + '/.MainActivity')
 wait_for('Back to the run')
 capture('05-background-pause')
 passed('Backgrounding automatically pauses the native run')
+
+# Kill the actual process with an unfinished run, twice. Recovery must remain
+# paused, retain the lane and HUD timer, and avoid banking an extra score.
+for attempt in range(2):
+    wait_for('Run saved for recovery.')
+    before = {node.get('text') for node in last_root.iter('node') if re.fullmatch(r'\d+s', node.get('text', ''))}
+    before_score = {node.get('content-desc') for node in last_root.iter('node') if node.get('content-desc', '').startswith('Current score ')}
+    assert before, 'Paused countdown not found'
+    assert before_score, 'Paused score not found'
+    adb('shell', 'am', 'force-stop', PACKAGE)
+    adb('shell', 'am', 'start', '-W', '-n', PACKAGE + '/.MainActivity')
+    tap('Continue interrupted run')
+    wait_for('Back to the run')
+    wait_for('MADGER in the center lane')
+    after = {node.get('text') for node in last_root.iter('node') if re.fullmatch(r'\d+s', node.get('text', ''))}
+    assert before == after, (before, after)
+    after_score = {node.get('content-desc') for node in last_root.iter('node') if node.get('content-desc', '').startswith('Current score ')}
+    assert before_score == after_score, (before_score, after_score)
+    capture(f'05-recovered-{attempt}')
+    if attempt == 0:
+        tap('Back to the run')
+        time.sleep(0.3)
+        click_node(pause_node)
+        wait_for('Back to the run')
+passed('Unfinished native run survives repeated process restarts, frozen with its lane and timer')
 tap('End run & save score')
 wait_for('Score saved on this device ✓')
 capture('06-banked-score')
@@ -149,6 +174,7 @@ passed('The native high-score table displays the banked daily score')
 adb('shell', 'am', 'force-stop', PACKAGE)
 adb('shell', 'am', 'start', '-W', '-n', PACKAGE + '/.MainActivity')
 wait_for('Play Burrow Run')
+assert not any(node.get('content-desc') == 'Continue interrupted run' for node in last_root.iter('node')), 'Completed run was resurrected'
 tap('Scores')
 tap('Today’s run')
 wait_for(rank)

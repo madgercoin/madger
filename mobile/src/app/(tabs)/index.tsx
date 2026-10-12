@@ -18,6 +18,7 @@ export default function HomeScreen() {
   return <Screen>
     <GameHeader title="Keep digging" subtitle="Small badger. Your next big run." />
     <SaveStatus />
+    {profile.checkpoint ? <Card><Text style={gameStyles.section}>Your tunnel is waiting.</Text><Text style={gameStyles.body}>Continue your interrupted {profile.checkpoint.mode === "daily" ? `Daily run (${profile.checkpoint.day})` : "Classic run"}. It stays paused until you resume.</Text><ActionButton label="Continue interrupted run" icon="play" onPress={() => router.push("/play")} /></Card> : null}
     <View style={styles.hero}>
       <Image accessible={false} source={require("../../../assets/images/burrow-tunnel.png")} contentFit="cover" style={StyleSheet.absoluteFill} />
       <LinearGradient colors={["#060B0730", "#080E09", "#080E09"]} locations={[0, 0.62, 1]} style={StyleSheet.absoluteFill} />

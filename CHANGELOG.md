@@ -1,5 +1,12 @@
 # Changelog
 
+## 2026-10-12 - Burrow Run 1.4 recovery and complete play loop
+
+- Recover unfinished Classic and Daily runs after process termination, paused with their route RNG, lane, powers, preparation countdown and original date. Save recovery points every second and on pause; banking clears them alongside the completed record.
+- Advance ordinary delayed frames without dropping game time, pause foreground stalls longer than half a second, and keep Daily debrief objectives tied to the run date across midnight.
+- Clarify the 60-second completion goal and keyboard controls, expose unfinished runs on Home, and keep pause/resume/banking actions visible on small screens.
+- Add interrupted-run, win/loss/restart, midnight, slow-frame and corrupt-storage regressions, including repeated Android process restart. No new dependencies, permissions, telemetry or artwork.
+
 ## 2026-10-11 - Social preflight special-scheme parsing
 
 - Preserve the original protocol of WHATWG shorthand/backslash URL forms before validating MADGER website origins, closing the PR #120 follow-up review finding.

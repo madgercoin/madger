@@ -238,7 +238,8 @@ export function stepSimulation(
     const spawnAt = scheduledSpawns ? elapsed + spawnIn : elapsed;
     items.push(
       ...createWave(random, spawnAt).map((item) => ({
-        ...item,
+        lane: item.lane,
+        type: item.type,
         id: nextId++,
         y: -0.05 + item.offset,
         passed: false,
@@ -293,6 +294,25 @@ export function runRank(run: Pick<RunState, "score" | "hits">) {
   if (run.score >= 10000) return "A";
   if (run.score >= 5000) return "B";
   return "C";
+}
+
+export const MAX_FRAME_GAP = 0.5;
+// Catch up ordinary foreground delays without dropping game time. Long stalls
+// request an explicit pause rather than processing hazards the player never saw.
+export function advanceSimulation(state: Simulation, seconds: number, random = Math.random, scheduledSpawns = false) {
+  if (!Number.isFinite(seconds) || seconds < 0 || seconds > MAX_FRAME_GAP)
+    return { state, events: [] as GameEvent[], ended: null, interrupted: true };
+  let remaining = seconds;
+  let result: ReturnType<typeof stepSimulation> = { state, events: [],
+    ended: state.run.grit <= 0 ? "grit" : state.elapsed >= ROUND_SECONDS ? "time" : null };
+  const events: GameEvent[] = [];
+  while (remaining > 1e-9 && !result.ended) {
+    const delta = Math.min(0.1, remaining);
+    result = stepSimulation(result.state, delta, random, scheduledSpawns);
+    events.push(...result.events);
+    remaining -= delta;
+  }
+  return { ...result, events, interrupted: false };
 }
 
 export function sanitizeRecord(candidate: unknown): FieldRecord {
