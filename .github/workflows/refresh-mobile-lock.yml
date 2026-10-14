@@ -1,0 +1,45 @@
+name: Refresh mobile Expo lockfile
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/refresh-mobile-lock.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: mobile
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: mobile/package-lock.json
+      - name: Resolve the Expo SDK 57 compatibility set
+        run: >
+          npm install --package-lock-only --ignore-scripts
+          @expo/ui@~57.0.24
+          expo@~57.0.29
+          expo-asset@~57.0.20
+          expo-constants@~57.0.22
+          expo-linking@~57.0.13
+          expo-router@~57.0.27
+      - name: Commit the npm-generated dependency graph
+        working-directory: .
+        run: |
+          git diff --check
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add mobile/package.json mobile/package-lock.json
+          git diff --cached --quiet || git commit -m "chore(mobile): refresh Expo SDK 57 compatibility set"
+          git push origin HEAD:main
