@@ -1,5 +1,21 @@
 # Changelog
 
+## 2026-10-15 — Signals discovery and visual reading trails
+
+- Added the image-led Signal Finder with purpose filters for proof, safer crypto, community utility, investor diligence, and brand/culture, plus full-archive search and an unread-only view.
+- Replaced the stale decorative “008” archive numbering with explicit, validated 001–015 dispatch identifiers.
+- Added three topic-related image cards to every dispatch so readers can continue through useful material without returning to the archive first.
+- Kept reading history local to the visitor’s browser, made active filters shareable through the URL, preserved the full no-script archive, and added responsive and reduced-motion behavior.
+- Extended automated validation to enforce Signal Finder controls, current numbering, article-library parity, and related-reading behavior across all 15 dispatches.
+
+## 2026-10-15 — Signals dispatch: playable preview, explicit store boundary
+
+- Published Dispatch 015 as a source-grounded release-status guide for MADGER 1.3.0, with a safe test route, public Android prerelease, exact APK SHA-256 digest, passing Mobile CI evidence, and the failed Google Play access gate.
+- Documented the current distribution boundary in the mobile release checklist: the public development-signed Android preview is available, while Google Play build/submission did not run because the release credential was absent and no Apple distribution is claimed.
+- Added real gameplay captures as image-led archive, homepage, and article controls; expanded the archive to 15 dispatches while preserving the separate beginner buying path.
+- Corrected the stale 13-dispatch hero count, refreshed the October 15 mint-report reference and official-link review date, and added visible publication/revision labels to every dispatch.
+- Updated RSS, sitemap, production allowlist, article navigation, structured metadata, automated parity checks, and deployment smoke tests.
+
 ## 2026-10-12 - Burrow Run 1.4 recovery and complete play loop
 
 - Recover unfinished Classic and Daily runs after process termination, paused with their route RNG, lane, powers, preparation countdown and original date. Save recovery points every second and on pause; banking clears them alongside the completed record.

@@ -36,6 +36,7 @@ export const rootFiles = [
   "blog-diligence-map.html",
   "blog-madger-thesis.html",
   "blog-market-cap-is-not-fdv.html",
+  "blog-mobile-preview-release-status.html",
   "blog-circulating-supply-endpoint.html",
   "blog-verify-without-social.html",
   "blog-proof-you-can-open.html",
@@ -93,7 +94,10 @@ export const assetFiles = [
   "madger_fieldnote_standard_v1.webp",
   "madger_fieldnote_standard_v1_social.jpg",
   "madger_fieldnote_safety_v1.webp",
-  "madger_fieldnote_safety_v1_social.jpg"
+  "madger_fieldnote_safety_v1_social.jpg",
+  "reports/game-upgrade/burrow-gameplay-390.png",
+  "reports/game-upgrade/burrow-lobby-390.png",
+  "reports/game-upgrade/burrow-results-390.png"
 ];
 
 export const distAllowlist = [

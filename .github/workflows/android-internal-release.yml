@@ -1,0 +1,50 @@
+name: Android Internal Release
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - "mobile/**"
+      - ".github/workflows/android-internal-release.yml"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: android-internal-release
+  cancel-in-progress: false
+
+jobs:
+  build-and-submit:
+    name: Build and submit MADGER
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    defaults:
+      run:
+        working-directory: mobile
+    env:
+      EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+      MADGER_ANDROID_DEVICE_QA: ${{ vars.MADGER_ANDROID_DEVICE_QA }}
+      MADGER_IOS_DEVICE_QA: ${{ vars.MADGER_IOS_DEVICE_QA }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: mobile/package-lock.json
+      - name: Confirm Expo release access
+        run: |
+          if [ -z "${EXPO_TOKEN:-}" ]; then
+            echo "::error::The repository EXPO_TOKEN secret is not configured."
+            exit 1
+          fi
+          npx --yes eas-cli@24.3.0 whoami
+      - name: Validate the release source
+        run: |
+          npm ci
+          npm run release:distribution
+          npx expo-doctor
+      - name: Build the persistent-key Play bundle and submit it to internal testing
+        run: npx --yes eas-cli@24.3.0 build --platform android --profile production --non-interactive --wait --auto-submit
