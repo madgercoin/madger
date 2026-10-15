@@ -1,4 +1,4 @@
-# MADGER mobile 1.3.0 release checklist
+# MADGER mobile 1.4.0 release checklist
 
 ## Current public distribution status — 2026-10-15
 

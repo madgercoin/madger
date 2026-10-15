@@ -12,7 +12,7 @@ export function useGameProfile() {
   const store = useContext(Context);
   if (!store) throw new Error("GameProfileProvider is missing");
   const snapshot = useSyncExternalStore(store.subscribe, store.getSnapshot, store.getSnapshot);
-  return { ...snapshot, bankRun: store.bankRun, setPreferences: store.setPreferences, retry: store.retry, resetProgress: store.resetProgress, setRunActive: store.setRunActive };
+  return { ...snapshot, bankRun: store.bankRun, checkpointRun: store.checkpointRun, setPreferences: store.setPreferences, retry: store.retry, resetProgress: store.resetProgress, setRunActive: store.setRunActive };
 }
 export function useGameDay() {
   const [day, setDay] = useState(() => new Date().toISOString().slice(0, 10));

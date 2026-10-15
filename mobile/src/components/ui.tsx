@@ -5,8 +5,8 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { COLORS } from '@/constants/brand';
 
-export function Screen({ children, footer, scroll = true }: PropsWithChildren<{ footer?: ReactNode; scroll?: boolean }>) {
-  return <LinearGradient colors={[COLORS.background, '#181A0D', COLORS.background]} style={styles.flex}><SafeAreaView style={styles.flex} edges={['top', 'left', 'right']}>{scroll ? <ScrollView contentContainerStyle={styles.scroll}>{children}</ScrollView> : <View style={[styles.scroll, styles.flex]}>{children}</View>}{footer ? <View style={styles.footer}>{footer}</View> : null}</SafeAreaView></LinearGradient>;
+export function Screen({ children, footer, scroll = true, compact = false }: PropsWithChildren<{ footer?: ReactNode; scroll?: boolean; compact?: boolean }>) {
+  return <LinearGradient colors={[COLORS.background, '#181A0D', COLORS.background]} style={styles.flex}><SafeAreaView style={styles.flex} edges={['top', 'left', 'right']}>{scroll ? <ScrollView contentContainerStyle={[styles.scroll, compact && styles.compact]}>{children}</ScrollView> : <View style={[styles.scroll, styles.flex, compact && styles.compact]}>{children}</View>}{footer ? <View style={styles.footer}>{footer}</View> : null}</SafeAreaView></LinearGradient>;
 }
 
 export function BrandHeader({ eyebrow, title, subtitle }: { eyebrow?: string; title: string; subtitle?: string }) {
@@ -42,6 +42,7 @@ export const textStyles = StyleSheet.create({ body: { color: COLORS.muted, fontS
 
 const styles = StyleSheet.create({
   flex: { flex: 1 }, scroll: { padding: 20, paddingBottom: 28, gap: 20, width: '100%', maxWidth: 760, alignSelf: 'center' },
+  compact: { paddingTop: 8, paddingBottom: 8, gap: 8 },
   footer: { paddingHorizontal: 20, paddingVertical: 10, borderTopWidth: 1, borderColor: COLORS.border, backgroundColor: COLORS.background, width: '100%', maxWidth: 760, alignSelf: 'center' },
   header: { flexDirection: 'row', alignItems: 'center', gap: 14, paddingTop: 4 }, logo: { width: 68, height: 68, resizeMode: 'contain' }, headerCopy: { flex: 1 },
   eyebrow: { color: COLORS.gold, fontSize: 9, fontWeight: '900', letterSpacing: 1.4, textTransform: 'uppercase' }, title: { color: COLORS.cream, fontSize: 30, lineHeight: 34, fontWeight: '900', letterSpacing: -0.8 }, subtitle: { color: COLORS.muted, fontSize: 14, lineHeight: 20, marginTop: 3 },

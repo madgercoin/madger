@@ -1,4 +1,5 @@
 import { emptyRecord, objectiveFor, objectiveValue, runRank, sanitizeRecord, type FieldRecord, type RunState } from "./burrowRun";
+import { sanitizeCheckpoint, type RunCheckpoint } from "./runRecovery";
 
 export const PROFILE_KEY = "madger-arcade-profile-v2";
 export const LEGACY_RECORD_KEY = "madger-burrow-run-native-v1";
@@ -14,6 +15,7 @@ export type GameProfile = {
   version: 2; record: FieldRecord; highScores: SavedRun[]; recentRuns: SavedRun[];
   legacyBest: number; xp: number; completed: number; perfectRuns: number;
   playedDays: string[]; preferences: Preferences;
+  checkpoint: RunCheckpoint | null;
 };
 export const TRAILS: { id: Trail; label: string; color: string; hint: string }[] = [
   { id: "gold", label: "Original gold", color: "#FFC928", hint: "Yours from the start" },
@@ -23,7 +25,7 @@ export const TRAILS: { id: Trail; label: string; color: string; hint: string }[]
 ];
 export const emptyProfile = (): GameProfile => ({
   version: 2, record: emptyRecord(), highScores: [], recentRuns: [], legacyBest: 0,
-  xp: 0, completed: 0, perfectRuns: 0, playedDays: [],
+  xp: 0, completed: 0, perfectRuns: 0, playedDays: [], checkpoint: null,
   preferences: { sound: false, haptics: true, calm: false, trail: "gold" },
 });
 const integer = (value: unknown, maximum = Number.MAX_SAFE_INTEGER) => typeof value === "number" && Number.isSafeInteger(value) && value >= 0 ? Math.min(value, maximum) : 0;
@@ -69,6 +71,8 @@ export function sanitizeProfile(value: unknown, legacy?: unknown): GameProfile {
       trail: TRAILS.some(t => t.id === preferences.trail) ? preferences.trail : "gold" },
   };
   if (!trailUnlocked(profile, profile.preferences.trail)) profile.preferences.trail = "gold";
+  const checkpoint = sanitizeCheckpoint(p.checkpoint);
+  profile.checkpoint = checkpoint && ![...highScores, ...recentRuns].some(run => run.id === checkpoint.id) ? checkpoint : null;
   return profile;
 }
 export function makeSavedRun(run: RunState, details: { id: string; mode: RunMode; day: string; finishedAt: string; seconds: number; reason: SavedRun["reason"] }): SavedRun {
@@ -79,7 +83,7 @@ export function addCompletedRun(profile: GameProfile, run: SavedRun): GameProfil
   const objective = objectiveFor(Math.floor(Date.parse(run.day) / 86400000));
   const cleared = run.mode === "daily" && objectiveValue(objective, { score: run.score, signals: run.signals, bestStreak: run.bestStreak }) >= objective.target;
   const earned = run.seconds >= 5 ? 20 + Math.floor(run.score / 100) + (run.reason === "time" ? 100 : 0) : 0;
-  return { ...profile, record: { runs: profile.record.runs + 1, signals: profile.record.signals + run.signals,
+  return { ...profile, checkpoint: profile.checkpoint?.id === run.id ? null : profile.checkpoint, record: { runs: profile.record.runs + 1, signals: profile.record.signals + run.signals,
     bestScore: Math.max(profile.record.bestScore, run.score), bestStreak: Math.max(profile.record.bestStreak, run.bestStreak),
     marks: [...new Set([...profile.record.marks, ...(cleared ? [run.day] : [])])].slice(-30) },
     highScores: boundScores([...profile.highScores, run]), recentRuns: [run, ...profile.recentRuns].slice(0, 20),
@@ -119,4 +123,7 @@ export function achievementsFor(profile: GameProfile) {
   ];
 }
 export function seedForDay(day: string) { let seed = 2166136261; for (const char of day) { seed ^= char.charCodeAt(0); seed = Math.imul(seed, 16777619); } return seed >>> 0; }
-export function randomFromSeed(initial: number) { let seed = initial >>> 0; return () => { seed = (Math.imul(seed, 1664525) + 1013904223) >>> 0; return seed / 4294967296; }; }
+export function randomFromSeed(initial: number) {
+  let seed = initial >>> 0;
+  return Object.assign(() => { seed = (Math.imul(seed, 1664525) + 1013904223) >>> 0; return seed / 4294967296; }, { getState: () => seed });
+}

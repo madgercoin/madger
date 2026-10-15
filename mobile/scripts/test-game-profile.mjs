@@ -7,7 +7,7 @@ import test, { after } from "node:test";
 import ts from "typescript";
 const directory = await mkdtemp(join(tmpdir(), "madger-profile-tests-"));
 after(() => rm(directory, { recursive: true, force: true }));
-for (const name of ["burrowRun", "gameProfile", "gameStore"]) {
+for (const name of ["burrowRun", "runRecovery", "gameProfile", "gameStore"]) {
   const source = await readFile(new URL(`../src/lib/${name}.ts`, import.meta.url), "utf8");
   const compiled = ts.transpileModule(source, { compilerOptions: { module: ts.ModuleKind.ESNext, target: ts.ScriptTarget.ES2022 } }).outputText.replace(/from "\.\/(\w+)"/g, 'from "./$1.mjs"');
   await writeFile(join(directory, name + ".mjs"), compiled);
@@ -15,11 +15,115 @@ for (const name of ["burrowRun", "gameProfile", "gameStore"]) {
 const p = await import(pathToFileURL(join(directory, "gameProfile.mjs")));
 const { createGameStore } = await import(pathToFileURL(join(directory, "gameStore.mjs")));
 const rules = await import(pathToFileURL(join(directory, "burrowRun.mjs")));
+const { sanitizeCheckpoint } = await import(pathToFileURL(join(directory, "runRecovery.mjs")));
 const run = (id, score = 5000, mode = "classic", day = "2026-10-10") => p.makeSavedRun({ ...rules.freshRun(), score, signals: 30, bestStreak: 15 }, { id, mode, day, finishedAt: `${day}T12:00:00.000Z`, seconds: 60, reason: "time" });
 const memoryStorage = () => {
   const values = new Map();
   return { values, async getItem(key) { return values.get(key) ?? null; }, async multiSet(entries) { for (const [key, value] of entries) values.set(key, value); } };
 };
+
+const checkpoint = (id = "interrupted") => ({ version: 1, id, mode: "daily", day: "2026-10-10", stage: "running", countdown: 0,
+  randomState: p.seedForDay("2026-10-10"), simulation: { ...rules.freshSimulation(), elapsed: 12,
+    run: { ...rules.freshRun(), score: 600, signals: 5, streak: 5, bestStreak: 5, shield: 4, magnet: 2, energy: 40 } } });
+
+test("recovery restores route RNG, powers and state without banking progression", async () => {
+  const storage = memoryStorage(), first = createGameStore(storage);
+  await first.init();
+  const random = p.randomFromSeed(1234);
+  for (let i = 0; i < 19; i++) random();
+  const value = { ...checkpoint(), randomState: random.getState() };
+  await first.checkpointRun(value);
+  assert.equal(first.getSnapshot().profile.record.runs, 0);
+  assert.equal(first.getSnapshot().profile.xp, 0);
+  const reopened = createGameStore(storage);
+  await reopened.init();
+  assert.deepEqual(reopened.getSnapshot().profile.checkpoint, value);
+  assert.equal(reopened.getSnapshot().activeRun, true);
+  reopened.setRunActive(false);
+  await reopened.resetProgress();
+  assert.deepEqual(reopened.getSnapshot().profile.checkpoint, value, "a recoverable run protects progress on Home/Settings too");
+  const restoredRandom = p.randomFromSeed(value.randomState);
+  for (let i = 0; i < 50; i++) assert.equal(restoredRandom(), random());
+});
+
+test("completion replaces recovery atomically, cannot resurrect or bank the same run twice", async () => {
+  const storage = memoryStorage(), store = createGameStore(storage);
+  await store.init();
+  await store.checkpointRun(checkpoint());
+  await store.bankRun(run("interrupted", 3500, "daily"));
+  assert.equal(store.getSnapshot().profile.checkpoint, null);
+  assert.equal(store.getSnapshot().activeRun, false);
+  await store.checkpointRun(checkpoint());
+  await store.bankRun(run("interrupted", 3500, "daily"));
+  const reopened = createGameStore(storage); await reopened.init();
+  assert.equal(reopened.getSnapshot().profile.checkpoint, null);
+  assert.equal(reopened.getSnapshot().profile.record.runs, 1);
+  assert.equal(reopened.getSnapshot().profile.recentRuns.length, 1);
+  assert.equal(p.sanitizeProfile({ ...reopened.getSnapshot().profile, checkpoint: checkpoint() }).checkpoint, null);
+});
+
+test("an actual seeded simulation continues identically after cold recovery with the same frames and inputs", async () => {
+  const random = p.randomFromSeed(p.seedForDay("2026-10-10"));
+  let live = rules.freshSimulation();
+  for (let i = 0; i < 360; i++) live = rules.advanceSimulation(live, 0.033, random, true).state;
+  assert.ok(live.run.grit > 0);
+  const storage = memoryStorage(), store = createGameStore(storage); await store.init();
+  await store.checkpointRun({ ...checkpoint(), simulation: live, randomState: random.getState() });
+  const reopened = createGameStore(storage); await reopened.init();
+  const point = reopened.getSnapshot().profile.checkpoint;
+  assert.deepEqual(point.simulation, live);
+  const recoveredRandom = p.randomFromSeed(point.randomState);
+  let recovered = point.simulation;
+  for (let i = 0; i < 60; i++) {
+    const left = rules.advanceSimulation(live, 0.033, random, true);
+    const right = rules.advanceSimulation(recovered, 0.033, recoveredRandom, true);
+    assert.deepEqual(right, left);
+    live = left.state; recovered = right.state;
+  }
+  assert.equal(recoveredRandom.getState(), random.getState());
+});
+
+test("failed completion retains the last durable recovery point and retry clears it", async () => {
+  const storage = memoryStorage(); let fail = false;
+  const writer = { ...storage, async multiSet(entries) { if (fail) throw Error("disk full"); return storage.multiSet(entries); } };
+  const store = createGameStore(writer); await store.init(); await store.checkpointRun(checkpoint());
+  fail = true; await store.bankRun(run("interrupted"));
+  assert.ok(store.getSnapshot().error);
+  const reopened = createGameStore(storage); await reopened.init();
+  assert.equal(reopened.getSnapshot().profile.checkpoint.id, "interrupted");
+  assert.equal(reopened.getSnapshot().profile.record.runs, 0);
+  fail = false; await store.retry();
+  const recovered = createGameStore(storage); await recovered.init();
+  assert.equal(recovered.getSnapshot().profile.checkpoint, null);
+  assert.equal(recovered.getSnapshot().profile.record.runs, 1);
+});
+
+test("stale completion and a second controller cannot overwrite the current recovery point", async () => {
+  const storage = memoryStorage(), store = createGameStore(storage); await store.init();
+  await store.checkpointRun(checkpoint("current"));
+  await store.checkpointRun(checkpoint("replacement"));
+  assert.equal(store.getSnapshot().profile.checkpoint.id, "current");
+  await store.bankRun(run("older-finish"));
+  assert.equal(store.getSnapshot().profile.checkpoint.id, "current");
+  assert.equal(store.getSnapshot().activeRun, true);
+  await store.bankRun(run("current"));
+  assert.equal(store.getSnapshot().profile.checkpoint, null);
+  assert.equal(store.getSnapshot().profile.record.runs, 2);
+});
+
+test("corrupt and terminal checkpoints are rejected while old records survive", () => {
+  const value = checkpoint();
+  assert.deepEqual(sanitizeCheckpoint(value), value);
+  for (const broken of [null, { ...value, randomState: -1 }, { ...value, day: "2026-02-30" },
+    { ...value, simulation: { ...value.simulation, elapsed: 60 } },
+    { ...value, simulation: { ...value.simulation, lane: 7 } },
+    { ...value, simulation: { ...value.simulation, run: { ...value.simulation.run, grit: 0 } } },
+    { ...value, simulation: { ...value.simulation, entities: [{ id: 0, lane: 1, y: NaN, type: "signal", passed: false }] } }]) {
+    assert.equal(sanitizeCheckpoint(broken), null);
+    const profile = p.sanitizeProfile({ ...p.emptyProfile(), record: { ...rules.emptyRecord(), bestScore: 1234 }, checkpoint: broken });
+    assert.equal(profile.checkpoint, null); assert.equal(profile.record.bestScore, 1234);
+  }
+});
 
 // Observe actual spawns from stepSimulation. Undo only the movement applied in
 // that frame to recover authored offsets; scores and collisions are not compared.

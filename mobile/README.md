@@ -9,6 +9,7 @@ The native MADGER arcade app, built with Expo SDK 57 and React Native.
 - Separate Classic and daily seeded high scores, 20-run history, personal-best sharing, XP levels, eight achievements, and four earned cosmetic trails
 - Private on-device scores and preferences that survive app restarts; earlier field records are preserved on upgrade
 - Persistent sound, haptic, and calm settings, with system reduced motion respected
+- Interrupted-run recovery restores the original route, powers, lane and countdown in a paused state; completed runs cannot be banked twice
 - Safe progress reset and recovery actions for storage failures
 - Official community links available in Settings; no account, wallet, ads, or purchase needed to play
 - Android adaptive icon and opaque iOS store icon built from the official mark
@@ -45,7 +46,7 @@ Run these commands from `mobile/`. The repository-root `.easignore` restricts no
 - Complete a Burrow Run on both a physical Android device and iPhone; verify backgrounding pauses the run and local records survive restart.
 - Review `PRIVACY.md` and the live privacy-policy URL.
 
-## Burrow Run 1.3
+## Burrow Run 1.4
 
 The Home screen leads directly into Classic play, the seeded daily route, saved scores, and earned rewards. Runs last 60 seconds and cross three increasingly fast tunnel zones. Collect signal trails to build the multiplier and charge a three-second Dig Burst: it doubles signal points and smashes noise. Shields cover one hit for up to eight seconds; magnets collect signals in every lane for six seconds. The first six seconds teach collecting before hazards spawn. Movement, pause/resume, countdown, power timers, and persistence are covered by rule and browser checks. Classic and daily scores are separate; the last 20 runs, XP, achievements, and trails are saved locally. End a paused run to bank its current score. Sound is off by default; haptics and calm effects are player controlled and persist across restarts. System reduced motion is respected.
 

@@ -20,3 +20,7 @@
 **/*.tsbuildinfo
 **/.DS_Store
 /mobile/dist-android
+/mobile/browser-smoke
+/mobile/mode-smoke
+/mobile/completion-smoke
+/mobile/scripts/__pycache__

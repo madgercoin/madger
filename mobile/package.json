@@ -1,7 +1,7 @@
 {
   "name": "madger-mobile",
   "main": "expo-router/entry",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "packageManager": "npm@10.9.9",
   "dependencies": {
     "@expo/ui": "~57.0.25",
@@ -46,6 +46,7 @@
     "uuid": "11.1.1"
   },
   "scripts": {
+    "postinstall": "node scripts/patch-uri-decoder.mjs",
     "start": "expo start",
     "reset-project": "node ./scripts/reset-project.js",
     "android": "expo start --android",
@@ -53,7 +54,8 @@
     "web": "expo start --web",
     "lint": "expo lint",
     "typecheck": "tsc --noEmit",
-    "validate": "npm run test:game && npm run test:daily-dig && npm run test:profile && npm run typecheck && npm run lint",
+    "validate": "npm run test:game && npm run test:daily-dig && npm run test:profile && npm run test:dependencies && npm run typecheck && npm run lint",
+    "test:dependencies": "node --test scripts/test-uri-decoder.mjs",
     "test:game": "node --test scripts/test-burrow-run.mjs",
     "test:daily-dig": "node --test scripts/test-daily-dig.mjs",
     "release:metadata": "node scripts/release-readiness.mjs",

@@ -17,6 +17,25 @@ const javascript = ts.transpileModule(source, {
 const rules = await import(
   `data:text/javascript;base64,${Buffer.from(javascript).toString("base64")}`
 );
+
+test("ordinary slow frames consume their full time; stalls pause without unseen damage", () => {
+  let state = { ...rules.freshSimulation(), spawnIn: 1.4, run: { ...rules.freshRun(), shield: 4, magnet: 3, burst: 2 } };
+  let split = state;
+  for (let i = 0; i < 3; i++) split = rules.stepSimulation(split, 0.1, () => 0.5).state;
+  const slow = rules.advanceSimulation(state, 0.3, () => 0.5);
+  assert.ok(Math.abs(slow.state.elapsed - 0.3) < 1e-9);
+  assert.ok(Math.abs(slow.state.elapsed - split.elapsed) < 1e-9);
+  assert.deepEqual({ ...slow.state, elapsed: split.elapsed }, split);
+  for (const seconds of [1, Infinity, NaN, -1]) {
+    const interrupted = rules.advanceSimulation(state, seconds);
+    assert.equal(interrupted.interrupted, true); assert.equal(interrupted.state, state);
+    assert.deepEqual(interrupted.events, []);
+  }
+  state = { ...state, elapsed: 59.9 };
+  const ending = rules.advanceSimulation(state, 0.3);
+  assert.equal(ending.ended, "time"); assert.equal(ending.state.elapsed, 60);
+  assert.equal(rules.advanceSimulation(ending.state, 0.3).state, ending.state);
+});
 test("native rules preserve scoring, grit, and phase boundaries", () => {
   let run = rules.freshRun();
   for (let index = 0; index < 5; index += 1)

@@ -73,6 +73,7 @@ with sync_playwright() as p:
     passed('Swipe gesture moves the runner')
     page.get_by_role('button',name='Pause run').click()
     expect(page.get_by_role('button',name='Back to the run')).to_be_visible()
+    expect(page.get_by_text('Run saved for recovery.',exact=True)).to_be_visible()
     timer_text=page.locator('body').inner_text()
     page.clock.run_for(5000)
     assert page.locator('body').inner_text()==timer_text
@@ -81,10 +82,13 @@ with sync_playwright() as p:
     page.clock.run_for(1000)
     page.screenshot(path=str(OUT/'burrow-gameplay-390.png'))
     page.get_by_role('tab',name='Home',exact=True).click()
+    page.keyboard.press('p')
+    page.clock.run_for(1000)
     page.get_by_role('tab',name='Play',exact=True).click()
     expect(page.get_by_role('button',name='Back to the run')).to_be_visible()
     page.get_by_role('button',name='Back to the run').click()
     passed('Leaving the Play tab automatically pauses the run')
+    passed('Keyboard shortcuts cannot resume an offscreen game')
     # Complete a real simulation with a reproducible stream; move occasionally.
     for i in range(125):
         if page.get_by_role('button',name='Dig again').count():
@@ -106,7 +110,7 @@ with sync_playwright() as p:
     expect(page.get_by_role('button',name='Pause run')).to_be_visible()
     passed('Replay starts a fresh run')
     page.reload()
-    expect(page.get_by_role('button',name='Let’s dig')).to_be_enabled()
+    expect(page.get_by_role('button',name='Back to the run')).to_be_enabled()
     saved_again=page.evaluate('localStorage.getItem("madger-burrow-run-native-v1")')
     assert json.loads(saved_again)==saved
     passed('Field record survives a reload')
@@ -114,7 +118,7 @@ with sync_playwright() as p:
     expect(page.get_by_role('button',name='Play Burrow Run')).to_be_visible()
     page.screenshot(path=str(OUT/'madger-home-390.png'))
     page.get_by_role('button',name='Play Burrow Run').click()
-    expect(page.get_by_role('button',name='Let’s dig')).to_be_enabled()
+    expect(page.get_by_role('button',name='Back to the run')).to_be_enabled()
     passed('Home offers a direct game entry')
     profile=page.evaluate('JSON.parse(localStorage.getItem("madger-arcade-profile-v2"))')
     assert profile['record']==saved
@@ -147,6 +151,12 @@ with sync_playwright() as p:
     expect(page.get_by_role('switch',name='Calm effects',exact=True)).to_have_attribute('aria-checked','true')
     assert page.evaluate('JSON.parse(localStorage.getItem("madger-arcade-profile-v2")).record')==saved
     passed('Scores and sound/haptic/calm preferences survive a full page reload')
+    page.get_by_role('tab',name='Play',exact=True).click()
+    page.get_by_role('button',name='End run & save score',exact=True).click()
+    expect(page.get_by_role('button',name='Dig again')).to_be_enabled()
+    recovered=page.evaluate('JSON.parse(localStorage.getItem("madger-arcade-profile-v2"))')
+    assert recovered['record']['runs']==2 and recovered['checkpoint'] is None
+    passed('Recovered replay banks once and clears its recovery point')
     page.get_by_role('tab',name='Scores',exact=True).click()
     page.get_by_role('button',name='High scores',exact=True).click()
     page.get_by_role('button',name='Today’s run',exact=True).click()
@@ -163,7 +173,7 @@ with sync_playwright() as p:
     page.get_by_role('button',name='End run & save score',exact=True).click()
     expect(page.get_by_text('Score saved on this device ✓',exact=True)).to_be_visible()
     daily_profile=page.evaluate('JSON.parse(localStorage.getItem("madger-arcade-profile-v2"))')
-    assert daily_profile['record']['runs']==2
+    assert daily_profile['record']['runs']==3
     assert daily_profile['recentRuns'][0]['mode']=='daily' and daily_profile['recentRuns'][0]['reason']=='quit'
     page.get_by_role('button',name='See high scores').click()
     expect(page.get_by_label(re.compile(r'^Rank 1, '))).to_be_visible()
@@ -189,6 +199,10 @@ with sync_playwright() as p:
         page.clock.run_for(1000)
         page.screenshot(path=str(OUT/f'burrow-paused-{width}.png'))
         page.reload()
+        expect(page.get_by_role('button',name='Back to the run')).to_be_enabled()
+        page.get_by_role('button',name='End run & save score').click()
+        expect(page.get_by_role('button',name='Dig again')).to_be_enabled()
+        page.get_by_role('button',name='Classic run',exact=True).click()
         expect(page.get_by_role('button',name='Let’s dig')).to_be_enabled()
         passed(f'{width}px lobby, gameplay, controls, and pause dialog fit')
     # A fresh browser context reproduces a real upgrade from v1 data.

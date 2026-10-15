@@ -135,6 +135,59 @@ adb('shell', 'am', 'start', '-W', '-n', PACKAGE + '/.MainActivity')
 wait_for('Back to the run')
 capture('05-background-pause')
 passed('Backgrounding automatically pauses the native run')
+
+# Kill while genuinely running, without requesting a pause/save. Waiting over
+# three seconds makes an old pause-only snapshot insufficient to pass recovery.
+wait_for('Run saved for recovery.')
+paused_seconds = {int(node.get('text')[:-1]) for node in last_root.iter('node') if re.fullmatch(r'\d+s', node.get('text', ''))}
+assert len(paused_seconds) == 1, paused_seconds
+tap('Back to the run')
+time.sleep(3.2)
+scan_started = time.monotonic()
+root = hierarchy()
+assert any(node.get('content-desc') == 'Pause run' for node in root.iter('node')), 'Foreground run was not active'
+assert not any(node.get('content-desc') == 'Back to the run' for node in root.iter('node')), 'Foreground run had paused'
+live_seconds = {int(node.get('text')[:-1]) for node in root.iter('node') if re.fullmatch(r'\d+s', node.get('text', ''))}
+assert len(live_seconds) == 1, live_seconds
+adb('shell', 'am', 'force-stop', PACKAGE)
+observation_delay = time.monotonic() - scan_started
+adb('shell', 'am', 'start', '-W', '-n', PACKAGE + '/.MainActivity')
+tap('Continue interrupted run')
+wait_for('Back to the run')
+recovered_seconds = {int(node.get('text')[:-1]) for node in last_root.iter('node') if re.fullmatch(r'\d+s', node.get('text', ''))}
+assert len(recovered_seconds) == 1, recovered_seconds
+live, recovered, earlier_pause = next(iter(live_seconds)), next(iter(recovered_seconds)), next(iter(paused_seconds))
+# One-second checkpoint cadence plus integer HUD rounding permits at most two
+# displayed seconds of rollback. Scanning/force-stop can consume foreground time.
+assert live - int(observation_delay + 1) <= recovered <= live + 2, (live, recovered, observation_delay)
+assert recovered <= earlier_pause - 2, 'Recovered only the old paused snapshot; periodic checkpoint did not advance'
+capture('05-foreground-recovered')
+passed('Foreground process kill recovers a periodic checkpoint with at most two HUD seconds of rollback')
+
+# Kill the actual process with an unfinished run, twice. Recovery must remain
+# paused, retain the lane and HUD timer, and avoid banking an extra score.
+for attempt in range(2):
+    wait_for('Run saved for recovery.')
+    before = {node.get('text') for node in last_root.iter('node') if re.fullmatch(r'\d+s', node.get('text', ''))}
+    before_score = {node.get('content-desc') for node in last_root.iter('node') if node.get('content-desc', '').startswith('Current score ')}
+    assert before, 'Paused countdown not found'
+    assert before_score, 'Paused score not found'
+    adb('shell', 'am', 'force-stop', PACKAGE)
+    adb('shell', 'am', 'start', '-W', '-n', PACKAGE + '/.MainActivity')
+    tap('Continue interrupted run')
+    wait_for('Back to the run')
+    wait_for('MADGER in the center lane')
+    after = {node.get('text') for node in last_root.iter('node') if re.fullmatch(r'\d+s', node.get('text', ''))}
+    assert before == after, (before, after)
+    after_score = {node.get('content-desc') for node in last_root.iter('node') if node.get('content-desc', '').startswith('Current score ')}
+    assert before_score == after_score, (before_score, after_score)
+    capture(f'05-recovered-{attempt}')
+    if attempt == 0:
+        tap('Back to the run')
+        time.sleep(0.3)
+        click_node(pause_node)
+        wait_for('Back to the run')
+passed('Unfinished native run survives repeated process restarts, frozen with its lane and timer')
 tap('End run & save score')
 wait_for('Score saved on this device ✓')
 capture('06-banked-score')
@@ -149,8 +202,11 @@ passed('The native high-score table displays the banked daily score')
 adb('shell', 'am', 'force-stop', PACKAGE)
 adb('shell', 'am', 'start', '-W', '-n', PACKAGE + '/.MainActivity')
 wait_for('Play Burrow Run')
+assert not any(node.get('content-desc') == 'Continue interrupted run' for node in last_root.iter('node')), 'Completed run was resurrected'
 tap('Scores')
+wait_for('Your scores')
 tap('Today’s run')
+wait_for('Play today’s run')
 wait_for(rank)
 capture('08-scores-after-restart')
 passed('The high score survives a full native app process restart')

@@ -5,6 +5,10 @@ node_modules/
 dist/
 dist-android/
 web-build/
+browser-smoke/
+mode-smoke/
+completion-smoke/
+scripts/__pycache__/
 expo-env.d.ts
 .kotlin/
 *.orig.*

@@ -17,7 +17,7 @@ concurrency:
 
 jobs:
   build-and-submit:
-    name: Build and submit MADGER 1.3.0
+    name: Build and submit MADGER
     runs-on: ubuntu-latest
     timeout-minutes: 90
     defaults:
@@ -25,6 +25,8 @@ jobs:
         working-directory: mobile
     env:
       EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+      MADGER_ANDROID_DEVICE_QA: ${{ vars.MADGER_ANDROID_DEVICE_QA }}
+      MADGER_IOS_DEVICE_QA: ${{ vars.MADGER_IOS_DEVICE_QA }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -42,7 +44,7 @@ jobs:
       - name: Validate the release source
         run: |
           npm ci
-          npm run release:check
+          npm run release:distribution
           npx expo-doctor
       - name: Build the persistent-key Play bundle and submit it to internal testing
         run: npx --yes eas-cli@24.3.0 build --platform android --profile production --non-interactive --wait --auto-submit

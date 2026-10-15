@@ -24,6 +24,7 @@ expo-env.d.ts
 
 # debug
 mode-smoke/
+completion-smoke/
 scripts/__pycache__/
 npm-debug.*
 yarn-debug.*
