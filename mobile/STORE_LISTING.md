@@ -1,53 +1,59 @@
-# Store Listing Draft
+# MADGER 1.4 Google Play listing
 
 ## App name
 
 MADGER
 
-## Subtitle / short description
+## Short description
 
-Run the Burrow. Find your people.
+Dodge, collect and Dig Burst through a 60-second arcade challenge.
 
 ## Full description
 
-Enter the Burrow with the official MADGER app.
+One badger. Three tunnel zones. Sixty seconds to make your mark.
 
-Play the native Burrow Run game, follow the official purchase path, learn how to buy safely if you are new to crypto, verify the exact official Solana mint, discover official community channels, and build private progress that stays on your device.
+Take MADGER into Burrow Run, a fast arcade challenge built for quick runs and another try. Swipe or tap to switch lanes, collect glowing signals, dodge the noise, and keep your streak alive as the tunnel gets faster.
 
-MADGER never asks for a seed phrase or private key. The app does not connect to wallets, execute transactions, sell tokens, or provide financial advice.
+BUILD YOUR RUN
+Every five signals increases your multiplier. Grab a shield to cover a hit, use a magnet to collect across all three lanes, and charge Dig Burst for three seconds of double points and protection.
 
-Highlights:
-- Cinematic Burrow Run arcade game with a running MADGER character
-- Swipe or tap to dodge noise and collect glowing signal trails
-- Shield and magnet pickups, close-dodge bonuses, and a charged Dig Burst
-- Opt-in original sound effects, haptics, and calm effects
-- Personal-best celebrations, run ranks, and instant replay
-- Three escalating tunnel zones and rotating daily field marks
-- Private local game record with an in-game reset
-- Equal direct-buy and beginner-guide actions
-- Step-by-step wallet, SOL, verification, and swap guidance
-- Exact mint copy and share tools
-- Official Telegram, X, website, and litepaper links
-- Local Daily Dig streak with no account required
+FIND YOUR CHALLENGE
+Classic gives you a fresh run each time. The daily challenge repeats its route until midnight UTC, with a separate high-score board and a daily field mark to chase.
 
-Dig past the noise.
+KEEP YOUR PROGRESS
+Save your best scores and last 20 runs, earn XP, complete eight achievements, and unlock four cosmetic trails through play. An interrupted run can be recovered from its latest saved checkpoint and resumes only when you are ready.
 
-## Keywords
+PLAY YOUR WAY
+Use swipe or button controls. Choose sound, haptics and calm effects in Settings. Pause any time, bank your current score, or jump straight into another run.
 
-MADGER, arcade, runner, badger, Burrow Run, community, verification
+No account, ads or payment is needed to play. Scores and progress stay on your device. There are no cash prizes, token rewards or remote leaderboards.
 
-## Category
+Official MADGER community links are available in Settings.
 
-Primary: Entertainment
+## Google Play category
 
-Secondary: Social Networking
+Game / Arcade
 
 ## Support and policy
 
-- Support: https://madgercoin.com
+- Support website: https://madgercoin.com
 - Privacy policy: https://madgercoin.com/privacy.html
-- Contact: madgercoin@gmail.com
+- Support email: madgercoin@gmail.com
 
-## Review notes
+## Release notes
 
-No login is required and no wallet is connected. The Daily Dig and Burrow Run record use only on-device storage. Burrow Run has no ads, purchases, prizes, token rewards, remote leaderboard, or analytics. All external links are user initiated. The Buy screen opens the official website guide or a fixed SOL-to-MADGER Raydium route; all transactions occur outside the app.
+- Recover interrupted runs with your route, powers and lane preserved.
+- Improved pause and resume controls on small screens.
+- More consistent timing during brief device slowdowns.
+- Daily results keep their original challenge date.
+- Classic and daily scores, achievements and settings remain saved locally.
+
+## App access / review notes
+
+No sign-in or special access is required. The four main tabs are Home, Play, Scores and Settings. Gameplay is local and does not require a wallet. No advertising, in-app purchases, prizes, token rewards, remote leaderboard or game telemetry is implemented.
+
+Optional community, verification and buying-information routes remain accessible in the application. External links are user initiated. Any purchase or swap route opens an external service; the app does not connect to wallets, execute transactions or request private keys. Store declarations must account for those informational routes as well as the primary game.
+
+Progress and unfinished-run checkpoints are stored locally. Score sharing uses the operating system share sheet only when the player chooses to share. Clearing app storage or uninstalling removes local progress.
+
+This document prepares listing text. It does not attest to Google Play submission, approval, production eligibility or completed physical-device testing.
