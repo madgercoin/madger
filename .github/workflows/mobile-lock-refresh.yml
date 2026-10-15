@@ -1,0 +1,30 @@
+name: Refresh mobile dependency lock
+on:
+  pull_request:
+    paths:
+      - ".github/workflows/mobile-lock-refresh.yml"
+permissions:
+  contents: read
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    defaults:
+      run:
+        working-directory: mobile
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm ci
+      - name: Apply the exact Expo compatibility patches
+        run: npx expo install '@expo/ui@~57.0.25' 'expo@~57.0.30' 'expo-router@~57.0.28' --npm
+      - name: Return refreshed public manifests for the release branch
+        run: |
+          node --input-type=module <<'JS'
+          import { readFileSync } from 'node:fs';
+          for (const file of ['package.json', 'package-lock.json']) {
+            console.log('MADGER_MANIFEST ' + file + ' ' + JSON.stringify(JSON.parse(readFileSync(file, 'utf8'))));
+          }
+          JS
