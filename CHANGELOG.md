@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026-10-15 — Signals dispatch: playable preview, explicit store boundary
+
+- Published Dispatch 015 as a source-grounded release-status guide for MADGER 1.3.0, with a safe test route, public Android prerelease, exact APK SHA-256 digest, passing Mobile CI evidence, and the failed Google Play access gate.
+- Documented the current distribution boundary in the mobile release checklist: the public development-signed Android preview is available, while Google Play build/submission did not run because the release credential was absent and no Apple distribution is claimed.
+- Added real gameplay captures as image-led archive, homepage, and article controls; expanded the archive to 15 dispatches while preserving the separate beginner buying path.
+- Corrected the stale 13-dispatch hero count, refreshed the October 15 mint-report reference and official-link review date, and added visible publication/revision labels to every dispatch.
+- Updated RSS, sitemap, production allowlist, article navigation, structured metadata, automated parity checks, and deployment smoke tests.
+
 ## 2026-10-11 - Social preflight special-scheme parsing
 
 - Preserve the original protocol of WHATWG shorthand/backslash URL forms before validating MADGER website origins, closing the PR #120 follow-up review finding.

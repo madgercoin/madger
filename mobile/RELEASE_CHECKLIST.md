@@ -1,5 +1,12 @@
 # MADGER mobile 1.3.0 release checklist
 
+## Current public distribution status — 2026-10-15
+
+- The verified Android preview is public as [prerelease `mobile-v1.3.0-preview.59`](https://github.com/madgercoin/madger/releases/tag/mobile-v1.3.0-preview.59). It uses a generated development signing key and is not a Google Play release.
+- [Mobile CI run 38601277824](https://github.com/madgercoin/madger/actions/runs/38601277824) passed source validation, Expo Doctor, Android/iOS bundle exports, browser game and persistence checks, standalone Android compilation, permission inspection, Android emulator runtime checks, and prerelease publication.
+- [Android Internal Release run 38601277707](https://github.com/madgercoin/madger/actions/runs/38601277707) failed at the Expo access gate because `EXPO_TOKEN` was not configured. Its production build and Google Play internal-track submission step did not run. Do not describe 1.3.0 as submitted to, available in, or approved by Google Play on the basis of that workflow.
+- No Apple App Store or TestFlight distribution is claimed by the public record reviewed on October 15.
+
 ## Automated source gate
 
 Use EAS CLI 24.3.0 or newer. Run `npm ci`, then `npm run release:check`. This validates Burrow Run behavior, TypeScript, lint, Expo dependency compatibility, production export, release metadata, and the CRC integrity of every configured native PNG.

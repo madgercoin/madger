@@ -23,6 +23,7 @@ const checks = [
   ["/collaborators", 200],
   ["/privacy", 200],
   ["/blog", 200],
+  ["/blog-mobile-preview-release-status", 200],
   ["/blog-circulating-supply-endpoint", 200],
   ["/blog-verify-without-social", 200],
   ["/blog-market-cap-is-not-fdv", 200],
@@ -43,7 +44,10 @@ const checks = [
   ["/assets/madger_hero_burrow_v7.jpg", 200],
   ["/assets/madger_official_logo_transparent_192.png", 200],
   ["/assets/madger_official_logo_transparent_512.png", 200],
-  ["/assets/madger_v6_community_welcome.webp", 200]
+  ["/assets/madger_v6_community_welcome.webp", 200],
+  ["/assets/reports/game-upgrade/burrow-gameplay-390.png", 200],
+  ["/assets/reports/game-upgrade/burrow-lobby-390.png", 200],
+  ["/assets/reports/game-upgrade/burrow-results-390.png", 200]
 ];
 const redirects = [
   ["/app.html", "/app"],
@@ -182,15 +186,15 @@ if (game) {
   }
 }
 
-const latestDispatch = responses.get("/blog-circulating-supply-endpoint");
+const latestDispatch = responses.get("/blog-mobile-preview-release-status");
 if (latestDispatch) {
-  const contentChecks = [[latestDispatch.body.includes("Dispatch 014"), "dispatch number"],[latestDispatch.body.includes("OCT 8, 2026") && latestDispatch.body.includes("REVISED"), "visible publication and revision dates"],[latestDispatch.body.includes("/api/circulating-supply"), "live endpoint"],[latestDispatch.body.includes("supply-endpoint.mjs"), "production source"],[latestDispatch.body.includes("test/supply-endpoint.test.mjs"), "behavioral tests"],[latestDispatch.body.includes("reports/token/circulating-2026-10-06.json"), "five-lock evidence"],[latestDispatch.body.includes("reports/token/latest.json"), "finalized token report"],[latestDispatch.body.includes("solscan.io/token/"), "independent explorer source"],[latestDispatch.body.includes("lock.jup.ag/token/"), "Jupiter Lock source"],[latestDispatch.body.includes(officialMint), "official mint"],[latestDispatch.body.includes("does not guarantee"), "risk boundary"],[latestDispatch.body.includes("temporarily unavailable") && latestDispatch.body.includes("March 12, 2027"), "failure and vesting boundaries"],[latestDispatch.body.includes('href="/buy"'), "separate beginner buying path"],[latestDispatch.body.includes('href="/commons"'), "no-purchase community utility"]];
+  const contentChecks = [[latestDispatch.body.includes("Dispatch 015"), "dispatch number"],[latestDispatch.body.includes("OCT 15, 2026") && latestDispatch.body.includes("REVISED"), "visible publication and revision dates"],[latestDispatch.body.includes("mobile-v1.3.0-preview.59"), "public Android prerelease"],[latestDispatch.body.includes("actions/runs/38601277824"), "passing Mobile CI evidence"],[latestDispatch.body.includes("actions/runs/38601277707"), "failed store gate evidence"],[latestDispatch.body.includes("469772f706b014f77e250a6caf4fb1b6c5db5d310d010f080068062051489266"), "APK checksum"],[latestDispatch.body.includes("not claiming") && latestDispatch.body.includes("did not run"), "store distribution boundary"],[latestDispatch.body.includes(officialMint), "official mint"],[latestDispatch.body.includes("does not guarantee"), "risk boundary"],[latestDispatch.body.includes('href="/buy"'), "separate beginner buying path"],[latestDispatch.body.includes('href="/commons"'), "no-purchase community utility"],[latestDispatch.body.includes('href="/game"'), "public browser game path"]];
   for (const [passed, label] of contentChecks) { console.log(`${passed ? "PASS" : "FAIL"} ${label}`); if (!passed) failures.push(`latest dispatch: ${label}`); }
 }
 
 const officialDirectory = responses.get("/official-links");
 if (officialDirectory) {
-  const contentChecks = [[officialDirectory.body.includes("Last reviewed October 8, 2026"), "visible review date"],[officialDirectory.body.includes("An account absent from this current directory is not an official destination"), "absent-account trust rule"],[officialDirectory.body.includes('href="/blog-verify-without-social.html"'), "verification drill path"],[officialDirectory.body.includes('href="/api/circulating-supply"'), "live supply endpoint path"],[officialDirectory.body.includes(officialMint), "official mint"]];
+  const contentChecks = [[officialDirectory.body.includes("Last reviewed October 15, 2026"), "visible review date"],[officialDirectory.body.includes("An account absent from this current directory is not an official destination"), "absent-account trust rule"],[officialDirectory.body.includes('href="/blog-verify-without-social.html"'), "verification drill path"],[officialDirectory.body.includes('href="/api/circulating-supply"'), "live supply endpoint path"],[officialDirectory.body.includes(officialMint), "official mint"]];
   for (const [passed, label] of contentChecks) { console.log(`${passed ? "PASS" : "FAIL"} ${label}`); if (!passed) failures.push(`official directory: ${label}`); }
 }
 
