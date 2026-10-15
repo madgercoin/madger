@@ -16,7 +16,7 @@
   <link rel="apple-touch-icon" sizes="180x180" href="/assets/madger_official_logo_transparent_180.png">
   <link rel="manifest" href="/manifest.webmanifest?v=20260829-journal-app">
   <link rel="preload" as="image" href="/assets/madger_journal_writer_v3.webp" type="image/webp" fetchpriority="high">
-  <link rel="stylesheet" href="/blog.css?v=20261015-release-desk">
+  <link rel="stylesheet" href="/blog.css?v=20261015-signal-finder">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="MADGER">
   <meta property="og:title" content="Signals From Below | MADGER">
@@ -96,7 +96,7 @@
         <div><p class="eyebrow">Latest dispatch / 01</p><h2 id="latest-title">START HERE.</h2></div>
         <p>One useful idea at a time. No manufactured urgency, price predictions, or mystery claims.</p>
       </div>
-      <article class="feature-card mobile-preview-card" data-tilt>
+      <article class="feature-card mobile-preview-card" data-dispatch="LATEST / 015" data-tilt>
         <a class="feature-card-link" href="/blog-mobile-preview-release-status.html" aria-label="Read Dispatch 015: Playable, proven, not yet in the store">
           <span class="feature-image"><img src="/assets/reports/game-upgrade/burrow-gameplay-390.png" width="390" height="844" alt="MADGER runs through a glowing three-lane Burrow tunnel in the Android preview" loading="lazy"><b>DISPATCH 015</b><i aria-hidden="true">↗</i></span>
           <span class="feature-copy"><span class="article-meta"><b>RELEASE DESK</b><time datetime="2026-10-15">OCT 15, 2026</time><b>11 MIN READ</b></span><strong class="feature-title">PLAYABLE, PROVEN, NOT YET IN THE STORE: MADGER 1.3.0</strong><span class="feature-deck">Test the public Android preview, inspect its build evidence, and see why MADGER is not claiming a store launch.</span><em class="visual-cta">Open Dispatch 015 <b>→</b></em></span>
@@ -106,53 +106,73 @@
 
     <section class="journal-section notes" id="signals" aria-labelledby="notes-title" data-index="02" data-reveal>
       <div class="section-heading compact"><div><p class="eyebrow">From below the noise / 02</p><h2 id="notes-title">THE ARCHIVE.</h2></div><span class="archive-count">15 DISPATCHES</span></div>
+      <div class="signal-finder" aria-labelledby="signal-finder-title">
+        <div class="signal-finder-heading">
+          <div><p class="eyebrow">Signal finder</p><h3 id="signal-finder-title">FIND THE USEFUL PART.</h3></div>
+          <p id="archive-status" role="status" aria-live="polite">Showing all 15 dispatches.</p>
+        </div>
+        <div class="signal-filter-grid" role="group" aria-label="Filter dispatches by purpose">
+          <button class="signal-filter is-active" type="button" data-topic="all" aria-pressed="true"><img src="/assets/madger_journal_writer_v3.webp" width="1536" height="1024" alt=""><span><small>THE COMPLETE RECORD</small><strong>All signals</strong></span></button>
+          <button class="signal-filter" type="button" data-topic="proof" aria-pressed="false"><img src="/assets/reports/game-upgrade/burrow-gameplay-390.png" width="390" height="844" alt=""><span><small>BUILD EVIDENCE</small><strong>Proof &amp; releases</strong></span></button>
+          <button class="signal-filter" type="button" data-topic="safety" aria-pressed="false"><img src="/assets/madger_fieldnote_safety_v1.webp" width="1536" height="1024" alt=""><span><small>LOWER THE RISK</small><strong>Safer crypto</strong></span></button>
+          <button class="signal-filter" type="button" data-topic="utility" aria-pressed="false"><img src="/assets/madger_v6_community_welcome.webp" width="1084" height="1451" alt=""><span><small>PARTICIPATE FIRST</small><strong>Community utility</strong></span></button>
+          <button class="signal-filter" type="button" data-topic="diligence" aria-pressed="false"><img src="/assets/madger_trading_live_launch_poster_v1.png" width="1536" height="1024" alt=""><span><small>CHECK THE CLAIM</small><strong>Investor diligence</strong></span></button>
+          <button class="signal-filter" type="button" data-topic="culture" aria-pressed="false"><img src="/assets/madger_fieldnote_standard_v1.webp" width="1536" height="1024" alt=""><span><small>WHY IT LOOKS THIS WAY</small><strong>Brand &amp; culture</strong></span></button>
+        </div>
+        <div class="archive-search-row">
+          <label for="signal-search"><span>SEARCH THE RECORD</span><input id="signal-search" type="search" placeholder="Try “wallet”, “supply”, or “creator”" autocomplete="off"></label>
+          <label class="unread-toggle"><input id="unread-only" type="checkbox"><span>Show unread only</span></label>
+          <button class="clear-filters" id="clear-signal-filters" type="button" hidden>Clear filters</button>
+        </div>
+      </div>
       <div class="card-grid">
-        <article class="story-card mobile-preview-card" data-tilt><a class="story-image" href="/blog-mobile-preview-release-status.html"><img src="/assets/reports/game-upgrade/burrow-gameplay-390.png" width="390" height="844" alt="MADGER runs through a glowing three-lane Burrow tunnel in the Android preview" loading="lazy"><span>RELEASE DESK</span></a><div class="story-copy"><p><time datetime="2026-10-15">OCT 15, 2026</time><b>11 MIN</b></p><h3><a href="/blog-mobile-preview-release-status.html">Playable, proven, not yet in the store: MADGER 1.3.0</a></h3><p>A safe test route, public build evidence, and the exact preview-versus-store boundary.</p><a class="read-link" href="/blog-mobile-preview-release-status.html">Check the release <span>→</span></a></div></article>
-        <article class="story-card" data-tilt><a class="story-image" href="/blog-circulating-supply-endpoint.html"><img src="/assets/madger_fieldnote_foundations_v1.webp" width="1536" height="1024" alt="MADGER measures a durable underground foundation" loading="lazy"><span>PROOF INFRASTRUCTURE</span></a><div class="story-copy"><p><time datetime="2026-10-08">OCT 8, 2026</time><b>12 MIN</b></p><h3><a href="/blog-circulating-supply-endpoint.html">A number that can explain itself: MADGER’s live supply endpoint</a></h3><p>Audit the live API, five-lock calculation, and fail-closed safety boundaries.</p><a class="read-link" href="/blog-circulating-supply-endpoint.html">Test the number <span>→</span></a></div></article>
-        <article class="story-card safety-card" data-tilt><a class="story-image" href="/blog-verify-without-social.html"><img src="/assets/madger_fieldnote_safety_v1.webp" width="1536" height="1024" alt="MADGER verifies links at a security desk" loading="lazy"><span>VERIFICATION DESK</span></a><div class="story-copy"><p><time datetime="2026-10-01">OCT 1, 2026</time><b>10 MIN</b></p><h3><a href="/blog-verify-without-social.html">When a channel goes dark: verify MADGER without social media</a></h3><p>A source ladder for recovering the official record and rejecting impersonators.</p><a class="read-link" href="/blog-verify-without-social.html">Run the drill <span>→</span></a></div></article>
-        <article class="story-card safety-card" data-tilt><a class="story-image" href="/blog-market-cap-is-not-fdv.html"><img src="/assets/madger_trading_live_launch_poster_v1.png" width="1536" height="1024" alt="Official MADGER trading-live artwork" loading="lazy"><span>DILIGENCE DESK</span></a><div class="story-copy"><p><time datetime="2026-09-24">SEP 24, 2026</time><b>10 MIN</b></p><h3><a href="/blog-market-cap-is-not-fdv.html">Market cap is not FDV: a 10-minute MADGER supply audit</a></h3><p>Reproduce the circulating calculation and identify a mislabeled valuation.</p><a class="read-link" href="/blog-market-cap-is-not-fdv.html">Run the audit <span>→</span></a></div></article>
-        <article class="story-card safety-card" data-tilt><a class="story-image" href="/blog-proof-you-can-open.html"><img src="/assets/madger_social_share_v10.jpg" width="1200" height="630" alt="The original MADGER character emerges through glowing Burrow trails" loading="lazy"><span>PROOF BRIEFING</span></a><div class="story-copy"><p><time datetime="2026-09-17">SEP 17, 2026</time><b>9 MIN</b></p><h3><a href="/blog-proof-you-can-open.html">Proof you can open: Burrow Run and the five-lock record</a></h3><p>What readers can play, verify, and challenge in MADGER’s newest public proof.</p><a class="read-link" href="/blog-proof-you-can-open.html">Open briefing <span>→</span></a></div></article>
-        <article class="story-card" data-tilt>
+        <article class="story-card mobile-preview-card" data-dispatch="015" data-tilt><a class="story-image" href="/blog-mobile-preview-release-status.html"><img src="/assets/reports/game-upgrade/burrow-gameplay-390.png" width="390" height="844" alt="MADGER runs through a glowing three-lane Burrow tunnel in the Android preview" loading="lazy"><span>RELEASE DESK</span></a><div class="story-copy"><p><time datetime="2026-10-15">OCT 15, 2026</time><b>11 MIN</b></p><h3><a href="/blog-mobile-preview-release-status.html">Playable, proven, not yet in the store: MADGER 1.3.0</a></h3><p>A safe test route, public build evidence, and the exact preview-versus-store boundary.</p><a class="read-link" href="/blog-mobile-preview-release-status.html">Check the release <span>→</span></a></div></article>
+        <article class="story-card" data-dispatch="014" data-tilt><a class="story-image" href="/blog-circulating-supply-endpoint.html"><img src="/assets/madger_fieldnote_foundations_v1.webp" width="1536" height="1024" alt="MADGER measures a durable underground foundation" loading="lazy"><span>PROOF INFRASTRUCTURE</span></a><div class="story-copy"><p><time datetime="2026-10-08">OCT 8, 2026</time><b>12 MIN</b></p><h3><a href="/blog-circulating-supply-endpoint.html">A number that can explain itself: MADGER’s live supply endpoint</a></h3><p>Audit the live API, five-lock calculation, and fail-closed safety boundaries.</p><a class="read-link" href="/blog-circulating-supply-endpoint.html">Test the number <span>→</span></a></div></article>
+        <article class="story-card safety-card" data-dispatch="013" data-tilt><a class="story-image" href="/blog-verify-without-social.html"><img src="/assets/madger_fieldnote_safety_v1.webp" width="1536" height="1024" alt="MADGER verifies links at a security desk" loading="lazy"><span>VERIFICATION DESK</span></a><div class="story-copy"><p><time datetime="2026-10-01">OCT 1, 2026</time><b>10 MIN</b></p><h3><a href="/blog-verify-without-social.html">When a channel goes dark: verify MADGER without social media</a></h3><p>A source ladder for recovering the official record and rejecting impersonators.</p><a class="read-link" href="/blog-verify-without-social.html">Run the drill <span>→</span></a></div></article>
+        <article class="story-card safety-card" data-dispatch="012" data-tilt><a class="story-image" href="/blog-market-cap-is-not-fdv.html"><img src="/assets/madger_trading_live_launch_poster_v1.png" width="1536" height="1024" alt="Official MADGER trading-live artwork" loading="lazy"><span>DILIGENCE DESK</span></a><div class="story-copy"><p><time datetime="2026-09-24">SEP 24, 2026</time><b>10 MIN</b></p><h3><a href="/blog-market-cap-is-not-fdv.html">Market cap is not FDV: a 10-minute MADGER supply audit</a></h3><p>Reproduce the circulating calculation and identify a mislabeled valuation.</p><a class="read-link" href="/blog-market-cap-is-not-fdv.html">Run the audit <span>→</span></a></div></article>
+        <article class="story-card safety-card" data-dispatch="011" data-tilt><a class="story-image" href="/blog-proof-you-can-open.html"><img src="/assets/madger_social_share_v10.jpg" width="1200" height="630" alt="The original MADGER character emerges through glowing Burrow trails" loading="lazy"><span>PROOF BRIEFING</span></a><div class="story-copy"><p><time datetime="2026-09-17">SEP 17, 2026</time><b>9 MIN</b></p><h3><a href="/blog-proof-you-can-open.html">Proof you can open: Burrow Run and the five-lock record</a></h3><p>What readers can play, verify, and challenge in MADGER’s newest public proof.</p><a class="read-link" href="/blog-proof-you-can-open.html">Open briefing <span>→</span></a></div></article>
+        <article class="story-card" data-dispatch="010" data-tilt>
           <a class="story-image" href="/blog-utility-without-a-wallet.html"><img src="/assets/madger_v6_community_welcome.webp" width="1084" height="1451" alt="MADGER steps forward from The Burrow" loading="lazy"><span>UTILITY BRIEFING</span></a>
           <div class="story-copy"><p><time datetime="2026-09-11">SEP 11, 2026</time><b>7 MIN</b></p><h3><a href="/blog-utility-without-a-wallet.html">Utility without a wallet: The Burrow Commons</a></h3><p>What people can use, verify, and improve before any token purchase.</p><a class="read-link" href="/blog-utility-without-a-wallet.html">Open briefing <span>→</span></a></div>
         </article>
-        <article class="story-card safety-card" data-tilt>
+        <article class="story-card safety-card" data-dispatch="009" data-tilt>
           <a class="story-image" href="/blog-creator-trust-standard.html"><img src="/assets/madger_journal_writer_v3.webp" width="1536" height="1024" alt="MADGER writes at the Signal Desk" loading="lazy"><span>CREATOR TRUST</span></a>
           <div class="story-copy"><p><time datetime="2026-09-11">SEP 11, 2026</time><b>6 MIN</b></p><h3><a href="/blog-creator-trust-standard.html">Before the badge: a creator trust standard</a></h3><p>A six-part standard for safer, clearer, professional crypto creator relationships.</p><a class="read-link" href="/blog-creator-trust-standard.html">Open standard <span>→</span></a></div>
         </article>
-        <article class="story-card" data-tilt>
+        <article class="story-card" data-dispatch="008" data-tilt>
           <a class="story-image" href="/blog-madger-thesis.html"><img src="/assets/madger_v6_community_welcome.webp" width="1084" height="1451" alt="MADGER steps forward from The Burrow" loading="lazy"><span>INVESTOR BRIEFING</span></a>
           <div class="story-copy"><p><time datetime="2026-09-04">SEP 4, 2026</time><b>8 MIN</b></p><h3><a href="/blog-madger-thesis.html">The MADGER thesis: build a character people can verify</a></h3><p>A testable strategy built around identity, evidence, distribution, and execution.</p><a class="read-link" href="/blog-madger-thesis.html">Open briefing <span>→</span></a></div>
         </article>
-        <article class="story-card safety-card" data-tilt>
+        <article class="story-card safety-card" data-dispatch="007" data-tilt>
           <a class="story-image" href="/blog-diligence-map.html"><img src="/assets/madger_trading_live_launch_poster_v1.png" width="1536" height="1024" alt="Official MADGER trading-live artwork" loading="lazy"><span>DILIGENCE DESK</span></a>
           <div class="story-copy"><p><time datetime="2026-09-04">SEP 4, 2026</time><b>7 MIN</b></p><h3><a href="/blog-diligence-map.html">How to evaluate MADGER: a diligence map</a></h3><p>What is verifiable now, what remains execution risk, and where to check the evidence.</p><a class="read-link" href="/blog-diligence-map.html">Open briefing <span>→</span></a></div>
         </article>
-        <article class="story-card" data-tilt>
+        <article class="story-card" data-dispatch="006" data-tilt>
           <a class="story-image" href="/blog-burrow-after-launch.html"><img src="/assets/madger_hero_burrow_v7.jpg" width="1536" height="1024" alt="MADGER stands inside the illuminated Burrow" loading="lazy"><span>PROJECT INTELLIGENCE</span></a>
           <div class="story-copy"><p><time datetime="2026-09-01">SEP 1, 2026</time><b>6 MIN</b></p><h3><a href="/blog-burrow-after-launch.html">The Burrow after launch: what comes next</a></h3><p>A practical operating doctrine for turning one launch into lasting momentum.</p><a class="read-link" href="/blog-burrow-after-launch.html">Open dispatch <span>→</span></a></div>
         </article>
-        <article class="story-card" data-tilt>
+        <article class="story-card" data-dispatch="005" data-tilt>
           <a class="story-image" href="/blog-character-outlives-chart.html"><img src="/assets/madger_social_share_v10.jpg" width="1200" height="630" alt="The original MADGER character emerges through glowing Burrow trails" loading="lazy"><span>CHARACTER FILES</span></a>
           <div class="story-copy"><p><time datetime="2026-09-01">SEP 1, 2026</time><b>5 MIN</b></p><h3><a href="/blog-character-outlives-chart.html">A character can outlive a chart</a></h3><p>Why an original identity gives a project something price action cannot manufacture.</p><a class="read-link" href="/blog-character-outlives-chart.html">Open dispatch <span>→</span></a></div>
         </article>
-        <article class="story-card safety-card" data-tilt>
+        <article class="story-card safety-card" data-dispatch="004" data-tilt>
           <a class="story-image" href="/blog-verify-live-market.html"><img src="/assets/madger_trading_live_launch_poster_v1.png" width="1536" height="1024" alt="Official MADGER trading-live artwork with verified project branding" loading="lazy"><span>MARKET FIELDCRAFT</span></a>
           <div class="story-copy"><p><time datetime="2026-09-01">SEP 1, 2026</time><b>7 MIN</b></p><h3><a href="/blog-verify-live-market.html">How to verify a live Solana market</a></h3><p>A disciplined route from official mint to pool—without trusting a ticker or a DM.</p><a class="read-link" href="/blog-verify-live-market.html">Open dispatch <span>→</span></a></div>
         </article>
-        <article class="story-card" data-tilt>
+        <article class="story-card" data-dispatch="003" data-tilt>
           <a class="story-image" href="/blog-building-foundations.html"><img src="/assets/madger_fieldnote_foundations_v1.webp" width="1536" height="1024" alt="MADGER carefully measures plans for a durable tunnel foundation" loading="lazy"><span>PROJECT NOTES</span></a>
           <div class="story-copy"><p><time datetime="2026-08-28">AUG 28, 2026</time><b>5 MIN</b></p><h3><a href="/blog-building-foundations.html">Why MADGER is building the boring parts first</a></h3><p>The work behind a trustworthy public home—and why clarity comes before spectacle.</p><a class="read-link" href="/blog-building-foundations.html">Open dispatch <span>→</span></a></div>
         </article>
-        <article class="story-card" data-tilt>
+        <article class="story-card" data-dispatch="002" data-tilt>
           <a class="story-image" href="/blog-honey-badger-standard.html"><img src="/assets/madger_fieldnote_standard_v1.webp" width="1536" height="1024" alt="MADGER holds a field lantern at the threshold of a stormy tunnel" loading="lazy"><span>BURROW CULTURE</span></a>
           <div class="story-copy"><p><time datetime="2026-08-24">AUG 24, 2026</time><b>4 MIN</b></p><h3><a href="/blog-honey-badger-standard.html">The Honey Badger standard</a></h3><p>Resilient, skeptical, loyal: the character rules behind every MADGER decision.</p><a class="read-link" href="/blog-honey-badger-standard.html">Open dispatch <span>→</span></a></div>
         </article>
-        <article class="story-card safety-card" data-tilt>
+        <article class="story-card safety-card" data-dispatch="001" data-tilt>
           <a class="story-image" href="/blog-token-link-safety.html"><img src="/assets/madger_fieldnote_safety_v1.webp" width="1536" height="1024" alt="MADGER inspects suspicious and verified links with a magnifying glass at a security desk" loading="lazy"><span>CRYPTO SAFETY</span></a>
           <div class="story-copy"><p><time datetime="2026-08-20">AUG 20, 2026</time><b>6 MIN</b></p><h3><a href="/blog-token-link-safety.html">Seven checks before you trust a token link</a></h3><p>A calm, practical checklist for rejecting copycats, fake support, and rushed decisions.</p><a class="read-link" href="/blog-token-link-safety.html">Open dispatch <span>→</span></a></div>
         </article>
       </div>
+      <p class="archive-empty" id="archive-empty" hidden>No dispatch matches those filters. Clear the search or choose another signal.</p>
     </section>
 
     <section class="editorial-standard journal-section" aria-labelledby="standard-title" data-index="03" data-reveal>
@@ -177,6 +197,6 @@
     <div><a href="/feed.xml">RSS</a><a href="https://t.me/madgercoin" target="_blank" rel="noopener noreferrer">Announcements</a><a href="/privacy.html">Privacy</a></div>
     <small>© 2026 MADGER. Crypto assets involve risk. This journal is informational, not financial advice.</small>
   </footer>
-  <script src="/blog.js?v=20260919-signal-console" defer></script>
+  <script src="/blog.js?v=20261015-signal-finder" defer></script>
 </body>
 </html>

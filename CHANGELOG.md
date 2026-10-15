@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026-10-15 — Signals discovery and visual reading trails
+
+- Added the image-led Signal Finder with purpose filters for proof, safer crypto, community utility, investor diligence, and brand/culture, plus full-archive search and an unread-only view.
+- Replaced the stale decorative “008” archive numbering with explicit, validated 001–015 dispatch identifiers.
+- Added three topic-related image cards to every dispatch so readers can continue through useful material without returning to the archive first.
+- Kept reading history local to the visitor’s browser, made active filters shareable through the URL, preserved the full no-script archive, and added responsive and reduced-motion behavior.
+- Extended automated validation to enforce Signal Finder controls, current numbering, article-library parity, and related-reading behavior across all 15 dispatches.
+
 ## 2026-10-15 — Signals dispatch: playable preview, explicit store boundary
 
 - Published Dispatch 015 as a source-grounded release-status guide for MADGER 1.3.0, with a safe test route, public Android prerelease, exact APK SHA-256 digest, passing Mobile CI evidence, and the failed Google Play access gate.

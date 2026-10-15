@@ -307,6 +307,7 @@ if (!sitemap.includes("<lastmod>") || !sitemap.includes("<image:image>")) {
 const latestDispatch = pages.get("blog-mobile-preview-release-status.html");
 const latestDispatchUrl = "https://madgercoin.com/blog-mobile-preview-release-status.html";
 const feed = await readFile("feed.xml", "utf8");
+const blogScript = await readFile("blog.js", "utf8");
 if (!pages.get("blog.html").includes('href="/blog-mobile-preview-release-status.html"') || !pages.get("blog.html").includes("15 DISPATCHES")) failures.push("blog.html: latest dispatch archive parity is missing");
 if (!pages.get("index.html").includes('href="/blog-mobile-preview-release-status.html"') || !pages.get("index.html").includes("15 DISPATCHES")) failures.push("index.html: latest dispatch homepage parity is missing");
 if (!feed.includes(latestDispatchUrl) || !feed.includes("Thu, 15 Oct 2026 14:15:00 GMT")) failures.push("feed.xml: latest dispatch or publication date is missing");
@@ -317,18 +318,23 @@ if (!latestDispatch.includes(officialMint) || !latestDispatch.includes("does not
 if (visibleText(latestDispatch).split(/\s+/).filter(Boolean).length < 900) failures.push("latest dispatch: substantial article threshold not met");
 
 const signalsArchive = pages.get("blog.html");
-for (const marker of ["hero-visual-actions", "signal-path-grid", "feature-card-link", "story-card"]) {
+for (const marker of ["hero-visual-actions", "signal-path-grid", "feature-card-link", "story-card", "signal-finder", "signal-filter-grid", "signal-search", "unread-only"]) {
   if (!signalsArchive.includes(marker)) failures.push(`blog.html: visual reading control ${marker} is missing`);
 }
+if ((signalsArchive.match(/class="signal-filter(?:\s|\")/g) ?? []).length !== 6) failures.push("blog.html: expected six image-led Signal Finder controls");
+if ((signalsArchive.match(/data-dispatch="0\d\d"/g) ?? []).length !== 15 || !signalsArchive.includes('data-dispatch="LATEST / 015"')) failures.push("blog.html: current dispatch numbering is incomplete");
+if (!blogScript.includes("const signalLibrary") || !blogScript.includes("applyArchiveFilters") || !blogScript.includes("related-signals") || !blogScript.includes("Chosen by shared subject")) failures.push("blog.js: archive discovery or related-reading enhancement is missing");
 if (!pages.get("index.html").includes("signal-entry-button") || !pages.get("index.html").includes('<div class="journal-stack"><a href="/blog-circulating-supply-endpoint.html"><img')) {
   failures.push("index.html: image-led Signals entry points are missing");
 }
 const dispatchFiles = htmlFiles.filter(file => file.startsWith("blog-") && file.endsWith(".html"));
+const libraryPaths = new Set([...blogScript.matchAll(/path: "(\/blog-[^"]+)"/g)].map(match => `${match[1]}.html`));
+if (libraryPaths.size !== dispatchFiles.length || dispatchFiles.some(file => !libraryPaths.has(`/${file}`))) failures.push("blog.js: Signal Library does not match the published dispatch archive");
 for (const file of dispatchFiles) {
   const html = pages.get(file);
   const url = indexablePages.get(file);
   if (!html.includes('class="signal-article"') || !html.includes('class="journal-progress"')) failures.push(`${file}: visual article shell is missing`);
-  if (!html.includes('/blog.css?v=20261015-release-desk') || !html.includes('/blog.js?v=20260919-signal-console')) failures.push(`${file}: Signals asset version parity is missing`);
+  if (!html.includes('/blog.css?v=20261015-signal-finder') || !html.includes('/blog.js?v=20261015-signal-finder')) failures.push(`${file}: Signals asset version parity is missing`);
   if (/\bhype\b/i.test(visibleText(html))) failures.push(`${file}: retired editorial wording is present`);
   if (!html.includes("PUBLISHED") || !html.includes("REVISED")) failures.push(`${file}: visible publication or revision label is missing`);
   if (!pages.get("blog.html").includes(`href="/${file}"`)) failures.push(`${file}: archive parity is missing`);
