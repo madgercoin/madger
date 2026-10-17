@@ -1,6 +1,13 @@
 import { readFile } from 'node:fs/promises';
 
-const strict = process.argv.includes('--distribution');
+const args = process.argv.slice(2);
+const strict = args.includes('--distribution');
+const platformIndex = args.indexOf('--platform');
+const platform = platformIndex === -1 ? 'all' : args[platformIndex + 1];
+if (!['all', 'android', 'ios'].includes(platform) || args.filter((arg) => arg === '--platform').length > 1) {
+  console.error('BLOCKED: --platform must be one of all, android, or ios');
+  process.exit(1);
+}
 const app = JSON.parse(await readFile(new URL('../app.json', import.meta.url), 'utf8')).expo;
 const pkg = JSON.parse(await readFile(new URL('../package.json', import.meta.url), 'utf8'));
 const failures = [];
@@ -54,9 +61,10 @@ if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/
   (strict ? failures : warnings).push(message);
 }
 
-for (const [platform, variable] of [['Android', 'MADGER_ANDROID_DEVICE_QA'], ['iOS', 'MADGER_IOS_DEVICE_QA']]) {
+for (const [devicePlatform, variable] of [['Android', 'MADGER_ANDROID_DEVICE_QA'], ['iOS', 'MADGER_IOS_DEVICE_QA']]) {
+  if (platform !== 'all' && platform !== devicePlatform.toLowerCase()) continue;
   if (process.env[variable] !== 'passed') {
-    const message = `${platform} physical-device QA is not attested; set ${variable}=passed only after completing mobile/RELEASE_CHECKLIST.md`;
+    const message = `${devicePlatform} physical-device QA is not attested; set ${variable}=passed only after completing mobile/RELEASE_CHECKLIST.md`;
     (strict ? failures : warnings).push(message);
   }
 }
