@@ -1,9 +1,9 @@
 {
-  "generatedAt": "2026-10-17T12:18:44.434Z",
-  "previousGeneratedAt": "2026-10-16T13:24:43.068Z",
+  "generatedAt": "2026-10-18T12:42:26.119Z",
+  "previousGeneratedAt": "2026-10-17T12:18:44.434Z",
   "window": {
-    "start": "2026-09-17T12:18:44.434Z",
-    "end": "2026-10-17T12:18:44.434Z"
+    "start": "2026-09-18T12:42:26.119Z",
+    "end": "2026-10-18T12:42:26.119Z"
   },
   "organization": {
     "id": "6a67aceacff325d8d2d231e9",
@@ -20,14 +20,14 @@
       "state": "connected",
       "healthy": true,
       "queuePaused": false,
-      "metricsUpdatedAt": "2026-10-17T04:09:10.716Z",
+      "metricsUpdatedAt": "2026-10-18T03:09:20.730Z",
       "metrics": {
-        "postCount": 36,
-        "reactions": 165,
-        "comments": 129,
-        "engagementRate": 23.88,
+        "postCount": 37,
+        "reactions": 167,
+        "comments": 131,
+        "engagementRate": 24.02,
         "reposts": 4,
-        "impressions": 1956,
+        "impressions": 1973,
         "clicks": 8
       },
       "requiresCommunityReview": true
@@ -42,9 +42,9 @@
       "state": "connected",
       "healthy": true,
       "queuePaused": false,
-      "metricsUpdatedAt": "2026-10-16T19:04:01.233Z",
+      "metricsUpdatedAt": "2026-10-17T18:04:12.453Z",
       "metrics": {
-        "postCount": 25,
+        "postCount": 26,
         "reactions": 2,
         "comments": 6,
         "engagementRate": 2.11,
@@ -64,17 +64,17 @@
       "state": "connected",
       "healthy": true,
       "queuePaused": false,
-      "metricsUpdatedAt": "2026-10-17T08:59:03.780Z",
+      "metricsUpdatedAt": "2026-10-18T07:59:14.443Z",
       "metrics": {
-        "postCount": 24,
-        "reactions": 48,
-        "comments": 16,
-        "engagementRate": 66.67,
-        "views": 231,
+        "postCount": 25,
+        "reactions": 50,
+        "comments": 17,
+        "engagementRate": 67.68,
+        "views": 235,
         "shares": 0,
         "saves": 0,
         "follows": 0,
-        "reach": 96,
+        "reach": 99,
         "totalTimeWatched": 1050,
         "averageTimeWatched": 583.37
       },
@@ -90,17 +90,17 @@
       "state": "connected",
       "healthy": true,
       "queuePaused": false,
-      "metricsUpdatedAt": "2026-10-17T02:49:07.157Z",
+      "metricsUpdatedAt": "2026-10-17T20:59:23.339Z",
       "metrics": {
-        "postCount": 25,
+        "postCount": 26,
         "reactions": 9,
         "comments": 0,
-        "engagementRate": 0.42,
-        "views": 2360,
+        "engagementRate": 0.39,
+        "views": 2547,
         "shares": 1,
-        "reach": 2064,
-        "totalTimeWatched": 145.65,
-        "averageTimeWatched": 3.12
+        "reach": 2160,
+        "totalTimeWatched": 150.98,
+        "averageTimeWatched": 3.08
       },
       "requiresCommunityReview": false
     }
