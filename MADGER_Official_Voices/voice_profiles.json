@@ -1,5 +1,5 @@
 {
-  "version": 6,
+  "version": 7,
   "project": "MADGER game",
   "created": "2026-10-19",
   "visual_rules": [
@@ -10,7 +10,7 @@
     "Gorilla White exact white silverback pose-card proportions, tan face/chest and blue eyes.",
     "Snow White approved slightly smaller subtly cartoony adult shepherd; long muzzle, soft forehead, slender legs, short coat, cream-frosted tail, long tongue, rose collar and matching SW charm."
   ],
-  "reuse_rule": "All four voices approved by user October 18 2026. Reuse exact saved identities and post-processing settings for future productions.",
+  "reuse_rule": "MADGER, Gorilla White R7 and MADGER_Bot Friendly Smooth R4 voices approved for future speaking scenes. Snow White NEVER has a speaking voice; natural canine sounds only. Current ability previews contain no spoken dialogue.",
   "characters": {
     "MADGER": {
       "provider": "ElevenLabs",
@@ -72,15 +72,10 @@
       "approved_audio_file": "MADGER_Bot_Friendly_Smooth_R4.mp3"
     },
     "SNOW_WHITE": {
-      "provider": "Runway speech",
-      "preset": "Lara",
-      "model": "eleven_v3",
-      "speed": 1,
-      "delivery": "Bright confident young feminine American hero voice; retain canine barks and panting separately",
-      "line": "[excited] I've got your back. Let's go!",
-      "task_id": "83f54f25-dbc3-4a87-b352-197a7ab6642c",
-      "status": "User approved October 18 2026; preserve voice unchanged"
+      "status": "No speaking voice, permanently, per user October 18 2026",
+      "delivery": "Natural dog barks, panting, whines and other canine vocalizations only. Preserve the bark in her action preview.",
+      "superseded_voice": "Lara speech approval revoked; do not use earlier speech samples."
     }
   },
-  "video_status": "All four previews contain approved voices over ducked action soundtracks. Dialogue is voiceover, not lip-synced."
+  "video_status": "Four eight-second clips and combined reel restored to original generated effects/music/canine sounds with no added dialogue. Snow White bark preserved."
 }
