@@ -1,0 +1,86 @@
+{
+  "version": 6,
+  "project": "MADGER game",
+  "created": "2026-10-19",
+  "visual_rules": [
+    "Use user supplied official pose cards as exact design references.",
+    "MADGER normal small teeth: oversized fang permanently removed per explicit later instruction.",
+    "MADGER proportional short arms, neutral wrists, high chest stripe, exact tail markings.",
+    "MADGER_Bot fully robotic face, silver and black metal panels, amber optics, blue illuminated joints; no organic fur face.",
+    "Gorilla White exact white silverback pose-card proportions, tan face/chest and blue eyes.",
+    "Snow White approved slightly smaller subtly cartoony adult shepherd; long muzzle, soft forehead, slender legs, short coat, cream-frosted tail, long tongue, rose collar and matching SW charm."
+  ],
+  "reuse_rule": "All four voices approved by user October 18 2026. Reuse exact saved identities and post-processing settings for future productions.",
+  "characters": {
+    "MADGER": {
+      "provider": "ElevenLabs",
+      "saved_voice_name": "MADGER - Excited Teen - R2",
+      "voice_id": "OvSI8qvaDkaFiIdSCWRw",
+      "model": "eleven_v4",
+      "speed": 1,
+      "stability": 0.5,
+      "similarity_boost": 0.75,
+      "status": "User approved October 18 2026; preserve voice unchanged",
+      "profile_library_id": "libfile_6ff2f2178d248191a3e6d0787f1bceb1",
+      "new_line": "[excited] My burrow. My rules. Let's go!",
+      "generation_status": "Generated in ElevenLabs with saved voice and Eleven v4; mixed into final preview."
+    },
+    "GORILLA_WHITE": {
+      "provider": "Runway speech",
+      "preset": "Chad",
+      "model": "eleven_v3",
+      "speed": 0.97,
+      "delivery": "Friendly youthful baritone with chest resonance; preserve approved rhythm",
+      "line": "[friendly] Stay close. I've got you! [excited] Let's do this, together!",
+      "task_id": "99f09971-551c-4a53-aed2-5c00eb1cd822",
+      "prior_audition": {
+        "provider": "Runway speech",
+        "preset": "Ragnar",
+        "model": "eleven_v3",
+        "speed": 0.95,
+        "delivery": "Deep resonant protective male; controlled strength, short clear phrases",
+        "line": "[confident] Stay behind me. Nothing gets through.",
+        "task_id": "c65fa6c7-6468-458e-b3ab-ea54b672b70e"
+      },
+      "status": "User approved baritone R7 on October 18 2026",
+      "r2_rejected": "User rejected both; requires teenage good-guy voices",
+      "post_processing": "From R3 source: pitch factors 1.05 * 0.97 * 0.98 * 0.985 * 0.94; tempo 0.95. EQ boosts 170Hz +2.3dB, 340Hz +1dB, 150Hz +1.5dB; 2800Hz -1dB. Loudness -16 LUFS.",
+      "approved_audio_library_id": "libfile_d78e7ae52db081918ea2608ef4d2354a",
+      "approved_audio_file": "Gorilla_White_Baritone_R7.mp3"
+    },
+    "MADGER_Bot": {
+      "provider": "Runway speech",
+      "preset": "Brodie",
+      "model": "eleven_v3",
+      "speed": 1.04,
+      "delivery": "Friendly cheerful teenage male teammate with subtle robotic treatment",
+      "line": "[cheerful] Hey, team! [excited] Power boost is ready. Let's do this!",
+      "task_id": "d5e609b1-04d3-4729-a52a-40469b523a36",
+      "prior_audition": {
+        "provider": "Runway speech",
+        "preset": "Xylar",
+        "model": "eleven_v3",
+        "speed": 1,
+        "delivery": "Clearly modulated synthetic voice, precise and confident",
+        "line": "[confident] Systems online. Power boost, activated.",
+        "task_id": "dc2bcb98-d105-45a4-84e7-fe8d866fc654"
+      },
+      "status": "User approved Friendly Smooth R4 on October 18 2026",
+      "r2_rejected": "User rejected both; requires teenage good-guy voices",
+      "post_processing": "From R3 source: rubberband tempo 0.96 pitch 1.02; EQ 3200Hz -2.5dB Q0.8; echo 12ms decay0.07 in0.8 out0.9; loudness -16 LUFS. No amplitude modulation.",
+      "approved_audio_library_id": "libfile_0f72153f23e48191b6da453fcc996f64",
+      "approved_audio_file": "MADGER_Bot_Friendly_Smooth_R4.mp3"
+    },
+    "SNOW_WHITE": {
+      "provider": "Runway speech",
+      "preset": "Lara",
+      "model": "eleven_v3",
+      "speed": 1,
+      "delivery": "Bright confident young feminine American hero voice; retain canine barks and panting separately",
+      "line": "[excited] I've got your back. Let's go!",
+      "task_id": "83f54f25-dbc3-4a87-b352-197a7ab6642c",
+      "status": "User approved October 18 2026; preserve voice unchanged"
+    }
+  },
+  "video_status": "All four previews contain approved voices over ducked action soundtracks. Dialogue is voiceover, not lip-synced."
+}
