@@ -106,9 +106,12 @@ def cached_node(label):
 
 def kill_observed_foreground_run():
     """Read only the live HUD/controls, then kill before that observation is stale."""
-    started = time.monotonic()
-    observation = {'status': 'sampling', 'clock': 'host monotonic seconds',
-                   'started': started, 'max_age_seconds': 2.0, 'queries': []}
+    started = None
+    preparation = {'started': time.monotonic(), 'queries': []}
+    observation = {'status': 'preparing', 'clock': 'host monotonic seconds',
+                   'started': started, 'max_age_seconds': 2.0, 'queries': [],
+                   'freshness_scope': 'Before live getText through completed force-stop',
+                   'pre_observation': preparation}
     screenshot = None
 
     def query(name, operation):
@@ -143,8 +146,26 @@ def kill_observed_foreground_run():
         observation['paused_reference'] = [node.attrib for node in timers + reference_controls]
         # Read back the zero-idle/selector waits set at connection time. The
         # driver must not wait for this continuously animated game to go idle.
-        observation['driver_config'] = device.jsonrpc.getConfigurator()
+        configuration = {'name': 'driver-config', 'started': time.monotonic()}
+        preparation['queries'].append(configuration)
+        try:
+            configuration['value'] = device.jsonrpc.getConfigurator()
+        finally:
+            configuration['finished'] = time.monotonic()
+        observation['driver_config'] = configuration['value']
         assert all(observation['driver_config'].get(key) == 0 for key in ('waitForIdleTimeout', 'waitForSelectorTimeout')), 'Live-query driver waits were not disabled'
+
+        # This raw image is a pre-observation visual reference, outside the
+        # fresh live-HUD window. It does not establish the later kill state.
+        visual = {'name': 'screenshot', 'role': 'pre-observation reference',
+                  'started': time.monotonic(), 'file': 'foreground-reference.png'}
+        preparation['queries'].append(visual)
+        try:
+            screenshot = adb('exec-out', 'screencap', '-p')
+            visual['bytes'] = len(screenshot)
+        finally:
+            visual['finished'] = time.monotonic()
+        assert screenshot.startswith(b'\x89PNG\r\n\x1a\n'), 'Foreground reference screenshot was not a PNG'
 
         # Scalar getText/exist avoid full hierarchy scans, count/absence
         # searches, and .info's repeated accessibility property refreshes.
@@ -152,23 +173,17 @@ def kill_observed_foreground_run():
                           'enabled': True, 'textMatches': r'\d+s'}
         observation['timer_selector'] = timer_selector
         timer_object = device(**timer_selector)
+        # One continuous clock covers both fresh observations and the entire
+        # force-stop. Preparation above cannot age a timer not yet sampled.
+        started = time.monotonic()
+        preparation['finished'] = started
+        observation['started'] = started
+        observation['status'] = 'sampling'
         timer = query('timer-text', lambda: device.jsonrpc.getText(timer_object.selector))
         assert isinstance(timer, str) and re.fullmatch(r'\d+s', timer), ('Invalid live HUD timer', timer)
         live = int(timer[:-1])
         assert 0 < live <= 60, ('Foreground run timer expired or invalid', live)
         observation['live_seconds'] = live
-
-        # Keep a raw visual record without asking the app for another tree.
-        # Save bytes after the kill so disk writes cannot age the observation.
-        visual = {'name': 'screenshot', 'started': time.monotonic(), 'file': 'foreground-kill.png'}
-        observation['queries'].append(visual)
-        try:
-            screenshot = adb('exec-out', 'screencap', '-p')
-            visual['bytes'] = len(screenshot)
-        finally:
-            visual['finished'] = time.monotonic()
-        assert visual['finished'] - started <= observation['max_age_seconds'], 'Foreground observation became stale during screenshot'
-        assert screenshot.startswith(b'\x89PNG\r\n\x1a\n'), 'Foreground screenshot was not a PNG'
 
         # Pause run exists only in the active route. The same top-bar control
         # becomes Resume run when paused and disappears when the run ends.
@@ -190,8 +205,10 @@ def kill_observed_foreground_run():
         observation['error'] = str(error)
         raise
     finally:
+        if 'finished' not in preparation:
+            preparation['finished'] = time.monotonic()
         if screenshot is not None:
-            OUT.joinpath('foreground-kill.png').write_bytes(screenshot)
+            OUT.joinpath('foreground-reference.png').write_bytes(screenshot)
         OUT.joinpath('foreground-kill-observation.json').write_text(json.dumps(observation, indent=2))
 
 
