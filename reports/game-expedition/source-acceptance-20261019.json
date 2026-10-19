@@ -1,8 +1,8 @@
 {
   "status": "passed",
-  "checkedUtc": "2026-10-19T07:22:30.429Z",
+  "checkedUtc": "2026-10-19T08:35:24.828Z",
   "tests": {
-    "passed": 120,
+    "passed": 130,
     "failed": 0,
     "optionalBaselineTestsSkipped": 2
   },
@@ -13,12 +13,38 @@
     "web bundle export",
     "source release metadata"
   ],
+  "sourceFileSha256": {
+    "src/app/expedition.tsx": "1284c235666812c82862f0338ae746a0ba55d64d914c893d319cff87f9cab166",
+    "src/game/expedition/core.ts": "9946f861ddb04c3d7fac93dad9f94a704ccae09d30ac85f4f08ed8fbf56eb4dd",
+    "src/game/expedition/animation.ts": "bdddfbdf4c4717c9874e91839b6ae4857063fbaec86ac2e66f909bb7feeb2b4d",
+    "src/game/expedition/scene.ts": "1bfaf0c500dfc6bb32d070ae5a9823b924b7a35f4d1ac97795ecbc59931cd008",
+    "src/game/expedition/gl.ts": "1836b0cf7bf103c15ea0ab31658733949f177faeaadd537afa2910ad623bb0de"
+  },
+  "burrow": {
+    "controls": [
+      "Down",
+      "S",
+      "downward swipe",
+      "BURROW"
+    ],
+    "groundedDurationSeconds": 0.83,
+    "cooldownSeconds": 1.02,
+    "versionOneCheckpointCompatibility": true,
+    "finishedRunEmergence": true,
+    "visualReview": [
+      "02a-burrow-midpoint.png",
+      "02b-burrow-emergence.png"
+    ],
+    "quickWebTouchButtonVerified": true
+  },
   "cullingGeometry": {
     "targetedTests": 7,
-    "sceneCaptures": 20,
-    "submittedPrimitives": 24088,
-    "excludedPrimitives": 3730,
     "survivingInstanceBytesPreserved": true
+  },
+  "indexedGeometry": {
+    "targetedTests": 5,
+    "exactTriangleStreamPreserved": true,
+    "verifiedIndexedPixelCases": 27
   },
   "cullingPixels": {
     "cases": 27,
@@ -32,13 +58,16 @@
       800,
       920,
       1024
-    ]
+    ],
+    "scope": "Old and current GL renderer draw the same current scene, including burrowing; renderer equivalence, not comparison with the removed slide animation"
   },
   "browser": {
     "report": "app-runtime-smoke.json",
-    "uninterruptedFrames": 212,
-    "meanFrameMs": 16.584433962274694,
-    "stallsOver400ms": 0
+    "checks": 12,
+    "uninterruptedFrames": 211,
+    "meanFrameMs": 16.591469194326923,
+    "stallsOver400ms": 0,
+    "drawSubmissions": 2321
   },
   "nativeAcceptance": "The replacement signed APK must be verified and exercised separately. No physical-device acceptance is attested."
 }

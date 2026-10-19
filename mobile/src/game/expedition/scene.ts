@@ -1,7 +1,7 @@
 import { branchOffset, clamp, hazardPose, LANE_WIDTH, routeOffset, smooth, type CourseItem, type Expedition, type GameEvent } from './core';
 import { ExpeditionRenderer, color, type Color, type GL, type Shape } from './gl';
 import { multiply, segment, transform, type Mat4, type Vec3 } from './math';
-import { gaitPose, slideBlend, reactionEnvelope, crouchPose } from './animation';
+import { gaitPose, burrowPose, reactionEnvelope } from './animation';
 import { companionId, COMPANIONS } from './companions';
 import { drawCompanion, drawTeam } from './companion-models';
 const C={fur:color('#24272a',-4),furLight:color('#353237',-4),black:color('#0d1117'),cream:color('#f2d9a2'),pale:color('#fff0c7'),gold:color('#ffcb5a'),goldGlow:color('#ffc765',1.15),mint:color('#70e4d7',.35),violet:color('#b4a0fa',.45),red:color('#e8795e'),pink:color('#da818b'),stone:color('#758474'),stoneDark:color('#425450'),wood:color('#6c4b35'),woodLight:color('#a47c4b'),leaf:color('#427763'),leafLight:color('#75aa63'),iron:color('#657579'),copper:color('#ad8155'),water:color('#254d56',-2),shadow:color('#000000',-3)};
@@ -22,12 +22,12 @@ export class ExpeditionScene {
    if(e.kind==='hit')this.reaction={kind:'hurt',at:this.clock};
    if(['secret','upgrade','power','companion-join','companion-attack','companion-guard','companion-boost'].includes(e.kind))this.reaction={kind:e.kind==='secret'?'discovery':'good',at:this.clock};
    if(e.kind==='revive'||e.kind==='win')this.reaction={kind:'revive',at:this.clock};
-   if(calm||!['coin','gem','hit','block','secret','revive','land','step','burst','splash','power','companion-join','companion-attack','companion-guard','companion-boost'].includes(e.kind))continue;
+   if(calm||!['coin','gem','hit','block','secret','revive','land','step','slide','burst','splash','power','companion-join','companion-attack','companion-guard','companion-boost'].includes(e.kind))continue;
    const amount=e.kind==='step'?2:e.kind==='coin'?4:e.kind==='secret'||e.kind==='revive'?18:9;
-   const c=e.companion?color(COMPANIONS[e.companion].color,.5):e.kind==='hit'?C.red:e.kind==='land'||e.kind==='step'?color('#b3a386'):e.kind==='splash'?C.mint:e.kind==='block'?C.mint:e.kind==='gem'?C.violet:C.goldGlow;
+   const c=e.companion?color(COMPANIONS[e.companion].color,.5):e.kind==='hit'?C.red:e.kind==='land'||e.kind==='step'||e.kind==='slide'?color('#b3a386'):e.kind==='splash'?C.mint:e.kind==='block'?C.mint:e.kind==='gem'?C.violet:C.goldGlow;
    for(let i=0;i<amount;i++){
     const n=this.particleId++,r=hash(n),a=hash(n+8)*TAU;
-    this.particles.push({x:e.targetX!==undefined?e.targetX+curve(e.targetD??s.distance)-curve(s.distance):s.x+routeOffset(s),y:floorY(e.targetD??s.distance)+(e.kind==='step'||e.kind==='land'?.15:1.1)+s.y,d:e.targetD??s.distance,
+    this.particles.push({x:e.targetX!==undefined?e.targetX+curve(e.targetD??s.distance)-curve(s.distance):s.x+routeOffset(s),y:floorY(e.targetD??s.distance)+(e.kind==='step'||e.kind==='land'||e.kind==='slide'?.15:1.1)+s.y,d:e.targetD??s.distance,
      vx:Math.cos(a)*(1+r*1.8),vy:(e.kind==='step'?.5:1.8)+r*2,vz:Math.sin(a)*2,born:this.clock,life:e.kind==='step'?.32:.55+r*.4,c,size:e.kind==='step'?.055:.065+r*.04});
    }
   }this.particles=this.particles.slice(-100);
@@ -46,11 +46,12 @@ export class ExpeditionScene {
   const turnBack=running&&this.reaction.kind==='discovery'?Math.sin(clamp(age/1.15,0,1)*Math.PI)*1.15:0;
   const stride=s.distance/3.8*TAU,grounded=s.y<.02&&s.slide<=0;
   const bob=running&&grounded?Math.abs(Math.sin(stride))*.07:Math.sin(time*2.6)*.018;
-  const crouch=slideBlend(s.slide,s.slideAge),pose=crouchPose(crouch,running),air=smooth(s.y/.38);
+  const finishAge=s.mode==='won'||s.mode==='lost'?age:undefined;
+  const pose=burrowPose(s.slide,s.slideAge,running,s.y,finishAge),crouch=pose.weight,air=smooth(s.y/.38);
   const idleYaw=idle?Math.PI+.12+Math.sin(time*.5)*.15:0;
   const bank=calm?0:clamp(-s.vx*.04,-.18,.18);
   const bounce=happy*.06*Math.sin(age*10);
-  const root=transform(s.x+routeOffset(s),floorY(s.distance)+s.y,0,1,1,1,0,idleYaw,0);
+  const root=transform(s.x+routeOffset(s),floorY(s.distance)+s.y-pose.depth,0,1,1,1,0,idleYaw,0);
   const body=multiply(root,transform(0,bob*(1-crouch)+bounce*(1-crouch)+pose.bodyY,0,1,1,1,pose.bodyX+hurt*.17,0,bank+hurt*.15));
   const fur=hurt>.2?color('#705055'):C.fur;
   this.shape('sphere',fur,0,1.10,0,.47,.66,.34,0,0,0,body);
@@ -73,6 +74,8 @@ export class ExpeditionScene {
    const shoulder:Vec3=[side*.44,1.45,0],elbow:Vec3=[side*(.58+happy*.12),1.08+happy*.34,-Math.sin(swing)*.38+hurt*.23],hand:Vec3=[side*(.50+happy*.23),.82+happy*.71,-.21-Math.sin(swing)*.47];
    elbow[1]+=.28*air;hand[1]+=.45*air;hand[2]-=.12*air;
    elbow[1]=elbow[1]*(1-crouch)+.85*crouch;elbow[2]=elbow[2]*(1-crouch)+.10*crouch;hand[1]=hand[1]*(1-crouch)+.72*crouch;hand[2]=hand[2]*(1-crouch)-.05*crouch;
+   // Alternating claw strokes visibly pull Madger into the ground during the dive.
+   elbow[1]+=side*pose.stroke*.12;hand[1]+=side*pose.stroke*.22;hand[2]-=crouch*.22+side*pose.stroke*.18;
    this.link(shoulder,elbow,.19,fur,body);this.orb(...elbow,.19,fur,body);this.link(elbow,hand,.15,fur,body);
    this.shape('sphere',fur,...hand,.20,.21,.17,0,0,0,body);
    for(let i=0;i<5;i++)this.shape('cone',C.pale,hand[0]+(i-2)*.065,hand[1]-.07,hand[2]-.16,.024,.12,.028,-Math.PI/2,0,side*.08,body);
@@ -111,10 +114,28 @@ export class ExpeditionScene {
   this.shape('sphere',C.black,0,-.105,-.704,.169,.116,.118,0,0,0,head);
   this.shape('sphere',color('#869093'),-.034,-.068,-.807,.05,.018,.015,0,0,0,head);
   if(mouthOpen>.045)for(let i=0;i<4;i++)this.shape('box',C.pale,(i-1.5)*.057,-.303,-.611,.043,.049,.033,0,0,0,head);
-  this.shape('shadow',C.shadow,s.x+routeOffset(s),floorY(s.distance)+.018,0,.76*(1-s.y*.10),1,.62*(1-s.y*.10));
+  this.shape('shadow',C.shadow,s.x+routeOffset(s),floorY(s.distance)+.018,0,.76*(1-s.y*.10)*(1-crouch*.45),1,.62*(1-s.y*.10));
+  if(crouch>0)this.burrowTrail(s,crouch,calm);
   if(s.shields>0){this.shape('ring',C.mint,s.x+routeOffset(s),1.20+floorY(s.distance)+s.y,0,.88,1,.88,Math.PI/2,time*.8,0);this.shape('ring',C.mint,s.x+routeOffset(s),1.20+floorY(s.distance)+s.y,0,.88,1,.88,0,0,time*.5);}
   if(s.magnet>0)this.shape('ring',C.violet,s.x+routeOffset(s),floorY(s.distance)+.10,0,1.2+.07*Math.sin(time*5),1,1.2,0,time*.4,0);
   if(s.burst>0)for(let i=0;i<7;i++)this.shape('cone',C.goldGlow,s.x+routeOffset(s)+(i-3)*.15,.45+s.y,i*.18+.35,.06,.8,.06,-Math.PI/2,0,0);
+ }
+ /** Surface soil marks the runner's position while the articulated body is underground. */
+ private burrowTrail(s:Expedition,weight:number,calm:boolean){
+  const x=s.x+routeOffset(s),y=floorY(s.distance),pulse=calm?0:Math.sin(s.slideAge*34)*.025;
+  const soil=s.zone===2?color('#75677b'):s.zone===1?color('#85735c'):color('#8b6743');
+  this.shape('rock',soil,x,y+.09*weight,0,.66*weight,(.18+pulse)*weight,.84*weight,0,0,0);
+  for(const side of [-1,1])this.shape('rock',C.woodLight,x+side*.38*weight,y+.055,.10,.27*weight,.105*weight,.52*weight,0,side*.25,0);
+  // A short trail scrolls backwards with travelled distance; no retained particles are needed.
+  const travel=s.slideAge*s.speed;
+  for(let i=0;i<6;i++){
+   const z=((travel+i*.48)%2.88)+.36,fade=weight*(1-z/3.4);
+   this.shape('rock',i%2?soil:C.woodLight,x+Math.sin(i*2.4)*.20*weight,y+.025,z,.36*fade,.065*fade,.27*fade,0,i,0);
+  }
+  if(!calm)for(let i=0;i<8;i++){
+   const age=(s.slideAge*3.4+i/8)%1,side=i%2?1:-1;
+   this.shape('rock',i%3?soil:C.woodLight,x+side*(.26+age*.66)*weight,y+(.08+Math.sin(age*Math.PI)*.34)*weight,-.30+age*.80,.055*weight,.05*weight,.045*weight,age*3,i,age*2);
+  }
  }
  private plant(x:number,y:number,z:number,n:number,time:number){
   for(let i=0;i<5;i++){const a=i/5*TAU+hash(n)*6;this.shape('leaf',i%2?C.leaf:C.leafLight,x,y,z,.45,.6,.8,Math.sin(time*1.2+n+i)*.13,a,.25);}

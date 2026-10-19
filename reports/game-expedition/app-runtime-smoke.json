@@ -1,5 +1,5 @@
 {
-  "date": "2026-10-19T07:22:30.429Z",
+  "date": "2026-10-19T08:34:19.397Z",
   "browser": "155.0.8059.82",
   "renderer": "ANGLE (Intel, Intel(R) UHD Graphics (0x00008A56) Direct3D11 vs_5_0 ps_5_0, D3D11)",
   "scope": "Actual exported web application on the PC GPU; not physical Android acceptance",
@@ -13,18 +13,21 @@
     "sha256": "7b51f62d95351843f17e696f1a5e6f6c33e472e1724707127e4d9c40fba82628"
   },
   "uninterruptedFrameTiming": {
-    "frames": 212,
-    "ms": 3515.900000002235,
-    "mean": 16.584433962274694,
+    "frames": 211,
+    "ms": 3500.8000000029806,
+    "mean": 16.591469194326923,
     "p95": 16.800000000000182,
-    "max": 16.80000000000109,
-    "over400": 0
+    "max": 17.200000000000728,
+    "over400": 0,
+    "drawSubmissions": 2321
   },
   "checks": [
     "real exported app boots",
     "detailed nonblank 3D rendering",
     "animated idle",
-    "jump and slide inputs",
+    "jump input",
+    "keyboard Down and BURROW button trigger burrowing",
+    "active rendering submits observed GPU draws",
     "pause freezes simulation and render",
     "pause stops audio",
     "cold reload keeps checkpoint",
@@ -39,6 +42,10 @@
     },
     {
       "src": "music.c425b77cff55695786772367f4c8f2ba.mp3",
+      "status": "playing"
+    },
+    {
+      "src": "step.808fffc66ba388fc9a0a07dd83269fcc.wav",
       "status": "playing"
     },
     {

@@ -39,7 +39,7 @@ APK = Path(os.environ.get("MADGER_ANDROID_APK", str(ROOT / "madger-expedition-pr
 STAMP = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
 OUT = Path(os.environ.get("MADGER_ANDROID_EVIDENCE_DIR", str(ROOT / "expedition-evidence" / "android-smoke" / STAMP)))
 ENTRY = "Play the 3D Expedition"
-HUD = re.compile(r"Expedition distance (\d+) meters; lane (-?\d); (jumping|sliding|running); route (main|hollow|grotto)")
+HUD = re.compile(r"Expedition distance (\d+) meters; lane (-?\d); (jumping|burrowing|running); route (main|hollow|grotto)")
 SCORE = re.compile(r"Current expedition score (\d+)")
 ERROR_LABELS = (
     "The 3D view did not start.", "The 3D view needs a restart.",
@@ -388,14 +388,14 @@ class Smoke:
         self.tap("JUMP")
         self.wait_hud(lambda state: state["action"] == "jumping", "jump response", timeout=2)
         self.wait_hud(lambda state: state["action"] == "running", "landing")
-        self.tap("SLIDE")
-        self.wait_hud(lambda state: state["action"] == "sliding", "slide response", timeout=2)
+        self.tap("BURROW")
+        self.wait_hud(lambda state: state["action"] == "burrowing", "burrow response", timeout=2)
         _, _, labels = self.tree()
         charge = next((label for label in labels if re.fullmatch(r"Activate burst, \d+ percent charged", label)), None)
         if not charge:
             raise AssertionError("Burst control and its charge announcement are absent")
         self.report["burst_scope"] = "Control and charge label checked; burst activation is not exercised by this short route."
-        self.mark("Left, right, jump, and slide respond through the visible HUD", burst_control=charge)
+        self.mark("Left, right, jump, and burrow respond through the visible HUD", burst_control=charge)
 
         self.tap("Pause expedition")
         paused = self.paused_state("05-manual-pause")

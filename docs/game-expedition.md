@@ -4,7 +4,13 @@
 
 The Expo app opens Expedition from the first card on Home. The game uses an articulated 3D character and an instanced WebGL renderer through expo-gl. It has a 1,080-metre course across the Overgrown Burrow, Forgotten Works and Crystal Grotto.
 
-The player can steer between three lanes, jump, slide, activate an earned burst, collect relics and coins, recover health, gain shields and extra lives, and discover hidden routes. A hidden workshop grants a run upgrade. Keys open the sealed vault; the final treasure precedes the finish. The discovery journal and completed runs persist separately from the original Burrow Run records.
+The player can steer between three lanes, jump, burrow beneath the surface, activate an earned burst, collect relics and coins, recover health, gain shields and extra lives, and discover hidden routes. A hidden workshop grants a run upgrade. Keys open the sealed vault; the final treasure precedes the finish. The discovery journal and completed runs persist separately from the original Burrow Run records.
+
+## Down-to-burrow controls
+
+Down, S, a downward swipe, and the BURROW button make grounded MADGER dig below the surface, travel with a moving soil mound and dirt trail, then emerge. The action lasts 0.83 seconds with a 1.02-second cooldown. Pressing Down while airborne retains controlled fast descent. Burrowing passes under overhead roots and drones; gaps, saws, crates and boulders retain their existing collision rules. Mud still slows the run. A finished run visibly surfaces MADGER even if it ends during a burrow.
+
+Existing saved runs remain compatible: version-one checkpoint fields retain their historical slide names, while player-facing controls and status read BURROW and burrowing. Pausing or restoring a run preserves the active action until play resumes.
 
 ## Companion behavior
 
@@ -32,9 +38,11 @@ Native rendering drains each submitted Expo GL frame before allowing the next on
 
 The renderer also excludes primitives whose entire transformed local bounds fall outside the camera clipping volume. Bounds come from the actual vertices, including the updated animated tail, and account for rotation, nonuniform and mirrored scale, shear, and numerical tolerance. Surviving instance data and order are unchanged. Non-affine matrices remain visible. Independent corner tests and a 27-frame WebGL comparison verify that this optimization preserves rendered pixels; native performance is assessed separately on the signed APK.
 
+The renderer uses indexed instanced drawing when exposed by the graphics context. Static meshes share only bit-identical position and normal records; the animated tail shares stable grid identities across poses. The original expanded arrays, triangle order, and shaders remain intact, and contexts without indexed instancing retain their array draw path. Exact stream reconstruction and independent pixel comparisons verify this work. The existing first and thirtieth native frame diagnostics also report indexed draw counts so Android evidence can confirm which path ran.
+
 ## Validation
 
-From mobile/: run npm run validate, npx expo install --check, and the repository's export/build checks. The expedition tests cover seeded course generation, collision versus visible movement, jump/slide rules, secret-route continuity, upgrades, extra lives, finish banking, corrupt storage, save failures, interruption recovery, and ordinary-control winning runs. Companion tests cover distinct abilities, timing, target reservations, saved-state integrity and rendered anatomy. Audio regression tests use delayed seek promises to check cancellation and cue priority.
+From mobile/: run npm run validate, npx expo install --check, and the repository's export/build checks. The expedition tests cover seeded course generation, collision versus visible movement, jump/burrow rules, secret-route continuity, upgrades, extra lives, finish banking, corrupt storage, save failures, interruption recovery, and ordinary-control winning runs. Companion tests cover distinct abilities, timing, target reservations, saved-state integrity and rendered anatomy. Audio regression tests use delayed seek promises to check cancellation and cue priority.
 
 Browser evidence is useful for exported web behavior and layout. It is not physical Android acceptance. An Android test APK must be built, signature/identity verified, installed and exercised on an available Android target before its native behavior is reported as tested. Production Play distribution retains its existing release gates and signing requirements.
 

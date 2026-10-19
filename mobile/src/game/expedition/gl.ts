@@ -154,7 +154,18 @@ function geometryBounds(vertices:Float32Array,bounds:Bounds={center:[0,0,0],half
  for(let i=0;i<vertices.length;i+=6)for(let axis=0;axis<3;axis++){low[axis]=Math.min(low[axis],vertices[i+axis]);high[axis]=Math.max(high[axis],vertices[i+axis]);}
  for(let axis=0;axis<3;axis++){bounds.center[axis]=(low[axis]+high[axis])/2;bounds.half[axis]=(high[axis]-low[axis])/2;}return bounds;
 }
-type Batch={vertex:WebGLBuffer;instances:WebGLBuffer;vertices:number;data:Float32Array;visible:Float32Array;bounds:Bounds;count:number;};
+function elementIndices(shape:Shape,vertices:Float32Array){
+ const count=vertices.length/6,indices=new Uint16Array(count),first=new Map<string|number,number>();
+ const bits=new Uint32Array(vertices.buffer,vertices.byteOffset,vertices.length);
+ for(let i=0;i<count;i++){
+  // Static meshes share only bit-identical positions AND normals. The tail
+  // shares stable grid identities, never incidental equality at one pose.
+  const o=i*6,key=shape==='tail'?TAIL_INDICES[i]:`${bits[o]},${bits[o+1]},${bits[o+2]},${bits[o+3]},${bits[o+4]},${bits[o+5]}`;
+  const previous=first.get(key);if(previous===undefined){first.set(key,i);indices[i]=i;}else indices[i]=previous;
+ }
+ return indices;
+}
+type Batch={vertex:WebGLBuffer;instances:WebGLBuffer;elements:WebGLBuffer|null;vertices:number;data:Float32Array;visible:Float32Array;bounds:Bounds;count:number;};
 function updateClipPlanes(vp:Mat4,planes:Float64Array){
  // Matrices are column-major; clip inequalities are row 4 +/- rows 1, 2, 3.
  for(let axis=0;axis<3;axis++)for(let side=0;side<2;side++){
@@ -189,9 +200,10 @@ export class ExpeditionRenderer {
  private gl:NativeGL;private program:WebGLProgram;private batches=new Map<Shape,Batch>();
  private uniforms:{vp:WebGLUniformLocation;eye:WebGLUniformLocation;fog:WebGLUniformLocation;range:WebGLUniformLocation;time:WebGLUniformLocation;travel:WebGLUniformLocation};
  private divisor:((i:number,v:number)=>void)|null=null;private drawInstanced:((mode:number,first:number,count:number,instances:number)=>void)|null=null;
+ private drawIndexedInstanced:((mode:number,count:number,type:number,offset:number,instances:number)=>void)|null=null;
  private tailVertices=new Float32Array(TAIL_INDICES.length*6);private tailGrid=new Float64Array((TAIL_RINGS+1)*(TAIL_SIDES+1)*6);
  private clipPlanes=new Float64Array(24);
- private dead=false;private nativeFrames=0;public stats={instances:0,culledInstances:0,drawCalls:0,triangles:0,nativeDrainMs:0};
+ private dead=false;private nativeFrames=0;public stats={instances:0,culledInstances:0,drawCalls:0,indexedDrawCalls:0,triangles:0,nativeDrainMs:0};
  constructor(gl:GL){
   this.gl=gl as NativeGL;
   const compile=(type:number,source:string)=>{const s=gl.createShader(type);if(!s)throw Error('Could not allocate a GPU shader');gl.shaderSource(s,source);gl.compileShader(s);if(!gl.getShaderParameter(s,gl.COMPILE_STATUS)){const message=gl.getShaderInfoLog(s);gl.deleteShader(s);throw Error('3D shader: '+message);}return s;};
@@ -201,18 +213,23 @@ export class ExpeditionRenderer {
   const uniform=(name:string)=>{const u=gl.getUniformLocation(program,name);if(u===null)throw Error('Missing shader uniform '+name);return u;};
   this.uniforms={vp:uniform('uVP'),eye:uniform('uEye'),fog:uniform('uFog'),range:uniform('uFogRange'),time:uniform('uTime'),travel:uniform('uTravel')};
   const g=gl as WebGL2RenderingContext;
-  if(typeof g.drawArraysInstanced==='function'){this.drawInstanced=g.drawArraysInstanced.bind(g);this.divisor=g.vertexAttribDivisor.bind(g);}else{
-   const ext=gl.getExtension('ANGLE_instanced_arrays');if(ext){this.drawInstanced=ext.drawArraysInstancedANGLE.bind(ext);this.divisor=ext.vertexAttribDivisorANGLE.bind(ext);}
+  if(typeof g.drawArraysInstanced==='function'){
+   this.drawInstanced=g.drawArraysInstanced.bind(g);this.divisor=g.vertexAttribDivisor.bind(g);
+   if('drawElementsInstanced' in g&&typeof g.drawElementsInstanced==='function')this.drawIndexedInstanced=g.drawElementsInstanced.bind(g);
+  }else{
+   const ext=gl.getExtension('ANGLE_instanced_arrays');if(ext){this.drawInstanced=ext.drawArraysInstancedANGLE.bind(ext);this.divisor=ext.vertexAttribDivisorANGLE.bind(ext);if('drawElementsInstancedANGLE' in ext&&typeof ext.drawElementsInstancedANGLE==='function')this.drawIndexedInstanced=ext.drawElementsInstancedANGLE.bind(ext);}
   }
   for(const shape of ['box','sphere','rock','cylinder','cone','ring','leaf','headStripe','tail','shadow','halo'] as Shape[]){
    const data=shape==='tail'?tailGeometry(0,0,this.tailVertices,this.tailGrid):geometry(shape),vertex=gl.createBuffer(),instances=gl.createBuffer();if(!vertex||!instances)throw Error('GPU buffer allocation failed');
    gl.bindBuffer(gl.ARRAY_BUFFER,vertex);gl.bufferData(gl.ARRAY_BUFFER,data,gl.STATIC_DRAW);
-   this.batches.set(shape,{vertex,instances,vertices:data.length/6,data:new Float32Array(20*4096),visible:new Float32Array(0),bounds:geometryBounds(data),count:0});
+   let elements:WebGLBuffer|null=null;
+   if(this.drawIndexedInstanced&&data.length/6<=65535){elements=gl.createBuffer();if(!elements)throw Error('GPU index buffer allocation failed');gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER,elements);gl.bufferData(gl.ELEMENT_ARRAY_BUFFER,elementIndices(shape,data),gl.STATIC_DRAW);}
+   this.batches.set(shape,{vertex,instances,elements,vertices:data.length/6,data:new Float32Array(20*4096),visible:new Float32Array(0),bounds:geometryBounds(data),count:0});
   }
   gl.enable(gl.DEPTH_TEST);gl.depthFunc(gl.LEQUAL);gl.disable(gl.CULL_FACE);
  }
  updateTail(time:number,bank:number){const b=this.batches.get('tail')!;const data=tailGeometry(time,bank,this.tailVertices,this.tailGrid);geometryBounds(data,b.bounds);this.gl.bindBuffer(this.gl.ARRAY_BUFFER,b.vertex);this.gl.bufferData(this.gl.ARRAY_BUFFER,data,this.gl.DYNAMIC_DRAW);b.vertices=data.length/6;}
- reset(){for(const b of this.batches.values())b.count=0;this.stats={instances:0,culledInstances:0,drawCalls:0,triangles:0,nativeDrainMs:0};}
+ reset(){for(const b of this.batches.values())b.count=0;this.stats={instances:0,culledInstances:0,drawCalls:0,indexedDrawCalls:0,triangles:0,nativeDrainMs:0};}
  add(shape:Shape,matrix:Mat4,c:Color){const b=this.batches.get(shape)!;if(b.count>=4096)return;const offset=b.count*20;b.data.set(matrix,offset);b.data.set(c,offset+16);b.count++;}
  shape(shape:Shape,c:Color,x:number,y:number,z:number,sx=1,sy=1,sz=1,rx=0,ry=0,rz=0,parent?:Mat4){const t=transform(x,y,z,sx,sy,sz,rx,ry,rz);this.add(shape,parent?multiply(parent,t):t,c);}
  render(eye:Vec3,target:Vec3,time:number,zone:number,travel=0){
@@ -229,7 +246,8 @@ export class ExpeditionRenderer {
    if(this.divisor&&this.drawInstanced){
     this.divisor(0,0);this.divisor(1,0);gl.bindBuffer(gl.ARRAY_BUFFER,b.instances);gl.bufferData(gl.ARRAY_BUFFER,b.visible.subarray(0,count*20),gl.DYNAMIC_DRAW);
     for(let i=2;i<=6;i++){gl.enableVertexAttribArray(i);gl.vertexAttribPointer(i,4,gl.FLOAT,false,80,(i-2)*16);this.divisor(i,1);}
-    this.drawInstanced(gl.TRIANGLES,0,b.vertices,count);this.stats.drawCalls++;
+    if(b.elements&&this.drawIndexedInstanced){gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER,b.elements);this.drawIndexedInstanced(gl.TRIANGLES,b.vertices,gl.UNSIGNED_SHORT,0,count);this.stats.indexedDrawCalls++;}else this.drawInstanced(gl.TRIANGLES,0,b.vertices,count);
+    this.stats.drawCalls++;
     for(let i=2;i<=6;i++)this.divisor(i,0);
    }else{
     for(let i=2;i<=6;i++)gl.disableVertexAttribArray(i);
@@ -247,5 +265,5 @@ export class ExpeditionRenderer {
    if(++this.nativeFrames===1||this.nativeFrames===30)console.info('MADGER_EXPEDITION_RENDER '+JSON.stringify({frame:this.nativeFrames,instanced:!!this.drawInstanced,...this.stats}));
   }
  }
- dispose(){if(this.dead)return;this.dead=true;try{for(const b of this.batches.values()){this.gl.deleteBuffer(b.vertex);this.gl.deleteBuffer(b.instances);}this.gl.deleteProgram(this.program);}catch{/* A lost context has already freed its GPU resources. */}this.batches.clear();}
+ dispose(){if(this.dead)return;this.dead=true;try{for(const b of this.batches.values()){this.gl.deleteBuffer(b.vertex);this.gl.deleteBuffer(b.instances);if(b.elements)this.gl.deleteBuffer(b.elements);}this.gl.deleteProgram(this.program);}catch{/* A lost context has already freed its GPU resources. */}this.batches.clear();}
 }

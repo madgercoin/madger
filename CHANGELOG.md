@@ -1,5 +1,19 @@
 # Changelog
 
+## 2026-10-19 - Down makes MADGER burrow
+
+- Replaced the player-facing slide action with BURROW on the Down and S keys, downward swipe, and touch button. MADGER dives beneath the surface, leaves a moving dirt trail, and emerges smoothly.
+- Preserved action timing, cooldown, airborne fast descent, hazard rules, hidden routes, and version-one saved-run compatibility. Finished runs surface MADGER even when they end mid-burrow.
+- Fixed quick web game-button taps by using completed press events on web while retaining immediate native press-in controls.
+- Added grounded/airborne input, cooldown, hazard, saved-run, animation-depth and finished-emergence checks. Browser and Android smoke checks now require the BURROW control and burrowing response.
+
+## 2026-10-19 - Shared Expedition mesh vertices
+
+- Added indexed instanced drawing to reuse shared position and normal records, reducing repeated vertex processing while preserving every triangle, shader, and material.
+- Kept the animated tail's indices stable across poses and retained the existing array-based draw paths for contexts without indexed instancing.
+- Added exact byte-stream reconstruction, tail-pose, native/ANGLE/fallback, disposal, and native-drain coverage. The native frame diagnostics report indexed draw counts.
+- Build 13's exact-APK runs still found native stalls despite camera culling. The replacement APK must pass the unchanged native gameplay and recovery checks before acceptance.
+
 ## 2026-10-19 - Conservative camera visibility
 
 - Excluded only complete primitive bounds outside the camera clipping volume, reducing native GPU work while preserving visible geometry, shaders, materials and animations.

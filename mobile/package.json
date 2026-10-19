@@ -64,7 +64,7 @@
     "release:check": "npm run validate && npx expo install --check && npx expo export --platform web && npm run release:metadata",
     "release:distribution": "npm run release:check && node scripts/release-readiness.mjs --distribution",
     "test:profile": "node --test scripts/test-game-profile.mjs scripts/test-run-mode.mjs",
-    "test:expedition": "node --test scripts/test-expedition.cjs scripts/test-expedition-render.cjs scripts/test-expedition-render-memory.cjs scripts/test-expedition-culling.cjs",
+    "test:expedition": "node --test scripts/test-expedition.cjs scripts/test-expedition-render.cjs scripts/test-expedition-render-memory.cjs scripts/test-expedition-culling.cjs scripts/test-expedition-indices.cjs",
     "test:companions": "node --test scripts/test-companions.cjs",
     "test:expedition-audio": "node --test scripts/test-expedition-audio.cjs"
   },

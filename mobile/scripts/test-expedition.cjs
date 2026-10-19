@@ -10,13 +10,24 @@ test('150 course seeds are reproducible, bounded, sorted and leave an unobstruct
 });
 test('steering is continuous and collision follows physical x, not selected lane',()=>{const {s,course,events}=at('boulder');G.steer(s,1);assert.equal(s.x,0);G.fixedStep(s,course,events);assert(s.x>0&&s.x<.03);assert.equal(s.hp,2);const safe=at('boulder',{x:2.15,lane:1});G.steer(safe.s,-1);G.fixedStep(safe.s,safe.course,safe.events);assert.equal(safe.s.hp,3);});
 test('jump follows gravity, lands on the surface and cannot stack airborne impulses',()=>{const s=running(),e=[];G.jump(s,e);const initial=s.vy;G.jump(s,e);assert.equal(s.vy,initial);stepFor(s,[],.35,e);assert(s.y>1.2&&s.y<1.8);stepFor(s,[],.6,e);assert.equal(s.y,0);assert.equal(s.vy,0);assert(e.some(x=>x.kind==='land'));});
-test('jump avoids low traps and gaps; slide avoids overhead roots and drones',()=>{for(const kind of ['saw','gap','crate','mud','boulder']){const {s,course,events}=at(kind,{y:1.4,vy:0});G.fixedStep(s,course,events);assert.equal(s.hp,3,kind);assert.equal(s.mud,0);}for(const kind of ['roots','drone']){const {s,course,events}=at(kind,{slide:.6});G.fixedStep(s,course,events);assert.equal(s.hp,3,kind);}const root=at('roots',{y:1,vy:0});G.fixedStep(root.s,root.course,root.events);assert.equal(root.s.hp,2);});
+test('jump avoids low traps and gaps; burrowing avoids overhead roots and drones',()=>{for(const kind of ['saw','gap','crate','mud','boulder']){const {s,course,events}=at(kind,{y:1.4,vy:0});G.fixedStep(s,course,events);assert.equal(s.hp,3,kind);assert.equal(s.mud,0);}for(const kind of ['roots','drone']){const {s,course,events}=at(kind);G.burrow(s,events);G.fixedStep(s,course,events);assert.equal(s.hp,3,kind);}const root=at('roots',{y:1,vy:0});G.fixedStep(root.s,root.course,root.events);assert.equal(root.s.hp,2);});
+test('Down starts a bounded burrow, respects cooldown and keeps legacy callers compatible',()=>{
+ const s=running(),events=[];G.burrow(s,events);assert.equal(s.slide,.83);assert.equal(s.slideCooldown,1.02);assert.equal(events.length,1);assert.equal(events[0].kind,'slide');
+ stepFor(s,[],.2,events);const timer=s.slide;G.burrow(s,events);assert.equal(s.slide,timer);assert.equal(events.filter(e=>e.kind==='slide').length,1);
+ stepFor(s,[],.64,events);assert.equal(s.slide,0);assert(s.slideCooldown>0);stepFor(s,[],.2,events);G.slide(s,events);assert.equal(s.slide,.83);assert.equal(G.slide,G.burrow);
+ for(const mode of ['ready','countdown','paused','upgrade','won','lost']){const stopped=running();stopped.mode=mode;G.burrow(stopped,[]);assert.equal(stopped.slide,0,mode);}
+});
+test('airborne Down descends without digging through a gap or gaining immunity',()=>{
+ const s=running(),events=[];G.jump(s,events);stepFor(s,[],.2,events);G.burrow(s,events);assert.equal(s.slide,0);assert(s.vy<=-11);assert.equal(events.filter(e=>e.kind==='slide').length,0);
+ for(const kind of ['gap','saw','crate','boulder']){const item=at(kind);G.burrow(item.s,item.events);G.fixedStep(item.s,item.course,item.events);assert.equal(item.s.hp,2,kind);}
+ const mud=at('mud');G.burrow(mud.s,mud.events);G.fixedStep(mud.s,mud.course,mud.events);assert(mud.s.mud>0);
+});
 test('hits resolve once, shields consume one charge and immunity prevents stacked damage',()=>{const {s,course,events}=at('boulder',{shields:2,shieldTime:10});stepFor(s,course,.1,events);assert.equal(s.hp,3);assert.equal(s.shields,1);assert.equal(events.filter(e=>e.kind==='block').length,1);const multi=at('crate');multi.course.push({...multi.course[0],id:2});G.fixedStep(multi.s,multi.course,multi.events);assert.equal(multi.s.hp,2);assert.equal(multi.s.hits,1);});
 test('extra life revives once, restores grit and grants a safe recovery period',()=>{const {s,course,events}=at('boulder',{hp:1,lives:1});G.fixedStep(s,course,events);assert.equal(s.hp,3);assert.equal(s.lives,0);assert(s.immune>2.9);assert.equal(s.finished,false);assert(events.some(e=>e.kind==='revive'));});
 test('dead runs cannot score, move or emit another failure',()=>{const {s,course,events}=at('boulder',{hp:1});G.fixedStep(s,course,events);assert.equal(s.mode,'lost');const before=JSON.stringify(s);G.fixedStep(s,course,events);assert.equal(JSON.stringify(s),before);assert.equal(events.filter(e=>e.kind==='lose').length,1);});
 test('pause freezes physics, hazards, upgrade timers and score',()=>{const s=running(),c=G.buildCourse(17),e=[];s.magnet=5;s.shieldTime=6;G.pause(s);const before=JSON.stringify(s);G.advance(s,c,10,G.createClock(),e);assert.equal(JSON.stringify(s),before);assert.equal(e.length,0);G.resume(s);assert.equal(s.mode,'running');});
 test('30 and 144 Hz displays produce identical simulation; long stalls pause safely',()=>{const course=G.buildCourse(9),a=running(9),b=running(9),ca=G.createClock(),cb=G.createClock();for(let i=0;i<300;i++)G.advance(a,course,1/30,ca,[]);for(let i=0;i<1440;i++)G.advance(b,course,1/144,cb,[]);assert.deepEqual(a,b);const before=a.distance,hp=a.hp;G.advance(a,course,1.2,ca,[]);assert.equal(a.mode,'paused');assert.equal(a.distance,before);assert.equal(a.hp,hp);});
-test('hidden burrow needs a slide and provides a continuous, safe, valuable shortcut',()=>{const s=running(),course=G.buildCourse(17),gate=course.find(i=>i.kind==='burrow');s.distance=gate.d-.2;s.x=gate.lane*G.LANE_WIDTH;s.lane=gate.lane;G.fixedStep(s,course,[]);assert.equal(s.route,'main');s.slide=.5;const e=[];G.fixedStep(s,course,e);assert.equal(s.route,'hollow');assert(s.secrets.includes('hollow'));assert(s.score>=500);assert(Math.abs(G.routeOffset(s)-gate.lane*G.LANE_WIDTH)<.05);assert.equal(G.branchOffset(270,180,270,1),0);s.distance=269.99;G.fixedStep(s,course,e);assert.equal(s.route,'main');assert(s.immune>=1.9);});
+test('hidden gate needs a burrow and provides a continuous, safe, valuable shortcut',()=>{const s=running(),course=G.buildCourse(17),gate=course.find(i=>i.kind==='burrow');s.distance=gate.d-.2;s.x=gate.lane*G.LANE_WIDTH;s.lane=gate.lane;G.fixedStep(s,course,[]);assert.equal(s.route,'main');const e=[];G.burrow(s,e);G.fixedStep(s,course,e);assert.equal(s.route,'hollow');assert(s.secrets.includes('hollow'));assert(s.score>=500);assert(Math.abs(G.routeOffset(s)-gate.lane*G.LANE_WIDTH)<.05);assert.equal(G.branchOffset(270,180,270,1),0);s.distance=269.99;G.fixedStep(s,course,e);assert.equal(s.route,'main');assert(s.immune>=1.9);});
 test('workshop opens by jumping, freezes play and grants a functional upgrade',()=>{const miss=at('workshop');G.fixedStep(miss.s,miss.course,miss.events);assert.equal(miss.s.mode,'running');assert.equal(miss.s.hp,2);const {s,course,events}=at('workshop',{y:.9});G.fixedStep(s,course,events);assert.equal(s.mode,'upgrade');const d=s.distance;stepFor(s,course,1,events);assert.equal(s.distance,d);G.chooseUpgrade(s,'armor',events);assert.equal(s.shields,2);assert.equal(s.mode,'running');});
 test('a vault consumes a real key and cannot be farmed repeatedly',()=>{const {s,course,events}=at('vault',{keys:1});stepFor(s,course,.1,events);assert.equal(s.keys,0);assert.equal(s.lives,1);assert.equal(s.score,1800);assert(s.secrets.includes('sealed-vault'));});
 test('magnet reaches adjacent lanes; full life reserves convert to a bonus',()=>{const {s,course,events}=at('gem',{x:2.15,lane:1,magnet:5});G.fixedStep(s,course,events);assert.equal(s.gems,1);const life=at('life',{lives:2});G.fixedStep(life.s,life.course,life.events);assert.equal(life.s.lives,2);assert.equal(life.s.score,750);});
@@ -35,7 +46,7 @@ test('all five discoveries and a winning run are reachable with ordinary control
    if(s.route!=='main')target=0;
    else{
     const special=c.find(i=>i.route==='main'&&['burrow','workshop','key','vault'].includes(i.kind)&&i.d-s.distance>-.6&&i.d-s.distance<17&&!s.used.includes(i.id));
-    if(special){target=special.lane;if(special.kind==='burrow'&&special.d-s.distance<5&&special.d>=s.distance)G.slide(s,e);if(special.kind==='workshop'&&special.d-s.distance<4&&s.y===0)G.jump(s,e);}
+    if(special){target=special.lane;if(special.kind==='burrow'&&special.d-s.distance<5&&special.d>=s.distance)G.burrow(s,e);if(special.kind==='workshop'&&special.d-s.distance<4&&s.y===0)G.jump(s,e);}
     else{const next=c.find(i=>i.route==='main'&&G.HAZARDS.has(i.kind)&&i.d-s.distance>-.5&&i.d-s.distance<10);if(next){const blocked=c.filter(i=>G.HAZARDS.has(i.kind)&&i.d===next.d).map(i=>i.lane);target=[-1,0,1].find(l=>!blocked.includes(l));}}
    }
    if(target!==s.lane)G.steer(s,target<s.lane?-1:1);
@@ -50,10 +61,31 @@ test('geometry transforms remain finite for vertical bones and unusual camera an
 test('burst requires earned charge and does not bridge a gap',()=>{const {s,course,events}=at('gap',{energy:99});G.burst(s,events);assert.equal(s.burst,0);s.energy=100;G.burst(s,events);assert.equal(s.energy,0);G.fixedStep(s,course,events);assert.equal(s.hp,2);});
 
 test('stance foot stays locked to the travelling ground instead of skating',()=>{for(const side of [-1,1]){const d=side>0?2.0:.1,a=A.gaitPose(d,side),b=A.gaitPose(d+.01,side);assert(a.stance&&b.stance);assert(Math.abs((b.z-a.z)-.01)<1e-8);}});
-test('gait transitions and jump/slide blends do not snap foot positions',()=>{for(const d of [.27*3.8,3.8]){const a=A.gaitPose(d-1e-5,-1),b=A.gaitPose(d+1e-5,-1);assert(Math.abs(a.z-b.z)<1e-3);assert(Math.abs(a.y-b.y)<1e-3);}assert.equal(A.reactionEnvelope(0),0);assert.equal(A.reactionEnvelope(1.2),0);assert.equal(A.slideBlend(.83),0);assert.equal(A.slideBlend(0),0);});
+test('gait transitions and jump/burrow blends do not snap foot positions',()=>{for(const d of [.27*3.8,3.8]){const a=A.gaitPose(d-1e-5,-1),b=A.gaitPose(d+1e-5,-1);assert(Math.abs(a.z-b.z)<1e-3);assert(Math.abs(a.y-b.y)<1e-3);}assert.equal(A.reactionEnvelope(0),0);assert.equal(A.reactionEnvelope(1.2),0);assert.equal(A.burrowPose(.83).depth,0);assert.equal(A.burrowPose(0).depth,0);});
+test('burrow animation dives fully underground and emerges continuously within the original action window',()=>{
+ const middle=A.burrowPose(.43,.4),headY=Math.cos(middle.bodyX)*middle.headY-Math.sin(middle.bodyX)*middle.headZ+middle.bodyY-middle.depth;
+ assert(middle.depth>2);assert(headY+.75<0,'even the head and ears must be below the surface at mid-burrow');
+ let previous=A.burrowPose(.83,0).depth;
+ for(let i=1;i<=830;i++){const age=i/1000,p=A.burrowPose(Math.max(0,.83-age),age);assert(Object.values(p).every(Number.isFinite));assert(p.depth>=0&&p.depth<=2.05);assert(Math.abs(p.depth-previous)<.032);previous=p.depth;}
+ assert.equal(previous,0);assert.equal(A.burrowPose(.5,.33,true,.35).depth,0,'ledge recovery remains visibly airborne');
+});
 test('full crouch keeps head and muzzle under the overhead root beam',()=>{const p=A.crouchPose(1,true);const cy=Math.cos(p.bodyX)*p.headY-Math.sin(p.bodyX)*p.headZ+p.bodyY;const rotation=p.bodyX+p.headX;const radius=Math.sqrt((.616*Math.cos(rotation))**2+(.546*Math.sin(rotation))**2);assert(cy+radius<.93);assert(cy>0);});
 
-test('a secret entry extends the slide without snapping out of the crouch',()=>{const s=running(),c=G.buildCourse(17),g=c.find(i=>i.kind==='burrow');s.distance=g.d-.1;s.x=g.lane*G.LANE_WIDTH;s.lane=g.lane;s.slide=.4;s.slideAge=.43;const before=A.slideBlend(s.slide,s.slideAge);G.fixedStep(s,c,[]);assert.equal(s.route,'hollow');assert(s.slide>=1.0);assert.equal(A.slideBlend(s.slide,s.slideAge),before);});
+test('a secret entry extends the burrow without snapping out of the underground pose',()=>{const s=running(),c=G.buildCourse(17),g=c.find(i=>i.kind==='burrow');s.distance=g.d-.1;s.x=g.lane*G.LANE_WIDTH;s.lane=g.lane;s.slide=.4;s.slideAge=.43;const before=A.burrowPose(s.slide,s.slideAge).depth;G.fixedStep(s,c,[]);assert.equal(s.route,'hollow');assert(s.slide>=1.0);assert.equal(A.burrowPose(s.slide,s.slideAge).depth,before);});
+test('old sliding checkpoints restore as the same paused burrow without a storage migration',()=>{
+ const old=running(7);old.distance=44;old.slide=.42;old.slideAge=.41;old.slideCooldown=.61;
+ const restored=P.sanitizeExpedition(JSON.parse(JSON.stringify(old)));assert(restored);assert.equal(restored.mode,'paused');assert.equal(restored.slide,old.slide);assert.equal(restored.slideAge,old.slideAge);assert.equal(restored.slideCooldown,old.slideCooldown);
+ const before=A.burrowPose(restored.slide,restored.slideAge);G.advance(restored,[],.3,G.createClock(),[]);assert.deepEqual(A.burrowPose(restored.slide,restored.slideAge),before);
+ G.resume(restored);stepFor(restored,[],.5);assert.equal(restored.slide,0);assert.equal(A.burrowPose(restored.slide,restored.slideAge).depth,0);
+});
+test('finished runs emerge for the result reaction even while their burrow timer is frozen',()=>{
+ const remaining=.43,age=.4,paused=A.burrowPose(remaining,age,true,0);
+ assert.equal(A.burrowPose(remaining,age,false,0,0).depth,paused.depth);
+ let depth=paused.depth;
+ for(let tick=1;tick<=240;tick++){const next=A.burrowPose(remaining,age,false,0,tick/1000).depth;assert(next<=depth);assert(depth-next<.014);depth=next;}
+ assert.equal(depth,0);assert.equal(A.burrowPose(remaining,age,false,0,2).depth,0);
+ assert.deepEqual(A.burrowPose(remaining,age,true,0),paused,'paused and upgrade poses must not consume visual-time emergence');
+});
 
 
 test('Snow White waits for a drone already being hacked instead of wasting an attack',()=>{

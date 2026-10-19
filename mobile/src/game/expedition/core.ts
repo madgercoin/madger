@@ -18,6 +18,7 @@ export type GameEvent = { id: number; kind: EventKind; at: number; x: number; te
 export type Expedition = {
   version: 1; seed: number; id: string; mode: Mode; resumeMode: 'countdown' | 'running';
   tick: number; time: number; distance: number; countdown: number; lane: Lane; x: number; vx: number;
+  // Legacy field names keep version-1 checkpoints compatible with the Down burrow action.
   y: number; vy: number; slide: number; slideAge: number; slideCooldown: number; jumpBuffer: number; speed: number;
   hp: number; lives: number; shields: number; shieldTime: number; magnet: number; burst: number;
   energy: number; immune: number; mud: number; score: number; coins: number; gems: number;
@@ -127,11 +128,16 @@ export function jump(s: Expedition, events: GameEvent[]) {
   if(s.y <= .025 && s.slide <= .01) { s.vy=8.7; s.y=.025; s.jumpBuffer=0; event(s,events,'jump'); }
   else if(s.y > .025) s.jumpBuffer=.12;
 }
-export function slide(s: Expedition, events: GameEvent[]) {
+/** Down digs beneath overhead obstacles; airborne Down makes a controlled descent.
+ * Keep the serialized timers and audio event stable so interrupted older runs resume safely.
+ */
+export function burrow(s: Expedition, events: GameEvent[]) {
   if(s.mode!=='running' || s.slideCooldown>0) return;
   if(s.y>.18) { s.vy=Math.min(s.vy,-11); return; }
   s.slide=.83; s.slideAge=0; s.slideCooldown=1.02; event(s,events,'slide');
 }
+/** Compatibility for older callers; the action now visibly burrows. */
+export const slide = burrow;
 export function burst(s: Expedition, events: GameEvent[]) {
   if(s.mode!=='running' || s.energy<100 || s.burst>0) return;
   s.energy=0; s.burst=s.companions.bot.timeLeft>0?3.6:2.4; s.lastGood=s.time; event(s,events,'burst','MADGER BURST');
@@ -311,7 +317,7 @@ export function nearbyHint(s: Expedition, course: CourseItem[]) {
   const item=course.find(i=>i.route==='main'&&i.d>s.distance+6&&i.d<s.distance+45&&['burrow','workshop','vault','key'].includes(i.kind));
   if(!item){const ally=course.find(i=>i.route===s.route&&i.d>s.distance+3&&i.d<s.distance+40&&companionId(i.kind)&&!s.used.includes(i.id));if(!ally)return '';const id=companionId(ally.kind)!;return COMPANIONS[id].name.toUpperCase()+' · '+COMPANIONS[id].role+' · '+['LEFT','CENTRE','RIGHT'][ally.lane+1];}
   const lane=['LEFT','CENTRE','RIGHT'][item.lane+1];
-  if(item.kind==='burrow')return `CLAW MARKS ${lane} · SLIDE INTO THE HOLLOW`;
+  if(item.kind==='burrow')return `CLAW MARKS ${lane} · BURROW INTO THE HOLLOW`;
   if(item.kind==='workshop')return `WORKSHOP ${lane} · JUMP THROUGH THE ARCH`;
   if(item.kind==='key')return `VAULT KEY ${lane} · KEEP IT FOR THE GOLD DOOR`;
   return `${item.d>1000?'TREASURE':'SEALED VAULT'} ${lane}${s.keys>0?' · KEY READY':''}`;

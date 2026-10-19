@@ -1,6 +1,6 @@
 {
   "status": "passed",
-  "date": "2026-10-19T07:20:32.469Z",
+  "date": "2026-10-19T08:24:14.805Z",
   "scope": "Deterministic scene-only WebGL2 pixel comparison on software graphics; not gameplay or native performance acceptance",
   "browser": "155.0.8059.82",
   "cases": 27,
@@ -22,6 +22,7 @@
         "instances": 560,
         "culledInstances": 831,
         "drawCalls": 11,
+        "indexedDrawCalls": 11,
         "triangles": 59100,
         "nativeDrainMs": 0,
         "particles": 0
@@ -44,6 +45,7 @@
         "instances": 1040,
         "culledInstances": 197,
         "drawCalls": 11,
+        "indexedDrawCalls": 11,
         "triangles": 81414,
         "nativeDrainMs": 0,
         "particles": 0
@@ -66,6 +68,7 @@
         "instances": 1276,
         "culledInstances": 228,
         "drawCalls": 11,
+        "indexedDrawCalls": 11,
         "triangles": 88328,
         "nativeDrainMs": 0,
         "particles": 0
@@ -88,29 +91,31 @@
         "instances": 1158,
         "culledInstances": 182,
         "drawCalls": 11,
+        "indexedDrawCalls": 11,
         "triangles": 80936,
         "nativeDrainMs": 0,
         "particles": 0
       }
     },
     {
-      "name": "slide",
+      "name": "burrow",
       "width": 360,
       "height": 800,
       "changedChannels": 0,
       "maxChannelDifference": 0,
       "before": {
-        "instances": 1373,
+        "instances": 1390,
         "drawCalls": 11,
-        "triangles": 89136,
+        "triangles": 90666,
         "nativeDrainMs": 0,
         "particles": 0
       },
       "after": {
-        "instances": 1178,
+        "instances": 1195,
         "culledInstances": 195,
         "drawCalls": 11,
-        "triangles": 81476,
+        "indexedDrawCalls": 11,
+        "triangles": 83006,
         "nativeDrainMs": 0,
         "particles": 0
       }
@@ -132,6 +137,7 @@
         "instances": 993,
         "culledInstances": 458,
         "drawCalls": 11,
+        "indexedDrawCalls": 11,
         "triangles": 80204,
         "nativeDrainMs": 0,
         "particles": 0
@@ -154,6 +160,7 @@
         "instances": 936,
         "culledInstances": 435,
         "drawCalls": 11,
+        "indexedDrawCalls": 11,
         "triangles": 74878,
         "nativeDrainMs": 0,
         "particles": 0
@@ -176,6 +183,7 @@
         "instances": 950,
         "culledInstances": 185,
         "drawCalls": 11,
+        "indexedDrawCalls": 11,
         "triangles": 73560,
         "nativeDrainMs": 0,
         "particles": 0
@@ -198,6 +206,7 @@
         "instances": 711,
         "culledInstances": 208,
         "drawCalls": 9,
+        "indexedDrawCalls": 9,
         "triangles": 39234,
         "nativeDrainMs": 0,
         "particles": 0
@@ -220,6 +229,7 @@
         "instances": 559,
         "culledInstances": 832,
         "drawCalls": 11,
+        "indexedDrawCalls": 11,
         "triangles": 59088,
         "nativeDrainMs": 0,
         "particles": 0
@@ -242,6 +252,7 @@
         "instances": 1040,
         "culledInstances": 197,
         "drawCalls": 11,
+        "indexedDrawCalls": 11,
         "triangles": 81414,
         "nativeDrainMs": 0,
         "particles": 0
@@ -264,6 +275,7 @@
         "instances": 1276,
         "culledInstances": 228,
         "drawCalls": 11,
+        "indexedDrawCalls": 11,
         "triangles": 88328,
         "nativeDrainMs": 0,
         "particles": 0
@@ -286,29 +298,31 @@
         "instances": 1158,
         "culledInstances": 182,
         "drawCalls": 11,
+        "indexedDrawCalls": 11,
         "triangles": 80936,
         "nativeDrainMs": 0,
         "particles": 0
       }
     },
     {
-      "name": "slide",
+      "name": "burrow",
       "width": 430,
       "height": 920,
       "changedChannels": 0,
       "maxChannelDifference": 0,
       "before": {
-        "instances": 1373,
+        "instances": 1390,
         "drawCalls": 11,
-        "triangles": 89136,
+        "triangles": 90666,
         "nativeDrainMs": 0,
         "particles": 0
       },
       "after": {
-        "instances": 1178,
+        "instances": 1195,
         "culledInstances": 195,
         "drawCalls": 11,
-        "triangles": 81476,
+        "indexedDrawCalls": 11,
+        "triangles": 83006,
         "nativeDrainMs": 0,
         "particles": 0
       }
@@ -330,6 +344,7 @@
         "instances": 993,
         "culledInstances": 458,
         "drawCalls": 11,
+        "indexedDrawCalls": 11,
         "triangles": 80204,
         "nativeDrainMs": 0,
         "particles": 0
@@ -352,6 +367,7 @@
         "instances": 936,
         "culledInstances": 435,
         "drawCalls": 11,
+        "indexedDrawCalls": 11,
         "triangles": 74878,
         "nativeDrainMs": 0,
         "particles": 0
@@ -374,6 +390,7 @@
         "instances": 950,
         "culledInstances": 185,
         "drawCalls": 11,
+        "indexedDrawCalls": 11,
         "triangles": 73560,
         "nativeDrainMs": 0,
         "particles": 0
@@ -396,6 +413,7 @@
         "instances": 711,
         "culledInstances": 208,
         "drawCalls": 9,
+        "indexedDrawCalls": 9,
         "triangles": 39234,
         "nativeDrainMs": 0,
         "particles": 0
@@ -418,6 +436,7 @@
         "instances": 1100,
         "culledInstances": 291,
         "drawCalls": 11,
+        "indexedDrawCalls": 11,
         "triangles": 92046,
         "nativeDrainMs": 0,
         "particles": 0
@@ -440,6 +459,7 @@
         "instances": 1090,
         "culledInstances": 147,
         "drawCalls": 11,
+        "indexedDrawCalls": 11,
         "triangles": 84960,
         "nativeDrainMs": 0,
         "particles": 0
@@ -462,6 +482,7 @@
         "instances": 1306,
         "culledInstances": 198,
         "drawCalls": 11,
+        "indexedDrawCalls": 11,
         "triangles": 90440,
         "nativeDrainMs": 0,
         "particles": 0
@@ -484,29 +505,31 @@
         "instances": 1220,
         "culledInstances": 120,
         "drawCalls": 11,
+        "indexedDrawCalls": 11,
         "triangles": 82764,
         "nativeDrainMs": 0,
         "particles": 0
       }
     },
     {
-      "name": "slide",
+      "name": "burrow",
       "width": 768,
       "height": 1024,
       "changedChannels": 0,
       "maxChannelDifference": 0,
       "before": {
-        "instances": 1373,
+        "instances": 1390,
         "drawCalls": 11,
-        "triangles": 89136,
+        "triangles": 90666,
         "nativeDrainMs": 0,
         "particles": 0
       },
       "after": {
-        "instances": 1206,
+        "instances": 1223,
         "culledInstances": 167,
         "drawCalls": 11,
-        "triangles": 83068,
+        "indexedDrawCalls": 11,
+        "triangles": 84598,
         "nativeDrainMs": 0,
         "particles": 0
       }
@@ -528,6 +551,7 @@
         "instances": 1102,
         "culledInstances": 349,
         "drawCalls": 11,
+        "indexedDrawCalls": 11,
         "triangles": 85648,
         "nativeDrainMs": 0,
         "particles": 0
@@ -550,6 +574,7 @@
         "instances": 1063,
         "culledInstances": 308,
         "drawCalls": 11,
+        "indexedDrawCalls": 11,
         "triangles": 81912,
         "nativeDrainMs": 0,
         "particles": 0
@@ -572,6 +597,7 @@
         "instances": 998,
         "culledInstances": 137,
         "drawCalls": 11,
+        "indexedDrawCalls": 11,
         "triangles": 77098,
         "nativeDrainMs": 0,
         "particles": 0
@@ -594,6 +620,7 @@
         "instances": 737,
         "culledInstances": 182,
         "drawCalls": 9,
+        "indexedDrawCalls": 9,
         "triangles": 41382,
         "nativeDrainMs": 0,
         "particles": 0

@@ -31,7 +31,7 @@ function bundle(old){
     {name:'overgrown',distance:40,time:4},
     {name:'crew-arrival',distance:146,time:14.6,crew:true},
     {name:'jump',distance:394,time:38,zone:1,y:1.1,vy:1,crew:true},
-    {name:'slide',distance:589,time:55,zone:1,slide:.7,crew:true},
+    {name:'burrow',distance:589,time:55,zone:1,slide:.7,slideAge:.13,crew:true},
     {name:'hollow-left',distance:225,time:20,route:'hollow',routeStart:180,routeEnd:270,routeSide:-1,crew:true},
     {name:'grotto-right',distance:810,time:77,zone:2,route:'grotto',routeStart:780,routeEnd:870,routeSide:1,crew:true},
     {name:'grotto-main',distance:950,time:90,zone:2,crew:true},
