@@ -92,7 +92,9 @@ class Smoke:
         print(name, flush=True)
 
     def tree(self):
-        xml = self.timed("hierarchy", lambda: self.device.dump_hierarchy(compressed=False))
+        # Long scans may add load; RPC duration alone does not prove a frame stall.
+        # Required accessible labels and bounds are still checked by every caller.
+        xml = self.timed("hierarchy", lambda: self.device.dump_hierarchy(compressed=True))
         nodes = list(ET.fromstring(xml).iter("node"))
         labels = [node.get(key, "") for node in nodes for key in ("text", "content-desc")]
         self.last_observation = self.observation(nodes, labels)
@@ -159,24 +161,73 @@ class Smoke:
         raise AssertionError(f"HUD did not show {description}; last state: {last}; observation: {self.last_observation}")
 
     def capture(self, name, require_running=False):
+        if require_running:
+            return self.capture_running_window(name, [name], [.55])[0]
         image = self.timed("screenshot:uiautomator:" + name, self.device.screenshot).convert("RGB")
         image.save(OUT / f"{name}.png")
         xml, _, _ = self.tree()
         (OUT / f"{name}.xml").write_text(xml, encoding="utf-8")
-        if require_running:
-            nodes = list(ET.fromstring(xml).iter("node"))
-            labels = [node.get(key, "") for node in nodes for key in ("text", "content-desc")]
-            if "Your run is safe." in labels or not self.label_node(nodes, "Pause expedition", clickable=True):
-                raise AssertionError(f"Motion frame {name} was not a running game; overlays cannot prove animation")
         return image
+
+    def capture_adb_png(self, name):
+        command = [os.environ.get("ADB", "adb"), "-s", self.serial, "exec-out", "screencap", "-p"]
+        result = self.timed("screenshot:adb:" + name, lambda: subprocess.run(command, capture_output=True, check=True, timeout=30))
+        return result.stdout
 
     def capture_adb(self, name):
         from PIL import Image
-        command = [os.environ.get("ADB", "adb"), "-s", self.serial, "exec-out", "screencap", "-p"]
-        result = self.timed("screenshot:adb:" + name, lambda: subprocess.run(command, capture_output=True, check=True, timeout=30))
-        image = Image.open(io.BytesIO(result.stdout)).convert("RGB")
-        image.save(OUT / f"{name}.png")
-        return image
+        png = self.capture_adb_png(name)
+        (OUT / f"{name}.png").write_bytes(png)
+        return Image.open(io.BytesIO(png)).convert("RGB")
+
+    @staticmethod
+    def require_running_observation(observation, context):
+        hud = observation.get("hud") if observation else None
+        if not observation or observation.get("phase") != "running" or not hud or any(
+                key not in hud for key in ("distance_m", "lane", "action", "route", "score")):
+            raise AssertionError(f"{context} must show a running phase and complete HUD; observed {observation}")
+
+    def capture_running_window(self, name, frame_names, quiet_waits):
+        """Bracket untouched gameplay with explicit phase/HUD observations.
+
+        No UI input, hierarchy scans, or PNG decoding occur between endpoints.
+        Paused runs cannot resume themselves, so either non-running endpoint
+        rejects the entire window. A later phase never labels an earlier PNG.
+        Raw ADB captures may still add graphics load; they are not free probes.
+        """
+        from PIL import Image
+        if not frame_names or len(frame_names) != len(quiet_waits):
+            raise ValueError("Each motion frame requires an explicit preceding quiet wait")
+        window = {"frames": list(frame_names), "quiet_waits_s": list(quiet_waits),
+                  "capture_method": "adb exec-out screencap -p", "phase_and_progress_passed": False}
+        self.report.setdefault("motion_windows", {})[name] = window
+        xml, _, _ = self.tree()
+        window["before"] = self.last_observation
+        (OUT / f"{name}-before.xml").write_text(xml, encoding="utf-8")
+        self.require_running_observation(window["before"], f"Motion window {name} start")
+        raw_frames = []
+        window["sampling_start_s"] = round(time.monotonic() - self.started, 3)
+        try:
+            for frame_name, delay in zip(frame_names, quiet_waits):
+                if delay:
+                    time.sleep(delay)
+                raw_frames.append((frame_name, self.capture_adb_png(frame_name)))
+            window["sampling_end_s"] = round(time.monotonic() - self.started, 3)
+            xml, _, _ = self.tree()
+            window["after"] = self.last_observation
+            (OUT / f"{name}-after.xml").write_text(xml, encoding="utf-8")
+        finally:
+            # Preserve raw evidence even if the final observation or capture fails.
+            # Encoding/decoding and image analysis stay outside the sampled window.
+            for frame_name, png in raw_frames:
+                (OUT / f"{frame_name}.png").write_bytes(png)
+        self.require_running_observation(window["after"], f"Motion window {name} end")
+        progress = window["after"]["hud"]["distance_m"] - window["before"]["hud"]["distance_m"]
+        window["distance_delta_m"] = progress
+        if progress <= 0:
+            raise AssertionError(f"Motion window {name} did not advance distance: {window['before']} -> {window['after']}")
+        window["phase_and_progress_passed"] = True
+        return [Image.open(io.BytesIO(png)).convert("RGB") for _, png in raw_frames]
 
     def startup_diagnostic(self, original_error):
         """One visible resume for evidence only. The caller always rethrows failure."""
@@ -296,11 +347,11 @@ class Smoke:
             except Exception as diagnostic_error:
                 self.report.setdefault("startup_diagnostic", {})["diagnostic_error"] = str(diagnostic_error)
             raise
-        first = self.capture("03-running-a", require_running=True)
-        self.rendered("03-running-a", first)
-        time.sleep(.55)
-        second = self.capture("04-running-b", require_running=True)
-        self.rendered("04-running-b", second)
+        frame_names = ["03-running-a", "04-running-b", "04-sustained-motion-1", "04-sustained-motion-2"]
+        motion_frames = self.capture_running_window("initial-running", frame_names, [0, .55, .4, .4])
+        for name, image in zip(frame_names, motion_frames):
+            self.rendered(name, image)
+        first, second = motion_frames[:2]
         movement = sum(ImageStat.Stat(ImageChops.difference(self.game_crop(first), self.game_crop(second))).mean) / 3
         self.report["frames"]["motion_mean_difference"] = round(movement, 3)
         if movement < .8:
@@ -322,10 +373,7 @@ class Smoke:
             self.report["motion_diagnostics"] = samples
             raise AssertionError(f"3D game field did not visibly animate: mean pixel change={movement:.3f}")
         self.report["sustained_motion_differences"] = [round(movement, 3)]
-        for index in range(2):
-            time.sleep(.4)
-            next_frame = self.capture(f"04-sustained-motion-{index + 1}", require_running=True)
-            self.rendered(f"04-sustained-motion-{index + 1}", next_frame)
+        for index, next_frame in enumerate(motion_frames[2:]):
             difference = sum(ImageStat.Stat(ImageChops.difference(self.game_crop(second), self.game_crop(next_frame))).mean) / 3
             self.report["sustained_motion_differences"].append(round(difference, 3))
             if difference < .8:
@@ -427,7 +475,7 @@ class Smoke:
                 if (tag == "ReactNativeJS" and level in ("E", "F")) or re.search(r"FATAL EXCEPTION|Fatal signal|JavascriptException|Unhandled JS Exception", message, re.I):
                     crashes.append(line)
             self.report["application_pids"] = sorted(self.pids)
-            self.report["performance_lines"] = [line for line in lines if re.search(r"EGL_emulation.*app_time_stats|Choreographer.*Skipped|EXGL.*EGL error|EGL_BAD_MATCH", line)][-160:]
+            self.report["performance_lines"] = [line for line in lines if re.search(r"EGL_emulation.*app_time_stats|Choreographer.*Skipped|EXGL.*EGL error|EGL_BAD_MATCH|MADGER_EXPEDITION_FRAME_STALL", line)][-160:]
             if not self.pids:
                 self.report["errors"].append("No application PID was observed for scoped native/JavaScript crash checks")
             self.report["crash_lines"] = crashes[:100]

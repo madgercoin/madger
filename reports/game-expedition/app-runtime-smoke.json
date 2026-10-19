@@ -1,5 +1,5 @@
 {
-  "date": "2026-10-19T01:59:27.971Z",
+  "date": "2026-10-19T06:29:31.030Z",
   "browser": "155.0.8059.82",
   "renderer": "ANGLE (Intel, Intel(R) UHD Graphics (0x00008A56) Direct3D11 vs_5_0 ps_5_0, D3D11)",
   "scope": "Actual exported web application on the PC GPU; not physical Android acceptance",
@@ -7,17 +7,17 @@
   "failedRequests": [],
   "canvas": {
     "lit": 8192,
-    "colors": 2168,
+    "colors": 2175,
     "width": 430,
     "height": 920,
-    "sha256": "9470e5ae4c0f665901e8f512b08da5894604336054ca3bc16fe520b2213c74a3"
+    "sha256": "16c1a7adb34eb9a9831df33ac10035b72f1ff3525a00c061587100fea4eafb26"
   },
   "uninterruptedFrameTiming": {
     "frames": 211,
-    "ms": 3500.5000000001855,
-    "mean": 16.590047393365808,
+    "ms": 3502.9000000007454,
+    "mean": 16.6014218009514,
     "p95": 16.800000000000182,
-    "max": 17.400000000000546,
+    "max": 16.899999999999636,
     "over400": 0
   },
   "checks": [
@@ -39,14 +39,6 @@
     },
     {
       "src": "music.c425b77cff55695786772367f4c8f2ba.mp3",
-      "status": "playing"
-    },
-    {
-      "src": "step.808fffc66ba388fc9a0a07dd83269fcc.wav",
-      "status": "playing"
-    },
-    {
-      "src": "step.808fffc66ba388fc9a0a07dd83269fcc.wav",
       "status": "playing"
     },
     {

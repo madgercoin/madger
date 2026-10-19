@@ -50,6 +50,43 @@ def wait_for(label, seconds=30):
     raise AssertionError(f'Enabled action did not appear: {label}')
 
 
+def home_action(label, max_swipes=5, forbidden_label=None):
+    """Find a Home action with bounded swipes inside the app's scroll view."""
+    for swipe_count in range(max_swipes + 1):
+        root = hierarchy()
+        if forbidden_label is not None:
+            assert not any(
+                forbidden_label in (node.get('content-desc'), node.get('text'))
+                for node in root.iter('node')
+            ), 'Completed run was resurrected'
+        scroll_view = next((
+            node for node in root.iter('node')
+            if node.get('scrollable') == 'true' and node.get('package') == PACKAGE
+        ), None)
+        assert scroll_view is not None, 'Home scroll view is missing'
+        viewport = list(map(int, re.findall(r'-?\d+', scroll_view.get('bounds', ''))))
+        assert len(viewport) == 4, 'Home scroll view has invalid bounds'
+        left, top, right, bottom = viewport
+        assert right > left and bottom > top, 'Home scroll view is not visible'
+        for node in root.iter('node'):
+            if label not in (node.get('content-desc'), node.get('text')) or node.get('enabled') != 'true':
+                continue
+            bounds = list(map(int, re.findall(r'-?\d+', node.get('bounds', ''))))
+            if len(bounds) == 4 and (
+                left <= bounds[0] < bounds[2] <= right
+                and top <= bounds[1] < bounds[3] <= bottom
+                and node.get('visible-to-user', 'true') == 'true'
+            ):
+                return node
+        if swipe_count == max_swipes:
+            break
+        x = (left + right) // 2
+        height = bottom - top
+        device.swipe(x, top + int(height * 0.78), x, top + int(height * 0.28), duration=0.35)
+        time.sleep(0.5)
+    raise AssertionError(f'Enabled Home action not visible after {max_swipes} swipes: {label}')
+
+
 def tap(label):
     click_node(wait_for(label))
 
@@ -96,10 +133,10 @@ atexit.register(collect_debug)
 adb('install', '-r', 'android/app/build/outputs/apk/release/app-release.apk')
 adb('logcat', '-c')
 adb('shell', 'am', 'start', '-W', '-n', PACKAGE + '/.MainActivity')
-wait_for('Play Burrow Run')
+wait_for('Play the 3D Expedition')
 capture('01-home')
 passed('Standalone APK launches and renders the Home entry')
-tap('Play Burrow Run')
+click_node(home_action('Play Burrow Run'))
 wait_for('Let’s dig')
 capture('02-lobby')
 passed('Game lobby loads with an enabled start action')
@@ -152,7 +189,8 @@ assert len(live_seconds) == 1, live_seconds
 adb('shell', 'am', 'force-stop', PACKAGE)
 observation_delay = time.monotonic() - scan_started
 adb('shell', 'am', 'start', '-W', '-n', PACKAGE + '/.MainActivity')
-tap('Continue interrupted run')
+wait_for('Play the 3D Expedition')
+click_node(home_action('Continue interrupted run'))
 wait_for('Back to the run')
 recovered_seconds = {int(node.get('text')[:-1]) for node in last_root.iter('node') if re.fullmatch(r'\d+s', node.get('text', ''))}
 assert len(recovered_seconds) == 1, recovered_seconds
@@ -174,7 +212,8 @@ for attempt in range(2):
     assert before_score, 'Paused score not found'
     adb('shell', 'am', 'force-stop', PACKAGE)
     adb('shell', 'am', 'start', '-W', '-n', PACKAGE + '/.MainActivity')
-    tap('Continue interrupted run')
+    wait_for('Play the 3D Expedition')
+    click_node(home_action('Continue interrupted run'))
     wait_for('Back to the run')
     wait_for('MADGER in the center lane')
     after = {node.get('text') for node in last_root.iter('node') if re.fullmatch(r'\d+s', node.get('text', ''))}
@@ -201,7 +240,8 @@ capture('07-high-scores')
 passed('The native high-score table displays the banked daily score')
 adb('shell', 'am', 'force-stop', PACKAGE)
 adb('shell', 'am', 'start', '-W', '-n', PACKAGE + '/.MainActivity')
-wait_for('Play Burrow Run')
+wait_for('Play the 3D Expedition')
+home_action('Play Burrow Run', forbidden_label='Continue interrupted run')
 assert not any(node.get('content-desc') == 'Continue interrupted run' for node in last_root.iter('node')), 'Completed run was resurrected'
 tap('Scores')
 wait_for('Your scores')
