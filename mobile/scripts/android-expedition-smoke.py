@@ -20,6 +20,7 @@ No deep links, debug globals, storage edits, or engine/state injection are used.
 from __future__ import annotations
 
 import hashlib
+import io
 import json
 import os
 from pathlib import Path
@@ -143,6 +144,14 @@ class Smoke:
         (OUT / f"{name}.xml").write_text(xml, encoding="utf-8")
         return image
 
+    def capture_adb(self, name):
+        from PIL import Image
+        command = [os.environ.get("ADB", "adb"), "-s", self.serial, "exec-out", "screencap", "-p"]
+        result = subprocess.run(command, capture_output=True, check=True, timeout=30)
+        image = Image.open(io.BytesIO(result.stdout)).convert("RGB")
+        image.save(OUT / f"{name}.png")
+        return image
+
     @staticmethod
     def game_crop(image):
         width, height = image.size
@@ -227,6 +236,22 @@ class Smoke:
         movement = sum(ImageStat.Stat(ImageChops.difference(self.game_crop(first), self.game_crop(second))).mean) / 3
         self.report["frames"]["motion_mean_difference"] = round(movement, 3)
         if movement < .8:
+            # Diagnose slow GPU presentation or screenshot-layer caching without
+            # accepting a failed motion check or changing the expected threshold.
+            samples = []
+            previous = second
+            for index in range(3):
+                time.sleep(1)
+                name = f"motion-diagnostic-{index + 1}"
+                direct = self.capture_adb(name + "-adb")
+                automation = self.capture(name + "-automation")
+                samples.append({"elapsed_s": round(time.monotonic() - self.started, 3),
+                    "hud": self.hud(),
+                    "adb_motion_from_previous": round(sum(ImageStat.Stat(ImageChops.difference(self.game_crop(previous), self.game_crop(direct))).mean) / 3, 3),
+                    "capture_method_difference": round(sum(ImageStat.Stat(ImageChops.difference(self.game_crop(direct), self.game_crop(automation))).mean) / 3, 3),
+                    "adb_image": name + "-adb.png", "automation_image": name + "-automation.png"})
+                previous = direct
+            self.report["motion_diagnostics"] = samples
             raise AssertionError(f"3D game field did not visibly animate: mean pixel change={movement:.3f}")
         self.mark("3D game field renders nonblank geometry and animates", initial_state=initial)
 
