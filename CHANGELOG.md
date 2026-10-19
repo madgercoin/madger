@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026-10-19 - Verified Expedition Android preview
+
+- Completed the signed MADGER Expedition 1.5.0 build 14 APK from app source a69220e80d8132b2e4dbe29d724f80c7dc01289f. Signature, SHA-256, package, version and permission inspection passed.
+- Exact-APK QA run 39229821033 passed all seven Expedition checks, including BURROW, and all eleven legacy Burrow Run checks. The successful run contains no scoped crash or frame-stall findings.
+- Source validation passed 130 tests; all 27 renderer pixel comparisons and 12 exported-browser checks passed. Detailed evidence and test scope are recorded in reports/game-expedition/README.md.
+- Removed a duplicate native timer lookup in the recovery harness while preserving the two-second freshness and saved-progress gates. The complete live observation and force-stop took 0.707 seconds.
+- Preserved the earlier same-APK emulator failure (440 ms protective pause at 8 metres) in the evidence history. The accepted short run does not establish sustained physical-phone performance or rule out intermittent software-emulator stalls.
+
 ## 2026-10-19 - Down makes MADGER burrow
 
 - Replaced the player-facing slide action with BURROW on the Down and S keys, downward swipe, and touch button. MADGER dives beneath the surface, leaves a moving dirt trail, and emerges smoothly.
@@ -12,7 +20,7 @@
 - Added indexed instanced drawing to reuse shared position and normal records, reducing repeated vertex processing while preserving every triangle, shader, and material.
 - Kept the animated tail's indices stable across poses and retained the existing array-based draw paths for contexts without indexed instancing.
 - Added exact byte-stream reconstruction, tail-pose, native/ANGLE/fallback, disposal, and native-drain coverage. The native frame diagnostics report indexed draw counts.
-- Build 13's exact-APK runs still found native stalls despite camera culling. The replacement APK must pass the unchanged native gameplay and recovery checks before acceptance.
+- Build 13's exact-APK runs still found native stalls despite camera culling. Build 14's later acceptance and remaining emulator limitations are recorded above.
 
 ## 2026-10-19 - Conservative camera visibility
 

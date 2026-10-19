@@ -1,0 +1,25 @@
+{
+  "status": "passed",
+  "package": "com.madgercoin.expedition.preview",
+  "apk": "/home/runner/work/madger/madger/.qa-artifacts/madger-expedition-preview.apk",
+  "suites": [
+    {
+      "name": "expedition",
+      "status": "passed",
+      "exit_code": 0,
+      "timed_out": false,
+      "duration_s": 42.492,
+      "evidence_dir": "/home/runner/work/madger/madger/mobile/expedition-evidence/android-preview",
+      "console_log": "/home/runner/work/madger/madger/mobile/expedition-evidence/android-preview/expedition-console.log"
+    },
+    {
+      "name": "legacy-burrow",
+      "status": "passed",
+      "exit_code": 0,
+      "timed_out": false,
+      "duration_s": 37.748,
+      "evidence_dir": "/home/runner/work/madger/madger/mobile/expedition-evidence/android-preview/legacy-burrow",
+      "console_log": "/home/runner/work/madger/madger/mobile/expedition-evidence/android-preview/legacy-burrow/legacy-burrow-console.log"
+    }
+  ]
+}
