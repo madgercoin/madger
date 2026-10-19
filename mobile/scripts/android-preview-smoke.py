@@ -169,8 +169,10 @@ def kill_observed_foreground_run():
 
         # Scalar getText/exist avoid full hierarchy scans, count/absence
         # searches, and .info's repeated accessibility property refreshes.
+        # instance=0 selects the UiSelector getText path, avoiding this
+        # backend's two UiObject2 lookups for a single timer value.
         timer_selector = {'packageName': PACKAGE, 'className': 'android.widget.TextView',
-                          'enabled': True, 'textMatches': r'\d+s'}
+                          'enabled': True, 'textMatches': r'\d+s', 'instance': 0}
         observation['timer_selector'] = timer_selector
         timer_object = device(**timer_selector)
         # One continuous clock covers both fresh observations and the entire
