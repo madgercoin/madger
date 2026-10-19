@@ -1,5 +1,14 @@
 # Changelog
 
+## 2026-10-18 — 3D Expedition and animated companion support
+
+- Added the existing Expedition upgrade to the app: three 3D environments, natural character movement and reactions, moving hazards, hidden routes, workshop upgrades, vaults, extra lives, audio, and persistent discoveries.
+- Added Snow White attack support, Gorilla White defensive saves, and MADGER Bot electronic boosts, with entrances, exits, timed support, status displays, effects, and saved companion state.
+- Removed obsolete oversized-fang geometry, made Bot's face mechanical, and corrected Gorilla White's rear-foot swing.
+- Prevented companions from reserving the same unresolved target and prevented delayed audio seeks from restarting interrupted cues.
+- Hardened mobile shader precision and expanded gameplay, companion, and asynchronous audio regression coverage. Android build evidence and distribution status are recorded separately; this entry does not imply Google Play publication.
+- Documented behavior and validation in `docs/game-expedition.md`.
+
 ## 2026-10-15 — Signals discovery and visual reading trails
 
 - Added the image-led Signal Finder with purpose filters for proof, safer crypto, community utility, investor diligence, and brand/culture, plus full-archive search and an unread-only view.

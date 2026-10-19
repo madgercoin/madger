@@ -1,0 +1,307 @@
+import { branchOffset, clamp, hazardPose, LANE_WIDTH, routeOffset, smooth, type CourseItem, type Expedition, type GameEvent } from './core';
+import { ExpeditionRenderer, color, type Color, type GL, type Shape } from './gl';
+import { multiply, segment, transform, type Mat4, type Vec3 } from './math';
+import { gaitPose, slideBlend, reactionEnvelope, crouchPose } from './animation';
+import { companionId, COMPANIONS } from './companions';
+import { drawCompanion, drawTeam } from './companion-models';
+const C={fur:color('#24272a',-4),furLight:color('#353237',-4),black:color('#0d1117'),cream:color('#f2d9a2'),pale:color('#fff0c7'),gold:color('#ffcb5a'),goldGlow:color('#ffc765',1.15),mint:color('#70e4d7',.35),violet:color('#b4a0fa',.45),red:color('#e8795e'),pink:color('#da818b'),stone:color('#758474'),stoneDark:color('#425450'),wood:color('#6c4b35'),woodLight:color('#a47c4b'),leaf:color('#427763'),leafLight:color('#75aa63'),iron:color('#657579'),copper:color('#ad8155'),water:color('#254d56',-2),shadow:color('#000000',-3)};
+const TAU=Math.PI*2;
+const hash=(n:number)=>{const x=Math.sin(n*127.13+91.7)*43758.5453;return x-Math.floor(x);};
+export const CHARACTER_CONTRACT={fangCount:0,teeth:'small-even',clawsPerPaw:5,fur:'black',markings:'cream',eyes:'amber-gold'} as const;
+const curve=(d:number)=>Math.sin(d/76)*.8+Math.sin(d/185)*1.1;
+const floorY=(d:number)=>Math.sin(d/34)*.12;
+type Particle={x:number;y:number;d:number;vx:number;vy:number;vz:number;born:number;life:number;c:Color;size:number};
+export class ExpeditionScene {
+ renderer:ExpeditionRenderer;private particles:Particle[]=[];private clock=0;private lastTime=0;
+ private reaction:{kind:'good'|'hurt'|'revive'|'discovery';at:number}={kind:'good',at:-10};
+ private cameraX=0;private cameraY=0;private initializedCamera=false;private disposed=false;private particleId=0;
+ constructor(gl:GL){this.renderer=new ExpeditionRenderer(gl);}
+ get stats(){return {...this.renderer.stats,particles:this.particles.length};}
+ events(events:GameEvent[],s:Expedition,calm=false){
+  for(const e of events){
+   if(e.kind==='hit')this.reaction={kind:'hurt',at:this.clock};
+   if(['secret','upgrade','power','companion-join','companion-attack','companion-guard','companion-boost'].includes(e.kind))this.reaction={kind:e.kind==='secret'?'discovery':'good',at:this.clock};
+   if(e.kind==='revive'||e.kind==='win')this.reaction={kind:'revive',at:this.clock};
+   if(calm||!['coin','gem','hit','block','secret','revive','land','step','burst','splash','power','companion-join','companion-attack','companion-guard','companion-boost'].includes(e.kind))continue;
+   const amount=e.kind==='step'?2:e.kind==='coin'?4:e.kind==='secret'||e.kind==='revive'?18:9;
+   const c=e.companion?color(COMPANIONS[e.companion].color,.5):e.kind==='hit'?C.red:e.kind==='land'||e.kind==='step'?color('#b3a386'):e.kind==='splash'?C.mint:e.kind==='block'?C.mint:e.kind==='gem'?C.violet:C.goldGlow;
+   for(let i=0;i<amount;i++){
+    const n=this.particleId++,r=hash(n),a=hash(n+8)*TAU;
+    this.particles.push({x:e.targetX!==undefined?e.targetX+curve(e.targetD??s.distance)-curve(s.distance):s.x+routeOffset(s),y:floorY(e.targetD??s.distance)+(e.kind==='step'||e.kind==='land'?.15:1.1)+s.y,d:e.targetD??s.distance,
+     vx:Math.cos(a)*(1+r*1.8),vy:(e.kind==='step'?.5:1.8)+r*2,vz:Math.sin(a)*2,born:this.clock,life:e.kind==='step'?.32:.55+r*.4,c,size:e.kind==='step'?.055:.065+r*.04});
+   }
+  }this.particles=this.particles.slice(-100);
+ }
+ private shape(shape:Shape,c:Color,x:number,y:number,z:number,sx=1,sy=1,sz=1,rx=0,ry=0,rz=0,parent?:Mat4){this.renderer.shape(shape,c,x,y,z,sx,sy,sz,rx,ry,rz,parent);}
+ private link(a:Vec3,b:Vec3,radius:number,c:Color,parent?:Mat4){const m=segment(a,b,radius);this.renderer.add('cylinder',parent?multiply(parent,m):m,c);}
+ private orb(x:number,y:number,z:number,r:number,c:Color,parent?:Mat4){this.shape('sphere',c,x,y,z,r,r,r,0,0,0,parent);}
+ private arch(x:number,y:number,z:number,r:number,c:Color,width=.26){
+  for(let i=0;i<9;i++){const a=(i+.5)/9*Math.PI;this.shape('box',c,x+Math.cos(a)*r,y+Math.sin(a)*r,z,width,r*.365,.6,0,0,a);}
+ }
+ /** Articulated three-dimensional character; no billboard or static runner sprite. */
+ private madger(s:Expedition,time:number,calm:boolean){
+  const running=['running','paused','upgrade'].includes(s.mode)&&s.distance>0,idle=s.mode==='ready',age=this.clock-this.reaction.at;
+  const hurt=this.reaction.kind==='hurt'?smooth(age/.045)*Math.max(0,1-age/.65):0;
+  const happy=this.reaction.kind!=='hurt'?reactionEnvelope(age):0;
+  const turnBack=running&&this.reaction.kind==='discovery'?Math.sin(clamp(age/1.15,0,1)*Math.PI)*1.15:0;
+  const stride=s.distance/3.8*TAU,grounded=s.y<.02&&s.slide<=0;
+  const bob=running&&grounded?Math.abs(Math.sin(stride))*.07:Math.sin(time*2.6)*.018;
+  const crouch=slideBlend(s.slide,s.slideAge),pose=crouchPose(crouch,running),air=smooth(s.y/.38);
+  const idleYaw=idle?Math.PI+.12+Math.sin(time*.5)*.15:0;
+  const bank=calm?0:clamp(-s.vx*.04,-.18,.18);
+  const bounce=happy*.06*Math.sin(age*10);
+  const root=transform(s.x+routeOffset(s),floorY(s.distance)+s.y,0,1,1,1,0,idleYaw,0);
+  const body=multiply(root,transform(0,bob*(1-crouch)+bounce*(1-crouch)+pose.bodyY,0,1,1,1,pose.bodyX+hurt*.17,0,bank+hurt*.15));
+  const fur=hurt>.2?color('#705055'):C.fur;
+  this.shape('sphere',fur,0,1.10,0,.47,.66,.34,0,0,0,body);
+  this.shape('sphere',C.furLight,0,.82,.08,.45,.37,.34,0,0,0,body);
+  this.link([-.28,1.56,-.28],[0,1.10,-.354],.061,C.cream,body);
+  this.link([0,1.10,-.354],[.27,1.50,-.285],.061,C.cream,body);
+  this.link([-.20,1.31,-.33],[0,.94,-.326],.038,C.cream,body);
+  this.link([0,.94,-.326],[.20,1.29,-.33],.038,C.cream,body);
+  // Stance and swing share travelled distance with footsteps and ground motion.
+  for(const side of [-1,1]){
+   const gait=gaitPose(s.distance,side,s.y,crouch,running),footZ=gait.z,footY=gait.y;
+   const hip:Vec3=[side*.26,.88+bob-crouch*.40,0],foot:Vec3=[side*(.27+crouch*.08),footY,footZ];
+   const dy=foot[1]-hip[1],dz=foot[2]-hip[2],length=Math.min(.95,Math.max(.01,Math.hypot(dy,dz))),bend=Math.sqrt(Math.max(.015,.49*.49-(length*.5)**2));
+   const knee:Vec3=[side*.28,(hip[1]+foot[1])*.5+dz/length*bend,(hip[2]+foot[2])*.5+dy/length*bend];
+   this.link(hip,knee,.18,fur,root);this.orb(...knee,.19,fur,root);this.link(knee,foot,.135,fur,root);
+   this.shape('sphere',fur,foot[0],foot[1],foot[2]-.07,.20,.13,.31,0,0,0,root);
+   this.shape('sphere',C.woodLight,foot[0],foot[1]-.072,foot[2]-.06,.155,.036,.235,0,0,0,root);
+   for(let i=0;i<5;i++)this.shape('cone',C.pale,foot[0]+(i-2)*.067,foot[1]+.025,foot[2]-.33,.027,.14,.030,-Math.PI/2,0,0,root);
+   const swing=running?Math.sin(stride+(side<0?Math.PI:0))*.67:Math.sin(time*1.9+side)*.055;
+   const shoulder:Vec3=[side*.44,1.45,0],elbow:Vec3=[side*(.58+happy*.12),1.08+happy*.34,-Math.sin(swing)*.38+hurt*.23],hand:Vec3=[side*(.50+happy*.23),.82+happy*.71,-.21-Math.sin(swing)*.47];
+   elbow[1]+=.28*air;hand[1]+=.45*air;hand[2]-=.12*air;
+   elbow[1]=elbow[1]*(1-crouch)+.85*crouch;elbow[2]=elbow[2]*(1-crouch)+.10*crouch;hand[1]=hand[1]*(1-crouch)+.72*crouch;hand[2]=hand[2]*(1-crouch)-.05*crouch;
+   this.link(shoulder,elbow,.19,fur,body);this.orb(...elbow,.19,fur,body);this.link(elbow,hand,.15,fur,body);
+   this.shape('sphere',fur,...hand,.20,.21,.17,0,0,0,body);
+   for(let i=0;i<5;i++)this.shape('cone',C.pale,hand[0]+(i-2)*.065,hand[1]-.07,hand[2]-.16,.024,.12,.028,-Math.PI/2,0,side*.08,body);
+  }
+  // A continuous deforming fur mesh avoids disconnected, bead-like tail segments.
+  this.renderer.updateTail(time,bank);
+  const tail=multiply(body,transform(0,.65-crouch*.20,.23-crouch*.13,1,1,1,pose.tailX,Math.sin(time*2.8)*.16-bank*.7,0));
+  this.renderer.add('tail',tail,color('#343034',-5));
+  const head=multiply(body,transform(0,pose.headY,pose.headZ,1,1,1,pose.headX+Math.sin(time*2.4)*.025-happy*.07,hurt*.18+turnBack+Math.sin(time*.72)*.04,Math.sin(time*1.6)*.015));
+  this.shape('sphere',fur,0,0,-.03,.67,.59,.52,0,0,0,head);
+  for(const side of [-1,1]){
+   const ear=multiply(head,transform(side*.54,.40,.05,1,1,1,0,0,side*(.19+Math.sin(time*2.1+side)*.025)));
+   this.shape('sphere',C.cream,0,0,0,.21,.235,.10,0,0,0,ear);this.shape('sphere',C.wood,0,0,-.08,.142,.16,.045,0,0,0,ear);
+   this.shape('sphere',C.cream,side*.37,-.06,-.385,.29,.30,.135,0,side*.22,side*.22,head);
+   this.shape('sphere',C.cream,side*.42,-.24,-.32,.235,.24,.16,0,0,side*.35,head);
+   const blinkPhase=(time+side*.027)%4.3,blink=blinkPhase<.12?.1:blinkPhase<.19?smooth((blinkPhase-.12)/.07):1;
+   const eyeY=.08,eyeScale=Math.max(.07,blink*(1-hurt*.55));
+   this.shape('sphere',C.black,side*.30,eyeY,-.50,.199,.240,.076,0,0,side*.15,head);
+   this.shape('sphere',color('#fff6e4'),side*.30,eyeY,-.551,.159,.195*eyeScale,.045,0,0,side*.15,head);
+   this.shape('sphere',color('#dca334'),side*.29,eyeY-.004,-.590,.115,.149*eyeScale,.028,0,0,0,head);
+   this.shape('sphere',C.black,side*.29,eyeY-.002,-.614,.067,.108*eyeScale,.015,0,0,0,head);
+   this.orb(side*.27-.020,eyeY+.055*eyeScale,-.632,.023,color('#fffef4',.25),head);
+   this.link([side*.12,.27,-.53],[side*.46,.30+hurt*.035,-.44],.067,C.fur,head);
+   for(let i=0;i<3;i++)this.shape('cone',C.cream,side*(.49+i*.039),-.23-i*.042,-.21,.062,.25,.042,0,0,side*1.10,head);
+  }
+  this.shape('headStripe',C.cream,0,0,0,1,1,1,0,0,0,head);
+  this.shape('sphere',C.cream,0,.29,-.461,.14,.24,.062,0,0,0,head);
+  this.shape('cone',C.cream,.027,.078,-.538,.103,.26,.035,Math.PI,0,-.15,head);
+  // Normal, even teeth remain inside the mouth; no oversized external fang.
+  const mouthOpen=.02+happy*.07+hurt*.075;
+  this.shape('sphere',C.black,0,-.295-mouthOpen*.3,-.515,.325,.17+mouthOpen,.099,0,0,0,head);
+  this.shape('sphere',C.cream,0,-.335-mouthOpen,-.506,.337,.10,.154,0,0,0,head);
+  if(mouthOpen>.05)this.shape('sphere',C.pink,0,-.34-mouthOpen*.7,-.61,.135,.045,.035,0,0,0,head);
+  this.shape('sphere',C.cream,-.16,-.18,-.525,.25,.17,.205,0,0,.09,head);
+  this.shape('sphere',C.cream,.16,-.18,-.525,.25,.17,.205,0,0,-.09,head);
+  this.shape('sphere',C.black,0,-.105,-.704,.169,.116,.118,0,0,0,head);
+  this.shape('sphere',color('#869093'),-.034,-.068,-.807,.05,.018,.015,0,0,0,head);
+  if(mouthOpen>.045)for(let i=0;i<4;i++)this.shape('box',C.pale,(i-1.5)*.057,-.303,-.611,.043,.049,.033,0,0,0,head);
+  this.shape('shadow',C.shadow,s.x+routeOffset(s),floorY(s.distance)+.018,0,.76*(1-s.y*.10),1,.62*(1-s.y*.10));
+  if(s.shields>0){this.shape('ring',C.mint,s.x+routeOffset(s),1.20+floorY(s.distance)+s.y,0,.88,1,.88,Math.PI/2,time*.8,0);this.shape('ring',C.mint,s.x+routeOffset(s),1.20+floorY(s.distance)+s.y,0,.88,1,.88,0,0,time*.5);}
+  if(s.magnet>0)this.shape('ring',C.violet,s.x+routeOffset(s),floorY(s.distance)+.10,0,1.2+.07*Math.sin(time*5),1,1.2,0,time*.4,0);
+  if(s.burst>0)for(let i=0;i<7;i++)this.shape('cone',C.goldGlow,s.x+routeOffset(s)+(i-3)*.15,.45+s.y,i*.18+.35,.06,.8,.06,-Math.PI/2,0,0);
+ }
+ private plant(x:number,y:number,z:number,n:number,time:number){
+  for(let i=0;i<5;i++){const a=i/5*TAU+hash(n)*6;this.shape('leaf',i%2?C.leaf:C.leafLight,x,y,z,.45,.6,.8,Math.sin(time*1.2+n+i)*.13,a,.25);}
+ }
+ private crystal(x:number,y:number,z:number,scale:number,n:number){
+  for(let i=0;i<3;i++){const h=scale*(.8+hash(n+i)*.7);this.shape('cone',i%2?C.violet:C.mint,x+(i-1)*.30*scale,y+h/2,z+hash(n+i)*.2,.22*scale,h,.22*scale,0,hash(n)*6,(i-1)*.15);this.shape('cone',i%2?C.violet:C.mint,x+(i-1)*.30*scale,y+.06,z,.22*scale,.18,.22*scale,Math.PI,0,0);}
+ }
+ private gear(x:number,y:number,z:number,r:number,time:number){
+  this.shape('cylinder',C.copper,x,y,z,r,.16,r,Math.PI/2,0,0);this.shape('ring',C.iron,x,y,z,r*1.12,1,r*1.12,Math.PI/2,0,time);
+  for(let i=0;i<10;i++){const a=i/10*TAU+time;this.shape('box',C.iron,x+Math.cos(a)*r,y+Math.sin(a)*r,z,.20,.26,.23,0,0,a);}
+ }
+ private scenery(s:Expedition,time:number,calm:boolean){
+  const d=s.distance,zone=s.zone,c0=curve(d);const worldX=(wd:number)=>curve(wd)-c0;
+  const branchSide=(wd:number,side:number)=>this.course.some(g=>g.kind==='burrow'&&g.lane===side&&wd>=g.d-14&&wd<=g.d+103);
+  for(let i=0;i<13;i++){
+   const wd=Math.floor(d/20)*20+i*20,zz=d-wd,n=Math.floor(wd/20);
+   for(const side of [-1,1]){
+    const x=worldX(wd)+side*((branchSide(wd,side)?24:14)+hash(n+side)*9),h=8+hash(n*3)*16;
+    this.shape('rock',color(zone===2?'#45455e':'#374a43'),x,h/2-4,zz,5,h/2,5,.1,hash(n)*4,.12);
+    if(n%3===0){
+      const wall=color(zone===2?'#526079':'#405952');
+      this.shape('box',wall,x-side*3,3.5,zz-9,2,9,2);this.arch(x-side*3,5,zz-9,3,wall,.7);
+      for(let j=0;j<3;j++)this.shape('box',C.stoneDark,x-side*(1.5+j*1.7),7.3-j*.45,zz-9,1.65,.6,1.5);
+      if(zone!==1)for(let k=0;k<3;k++){this.shape('box',color('#162b30'),x-side*3,2+k*1.4,zz-7.92,.55,.80,.05);this.orb(x-side*3,2.0+k*1.4,zz-7.85,.06,C.goldGlow);}
+     }
+     if(n%5===2&&zone===0){const hut=x-side*5;this.shape('rock',C.stoneDark,hut,-.1,zz,2.2,1.6,1.9);this.arch(hut,-.1,zz+1.7,.70,C.wood,.19);this.shape('box',C.wood,hut,.31,zz+1.7,1.12,.9,.16);this.orb(hut+.87,.58,zz+1.85,.11,C.goldGlow);}
+   }
+  }
+  const start=Math.floor(d/4)*4-12;
+  for(let wd=start;wd<d+108;wd+=4){
+   const z=d-wd,x=worldX(wd),y=floorY(wd),index=Math.floor(wd/4),zoneTile=Math.min(2,Math.floor(Math.max(0,wd)/360));
+   for(const lane of [-1,0,1]){
+    const hole=s.route==='main'&&this.course.some(o=>o.kind==='gap'&&o.route==='main'&&o.lane===lane&&Math.abs(o.d-wd)<2.8);
+    if(hole){this.shape('box',C.water,x+lane*LANE_WIDTH,y-1.75,z,2.1,.05,4);continue;}
+    const floor=zoneTile===0?['#899984','#879481','#95a08b'][Math.abs(index+lane)%3]:zoneTile===1?['#727c7e','#7c8886','#69797b'][Math.abs(index+lane)%3]:['#717991','#858895','#7c879b'][Math.abs(index+lane)%3];
+    this.shape('box',color(floor,-1),x+lane*LANE_WIDTH,y-.20,z,2.10,.38,3.94,0,-Math.cos(wd/76)*.010,0);
+    if(zoneTile===1)this.shape('box',C.copper,x+lane*LANE_WIDTH,y+.008,z,1.90,.015,.07);
+    else if(index%3===0)this.shape('box',color('#567763'),x+lane*LANE_WIDTH+.71,y+.007,z+.65,.35,.015,.9,0,.2,0);
+   }
+   if(index%2===0)for(const side of [-1,1]){
+    if(branchSide(wd,side))continue;
+    this.shape('box',C.stoneDark,x+side*3.43,y-.15,z,.45,.60,7.8);
+    this.shape('cylinder',C.wood,x+side*3.42,y+.55,z,.10,1.3,.10);
+    this.link([x+side*3.42,y+.93,z-4],[x+side*3.42,y+.88,z+4],.045,C.woodLight);
+    this.shape('box',C.water,x+side*8,y-.95,z,8,.08,8,0,0,0);
+   }
+   if(index%3===0)for(const side of [-1,1]){
+    const n=index*11+side*3,xx=x+side*(4.8+hash(n)*1.8);
+    if(branchSide(wd,side)){this.plant(x+side*13.2,y-.15,z,n,time);continue;}
+    this.shape('rock',C.stoneDark,xx,y-.15,z,1.0+hash(n),1.1,1.4,0,hash(n+2)*5,.1);
+    this.plant(xx-side*.5,y+.48,z+.5,n,time);
+    if(zoneTile===0){
+      const sway=calm?0:Math.sin(time*.9+n)*.025;
+      this.link([xx,y-.6,z],[xx-side*.7,y+6,z-.6],.30,C.wood);
+      this.link([xx-side*.7,y+4.1,z-.3],[xx-side*3.6,y+6+sway,z+.2],.16,C.wood);
+      for(let j=0;j<3;j++){
+       const cx=xx-side*(.5+j*.75),cy=y+6.2+j*.32+sway,cz=z+(hash(n+j)-.5)*1.1;
+       this.shape('rock',j%2?C.leaf:C.leafLight,cx,cy,cz,1.12+j*.21,.58+hash(n+j)*.22,1.43,0,hash(n+j)*5,.06);
+       if(j!==1)this.shape('rock',C.leaf,cx+side*.85,cy-.27,cz+.35,.93,.49,1.02,0,hash(n+2)*4,0);
+      }
+      if(n%2===0){this.link([xx-side*1.9,y+5.7,z],[xx-side*2.0+Math.sin(time*.8+n)*.12,y+2.7,z+.20],.025,C.leaf);this.plant(xx-side*2.0,y+3.6,z+.2,n+1,time);}
+    }else if(zoneTile===1){
+      this.shape('box',C.iron,xx,y+.8,z,.8,2,.7);this.shape('cylinder',C.copper,xx,y+1.5,z,.24,2.1,.24,Math.PI/2,0,0);
+      this.gear(xx-side*.6,y+1.2,z,.5,time*.6*(side>0?1:-1));
+    }else this.crystal(xx,y+.7,z,1.4,n);
+   }
+   if(index%5===0){
+    this.arch(x,y+2.1,z,5.0,zoneTile===2?color('#606779'):C.stoneDark,.60);
+    for(const side of [-1,1]){
+     this.shape('box',C.stoneDark,x+side*5,y+1,z,.65,2.3,.9);
+     this.link([x+side*4.0,y+1.3,z],[x+side*4.0,y+2.8,z],.09,C.wood);
+     const swing=calm?0:Math.sin(time*1.6+index)*.07;
+     this.shape('box',C.iron,x+side*4.0+swing,y+2.45,z,.33,.54,.33,0,0,swing);
+     this.shape('sphere',color('#ffd994',1.5+Math.sin(time*7+index)*.04),x+side*4.0+swing,y+2.46,z,.13,.20,.13);
+    }
+   }
+  }
+  // Both shortcuts physically diverge and rejoin rather than teleporting the player.
+  for(const gate of this.course.filter(o=>o.kind==='burrow')){
+   if(gate.d+94<d-10||gate.d>d+105)continue;
+   for(let wd=gate.d;wd<=gate.d+90;wd+=3){
+    const z=d-wd;if(z>12||z< -110)continue;
+    const bx=worldX(wd)+branchOffset(wd,gate.d,gate.d+90,gate.lane),by=floorY(wd)+.025;
+    this.shape('box',C.woodLight,bx,by-.17,z,6.4,.25,2.93);
+    for(const side of [-1,1]){this.shape('cylinder',C.wood,bx+side*3.13,by+.52,z,.085,1.25,.085);this.link([bx+side*3.13,by+.85,z-1.5],[bx+side*3.13,by+.82,z+1.5],.025,C.cream);}
+    if(Math.round(wd)%9===0){this.arch(bx,by+.6,z,3.3,C.wood,.22);this.crystal(bx+2.7,by+.15,z,.48,wd);}
+   }
+  }
+  if(!calm)for(let i=0;i<25;i++){const zz=-((i*7.3+d*.6)%95)+8;this.orb(Math.sin(i*9.7)*9+Math.sin(time+i)*.14,1.2+hash(i)*5+Math.sin(time*.7+i)*.18,zz,.025+(i%3)*.008,i%3?C.mint:C.goldGlow);}
+  if(d>970){const z=d-1090;this.arch(worldX(1090),1.2,z,4.5,C.gold,.5);for(let i=0;i<5;i++)this.shape('box',C.goldGlow,worldX(1090)+(i-2)*1.4,1.8,z,.8,3.2,.25);}
+ }
+ private course:CourseItem[]=[];
+ setCourse(course:CourseItem[]){this.course=course;}
+ private item(item:CourseItem,s:Expedition,time:number){
+  const ahead=item.d-s.distance;if(ahead < -6||ahead>102||s.used.includes(item.id))return;
+  if(item.route!==s.route&&item.route!=='main'&&s.route!=='main')return;
+  let offset=0;
+  if(item.route!=='main'){const gate=this.course.find(g=>g.kind==='burrow'&&((item.route==='hollow'&&g.d<500)||(item.route==='grotto'&&g.d>500)));if(gate)offset=branchOffset(item.d,gate.d,gate.d+90,gate.lane);}
+  const pose=hazardPose(item,s.time,s.distance),x=pose.x+offset+curve(item.d)-curve(s.distance),z=-ahead,y=floorY(item.d),phase=time+item.phase;
+  const bob=Math.sin(phase*3)*.09;
+  const shadow=(size:number)=>this.shape('shadow',C.shadow,x,y+.020,z,size,1,size);
+  if(['coin','gem','life','key','shield','magnet'].includes(item.kind))this.shape('halo',color(item.kind==='gem'?'#b6a4ff':item.kind==='shield'?'#69efcf':'#ffc363',-6),x,y+1+bob,z,.68,.68,.68);
+  const ally=companionId(item.kind);
+  if(ally){
+   const c=color(COMPANIONS[ally].color,.45),active=s.companions[ally].timeLeft>0;
+   this.shape('ring',c,x,y+.06,z,.67,1,.67,0,time*.5,0);
+   if(!active)drawCompanion(this.renderer,ally,{x,y:y+(ally==='bot'?1.25:0),z,yaw:Math.PI,scale:ally==='gorilla'?.70:ally==='bot'?.76:.85,time,distance:s.distance,running:false});
+   else{this.shape('ring',c,x,y+1.03+bob,z,.43,1,.43,Math.PI/2,time,0);this.orb(x,y+1.03+bob,z,.15,c);}
+   return;
+  }
+  switch(item.kind){
+   case 'coin':
+    this.shape('ring',C.goldGlow,x,y+.92+bob,z,.32,.9,.32,Math.PI/2,phase*2.5,0);this.shape('cylinder',C.gold,x,y+.92+bob,z,.225,.055,.225,Math.PI/2,phase*2.5,0);shadow(.32);break;
+   case 'gem':
+    this.shape('cone',C.violet,x,y+1.12+bob,z,.32,.55,.32,0,phase*1.7,0);this.shape('cone',C.mint,x,y+.73+bob,z,.32,.24,.32,Math.PI,phase*1.7,0);shadow(.35);break;
+   case 'heart':case 'life':{
+    const yy=y+.95+bob,c=item.kind==='life'?C.goldGlow:C.pink;
+    this.orb(x-.13,yy+.09,z,.22,c);this.orb(x+.13,yy+.09,z,.22,c);this.shape('cone',c,x,yy-.15,z,.31,.43,.23,Math.PI,phase*.4,0);
+    if(item.kind==='life')for(const side of [-1,1])this.shape('leaf',C.pale,x+side*.2,yy,z,.55,1,.7,Math.PI/2,side*Math.PI/2,side*Math.sin(phase*5)*.3);
+    shadow(.4);break;}
+   case 'shield':
+    this.shape('sphere',C.mint,x,y+1+bob,z,.42,.50,.10,0,phase,0);this.shape('box',C.pale,x,y+1+bob,z+.08,.08,.52,.06,0,phase,0);shadow(.4);break;
+   case 'magnet':
+    this.shape('ring',C.violet,x,y+1+bob,z,.40,.8,.40,Math.PI/2,phase*1.7,0);this.orb(x,y+1+bob,z,.16,C.pale);shadow(.4);break;
+   case 'key':
+    this.shape('ring',C.goldGlow,x,y+1.27+bob,z,.22,.7,.22,Math.PI/2,0,0);this.shape('box',C.gold,x,y+.91+bob,z,.08,.54,.09);this.shape('box',C.gold,x+.10,y+.72+bob,z,.25,.09,.09);shadow(.4);break;
+   case 'boulder':
+    this.shape('rock',color('#947d66'),x,y+.80+pose.y,z,.85,.80,.85,phase*1.5,phase*.5,0);this.shape('ring',color('#c59164'),x,y+.10,z,.83,1,.83);shadow(.9);break;
+   case 'saw':
+    this.shape('box',C.wood,x,y+.16,z,1.3,.3,.9);
+    this.shape('cylinder',C.iron,x,y+.53,z,.52,.12,.52,Math.PI/2,0,0);
+    for(let i=0;i<12;i++){const a=phase*8+i/12*TAU;this.shape('cone',i%3?C.iron:C.red,x+Math.cos(a)*.56,y+.53+Math.sin(a)*.56,z,.10,.26,.065,0,0,a-Math.PI/2);}shadow(.7);break;
+   case 'roots':
+    this.link([x-.82,y,z],[x-.77,y+1.2,z],.12,C.wood);this.link([x+.82,y,z],[x+.73,y+1.2,z],.14,C.wood);
+    this.link([x-.79,y+1.22,z],[x+.78,y+1.19,z],.30,C.wood);this.link([x-.83,y+1.35,z+.10],[x+.84,y+1.40,z-.12],.13,C.leaf);
+    for(let i=0;i<4;i++)this.shape('leaf',C.leafLight,x-.7+i*.43,y+1.55,z,.4,.4,.65,.2,phase*.025+i,.3);shadow(.8);break;
+   case 'steam':{
+    const pressure=((s.time+item.phase)%3.2)/3.2;
+    this.shape('cylinder',C.iron,x,y+.06,z,.58,.15,.58);
+    this.shape('ring',pose.active?C.red:C.gold,x,y+.15,z,.48,1,.48);
+    const count=pose.active?7:2;
+    for(let i=0;i<count;i++){const f=((time*1.9+i/count)%1),radius=.14+f*.31;this.shape('sphere',color(pose.active?'#c6ddd3':'#a2b4ad',.1),x+Math.sin(i*7+phase)*f*.11,y+.16+f*(pose.active?1.9:.30),z,radius,radius*.7,radius);}
+    this.shape('box',C.copper,x+.57,y+.25,z,.20,.5,.3);this.shape('box',pose.active?C.red:C.gold,x+.57,y+.26+pressure*.13,z+.16,.10,.22,.04);break;}
+   case 'gap':
+    for(const side of [-1,1])this.shape('box',C.red,x+side*.85,y+.045,z,.08,.04,3.0);
+    this.shape('box',color('#142e36'),x,y-1.9,z,1.9,.10,3.5);
+    for(let i=0;i<3;i++)this.shape('box',C.wood,x-.6+i*.6,y-.24-Math.max(0,1-ahead/9)*.5,z,.35,.16,1.5,Math.max(0,1-ahead/9)*.5,0,.10*i);break;
+   case 'mud':
+    this.shape('sphere',color('#634d38'),x,y+.018,z,.91,.045,1.28);
+    for(let i=0;i<4;i++)this.orb(x+Math.sin(i*4)*.56,y+.04+Math.max(0,Math.sin(phase*2+i))*.06,z+Math.cos(i)*.7,.07,color('#8a7152'));break;
+   case 'drone':
+    this.shape('sphere',C.copper,x,y+1.04+pose.y*.25,z,.42,.22,.29);this.orb(x,y+.99+pose.y*.25,z+.26,.105,C.red);
+    for(const side of [-1,1]){this.link([x,y+1.05,z],[x+side*.6,y+1.13,z],.045,C.iron);this.shape('box',C.iron,x+side*.6,y+1.2,z,.82,.035,.10,0,phase*35,0);}
+    shadow(.65);break;
+   case 'crate':
+    this.shape('box',C.woodLight,x,y+.47,z,1,.95,1,0,Math.sin(phase)*.02,0);for(const side of [-1,1])this.shape('box',C.wood,x+side*.35,y+.47,z+.51,.10,.94,.05);this.shape('box',C.copper,x,y+.47,z+.53,1,.09,.06,0,0,.65);shadow(.7);break;
+   case 'burrow':{
+    const archX=branchOffset(item.d+7,item.d,item.d+90,item.lane)+curve(item.d+7)-curve(s.distance);
+    this.arch(archX,y,z-7,1.12,C.wood,.23);this.shape('rock',C.wood,archX,y+.85,z-7.04,1.3,.45,.45);
+    this.shape('rock',C.stone,x-item.lane*.82,y+.48,z+.10,.27,.40,.16);
+    for(let i=0;i<5;i++)this.shape('box',C.cream,x-item.lane*.82+(i-2)*.055,y+.55,z+.27,.024,.19,.017,0,0,-.18);
+    this.orb(x+item.lane*.95,y+.65+Math.sin(phase)*.02,z+.12,.095,C.goldGlow);break;}
+   case 'workshop':
+    this.arch(x,y+.70,z,1.0,C.copper,.24);this.shape('box',C.woodLight,x,y+.49,z,.9,.65,.9);this.gear(x,y+2.0,z,.30,phase*.5);
+    this.shape('box',C.mint,x,y+.82,z+.45,.5,.03,.03);shadow(.9);break;
+   case 'vault':
+    this.shape('box',C.wood,x,y+.55,z,1.38,.9,.98);this.shape('cylinder',C.copper,x,y+.97,z,.66,1.39,.5,0,0,Math.PI/2);
+    for(const side of [-1,1])this.shape('box',C.gold,x+side*.46,y+.65,z+.52,.10,1.1,.06);
+    this.shape('box',C.goldGlow,x,y+.72,z+.54,.21,.27,.075);shadow(.9);break;
+  }
+ }
+ draw(s:Expedition,visualTime:number,calm=false){
+  if(this.disposed)return;const dt=Math.min(.08,Math.max(0,visualTime-this.lastTime));this.lastTime=visualTime;this.clock=visualTime;
+  this.renderer.reset();this.scenery(s,visualTime,calm);
+  for(const item of this.course)this.item(item,s,visualTime);
+  this.madger(s,visualTime,calm);
+  drawTeam(this.renderer,s,visualTime,calm,curve,floorY);
+  this.particles=this.particles.filter(p=>visualTime-p.born<p.life);
+  if(!calm)for(const p of this.particles){const age=visualTime-p.born,fade=1-age/p.life;this.orb(p.x+p.vx*age,p.y+p.vy*age-4.3*age*age,s.distance-p.d+p.vz*age,Math.max(.008,p.size*fade),p.c);}
+  const lobby=s.mode==='ready',centre=routeOffset(s),targetX=centre+s.x*.72;
+  if(!this.initializedCamera){this.cameraX=targetX;this.cameraY=s.y*.18;this.initializedCamera=true;}
+  this.cameraX+=(targetX-this.cameraX)*(1-Math.exp(-dt*4));
+  this.cameraY+=(s.y*.18-this.cameraY)*(1-Math.exp(-dt*3));
+  const shake=!calm&&this.clock-this.reaction.at<.26&&this.reaction.kind==='hurt'?Math.sin(this.clock*73)*.055*(1-(this.clock-this.reaction.at)/.26):0;
+  const eye:Vec3=lobby?[3.8,3.3,8.6]:[this.cameraX+shake,4.4+this.cameraY,9.6];
+  const target:Vec3=lobby?[0,1.35,-.6]:[this.cameraX+curve(s.distance+22)-curve(s.distance),.9,-14];
+  this.renderer.render(eye,target,visualTime,s.zone,s.distance);
+ }
+ dispose(){this.disposed=true;this.particles=[];this.renderer.dispose();}
+}

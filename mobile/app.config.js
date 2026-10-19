@@ -1,6 +1,14 @@
 // CI previews install beside the official app without replacing its local record.
-// Production and EAS builds keep the verified app.json identifiers unchanged.
+// Explicit test profiles have separate identities; production keeps app.json identifiers.
 module.exports = ({ config }) => {
+  if (process.env.MADGER_EXPEDITION_PREVIEW === '1') {
+    return {
+      ...config,
+      name: 'MADGER Expedition',
+      scheme: 'madger-expedition',
+      android: { ...config.android, package: 'com.madgercoin.expedition.preview' },
+    };
+  }
   if (process.env.MADGER_ANDROID_PREVIEW !== '1') return config;
   return {
     ...config,

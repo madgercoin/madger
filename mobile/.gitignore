@@ -45,3 +45,10 @@ example
 # generated native folders
 /ios
 /android
+
+# Local expedition review evidence / tooling
+.qa-tools/
+expedition-evidence/
+dist-expedition/
+*.qa.json
+assets/audio/expedition/*-source.mp3

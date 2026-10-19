@@ -15,6 +15,11 @@
         "buildType": "apk"
       }
     },
+    "expedition-preview": {
+      "extends": "preview",
+      "autoIncrement": true,
+      "env": { "MADGER_EXPEDITION_PREVIEW": "1" }
+    },
     "production": {
       "autoIncrement": true
     }
