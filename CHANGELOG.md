@@ -3,6 +3,8 @@
 ## 2026-10-19 - Native Expedition frame submission
 
 - Bound pending native GL work to one rendered frame so the HUD cannot outrun a growing presentation backlog.
+- Stopped unchanged paused scenes from redrawing, bounded animated material caching, reused tail geometry buffers, and indexed immutable course features to reduce rendering work without changing their appearance.
+- Corrected the camera when a saved hidden-route run loads after the lobby has already drawn.
 - Added renderer queue and batching regression coverage, plus limited native drain timing diagnostics. Native APK validation is still required; this entry does not claim device acceptance.
 
 ## 2026-10-18 — 3D Expedition and animated companion support

@@ -41,6 +41,8 @@ export default function ExpeditionScreen(){
  const booted=useRef(false),mounted=useRef(true),foreground=useRef(AppState.currentState==='active'),focused=useRef(true);
  const preferences=useRef({sound:true,calm:false,music:true});
  const visualTime=useRef(0),lastFrame=useRef<number|null>(null),raf=useRef<number|null>(null),lastSnapshot=useRef(0),lastSave=useRef(0),lastFinish=useRef(-10000),finishedBanked=useRef('');
+ const needsDraw=useRef(true),lastDrawn=useRef<{id:string;mode:Expedition['mode']|null;calm:boolean}>({id:'',mode:null,calm:false});
+ const lastDrawMs=useRef(0);
  const [ui,setUi]=useState(()=>snapshotRun(runRef.current));
  const [ready3d,setReady3d]=useState(false),[renderError,setRenderError]=useState<string|null>(null),[contextKey,setContextKey]=useState(0),[journal,setJournal]=useState(false),[crew,setCrew]=useState(false);
  const [uiHint,setUiHint]=useState('');
@@ -72,11 +74,11 @@ export default function ExpeditionScreen(){
   audioRef.current?.settings(preferences.current.sound,preferences.current.music);
   if(saved.ready&&!booted.current){booted.current=true;const checkpoint=saved.profile.checkpoint;if(checkpoint){runRef.current=JSON.parse(JSON.stringify(checkpoint)) as Expedition;courseRef.current=buildCourse(checkpoint.seed);sceneRef.current?.setCourse(courseRef.current);publish();}}
  },[saved.ready,saved.profile.settings,saved.profile.checkpoint,publish]);
- useFocusEffect(useCallback(()=>{focused.current=true;lastFrame.current=null;return()=>{focused.current=false;stopAndSave();};},[stopAndSave]));
+ useFocusEffect(useCallback(()=>{focused.current=true;lastFrame.current=null;needsDraw.current=true;return()=>{focused.current=false;stopAndSave();};},[stopAndSave]));
  useEffect(()=>{
-  const state=AppState.addEventListener('change',next=>{foreground.current=next==='active';lastFrame.current=null;if(!foreground.current)stopAndSave();});
+  const state=AppState.addEventListener('change',next=>{foreground.current=next==='active';lastFrame.current=null;needsDraw.current=true;if(!foreground.current)stopAndSave();});
   const back=BackHandler.addEventListener('hardwareBackPress',()=>{if(['running','countdown'].includes(runRef.current.mode)){stopAndSave();return true;}return false;});
-  const onHide=()=>{if(typeof document!=='undefined'&&document.hidden){foreground.current=false;stopAndSave();}else{foreground.current=true;lastFrame.current=null;}};
+  const onHide=()=>{if(typeof document!=='undefined'&&document.hidden){foreground.current=false;stopAndSave();}else{foreground.current=true;lastFrame.current=null;needsDraw.current=true;}};
   if(Platform.OS==='web'&&typeof document!=='undefined')document.addEventListener('visibilitychange',onHide);
   return()=>{state.remove();back.remove();if(Platform.OS==='web'&&typeof document!=='undefined')document.removeEventListener('visibilitychange',onHide);};
  },[stopAndSave]);
@@ -94,6 +96,7 @@ export default function ExpeditionScreen(){
   const s=runRef.current,events:GameEvent[]=[];
   if(foreground.current&&focused.current){
    const was=s.mode;
+   if(seconds>.4&&(was==='running'||was==='countdown'))console.warn('MADGER_EXPEDITION_FRAME_STALL',JSON.stringify({frameMs:Math.round(seconds*1000),drawMs:Math.round(lastDrawMs.current),phase:was,...sceneRef.current.stats}));
    if(was==='running'||was==='countdown')advance(s,courseRef.current,seconds,clockRef.current,events);
    if(s.mode==='ready'||s.mode==='running'||s.mode==='countdown'||s.mode==='won'||s.mode==='lost')visualTime.current+=Math.min(seconds,.075);
    // Let the final reaction finish; do not continue physics after completion.
@@ -103,8 +106,13 @@ export default function ExpeditionScreen(){
    if((s.mode==='running'||s.mode==='countdown')&&timestamp-lastSave.current>2500){lastSave.current=timestamp;checkpoint();}
    if(s.mode==='upgrade'&&was!=='upgrade')checkpoint();
    if(s.mode==='paused'&&was!=='paused'){audioRef.current?.active(false);checkpoint();}
-   if(timestamp-lastSnapshot.current>80||was!==s.mode){lastSnapshot.current=timestamp;publish();}
-   try{sceneRef.current.draw(s,visualTime.current,preferences.current.calm);}catch(error){stopAndSave();setRenderError(error instanceof Error?error.message:'The 3D view was interrupted.');setReady3d(false);return;}
+   if(((s.mode==='running'||s.mode==='countdown')&&timestamp-lastSnapshot.current>80)||was!==s.mode){lastSnapshot.current=timestamp;publish();}
+   // A paused run has no changing geometry. Redraw once for state, settings,
+   // layout, or lifecycle changes instead of continually rebuilding the scene.
+   const calm=preferences.current.calm,previous=lastDrawn.current;
+   if((s.mode!=='paused'&&s.mode!=='upgrade')||needsDraw.current||previous.id!==s.id||previous.mode!==s.mode||previous.calm!==calm){
+    try{const started=performance.now();sceneRef.current.draw(s,visualTime.current,calm);lastDrawMs.current=performance.now()-started;needsDraw.current=false;lastDrawn.current={id:s.id,mode:s.mode,calm};}catch(error){stopAndSave();setRenderError(error instanceof Error?error.message:'The 3D view was interrupted.');setReady3d(false);return;}
+   }
   }
   raf.current=requestAnimationFrame(tick);
  },[checkpoint,onEvents,publish,stopAndSave,store]);
@@ -126,7 +134,7 @@ export default function ExpeditionScreen(){
  const hint=active?uiHint:'';
  const retryRender=()=>{stopAndSave();if(raf.current!==null)cancelAnimationFrame(raf.current);raf.current=null;sceneRef.current?.dispose();sceneRef.current=null;setRenderError(null);setReady3d(false);setContextKey(k=>k+1);};
  return <View style={styles.root}>
-  <GLView key={contextKey} style={StyleSheet.absoluteFill} onContextCreate={context} msaaSamples={2} {...WEB_GL_PROPS} {...(Platform.OS==='web'?{onContextLost:contextLost}:{})}/>
+  <GLView key={contextKey} style={StyleSheet.absoluteFill} onContextCreate={context} onLayout={()=>{needsDraw.current=true;}} msaaSamples={2} {...WEB_GL_PROPS} {...(Platform.OS==='web'?{onContextLost:contextLost}:{})}/>
   <View style={StyleSheet.absoluteFill} {...pan.panHandlers} accessible={false}/>
   <LinearGradient pointerEvents="none" colors={['#061710E6','#06171000']} style={[styles.topShade,{height:insets.top+210}]}/>
   <View pointerEvents="box-none" style={[styles.hud,{top:Math.max(12,insets.top+6)}]}>

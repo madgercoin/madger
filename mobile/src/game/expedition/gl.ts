@@ -113,29 +113,47 @@ function geometry(shape:Shape) {
  }else{triangle(v,[-1,0,-1],[1,0,1],[1,0,-1],[0,1,0]);triangle(v,[-1,0,-1],[-1,0,1],[1,0,1],[0,1,0]);}
  return new Float32Array(v);
 }
-function tailGeometry(time:number,bank:number){
- const v:number[]=[];const rings=16,sides=14;
- const point=(i:number,j:number):{p:Vec3;n:Vec3}=>{
-  const t=i/rings,a=j/sides*Math.PI*2;
-  const radius=Math.max(.022,(.22+.17*Math.sin(Math.PI*t))*(1-t*t*.82));
-  const cy=.14*Math.sin(t*Math.PI)+.26*t*t;
-  const cx=Math.sin(time*3.1-t*2.8)*.13*t*t-bank*t*.15;
-  const r=radius*(1+.025*Math.sin(a*7+t*80));
-  return {p:[cx+Math.cos(a)*r,cy+Math.sin(a)*r,t*1.26],n:[Math.cos(a),Math.sin(a),(.15+t*.35)]};
- };
- for(let i=0;i<rings;i++)for(let j=0;j<sides;j++)for(const q of [point(i,j),point(i+1,j),point(i,j+1),point(i+1,j),point(i+1,j+1),point(i,j+1)]){const l=Math.hypot(...q.n);v.push(...q.p,q.n[0]/l,q.n[1]/l,q.n[2]/l);}
- return new Float32Array(v);
+const TAIL_RINGS=16,TAIL_SIDES=14;
+const TAIL_INDICES=(()=>{
+ const indices=new Uint16Array(TAIL_RINGS*TAIL_SIDES*6);let offset=0;
+ for(let i=0;i<TAIL_RINGS;i++)for(let j=0;j<TAIL_SIDES;j++){
+  const a=i*(TAIL_SIDES+1)+j,b=(i+1)*(TAIL_SIDES+1)+j;
+  indices.set([a,b,a+1,b,b+1,a+1],offset);offset+=6;
+ }
+ return indices;
+})();
+function tailGeometry(time:number,bank:number,vertices=new Float32Array(TAIL_INDICES.length*6),grid=new Float64Array((TAIL_RINGS+1)*(TAIL_SIDES+1)*6)){
+ // Keep shared points in Float64 until expansion so the final Float32 vertices
+ // retain the exact original geometry and triangle order without per-frame objects.
+ for(let i=0;i<=TAIL_RINGS;i++){
+  const t=i/TAIL_RINGS,radius=Math.max(.022,(.22+.17*Math.sin(Math.PI*t))*(1-t*t*.82));
+  const cy=.14*Math.sin(t*Math.PI)+.26*t*t,cx=Math.sin(time*3.1-t*2.8)*.13*t*t-bank*t*.15,nz=.15+t*.35;
+  for(let j=0;j<=TAIL_SIDES;j++){
+   const a=j/TAIL_SIDES*Math.PI*2,cos=Math.cos(a),sin=Math.sin(a),r=radius*(1+.025*Math.sin(a*7+t*80)),length=Math.hypot(cos,sin,nz),offset=(i*(TAIL_SIDES+1)+j)*6;
+   grid[offset]=cx+cos*r;grid[offset+1]=cy+sin*r;grid[offset+2]=t*1.26;
+   grid[offset+3]=cos/length;grid[offset+4]=sin/length;grid[offset+5]=nz/length;
+  }
+ }
+ for(let i=0;i<TAIL_INDICES.length;i++){
+  const source=TAIL_INDICES[i]*6,target=i*6;
+  for(let component=0;component<6;component++)vertices[target+component]=grid[source+component];
+ }
+ return vertices;
 }
-const colorCache=new Map<string,Color>();
+const COLOR_CACHE_LIMIT=512,colorCache=new Map<string,Color>();
 export function color(hex:string,material=0):Color {
  const key=hex+':'+material;const cached=colorCache.get(key);if(cached)return cached;
- const n=parseInt(hex.replace('#',''),16);const c:Color=[Math.pow(((n>>16)&255)/255,2.2),Math.pow(((n>>8)&255)/255,2.2),Math.pow((n&255)/255,2.2),material];colorCache.set(key,c);return c;
+ const n=parseInt(hex.replace('#',''),16);const c:Color=[Math.pow(((n>>16)&255)/255,2.2),Math.pow(((n>>8)&255)/255,2.2),Math.pow((n&255)/255,2.2),material];
+ // Animated emission values are continuous; never retain one cache entry per frame.
+ if(colorCache.size>=COLOR_CACHE_LIMIT){const oldest=colorCache.keys().next().value;if(oldest!==undefined)colorCache.delete(oldest);}
+ colorCache.set(key,c);return c;
 }
 type Batch={vertex:WebGLBuffer;instances:WebGLBuffer;vertices:number;data:Float32Array;count:number;};
 export class ExpeditionRenderer {
  private gl:NativeGL;private program:WebGLProgram;private batches=new Map<Shape,Batch>();
  private uniforms:{vp:WebGLUniformLocation;eye:WebGLUniformLocation;fog:WebGLUniformLocation;range:WebGLUniformLocation;time:WebGLUniformLocation;travel:WebGLUniformLocation};
  private divisor:((i:number,v:number)=>void)|null=null;private drawInstanced:((mode:number,first:number,count:number,instances:number)=>void)|null=null;
+ private tailVertices=new Float32Array(TAIL_INDICES.length*6);private tailGrid=new Float64Array((TAIL_RINGS+1)*(TAIL_SIDES+1)*6);
  private dead=false;private nativeFrames=0;public stats={instances:0,drawCalls:0,triangles:0,nativeDrainMs:0};
  constructor(gl:GL){
   this.gl=gl as NativeGL;
@@ -150,13 +168,13 @@ export class ExpeditionRenderer {
    const ext=gl.getExtension('ANGLE_instanced_arrays');if(ext){this.drawInstanced=ext.drawArraysInstancedANGLE.bind(ext);this.divisor=ext.vertexAttribDivisorANGLE.bind(ext);}
   }
   for(const shape of ['box','sphere','rock','cylinder','cone','ring','leaf','headStripe','tail','shadow','halo'] as Shape[]){
-   const data=geometry(shape),vertex=gl.createBuffer(),instances=gl.createBuffer();if(!vertex||!instances)throw Error('GPU buffer allocation failed');
+   const data=shape==='tail'?tailGeometry(0,0,this.tailVertices,this.tailGrid):geometry(shape),vertex=gl.createBuffer(),instances=gl.createBuffer();if(!vertex||!instances)throw Error('GPU buffer allocation failed');
    gl.bindBuffer(gl.ARRAY_BUFFER,vertex);gl.bufferData(gl.ARRAY_BUFFER,data,gl.STATIC_DRAW);
    this.batches.set(shape,{vertex,instances,vertices:data.length/6,data:new Float32Array(20*4096),count:0});
   }
   gl.enable(gl.DEPTH_TEST);gl.depthFunc(gl.LEQUAL);gl.disable(gl.CULL_FACE);
  }
- updateTail(time:number,bank:number){const b=this.batches.get('tail')!;const data=tailGeometry(time,bank);this.gl.bindBuffer(this.gl.ARRAY_BUFFER,b.vertex);this.gl.bufferData(this.gl.ARRAY_BUFFER,data,this.gl.DYNAMIC_DRAW);b.vertices=data.length/6;}
+ updateTail(time:number,bank:number){const b=this.batches.get('tail')!;const data=tailGeometry(time,bank,this.tailVertices,this.tailGrid);this.gl.bindBuffer(this.gl.ARRAY_BUFFER,b.vertex);this.gl.bufferData(this.gl.ARRAY_BUFFER,data,this.gl.DYNAMIC_DRAW);b.vertices=data.length/6;}
  reset(){for(const b of this.batches.values())b.count=0;this.stats={instances:0,drawCalls:0,triangles:0,nativeDrainMs:0};}
  add(shape:Shape,matrix:Mat4,c:Color){const b=this.batches.get(shape)!;if(b.count>=4096)return;const offset=b.count*20;b.data.set(matrix,offset);b.data.set(c,offset+16);b.count++;}
  shape(shape:Shape,c:Color,x:number,y:number,z:number,sx=1,sy=1,sz=1,rx=0,ry=0,rz=0,parent?:Mat4){const t=transform(x,y,z,sx,sy,sz,rx,ry,rz);this.add(shape,parent?multiply(parent,t):t,c);}

@@ -128,7 +128,7 @@ export class ExpeditionScene {
  }
  private scenery(s:Expedition,time:number,calm:boolean){
   const d=s.distance,zone=s.zone,c0=curve(d);const worldX=(wd:number)=>curve(wd)-c0;
-  const branchSide=(wd:number,side:number)=>this.course.some(g=>g.kind==='burrow'&&g.lane===side&&wd>=g.d-14&&wd<=g.d+103);
+  const branchSide=(wd:number,side:number)=>this.burrows.some(g=>g.lane===side&&wd>=g.d-14&&wd<=g.d+103);
   for(let i=0;i<13;i++){
    const wd=Math.floor(d/20)*20+i*20,zz=d-wd,n=Math.floor(wd/20);
    for(const side of [-1,1]){
@@ -147,7 +147,7 @@ export class ExpeditionScene {
   for(let wd=start;wd<d+108;wd+=4){
    const z=d-wd,x=worldX(wd),y=floorY(wd),index=Math.floor(wd/4),zoneTile=Math.min(2,Math.floor(Math.max(0,wd)/360));
    for(const lane of [-1,0,1]){
-    const hole=s.route==='main'&&this.course.some(o=>o.kind==='gap'&&o.route==='main'&&o.lane===lane&&Math.abs(o.d-wd)<2.8);
+    const hole=s.route==='main'&&this.mainGaps.some(o=>o.lane===lane&&Math.abs(o.d-wd)<2.8);
     if(hole){this.shape('box',C.water,x+lane*LANE_WIDTH,y-1.75,z,2.1,.05,4);continue;}
     const floor=zoneTile===0?['#899984','#879481','#95a08b'][Math.abs(index+lane)%3]:zoneTile===1?['#727c7e','#7c8886','#69797b'][Math.abs(index+lane)%3]:['#717991','#858895','#7c879b'][Math.abs(index+lane)%3];
     this.shape('box',color(floor,-1),x+lane*LANE_WIDTH,y-.20,z,2.10,.38,3.94,0,-Math.cos(wd/76)*.010,0);
@@ -193,7 +193,7 @@ export class ExpeditionScene {
    }
   }
   // Both shortcuts physically diverge and rejoin rather than teleporting the player.
-  for(const gate of this.course.filter(o=>o.kind==='burrow')){
+  for(const gate of this.burrows){
    if(gate.d+94<d-10||gate.d>d+105)continue;
    for(let wd=gate.d;wd<=gate.d+90;wd+=3){
     const z=d-wd;if(z>12||z< -110)continue;
@@ -206,13 +206,13 @@ export class ExpeditionScene {
   if(!calm)for(let i=0;i<25;i++){const zz=-((i*7.3+d*.6)%95)+8;this.orb(Math.sin(i*9.7)*9+Math.sin(time+i)*.14,1.2+hash(i)*5+Math.sin(time*.7+i)*.18,zz,.025+(i%3)*.008,i%3?C.mint:C.goldGlow);}
   if(d>970){const z=d-1090;this.arch(worldX(1090),1.2,z,4.5,C.gold,.5);for(let i=0;i<5;i++)this.shape('box',C.goldGlow,worldX(1090)+(i-2)*1.4,1.8,z,.8,3.2,.25);}
  }
- private course:CourseItem[]=[];
- setCourse(course:CourseItem[]){this.course=course;}
+ private course:CourseItem[]=[];private burrows:CourseItem[]=[];private mainGaps:CourseItem[]=[];
+ setCourse(course:CourseItem[]){this.course=course;this.burrows=course.filter(o=>o.kind==='burrow');this.mainGaps=course.filter(o=>o.kind==='gap'&&o.route==='main');this.initializedCamera=false;}
  private item(item:CourseItem,s:Expedition,time:number){
   const ahead=item.d-s.distance;if(ahead < -6||ahead>102||s.used.includes(item.id))return;
   if(item.route!==s.route&&item.route!=='main'&&s.route!=='main')return;
   let offset=0;
-  if(item.route!=='main'){const gate=this.course.find(g=>g.kind==='burrow'&&((item.route==='hollow'&&g.d<500)||(item.route==='grotto'&&g.d>500)));if(gate)offset=branchOffset(item.d,gate.d,gate.d+90,gate.lane);}
+  if(item.route!=='main'){const gate=this.burrows.find(g=>(item.route==='hollow'&&g.d<500)||(item.route==='grotto'&&g.d>500));if(gate)offset=branchOffset(item.d,gate.d,gate.d+90,gate.lane);}
   const pose=hazardPose(item,s.time,s.distance),x=pose.x+offset+curve(item.d)-curve(s.distance),z=-ahead,y=floorY(item.d),phase=time+item.phase;
   const bob=Math.sin(phase*3)*.09;
   const shadow=(size:number)=>this.shape('shadow',C.shadow,x,y+.020,z,size,1,size);
