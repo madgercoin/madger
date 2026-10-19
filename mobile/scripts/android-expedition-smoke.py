@@ -56,8 +56,26 @@ class Smoke:
         self.log_file = None
         self.pids: set[str] = set()
         self.started = time.monotonic()
+        self.last_observation = None
         self.report = {"status": "running", "package": PACKAGE, "started_utc": STAMP,
-                       "steps": [], "states": {}, "frames": {}, "errors": []}
+                       "steps": [], "states": {}, "frames": {}, "errors": [], "automation_calls": []}
+
+    def timed(self, name, call):
+        started = time.monotonic()
+        try:
+            return call()
+        finally:
+            self.report["automation_calls"].append({"name": name,
+                "start_s": round(started - self.started, 3),
+                "duration_ms": round((time.monotonic() - started) * 1000, 2)})
+
+    def observation(self, nodes, labels):
+        match = next((HUD.search(value) for value in labels if HUD.search(value)), None)
+        score = next((SCORE.search(value) for value in labels if SCORE.search(value)), None)
+        hud = None if not match or not score else {"distance_m": int(match[1]), "lane": int(match[2]),
+            "action": match[3], "route": match[4], "score": int(score[1])}
+        phase = "paused" if "Your run is safe." in labels else "countdown" if "FOLLOW THE GOLD" in labels else "running" if self.label_node(nodes, "Pause expedition", clickable=True) else "other"
+        return {"phase": phase, "hud": hud, "elapsed_s": round(time.monotonic() - self.started, 3)}
 
     def adb(self, *args, timeout=40, check=True):
         command = [os.environ.get("ADB", "adb")]
@@ -74,9 +92,10 @@ class Smoke:
         print(name, flush=True)
 
     def tree(self):
-        xml = self.device.dump_hierarchy(compressed=False)
+        xml = self.timed("hierarchy", lambda: self.device.dump_hierarchy(compressed=False))
         nodes = list(ET.fromstring(xml).iter("node"))
         labels = [node.get(key, "") for node in nodes for key in ("text", "content-desc")]
+        self.last_observation = self.observation(nodes, labels)
         for bad in ERROR_LABELS:
             if any(bad.lower() in value.lower() for value in labels):
                 raise AssertionError(f"App displayed an error: {bad}")
@@ -118,7 +137,7 @@ class Smoke:
     def tap(self, label, timeout=20):
         bounds, _ = self.wait_label(label, timeout, clickable=True)
         x1, y1, x2, y2 = bounds
-        self.device.click((x1 + x2) // 2, (y1 + y2) // 2)
+        self.timed("click:" + label, lambda: self.device.click((x1 + x2) // 2, (y1 + y2) // 2))
 
     def hud(self):
         _, _, labels = self.tree()
@@ -137,12 +156,12 @@ class Smoke:
             if last and predicate(last):
                 return last
             time.sleep(.06)
-        raise AssertionError(f"HUD did not show {description}; last state: {last}")
+        raise AssertionError(f"HUD did not show {description}; last state: {last}; observation: {self.last_observation}")
 
     def capture(self, name, require_running=False):
-        image = self.device.screenshot().convert("RGB")
+        image = self.timed("screenshot:uiautomator:" + name, self.device.screenshot).convert("RGB")
         image.save(OUT / f"{name}.png")
-        xml = self.device.dump_hierarchy(compressed=False)
+        xml, _, _ = self.tree()
         (OUT / f"{name}.xml").write_text(xml, encoding="utf-8")
         if require_running:
             nodes = list(ET.fromstring(xml).iter("node"))
@@ -154,10 +173,43 @@ class Smoke:
     def capture_adb(self, name):
         from PIL import Image
         command = [os.environ.get("ADB", "adb"), "-s", self.serial, "exec-out", "screencap", "-p"]
-        result = subprocess.run(command, capture_output=True, check=True, timeout=30)
+        result = self.timed("screenshot:adb:" + name, lambda: subprocess.run(command, capture_output=True, check=True, timeout=30))
         image = Image.open(io.BytesIO(result.stdout)).convert("RGB")
         image.save(OUT / f"{name}.png")
         return image
+
+    def startup_diagnostic(self, original_error):
+        """One visible resume for evidence only. The caller always rethrows failure."""
+        from PIL import ImageChops, ImageStat
+        diagnostic = {"original_failure": str(original_error), "resume_attempts": 0,
+            "affects_acceptance": False, "quiet_before_resume_s": 3, "quiet_after_resume_s": 4}
+        self.report["startup_diagnostic"] = diagnostic
+        self.capture("startup-failure")
+        diagnostic["initial"] = self.last_observation
+        time.sleep(3)
+        _, nodes, _ = self.tree()
+        diagnostic["before_resume"] = self.last_observation
+        found = self.label_node(nodes, "Resume expedition", clickable=True)
+        if self.last_observation["phase"] != "paused" or not found:
+            diagnostic["outcome"] = "No visible paused Resume button; no diagnostic input performed"
+            return
+        (x1, y1, x2, y2), _ = found
+        diagnostic["resume_attempts"] = 1
+        self.timed("click:diagnostic Resume expedition", lambda: self.device.click((x1 + x2) // 2, (y1 + y2) // 2))
+        diagnostic["quiet_start_s"] = round(time.monotonic() - self.started, 3)
+        time.sleep(4)  # No hierarchy, screenshots, shell calls, or input during this interval.
+        diagnostic["quiet_end_s"] = round(time.monotonic() - self.started, 3)
+        first = self.capture_adb("startup-quiet-a")
+        time.sleep(.55)
+        second = self.capture_adb("startup-quiet-b")
+        xml, _, _ = self.tree()
+        (OUT / "startup-after-quiet.xml").write_text(xml, encoding="utf-8")
+        diagnostic["after_capture"] = self.last_observation
+        before, after = diagnostic["before_resume"]["hud"], self.last_observation["hud"]
+        diagnostic["distance_delta_m"] = after["distance_m"] - before["distance_m"] if before and after else None
+        diagnostic["raw_frame_difference"] = round(sum(ImageStat.Stat(ImageChops.difference(self.game_crop(first), self.game_crop(second))).mean) / 3, 3)
+        diagnostic["outcome"] = "Paused again at observation after one resume and a quiet interval" if self.last_observation["phase"] == "paused" else "Observed " + self.last_observation["phase"] + " after one resume and a quiet interval"
+        diagnostic["interpretation_limit"] = "Raw captures can add load and their phase is not bracketed; these frames never satisfy the motion gate. RPC durations do not prove RAF blocking. Original failure is preserved."
 
     @staticmethod
     def game_crop(image):
@@ -236,7 +288,14 @@ class Smoke:
         self.wait_label("Start expedition", timeout=35)
         self.capture("02-expedition-ready")
         self.tap("Start expedition")
-        initial = self.wait_hud(lambda state: state["distance_m"] >= 2, "running distance after countdown", timeout=12)
+        try:
+            initial = self.wait_hud(lambda state: state["distance_m"] >= 2, "running distance after countdown", timeout=12)
+        except Exception as original_error:
+            try:
+                self.startup_diagnostic(original_error)
+            except Exception as diagnostic_error:
+                self.report.setdefault("startup_diagnostic", {})["diagnostic_error"] = str(diagnostic_error)
+            raise
         first = self.capture("03-running-a", require_running=True)
         self.rendered("03-running-a", first)
         time.sleep(.55)
@@ -368,6 +427,7 @@ class Smoke:
                 if (tag == "ReactNativeJS" and level in ("E", "F")) or re.search(r"FATAL EXCEPTION|Fatal signal|JavascriptException|Unhandled JS Exception", message, re.I):
                     crashes.append(line)
             self.report["application_pids"] = sorted(self.pids)
+            self.report["performance_lines"] = [line for line in lines if re.search(r"EGL_emulation.*app_time_stats|Choreographer.*Skipped|EXGL.*EGL error|EGL_BAD_MATCH", line)][-160:]
             if not self.pids:
                 self.report["errors"].append("No application PID was observed for scoped native/JavaScript crash checks")
             self.report["crash_lines"] = crashes[:100]
