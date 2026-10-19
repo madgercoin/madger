@@ -27,13 +27,17 @@ Use approved MADGER assets featuring Madger, Snow White, Gorilla White, and Madg
 ## Verified setup and publication status
 
 - Profile name, username, official logo avatar, bio, website, and current social links saved and verified on the channel.
-- Created the public collection: https://giphy.com/channel/MadgerDaBadger/official-madger-animations
-- No new GIFs have been published yet.
-- Two public GIF uploads are staged in GIPHY's final upload screen:
-  1. Official MADGER outro, 12.01 seconds, from https://madgercoin.com/assets/Madger_Official_Outro_Clip.mp4
-  2. Madger Productions Presents intro, 6.41 seconds, from https://madgercoin.com/assets/Madger_Productions_Presents_Intro_clip.mp4
-- Both staged uploads link to https://madgercoin.com and include relevant MADGER, Burrow, honey badger, and animation tags; each includes its intro/outro-specific tag.
-- GIPHY states that clicking Upload to GIPHY agrees to its Terms of Service, Community Guidelines, and Privacy Policy. Final publication is waiting for the owner's confirmation of this acceptance.
-- The latest approved four-hero teaser was identified, but automatic approval review rejected its browser download because the file-storage domain was outside the approved website. It was not uploaded. The generic GIF editor also remained stuck processing; the direct Upload flow reached the reviewable final screen successfully.
+- Public collection: https://giphy.com/channel/MadgerDaBadger/official-madger-animations
+- Owner confirmed acceptance of GIPHY's terms and publication of both GIFs on 2026-10-19.
+- GIPHY confirmed **Upload Complete!** for both files on 2026-10-19:
 
-Do not treat a staged upload or a prepared asset as published. Verify the returned GIF URLs after final submission.
+| Asset | Live GIF URL | Source |
+| --- | --- | --- |
+| MADGER Official Outro | https://giphy.com/gifs/IqGu2YS7SRBmMw663B | https://madgercoin.com/assets/Madger_Official_Outro_Clip.mp4 |
+| Madger Productions Intro | https://giphy.com/gifs/jlJTSsEJuyeqOc38I6 | https://madgercoin.com/assets/Madger_Productions_Presents_Intro_clip.mp4 |
+
+Both were submitted as public 640 x 360 GIFs at 15 fps, with source attribution to https://madgercoin.com and the Official MADGER Animations collection selected. Shared tags: madger, madgercoin, the burrow, honey badger, madgerdabadger, animation. Individual tags: outro; intro and madger productions.
+
+GIPHY's URL-import uploads returned errors. The same approved public MP4 sources were downloaded from madgercoin.com, converted to GIF, and successfully uploaded as local files. Do not retry the failed URL-import forms; doing so could create duplicates.
+
+The latest approved four-hero teaser remains pending. Automatic approval review rejected its browser download from a file-storage domain outside the approved website. It was not uploaded as part of this completed two-GIF publication.
