@@ -109,14 +109,17 @@ def kill_observed_foreground_run():
     started = time.monotonic()
     observation = {'status': 'sampling', 'clock': 'host monotonic seconds',
                    'started': started, 'max_age_seconds': 2.0, 'queries': []}
-    xml = None
+    screenshot = None
 
-    def with_depth(node, depth=-1):
-        # Android's dump depth starts at zero for each window root. The XML
-        # document adds a containing <hierarchy>, hence the initial minus one.
-        yield node, depth
-        for child in node:
-            yield from with_depth(child, depth + 1)
+    def query(name, operation):
+        sample = {'name': name, 'started': time.monotonic()}
+        observation['queries'].append(sample)
+        try:
+            sample['value'] = operation()
+        finally:
+            sample['finished'] = time.monotonic()
+        assert sample['finished'] - started <= observation['max_age_seconds'], f'Foreground observation became stale during {name}'
+        return sample['value']
 
     def assert_visible(node):
         bounds = list(map(int, re.findall(r'-?\d+', node.get('bounds', ''))))
@@ -125,52 +128,54 @@ def kill_observed_foreground_run():
         ), ('Live HUD/control was not visible and enabled', node.attrib)
 
     try:
-        # Calibrate on the already captured paused screen. HUD and footer
-        # controls share a shallow layer; animated tunnel entities are deeper.
-        # The same depth retains the timer, Pause/Resume, and Back controls in
-        # one live tree without visiting every moving scene child.
-        calibration = [
-            {'label': node.get('content-desc', '') or node.get('text', ''), 'depth': depth}
-            for node, depth in with_depth(last_root)
-            if node.get('package') == PACKAGE and (
-                node.get('content-desc') in ('Resume run', 'Back to the run')
-                or re.fullmatch(r'\d+s', node.get('text', ''))
-            )
-        ]
-        baseline_labels = {item['label'] for item in calibration}
-        assert {'Resume run', 'Back to the run'} <= baseline_labels, 'Paused HUD calibration was missing controls'
-        assert any(re.fullmatch(r'\d+s', label) for label in baseline_labels), 'Paused HUD calibration was missing the timer'
-        max_depth = max(item['depth'] for item in calibration)
-        observation['depth_calibration'] = calibration
-        observation['max_depth'] = max_depth
+        # Validate the HUD identity/visibility from the existing paused tree.
+        # This HUD also renders while running; only its timer value changes.
+        reference_nodes = [node for node in last_root.iter('node') if node.get('package') == PACKAGE]
+        timers = [node for node in reference_nodes if re.fullmatch(r'\d+s', node.get('text', ''))]
+        assert len({node.get('text') for node in timers}) == 1, 'Paused HUD timer was missing or ambiguous'
+        assert all(node.get('class') == 'android.widget.TextView' for node in timers), 'Paused HUD timer class changed'
+        for node in timers:
+            assert_visible(node)
+        reference_controls = [node for node in reference_nodes if node.get('content-desc') in ('Resume run', 'Back to the run')]
+        assert {'Resume run', 'Back to the run'} <= {node.get('content-desc') for node in reference_controls}, 'Paused HUD reference was missing controls'
+        for node in reference_controls:
+            assert_visible(node)
+        observation['paused_reference'] = [node.attrib for node in timers + reference_controls]
         # Read back the zero-idle/selector waits set at connection time. The
         # driver must not wait for this continuously animated game to go idle.
         observation['driver_config'] = device.jsonrpc.getConfigurator()
         assert all(observation['driver_config'].get(key) == 0 for key in ('waitForIdleTimeout', 'waitForSelectorTimeout')), 'Live-query driver waits were not disabled'
-        sample = {'name': 'hud-tree', 'started': time.monotonic()}
-        observation['queries'].append(sample)
-        try:
-            xml = device.dump_hierarchy(compressed=False, max_depth=max_depth)
-        finally:
-            sample['finished'] = time.monotonic()
-        assert sample['finished'] - started <= observation['max_age_seconds'], 'Foreground observation became stale during HUD query'
-        root = ET.fromstring(xml)
-        nodes = [node for node in root.iter('node') if node.get('package') == PACKAGE]
-        sample['node_count'] = len(nodes)
-        timers = [node for node in nodes if re.fullmatch(r'\d+s', node.get('text', ''))]
-        live_seconds = {int(node.get('text')[:-1]) for node in timers}
-        assert len(live_seconds) == 1, ('Live HUD timer was missing or ambiguous', live_seconds)
-        for node in timers:
-            assert_visible(node)
-        live = next(iter(live_seconds))
+
+        # Scalar getText/exist avoid full hierarchy scans, count/absence
+        # searches, and .info's repeated accessibility property refreshes.
+        timer_selector = {'packageName': PACKAGE, 'className': 'android.widget.TextView',
+                          'enabled': True, 'textMatches': r'\d+s'}
+        observation['timer_selector'] = timer_selector
+        timer_object = device(**timer_selector)
+        timer = query('timer-text', lambda: device.jsonrpc.getText(timer_object.selector))
+        assert isinstance(timer, str) and re.fullmatch(r'\d+s', timer), ('Invalid live HUD timer', timer)
+        live = int(timer[:-1])
         assert 0 < live <= 60, ('Foreground run timer expired or invalid', live)
         observation['live_seconds'] = live
 
-        labels = [node.get('content-desc') for node in nodes]
-        assert 'Pause run' in labels, 'Foreground run was not active'
-        assert 'Back to the run' not in labels and 'Resume run' not in labels, 'Foreground run had paused'
-        assert_visible(next(node for node in nodes if node.get('content-desc') == 'Pause run'))
-        sample['observed_controls'] = [label for label in labels if label in ('Pause run', 'Resume run', 'Back to the run')]
+        # Keep a raw visual record without asking the app for another tree.
+        # Save bytes after the kill so disk writes cannot age the observation.
+        visual = {'name': 'screenshot', 'started': time.monotonic(), 'file': 'foreground-kill.png'}
+        observation['queries'].append(visual)
+        try:
+            screenshot = adb('exec-out', 'screencap', '-p')
+            visual['bytes'] = len(screenshot)
+        finally:
+            visual['finished'] = time.monotonic()
+        assert visual['finished'] - started <= observation['max_age_seconds'], 'Foreground observation became stale during screenshot'
+        assert screenshot.startswith(b'\x89PNG\r\n\x1a\n'), 'Foreground screenshot was not a PNG'
+
+        # Pause run exists only in the active route. The same top-bar control
+        # becomes Resume run when paused and disappears when the run ends.
+        pause_selector = {'packageName': PACKAGE, 'description': 'Pause run', 'enabled': True}
+        observation['activity_selector'] = pause_selector
+        active = query('pause-control-exists', lambda: device(**pause_selector).exists(timeout=0))
+        assert active is True, 'Foreground run was paused, ended, or not visible'
         observation['force_stop_requested'] = time.monotonic()
         assert observation['force_stop_requested'] - started <= observation['max_age_seconds'], 'Foreground observation was stale before process kill'
         adb('shell', 'am', 'force-stop', PACKAGE)
@@ -185,8 +190,8 @@ def kill_observed_foreground_run():
         observation['error'] = str(error)
         raise
     finally:
-        if xml is not None:
-            OUT.joinpath('foreground-kill-ui.xml').write_text(xml)
+        if screenshot is not None:
+            OUT.joinpath('foreground-kill.png').write_bytes(screenshot)
         OUT.joinpath('foreground-kill-observation.json').write_text(json.dumps(observation, indent=2))
 
 
