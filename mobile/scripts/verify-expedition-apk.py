@@ -30,7 +30,7 @@ def validate_manifest(value):
     url = urlsplit(value["apkUrl"])
     if (url.scheme != "https" or url.netloc != "expo.dev" or url.username is not None
             or url.password is not None or url.query or url.fragment
-            or not re.fullmatch(r"/artifacts/eas/[A-Za-z0-9][A-Za-z0-9/_-]*\.apk", url.path)):
+            or not re.fullmatch(r"/artifacts/eas/[A-Za-z0-9_-][A-Za-z0-9/_-]*\.apk", url.path)):
         raise ValueError("apkUrl must be a credential-free https://expo.dev/artifacts/eas/...apk URL")
     # urlsplit can strip leading controls; insist that the original URL is canonical.
     if value["apkUrl"] != "https://expo.dev" + url.path:
