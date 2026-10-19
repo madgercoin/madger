@@ -3,6 +3,60 @@ export type Shape='box'|'sphere'|'rock'|'cylinder'|'cone'|'ring'|'leaf'|'shadow'
 export type Color=[number,number,number,number];
 export type GL=WebGLRenderingContext|WebGL2RenderingContext;
 type NativeGL=GL & {endFrameEXP?:()=>void;flushEXP?:()=>void};
+export type SceneScale=1|0.75;
+
+// Owns only the scene target. React HUD/controls and the window stay full size.
+// Exported so tooling can compare the identical presentation path at 1 and .75.
+export class SceneRenderTarget {
+ private framebuffer:WebGLFramebuffer|null=null;private texture:WebGLTexture|null=null;private depth:WebGLRenderbuffer|null=null;
+ private program:WebGLProgram|null=null;private vertices:WebGLBuffer|null=null;private sampler:WebGLUniformLocation|null=null;
+ private size='';private failed=false;private dead=false;
+ public width=0;public height=0;
+ constructor(private gl:GL){}
+ private releaseTarget(){const gl=this.gl;if(this.framebuffer)gl.deleteFramebuffer(this.framebuffer);if(this.texture)gl.deleteTexture(this.texture);if(this.depth)gl.deleteRenderbuffer(this.depth);this.framebuffer=null;this.texture=null;this.depth=null;}
+ private release(){this.releaseTarget();if(this.program)this.gl.deleteProgram(this.program);if(this.vertices)this.gl.deleteBuffer(this.vertices);this.program=null;this.vertices=null;this.sampler=null;}
+ private prepareProgram(){
+  if(this.program)return;const gl=this.gl,shaders:WebGLShader[]=[];
+  try{
+   const compile=(kind:number,source:string)=>{const shader=gl.createShader(kind);if(!shader)throw Error('Presentation shader allocation failed');shaders.push(shader);gl.shaderSource(shader,source);gl.compileShader(shader);if(!gl.getShaderParameter(shader,gl.COMPILE_STATUS))throw Error(gl.getShaderInfoLog(shader)||'Presentation shader compilation failed');return shader;};
+   const vertex=compile(gl.VERTEX_SHADER,'attribute vec2 aPosition;varying vec2 vUV;void main(){vUV=aPosition*.5+.5;gl_Position=vec4(aPosition,0.,1.);}');
+   const fragment=compile(gl.FRAGMENT_SHADER,'precision mediump float;varying vec2 vUV;uniform sampler2D uScene;void main(){gl_FragColor=vec4(texture2D(uScene,vUV).rgb,1.);}');
+   this.program=gl.createProgram();if(!this.program)throw Error('Presentation program allocation failed');gl.attachShader(this.program,vertex);gl.attachShader(this.program,fragment);gl.bindAttribLocation(this.program,0,'aPosition');gl.linkProgram(this.program);
+   if(!gl.getProgramParameter(this.program,gl.LINK_STATUS))throw Error(gl.getProgramInfoLog(this.program)||'Presentation program link failed');
+   this.sampler=gl.getUniformLocation(this.program,'uScene');if(this.sampler===null)throw Error('Presentation sampler missing');
+   this.vertices=gl.createBuffer();if(!this.vertices)throw Error('Presentation buffer allocation failed');gl.bindBuffer(gl.ARRAY_BUFFER,this.vertices);gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([-1,-1,3,-1,-1,3]),gl.STATIC_DRAW);
+  }finally{for(const shader of shaders)gl.deleteShader(shader);}
+ }
+ begin(width:number,height:number,scale:SceneScale){
+  const gl=this.gl;if(this.dead||gl.isContextLost())return false;
+  const w=Math.max(1,Math.floor(width*scale)),h=Math.max(1,Math.floor(height*scale)),size=`${w}x${h}`;
+  if(this.size!==size){this.releaseTarget();this.size=size;this.failed=false;}
+  if(this.failed)return false;
+  try{
+   this.prepareProgram();
+   if(!this.framebuffer){
+    this.width=w;this.height=h;this.framebuffer=gl.createFramebuffer();this.texture=gl.createTexture();this.depth=gl.createRenderbuffer();
+    if(!this.framebuffer||!this.texture||!this.depth)throw Error('Scene target allocation failed');
+    gl.activeTexture(gl.TEXTURE0);gl.bindTexture(gl.TEXTURE_2D,this.texture);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.LINEAR);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MAG_FILTER,gl.LINEAR);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_S,gl.CLAMP_TO_EDGE);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_T,gl.CLAMP_TO_EDGE);
+    gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA,w,h,0,gl.RGBA,gl.UNSIGNED_BYTE,null);
+    gl.bindRenderbuffer(gl.RENDERBUFFER,this.depth);gl.renderbufferStorage(gl.RENDERBUFFER,gl.DEPTH_COMPONENT16,w,h);
+    gl.bindFramebuffer(gl.FRAMEBUFFER,this.framebuffer);gl.framebufferTexture2D(gl.FRAMEBUFFER,gl.COLOR_ATTACHMENT0,gl.TEXTURE_2D,this.texture,0);gl.framebufferRenderbuffer(gl.FRAMEBUFFER,gl.DEPTH_ATTACHMENT,gl.RENDERBUFFER,this.depth);
+    if(gl.checkFramebufferStatus(gl.FRAMEBUFFER)!==gl.FRAMEBUFFER_COMPLETE)throw Error('Scene framebuffer incomplete');
+    gl.bindTexture(gl.TEXTURE_2D,null);gl.bindRenderbuffer(gl.RENDERBUFFER,null);
+   }else gl.bindFramebuffer(gl.FRAMEBUFFER,this.framebuffer);
+   return true;
+  }catch(error){
+   this.release();this.failed=true;gl.bindFramebuffer(gl.FRAMEBUFFER,null);gl.bindTexture(gl.TEXTURE_2D,null);gl.bindRenderbuffer(gl.RENDERBUFFER,null);
+   console.warn('Low-resolution scene unavailable; using full resolution.',error);return false;
+  }
+ }
+ present(width:number,height:number){
+  const gl=this.gl;gl.bindFramebuffer(gl.FRAMEBUFFER,null);gl.viewport(0,0,width,height);gl.disable(gl.DEPTH_TEST);gl.disable(gl.BLEND);gl.depthMask(false);gl.useProgram(this.program);
+  gl.activeTexture(gl.TEXTURE0);gl.bindTexture(gl.TEXTURE_2D,this.texture);gl.uniform1i(this.sampler,0);gl.bindBuffer(gl.ARRAY_BUFFER,this.vertices);gl.enableVertexAttribArray(0);gl.vertexAttribPointer(0,2,gl.FLOAT,false,8,0);for(let i=1;i<=6;i++)gl.disableVertexAttribArray(i);
+  gl.drawArrays(gl.TRIANGLES,0,3);gl.bindTexture(gl.TEXTURE_2D,null);gl.depthMask(true);gl.enable(gl.DEPTH_TEST);
+ }
+ dispose(){if(this.dead)return;this.dead=true;this.release();}
+}
 const VERTEX=`
 precision highp float;
 attribute vec3 aPosition;
@@ -197,6 +251,7 @@ function cullBatch(batch:Batch,planes:Float64Array){
  return count;
 }
 export class ExpeditionRenderer {
+ private sceneScale:SceneScale=1;private sceneTarget:SceneRenderTarget|null=null;private forceOffscreen=false;
  private gl:NativeGL;private program:WebGLProgram;private batches=new Map<Shape,Batch>();
  private uniforms:{vp:WebGLUniformLocation;eye:WebGLUniformLocation;fog:WebGLUniformLocation;range:WebGLUniformLocation;time:WebGLUniformLocation;travel:WebGLUniformLocation};
  private divisor:((i:number,v:number)=>void)|null=null;private drawInstanced:((mode:number,first:number,count:number,instances:number)=>void)|null=null;
@@ -204,8 +259,9 @@ export class ExpeditionRenderer {
  private tailVertices=new Float32Array(TAIL_INDICES.length*6);private tailGrid=new Float64Array((TAIL_RINGS+1)*(TAIL_SIDES+1)*6);
  private clipPlanes=new Float64Array(24);
  private dead=false;private nativeFrames=0;public stats={instances:0,culledInstances:0,drawCalls:0,indexedDrawCalls:0,triangles:0,nativeDrainMs:0};
- constructor(gl:GL){
+ constructor(gl:GL,options:{sceneScale?:SceneScale;offscreen?:boolean}={}){
   this.gl=gl as NativeGL;
+  this.sceneScale=options.sceneScale??1;this.forceOffscreen=options.offscreen??false;
   const compile=(type:number,source:string)=>{const s=gl.createShader(type);if(!s)throw Error('Could not allocate a GPU shader');gl.shaderSource(s,source);gl.compileShader(s);if(!gl.getShaderParameter(s,gl.COMPILE_STATUS)){const message=gl.getShaderInfoLog(s);gl.deleteShader(s);throw Error('3D shader: '+message);}return s;};
   const vert=compile(gl.VERTEX_SHADER,VERTEX),frag=compile(gl.FRAGMENT_SHADER,FRAGMENT),program=gl.createProgram();if(!program)throw Error('Could not allocate GPU program');
   gl.attachShader(program,vert);gl.attachShader(program,frag);['aPosition','aNormal','aM0','aM1','aM2','aM3','aColor'].forEach((name,i)=>gl.bindAttribLocation(program,i,name));gl.linkProgram(program);gl.deleteShader(vert);gl.deleteShader(frag);
@@ -229,13 +285,15 @@ export class ExpeditionRenderer {
   gl.enable(gl.DEPTH_TEST);gl.depthFunc(gl.LEQUAL);gl.disable(gl.CULL_FACE);
  }
  updateTail(time:number,bank:number){const b=this.batches.get('tail')!;const data=tailGeometry(time,bank,this.tailVertices,this.tailGrid);geometryBounds(data,b.bounds);this.gl.bindBuffer(this.gl.ARRAY_BUFFER,b.vertex);this.gl.bufferData(this.gl.ARRAY_BUFFER,data,this.gl.DYNAMIC_DRAW);b.vertices=data.length/6;}
+ setSceneScale(scale:SceneScale){if(this.sceneScale===scale)return;this.sceneScale=scale;if(scale===1&&!this.forceOffscreen){this.sceneTarget?.dispose();this.sceneTarget=null;}}
  reset(){for(const b of this.batches.values())b.count=0;this.stats={instances:0,culledInstances:0,drawCalls:0,indexedDrawCalls:0,triangles:0,nativeDrainMs:0};}
  add(shape:Shape,matrix:Mat4,c:Color){const b=this.batches.get(shape)!;if(b.count>=4096)return;const offset=b.count*20;b.data.set(matrix,offset);b.data.set(c,offset+16);b.count++;}
  shape(shape:Shape,c:Color,x:number,y:number,z:number,sx=1,sy=1,sz=1,rx=0,ry=0,rz=0,parent?:Mat4){const t=transform(x,y,z,sx,sy,sz,rx,ry,rz);this.add(shape,parent?multiply(parent,t):t,c);}
  render(eye:Vec3,target:Vec3,time:number,zone:number,travel=0){
   if(this.dead)return;const gl=this.gl,width=gl.drawingBufferWidth,height=gl.drawingBufferHeight;if(width<2||height<2)return;
+  let offscreen=false;if(this.sceneScale!==1||this.forceOffscreen){this.sceneTarget??=new SceneRenderTarget(gl);offscreen=this.sceneTarget.begin(width,height,this.sceneScale);}
   const fog:Vec3=zone===0?[.024,.060,.057]:zone===1?[.024,.045,.057]:[.036,.026,.075];
-  const sky=fog.map(x=>Math.pow(x/(x+.65),.4545));gl.viewport(0,0,width,height);gl.clearColor(sky[0],sky[1],sky[2],1);gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT);
+  const sky=fog.map(x=>Math.pow(x/(x+.65),.4545));gl.enable(gl.DEPTH_TEST);gl.depthMask(true);gl.viewport(0,0,offscreen?this.sceneTarget!.width:width,offscreen?this.sceneTarget!.height:height);gl.clearColor(sky[0],sky[1],sky[2],1);gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT);
   gl.useProgram(this.program);const vp=multiply(perspective(2*Math.atan(Math.max(Math.tan(33*Math.PI/180),Math.tan(17*Math.PI/180)/(width/height))),width/height,.1,180),lookAt(eye,target));
   updateClipPlanes(vp,this.clipPlanes);
   gl.uniformMatrix4fv(this.uniforms.vp,false,vp);gl.uniform3f(this.uniforms.eye,eye[0],eye[1],eye[2]);gl.uniform3f(this.uniforms.fog,fog[0],fog[1],fog[2]);gl.uniform2f(this.uniforms.range,30,115);gl.uniform1f(this.uniforms.time,time);gl.uniform1f(this.uniforms.travel,travel);
@@ -255,7 +313,7 @@ export class ExpeditionRenderer {
    }
    this.stats.instances+=count;this.stats.triangles+=count*b.vertices/3;
   }
-  gl.depthMask(true);gl.disable(gl.BLEND);gl.flush();if(this.gl.endFrameEXP)this.gl.endFrameEXP();
+  gl.depthMask(true);gl.disable(gl.BLEND);if(offscreen){this.sceneTarget!.present(width,height);this.stats.drawCalls++;this.stats.triangles++;}gl.flush();if(this.gl.endFrameEXP)this.gl.endFrameEXP();
   // Expo presents after draining its native command backlog. Synchronize this
   // frame before a fast JS loop can queue another; otherwise a slow GPU can
   // display seconds-old geometry while the simulation and HUD continue ahead.
@@ -265,5 +323,5 @@ export class ExpeditionRenderer {
    if(++this.nativeFrames===1||this.nativeFrames===30)console.info('MADGER_EXPEDITION_RENDER '+JSON.stringify({frame:this.nativeFrames,instanced:!!this.drawInstanced,...this.stats}));
   }
  }
- dispose(){if(this.dead)return;this.dead=true;try{for(const b of this.batches.values()){this.gl.deleteBuffer(b.vertex);this.gl.deleteBuffer(b.instances);if(b.elements)this.gl.deleteBuffer(b.elements);}this.gl.deleteProgram(this.program);}catch{/* A lost context has already freed its GPU resources. */}this.batches.clear();}
+ dispose(){if(this.dead)return;this.dead=true;try{this.sceneTarget?.dispose();for(const b of this.batches.values()){this.gl.deleteBuffer(b.vertex);this.gl.deleteBuffer(b.instances);if(b.elements)this.gl.deleteBuffer(b.elements);}this.gl.deleteProgram(this.program);}catch{/* A lost context has already freed its GPU resources. */}this.sceneTarget=null;this.batches.clear();}
 }
