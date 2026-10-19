@@ -1,14 +1,6 @@
-name: Expedition preview APK QA
+name: Expedition optional scene quality QA
 
 on:
-  pull_request:
-    paths:
-      - mobile/expedition-preview-build.json
-      - mobile/scripts/android-expedition-smoke.py
-      - mobile/scripts/android-preview-smoke.py
-      - mobile/scripts/android-preview-suite.py
-      - mobile/scripts/verify-expedition-apk.py
-      - .github/workflows/expedition-preview-qa.yml
   workflow_dispatch:
 
 permissions:
@@ -16,13 +8,18 @@ permissions:
 
 jobs:
   exact-apk-smoke:
-    name: Verify and exercise the EAS preview APK
+    name: Native ${{ matrix.quality }} mode
+    strategy:
+      fail-fast: false
+      matrix:
+        quality: [sharp, softer]
     runs-on: ubuntu-latest
     timeout-minutes: 35
     env:
       MADGER_ANDROID_APK: ${{ github.workspace }}/.qa-artifacts/madger-expedition-preview.apk
       MADGER_ANDROID_EVIDENCE_DIR: ${{ github.workspace }}/mobile/expedition-evidence/android-preview
       MADGER_ANDROID_RESET: '1'
+      MADGER_ANDROID_SCENE_QUALITY: ${{ matrix.quality }}
     steps:
       - name: Check out the requested revision
         uses: actions/checkout@v4
@@ -71,23 +68,14 @@ jobs:
           script: |
             adb shell wm size 480x960
             adb shell wm density 160
-            "$RUNNER_TEMP/expedition-qa-venv/bin/python" mobile/scripts/android-preview-suite.py
+            "$RUNNER_TEMP/expedition-qa-venv/bin/python" mobile/scripts/android-scene-quality-suite.py
 
       - name: Upload APK verification and native test evidence
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: expedition-preview-qa-${{ github.run_id }}-${{ github.run_attempt }}
+          name: expedition-scene-quality-qa-${{ matrix.quality }}-${{ github.run_id }}-${{ github.run_attempt }}
           path: mobile/expedition-evidence/android-preview/
           if-no-files-found: warn
-          retention-days: 14
+          retention-days: 1
 
-      - name: Upload the verified Android installer
-        if: success()
-        uses: actions/upload-artifact@v4
-        with:
-          name: madger-expedition-preview-apk-${{ github.run_id }}-${{ github.run_attempt }}
-          path: ${{ env.MADGER_ANDROID_APK }}
-          compression-level: 0
-          if-no-files-found: error
-          retention-days: 14
