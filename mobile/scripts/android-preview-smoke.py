@@ -109,47 +109,68 @@ def kill_observed_foreground_run():
     started = time.monotonic()
     observation = {'status': 'sampling', 'clock': 'host monotonic seconds',
                    'started': started, 'max_age_seconds': 2.0, 'queries': []}
+    xml = None
 
-    def query(name, **selector):
-        sample = {'name': name, 'started': time.monotonic()}
-        observation['queries'].append(sample)
-        try:
-            # .info uses one cached UiObject2. info_list/count instead resolve
-            # the full animated tree and repeat legacy UiObject property reads.
-            sample['node'] = device(packageName=PACKAGE, enabled=True, **selector).info
-        finally:
-            sample['finished'] = time.monotonic()
-        assert sample['finished'] - started <= observation['max_age_seconds'], f'Foreground observation became stale during {name} query'
-        assert isinstance(sample['node'], dict), ('Live HUD/control was unavailable', name, sample['node'])
-        return sample['node']
+    def with_depth(node, depth=-1):
+        # Android's dump depth starts at zero for each window root. The XML
+        # document adds a containing <hierarchy>, hence the initial minus one.
+        yield node, depth
+        for child in node:
+            yield from with_depth(child, depth + 1)
 
     def assert_visible(node):
-        bounds = node.get('visibleBounds') or node.get('bounds') or {}
-        assert node.get('enabled') is True and (
-            bounds.get('right', 0) > bounds.get('left', 0)
-            and bounds.get('bottom', 0) > bounds.get('top', 0)
-        ), ('Live HUD/control was not visible and enabled', node)
+        bounds = list(map(int, re.findall(r'-?\d+', node.get('bounds', ''))))
+        assert node.get('enabled') == 'true' and node.get('visible-to-user', 'true') == 'true' and (
+            len(bounds) == 4 and bounds[2] > bounds[0] and bounds[3] > bounds[1]
+        ), ('Live HUD/control was not visible and enabled', node.attrib)
 
     try:
+        # Calibrate on the already captured paused screen. HUD and footer
+        # controls share a shallow layer; animated tunnel entities are deeper.
+        # The same depth retains the timer, Pause/Resume, and Back controls in
+        # one live tree without visiting every moving scene child.
+        calibration = [
+            {'label': node.get('content-desc', '') or node.get('text', ''), 'depth': depth}
+            for node, depth in with_depth(last_root)
+            if node.get('package') == PACKAGE and (
+                node.get('content-desc') in ('Resume run', 'Back to the run')
+                or re.fullmatch(r'\d+s', node.get('text', ''))
+            )
+        ]
+        baseline_labels = {item['label'] for item in calibration}
+        assert {'Resume run', 'Back to the run'} <= baseline_labels, 'Paused HUD calibration was missing controls'
+        assert any(re.fullmatch(r'\d+s', label) for label in baseline_labels), 'Paused HUD calibration was missing the timer'
+        max_depth = max(item['depth'] for item in calibration)
+        observation['depth_calibration'] = calibration
+        observation['max_depth'] = max_depth
         # Read back the zero-idle/selector waits set at connection time. The
         # driver must not wait for this continuously animated game to go idle.
         observation['driver_config'] = device.jsonrpc.getConfigurator()
         assert all(observation['driver_config'].get(key) == 0 for key in ('waitForIdleTimeout', 'waitForSelectorTimeout')), 'Live-query driver waits were not disabled'
-        timer_node = query('timer', className='android.widget.TextView', textMatches=r'\d+s')
-        assert_visible(timer_node)
-        timer = timer_node.get('text', '')
-        assert re.fullmatch(r'\d+s', timer), ('Invalid live HUD timer', timer)
-        live = int(timer[:-1])
+        sample = {'name': 'hud-tree', 'started': time.monotonic()}
+        observation['queries'].append(sample)
+        try:
+            xml = device.dump_hierarchy(compressed=False, max_depth=max_depth)
+        finally:
+            sample['finished'] = time.monotonic()
+        assert sample['finished'] - started <= observation['max_age_seconds'], 'Foreground observation became stale during HUD query'
+        root = ET.fromstring(xml)
+        nodes = [node for node in root.iter('node') if node.get('package') == PACKAGE]
+        sample['node_count'] = len(nodes)
+        timers = [node for node in nodes if re.fullmatch(r'\d+s', node.get('text', ''))]
+        live_seconds = {int(node.get('text')[:-1]) for node in timers}
+        assert len(live_seconds) == 1, ('Live HUD timer was missing or ambiguous', live_seconds)
+        for node in timers:
+            assert_visible(node)
+        live = next(iter(live_seconds))
         assert 0 < live <= 60, ('Foreground run timer expired or invalid', live)
         observation['live_seconds'] = live
 
-        # The top-bar control changes from Pause run to Resume run when paused;
-        # query both so a pause fails promptly instead of searching for absence.
-        control = query('activity', descriptionMatches=r'Pause run|Back to the run|Resume run')
-        label = control.get('contentDescription')
-        assert label not in ('Back to the run', 'Resume run'), 'Foreground run had paused'
-        assert label == 'Pause run', 'Foreground run was not active'
-        assert_visible(control)
+        labels = [node.get('content-desc') for node in nodes]
+        assert 'Pause run' in labels, 'Foreground run was not active'
+        assert 'Back to the run' not in labels and 'Resume run' not in labels, 'Foreground run had paused'
+        assert_visible(next(node for node in nodes if node.get('content-desc') == 'Pause run'))
+        sample['observed_controls'] = [label for label in labels if label in ('Pause run', 'Resume run', 'Back to the run')]
         observation['force_stop_requested'] = time.monotonic()
         assert observation['force_stop_requested'] - started <= observation['max_age_seconds'], 'Foreground observation was stale before process kill'
         adb('shell', 'am', 'force-stop', PACKAGE)
@@ -164,6 +185,8 @@ def kill_observed_foreground_run():
         observation['error'] = str(error)
         raise
     finally:
+        if xml is not None:
+            OUT.joinpath('foreground-kill-ui.xml').write_text(xml)
         OUT.joinpath('foreground-kill-observation.json').write_text(json.dumps(observation, indent=2))
 
 
