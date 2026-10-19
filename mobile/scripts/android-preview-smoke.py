@@ -114,10 +114,14 @@ def kill_observed_foreground_run():
         sample = {'name': name, 'started': time.monotonic()}
         observation['queries'].append(sample)
         try:
-            sample['nodes'] = device(packageName=PACKAGE, enabled=True, **selector).info_list()
-            return sample['nodes']
+            # .info uses one cached UiObject2. info_list/count instead resolve
+            # the full animated tree and repeat legacy UiObject property reads.
+            sample['node'] = device(packageName=PACKAGE, enabled=True, **selector).info
         finally:
             sample['finished'] = time.monotonic()
+        assert sample['finished'] - started <= observation['max_age_seconds'], f'Foreground observation became stale during {name} query'
+        assert isinstance(sample['node'], dict), ('Live HUD/control was unavailable', name, sample['node'])
+        return sample['node']
 
     def assert_visible(node):
         bounds = node.get('visibleBounds') or node.get('bounds') or {}
@@ -127,23 +131,25 @@ def kill_observed_foreground_run():
         ), ('Live HUD/control was not visible and enabled', node)
 
     try:
-        # A full accessibility traversal can take 11 seconds as the scene moves.
-        # Targeted selectors avoid collecting every moving tunnel entity and
-        # prevent a natural game-over during a stale, partially sampled tree.
-        timers = query('timer', textMatches=r'\d+s')
-        assert len(timers) == 1, ('Live HUD timer was not unique', timers)
-        assert_visible(timers[0])
-        timer = timers[0].get('text', '')
+        # Read back the zero-idle/selector waits set at connection time. The
+        # driver must not wait for this continuously animated game to go idle.
+        observation['driver_config'] = device.jsonrpc.getConfigurator()
+        assert all(observation['driver_config'].get(key) == 0 for key in ('waitForIdleTimeout', 'waitForSelectorTimeout')), 'Live-query driver waits were not disabled'
+        timer_node = query('timer', className='android.widget.TextView', textMatches=r'\d+s')
+        assert_visible(timer_node)
+        timer = timer_node.get('text', '')
         assert re.fullmatch(r'\d+s', timer), ('Invalid live HUD timer', timer)
         live = int(timer[:-1])
         assert 0 < live <= 60, ('Foreground run timer expired or invalid', live)
         observation['live_seconds'] = live
 
-        controls = query('activity', descriptionMatches=r'Pause run|Back to the run|Resume run')
-        labels = [node.get('contentDescription') for node in controls]
-        assert 'Pause run' in labels, 'Foreground run was not active'
-        assert 'Back to the run' not in labels and 'Resume run' not in labels, 'Foreground run had paused'
-        assert_visible(next(node for node in controls if node.get('contentDescription') == 'Pause run'))
+        # The top-bar control changes from Pause run to Resume run when paused;
+        # query both so a pause fails promptly instead of searching for absence.
+        control = query('activity', descriptionMatches=r'Pause run|Back to the run|Resume run')
+        label = control.get('contentDescription')
+        assert label not in ('Back to the run', 'Resume run'), 'Foreground run had paused'
+        assert label == 'Pause run', 'Foreground run was not active'
+        assert_visible(control)
         observation['force_stop_requested'] = time.monotonic()
         assert observation['force_stop_requested'] - started <= observation['max_age_seconds'], 'Foreground observation was stale before process kill'
         adb('shell', 'am', 'force-stop', PACKAGE)
