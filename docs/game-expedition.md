@@ -28,6 +28,8 @@ Gameplay runs at a fixed 120 Hz independent of render cadence. Foreground stalls
 
 The renderer uses high fragment precision where supported to keep course-coordinate shading within range on mobile GPUs, and bounded grain inputs on the lower-precision fallback. Reduced effects mode suppresses optional effects while preserving gameplay cues.
 
+Native rendering drains each submitted Expo GL frame before allowing the next one to queue. This bounds presentation lag when native work is slower than the JavaScript animation loop. The first and thirtieth native frames log instance/draw counts and drain time for verification; web rendering retains browser scheduling. Source tests exercise queued native work and both batching paths. A replacement signed APK must pass native animation, controls, and recovery checks before this correction is considered device-verified.
+
 ## Validation
 
 From mobile/: run npm run validate, npx expo install --check, and the repository's export/build checks. The expedition tests cover seeded course generation, collision versus visible movement, jump/slide rules, secret-route continuity, upgrades, extra lives, finish banking, corrupt storage, save failures, interruption recovery, and ordinary-control winning runs. Companion tests cover distinct abilities, timing, target reservations, saved-state integrity and rendered anatomy. Audio regression tests use delayed seek promises to check cancellation and cue priority.

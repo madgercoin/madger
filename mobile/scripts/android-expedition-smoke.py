@@ -262,6 +262,16 @@ class Smoke:
                 previous = direct
             self.report["motion_diagnostics"] = samples
             raise AssertionError(f"3D game field did not visibly animate: mean pixel change={movement:.3f}")
+        self.report["sustained_motion_differences"] = [round(movement, 3)]
+        for index in range(2):
+            time.sleep(.4)
+            next_frame = self.capture(f"04-sustained-motion-{index + 1}", require_running=True)
+            self.rendered(f"04-sustained-motion-{index + 1}", next_frame)
+            difference = sum(ImageStat.Stat(ImageChops.difference(self.game_crop(second), self.game_crop(next_frame))).mean) / 3
+            self.report["sustained_motion_differences"].append(round(difference, 3))
+            if difference < .8:
+                raise AssertionError(f"3D presentation stopped during sustained motion: mean pixel change={difference:.3f}")
+            second = next_frame
         self.mark("3D game field renders nonblank geometry and animates", initial_state=initial)
 
         self.tap("LEFT")
@@ -330,6 +340,15 @@ class Smoke:
         log_path = OUT / "logcat.txt"
         if log_path.exists():
             lines = log_path.read_text(encoding="utf-8", errors="replace").splitlines()
+            metrics = []
+            for line in lines:
+                marker = line.find("MADGER_EXPEDITION_RENDER ")
+                if marker >= 0:
+                    try:
+                        metrics.append(json.JSONDecoder().raw_decode(line[marker + len("MADGER_EXPEDITION_RENDER "):])[0])
+                    except ValueError:
+                        pass  # The complete unmodified line remains in logcat.txt.
+            self.report["render_metrics"] = metrics
             if not lines:
                 self.report["errors"].append("Logcat capture is empty; native/JavaScript crash checks lack evidence")
             for line in lines:

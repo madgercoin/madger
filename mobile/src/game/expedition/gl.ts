@@ -2,7 +2,7 @@ import { multiply, perspective, lookAt, transform, type Mat4, type Vec3 } from '
 export type Shape='box'|'sphere'|'rock'|'cylinder'|'cone'|'ring'|'leaf'|'shadow'|'headStripe'|'tail'|'halo';
 export type Color=[number,number,number,number];
 export type GL=WebGLRenderingContext|WebGL2RenderingContext;
-type NativeGL=GL & {endFrameEXP?:()=>void};
+type NativeGL=GL & {endFrameEXP?:()=>void;flushEXP?:()=>void};
 const VERTEX=`
 precision highp float;
 attribute vec3 aPosition;
@@ -136,7 +136,7 @@ export class ExpeditionRenderer {
  private gl:NativeGL;private program:WebGLProgram;private batches=new Map<Shape,Batch>();
  private uniforms:{vp:WebGLUniformLocation;eye:WebGLUniformLocation;fog:WebGLUniformLocation;range:WebGLUniformLocation;time:WebGLUniformLocation;travel:WebGLUniformLocation};
  private divisor:((i:number,v:number)=>void)|null=null;private drawInstanced:((mode:number,first:number,count:number,instances:number)=>void)|null=null;
- private dead=false;public stats={instances:0,drawCalls:0,triangles:0};
+ private dead=false;private nativeFrames=0;public stats={instances:0,drawCalls:0,triangles:0,nativeDrainMs:0};
  constructor(gl:GL){
   this.gl=gl as NativeGL;
   const compile=(type:number,source:string)=>{const s=gl.createShader(type);if(!s)throw Error('Could not allocate a GPU shader');gl.shaderSource(s,source);gl.compileShader(s);if(!gl.getShaderParameter(s,gl.COMPILE_STATUS)){const message=gl.getShaderInfoLog(s);gl.deleteShader(s);throw Error('3D shader: '+message);}return s;};
@@ -157,7 +157,7 @@ export class ExpeditionRenderer {
   gl.enable(gl.DEPTH_TEST);gl.depthFunc(gl.LEQUAL);gl.disable(gl.CULL_FACE);
  }
  updateTail(time:number,bank:number){const b=this.batches.get('tail')!;const data=tailGeometry(time,bank);this.gl.bindBuffer(this.gl.ARRAY_BUFFER,b.vertex);this.gl.bufferData(this.gl.ARRAY_BUFFER,data,this.gl.DYNAMIC_DRAW);b.vertices=data.length/6;}
- reset(){for(const b of this.batches.values())b.count=0;this.stats={instances:0,drawCalls:0,triangles:0};}
+ reset(){for(const b of this.batches.values())b.count=0;this.stats={instances:0,drawCalls:0,triangles:0,nativeDrainMs:0};}
  add(shape:Shape,matrix:Mat4,c:Color){const b=this.batches.get(shape)!;if(b.count>=4096)return;const offset=b.count*20;b.data.set(matrix,offset);b.data.set(c,offset+16);b.count++;}
  shape(shape:Shape,c:Color,x:number,y:number,z:number,sx=1,sy=1,sz=1,rx=0,ry=0,rz=0,parent?:Mat4){const t=transform(x,y,z,sx,sy,sz,rx,ry,rz);this.add(shape,parent?multiply(parent,t):t,c);}
  render(eye:Vec3,target:Vec3,time:number,zone:number,travel=0){
@@ -181,6 +181,14 @@ export class ExpeditionRenderer {
    this.stats.instances+=b.count;this.stats.triangles+=b.count*b.vertices/3;
   }
   gl.depthMask(true);gl.disable(gl.BLEND);gl.flush();if(this.gl.endFrameEXP)this.gl.endFrameEXP();
+  // Expo presents after draining its native command backlog. Synchronize this
+  // frame before a fast JS loop can queue another; otherwise a slow GPU can
+  // display seconds-old geometry while the simulation and HUD continue ahead.
+  // The web context has no flushEXP and retains its normal browser scheduling.
+  if(typeof this.gl.flushEXP==='function'){
+   const started=performance.now();this.gl.flushEXP();this.stats.nativeDrainMs=performance.now()-started;
+   if(++this.nativeFrames===1||this.nativeFrames===30)console.info('MADGER_EXPEDITION_RENDER '+JSON.stringify({frame:this.nativeFrames,instanced:!!this.drawInstanced,...this.stats}));
+  }
  }
  dispose(){if(this.dead)return;this.dead=true;try{for(const b of this.batches.values()){this.gl.deleteBuffer(b.vertex);this.gl.deleteBuffer(b.instances);}this.gl.deleteProgram(this.program);}catch{/* A lost context has already freed its GPU resources. */}this.batches.clear();}
 }

@@ -1,5 +1,10 @@
 # Changelog
 
+## 2026-10-19 - Native Expedition frame submission
+
+- Bound pending native GL work to one rendered frame so the HUD cannot outrun a growing presentation backlog.
+- Added renderer queue and batching regression coverage, plus limited native drain timing diagnostics. Native APK validation is still required; this entry does not claim device acceptance.
+
 ## 2026-10-18 — 3D Expedition and animated companion support
 
 - Added the existing Expedition upgrade to the app: three 3D environments, natural character movement and reactions, moving hazards, hidden routes, workshop upgrades, vaults, extra lives, audio, and persistent discoveries.
