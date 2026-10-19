@@ -107,3 +107,10 @@ test('Android workflow preserves source, Expo access, and production build check
   assert.match(workflow, /npx --yes eas-cli@24\.3\.0 whoami/);
   assert.match(workflow, /npx --yes eas-cli@24\.3\.0 build --platform android --profile production --non-interactive --wait --auto-submit/);
 });
+
+test('Published source archive includes the workflow required by release checks', async () => {
+  const workflow = await readFile(new URL('../../.github/workflows/mobile-ci.yml', import.meta.url), 'utf8');
+  const archiveCommand = workflow.split('\n').find((line) => /^\s*git archive /.test(line));
+  assert.ok(archiveCommand, 'Mobile CI must retain its source archive command');
+  assert.match(archiveCommand, /(?:^|\s)\.github\/workflows\/android-internal-release\.yml(?:\s|$)/);
+});
