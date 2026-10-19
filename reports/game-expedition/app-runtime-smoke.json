@@ -1,0 +1,65 @@
+{
+  "date": "2026-10-19T01:59:27.971Z",
+  "browser": "155.0.8059.82",
+  "renderer": "ANGLE (Intel, Intel(R) UHD Graphics (0x00008A56) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+  "scope": "Actual exported web application on the PC GPU; not physical Android acceptance",
+  "errors": [],
+  "failedRequests": [],
+  "canvas": {
+    "lit": 8192,
+    "colors": 2168,
+    "width": 430,
+    "height": 920,
+    "sha256": "9470e5ae4c0f665901e8f512b08da5894604336054ca3bc16fe520b2213c74a3"
+  },
+  "uninterruptedFrameTiming": {
+    "frames": 211,
+    "ms": 3500.5000000001855,
+    "mean": 16.590047393365808,
+    "p95": 16.800000000000182,
+    "max": 17.400000000000546,
+    "over400": 0
+  },
+  "checks": [
+    "real exported app boots",
+    "detailed nonblank 3D rendering",
+    "animated idle",
+    "jump and slide inputs",
+    "pause freezes simulation and render",
+    "pause stops audio",
+    "cold reload keeps checkpoint",
+    "resume advances existing run",
+    "reduced effects preference persists",
+    "small phone/tablet layouts"
+  ],
+  "audio": [
+    {
+      "src": "ambience.9e3ce0fc6f8d6acd6594a5e8ea241922.wav",
+      "status": "playing"
+    },
+    {
+      "src": "music.c425b77cff55695786772367f4c8f2ba.mp3",
+      "status": "playing"
+    },
+    {
+      "src": "step.808fffc66ba388fc9a0a07dd83269fcc.wav",
+      "status": "playing"
+    },
+    {
+      "src": "step.808fffc66ba388fc9a0a07dd83269fcc.wav",
+      "status": "playing"
+    },
+    {
+      "src": "step.808fffc66ba388fc9a0a07dd83269fcc.wav",
+      "status": "playing"
+    },
+    {
+      "src": "step.808fffc66ba388fc9a0a07dd83269fcc.wav",
+      "status": "playing"
+    },
+    {
+      "src": "step.808fffc66ba388fc9a0a07dd83269fcc.wav",
+      "status": "playing"
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "errors": [],
+  "stats": {
+    "instances": 1391,
+    "drawCalls": 11,
+    "triangles": 109292,
+    "particles": 0,
+    "glError": 0
+  },
+  "date": "2026-10-19T01:59:09.661Z",
+  "browser": "155.0.8059.82"
+}
