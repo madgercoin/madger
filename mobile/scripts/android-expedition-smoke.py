@@ -90,12 +90,14 @@ class Smoke:
         x1, y1, x2, y2 = map(int, numbers)
         return (x1, y1, x2, y2) if x2 > x1 and y2 > y1 else None
 
-    def label_node(self, nodes, label, enabled=True):
+    def label_node(self, nodes, label, enabled=True, clickable=False):
         matches = []
         for node in nodes:
             if label not in (node.get("text"), node.get("content-desc")):
                 continue
             if enabled and node.get("enabled") == "false":
+                continue
+            if clickable and node.get("clickable") != "true":
                 continue
             bounds = self.bounds(node)
             if bounds:
@@ -103,18 +105,18 @@ class Smoke:
         # Resume exists as both a small HUD icon and a full modal button.
         return max(matches, key=lambda pair: (pair[0][2] - pair[0][0]) * (pair[0][3] - pair[0][1]), default=None)
 
-    def wait_label(self, label, timeout=20, enabled=True):
+    def wait_label(self, label, timeout=20, enabled=True, clickable=False):
         deadline = time.monotonic() + timeout
         while time.monotonic() < deadline:
             _, nodes, _ = self.tree()
-            found = self.label_node(nodes, label, enabled)
+            found = self.label_node(nodes, label, enabled, clickable)
             if found:
                 return found
             time.sleep(.12)
         raise AssertionError(f"Visible {'enabled ' if enabled else ''}UI label not found: {label}")
 
     def tap(self, label, timeout=20):
-        bounds, _ = self.wait_label(label, timeout)
+        bounds, _ = self.wait_label(label, timeout, clickable=True)
         x1, y1, x2, y2 = bounds
         self.device.click((x1 + x2) // 2, (y1 + y2) // 2)
 
@@ -137,11 +139,16 @@ class Smoke:
             time.sleep(.06)
         raise AssertionError(f"HUD did not show {description}; last state: {last}")
 
-    def capture(self, name):
+    def capture(self, name, require_running=False):
         image = self.device.screenshot().convert("RGB")
         image.save(OUT / f"{name}.png")
         xml = self.device.dump_hierarchy(compressed=False)
         (OUT / f"{name}.xml").write_text(xml, encoding="utf-8")
+        if require_running:
+            nodes = list(ET.fromstring(xml).iter("node"))
+            labels = [node.get(key, "") for node in nodes for key in ("text", "content-desc")]
+            if "Your run is safe." in labels or not self.label_node(nodes, "Pause expedition", clickable=True):
+                raise AssertionError(f"Motion frame {name} was not a running game; overlays cannot prove animation")
         return image
 
     def capture_adb(self, name):
@@ -196,6 +203,8 @@ class Smoke:
             self.serial = available[0]
         self.report["serial"] = self.serial
         self.report["android_version"] = self.adb("shell", "getprop", "ro.build.version.release")
+        self.report["display_size"] = self.adb("shell", "wm", "size")
+        self.report["display_density"] = self.adb("shell", "wm", "density")
         if os.environ.get("MADGER_ANDROID_SKIP_INSTALL") != "1":
             if not APK.is_file():
                 raise AssertionError(f"APK not found: {APK}. Set MADGER_ANDROID_APK or MADGER_ANDROID_SKIP_INSTALL=1.")
@@ -228,10 +237,10 @@ class Smoke:
         self.capture("02-expedition-ready")
         self.tap("Start expedition")
         initial = self.wait_hud(lambda state: state["distance_m"] >= 2, "running distance after countdown", timeout=12)
-        first = self.capture("03-running-a")
+        first = self.capture("03-running-a", require_running=True)
         self.rendered("03-running-a", first)
         time.sleep(.55)
-        second = self.capture("04-running-b")
+        second = self.capture("04-running-b", require_running=True)
         self.rendered("04-running-b", second)
         movement = sum(ImageStat.Stat(ImageChops.difference(self.game_crop(first), self.game_crop(second))).mean) / 3
         self.report["frames"]["motion_mean_difference"] = round(movement, 3)
@@ -299,7 +308,7 @@ class Smoke:
         self.mark("Force-stop and cold launch restore the same saved run", restored_state=restored)
         self.tap("Resume expedition")
         self.wait_hud(lambda state: state["distance_m"] > restored["distance_m"], "progress after cold restore")
-        image = self.capture("08-restored-running")
+        image = self.capture("08-restored-running", require_running=True)
         self.rendered("08-restored-running", image)
         self.tap("Pause expedition")
         self.paused_state("09-final-paused")

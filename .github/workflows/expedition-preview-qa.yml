@@ -63,7 +63,13 @@ jobs:
           profile: pixel_6
           disable-animations: true
           emulator-options: -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim
-          script: '"$RUNNER_TEMP/expedition-qa-venv/bin/python" mobile/scripts/android-expedition-smoke.py'
+          # Keep software-GPU fill rate representative of a low-density phone.
+          # Pixel 6's full 1080x2400 buffer can stall SwiftShader, invoking the
+          # app's intentional long-frame safety pause before controls are tested.
+          script: |
+            adb shell wm size 480x960
+            adb shell wm density 160
+            "$RUNNER_TEMP/expedition-qa-venv/bin/python" mobile/scripts/android-expedition-smoke.py
 
       - name: Upload APK verification and native test evidence
         if: always()
