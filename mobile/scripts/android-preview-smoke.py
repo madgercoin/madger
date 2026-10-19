@@ -133,6 +133,9 @@ atexit.register(collect_debug)
 
 
 adb('install', '-r', APK)
+# The Expedition suite leaves this package on its paused game route. Start a
+# fresh activity/task while preserving both games' stored checkpoints and scores.
+adb('shell', 'am', 'force-stop', PACKAGE)
 adb('logcat', '-c')
 adb('shell', 'am', 'start', '-W', '-n', PACKAGE + '/.MainActivity')
 wait_for('Play the 3D Expedition')

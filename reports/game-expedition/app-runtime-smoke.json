@@ -1,5 +1,5 @@
 {
-  "date": "2026-10-19T06:29:31.030Z",
+  "date": "2026-10-19T07:22:30.429Z",
   "browser": "155.0.8059.82",
   "renderer": "ANGLE (Intel, Intel(R) UHD Graphics (0x00008A56) Direct3D11 vs_5_0 ps_5_0, D3D11)",
   "scope": "Actual exported web application on the PC GPU; not physical Android acceptance",
@@ -7,17 +7,17 @@
   "failedRequests": [],
   "canvas": {
     "lit": 8192,
-    "colors": 2175,
+    "colors": 2183,
     "width": 430,
     "height": 920,
-    "sha256": "16c1a7adb34eb9a9831df33ac10035b72f1ff3525a00c061587100fea4eafb26"
+    "sha256": "7b51f62d95351843f17e696f1a5e6f6c33e472e1724707127e4d9c40fba82628"
   },
   "uninterruptedFrameTiming": {
-    "frames": 211,
-    "ms": 3502.9000000007454,
-    "mean": 16.6014218009514,
+    "frames": 212,
+    "ms": 3515.900000002235,
+    "mean": 16.584433962274694,
     "p95": 16.800000000000182,
-    "max": 16.899999999999636,
+    "max": 16.80000000000109,
     "over400": 0
   },
   "checks": [

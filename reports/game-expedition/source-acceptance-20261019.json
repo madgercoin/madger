@@ -1,0 +1,44 @@
+{
+  "status": "passed",
+  "checkedUtc": "2026-10-19T07:22:30.429Z",
+  "tests": {
+    "passed": 120,
+    "failed": 0,
+    "optionalBaselineTestsSkipped": 2
+  },
+  "sourceChecks": [
+    "TypeScript",
+    "Expo lint",
+    "Expo dependency compatibility",
+    "web bundle export",
+    "source release metadata"
+  ],
+  "cullingGeometry": {
+    "targetedTests": 7,
+    "sceneCaptures": 20,
+    "submittedPrimitives": 24088,
+    "excludedPrimitives": 3730,
+    "survivingInstanceBytesPreserved": true
+  },
+  "cullingPixels": {
+    "cases": 27,
+    "changedChannels": 0,
+    "widths": [
+      360,
+      430,
+      768
+    ],
+    "heights": [
+      800,
+      920,
+      1024
+    ]
+  },
+  "browser": {
+    "report": "app-runtime-smoke.json",
+    "uninterruptedFrames": 212,
+    "meanFrameMs": 16.584433962274694,
+    "stallsOver400ms": 0
+  },
+  "nativeAcceptance": "The replacement signed APK must be verified and exercised separately. No physical-device acceptance is attested."
+}

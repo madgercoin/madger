@@ -1,0 +1,603 @@
+{
+  "status": "passed",
+  "date": "2026-10-19T07:20:32.469Z",
+  "scope": "Deterministic scene-only WebGL2 pixel comparison on software graphics; not gameplay or native performance acceptance",
+  "browser": "155.0.8059.82",
+  "cases": 27,
+  "results": [
+    {
+      "name": "lobby",
+      "width": 360,
+      "height": 800,
+      "changedChannels": 0,
+      "maxChannelDifference": 0,
+      "before": {
+        "instances": 1391,
+        "drawCalls": 11,
+        "triangles": 109292,
+        "nativeDrainMs": 0,
+        "particles": 0
+      },
+      "after": {
+        "instances": 560,
+        "culledInstances": 831,
+        "drawCalls": 11,
+        "triangles": 59100,
+        "nativeDrainMs": 0,
+        "particles": 0
+      }
+    },
+    {
+      "name": "overgrown",
+      "width": 360,
+      "height": 800,
+      "changedChannels": 0,
+      "maxChannelDifference": 0,
+      "before": {
+        "instances": 1237,
+        "drawCalls": 11,
+        "triangles": 92030,
+        "nativeDrainMs": 0,
+        "particles": 0
+      },
+      "after": {
+        "instances": 1040,
+        "culledInstances": 197,
+        "drawCalls": 11,
+        "triangles": 81414,
+        "nativeDrainMs": 0,
+        "particles": 0
+      }
+    },
+    {
+      "name": "crew-arrival",
+      "width": 360,
+      "height": 800,
+      "changedChannels": 0,
+      "maxChannelDifference": 0,
+      "before": {
+        "instances": 1504,
+        "drawCalls": 11,
+        "triangles": 100680,
+        "nativeDrainMs": 0,
+        "particles": 0
+      },
+      "after": {
+        "instances": 1276,
+        "culledInstances": 228,
+        "drawCalls": 11,
+        "triangles": 88328,
+        "nativeDrainMs": 0,
+        "particles": 0
+      }
+    },
+    {
+      "name": "jump",
+      "width": 360,
+      "height": 800,
+      "changedChannels": 0,
+      "maxChannelDifference": 0,
+      "before": {
+        "instances": 1340,
+        "drawCalls": 11,
+        "triangles": 87366,
+        "nativeDrainMs": 0,
+        "particles": 0
+      },
+      "after": {
+        "instances": 1158,
+        "culledInstances": 182,
+        "drawCalls": 11,
+        "triangles": 80936,
+        "nativeDrainMs": 0,
+        "particles": 0
+      }
+    },
+    {
+      "name": "slide",
+      "width": 360,
+      "height": 800,
+      "changedChannels": 0,
+      "maxChannelDifference": 0,
+      "before": {
+        "instances": 1373,
+        "drawCalls": 11,
+        "triangles": 89136,
+        "nativeDrainMs": 0,
+        "particles": 0
+      },
+      "after": {
+        "instances": 1178,
+        "culledInstances": 195,
+        "drawCalls": 11,
+        "triangles": 81476,
+        "nativeDrainMs": 0,
+        "particles": 0
+      }
+    },
+    {
+      "name": "hollow-left",
+      "width": 360,
+      "height": 800,
+      "changedChannels": 0,
+      "maxChannelDifference": 0,
+      "before": {
+        "instances": 1451,
+        "drawCalls": 11,
+        "triangles": 101020,
+        "nativeDrainMs": 0,
+        "particles": 0
+      },
+      "after": {
+        "instances": 993,
+        "culledInstances": 458,
+        "drawCalls": 11,
+        "triangles": 80204,
+        "nativeDrainMs": 0,
+        "particles": 0
+      }
+    },
+    {
+      "name": "grotto-right",
+      "width": 360,
+      "height": 800,
+      "changedChannels": 0,
+      "maxChannelDifference": 0,
+      "before": {
+        "instances": 1371,
+        "drawCalls": 11,
+        "triangles": 94712,
+        "nativeDrainMs": 0,
+        "particles": 0
+      },
+      "after": {
+        "instances": 936,
+        "culledInstances": 435,
+        "drawCalls": 11,
+        "triangles": 74878,
+        "nativeDrainMs": 0,
+        "particles": 0
+      }
+    },
+    {
+      "name": "grotto-main",
+      "width": 360,
+      "height": 800,
+      "changedChannels": 0,
+      "maxChannelDifference": 0,
+      "before": {
+        "instances": 1135,
+        "drawCalls": 11,
+        "triangles": 83056,
+        "nativeDrainMs": 0,
+        "particles": 0
+      },
+      "after": {
+        "instances": 950,
+        "culledInstances": 185,
+        "drawCalls": 11,
+        "triangles": 73560,
+        "nativeDrainMs": 0,
+        "particles": 0
+      }
+    },
+    {
+      "name": "finish",
+      "width": 360,
+      "height": 800,
+      "changedChannels": 0,
+      "maxChannelDifference": 0,
+      "before": {
+        "instances": 919,
+        "drawCalls": 9,
+        "triangles": 51358,
+        "nativeDrainMs": 0,
+        "particles": 0
+      },
+      "after": {
+        "instances": 711,
+        "culledInstances": 208,
+        "drawCalls": 9,
+        "triangles": 39234,
+        "nativeDrainMs": 0,
+        "particles": 0
+      }
+    },
+    {
+      "name": "lobby",
+      "width": 430,
+      "height": 920,
+      "changedChannels": 0,
+      "maxChannelDifference": 0,
+      "before": {
+        "instances": 1391,
+        "drawCalls": 11,
+        "triangles": 109292,
+        "nativeDrainMs": 0,
+        "particles": 0
+      },
+      "after": {
+        "instances": 559,
+        "culledInstances": 832,
+        "drawCalls": 11,
+        "triangles": 59088,
+        "nativeDrainMs": 0,
+        "particles": 0
+      }
+    },
+    {
+      "name": "overgrown",
+      "width": 430,
+      "height": 920,
+      "changedChannels": 0,
+      "maxChannelDifference": 0,
+      "before": {
+        "instances": 1237,
+        "drawCalls": 11,
+        "triangles": 92030,
+        "nativeDrainMs": 0,
+        "particles": 0
+      },
+      "after": {
+        "instances": 1040,
+        "culledInstances": 197,
+        "drawCalls": 11,
+        "triangles": 81414,
+        "nativeDrainMs": 0,
+        "particles": 0
+      }
+    },
+    {
+      "name": "crew-arrival",
+      "width": 430,
+      "height": 920,
+      "changedChannels": 0,
+      "maxChannelDifference": 0,
+      "before": {
+        "instances": 1504,
+        "drawCalls": 11,
+        "triangles": 100680,
+        "nativeDrainMs": 0,
+        "particles": 0
+      },
+      "after": {
+        "instances": 1276,
+        "culledInstances": 228,
+        "drawCalls": 11,
+        "triangles": 88328,
+        "nativeDrainMs": 0,
+        "particles": 0
+      }
+    },
+    {
+      "name": "jump",
+      "width": 430,
+      "height": 920,
+      "changedChannels": 0,
+      "maxChannelDifference": 0,
+      "before": {
+        "instances": 1340,
+        "drawCalls": 11,
+        "triangles": 87366,
+        "nativeDrainMs": 0,
+        "particles": 0
+      },
+      "after": {
+        "instances": 1158,
+        "culledInstances": 182,
+        "drawCalls": 11,
+        "triangles": 80936,
+        "nativeDrainMs": 0,
+        "particles": 0
+      }
+    },
+    {
+      "name": "slide",
+      "width": 430,
+      "height": 920,
+      "changedChannels": 0,
+      "maxChannelDifference": 0,
+      "before": {
+        "instances": 1373,
+        "drawCalls": 11,
+        "triangles": 89136,
+        "nativeDrainMs": 0,
+        "particles": 0
+      },
+      "after": {
+        "instances": 1178,
+        "culledInstances": 195,
+        "drawCalls": 11,
+        "triangles": 81476,
+        "nativeDrainMs": 0,
+        "particles": 0
+      }
+    },
+    {
+      "name": "hollow-left",
+      "width": 430,
+      "height": 920,
+      "changedChannels": 0,
+      "maxChannelDifference": 0,
+      "before": {
+        "instances": 1451,
+        "drawCalls": 11,
+        "triangles": 101020,
+        "nativeDrainMs": 0,
+        "particles": 0
+      },
+      "after": {
+        "instances": 993,
+        "culledInstances": 458,
+        "drawCalls": 11,
+        "triangles": 80204,
+        "nativeDrainMs": 0,
+        "particles": 0
+      }
+    },
+    {
+      "name": "grotto-right",
+      "width": 430,
+      "height": 920,
+      "changedChannels": 0,
+      "maxChannelDifference": 0,
+      "before": {
+        "instances": 1371,
+        "drawCalls": 11,
+        "triangles": 94712,
+        "nativeDrainMs": 0,
+        "particles": 0
+      },
+      "after": {
+        "instances": 936,
+        "culledInstances": 435,
+        "drawCalls": 11,
+        "triangles": 74878,
+        "nativeDrainMs": 0,
+        "particles": 0
+      }
+    },
+    {
+      "name": "grotto-main",
+      "width": 430,
+      "height": 920,
+      "changedChannels": 0,
+      "maxChannelDifference": 0,
+      "before": {
+        "instances": 1135,
+        "drawCalls": 11,
+        "triangles": 83056,
+        "nativeDrainMs": 0,
+        "particles": 0
+      },
+      "after": {
+        "instances": 950,
+        "culledInstances": 185,
+        "drawCalls": 11,
+        "triangles": 73560,
+        "nativeDrainMs": 0,
+        "particles": 0
+      }
+    },
+    {
+      "name": "finish",
+      "width": 430,
+      "height": 920,
+      "changedChannels": 0,
+      "maxChannelDifference": 0,
+      "before": {
+        "instances": 919,
+        "drawCalls": 9,
+        "triangles": 51358,
+        "nativeDrainMs": 0,
+        "particles": 0
+      },
+      "after": {
+        "instances": 711,
+        "culledInstances": 208,
+        "drawCalls": 9,
+        "triangles": 39234,
+        "nativeDrainMs": 0,
+        "particles": 0
+      }
+    },
+    {
+      "name": "lobby",
+      "width": 768,
+      "height": 1024,
+      "changedChannels": 0,
+      "maxChannelDifference": 0,
+      "before": {
+        "instances": 1391,
+        "drawCalls": 11,
+        "triangles": 109292,
+        "nativeDrainMs": 0,
+        "particles": 0
+      },
+      "after": {
+        "instances": 1100,
+        "culledInstances": 291,
+        "drawCalls": 11,
+        "triangles": 92046,
+        "nativeDrainMs": 0,
+        "particles": 0
+      }
+    },
+    {
+      "name": "overgrown",
+      "width": 768,
+      "height": 1024,
+      "changedChannels": 0,
+      "maxChannelDifference": 0,
+      "before": {
+        "instances": 1237,
+        "drawCalls": 11,
+        "triangles": 92030,
+        "nativeDrainMs": 0,
+        "particles": 0
+      },
+      "after": {
+        "instances": 1090,
+        "culledInstances": 147,
+        "drawCalls": 11,
+        "triangles": 84960,
+        "nativeDrainMs": 0,
+        "particles": 0
+      }
+    },
+    {
+      "name": "crew-arrival",
+      "width": 768,
+      "height": 1024,
+      "changedChannels": 0,
+      "maxChannelDifference": 0,
+      "before": {
+        "instances": 1504,
+        "drawCalls": 11,
+        "triangles": 100680,
+        "nativeDrainMs": 0,
+        "particles": 0
+      },
+      "after": {
+        "instances": 1306,
+        "culledInstances": 198,
+        "drawCalls": 11,
+        "triangles": 90440,
+        "nativeDrainMs": 0,
+        "particles": 0
+      }
+    },
+    {
+      "name": "jump",
+      "width": 768,
+      "height": 1024,
+      "changedChannels": 0,
+      "maxChannelDifference": 0,
+      "before": {
+        "instances": 1340,
+        "drawCalls": 11,
+        "triangles": 87366,
+        "nativeDrainMs": 0,
+        "particles": 0
+      },
+      "after": {
+        "instances": 1220,
+        "culledInstances": 120,
+        "drawCalls": 11,
+        "triangles": 82764,
+        "nativeDrainMs": 0,
+        "particles": 0
+      }
+    },
+    {
+      "name": "slide",
+      "width": 768,
+      "height": 1024,
+      "changedChannels": 0,
+      "maxChannelDifference": 0,
+      "before": {
+        "instances": 1373,
+        "drawCalls": 11,
+        "triangles": 89136,
+        "nativeDrainMs": 0,
+        "particles": 0
+      },
+      "after": {
+        "instances": 1206,
+        "culledInstances": 167,
+        "drawCalls": 11,
+        "triangles": 83068,
+        "nativeDrainMs": 0,
+        "particles": 0
+      }
+    },
+    {
+      "name": "hollow-left",
+      "width": 768,
+      "height": 1024,
+      "changedChannels": 0,
+      "maxChannelDifference": 0,
+      "before": {
+        "instances": 1451,
+        "drawCalls": 11,
+        "triangles": 101020,
+        "nativeDrainMs": 0,
+        "particles": 0
+      },
+      "after": {
+        "instances": 1102,
+        "culledInstances": 349,
+        "drawCalls": 11,
+        "triangles": 85648,
+        "nativeDrainMs": 0,
+        "particles": 0
+      }
+    },
+    {
+      "name": "grotto-right",
+      "width": 768,
+      "height": 1024,
+      "changedChannels": 0,
+      "maxChannelDifference": 0,
+      "before": {
+        "instances": 1371,
+        "drawCalls": 11,
+        "triangles": 94712,
+        "nativeDrainMs": 0,
+        "particles": 0
+      },
+      "after": {
+        "instances": 1063,
+        "culledInstances": 308,
+        "drawCalls": 11,
+        "triangles": 81912,
+        "nativeDrainMs": 0,
+        "particles": 0
+      }
+    },
+    {
+      "name": "grotto-main",
+      "width": 768,
+      "height": 1024,
+      "changedChannels": 0,
+      "maxChannelDifference": 0,
+      "before": {
+        "instances": 1135,
+        "drawCalls": 11,
+        "triangles": 83056,
+        "nativeDrainMs": 0,
+        "particles": 0
+      },
+      "after": {
+        "instances": 998,
+        "culledInstances": 137,
+        "drawCalls": 11,
+        "triangles": 77098,
+        "nativeDrainMs": 0,
+        "particles": 0
+      }
+    },
+    {
+      "name": "finish",
+      "width": 768,
+      "height": 1024,
+      "changedChannels": 0,
+      "maxChannelDifference": 0,
+      "before": {
+        "instances": 919,
+        "drawCalls": 9,
+        "triangles": 51358,
+        "nativeDrainMs": 0,
+        "particles": 0
+      },
+      "after": {
+        "instances": 737,
+        "culledInstances": 182,
+        "drawCalls": 9,
+        "triangles": 41382,
+        "nativeDrainMs": 0,
+        "particles": 0
+      }
+    }
+  ]
+}

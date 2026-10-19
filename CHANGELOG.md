@@ -1,5 +1,12 @@
 # Changelog
 
+## 2026-10-19 - Conservative camera visibility
+
+- Excluded only complete primitive bounds outside the camera clipping volume, reducing native GPU work while preserving visible geometry, shaders, materials and animations.
+- Kept animated bounds current, retained source instance ordering, and preserved native frame synchronization and the existing long-frame safety pause.
+- Added geometric corner-oracle coverage and a pixel-by-pixel WebGL comparison across all worlds, secret routes, companion states and three viewport sizes.
+- Run the Expedition and legacy Burrow native checks independently within one verified-APK suite, retaining both results and failing if either check fails.
+
 ## 2026-10-19 - Native Expedition frame submission
 
 - Bound pending native GL work to one rendered frame so the HUD cannot outrun a growing presentation backlog.

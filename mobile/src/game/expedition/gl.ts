@@ -148,13 +148,50 @@ export function color(hex:string,material=0):Color {
  if(colorCache.size>=COLOR_CACHE_LIMIT){const oldest=colorCache.keys().next().value;if(oldest!==undefined)colorCache.delete(oldest);}
  colorCache.set(key,c);return c;
 }
-type Batch={vertex:WebGLBuffer;instances:WebGLBuffer;vertices:number;data:Float32Array;count:number;};
+type Bounds={center:Vec3;half:Vec3};
+function geometryBounds(vertices:Float32Array,bounds:Bounds={center:[0,0,0],half:[0,0,0]}):Bounds {
+ const low=[Infinity,Infinity,Infinity],high=[-Infinity,-Infinity,-Infinity];
+ for(let i=0;i<vertices.length;i+=6)for(let axis=0;axis<3;axis++){low[axis]=Math.min(low[axis],vertices[i+axis]);high[axis]=Math.max(high[axis],vertices[i+axis]);}
+ for(let axis=0;axis<3;axis++){bounds.center[axis]=(low[axis]+high[axis])/2;bounds.half[axis]=(high[axis]-low[axis])/2;}return bounds;
+}
+type Batch={vertex:WebGLBuffer;instances:WebGLBuffer;vertices:number;data:Float32Array;visible:Float32Array;bounds:Bounds;count:number;};
+function updateClipPlanes(vp:Mat4,planes:Float64Array){
+ // Matrices are column-major; clip inequalities are row 4 +/- rows 1, 2, 3.
+ for(let axis=0;axis<3;axis++)for(let side=0;side<2;side++){
+  const offset=(axis*2+side)*4,sign=side===0?1:-1;
+  for(let component=0;component<4;component++)planes[offset+component]=vp[component*4+3]+sign*vp[component*4+axis];
+  const length=Math.hypot(planes[offset],planes[offset+1],planes[offset+2]);
+  if(length>0)for(let component=0;component<4;component++)planes[offset+component]/=length;
+ }
+}
+function cullBatch(batch:Batch,planes:Float64Array){
+ // Keep submitted data intact: a second render may use a different camera.
+ // The reusable upload buffer grows only to this batch's observed workload.
+ if(batch.visible.length<batch.count*20)batch.visible=new Float32Array(20*2**Math.ceil(Math.log2(batch.count)));
+ const data=batch.data,{center,half}=batch.bounds;let count=0;
+ for(let i=0;i<batch.count;i++){
+  const o=i*20,x=data[o]*center[0]+data[o+4]*center[1]+data[o+8]*center[2]+data[o+12],y=data[o+1]*center[0]+data[o+5]*center[1]+data[o+9]*center[2]+data[o+13],z=data[o+2]*center[0]+data[o+6]*center[1]+data[o+10]*center[2]+data[o+14];
+  let outside=false;
+  // The scene uses affine models. An unfamiliar projective model stays visible.
+  if(data[o+3]===0&&data[o+7]===0&&data[o+11]===0&&data[o+15]===1)for(let p=0;p<24;p+=4){
+   const a=planes[p],b=planes[p+1],c=planes[p+2],d=a*x+b*y+c*z+planes[p+3];
+   // Support radius of the transformed local box. This includes rotations,
+   // nonuniform/negative scales and shear, without shrinking any mesh bounds.
+   const radius=Math.abs(a*data[o]+b*data[o+1]+c*data[o+2])*half[0]+Math.abs(a*data[o+4]+b*data[o+5]+c*data[o+6])*half[1]+Math.abs(a*data[o+8]+b*data[o+9]+c*data[o+10])*half[2];
+   const tolerance=1e-5*(1+Math.abs(a*x)+Math.abs(b*y)+Math.abs(c*z)+Math.abs(planes[p+3])+radius);
+   if(d+radius < -tolerance){outside=true;break;}
+  }
+  if(!outside){for(let j=0;j<20;j++)batch.visible[count*20+j]=data[o+j];count++;}
+ }
+ return count;
+}
 export class ExpeditionRenderer {
  private gl:NativeGL;private program:WebGLProgram;private batches=new Map<Shape,Batch>();
  private uniforms:{vp:WebGLUniformLocation;eye:WebGLUniformLocation;fog:WebGLUniformLocation;range:WebGLUniformLocation;time:WebGLUniformLocation;travel:WebGLUniformLocation};
  private divisor:((i:number,v:number)=>void)|null=null;private drawInstanced:((mode:number,first:number,count:number,instances:number)=>void)|null=null;
  private tailVertices=new Float32Array(TAIL_INDICES.length*6);private tailGrid=new Float64Array((TAIL_RINGS+1)*(TAIL_SIDES+1)*6);
- private dead=false;private nativeFrames=0;public stats={instances:0,drawCalls:0,triangles:0,nativeDrainMs:0};
+ private clipPlanes=new Float64Array(24);
+ private dead=false;private nativeFrames=0;public stats={instances:0,culledInstances:0,drawCalls:0,triangles:0,nativeDrainMs:0};
  constructor(gl:GL){
   this.gl=gl as NativeGL;
   const compile=(type:number,source:string)=>{const s=gl.createShader(type);if(!s)throw Error('Could not allocate a GPU shader');gl.shaderSource(s,source);gl.compileShader(s);if(!gl.getShaderParameter(s,gl.COMPILE_STATUS)){const message=gl.getShaderInfoLog(s);gl.deleteShader(s);throw Error('3D shader: '+message);}return s;};
@@ -170,12 +207,12 @@ export class ExpeditionRenderer {
   for(const shape of ['box','sphere','rock','cylinder','cone','ring','leaf','headStripe','tail','shadow','halo'] as Shape[]){
    const data=shape==='tail'?tailGeometry(0,0,this.tailVertices,this.tailGrid):geometry(shape),vertex=gl.createBuffer(),instances=gl.createBuffer();if(!vertex||!instances)throw Error('GPU buffer allocation failed');
    gl.bindBuffer(gl.ARRAY_BUFFER,vertex);gl.bufferData(gl.ARRAY_BUFFER,data,gl.STATIC_DRAW);
-   this.batches.set(shape,{vertex,instances,vertices:data.length/6,data:new Float32Array(20*4096),count:0});
+   this.batches.set(shape,{vertex,instances,vertices:data.length/6,data:new Float32Array(20*4096),visible:new Float32Array(0),bounds:geometryBounds(data),count:0});
   }
   gl.enable(gl.DEPTH_TEST);gl.depthFunc(gl.LEQUAL);gl.disable(gl.CULL_FACE);
  }
- updateTail(time:number,bank:number){const b=this.batches.get('tail')!;const data=tailGeometry(time,bank,this.tailVertices,this.tailGrid);this.gl.bindBuffer(this.gl.ARRAY_BUFFER,b.vertex);this.gl.bufferData(this.gl.ARRAY_BUFFER,data,this.gl.DYNAMIC_DRAW);b.vertices=data.length/6;}
- reset(){for(const b of this.batches.values())b.count=0;this.stats={instances:0,drawCalls:0,triangles:0,nativeDrainMs:0};}
+ updateTail(time:number,bank:number){const b=this.batches.get('tail')!;const data=tailGeometry(time,bank,this.tailVertices,this.tailGrid);geometryBounds(data,b.bounds);this.gl.bindBuffer(this.gl.ARRAY_BUFFER,b.vertex);this.gl.bufferData(this.gl.ARRAY_BUFFER,data,this.gl.DYNAMIC_DRAW);b.vertices=data.length/6;}
+ reset(){for(const b of this.batches.values())b.count=0;this.stats={instances:0,culledInstances:0,drawCalls:0,triangles:0,nativeDrainMs:0};}
  add(shape:Shape,matrix:Mat4,c:Color){const b=this.batches.get(shape)!;if(b.count>=4096)return;const offset=b.count*20;b.data.set(matrix,offset);b.data.set(c,offset+16);b.count++;}
  shape(shape:Shape,c:Color,x:number,y:number,z:number,sx=1,sy=1,sz=1,rx=0,ry=0,rz=0,parent?:Mat4){const t=transform(x,y,z,sx,sy,sz,rx,ry,rz);this.add(shape,parent?multiply(parent,t):t,c);}
  render(eye:Vec3,target:Vec3,time:number,zone:number,travel=0){
@@ -183,20 +220,22 @@ export class ExpeditionRenderer {
   const fog:Vec3=zone===0?[.024,.060,.057]:zone===1?[.024,.045,.057]:[.036,.026,.075];
   const sky=fog.map(x=>Math.pow(x/(x+.65),.4545));gl.viewport(0,0,width,height);gl.clearColor(sky[0],sky[1],sky[2],1);gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT);
   gl.useProgram(this.program);const vp=multiply(perspective(2*Math.atan(Math.max(Math.tan(33*Math.PI/180),Math.tan(17*Math.PI/180)/(width/height))),width/height,.1,180),lookAt(eye,target));
+  updateClipPlanes(vp,this.clipPlanes);
   gl.uniformMatrix4fv(this.uniforms.vp,false,vp);gl.uniform3f(this.uniforms.eye,eye[0],eye[1],eye[2]);gl.uniform3f(this.uniforms.fog,fog[0],fog[1],fog[2]);gl.uniform2f(this.uniforms.range,30,115);gl.uniform1f(this.uniforms.time,time);gl.uniform1f(this.uniforms.travel,travel);
   for(const [shape,b] of this.batches){if(!b.count)continue;
+   const count=cullBatch(b,this.clipPlanes);this.stats.culledInstances+=b.count-count;if(!count)continue;
    if(shape==='shadow'||shape==='halo'){gl.enable(gl.BLEND);gl.blendFunc(gl.SRC_ALPHA,shape==='halo'?gl.ONE:gl.ONE_MINUS_SRC_ALPHA);gl.depthMask(false);}else{gl.disable(gl.BLEND);gl.depthMask(true);}
    gl.bindBuffer(gl.ARRAY_BUFFER,b.vertex);gl.enableVertexAttribArray(0);gl.enableVertexAttribArray(1);gl.vertexAttribPointer(0,3,gl.FLOAT,false,24,0);gl.vertexAttribPointer(1,3,gl.FLOAT,false,24,12);
    if(this.divisor&&this.drawInstanced){
-    this.divisor(0,0);this.divisor(1,0);gl.bindBuffer(gl.ARRAY_BUFFER,b.instances);gl.bufferData(gl.ARRAY_BUFFER,b.data.subarray(0,b.count*20),gl.DYNAMIC_DRAW);
+    this.divisor(0,0);this.divisor(1,0);gl.bindBuffer(gl.ARRAY_BUFFER,b.instances);gl.bufferData(gl.ARRAY_BUFFER,b.visible.subarray(0,count*20),gl.DYNAMIC_DRAW);
     for(let i=2;i<=6;i++){gl.enableVertexAttribArray(i);gl.vertexAttribPointer(i,4,gl.FLOAT,false,80,(i-2)*16);this.divisor(i,1);}
-    this.drawInstanced(gl.TRIANGLES,0,b.vertices,b.count);this.stats.drawCalls++;
+    this.drawInstanced(gl.TRIANGLES,0,b.vertices,count);this.stats.drawCalls++;
     for(let i=2;i<=6;i++)this.divisor(i,0);
    }else{
     for(let i=2;i<=6;i++)gl.disableVertexAttribArray(i);
-    for(let j=0;j<b.count;j++){for(let i=2;i<=6;i++)gl.vertexAttrib4fv(i,b.data.subarray(j*20+(i-2)*4,j*20+(i-1)*4));gl.drawArrays(gl.TRIANGLES,0,b.vertices);this.stats.drawCalls++;}
+    for(let j=0;j<count;j++){for(let i=2;i<=6;i++)gl.vertexAttrib4fv(i,b.visible.subarray(j*20+(i-2)*4,j*20+(i-1)*4));gl.drawArrays(gl.TRIANGLES,0,b.vertices);this.stats.drawCalls++;}
    }
-   this.stats.instances+=b.count;this.stats.triangles+=b.count*b.vertices/3;
+   this.stats.instances+=count;this.stats.triangles+=count*b.vertices/3;
   }
   gl.depthMask(true);gl.disable(gl.BLEND);gl.flush();if(this.gl.endFrameEXP)this.gl.endFrameEXP();
   // Expo presents after draining its native command backlog. Synchronize this

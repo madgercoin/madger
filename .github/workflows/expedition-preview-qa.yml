@@ -6,6 +6,7 @@ on:
       - mobile/expedition-preview-build.json
       - mobile/scripts/android-expedition-smoke.py
       - mobile/scripts/android-preview-smoke.py
+      - mobile/scripts/android-preview-suite.py
       - mobile/scripts/verify-expedition-apk.py
       - .github/workflows/expedition-preview-qa.yml
   workflow_dispatch:
@@ -55,7 +56,7 @@ jobs:
           sudo udevadm control --reload-rules
           sudo udevadm trigger --name-match=kvm
 
-      - name: Run native Expedition smoke tests
+      - name: Run Expedition and Burrow Run native smoke tests
         uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: 35
@@ -70,8 +71,7 @@ jobs:
           script: |
             adb shell wm size 480x960
             adb shell wm density 160
-            "$RUNNER_TEMP/expedition-qa-venv/bin/python" mobile/scripts/android-expedition-smoke.py
-            MADGER_ANDROID_LEGACY_EVIDENCE_DIR="$MADGER_ANDROID_EVIDENCE_DIR/legacy-burrow" "$RUNNER_TEMP/expedition-qa-venv/bin/python" mobile/scripts/android-preview-smoke.py
+            "$RUNNER_TEMP/expedition-qa-venv/bin/python" mobile/scripts/android-preview-suite.py
 
       - name: Upload APK verification and native test evidence
         if: always()
