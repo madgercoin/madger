@@ -1,5 +1,6 @@
 """Exercise the actual standalone preview APK through Android accessibility UI."""
 import json
+import os
 from pathlib import Path
 import re
 import subprocess
@@ -8,9 +9,10 @@ import xml.etree.ElementTree as ET
 import atexit
 import uiautomator2 as u2
 
-PACKAGE = 'com.madgercoin.preview'
-OUT = Path('android-smoke')
-OUT.mkdir(exist_ok=True)
+PACKAGE = os.environ.get('MADGER_ANDROID_PACKAGE') or 'com.madgercoin.preview'
+APK = os.environ.get('MADGER_ANDROID_APK') or 'android/app/build/outputs/apk/release/app-release.apk'
+OUT = Path(os.environ.get('MADGER_ANDROID_LEGACY_EVIDENCE_DIR') or 'android-smoke')
+OUT.mkdir(parents=True, exist_ok=True)
 checks = []
 last_root = None
 device = u2.connect()
@@ -130,7 +132,7 @@ def collect_debug():
 atexit.register(collect_debug)
 
 
-adb('install', '-r', 'android/app/build/outputs/apk/release/app-release.apk')
+adb('install', '-r', APK)
 adb('logcat', '-c')
 adb('shell', 'am', 'start', '-W', '-n', PACKAGE + '/.MainActivity')
 wait_for('Play the 3D Expedition')
@@ -253,6 +255,6 @@ passed('The high score survives a full native app process restart')
 assert adb('shell', 'pidof', PACKAGE).strip(), 'App process stopped'
 logs = adb('logcat', '-d').decode(errors='replace')
 OUT.joinpath('logcat.txt').write_text(logs)
-assert not re.search(r'FATAL EXCEPTION|ANR in com\.madgercoin\.preview|ReactNativeJS.*(?:TypeError|ReferenceError|Invariant Violation)', logs), 'Native runtime failure; inspect logcat.txt'
+assert not re.search(rf'FATAL EXCEPTION|ANR in {re.escape(PACKAGE)}|ReactNativeJS.*(?:TypeError|ReferenceError|Invariant Violation)', logs), 'Native runtime failure; inspect logcat.txt'
 passed('App stays running with no fatal native or JavaScript errors')
 OUT.joinpath('report.json').write_text(json.dumps({'checks': checks, 'package': PACKAGE}, indent=2))

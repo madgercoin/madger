@@ -11,7 +11,7 @@
 - EAS completed the build at `2026-10-19T06:45:40.381Z`.
 - Exact committed app source: [`85cb796b9631a3d45a32c585cf8e563047d43995`](https://github.com/madgercoin/madger/commit/85cb796b9631a3d45a32c585cf8e563047d43995).
 
-`mobile/expedition-preview-build.json` pins this artifact. The Expedition preview APK QA workflow checks its checksum, signature, package, version and permissions before installing it on Android. Native acceptance for build 12 is pending at this evidence revision. A successful package build does not establish runtime acceptance or physical-device performance.
+`mobile/expedition-preview-build.json` pins this artifact. The Expedition preview APK QA workflow checks its checksum, signature, package, version and permissions before installing it on Android. Build 12 passed the [exact-APK Android smoke run](https://github.com/madgercoin/madger/actions/runs/39212453386) at test revision `a36a14f4d9dc28e683aed1cecf798d0ccfb507ee`. This establishes the native smoke scope below; physical-device performance remains unverified.
 
 This internal preview uses a separate application identifier. No production release or Play submission is included in this work.
 
@@ -36,6 +36,22 @@ A separate renderer comparison matched all matrices and materials across 78 scen
 `app-runtime-smoke.json` and the application screenshots record the exported app on the PC using Chrome 155 and the Intel UHD GPU at `2026-10-19T06:29:31.030Z`. The run passed boot, nonblank 3D rendering, idle animation, jump/slide input, frozen pause with no GPU submissions, stopped pause audio, cold checkpoint restoration, resume progress, reduced-effects persistence, and small-phone/tablet layouts. It reported no JavaScript errors or failed asset requests.
 
 A 3.5-second uninterrupted sample contained 211 frames, averaging 16.60 ms with a 16.8 ms 95th percentile and no 400 ms stalls. This is PC-browser evidence, not physical Android performance. The separate scene render check compiled the shaders and rendered lobby/world probes without a WebGL error; its lobby contained 1,391 instances in 11 draw calls.
+
+## Completed Android checks
+
+The exact build-12 APK passed signature, checksum, package, version and permission verification, followed by a 45.86-second UI smoke test on Android 15 / API 35, x86_64, with the emulator's SwANGLE software graphics at 480 × 960 and 160 dpi. The run completed at `2026-10-19T06:54:59.073847+00:00`.
+
+Four nonblank raw frames were captured between running observations at 4 and 44 metres. Adjacent game-field mean differences were 10.196, 9.916 and 13.013, all above the unchanged 0.8 threshold. Left, right, jump and slide responded through the visible HUD. Manual pause froze the state at 129 metres; background return and a force-stop/cold launch both retained exactly 138 metres and 525 points. The restored run progressed from 142 to 153 metres within its running capture bracket and was left safely paused at 168 metres.
+
+The complete collected log contained no `MADGER_EXPEDITION_FRAME_STALL` entries, and the scoped crash check found no native/JavaScript crashes or app ANRs. This short functional run does not measure physical-phone frame rate, temperature or battery use.
+
+Preserved evidence:
+
+- `native-android-smoke.json`: complete state, motion, timing and scoped-error report.
+- `native-apk-verification.json`, `native-apksigner.txt`, `native-permissions.txt`: exact artifact identity, signing and permissions.
+- `native-lobby.png`, `native-running.png`, `native-recovered.png`: reviewed actual Android screenshots.
+
+The separate compatibility check of the older Burrow Run is pending. The same verified APK and emulator now run its unchanged gameplay/recovery/score assertions using the corrected Home scrolling.
 
 ## Native diagnostic history and test scope
 

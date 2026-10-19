@@ -1,0 +1,757 @@
+{
+  "status": "passed",
+  "package": "com.madgercoin.expedition.preview",
+  "started_utc": "20261019T065413Z",
+  "steps": [
+    {
+      "name": "Home launches and exposes the Expedition entry",
+      "elapsed_s": 8.597
+    },
+    {
+      "name": "3D game field renders nonblank geometry and animates",
+      "elapsed_s": 21.338,
+      "initial_state": {
+        "distance_m": 2,
+        "lane": 0,
+        "action": "running",
+        "route": "main",
+        "score": 0
+      }
+    },
+    {
+      "name": "Left, right, jump, and slide respond through the visible HUD",
+      "elapsed_s": 27.646,
+      "burst_control": "Activate burst, 56 percent charged"
+    },
+    {
+      "name": "Manual pause freezes distance, score, lane, and action",
+      "elapsed_s": 30.204
+    },
+    {
+      "name": "Backgrounding saves and returns to a paused run",
+      "elapsed_s": 35.138
+    },
+    {
+      "name": "Force-stop and cold launch restore the same saved run",
+      "elapsed_s": 40.535,
+      "restored_state": {
+        "distance_m": 138,
+        "lane": 0,
+        "action": "running",
+        "route": "main",
+        "score": 525
+      }
+    },
+    {
+      "name": "Restored run resumes with a nonblank 3D view; left safely paused",
+      "elapsed_s": 45.652
+    }
+  ],
+  "states": {
+    "05-manual-pause": {
+      "distance_m": 129,
+      "lane": 0,
+      "action": "running",
+      "route": "main",
+      "score": 525
+    },
+    "06-background-return": {
+      "distance_m": 138,
+      "lane": 0,
+      "action": "running",
+      "route": "main",
+      "score": 525
+    },
+    "07-cold-restored": {
+      "distance_m": 138,
+      "lane": 0,
+      "action": "running",
+      "route": "main",
+      "score": 525
+    },
+    "09-final-paused": {
+      "distance_m": 168,
+      "lane": 0,
+      "action": "running",
+      "route": "main",
+      "score": 525
+    }
+  },
+  "frames": {
+    "03-running-a": {
+      "rgb_stddev_max": 39.544,
+      "quantized_colors": 176,
+      "image": "03-running-a.png",
+      "roi": [
+        0.1,
+        0.46,
+        0.9,
+        0.78
+      ]
+    },
+    "04-running-b": {
+      "rgb_stddev_max": 40.629,
+      "quantized_colors": 178,
+      "image": "04-running-b.png",
+      "roi": [
+        0.1,
+        0.46,
+        0.9,
+        0.78
+      ]
+    },
+    "04-sustained-motion-1": {
+      "rgb_stddev_max": 39.424,
+      "quantized_colors": 174,
+      "image": "04-sustained-motion-1.png",
+      "roi": [
+        0.1,
+        0.46,
+        0.9,
+        0.78
+      ]
+    },
+    "04-sustained-motion-2": {
+      "rgb_stddev_max": 40.09,
+      "quantized_colors": 173,
+      "image": "04-sustained-motion-2.png",
+      "roi": [
+        0.1,
+        0.46,
+        0.9,
+        0.78
+      ]
+    },
+    "motion_mean_difference": 10.196,
+    "08-restored-running": {
+      "rgb_stddev_max": 41.648,
+      "quantized_colors": 181,
+      "image": "08-restored-running.png",
+      "roi": [
+        0.1,
+        0.46,
+        0.9,
+        0.78
+      ]
+    }
+  },
+  "errors": [],
+  "automation_calls": [
+    {
+      "name": "hierarchy",
+      "start_s": 7.665,
+      "duration_ms": 638.16
+    },
+    {
+      "name": "screenshot:uiautomator:01-home",
+      "start_s": 8.305,
+      "duration_ms": 160.42
+    },
+    {
+      "name": "hierarchy",
+      "start_s": 8.515,
+      "duration_ms": 80.48
+    },
+    {
+      "name": "hierarchy",
+      "start_s": 8.597,
+      "duration_ms": 94.07
+    },
+    {
+      "name": "click:Play the 3D Expedition",
+      "start_s": 8.692,
+      "duration_ms": 194.27
+    },
+    {
+      "name": "hierarchy",
+      "start_s": 8.886,
+      "duration_ms": 935.75
+    },
+    {
+      "name": "hierarchy",
+      "start_s": 9.944,
+      "duration_ms": 1658.79
+    },
+    {
+      "name": "screenshot:uiautomator:02-expedition-ready",
+      "start_s": 11.604,
+      "duration_ms": 250.62
+    },
+    {
+      "name": "hierarchy",
+      "start_s": 11.926,
+      "duration_ms": 351.02
+    },
+    {
+      "name": "hierarchy",
+      "start_s": 12.279,
+      "duration_ms": 116.03
+    },
+    {
+      "name": "click:Start expedition",
+      "start_s": 12.397,
+      "duration_ms": 384.61
+    },
+    {
+      "name": "hierarchy",
+      "start_s": 12.781,
+      "duration_ms": 136.37
+    },
+    {
+      "name": "hierarchy",
+      "start_s": 12.979,
+      "duration_ms": 197.75
+    },
+    {
+      "name": "hierarchy",
+      "start_s": 13.238,
+      "duration_ms": 622.18
+    },
+    {
+      "name": "hierarchy",
+      "start_s": 13.926,
+      "duration_ms": 313.93
+    },
+    {
+      "name": "hierarchy",
+      "start_s": 14.301,
+      "duration_ms": 259.17
+    },
+    {
+      "name": "hierarchy",
+      "start_s": 14.623,
+      "duration_ms": 174.48
+    },
+    {
+      "name": "hierarchy",
+      "start_s": 14.862,
+      "duration_ms": 288.01
+    },
+    {
+      "name": "hierarchy",
+      "start_s": 15.214,
+      "duration_ms": 342.84
+    },
+    {
+      "name": "hierarchy",
+      "start_s": 15.618,
+      "duration_ms": 291.43
+    },
+    {
+      "name": "hierarchy",
+      "start_s": 15.911,
+      "duration_ms": 464.15
+    },
+    {
+      "name": "screenshot:adb:03-running-a",
+      "start_s": 16.377,
+      "duration_ms": 482.29
+    },
+    {
+      "name": "screenshot:adb:04-running-b",
+      "start_s": 17.409,
+      "duration_ms": 580.03
+    },
+    {
+      "name": "screenshot:adb:04-sustained-motion-1",
+      "start_s": 18.389,
+      "duration_ms": 717.18
+    },
+    {
+      "name": "screenshot:adb:04-sustained-motion-2",
+      "start_s": 19.507,
+      "duration_ms": 532.89
+    },
+    {
+      "name": "hierarchy",
+      "start_s": 20.039,
+      "duration_ms": 1107.48
+    },
+    {
+      "name": "hierarchy",
+      "start_s": 21.339,
+      "duration_ms": 210.89
+    },
+    {
+      "name": "click:LEFT",
+      "start_s": 21.551,
+      "duration_ms": 446.3
+    },
+    {
+      "name": "hierarchy",
+      "start_s": 21.997,
+      "duration_ms": 363.28
+    },
+    {
+      "name": "hierarchy",
+      "start_s": 22.362,
+      "duration_ms": 174.97
+    },
+    {
+      "name": "click:RIGHT",
+      "start_s": 22.539,
+      "duration_ms": 344.32
+    },
+    {
+      "name": "hierarchy",
+      "start_s": 22.883,
+      "duration_ms": 1273.75
+    },
+    {
+      "name": "hierarchy",
+      "start_s": 24.158,
+      "duration_ms": 419.82
+    },
+    {
+      "name": "click:JUMP",
+      "start_s": 24.58,
+      "duration_ms": 339.58
+    },
+    {
+      "name": "hierarchy",
+      "start_s": 24.919,
+      "duration_ms": 146.43
+    },
+    {
+      "name": "hierarchy",
+      "start_s": 25.129,
+      "duration_ms": 1154.0
+    },
+    {
+      "name": "hierarchy",
+      "start_s": 26.284,
+      "duration_ms": 275.91
+    },
+    {
+      "name": "hierarchy",
+      "start_s": 26.562,
+      "duration_ms": 364.56
+    },
+    {
+      "name": "click:SLIDE",
+      "start_s": 26.928,
+      "duration_ms": 296.3
+    },
+    {
+      "name": "hierarchy",
+      "start_s": 27.224,
+      "duration_ms": 140.29
+    },
+    {
+      "name": "hierarchy",
+      "start_s": 27.366,
+      "duration_ms": 279.25
+    },
+    {
+      "name": "hierarchy",
+      "start_s": 27.646,
+      "duration_ms": 418.39
+    },
+    {
+      "name": "click:Pause expedition",
+      "start_s": 28.069,
+      "duration_ms": 512.24
+    },
+    {
+      "name": "hierarchy",
+      "start_s": 28.582,
+      "duration_ms": 353.57
+    },
+    {
+      "name": "hierarchy",
+      "start_s": 28.937,
+      "duration_ms": 108.5
+    },
+    {
+      "name": "hierarchy",
+      "start_s": 29.046,
+      "duration_ms": 84.26
+    },
+    {
+      "name": "hierarchy",
+      "start_s": 29.932,
+      "duration_ms": 84.89
+    },
+    {
+      "name": "screenshot:uiautomator:05-manual-pause",
+      "start_s": 30.018,
+      "duration_ms": 70.17
+    },
+    {
+      "name": "hierarchy",
+      "start_s": 30.116,
+      "duration_ms": 86.51
+    },
+    {
+      "name": "hierarchy",
+      "start_s": 30.204,
+      "duration_ms": 88.3
+    },
+    {
+      "name": "click:Resume expedition",
+      "start_s": 30.294,
+      "duration_ms": 400.2
+    },
+    {
+      "name": "hierarchy",
+      "start_s": 30.694,
+      "duration_ms": 273.75
+    },
+    {
+      "name": "hierarchy",
+      "start_s": 31.03,
+      "duration_ms": 212.84
+    },
+    {
+      "name": "hierarchy",
+      "start_s": 33.396,
+      "duration_ms": 236.53
+    },
+    {
+      "name": "hierarchy",
+      "start_s": 33.635,
+      "duration_ms": 100.16
+    },
+    {
+      "name": "hierarchy",
+      "start_s": 33.737,
+      "duration_ms": 81.16
+    },
+    {
+      "name": "hierarchy",
+      "start_s": 34.62,
+      "duration_ms": 332.64
+    },
+    {
+      "name": "screenshot:uiautomator:06-background-return",
+      "start_s": 34.954,
+      "duration_ms": 73.96
+    },
+    {
+      "name": "hierarchy",
+      "start_s": 35.057,
+      "duration_ms": 79.56
+    },
+    {
+      "name": "hierarchy",
+      "start_s": 36.599,
+      "duration_ms": 387.97
+    },
+    {
+      "name": "hierarchy",
+      "start_s": 36.988,
+      "duration_ms": 82.87
+    },
+    {
+      "name": "click:Play the 3D Expedition",
+      "start_s": 37.072,
+      "duration_ms": 191.36
+    },
+    {
+      "name": "hierarchy",
+      "start_s": 37.263,
+      "duration_ms": 218.72
+    },
+    {
+      "name": "hierarchy",
+      "start_s": 37.603,
+      "duration_ms": 694.11
+    },
+    {
+      "name": "hierarchy",
+      "start_s": 38.423,
+      "duration_ms": 872.36
+    },
+    {
+      "name": "hierarchy",
+      "start_s": 39.296,
+      "duration_ms": 80.15
+    },
+    {
+      "name": "hierarchy",
+      "start_s": 39.377,
+      "duration_ms": 82.92
+    },
+    {
+      "name": "hierarchy",
+      "start_s": 40.262,
+      "duration_ms": 87.03
+    },
+    {
+      "name": "screenshot:uiautomator:07-cold-restored",
+      "start_s": 40.35,
+      "duration_ms": 69.74
+    },
+    {
+      "name": "hierarchy",
+      "start_s": 40.448,
+      "duration_ms": 85.42
+    },
+    {
+      "name": "hierarchy",
+      "start_s": 40.535,
+      "duration_ms": 88.35
+    },
+    {
+      "name": "click:Resume expedition",
+      "start_s": 40.624,
+      "duration_ms": 189.17
+    },
+    {
+      "name": "hierarchy",
+      "start_s": 40.813,
+      "duration_ms": 147.07
+    },
+    {
+      "name": "hierarchy",
+      "start_s": 41.023,
+      "duration_ms": 275.44
+    },
+    {
+      "name": "hierarchy",
+      "start_s": 41.3,
+      "duration_ms": 480.57
+    },
+    {
+      "name": "screenshot:adb:08-restored-running",
+      "start_s": 42.335,
+      "duration_ms": 415.37
+    },
+    {
+      "name": "hierarchy",
+      "start_s": 42.751,
+      "duration_ms": 247.83
+    },
+    {
+      "name": "hierarchy",
+      "start_s": 43.048,
+      "duration_ms": 125.35
+    },
+    {
+      "name": "click:Pause expedition",
+      "start_s": 43.174,
+      "duration_ms": 456.44
+    },
+    {
+      "name": "hierarchy",
+      "start_s": 43.631,
+      "duration_ms": 416.19
+    },
+    {
+      "name": "hierarchy",
+      "start_s": 44.168,
+      "duration_ms": 241.3
+    },
+    {
+      "name": "hierarchy",
+      "start_s": 44.413,
+      "duration_ms": 89.84
+    },
+    {
+      "name": "hierarchy",
+      "start_s": 44.504,
+      "duration_ms": 77.85
+    },
+    {
+      "name": "hierarchy",
+      "start_s": 45.383,
+      "duration_ms": 83.68
+    },
+    {
+      "name": "screenshot:uiautomator:09-final-paused",
+      "start_s": 45.468,
+      "duration_ms": 70.59
+    },
+    {
+      "name": "hierarchy",
+      "start_s": 45.567,
+      "duration_ms": 83.24
+    }
+  ],
+  "serial": "emulator-5554",
+  "android_version": "15",
+  "display_size": "Physical size: 1080x2400\nOverride size: 480x960",
+  "display_density": "Physical density: 420\nOverride density: 160",
+  "apk": "/home/runner/work/madger/madger/.qa-artifacts/madger-expedition-preview.apk",
+  "apk_sha256": "edb5de5e7015f7b3669529b551fd83adf27c618701874ad3ce76a62e6d96c859",
+  "motion_windows": {
+    "initial-running": {
+      "frames": [
+        "03-running-a",
+        "04-running-b",
+        "04-sustained-motion-1",
+        "04-sustained-motion-2"
+      ],
+      "quiet_waits_s": [
+        0,
+        0.55,
+        0.4,
+        0.4
+      ],
+      "capture_method": "adb exec-out screencap -p",
+      "phase_and_progress_passed": true,
+      "before": {
+        "phase": "running",
+        "hud": {
+          "distance_m": 4,
+          "lane": 0,
+          "action": "running",
+          "route": "main",
+          "score": 0
+        },
+        "elapsed_s": 16.376
+      },
+      "sampling_start_s": 16.377,
+      "sampling_end_s": 20.039,
+      "after": {
+        "phase": "running",
+        "hud": {
+          "distance_m": 44,
+          "lane": 0,
+          "action": "running",
+          "route": "main",
+          "score": 250
+        },
+        "elapsed_s": 21.148
+      },
+      "distance_delta_m": 40
+    },
+    "08-restored-running": {
+      "frames": [
+        "08-restored-running"
+      ],
+      "quiet_waits_s": [
+        0.55
+      ],
+      "capture_method": "adb exec-out screencap -p",
+      "phase_and_progress_passed": true,
+      "before": {
+        "phase": "running",
+        "hud": {
+          "distance_m": 142,
+          "lane": 0,
+          "action": "running",
+          "route": "main",
+          "score": 525
+        },
+        "elapsed_s": 41.785
+      },
+      "sampling_start_s": 41.785,
+      "sampling_end_s": 42.751,
+      "after": {
+        "phase": "running",
+        "hud": {
+          "distance_m": 153,
+          "lane": 0,
+          "action": "running",
+          "route": "main",
+          "score": 525
+        },
+        "elapsed_s": 43.0
+      },
+      "distance_delta_m": 11
+    }
+  },
+  "sustained_motion_differences": [
+    10.196,
+    9.916,
+    13.013
+  ],
+  "burst_scope": "Control and charge label checked; burst activation is not exercised by this short route.",
+  "render_metrics": [
+    {
+      "frame": 1,
+      "instanced": true,
+      "instances": 1391,
+      "drawCalls": 11,
+      "triangles": 109292,
+      "nativeDrainMs": 292.285527
+    },
+    {
+      "frame": 30,
+      "instanced": true,
+      "instances": 1200,
+      "drawCalls": 11,
+      "triangles": 78512,
+      "nativeDrainMs": 140.7445399999997
+    },
+    {
+      "frame": 1,
+      "instanced": true,
+      "instances": 1518,
+      "drawCalls": 11,
+      "triangles": 103314,
+      "nativeDrainMs": 203.33430699999735
+    }
+  ],
+  "application_pids": [
+    "2312",
+    "2736"
+  ],
+  "performance_lines": [
+    "10-19 06:54:19.924  1136  1491 D EGL_emulation: app_time_stats: avg=4142.59ms min=4142.59ms max=4142.59ms count=1",
+    "10-19 06:54:19.933  1136  1491 D EGL_emulation: app_time_stats: avg=2078.77ms min=995.52ms max=3162.03ms count=2",
+    "10-19 06:54:21.881  2312  2330 D EGL_emulation: app_time_stats: avg=208.50ms min=53.95ms max=515.88ms count=6",
+    "10-19 06:54:23.069  2312  2330 D EGL_emulation: app_time_stats: avg=140.27ms min=39.61ms max=562.13ms count=8",
+    "10-19 06:54:23.251  2312  2478 E EGL_emulation: tid 2478: eglSurfaceAttrib(1621): error 0x3009 (EGL_BAD_MATCH)",
+    "10-19 06:54:23.255  2312  2478 E EXGL    : EGL error = 0x3009",
+    "10-19 06:54:24.212  2312  2330 D EGL_emulation: app_time_stats: avg=163.34ms min=80.62ms max=297.96ms count=7",
+    "10-19 06:54:25.036  2312  2478 D EGL_emulation: app_time_stats: avg=227.40ms min=93.02ms max=355.56ms count=6",
+    "10-19 06:54:25.280  2312  2330 D EGL_emulation: app_time_stats: avg=152.55ms min=84.45ms max=251.98ms count=7",
+    "10-19 06:54:26.279  2312  2478 D EGL_emulation: app_time_stats: avg=167.16ms min=76.27ms max=287.14ms count=7",
+    "10-19 06:54:26.326  2312  2330 D EGL_emulation: app_time_stats: avg=149.42ms min=59.83ms max=230.24ms count=7",
+    "10-19 06:54:27.399  2312  2478 D EGL_emulation: app_time_stats: avg=139.96ms min=55.48ms max=253.55ms count=8",
+    "10-19 06:54:27.458  2312  2330 D EGL_emulation: app_time_stats: avg=140.98ms min=15.77ms max=215.04ms count=8",
+    "10-19 06:54:28.463  2312  2330 D EGL_emulation: app_time_stats: avg=143.59ms min=121.24ms max=218.58ms count=7",
+    "10-19 06:54:28.480  2312  2478 D EGL_emulation: app_time_stats: avg=134.16ms min=19.86ms max=307.70ms count=8",
+    "10-19 06:54:29.591  2312  2478 D EGL_emulation: app_time_stats: avg=185.13ms min=81.13ms max=359.13ms count=6",
+    "10-19 06:54:29.659  2312  2330 D EGL_emulation: app_time_stats: avg=129.85ms min=16.66ms max=253.18ms count=9",
+    "10-19 06:54:30.723  2312  2330 D EGL_emulation: app_time_stats: avg=105.02ms min=19.57ms max=264.92ms count=10",
+    "10-19 06:54:30.821  2312  2478 D EGL_emulation: app_time_stats: avg=234.58ms min=126.11ms max=345.59ms count=5",
+    "10-19 06:54:31.854  2312  2330 D EGL_emulation: app_time_stats: avg=97.81ms min=12.55ms max=193.68ms count=11",
+    "10-19 06:54:32.007  2312  2478 D EGL_emulation: app_time_stats: avg=236.72ms min=109.92ms max=388.69ms count=5",
+    "10-19 06:54:32.896  2312  2330 D EGL_emulation: app_time_stats: avg=111.28ms min=7.39ms max=271.19ms count=9",
+    "10-19 06:54:33.075  2312  2478 D EGL_emulation: app_time_stats: avg=213.54ms min=121.63ms max=277.84ms count=5",
+    "10-19 06:54:33.970  2312  2330 D EGL_emulation: app_time_stats: avg=116.10ms min=13.93ms max=285.74ms count=9",
+    "10-19 06:54:34.266  2312  2478 D EGL_emulation: app_time_stats: avg=198.32ms min=47.26ms max=341.81ms count=6",
+    "10-19 06:54:35.206  2312  2330 D EGL_emulation: app_time_stats: avg=119.19ms min=16.85ms max=280.06ms count=9",
+    "10-19 06:54:35.401  2312  2478 D EGL_emulation: app_time_stats: avg=227.06ms min=91.78ms max=354.93ms count=5",
+    "10-19 06:54:36.269  2312  2330 D EGL_emulation: app_time_stats: avg=103.81ms min=13.70ms max=142.40ms count=10",
+    "10-19 06:54:36.551  2312  2478 D EGL_emulation: app_time_stats: avg=229.83ms min=207.22ms max=269.28ms count=5",
+    "10-19 06:54:37.483  2312  2330 D EGL_emulation: app_time_stats: avg=111.29ms min=17.39ms max=283.55ms count=10",
+    "10-19 06:54:37.665  2312  2478 D EGL_emulation: app_time_stats: avg=143.32ms min=85.65ms max=218.70ms count=6",
+    "10-19 06:54:38.599  2312  2330 D EGL_emulation: app_time_stats: avg=110.20ms min=11.12ms max=271.16ms count=10",
+    "10-19 06:54:38.766  2312  2478 D EGL_emulation: app_time_stats: avg=219.98ms min=134.02ms max=352.69ms count=5",
+    "10-19 06:54:39.734  2312  2330 D EGL_emulation: app_time_stats: avg=100.43ms min=12.08ms max=190.04ms count=11",
+    "10-19 06:54:40.019  2312  2478 D EGL_emulation: app_time_stats: avg=225.49ms min=60.33ms max=353.89ms count=5",
+    "10-19 06:54:40.862  2312  2330 D EGL_emulation: app_time_stats: avg=76.01ms min=11.24ms max=219.06ms count=10",
+    "10-19 06:54:41.054  2312  2478 D EGL_emulation: app_time_stats: avg=258.69ms min=103.29ms max=345.38ms count=4",
+    "10-19 06:54:41.996  2312  2330 D EGL_emulation: app_time_stats: avg=86.87ms min=12.35ms max=182.65ms count=11",
+    "10-19 06:54:43.377  2312  2330 D EGL_emulation: app_time_stats: avg=689.86ms min=66.72ms max=1313.00ms count=2",
+    "10-19 06:54:43.955  2312  2478 D EGL_emulation: app_time_stats: avg=580.14ms min=156.42ms max=2083.75ms count=5",
+    "10-19 06:54:44.482  2312  2330 D EGL_emulation: app_time_stats: avg=87.20ms min=43.56ms max=256.82ms count=12",
+    "10-19 06:54:44.921  1136  1491 D EGL_emulation: app_time_stats: avg=12498.81ms min=536.09ms max=24461.54ms count=2",
+    "10-19 06:54:46.121  1136  1491 D EGL_emulation: app_time_stats: avg=384.93ms min=109.25ms max=848.23ms count=3",
+    "10-19 06:54:46.194  2312  2478 D EGL_emulation: app_time_stats: avg=447.89ms min=135.90ms max=1246.71ms count=5",
+    "10-19 06:54:46.306  1136  1491 D EGL_emulation: app_time_stats: avg=507.16ms min=199.88ms max=955.08ms count=3",
+    "10-19 06:54:47.610  2312  2330 D EGL_emulation: app_time_stats: avg=296.95ms min=49.63ms max=898.90ms count=4",
+    "10-19 06:54:48.460  1136  1491 D EGL_emulation: app_time_stats: avg=1158.93ms min=282.88ms max=2034.98ms count=2",
+    "10-19 06:54:49.480  1136  1491 D EGL_emulation: app_time_stats: avg=339.89ms min=106.15ms max=489.40ms count=3",
+    "10-19 06:54:51.056  2736  2750 D EGL_emulation: app_time_stats: avg=205.91ms min=40.58ms max=776.81ms count=7",
+    "10-19 06:54:51.479  2736  2869 E EGL_emulation: tid 2869: eglSurfaceAttrib(1621): error 0x3009 (EGL_BAD_MATCH)",
+    "10-19 06:54:51.481  2736  2869 E EXGL    : EGL error = 0x3009",
+    "10-19 06:54:52.207  2736  2750 D EGL_emulation: app_time_stats: avg=115.15ms min=58.18ms max=212.94ms count=10",
+    "10-19 06:54:53.254  2736  2750 D EGL_emulation: app_time_stats: avg=100.83ms min=12.03ms max=559.54ms count=10",
+    "10-19 06:54:54.132  2736  2869 D EGL_emulation: app_time_stats: avg=1161.11ms min=393.92ms max=1928.30ms count=2",
+    "10-19 06:54:54.307  2736  2750 D EGL_emulation: app_time_stats: avg=204.14ms min=38.40ms max=491.48ms count=5",
+    "10-19 06:54:55.174  2736  2869 D EGL_emulation: app_time_stats: avg=208.36ms min=37.87ms max=360.03ms count=5",
+    "10-19 06:54:55.408  2736  2750 D EGL_emulation: app_time_stats: avg=122.04ms min=14.65ms max=295.44ms count=9",
+    "10-19 06:54:56.271  2736  2869 D EGL_emulation: app_time_stats: avg=273.86ms min=150.04ms max=386.00ms count=4",
+    "10-19 06:54:56.417  2736  2750 D EGL_emulation: app_time_stats: avg=98.51ms min=12.45ms max=204.42ms count=9",
+    "10-19 06:54:57.387  2736  2869 D EGL_emulation: app_time_stats: avg=278.90ms min=123.58ms max=496.31ms count=4",
+    "10-19 06:54:57.460  2736  2750 D EGL_emulation: app_time_stats: avg=130.45ms min=59.21ms max=347.71ms count=8"
+  ],
+  "crash_lines": [],
+  "duration_s": 45.86,
+  "completed_utc": "2026-10-19T06:54:59.073847+00:00"
+}
