@@ -10,6 +10,7 @@ import * as Haptics from 'expo-haptics';
 import { advance, begin, buildCourse, burst, chooseUpgrade, createClock, freshExpedition, jump, nearbyHint, pause, resume, burrow, steer, TRACK_LENGTH, ZONES, type Expedition, type GameEvent, type Upgrade } from '@/game/expedition/core';
 import { createExpeditionStore, type ExpeditionProfile } from '@/game/expedition/profile';
 import { ExpeditionScene } from '@/game/expedition/scene';
+import { classifyFrameGap, createFrameGapGuard, resetFrameGapGuard } from '@/game/expedition/frame-gap';
 import type { GL } from '@/game/expedition/gl';
 import { createExpeditionAudio, type ExpeditionAudio } from '@/game/expedition/audio';
 import { COMPANION_IDS, COMPANIONS } from '@/game/expedition/companions';
@@ -41,6 +42,7 @@ export default function ExpeditionScreen(){
  const booted=useRef(false),mounted=useRef(true),foreground=useRef(AppState.currentState==='active'),focused=useRef(true);
  const preferences=useRef({sound:true,calm:false,music:true});
  const visualTime=useRef(0),lastFrame=useRef<number|null>(null),raf=useRef<number|null>(null),lastSnapshot=useRef(0),lastSave=useRef(0),lastFinish=useRef(-10000),finishedBanked=useRef('');
+ const frameGap=useRef(createFrameGapGuard());
  const needsDraw=useRef(true),lastDrawn=useRef<{id:string;mode:Expedition['mode']|null;calm:boolean}>({id:'',mode:null,calm:false});
  const lastDrawMs=useRef(0);
  const [ui,setUi]=useState(()=>snapshotRun(runRef.current));
@@ -92,13 +94,21 @@ export default function ExpeditionScreen(){
 
  const frame=useCallback(function tick(timestamp:number){
   if(!mounted.current||!sceneRef.current)return;
-  const seconds=lastFrame.current===null?0:(timestamp-lastFrame.current)/1000;lastFrame.current=timestamp;
+  const firstFrame=lastFrame.current===null;
+  const seconds=firstFrame?0:(timestamp-lastFrame.current!)/1000;lastFrame.current=timestamp;
+  if(firstFrame)resetFrameGapGuard(frameGap.current);
   const s=runRef.current,events:GameEvent[]=[];
   if(foreground.current&&focused.current){
-   const was=s.mode;
-   if(seconds>.4&&(was==='running'||was==='countdown'))console.warn('MADGER_EXPEDITION_FRAME_STALL',JSON.stringify({frameMs:Math.round(seconds*1000),drawMs:Math.round(lastDrawMs.current),phase:was,...sceneRef.current.stats}));
-   if(was==='running'||was==='countdown')advance(s,courseRef.current,seconds,clockRef.current,events);
-   if(s.mode==='ready'||s.mode==='running'||s.mode==='countdown'||s.mode==='won'||s.mode==='lost')visualTime.current+=Math.min(seconds,.075);
+   const was=s.mode,active=was==='running'||was==='countdown';
+   const gap=classifyFrameGap(frameGap.current,seconds,timestamp/1000,active);
+   const usableSeconds=gap==='advance'?seconds:0;
+   if(seconds>.4&&(was==='running'||was==='countdown'))console.warn('MADGER_EXPEDITION_FRAME_STALL',JSON.stringify({frameMs:Math.round(seconds*1000),drawMs:Math.round(lastDrawMs.current),phase:was,policy:gap,...sceneRef.current.stats}));
+   if(active){
+    if(gap==='pause'){pause(s);clockRef.current.accumulator=0;}
+    else if(gap==='discard'||gap==='recover')clockRef.current.accumulator=0;
+    else advance(s,courseRef.current,seconds,clockRef.current,events);
+   }
+   if(s.mode==='ready'||s.mode==='running'||s.mode==='countdown'||s.mode==='won'||s.mode==='lost')visualTime.current+=Math.min(usableSeconds,.075);
    // Let the final reaction finish; do not continue physics after completion.
    if(s.finished&&finishedBanked.current!==s.id){finishedBanked.current=s.id;lastFinish.current=timestamp;void store.finish(s);}
    audioRef.current?.active(s.mode==='running'||s.mode==='countdown'||s.mode==='upgrade'||((s.mode==='won'||s.mode==='lost')&&timestamp-lastFinish.current<1250));
