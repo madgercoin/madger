@@ -104,6 +104,63 @@ def cached_node(label):
     return node
 
 
+def kill_observed_foreground_run():
+    """Read only the live HUD/controls, then kill before that observation is stale."""
+    started = time.monotonic()
+    observation = {'status': 'sampling', 'clock': 'host monotonic seconds',
+                   'started': started, 'max_age_seconds': 2.0, 'queries': []}
+
+    def query(name, **selector):
+        sample = {'name': name, 'started': time.monotonic()}
+        observation['queries'].append(sample)
+        try:
+            sample['nodes'] = device(packageName=PACKAGE, enabled=True, **selector).info_list()
+            return sample['nodes']
+        finally:
+            sample['finished'] = time.monotonic()
+
+    def assert_visible(node):
+        bounds = node.get('visibleBounds') or node.get('bounds') or {}
+        assert node.get('enabled') is True and (
+            bounds.get('right', 0) > bounds.get('left', 0)
+            and bounds.get('bottom', 0) > bounds.get('top', 0)
+        ), ('Live HUD/control was not visible and enabled', node)
+
+    try:
+        # A full accessibility traversal can take 11 seconds as the scene moves.
+        # Targeted selectors avoid collecting every moving tunnel entity and
+        # prevent a natural game-over during a stale, partially sampled tree.
+        timers = query('timer', textMatches=r'\d+s')
+        assert len(timers) == 1, ('Live HUD timer was not unique', timers)
+        assert_visible(timers[0])
+        timer = timers[0].get('text', '')
+        assert re.fullmatch(r'\d+s', timer), ('Invalid live HUD timer', timer)
+        live = int(timer[:-1])
+        assert 0 < live <= 60, ('Foreground run timer expired or invalid', live)
+        observation['live_seconds'] = live
+
+        controls = query('activity', descriptionMatches=r'Pause run|Back to the run|Resume run')
+        labels = [node.get('contentDescription') for node in controls]
+        assert 'Pause run' in labels, 'Foreground run was not active'
+        assert 'Back to the run' not in labels and 'Resume run' not in labels, 'Foreground run had paused'
+        assert_visible(next(node for node in controls if node.get('contentDescription') == 'Pause run'))
+        observation['force_stop_requested'] = time.monotonic()
+        assert observation['force_stop_requested'] - started <= observation['max_age_seconds'], 'Foreground observation was stale before process kill'
+        adb('shell', 'am', 'force-stop', PACKAGE)
+        observation['force_stop_completed'] = time.monotonic()
+        delay = observation['force_stop_completed'] - started
+        observation['observation_delay_seconds'] = delay
+        assert delay <= observation['max_age_seconds'], 'Foreground observation was stale when process kill completed'
+        observation['status'] = 'killed_while_observed_running'
+        return live, delay
+    except Exception as error:
+        observation['status'] = 'failed'
+        observation['error'] = str(error)
+        raise
+    finally:
+        OUT.joinpath('foreground-kill-observation.json').write_text(json.dumps(observation, indent=2))
+
+
 def capture(name):
     OUT.joinpath(name + '.png').write_bytes(adb('exec-out', 'screencap', '-p'))
 
@@ -185,21 +242,14 @@ paused_seconds = {int(node.get('text')[:-1]) for node in last_root.iter('node') 
 assert len(paused_seconds) == 1, paused_seconds
 tap('Back to the run')
 time.sleep(3.2)
-scan_started = time.monotonic()
-root = hierarchy()
-assert any(node.get('content-desc') == 'Pause run' for node in root.iter('node')), 'Foreground run was not active'
-assert not any(node.get('content-desc') == 'Back to the run' for node in root.iter('node')), 'Foreground run had paused'
-live_seconds = {int(node.get('text')[:-1]) for node in root.iter('node') if re.fullmatch(r'\d+s', node.get('text', ''))}
-assert len(live_seconds) == 1, live_seconds
-adb('shell', 'am', 'force-stop', PACKAGE)
-observation_delay = time.monotonic() - scan_started
+live, observation_delay = kill_observed_foreground_run()
 adb('shell', 'am', 'start', '-W', '-n', PACKAGE + '/.MainActivity')
 wait_for('Play the 3D Expedition')
 click_node(home_action('Continue interrupted run'))
 wait_for('Back to the run')
 recovered_seconds = {int(node.get('text')[:-1]) for node in last_root.iter('node') if re.fullmatch(r'\d+s', node.get('text', ''))}
 assert len(recovered_seconds) == 1, recovered_seconds
-live, recovered, earlier_pause = next(iter(live_seconds)), next(iter(recovered_seconds)), next(iter(paused_seconds))
+recovered, earlier_pause = next(iter(recovered_seconds)), next(iter(paused_seconds))
 # One-second checkpoint cadence plus integer HUD rounding permits at most two
 # displayed seconds of rollback. Scanning/force-stop can consume foreground time.
 assert live - int(observation_delay + 1) <= recovered <= live + 2, (live, recovered, observation_delay)
