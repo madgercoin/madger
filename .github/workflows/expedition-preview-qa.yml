@@ -18,7 +18,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 35
     env:
-      MADGER_ANDROID_APK: ${{ runner.temp }}/madger-expedition-preview.apk
+      MADGER_ANDROID_APK: ${{ github.workspace }}/.qa-artifacts/madger-expedition-preview.apk
       MADGER_ANDROID_EVIDENCE_DIR: ${{ github.workspace }}/mobile/expedition-evidence/android-preview
       MADGER_ANDROID_RESET: '1'
     steps:
