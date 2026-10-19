@@ -1,0 +1,68 @@
+{
+  "campaign": "MADGER — Meet the Heroes of The Burrow",
+  "date": "2026-10-19",
+  "asset": {
+    "filename": "MADGER_Game_Coming_Soon_Teaser.mp4",
+    "approvedVersion": 8,
+    "sha256": "3dda5038c862fd4c847129d09fceb4ca52f2796511f9f2698f67b9abc155b783",
+    "durationSeconds": 90.416667,
+    "width": 1920,
+    "height": 1080,
+    "fps": 24,
+    "type": "Cinematic game teaser, not actual gameplay"
+  },
+  "website": "https://madgercoin.com",
+  "publications": [
+    {
+      "platform": "X",
+      "status": "sent",
+      "bufferPostId": "6ad6688b2be0d5775d53141c",
+      "url": "https://x.com/2105667932919349248/status/2112257436182532393"
+    },
+    {
+      "platform": "Facebook",
+      "status": "sent",
+      "bufferPostId": "6ad6689937a3bee8ce017615",
+      "url": "https://facebook.com/1279493098576451_122120729871423166"
+    },
+    {
+      "platform": "Instagram",
+      "status": "sent",
+      "bufferPostId": "6ad668a6642abc3846c187db",
+      "url": "https://www.instagram.com/reel/Der9dIQFMtQ/"
+    },
+    {
+      "platform": "TikTok",
+      "status": "sent",
+      "bufferPostId": "6ad668b6a443b466be7217ee",
+      "url": "https://tiktok.com/@themadgercoin/video/7698455698987945230"
+    },
+    {
+      "platform": "Reddit",
+      "status": "removed_by_reddit_filters",
+      "url": "https://www.reddit.com/user/Madgercoin/comments/1xa5syo/meet_the_heroes_of_the_burrow_madger_game/",
+      "note": "Submitted to owned profile; removed by Reddit filters. Not republished."
+    },
+    {
+      "platform": "YouTube",
+      "status": "blocked",
+      "note": "Available authenticated channels are unrelated brands; MADGER channel access unavailable."
+    },
+    {
+      "platform": "Telegram",
+      "status": "blocked",
+      "note": "Browser session signed out."
+    }
+  ],
+  "productionStandards": [
+    "Preserve approved character likenesses and natural proportions. Madger has normal teeth, no large fang, and correct chest markings.",
+    "Snow White never has a speaking voice; preserve her approved bark.",
+    "Madger Bot has a robotic face and a friendly robotic voice when speech is appropriate.",
+    "Do not add dialogue to footage with unsynchronized mouths.",
+    "Use unique heroic poses, environmental interaction, depth, and readable dimensional branded typography.",
+    "Conform music to the exact edit and transitions; maintain consistent music level through sound effects.",
+    "Music must end with a complete composed finale, not an abrupt cutoff or a fade mid-note.",
+    "Coming soon precedes the official outro; outro is last and retains its original synchronized sound effects.",
+    "Audit the complete audiovisual export before delivery."
+  ]
+}
