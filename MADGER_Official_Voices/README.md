@@ -1,12 +1,12 @@
 # MADGER Official Character Voices
 
-Approved by James Dean on October 18, 2026. These are the approved voice references for future MADGER game and video production.
+Updated October 18, 2026.
 
-- [MADGER](MADGER.mp3): approved Excited Teen – R2 saved voice.
-- [Snow White](Snow_White.mp3): approved Lara voice.
-- [Gorilla White](Gorilla_White.mp3): approved R7 youthful baritone. Preserve rhythm.
-- [MADGER Bot](MADGER_Bot.mp3): approved Friendly Smooth R4 teenage robotic voice.
+**Snow White NEVER speaks. Use natural canine sounds only. Preserve her bark. Her previous Lara speech approval is revoked. Any historical Snow_White.mp3 is obsolete and must not be used.**
 
-See voice_profiles.json for exact provider identities, settings, delivery, and processing. The source files preserve the unprocessed generated performances used to create Gorilla White and MADGER Bot. Previous rejected auditions are not official voices. Do not substitute them.
+Approved voices for future scenes with speech:
+- [MADGER](MADGER.mp3): Excited Teen R2.
+- [Gorilla White](Gorilla_White.mp3): approved R7 baritone.
+- [MADGER Bot](MADGER_Bot.mp3): approved Friendly Smooth R4.
 
-For new dialogue, reuse the saved voice identity and listed processing, then compare to the approved MP3. These samples are reference performances, not a guarantee that future synthesis will be identical. No credentials are included.
+Current ability previews have no dialogue because mouths are not animated for speech. See voice_profiles.json for settings and character rules. Source audio files preserve the approved performances.
