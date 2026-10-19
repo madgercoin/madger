@@ -1,5 +1,5 @@
 {
-  "version": 7,
+  "version": 8,
   "project": "MADGER game",
   "created": "2026-10-19",
   "visual_rules": [
@@ -23,7 +23,13 @@
       "status": "User approved October 18 2026; preserve voice unchanged",
       "profile_library_id": "libfile_6ff2f2178d248191a3e6d0787f1bceb1",
       "new_line": "[excited] My burrow. My rules. Let's go!",
-      "generation_status": "Generated in ElevenLabs with saved voice and Eleven v4; mixed into final preview."
+      "generation_status": "Generated in ElevenLabs with saved voice and Eleven v4; mixed into final preview.",
+      "approved_visual": {
+        "approved_date": "2026-10-19",
+        "file": "generated_images/exec-94df606f-6c8c-4bf1-a3c4-6a99fe5c5af0.png",
+        "rule": "Use this exact approved compact friendly likeness; high chest V, black belly, angular tail zigzags, normal teeth. Remains bipedal in action.",
+        "replacement_video_task": "6eed82b7-858e-4697-a9aa-15eb63f30a0a"
+      }
     },
     "GORILLA_WHITE": {
       "provider": "Runway speech",
