@@ -32,6 +32,25 @@ const server=http.createServer((req,res)=>{
    const course=G.buildOvergrownCourse(s.seed);for(let i=0;i<8&&s.mode==='running';i++)G.fixedStep(s,course,[]);
    assert.equal(s.mode,'chamber');fixtures.push(s);
   }
+  // A software GPU must not repeatedly rescale its own backing canvas.
+  // Check six successive low-detail frames before normal route inspection.
+  const viewport=await page.evaluate(({run,course})=>{
+    const s=window.fixtureScene,canvas=document.querySelector('canvas');
+    s.setCourse(course);s.renderer.quality=.36;
+    const sizes=[];
+    for(let n=0;n<6;n++){
+      s.draw(run,3+n/60,false);
+      sizes.push([canvas.clientWidth,canvas.clientHeight,canvas.width,canvas.height]);
+    }
+    s.renderer.quality=1;
+    return sizes;
+  },{run:fixtures[0],course:G.buildOvergrownCourse(fixtures[0].seed)});
+  assert(viewport.every(row=>row[0]===viewport[0][0]&&row[1]===viewport[0][1]),
+    'Adaptive graphics shrank the CSS display viewport: '+JSON.stringify(viewport));
+  assert(viewport.every(row=>row[2]===viewport[0][2]&&row[3]===viewport[0][3]),
+    'Backing buffer shrank repeatedly at fixed quality: '+JSON.stringify(viewport));
+  assert(viewport[0][2]<viewport[0][0]&&viewport[0][3]<viewport[0][1],
+    'Low-detail mode failed to reduce 3D pixels: '+JSON.stringify(viewport));
   const results=[];
   for(const run of fixtures){
    const data=await page.evaluate(async({run,course})=>{

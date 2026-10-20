@@ -61,6 +61,14 @@ let bridge;
 class ForestRenderer {
   constructor(gl) {
     this.gl=gl; this.scene=new T.Scene(); this.scene.background=new T.Color('#7b9387');
+    // expo-gl sets responsive canvas CSS width/height before context creation.
+    // For an unstyled standalone canvas, preserve original display dimensions
+    // so lowering backing pixel resolution cannot recursively shrink layout.
+    const canvas=gl.canvas;
+    if(canvas?.style&&!canvas.style.width&&!canvas.style.height){
+      const width=canvas.clientWidth||canvas.width,height=canvas.clientHeight||canvas.height;
+      if(width>1&&height>1){canvas.style.width=width+'px';canvas.style.height=height+'px';}
+    }
     this.scene.fog=new T.FogExp2('#7b9387',.017);
     this.camera=new T.PerspectiveCamera(60,1,.1,145);
     this.gpu=new T.WebGLRenderer({canvas:gl.canvas,context:gl,antialias:false,alpha:false});

@@ -37,8 +37,21 @@ fs.mkdirSync(out,{recursive:true});
   assert(state.forest.cavernVaultTriangles>4000);
   assert(state.hero.approvedFace&&state.hero.backChevron&&state.hero.patternedTail);
   await page.screenshot({path:path.join(out,'deep-playable-cavern.png')});
-  await page.getByRole('button',{name:'Pause expedition',exact:true}).click();
-  await page.getByText('Your run is safe.',{exact:true}).waitFor();
+  const safe=page.getByText('Your run is safe.',{exact:true});
+  const metres=async()=>Number((await page.locator('[aria-label^="Expedition distance"]').first().getAttribute('aria-label').catch(()=>''))?.match(/distance (\d+)/)?.[1]||-1);
+  const initial=await metres();assert(initial>=140,'Deep branch starting distance was not visible');
+  let advanced=initial,resumes=0;
+  const deadline=Date.now()+35000;
+  while(Date.now()<deadline&&advanced<initial+6){
+    if(await safe.isVisible()){
+      if(++resumes>4)throw Error('Deep Burrow repeatedly paused before forward progress');
+      await page.getByRole('button',{name:'Resume expedition',exact:true}).last().click();
+    }
+    await page.waitForTimeout(230);advanced=Math.max(advanced,await metres());
+  }
+  assert(advanced>=initial+6,'Deep Burrow did not advance after resume');
+  if(!await safe.isVisible())await page.getByRole('button',{name:'Pause expedition',exact:true}).click();
+  await safe.waitFor();
   const saved=await page.evaluate(()=>JSON.parse(localStorage.getItem('madger-expedition-3d-v1')).checkpoint);
   assert.equal(saved.route,'deep');
   await page.reload({waitUntil:'networkidle',timeout:100000});
@@ -48,9 +61,9 @@ fs.mkdirSync(out,{recursive:true});
   assert.deepEqual(errors,[]);assert.deepEqual(bad,[]);
   const report={date:new Date().toISOString(),status:'PASS',url,
     checks:['approved face on live 3D rig','real controls choose Deep Burrow',
-      'physically enclosed PBR cavern','real save/reload returns to Deep',
+      'game advances at least six metres after normal protective Resume','physically enclosed PBR cavern','real save/reload returns to Deep',
       'back stripe and 3D patterned tail','no JavaScript or failed requests'],
-    hero:state.hero,cavernVaultTriangles:state.forest.cavernVaultTriangles,errors,bad};
+    hero:state.hero,startDistance:initial,advancedTo:advanced,protectiveResumes:resumes,cavernVaultTriangles:state.forest.cavernVaultTriangles,errors,bad};
   fs.writeFileSync(path.join(out,'hosted-madger-deep.json'),JSON.stringify(report,null,2));
   console.log('HOSTED_MADGER_DEEP_PASS',JSON.stringify(report));
  }catch(e){
