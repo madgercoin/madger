@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "id": "madger-confident",
+  "sha256": "ea154420ce62cf5431a962b546bea4e2e9d3b8e667b725f96b618e1bafa5846e",
+  "file": "giphy-publisher/assets/madger-confident.gif",
+  "title": "Madger — confident hero",
+  "test": true,
+  "scheduledFor": "2026-10-20T00:00:00Z",
+  "expectedOwner": "MadgerDaBadger",
+  "status": "reserved",
+  "reservedAt": "2026-10-20T01:32:45.578Z",
+  "runId": "39354009150"
+}
