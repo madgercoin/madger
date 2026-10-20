@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026-10-20 - Living Burrow / World Bible v2.1.0
+
+- Add a 26-page present-day world volume, five neighborhood identities, eight resident dossiers and seven measured sub-plans within existing allocations.
+- Preserve all 37 primary footprints, both route graphs, watercourse, crossings, hero profiles, voices, public access and population planning.
+- Add daily civic life, work, culture, bounded story seeds and a history workbook with questions kept distinct from established facts.
+- Record Madger as founder from the owner instruction while reserving motive, chronology, origins, first meetings, antagonists and creatures.
+- Archive the Underhall atmosphere study, editable SVG plans, complete source and validation. No production allowlist, game, video or voice changes.
+
 ## 2026-10-20 - Populated underground Burrow / World Bible v2.0.0
 
 - Add 21 underground areas, two occupied floors and a service level, with 28 measured blueprint sheets and reproducible sources.

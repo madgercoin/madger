@@ -1,0 +1,626 @@
+{
+  "status": "Reserved next phase; no origin answers supplied.",
+  "founder_fact": "Owner establishes that Madger created the Burrow. Motivation, chronology and collaborators remain unassigned.",
+  "event_schema": [
+    "event_id",
+    "relative_sequence",
+    "date_if_established",
+    "prerequisites",
+    "place_id",
+    "participants",
+    "objective_event",
+    "witness_accounts",
+    "rumors",
+    "before",
+    "after",
+    "who_knows",
+    "physical_evidence",
+    "later_reveal",
+    "canon_version"
+  ],
+  "events": [],
+  "dossiers": [
+    {
+      "id": "MADGER",
+      "type": "hero",
+      "established_present": "Organizer, explorer and friend; not the ruler.",
+      "questions": [
+        "Where did this character come from?",
+        "What did this character want before the Burrow?",
+        "When and how did each companion first meet them?",
+        "What action earned trust, and what difference survived?",
+        "Which past choice explains a present strength and a present flaw?"
+      ],
+      "status": "unwritten"
+    },
+    {
+      "id": "GORILLA_WHITE",
+      "type": "hero",
+      "established_present": "Craftsperson and protector; not an unlimited force.",
+      "questions": [
+        "Where did this character come from?",
+        "What did this character want before the Burrow?",
+        "When and how did each companion first meet them?",
+        "What action earned trust, and what difference survived?",
+        "Which past choice explains a present strength and a present flaw?"
+      ],
+      "status": "unwritten"
+    },
+    {
+      "id": "MADGER_BOT",
+      "type": "hero",
+      "established_present": "Systems keeper and evidence partner; not an omniscient administrator.",
+      "questions": [
+        "Where did this character come from?",
+        "What did this character want before the Burrow?",
+        "When and how did each companion first meet them?",
+        "What action earned trust, and what difference survived?",
+        "Which past choice explains a present strength and a present flaw?"
+      ],
+      "status": "unwritten"
+    },
+    {
+      "id": "SNOW_WHITE",
+      "type": "hero",
+      "established_present": "Adult quadrupedal shepherd, companion and scout; a real dog.",
+      "questions": [
+        "Where did this character come from?",
+        "What did this character want before the Burrow?",
+        "When and how did each companion first meet them?",
+        "What action earned trust, and what difference survived?",
+        "Which past choice explains a present strength and a present flaw?"
+      ],
+      "status": "unwritten"
+    },
+    {
+      "id": "RES-01",
+      "type": "resident",
+      "established_present": "Baker and shared-kitchen shift coordinator; home UG-04",
+      "questions": [
+        "What was their former home and why did they leave, stay or return?",
+        "Which skills and relationships did they bring?",
+        "How did they arrive and what did they expect?",
+        "What makes the Burrow home now?"
+      ],
+      "status": "unwritten"
+    },
+    {
+      "id": "RES-02",
+      "type": "resident",
+      "established_present": "Repair apprentice and tool-loan assistant; home UG-10",
+      "questions": [
+        "What was their former home and why did they leave, stay or return?",
+        "Which skills and relationships did they bring?",
+        "How did they arrive and what did they expect?",
+        "What makes the Burrow home now?"
+      ],
+      "status": "unwritten"
+    },
+    {
+      "id": "RES-03",
+      "type": "resident",
+      "established_present": "Water and air maintenance lead; home BRW-03",
+      "questions": [
+        "What was their former home and why did they leave, stay or return?",
+        "Which skills and relationships did they bring?",
+        "How did they arrive and what did they expect?",
+        "What makes the Burrow home now?"
+      ],
+      "status": "unwritten"
+    },
+    {
+      "id": "RES-04",
+      "type": "resident",
+      "established_present": "Teacher and makers-club facilitator; home UG-05",
+      "questions": [
+        "What was their former home and why did they leave, stay or return?",
+        "Which skills and relationships did they bring?",
+        "How did they arrive and what did they expect?",
+        "What makes the Burrow home now?"
+      ],
+      "status": "unwritten"
+    },
+    {
+      "id": "RES-05",
+      "type": "resident",
+      "established_present": "Welcome steward and records liaison; home UG-11",
+      "questions": [
+        "What was their former home and why did they leave, stay or return?",
+        "Which skills and relationships did they bring?",
+        "How did they arrive and what did they expect?",
+        "What makes the Burrow home now?"
+      ],
+      "status": "unwritten"
+    },
+    {
+      "id": "RES-06",
+      "type": "resident",
+      "established_present": "Mender, sign painter and public-notice contributor; home UG-04",
+      "questions": [
+        "What was their former home and why did they leave, stay or return?",
+        "Which skills and relationships did they bring?",
+        "How did they arrive and what did they expect?",
+        "What makes the Burrow home now?"
+      ],
+      "status": "unwritten"
+    },
+    {
+      "id": "RES-07",
+      "type": "resident",
+      "established_present": "Care worker and recovery coordinator; home UG-11",
+      "questions": [
+        "What was their former home and why did they leave, stay or return?",
+        "Which skills and relationships did they bring?",
+        "How did they arrive and what did they expect?",
+        "What makes the Burrow home now?"
+      ],
+      "status": "unwritten"
+    },
+    {
+      "id": "RES-08",
+      "type": "resident",
+      "established_present": "Grower and produce-stall coordinator; home BRW-03",
+      "questions": [
+        "What was their former home and why did they leave, stay or return?",
+        "Which skills and relationships did they bring?",
+        "How did they arrive and what did they expect?",
+        "What makes the Burrow home now?"
+      ],
+      "status": "unwritten"
+    },
+    {
+      "id": "BRW-01",
+      "type": "place",
+      "established_present": "Sunwell Market",
+      "questions": [
+        "What existed here before the current use?",
+        "Who built or adapted it, when, and for what need?",
+        "Which resources and compromises shaped it?",
+        "What alterations and surviving evidence connect that history to the present?"
+      ],
+      "status": "unwritten"
+    },
+    {
+      "id": "BRW-02",
+      "type": "place",
+      "established_present": "Common House & Tables",
+      "questions": [
+        "What existed here before the current use?",
+        "Who built or adapted it, when, and for what need?",
+        "Which resources and compromises shaped it?",
+        "What alterations and surviving evidence connect that history to the present?"
+      ],
+      "status": "unwritten"
+    },
+    {
+      "id": "BRW-03",
+      "type": "place",
+      "established_present": "Hearth Terraces",
+      "questions": [
+        "What existed here before the current use?",
+        "Who built or adapted it, when, and for what need?",
+        "Which resources and compromises shaped it?",
+        "What alterations and surviving evidence connect that history to the present?"
+      ],
+      "status": "unwritten"
+    },
+    {
+      "id": "BRW-04",
+      "type": "place",
+      "established_present": "Garden Terraces",
+      "questions": [
+        "What existed here before the current use?",
+        "Who built or adapted it, when, and for what need?",
+        "Which resources and compromises shaped it?",
+        "What alterations and surviving evidence connect that history to the present?"
+      ],
+      "status": "unwritten"
+    },
+    {
+      "id": "BRW-05",
+      "type": "place",
+      "established_present": "Spring House",
+      "questions": [
+        "What existed here before the current use?",
+        "Who built or adapted it, when, and for what need?",
+        "Which resources and compromises shaped it?",
+        "What alterations and surviving evidence connect that history to the present?"
+      ],
+      "status": "unwritten"
+    },
+    {
+      "id": "BRW-06",
+      "type": "place",
+      "established_present": "Waterhouse",
+      "questions": [
+        "What existed here before the current use?",
+        "Who built or adapted it, when, and for what need?",
+        "Which resources and compromises shaped it?",
+        "What alterations and surviving evidence connect that history to the present?"
+      ],
+      "status": "unwritten"
+    },
+    {
+      "id": "BRW-07",
+      "type": "place",
+      "established_present": "Gorilla White's Workshop",
+      "questions": [
+        "What existed here before the current use?",
+        "Who built or adapted it, when, and for what need?",
+        "Which resources and compromises shaped it?",
+        "What alterations and surviving evidence connect that history to the present?"
+      ],
+      "status": "unwritten"
+    },
+    {
+      "id": "BRW-08",
+      "type": "place",
+      "established_present": "Training Court",
+      "questions": [
+        "What existed here before the current use?",
+        "Who built or adapted it, when, and for what need?",
+        "Which resources and compromises shaped it?",
+        "What alterations and surviving evidence connect that history to the present?"
+      ],
+      "status": "unwritten"
+    },
+    {
+      "id": "BRW-09",
+      "type": "place",
+      "established_present": "Records House",
+      "questions": [
+        "What existed here before the current use?",
+        "Who built or adapted it, when, and for what need?",
+        "Which resources and compromises shaped it?",
+        "What alterations and surviving evidence connect that history to the present?"
+      ],
+      "status": "unwritten"
+    },
+    {
+      "id": "BRW-10",
+      "type": "place",
+      "established_present": "Storehouse & Trading Court",
+      "questions": [
+        "What existed here before the current use?",
+        "Who built or adapted it, when, and for what need?",
+        "Which resources and compromises shaped it?",
+        "What alterations and surviving evidence connect that history to the present?"
+      ],
+      "status": "unwritten"
+    },
+    {
+      "id": "BRW-11",
+      "type": "place",
+      "established_present": "Care House",
+      "questions": [
+        "What existed here before the current use?",
+        "Who built or adapted it, when, and for what need?",
+        "Which resources and compromises shaped it?",
+        "What alterations and surviving evidence connect that history to the present?"
+      ],
+      "status": "unwritten"
+    },
+    {
+      "id": "BRW-12",
+      "type": "place",
+      "established_present": "East Bridge",
+      "questions": [
+        "What existed here before the current use?",
+        "Who built or adapted it, when, and for what need?",
+        "Which resources and compromises shaped it?",
+        "What alterations and surviving evidence connect that history to the present?"
+      ],
+      "status": "unwritten"
+    },
+    {
+      "id": "BRW-13",
+      "type": "place",
+      "established_present": "Inner Arrival Court",
+      "questions": [
+        "What existed here before the current use?",
+        "Who built or adapted it, when, and for what need?",
+        "Which resources and compromises shaped it?",
+        "What alterations and surviving evidence connect that history to the present?"
+      ],
+      "status": "unwritten"
+    },
+    {
+      "id": "BRW-14",
+      "type": "place",
+      "established_present": "East Gate",
+      "questions": [
+        "What existed here before the current use?",
+        "Who built or adapted it, when, and for what need?",
+        "Which resources and compromises shaped it?",
+        "What alterations and surviving evidence connect that history to the present?"
+      ],
+      "status": "unwritten"
+    },
+    {
+      "id": "BRW-15",
+      "type": "place",
+      "established_present": "Service Walk & Gate Relay",
+      "questions": [
+        "What existed here before the current use?",
+        "Who built or adapted it, when, and for what need?",
+        "Which resources and compromises shaped it?",
+        "What alterations and surviving evidence connect that history to the present?"
+      ],
+      "status": "unwritten"
+    },
+    {
+      "id": "BRW-16",
+      "type": "place",
+      "established_present": "Makers' Room & Archive",
+      "questions": [
+        "What existed here before the current use?",
+        "Who built or adapted it, when, and for what need?",
+        "Which resources and compromises shaped it?",
+        "What alterations and surviving evidence connect that history to the present?"
+      ],
+      "status": "unwritten"
+    },
+    {
+      "id": "UG-00",
+      "type": "place",
+      "established_present": "Hearth Public Entry",
+      "questions": [
+        "What existed here before the current use?",
+        "Who built or adapted it, when, and for what need?",
+        "Which resources and compromises shaped it?",
+        "What alterations and surviving evidence connect that history to the present?"
+      ],
+      "status": "unwritten"
+    },
+    {
+      "id": "UG-01",
+      "type": "place",
+      "established_present": "Welcome Hall",
+      "questions": [
+        "What existed here before the current use?",
+        "Who built or adapted it, when, and for what need?",
+        "Which resources and compromises shaped it?",
+        "What alterations and surviving evidence connect that history to the present?"
+      ],
+      "status": "unwritten"
+    },
+    {
+      "id": "UG-02",
+      "type": "place",
+      "established_present": "Inner Gate Gallery",
+      "questions": [
+        "What existed here before the current use?",
+        "Who built or adapted it, when, and for what need?",
+        "Which resources and compromises shaped it?",
+        "What alterations and surviving evidence connect that history to the present?"
+      ],
+      "status": "unwritten"
+    },
+    {
+      "id": "UG-03",
+      "type": "place",
+      "established_present": "Underhall Commons",
+      "questions": [
+        "What existed here before the current use?",
+        "Who built or adapted it, when, and for what need?",
+        "Which resources and compromises shaped it?",
+        "What alterations and surviving evidence connect that history to the present?"
+      ],
+      "status": "unwritten"
+    },
+    {
+      "id": "UG-04",
+      "type": "place",
+      "established_present": "West Lantern Warren",
+      "questions": [
+        "What existed here before the current use?",
+        "Who built or adapted it, when, and for what need?",
+        "Which resources and compromises shaped it?",
+        "What alterations and surviving evidence connect that history to the present?"
+      ],
+      "status": "unwritten"
+    },
+    {
+      "id": "UG-05",
+      "type": "place",
+      "established_present": "East Orchard Warren",
+      "questions": [
+        "What existed here before the current use?",
+        "Who built or adapted it, when, and for what need?",
+        "Which resources and compromises shaped it?",
+        "What alterations and surviving evidence connect that history to the present?"
+      ],
+      "status": "unwritten"
+    },
+    {
+      "id": "UG-06",
+      "type": "place",
+      "established_present": "School & Play Hall",
+      "questions": [
+        "What existed here before the current use?",
+        "Who built or adapted it, when, and for what need?",
+        "Which resources and compromises shaped it?",
+        "What alterations and surviving evidence connect that history to the present?"
+      ],
+      "status": "unwritten"
+    },
+    {
+      "id": "UG-07",
+      "type": "place",
+      "established_present": "Care & Community Hall",
+      "questions": [
+        "What existed here before the current use?",
+        "Who built or adapted it, when, and for what need?",
+        "Which resources and compromises shaped it?",
+        "What alterations and surviving evidence connect that history to the present?"
+      ],
+      "status": "unwritten"
+    },
+    {
+      "id": "UG-08",
+      "type": "place",
+      "established_present": "Central Lift & Stair Court",
+      "questions": [
+        "What existed here before the current use?",
+        "Who built or adapted it, when, and for what need?",
+        "Which resources and compromises shaped it?",
+        "What alterations and surviving evidence connect that history to the present?"
+      ],
+      "status": "unwritten"
+    },
+    {
+      "id": "UG-09",
+      "type": "place",
+      "established_present": "Service Receiving Hall",
+      "questions": [
+        "What existed here before the current use?",
+        "Who built or adapted it, when, and for what need?",
+        "Which resources and compromises shaped it?",
+        "What alterations and surviving evidence connect that history to the present?"
+      ],
+      "status": "unwritten"
+    },
+    {
+      "id": "UG-10",
+      "type": "place",
+      "established_present": "West Deep Warren",
+      "questions": [
+        "What existed here before the current use?",
+        "Who built or adapted it, when, and for what need?",
+        "Which resources and compromises shaped it?",
+        "What alterations and surviving evidence connect that history to the present?"
+      ],
+      "status": "unwritten"
+    },
+    {
+      "id": "UG-11",
+      "type": "place",
+      "established_present": "East Deep Warren",
+      "questions": [
+        "What existed here before the current use?",
+        "Who built or adapted it, when, and for what need?",
+        "Which resources and compromises shaped it?",
+        "What alterations and surviving evidence connect that history to the present?"
+      ],
+      "status": "unwritten"
+    },
+    {
+      "id": "UG-12",
+      "type": "place",
+      "established_present": "Deep Commons & Kitchens",
+      "questions": [
+        "What existed here before the current use?",
+        "Who built or adapted it, when, and for what need?",
+        "Which resources and compromises shaped it?",
+        "What alterations and surviving evidence connect that history to the present?"
+      ],
+      "status": "unwritten"
+    },
+    {
+      "id": "UG-13",
+      "type": "place",
+      "established_present": "Food Gardens & Grow Rooms",
+      "questions": [
+        "What existed here before the current use?",
+        "Who built or adapted it, when, and for what need?",
+        "Which resources and compromises shaped it?",
+        "What alterations and surviving evidence connect that history to the present?"
+      ],
+      "status": "unwritten"
+    },
+    {
+      "id": "UG-14",
+      "type": "place",
+      "established_present": "Assembly & Refuge Hall",
+      "questions": [
+        "What existed here before the current use?",
+        "Who built or adapted it, when, and for what need?",
+        "Which resources and compromises shaped it?",
+        "What alterations and surviving evidence connect that history to the present?"
+      ],
+      "status": "unwritten"
+    },
+    {
+      "id": "UG-15",
+      "type": "place",
+      "established_present": "Baths & Laundry",
+      "questions": [
+        "What existed here before the current use?",
+        "Who built or adapted it, when, and for what need?",
+        "Which resources and compromises shaped it?",
+        "What alterations and surviving evidence connect that history to the present?"
+      ],
+      "status": "unwritten"
+    },
+    {
+      "id": "UG-16",
+      "type": "place",
+      "established_present": "Utility Repair Hall",
+      "questions": [
+        "What existed here before the current use?",
+        "Who built or adapted it, when, and for what need?",
+        "Which resources and compromises shaped it?",
+        "What alterations and surviving evidence connect that history to the present?"
+      ],
+      "status": "unwritten"
+    },
+    {
+      "id": "UG-17",
+      "type": "place",
+      "established_present": "Water & Air Service Rooms",
+      "questions": [
+        "What existed here before the current use?",
+        "Who built or adapted it, when, and for what need?",
+        "Which resources and compromises shaped it?",
+        "What alterations and surviving evidence connect that history to the present?"
+      ],
+      "status": "unwritten"
+    },
+    {
+      "id": "UG-18",
+      "type": "place",
+      "established_present": "Deep Stores",
+      "questions": [
+        "What existed here before the current use?",
+        "Who built or adapted it, when, and for what need?",
+        "Which resources and compromises shaped it?",
+        "What alterations and surviving evidence connect that history to the present?"
+      ],
+      "status": "unwritten"
+    },
+    {
+      "id": "UG-19",
+      "type": "place",
+      "established_present": "West Stair & Refuge Core",
+      "questions": [
+        "What existed here before the current use?",
+        "Who built or adapted it, when, and for what need?",
+        "Which resources and compromises shaped it?",
+        "What alterations and surviving evidence connect that history to the present?"
+      ],
+      "status": "unwritten"
+    },
+    {
+      "id": "UG-20",
+      "type": "place",
+      "established_present": "East Stair & Refuge Core",
+      "questions": [
+        "What existed here before the current use?",
+        "Who built or adapted it, when, and for what need?",
+        "Which resources and compromises shaped it?",
+        "What alterations and surviving evidence connect that history to the present?"
+      ],
+      "status": "unwritten"
+    }
+  ],
+  "future_subjects": [
+    "Madger founding motive and founding sequence",
+    "Burrow pre-settlement geography and construction phases",
+    "Residents origins and migration routes",
+    "First meetings and trust between the four companions",
+    "Histories of individual places and present institutions",
+    "Antagonist biographies, factions and conflicts",
+    "Safe and dangerous regions",
+    "Monster and animal ecology, behavior and any supernatural rules"
+  ]
+}

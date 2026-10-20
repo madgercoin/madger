@@ -1,0 +1,5923 @@
+{
+  "title": "MADGER World Bible",
+  "volume": "02 / Above and Below",
+  "version": "2.0.0",
+  "date": "2026-10-20",
+  "owner": "James Raymond Dean",
+  "status": "Owner-directed world expansion. The populated underground town and public entrance replace the surface-only scope and closed-gate default. Prior editions remain historical.",
+  "premise": "The Burrow is one busy, welcoming town with populated outdoor terraces and a larger underground neighborhood network. People move between both every day. If the outdoor district is overrun, an independent inner boundary protects the inhabited underground town.",
+  "scope": {
+    "included": "The existing outdoor basin, populated underground levels, their public/service/egress connections and normal/protected operating states.",
+    "excluded": "Undefined exterior lands, attacker identity, a finished game implementation and real-world structural/mechanical engineering."
+  },
+  "authority_order": [
+    "Latest explicit owner decision",
+    "This World Bible and its matching versioned map data",
+    "Dated event and character records",
+    "Location/model sheets checked against this Bible",
+    "Individual episode, game and promotional assets"
+  ],
+  "provenance": {
+    "retained": [
+      "Four established heroes and character/voice corrections",
+      "Warm, prosperous settlement and gradual clues",
+      "Sunwell, west workshops, north gardens, south homes, east bridge/gate",
+      "Independent physical gate bar and local digital records"
+    ],
+    "new_in_this_edition": [
+      "Two occupied underground levels and a service level; 21 new mapped area IDs.",
+      "Public entry, internal defensive boundary and independent secondary access closures.",
+      "Population planning revised from approximately 400 to 2,400, split 800 above and 1,600 below.",
+      "Existing surface anchors, footprints, three crossings and watercourse preserved."
+    ],
+    "supersedes": [
+      "R6 schematic geography where it lacks precise dimensions",
+      "R6 shots showing a road beyond the gate",
+      "Unmatched or mirrored background variants",
+      "Lantern/Warden pilot plot and arbitrary architectural changes",
+      "Surface-only scope, approximate 400-person planning population and closed-gate default from v1.0.0.",
+      "Pilot requirements that the public gate remain closed in every daytime shot."
+    ]
+  },
+  "geography": {
+    "world_id": "MADGER-BRW-HOME",
+    "units": "metres",
+    "coordinates": "right-handed: +X east, +Y north, +Z up",
+    "origin": "Sunwell center at finished market paving level",
+    "planning_envelope_m": [
+      600,
+      440
+    ],
+    "rim_height_m": 54,
+    "open_sky_aperture_m": [
+      430,
+      300
+    ],
+    "occupied_terraces_z_m": [
+      0,
+      6,
+      12,
+      18
+    ],
+    "baseline_population_approx": 2400,
+    "perimeter": "Ellipse x^2/300^2 + y^2/220^2 = 1 is the planning boundary. Render rock as irregular inside this envelope without moving anchors.",
+    "inside_definition": "The Burrow includes the outdoor basin and inhabited chambers beneath it and its inner rock terraces. Episode 1 can show both, but not the unassigned exterior beyond the east boundary.",
+    "scale_policy": "Coordinates and anchored footprints are fixed production layout. Local decoration and rock texture vary only within their allocated bounds. Roof heights and building shell details remain production specifications, not surveyed real-world engineering.",
+    "population_plan": {
+      "surface_residents": 800,
+      "underground_residents": 1600,
+      "total_residents": 2400,
+      "underground_households": 400,
+      "basis": "New production planning baseline, not a user-specified census. Four residential wards of 100 homes at an average four residents; shared services support both districts."
+    },
+    "occupied_underground_levels_z_m": [
+      -12,
+      -24
+    ],
+    "service_level_z_m": -36,
+    "underground_planning_bounds_m": [
+      -230,
+      -230,
+      -42,
+      175,
+      40,
+      4
+    ],
+    "underground_section": "Occupied room floors are -12 m and -24 m. Services are -36 m. Typical drawn chamber clear height is 6 m; the section reserves intervening rock. These are fictional production dimensions, not verified structural calculations."
+  },
+  "canon_rules": [
+    {
+      "id": "C01",
+      "title": "One shared place",
+      "rule": "Every episode, game hub and story illustration references the same location IDs, compass directions, routes and landmark relationships."
+    },
+    {
+      "id": "C02",
+      "title": "Permanent base, recorded change",
+      "rule": "Geography and built footprints form the baseline. Weather, repairs, new occupants and event damage belong in dated state overlays. Growth adds entries; it does not silently redraw the base."
+    },
+    {
+      "id": "C03",
+      "title": "Inside means inside",
+      "rule": "Episode 1 stays within the outdoor basin and mapped underground town. An open public gate may be shown from an inward-facing angle without depicting the undefined exterior. No villain or exterior attack cutaway."
+    },
+    {
+      "id": "C04",
+      "title": "Care has ordinary causes",
+      "rule": "Food, water, repairs and safety come from neighbors and working infrastructure. No magic lantern, universal energy core, or secretly indispensable hero sustains the town."
+    },
+    {
+      "id": "C05",
+      "title": "Trust can be checked",
+      "rule": "A message is evidence of a report, not proof that an event occurred. Digital, physical and personal observations can disagree."
+    },
+    {
+      "id": "C06",
+      "title": "The four remain themselves",
+      "rule": "Madger, Gorilla White, MADGER Bot and Snow White retain their established designs and approved voices. Snow has canine sounds only. No duplicate hero mascots as anonymous crowd fillers."
+    },
+    {
+      "id": "C07",
+      "title": "The pilot earns its warmth",
+      "rule": "Show skill, generosity, play and ordinary friction before clues. No pilot attack, named villain reveal or retroactive sabotage of the repaired bridge."
+    },
+    {
+      "id": "C08",
+      "title": "No convenience architecture",
+      "rule": "A chase may use an existing route or a newly documented extension. It cannot conjure a door through a previously solid wall or change which side of the canal a building occupies."
+    },
+    {
+      "id": "C09",
+      "title": "Same environment, different presentation",
+      "rule": "Anime may use painted linework and game assets may use 3D meshes. Their scale, silhouettes, sign placement, doors and travel connections agree."
+    },
+    {
+      "id": "C10",
+      "title": "Unknown is not permission to improvise",
+      "rule": "External lands, undisclosed tunnels and unnamed NPC biographies remain unassigned. Define and record them before using them as plot facts."
+    },
+    {
+      "id": "C11",
+      "title": "One town above and below",
+      "rule": "Both parts are highly populated permanent neighborhoods. Underground living is normal and valued; its residents share surface civic life."
+    },
+    {
+      "id": "C12",
+      "title": "Welcome first, independent defense",
+      "rule": "Public entrance is open in normal life. The inhabited underground town has a separate, more defensible inner boundary. Account for main, service and emergency ingress; no bypass invented for convenience."
+    },
+    {
+      "id": "C13",
+      "title": "People before closure",
+      "rule": "Defensive state changes retain civilian refuge, manual egress, air, water and local control. A status message alone cannot operate the physical gate bar."
+    },
+    {
+      "id": "C14",
+      "title": "A plan for every area",
+      "rule": "Register a blueprint, fixed coordinates and connections before a new area appears. New districts extend this world; event damage does not silently redraw its baseline."
+    }
+  ],
+  "locations": [
+    {
+      "id": "BRW-01",
+      "name": "Sunwell Market",
+      "position_m": [
+        0,
+        0,
+        0
+      ],
+      "footprint_m": [
+        84,
+        64
+      ],
+      "role": "The civic center: daily exchange, news and informal decisions.",
+      "anchors": [
+        "Round limestone well curb at the world origin; sealed potable-water draw point, never an energy core.",
+        "Four dark inset paving rays mark north, east, south and west.",
+        "Green canvas stalls occupy the north and west edges; the east route stays clear.",
+        "A freestanding timber noticeboard stands at (18,20,0)."
+      ],
+      "doors": [
+        "Open east to Gate Lane, south to Hearth Lane, west to Workshop Lane and north to Garden Way."
+      ],
+      "daily_life": "Produce arrives before breakfast. Neighbors trade repairs, food and information. A returned tool matters as much as a sale.",
+      "story_use": "Let the community solve ordinary problems here. A future false notice has recognizable recipients and consequences.",
+      "game_use": "Home hub, dialogue, noticeboard quests and map orientation. No random hazards in the peaceful baseline.",
+      "continuity_limits": [
+        "Keep the center open. Stalls move only within marked bays. Never mirror the paving compass or move the well."
+      ]
+    },
+    {
+      "id": "BRW-02",
+      "name": "Common House & Tables",
+      "position_m": [
+        -5,
+        -58,
+        0
+      ],
+      "footprint_m": [
+        50,
+        28
+      ],
+      "role": "A communal kitchen, shared meal room and meeting place open to the market.",
+      "anchors": [
+        "Long north-facing porch; three permanent stone table bases in its forecourt.",
+        "Warm plaster, green shutters, copper kitchen vent on the southwest corner.",
+        "Four friends usually sit at the eastern porch table; it is not privately reserved."
+      ],
+      "doors": [
+        "Main double doors centered in the north wall.",
+        "Kitchen service door in west wall.",
+        "Second exit in southeast corner."
+      ],
+      "daily_life": "Households have their own kitchens. This kitchen serves workers, visitors and shared meals; no one must earn food through heroics.",
+      "story_use": "The emotional home of the pilot and a repeatable place for disagreements, apologies and celebrations.",
+      "game_use": "Rest, party conversations and meal preparation. Healing/rest is a game interaction, not instant story-world magic.",
+      "continuity_limits": [
+        "Do not turn the forecourt into a different plaza. Seasonal cloths and food are state changes."
+      ]
+    },
+    {
+      "id": "BRW-03",
+      "name": "Hearth Terraces",
+      "position_m": [
+        -30,
+        -132,
+        12
+      ],
+      "footprint_m": [
+        140,
+        52
+      ],
+      "role": "The principal residential neighborhood, built into the southern rock.",
+      "anchors": [
+        "Three inhabited tiers at +6, +12 and +18 metres.",
+        "Pale stone lower walls, dark timber balconies, slate roofs and individual colored doors.",
+        "Madger and Snow share the ground-level accessible home entry at the west end of the +12 m terrace."
+      ],
+      "doors": [
+        "Each dwelling opens to a public gallery.",
+        "Stairs shorten the route; the western switchback ramp reaches every occupied tier."
+      ],
+      "daily_life": "Laundry, school bags, meals, repairs and quiet hours make this a neighborhood rather than a backdrop.",
+      "story_use": "Private thresholds give friendships boundaries. Residents have plans independent of the heroes.",
+      "game_use": "Home save point and optional conversations. Occupied homes are not loot containers.",
+      "continuity_limits": [
+        "This edition fixes neighborhood massing and Madger/Snow entry, not every unseen room or every resident name."
+      ]
+    },
+    {
+      "id": "BRW-04",
+      "name": "Garden Terraces",
+      "position_m": [
+        0,
+        135,
+        12
+      ],
+      "footprint_m": [
+        160,
+        62
+      ],
+      "role": "North terraces for produce, plant starts and shared learning.",
+      "anchors": [
+        "Three broad planted bands at +6, +12 and +18 metres.",
+        "Two low greenhouses sit at the eastern end of the +12 m terrace.",
+        "Garden crossing BRW-C02 links the lower path to Garden Way."
+      ],
+      "doors": [
+        "South stair from Garden Way.",
+        "Long west ramp for carts and mobility access."
+      ],
+      "daily_life": "Growers share water schedules. Greens, roots and fruit supplement traded grain; gardens do not magically feed everyone alone.",
+      "story_use": "A future changed delivery schedule can cause a missed watering without threatening the whole town at once.",
+      "game_use": "Cultivation, observation and soil-route tutorials in designated beds only.",
+      "continuity_limits": [
+        "No new cliff or waterfall between tiers. North remains north in every season."
+      ]
+    },
+    {
+      "id": "BRW-05",
+      "name": "Spring House",
+      "position_m": [
+        -160,
+        150,
+        18
+      ],
+      "footprint_m": [
+        32,
+        24
+      ],
+      "role": "Protected source, settling tanks and the start of separate water systems.",
+      "anchors": [
+        "Low limestone vault built into the northwest wall.",
+        "Three labeled valve wheels inside; a fenced settling court outside.",
+        "Drinking-water tanks are covered; the utility race is visibly separate."
+      ],
+      "doors": [
+        "South inspection entrance from Garden Ramp."
+      ],
+      "daily_life": "A water team checks clarity and flow physically and records the result before opening the daily allocation.",
+      "story_use": "Careful work becomes familiar before any later attempt to falsify it.",
+      "game_use": "Inspection puzzles and valve routing with a local effect; never a universal town-off switch.",
+      "continuity_limits": [
+        "No bathing or dumping in potable tanks. Water flows downhill along fixed routes."
+      ]
+    },
+    {
+      "id": "BRW-06",
+      "name": "Waterhouse",
+      "position_m": [
+        -185,
+        65,
+        0
+      ],
+      "footprint_m": [
+        40,
+        30
+      ],
+      "role": "Water-driven power and maintenance beside the western wheelrace.",
+      "anchors": [
+        "One 6 m diameter vertical waterwheel on the east wall.",
+        "Separate mechanical sluice and electrical isolator.",
+        "Wheelrace runs on the building's east side; the workshop stands south."
+      ],
+      "doors": [
+        "South door to the workshop court.",
+        "West equipment door to perimeter service path."
+      ],
+      "daily_life": "Operators clean grates and compare local gauges; nearby roofs add solar power and local batteries.",
+      "story_use": "Local consequences create practical rescue and repair stories later.",
+      "game_use": "Environmental repair and supervised mechanisms. No unrestricted control of the entire settlement.",
+      "continuity_limits": [
+        "The wheel never migrates to the gate or north gardens. Power and drinking water remain independent."
+      ]
+    },
+    {
+      "id": "BRW-07",
+      "name": "Gorilla White's Workshop",
+      "position_m": [
+        -185,
+        18,
+        0
+      ],
+      "footprint_m": [
+        44,
+        30
+      ],
+      "role": "A public repair workshop where Gorilla White works alongside other craftspeople.",
+      "anchors": [
+        "Wide east-facing pair of timber doors.",
+        "Big shared bench beneath north windows; blue tool silhouettes on the west rack.",
+        "A small private rest alcove is behind the south partition, never in the public tool aisle."
+      ],
+      "doors": [
+        "East workshop doors to the court.",
+        "North service door to Waterhouse.",
+        "South door to the western walk."
+      ],
+      "daily_life": "Repair tickets are public. Apprentices do real work. Gorilla accepts help and takes turns being off duty.",
+      "story_use": "Repairs reveal community relationships; strength can support rather than replace other people.",
+      "game_use": "Upgrade station, craft tasks and companion conversation. Purchases do not rewrite plot outcomes.",
+      "continuity_limits": [
+        "No weapon factory in the peaceful baseline. Shelves may gain tools; walls and doors stay fixed."
+      ]
+    },
+    {
+      "id": "BRW-08",
+      "name": "Training Court",
+      "position_m": [
+        -182,
+        -73,
+        0
+      ],
+      "footprint_m": [
+        58,
+        42
+      ],
+      "role": "A safe, open practice yard with marked soil lanes and rescue exercises.",
+      "anchors": [
+        "Low timber boundary on three sides; east entrance stays open.",
+        "Two sand/soil strips, reusable wooden obstacles and a rope-rescue frame.",
+        "Soft soil lane A runs north-south inside the court; buried utilities are outside its bounds."
+      ],
+      "doors": [
+        "East public entrance from the lower ring walk.",
+        "North equipment gate toward workshop."
+      ],
+      "daily_life": "Children practice coordination; adults rehearse carrying and rescue. Training is scheduled around rest hours.",
+      "story_use": "A place for effort, humor, failure and gradual competence before a real emergency.",
+      "game_use": "Jump, guard and BURROW tutorials. Down/S/down-swipe/BURROW retain their established behavior.",
+      "continuity_limits": [
+        "Digging is allowed only in defined soil volumes; never phase through stone, homes or pipes."
+      ]
+    },
+    {
+      "id": "BRW-09",
+      "name": "Records House",
+      "position_m": [
+        62,
+        42,
+        0
+      ],
+      "footprint_m": [
+        38,
+        28
+      ],
+      "role": "Bot's workroom, local records and the room where evidence is compared.",
+      "anchors": [
+        "Slate-blue shutters and copper cable trays.",
+        "A public counter at the south; comparison table in the center.",
+        "Offline records cabinet at the north; Bot's charging dock at the northeast."
+      ],
+      "doors": [
+        "South public entrance.",
+        "East maintenance door."
+      ],
+      "daily_life": "People can correct records and ask how a decision was made. Bot helps; he does not own everyone's information.",
+      "story_use": "An uncertain observation can be preserved without becoming an accusation.",
+      "game_use": "Quest journal, evidence board and local electronics tasks. Story knowledge and player discoveries are separate states.",
+      "continuity_limits": [
+        "No all-seeing surveillance wall or omniscient AI. The pilot does not name an attacker."
+      ]
+    },
+    {
+      "id": "BRW-10",
+      "name": "Storehouse & Trading Court",
+      "position_m": [
+        104,
+        -40,
+        0
+      ],
+      "footprint_m": [
+        52,
+        38
+      ],
+      "role": "Dry staples, tools and an interior receiving yard.",
+      "anchors": [
+        "Long green double doors on the east.",
+        "Raised dry floor, numbered shelves, reusable D-series delivery tags.",
+        "Receiving court on the east is broad enough to turn a handcart."
+      ],
+      "doors": [
+        "East cart entrance.",
+        "North staff door toward Gate Lane.",
+        "West inventory exit."
+      ],
+      "daily_life": "Outside trade supplies grain, cloth and spare parts. The shared reserve buffers interruptions; households keep personal supplies.",
+      "story_use": "A missing crate means a specific repair or meal is delayed. Outsiders are not automatically suspicious.",
+      "game_use": "Supplies, delivery errands and restoration materials. No invented real-money reward economy.",
+      "continuity_limits": [
+        "D17 is a delivery identifier, not a prophecy, secret emblem or villain's name."
+      ]
+    },
+    {
+      "id": "BRW-11",
+      "name": "Care House",
+      "position_m": [
+        -86,
+        -68,
+        0
+      ],
+      "footprint_m": [
+        30,
+        24
+      ],
+      "role": "A quiet neighborhood clinic and recovery space.",
+      "anchors": [
+        "Cream shutters, a simple blue circle sign and a planted waiting porch.",
+        "Two rest rooms behind the reception area."
+      ],
+      "doors": [
+        "North accessible entrance.",
+        "West service exit."
+      ],
+      "daily_life": "Ordinary checkups, rest and help for injuries; care does not depend on game rank.",
+      "story_use": "Consequences and recovery have a place, without turning every danger into spectacle.",
+      "game_use": "Recovery and rescue handoff. Actual story injuries follow the event ledger.",
+      "continuity_limits": [
+        "Do not replace it with a prison, armory or secret lab without an explicit canon revision."
+      ]
+    },
+    {
+      "id": "BRW-12",
+      "name": "East Bridge",
+      "position_m": [
+        170,
+        0,
+        0
+      ],
+      "footprint_m": [
+        12,
+        4.5
+      ],
+      "role": "The main public crossing between Gate Lane and the interior arrival court.",
+      "anchors": [
+        "12 m east-west deck over a 6 m north-south canal; low stone abutments.",
+        "Pale repaired timber, waist-high simple rails, three modest green pennants for the reopening.",
+        "No overhead structure and no chasm."
+      ],
+      "doors": [
+        "West landing at x=164.",
+        "East landing at x=176."
+      ],
+      "daily_life": "Carts and pedestrians take turns on the crossing. Service Crossing provides a bypass during maintenance.",
+      "story_use": "A shared accomplishment in Episode 1, repaired after ordinary seasonal weather.",
+      "game_use": "Landmark, route choice and later defense position. Fixed geometry in every mode.",
+      "continuity_limits": [
+        "No collapse, sabotage reveal or large arched stone replacement in the pilot."
+      ]
+    },
+    {
+      "id": "BRW-13",
+      "name": "Inner Arrival Court",
+      "position_m": [
+        225,
+        0,
+        0
+      ],
+      "footprint_m": [
+        72,
+        52
+      ],
+      "role": "An internal handoff space between East Bridge and the closed gate vestibule.",
+      "anchors": [
+        "Open paved court, shaded waiting bench on the north and two marked cart bays.",
+        "Delivery bell and small green status display beside the gate approach.",
+        "Visitors and deliveries are welcome in ordinary life. Pilot shots stay on interior ground and look inward."
+      ],
+      "doors": [
+        "West toward bridge.",
+        "East into the internal gate vestibule.",
+        "South into Service Walk."
+      ],
+      "daily_life": "A gate steward receives visitors and compares paper tags with the local record.",
+      "story_use": "Show hospitality and careful procedure together. One duplicate receipt quietly contradicts a simple count.",
+      "game_use": "Arrival/tutorial staging and visitor interactions without exposing undefined exterior terrain.",
+      "continuity_limits": [
+        "No view past the exterior threshold in Episode 1."
+      ]
+    },
+    {
+      "id": "BRW-14",
+      "name": "East Gate",
+      "position_m": [
+        282,
+        0,
+        0
+      ],
+      "footprint_m": [
+        24,
+        18
+      ],
+      "role": "A recessed gate vestibule and the main public threshold at the east rock wall.",
+      "anchors": [
+        "Twin timber-and-iron gate leaves at x=294.",
+        "Mechanical crossbar on the inside, independent of the arrival log; disengaged when the public gate is open.",
+        "Inner relay cabinet BRW-15 is on the south wall: the right wall when facing outward/east.",
+        "Vestibule mouth at x=270 opens into the arrival court."
+      ],
+      "doors": [
+        "Exterior leaf plane stays at x=294. Public passage is open during ordinary daytime. The pilot uses inward framing; no unassigned exterior landscape is shown.",
+        "Vestibule west mouth remains x=270. Leaves may close routinely at night or under an explicit protective state."
+      ],
+      "daily_life": "Staff open and close it; electronics record observations and schedules, not physical permission by themselves.",
+      "story_use": "The same visible bar, leaves and cabinet make the last unexplained receipt legible.",
+      "game_use": "Future adventure boundary; locked by the current quest state, not by an invented wall across the market.",
+      "continuity_limits": [
+        "Do not confuse the outdoor public gate with the new underground inner gates. Normal hospitality and defensive readiness coexist."
+      ]
+    },
+    {
+      "id": "BRW-15",
+      "name": "Service Walk & Gate Relay",
+      "position_m": [
+        270,
+        -26,
+        0
+      ],
+      "footprint_m": [
+        34,
+        14
+      ],
+      "role": "Public maintenance access along the inner south side of the gate.",
+      "anchors": [
+        "Slate paving, one shallow drain and one inspection hatch at (264,-26,0).",
+        "Cabinet R-E01 mounted at (282,-8.5,1.2), on the vestibule's south wall.",
+        "Cabinet door is flush and intact in the pilot; its display uses ordinary muted green."
+      ],
+      "doors": [
+        "North access from arrival court; return through the west vestibule mouth to reach the cabinet on its inner south wall.",
+        "No shortcut through the solid south vestibule wall."
+      ],
+      "daily_life": "Maintenance is scheduled and logged. The place is mundane before Snow notices an unfamiliar trace.",
+      "story_use": "A held indication and recorded time create a question; the source remains unknown.",
+      "game_use": "Inspection, local relay isolation and evidence comparisons in later missions.",
+      "continuity_limits": [
+        "Never move the cabinet to the north wall. Never imply Snow can smell a digital hack."
+      ]
+    },
+    {
+      "id": "BRW-16",
+      "name": "Makers' Room & Archive",
+      "position_m": [
+        -66,
+        16,
+        0
+      ],
+      "footprint_m": [
+        38,
+        22
+      ],
+      "role": "A shared studio, reading room and record of community projects.",
+      "anchors": [
+        "Ochre door facing south, long north worktable and east archive wall.",
+        "Displayed objects have credited makers and recorded histories."
+      ],
+      "doors": [
+        "South public entrance.",
+        "West service exit."
+      ],
+      "daily_life": "Neighbors draw, record stories, learn skills and mend small objects. Celebrations add dated artifacts.",
+      "story_use": "A living memory of past adventures without inventing ancient prophecy.",
+      "game_use": "Creator Studio and Trophy Chamber functions share this building; neither becomes an extra wing by accident.",
+      "continuity_limits": [
+        "No unrecorded trophy from an adventure the characters have not had."
+      ]
+    },
+    {
+      "id": "UG-00",
+      "name": "Hearth Public Entry",
+      "position_m": [
+        -30,
+        -144,
+        0
+      ],
+      "footprint_m": [
+        30,
+        88
+      ],
+      "kind": "entry",
+      "role": "A welcoming gallery below the Hearth Terraces. Public doors at (-30,-100,0) lead to lifts/stairs landing in the Welcome Hall. A continuous ramp provides a powered-lift-independent route.",
+      "continuity_limits": [
+        "Public in ordinary life. Entry is a civic threshold, not a private club or a token-holder gate."
+      ],
+      "levels_z_m": [
+        0
+      ],
+      "clear_height_m": 4,
+      "portals": [
+        {
+          "id": "UG-00-N-0",
+          "side": "N",
+          "position_m": [
+            -30,
+            -100.0,
+            0
+          ],
+          "width_m": 6
+        }
+      ],
+      "new_in_version": "2.0.0"
+    },
+    {
+      "id": "UG-01",
+      "name": "Welcome Hall",
+      "position_m": [
+        -30,
+        -170,
+        -12
+      ],
+      "footprint_m": [
+        48,
+        36
+      ],
+      "kind": "welcome",
+      "role": "The underground arrival hall: visitor information, seating, stroller/cart space and a steward desk. All main-entry routes arrive here before the inner boundary.",
+      "continuity_limits": [
+        "Queue space remains before the two inner closures. No lift or ramp may discharge directly behind the inner gates."
+      ],
+      "levels_z_m": [
+        -12
+      ],
+      "clear_height_m": 6,
+      "portals": [
+        {
+          "id": "UG-01-N-12",
+          "side": "N",
+          "position_m": [
+            -30,
+            -152.0,
+            -12
+          ],
+          "width_m": 12
+        },
+        {
+          "id": "UG-01-W-12",
+          "side": "W",
+          "position_m": [
+            -54.0,
+            -170,
+            -12
+          ],
+          "width_m": 6
+        }
+      ],
+      "new_in_version": "2.0.0"
+    },
+    {
+      "id": "UG-02",
+      "name": "Inner Gate Gallery",
+      "position_m": [
+        -30,
+        -136,
+        -12
+      ],
+      "footprint_m": [
+        24,
+        32
+      ],
+      "kind": "gate",
+      "role": "A broad civic passage with two independently operated inner closures. Both are open on ordinary days.",
+      "continuity_limits": [
+        "Closure lines at y=-144 and y=-128 protect the town beyond. Staff confirm people are clear; no automatic trapping of a crowded passage."
+      ],
+      "levels_z_m": [
+        -12
+      ],
+      "clear_height_m": 6,
+      "portals": [
+        {
+          "id": "UG-02-S-12",
+          "side": "S",
+          "position_m": [
+            -30,
+            -152.0,
+            -12
+          ],
+          "width_m": 12
+        },
+        {
+          "id": "UG-02-N-12",
+          "side": "N",
+          "position_m": [
+            -30,
+            -120.0,
+            -12
+          ],
+          "width_m": 12
+        }
+      ],
+      "new_in_version": "2.0.0"
+    },
+    {
+      "id": "UG-03",
+      "name": "Underhall Commons",
+      "position_m": [
+        -30,
+        -84,
+        -12
+      ],
+      "footprint_m": [
+        96,
+        72
+      ],
+      "kind": "commons",
+      "role": "A busy indoor high street with everyday shops, shared tables, a meeting square and neighborhood directions.",
+      "continuity_limits": [
+        "The central circulation cross stays open. This is a daily public place, not an empty bunker."
+      ],
+      "levels_z_m": [
+        -12
+      ],
+      "clear_height_m": 6,
+      "portals": [
+        {
+          "id": "UG-03-S-12",
+          "side": "S",
+          "position_m": [
+            -30,
+            -120.0,
+            -12
+          ],
+          "width_m": 12
+        },
+        {
+          "id": "UG-03-W-12",
+          "side": "W",
+          "position_m": [
+            -78.0,
+            -84,
+            -12
+          ],
+          "width_m": 6
+        },
+        {
+          "id": "UG-03-E-12",
+          "side": "E",
+          "position_m": [
+            18.0,
+            -84,
+            -12
+          ],
+          "width_m": 6
+        },
+        {
+          "id": "UG-03-N-12",
+          "side": "N",
+          "position_m": [
+            -30,
+            -48.0,
+            -12
+          ],
+          "width_m": 6
+        }
+      ],
+      "new_in_version": "2.0.0"
+    },
+    {
+      "id": "UG-04",
+      "name": "West Lantern Warren",
+      "position_m": [
+        -136,
+        -84,
+        -12
+      ],
+      "footprint_m": [
+        96,
+        72
+      ],
+      "kind": "homes",
+      "role": "Four household courts, shared play rooms, deliveries, doorways, kitchens and quiet residential galleries. Planning occupancy: 400 residents / 100 homes.",
+      "continuity_limits": [
+        "Lantern is a neighborhood name and ordinary lighting; no magical energy object. Private room layouts stay unassigned until drawn."
+      ],
+      "levels_z_m": [
+        -12
+      ],
+      "clear_height_m": 6,
+      "portals": [
+        {
+          "id": "UG-04-E-12",
+          "side": "E",
+          "position_m": [
+            -88.0,
+            -84,
+            -12
+          ],
+          "width_m": 6
+        },
+        {
+          "id": "UG-04-N-12",
+          "side": "N",
+          "position_m": [
+            -136,
+            -48.0,
+            -12
+          ],
+          "width_m": 6
+        },
+        {
+          "id": "UG-04-S-12",
+          "side": "S",
+          "position_m": [
+            -136,
+            -120.0,
+            -12
+          ],
+          "width_m": 6
+        },
+        {
+          "id": "UG-04-W-12",
+          "side": "W",
+          "position_m": [
+            -184.0,
+            -84,
+            -12
+          ],
+          "width_m": 4
+        }
+      ],
+      "new_in_version": "2.0.0"
+    },
+    {
+      "id": "UG-05",
+      "name": "East Orchard Warren",
+      "position_m": [
+        76,
+        -84,
+        -12
+      ],
+      "footprint_m": [
+        96,
+        72
+      ],
+      "kind": "homes",
+      "role": "Four dense residential courts with family homes, planted gathering pockets and neighbor-run shops. Planning occupancy: 400 residents / 100 homes.",
+      "continuity_limits": [
+        "Plants are decorative and locally grown; they do not imply unlimited daylight or a self-feeding town."
+      ],
+      "levels_z_m": [
+        -12
+      ],
+      "clear_height_m": 6,
+      "portals": [
+        {
+          "id": "UG-05-W-12",
+          "side": "W",
+          "position_m": [
+            28.0,
+            -84,
+            -12
+          ],
+          "width_m": 6
+        },
+        {
+          "id": "UG-05-N-12",
+          "side": "N",
+          "position_m": [
+            76,
+            -48.0,
+            -12
+          ],
+          "width_m": 6
+        },
+        {
+          "id": "UG-05-E-12",
+          "side": "E",
+          "position_m": [
+            124.0,
+            -84,
+            -12
+          ],
+          "width_m": 4
+        }
+      ],
+      "new_in_version": "2.0.0"
+    },
+    {
+      "id": "UG-06",
+      "name": "School & Play Hall",
+      "position_m": [
+        76,
+        0,
+        -12
+      ],
+      "footprint_m": [
+        96,
+        60
+      ],
+      "kind": "school",
+      "role": "Classrooms, reading, supervised play, making and community learning used by children from both surface and underground homes.",
+      "continuity_limits": [
+        "Children retain ordinary routines and protected gathering areas; danger does not turn the school into a combat room."
+      ],
+      "levels_z_m": [
+        -12
+      ],
+      "clear_height_m": 6,
+      "portals": [
+        {
+          "id": "UG-06-S-12",
+          "side": "S",
+          "position_m": [
+            76,
+            -30.0,
+            -12
+          ],
+          "width_m": 6
+        },
+        {
+          "id": "UG-06-W-12",
+          "side": "W",
+          "position_m": [
+            28.0,
+            0,
+            -12
+          ],
+          "width_m": 6
+        }
+      ],
+      "new_in_version": "2.0.0"
+    },
+    {
+      "id": "UG-07",
+      "name": "Care & Community Hall",
+      "position_m": [
+        -136,
+        0,
+        -12
+      ],
+      "footprint_m": [
+        96,
+        60
+      ],
+      "kind": "care",
+      "role": "Clinic rooms, recovery, community meals and a separate kitchen wing, with independent clean and service circulation.",
+      "continuity_limits": [
+        "Clinical rooms remain private. Kitchen noise and deliveries stay outside the care-room aisle."
+      ],
+      "levels_z_m": [
+        -12
+      ],
+      "clear_height_m": 6,
+      "portals": [
+        {
+          "id": "UG-07-S-12",
+          "side": "S",
+          "position_m": [
+            -136,
+            -30.0,
+            -12
+          ],
+          "width_m": 6
+        },
+        {
+          "id": "UG-07-E-12",
+          "side": "E",
+          "position_m": [
+            -88.0,
+            0,
+            -12
+          ],
+          "width_m": 6
+        }
+      ],
+      "new_in_version": "2.0.0"
+    },
+    {
+      "id": "UG-08",
+      "name": "Central Lift & Stair Court",
+      "position_m": [
+        -30,
+        0,
+        -12
+      ],
+      "footprint_m": [
+        60,
+        60
+      ],
+      "kind": "core",
+      "role": "A stacked neighborhood interchange at -12, -24 and -36 m, with ordinary lifts and independent stairs.",
+      "continuity_limits": [
+        "This core has no direct surface entrance. It connects only the protected side of the underground town."
+      ],
+      "levels_z_m": [
+        -12,
+        -24,
+        -36
+      ],
+      "clear_height_m": 6,
+      "portals": [
+        {
+          "id": "UG-08-S-12",
+          "side": "S",
+          "position_m": [
+            -30,
+            -30.0,
+            -12
+          ],
+          "width_m": 6
+        },
+        {
+          "id": "UG-08-W-12",
+          "side": "W",
+          "position_m": [
+            -60.0,
+            0,
+            -12
+          ],
+          "width_m": 6
+        },
+        {
+          "id": "UG-08-E-12",
+          "side": "E",
+          "position_m": [
+            0.0,
+            0,
+            -12
+          ],
+          "width_m": 6
+        },
+        {
+          "id": "UG-08-S-24",
+          "side": "S",
+          "position_m": [
+            -30,
+            -30.0,
+            -24
+          ],
+          "width_m": 6
+        },
+        {
+          "id": "UG-08-W-24",
+          "side": "W",
+          "position_m": [
+            -60.0,
+            0,
+            -24
+          ],
+          "width_m": 6
+        },
+        {
+          "id": "UG-08-E-24",
+          "side": "E",
+          "position_m": [
+            0.0,
+            0,
+            -24
+          ],
+          "width_m": 6
+        },
+        {
+          "id": "UG-08-S-36",
+          "side": "S",
+          "position_m": [
+            -30,
+            -30.0,
+            -36
+          ],
+          "width_m": 6
+        }
+      ],
+      "new_in_version": "2.0.0"
+    },
+    {
+      "id": "UG-09",
+      "name": "Service Receiving Hall",
+      "position_m": [
+        -136,
+        -170,
+        -12
+      ],
+      "footprint_m": [
+        80,
+        36
+      ],
+      "kind": "dock",
+      "role": "Freight from the workshop service passage is checked, staged and handed into the west neighborhood through a local closure.",
+      "continuity_limits": [
+        "The dock gate is a separate surface-to-town defensive boundary; it cannot be left as an unguarded bypass."
+      ],
+      "levels_z_m": [
+        -12
+      ],
+      "clear_height_m": 6,
+      "portals": [
+        {
+          "id": "UG-09-N-12",
+          "side": "N",
+          "position_m": [
+            -136,
+            -152.0,
+            -12
+          ],
+          "width_m": 6
+        },
+        {
+          "id": "UG-09-W-12",
+          "side": "W",
+          "position_m": [
+            -176.0,
+            -170,
+            -12
+          ],
+          "width_m": 6
+        }
+      ],
+      "new_in_version": "2.0.0"
+    },
+    {
+      "id": "UG-10",
+      "name": "West Deep Warren",
+      "position_m": [
+        -136,
+        -84,
+        -24
+      ],
+      "footprint_m": [
+        96,
+        72
+      ],
+      "kind": "homes",
+      "role": "A second residential neighborhood, equal in dignity and quality to the upper warren. Planning occupancy: 400 residents / 100 homes.",
+      "continuity_limits": [
+        "Depth is not a class hierarchy. These residents use surface gardens, markets and celebrations daily."
+      ],
+      "levels_z_m": [
+        -24
+      ],
+      "clear_height_m": 6,
+      "portals": [
+        {
+          "id": "UG-10-E-24",
+          "side": "E",
+          "position_m": [
+            -88.0,
+            -84,
+            -24
+          ],
+          "width_m": 6
+        },
+        {
+          "id": "UG-10-N-24",
+          "side": "N",
+          "position_m": [
+            -136,
+            -48.0,
+            -24
+          ],
+          "width_m": 6
+        },
+        {
+          "id": "UG-10-W-24",
+          "side": "W",
+          "position_m": [
+            -184.0,
+            -84,
+            -24
+          ],
+          "width_m": 4
+        }
+      ],
+      "new_in_version": "2.0.0"
+    },
+    {
+      "id": "UG-11",
+      "name": "East Deep Warren",
+      "position_m": [
+        76,
+        -84,
+        -24
+      ],
+      "footprint_m": [
+        96,
+        72
+      ],
+      "kind": "homes",
+      "role": "Dense family courtyards, homes, doorstep shops and social galleries on the second inhabited level. Planning occupancy: 400 residents / 100 homes.",
+      "continuity_limits": [
+        "The four wards are normal permanent homes, not temporary emergency beds."
+      ],
+      "levels_z_m": [
+        -24
+      ],
+      "clear_height_m": 6,
+      "portals": [
+        {
+          "id": "UG-11-W-24",
+          "side": "W",
+          "position_m": [
+            28.0,
+            -84,
+            -24
+          ],
+          "width_m": 6
+        },
+        {
+          "id": "UG-11-N-24",
+          "side": "N",
+          "position_m": [
+            76,
+            -48.0,
+            -24
+          ],
+          "width_m": 6
+        },
+        {
+          "id": "UG-11-E-24",
+          "side": "E",
+          "position_m": [
+            124.0,
+            -84,
+            -24
+          ],
+          "width_m": 4
+        }
+      ],
+      "new_in_version": "2.0.0"
+    },
+    {
+      "id": "UG-12",
+      "name": "Deep Commons & Kitchens",
+      "position_m": [
+        -30,
+        -84,
+        -24
+      ],
+      "footprint_m": [
+        96,
+        72
+      ],
+      "kind": "kitchens",
+      "role": "A shared meal hall, neighborhood shops and kitchens beside the lower residential streets.",
+      "continuity_limits": [
+        "Keep food preparation, clean stores and waste handling distinct. Household kitchens also exist."
+      ],
+      "levels_z_m": [
+        -24
+      ],
+      "clear_height_m": 6,
+      "portals": [
+        {
+          "id": "UG-12-W-24",
+          "side": "W",
+          "position_m": [
+            -78.0,
+            -84,
+            -24
+          ],
+          "width_m": 6
+        },
+        {
+          "id": "UG-12-E-24",
+          "side": "E",
+          "position_m": [
+            18.0,
+            -84,
+            -24
+          ],
+          "width_m": 6
+        },
+        {
+          "id": "UG-12-N-24",
+          "side": "N",
+          "position_m": [
+            -30,
+            -48.0,
+            -24
+          ],
+          "width_m": 6
+        },
+        {
+          "id": "UG-12-S-24",
+          "side": "S",
+          "position_m": [
+            -30,
+            -120.0,
+            -24
+          ],
+          "width_m": 6
+        }
+      ],
+      "new_in_version": "2.0.0"
+    },
+    {
+      "id": "UG-13",
+      "name": "Food Gardens & Grow Rooms",
+      "position_m": [
+        76,
+        0,
+        -24
+      ],
+      "footprint_m": [
+        96,
+        60
+      ],
+      "kind": "grow",
+      "role": "Powered growing rooms, seed storage and food preparation for selected greens, herbs and plant starts.",
+      "continuity_limits": [
+        "Grow lights require power. Underground cultivation supplements surface gardens and external trade; it does not feed everybody alone."
+      ],
+      "levels_z_m": [
+        -24
+      ],
+      "clear_height_m": 6,
+      "portals": [
+        {
+          "id": "UG-13-S-24",
+          "side": "S",
+          "position_m": [
+            76,
+            -30.0,
+            -24
+          ],
+          "width_m": 6
+        },
+        {
+          "id": "UG-13-W-24",
+          "side": "W",
+          "position_m": [
+            28.0,
+            0,
+            -24
+          ],
+          "width_m": 6
+        }
+      ],
+      "new_in_version": "2.0.0"
+    },
+    {
+      "id": "UG-14",
+      "name": "Assembly & Refuge Hall",
+      "position_m": [
+        -136,
+        0,
+        -24
+      ],
+      "footprint_m": [
+        96,
+        60
+      ],
+      "kind": "refuge",
+      "role": "Used daily for gatherings, sport, performances and clubs. In a protective state it receives surface residents, with rest, care and family reunification zones.",
+      "continuity_limits": [
+        "800 additional refuge places is a production planning target, not a certified capacity. Do not displace underground households to make refuge space."
+      ],
+      "levels_z_m": [
+        -24
+      ],
+      "clear_height_m": 6,
+      "portals": [
+        {
+          "id": "UG-14-S-24",
+          "side": "S",
+          "position_m": [
+            -136,
+            -30.0,
+            -24
+          ],
+          "width_m": 6
+        },
+        {
+          "id": "UG-14-E-24",
+          "side": "E",
+          "position_m": [
+            -88.0,
+            0,
+            -24
+          ],
+          "width_m": 6
+        }
+      ],
+      "new_in_version": "2.0.0"
+    },
+    {
+      "id": "UG-15",
+      "name": "Baths & Laundry",
+      "position_m": [
+        -30,
+        -170,
+        -24
+      ],
+      "footprint_m": [
+        96,
+        36
+      ],
+      "kind": "baths",
+      "role": "Shared baths, private washing rooms, laundry, drying and neighborhood maintenance stores.",
+      "continuity_limits": [
+        "Separate clean water from drainage. No connection opens through the Welcome Hall above."
+      ],
+      "levels_z_m": [
+        -24
+      ],
+      "clear_height_m": 6,
+      "portals": [
+        {
+          "id": "UG-15-N-24",
+          "side": "N",
+          "position_m": [
+            -30,
+            -152.0,
+            -24
+          ],
+          "width_m": 6
+        }
+      ],
+      "new_in_version": "2.0.0"
+    },
+    {
+      "id": "UG-16",
+      "name": "Utility Repair Hall",
+      "position_m": [
+        -136,
+        -84,
+        -36
+      ],
+      "footprint_m": [
+        96,
+        72
+      ],
+      "kind": "repair",
+      "role": "Maintainable local power distribution, battery rooms, spare equipment and repair benches.",
+      "continuity_limits": [
+        "Separate zones can be isolated. A failure here cannot be written as an unexplained instant shutdown of all life support."
+      ],
+      "levels_z_m": [
+        -36
+      ],
+      "clear_height_m": 6,
+      "portals": [
+        {
+          "id": "UG-16-E-36",
+          "side": "E",
+          "position_m": [
+            -88.0,
+            -84,
+            -36
+          ],
+          "width_m": 6
+        },
+        {
+          "id": "UG-16-W-36",
+          "side": "W",
+          "position_m": [
+            -184.0,
+            -84,
+            -36
+          ],
+          "width_m": 4
+        }
+      ],
+      "new_in_version": "2.0.0"
+    },
+    {
+      "id": "UG-17",
+      "name": "Water & Air Service Rooms",
+      "position_m": [
+        -30,
+        -84,
+        -36
+      ],
+      "footprint_m": [
+        96,
+        72
+      ],
+      "kind": "water",
+      "role": "Partitioned potable reserve, wastewater lift plant, drainage sumps and air-handling rooms.",
+      "continuity_limits": [
+        "Wastewater must be pumped up to the existing -3 m service level; it cannot flow uphill by gravity. Independent duty/backup equipment and local controls."
+      ],
+      "levels_z_m": [
+        -36
+      ],
+      "clear_height_m": 6,
+      "portals": [
+        {
+          "id": "UG-17-W-36",
+          "side": "W",
+          "position_m": [
+            -78.0,
+            -84,
+            -36
+          ],
+          "width_m": 6
+        },
+        {
+          "id": "UG-17-E-36",
+          "side": "E",
+          "position_m": [
+            18.0,
+            -84,
+            -36
+          ],
+          "width_m": 6
+        },
+        {
+          "id": "UG-17-N-36",
+          "side": "N",
+          "position_m": [
+            -30,
+            -48.0,
+            -36
+          ],
+          "width_m": 6
+        }
+      ],
+      "new_in_version": "2.0.0"
+    },
+    {
+      "id": "UG-18",
+      "name": "Deep Stores",
+      "position_m": [
+        76,
+        -84,
+        -36
+      ],
+      "footprint_m": [
+        96,
+        72
+      ],
+      "kind": "stores",
+      "role": "Dry staples, household supplies, repair materials and documented community reserves.",
+      "continuity_limits": [
+        "Stock quantities change in the event ledger. No infinite supplies or unearned emergency solution."
+      ],
+      "levels_z_m": [
+        -36
+      ],
+      "clear_height_m": 6,
+      "portals": [
+        {
+          "id": "UG-18-W-36",
+          "side": "W",
+          "position_m": [
+            28.0,
+            -84,
+            -36
+          ],
+          "width_m": 6
+        },
+        {
+          "id": "UG-18-E-36",
+          "side": "E",
+          "position_m": [
+            124.0,
+            -84,
+            -36
+          ],
+          "width_m": 4
+        }
+      ],
+      "new_in_version": "2.0.0"
+    },
+    {
+      "id": "UG-19",
+      "name": "West Stair & Refuge Core",
+      "position_m": [
+        -210,
+        -40,
+        -12
+      ],
+      "footprint_m": [
+        16,
+        20
+      ],
+      "kind": "egress",
+      "role": "An independent protected stair/refuge core links all three underground levels to the surface service walk at (-210,-40,0).",
+      "continuity_limits": [
+        "Outside entry is locally controlled. Occupants can leave from inside without network permission; surface conditions still determine whether evacuation is safe."
+      ],
+      "levels_z_m": [
+        -12,
+        -24,
+        -36
+      ],
+      "clear_height_m": 6,
+      "portals": [
+        {
+          "id": "UG-19-E-12",
+          "side": "E",
+          "position_m": [
+            -202.0,
+            -40,
+            -12
+          ],
+          "width_m": 4
+        },
+        {
+          "id": "UG-19-E-24",
+          "side": "E",
+          "position_m": [
+            -202.0,
+            -40,
+            -24
+          ],
+          "width_m": 4
+        },
+        {
+          "id": "UG-19-E-36",
+          "side": "E",
+          "position_m": [
+            -202.0,
+            -40,
+            -36
+          ],
+          "width_m": 4
+        }
+      ],
+      "new_in_version": "2.0.0"
+    },
+    {
+      "id": "UG-20",
+      "name": "East Stair & Refuge Core",
+      "position_m": [
+        144,
+        -40,
+        -12
+      ],
+      "footprint_m": [
+        16,
+        20
+      ],
+      "kind": "egress",
+      "role": "A second separated protected stair/refuge core links all levels to the surface service walk at (144,-40,0).",
+      "continuity_limits": [
+        "This is a distinct route from the west core. Include it in any surface-overrun state and keep staff able to operate it locally."
+      ],
+      "levels_z_m": [
+        -12,
+        -24,
+        -36
+      ],
+      "clear_height_m": 6,
+      "portals": [
+        {
+          "id": "UG-20-W-12",
+          "side": "W",
+          "position_m": [
+            136.0,
+            -40,
+            -12
+          ],
+          "width_m": 4
+        },
+        {
+          "id": "UG-20-W-24",
+          "side": "W",
+          "position_m": [
+            136.0,
+            -40,
+            -24
+          ],
+          "width_m": 4
+        },
+        {
+          "id": "UG-20-W-36",
+          "side": "W",
+          "position_m": [
+            136.0,
+            -40,
+            -36
+          ],
+          "width_m": 4
+        }
+      ],
+      "new_in_version": "2.0.0"
+    }
+  ],
+  "nodes": {
+    "sunwell": [
+      0,
+      0,
+      0
+    ],
+    "market_e": [
+      45,
+      0,
+      0
+    ],
+    "lane_e": [
+      132,
+      0,
+      0
+    ],
+    "bridge_w": [
+      164,
+      0,
+      0
+    ],
+    "bridge_e": [
+      176,
+      0,
+      0
+    ],
+    "arrival": [
+      225,
+      0,
+      0
+    ],
+    "gate_mouth": [
+      270,
+      0,
+      0
+    ],
+    "gate_inner": [
+      288,
+      0,
+      0
+    ],
+    "relay_walk": [
+      270,
+      -26,
+      0
+    ],
+    "relay_cabinet": [
+      282,
+      -6,
+      0
+    ],
+    "south_w": [
+      140,
+      -90,
+      0
+    ],
+    "south_cross_w": [
+      164,
+      -90,
+      0
+    ],
+    "south_cross_e": [
+      176,
+      -90,
+      0
+    ],
+    "south_e": [
+      202,
+      -90,
+      0
+    ],
+    "tables": [
+      -5,
+      -58,
+      0
+    ],
+    "care": [
+      -86,
+      -56,
+      0
+    ],
+    "home_low": [
+      -30,
+      -100,
+      0
+    ],
+    "home_ramp_a": [
+      -120,
+      -90,
+      0
+    ],
+    "home_ramp_b": [
+      -120,
+      -165,
+      6
+    ],
+    "home_ramp_c": [
+      -30,
+      -165,
+      12
+    ],
+    "home_entry": [
+      -80,
+      -132,
+      12
+    ],
+    "home_upper": [
+      -120,
+      -177,
+      18
+    ],
+    "workshop": [
+      -163,
+      18,
+      0
+    ],
+    "works_junction": [
+      -120,
+      0,
+      0
+    ],
+    "waterhouse": [
+      -185,
+      50,
+      0
+    ],
+    "training": [
+      -153,
+      -73,
+      0
+    ],
+    "makers": [
+      -66,
+      5,
+      0
+    ],
+    "records": [
+      62,
+      28,
+      0
+    ],
+    "store": [
+      130,
+      -40,
+      0
+    ],
+    "garden_lower": [
+      0,
+      55,
+      0
+    ],
+    "garden_cross": [
+      0,
+      62,
+      0
+    ],
+    "garden_base": [
+      0,
+      80,
+      0
+    ],
+    "garden_entry": [
+      0,
+      105,
+      6
+    ],
+    "garden_mid": [
+      0,
+      135,
+      12
+    ],
+    "garden_upper": [
+      0,
+      165,
+      18
+    ],
+    "garden_ramp_a": [
+      -90,
+      70,
+      0
+    ],
+    "garden_ramp_b": [
+      -200,
+      80,
+      6
+    ],
+    "garden_ramp_c": [
+      -100,
+      110,
+      12
+    ],
+    "spring": [
+      -160,
+      138,
+      18
+    ],
+    "garden_ramp_d": [
+      -200,
+      130,
+      18
+    ],
+    "service_culvert": [
+      210,
+      -145,
+      -3
+    ],
+    "emergency_door": [
+      -240,
+      -95,
+      0
+    ]
+  },
+  "routes": [
+    {
+      "id": "sunwell__market_e",
+      "a": "sunwell",
+      "b": "market_e",
+      "mode": "walk_cart",
+      "width_m": 4,
+      "length_m": 45.0,
+      "points_m": [
+        [
+          0,
+          0,
+          0
+        ],
+        [
+          45,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "id": "market_e__lane_e",
+      "a": "market_e",
+      "b": "lane_e",
+      "mode": "walk_cart",
+      "width_m": 4,
+      "length_m": 87.0,
+      "points_m": [
+        [
+          45,
+          0,
+          0
+        ],
+        [
+          132,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "id": "lane_e__bridge_w",
+      "a": "lane_e",
+      "b": "bridge_w",
+      "mode": "walk_cart",
+      "width_m": 4,
+      "length_m": 32.0,
+      "points_m": [
+        [
+          132,
+          0,
+          0
+        ],
+        [
+          164,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "id": "bridge_w__bridge_e",
+      "a": "bridge_w",
+      "b": "bridge_e",
+      "mode": "walk_cart",
+      "width_m": 4,
+      "length_m": 12.0,
+      "points_m": [
+        [
+          164,
+          0,
+          0
+        ],
+        [
+          176,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "id": "bridge_e__arrival",
+      "a": "bridge_e",
+      "b": "arrival",
+      "mode": "walk_cart",
+      "width_m": 4,
+      "length_m": 49.0,
+      "points_m": [
+        [
+          176,
+          0,
+          0
+        ],
+        [
+          225,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "id": "arrival__gate_mouth",
+      "a": "arrival",
+      "b": "gate_mouth",
+      "mode": "walk_cart",
+      "width_m": 4,
+      "length_m": 45.0,
+      "points_m": [
+        [
+          225,
+          0,
+          0
+        ],
+        [
+          270,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "id": "gate_mouth__gate_inner",
+      "a": "gate_mouth",
+      "b": "gate_inner",
+      "mode": "walk_cart",
+      "width_m": 4,
+      "length_m": 18.0,
+      "points_m": [
+        [
+          270,
+          0,
+          0
+        ],
+        [
+          288,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "id": "arrival__relay_walk",
+      "a": "arrival",
+      "b": "relay_walk",
+      "mode": "walk_cart",
+      "width_m": 4,
+      "length_m": 51.97,
+      "points_m": [
+        [
+          225,
+          0,
+          0
+        ],
+        [
+          270,
+          -26,
+          0
+        ]
+      ]
+    },
+    {
+      "id": "lane_e__south_w",
+      "a": "lane_e",
+      "b": "south_w",
+      "mode": "walk_cart",
+      "width_m": 4,
+      "length_m": 90.35,
+      "points_m": [
+        [
+          132,
+          0,
+          0
+        ],
+        [
+          140,
+          -90,
+          0
+        ]
+      ]
+    },
+    {
+      "id": "south_w__south_cross_w",
+      "a": "south_w",
+      "b": "south_cross_w",
+      "mode": "walk_cart",
+      "width_m": 4,
+      "length_m": 24.0,
+      "points_m": [
+        [
+          140,
+          -90,
+          0
+        ],
+        [
+          164,
+          -90,
+          0
+        ]
+      ]
+    },
+    {
+      "id": "south_cross_w__south_cross_e",
+      "a": "south_cross_w",
+      "b": "south_cross_e",
+      "mode": "walk_cart",
+      "width_m": 4,
+      "length_m": 12.0,
+      "points_m": [
+        [
+          164,
+          -90,
+          0
+        ],
+        [
+          176,
+          -90,
+          0
+        ]
+      ]
+    },
+    {
+      "id": "south_cross_e__south_e",
+      "a": "south_cross_e",
+      "b": "south_e",
+      "mode": "walk_cart",
+      "width_m": 4,
+      "length_m": 26.0,
+      "points_m": [
+        [
+          176,
+          -90,
+          0
+        ],
+        [
+          202,
+          -90,
+          0
+        ]
+      ]
+    },
+    {
+      "id": "south_e__arrival",
+      "a": "south_e",
+      "b": "arrival",
+      "mode": "walk_cart",
+      "width_m": 4,
+      "length_m": 92.89,
+      "points_m": [
+        [
+          202,
+          -90,
+          0
+        ],
+        [
+          225,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "id": "sunwell__tables",
+      "a": "sunwell",
+      "b": "tables",
+      "mode": "walk_cart",
+      "width_m": 4,
+      "length_m": 58.22,
+      "points_m": [
+        [
+          0,
+          0,
+          0
+        ],
+        [
+          -5,
+          -58,
+          0
+        ]
+      ]
+    },
+    {
+      "id": "tables__care",
+      "a": "tables",
+      "b": "care",
+      "mode": "walk_cart",
+      "width_m": 4,
+      "length_m": 81.02,
+      "points_m": [
+        [
+          -5,
+          -58,
+          0
+        ],
+        [
+          -86,
+          -56,
+          0
+        ]
+      ]
+    },
+    {
+      "id": "tables__home_low",
+      "a": "tables",
+      "b": "home_low",
+      "mode": "walk_cart",
+      "width_m": 4,
+      "length_m": 48.88,
+      "points_m": [
+        [
+          -5,
+          -58,
+          0
+        ],
+        [
+          -30,
+          -100,
+          0
+        ]
+      ]
+    },
+    {
+      "id": "home_low__home_ramp_a",
+      "a": "home_low",
+      "b": "home_ramp_a",
+      "mode": "walk_cart",
+      "width_m": 4,
+      "length_m": 90.55,
+      "points_m": [
+        [
+          -30,
+          -100,
+          0
+        ],
+        [
+          -120,
+          -90,
+          0
+        ]
+      ]
+    },
+    {
+      "id": "home_ramp_a__home_ramp_b",
+      "a": "home_ramp_a",
+      "b": "home_ramp_b",
+      "mode": "walk_cart",
+      "width_m": 4,
+      "length_m": 75.24,
+      "points_m": [
+        [
+          -120,
+          -90,
+          0
+        ],
+        [
+          -120,
+          -165,
+          6
+        ]
+      ]
+    },
+    {
+      "id": "home_ramp_b__home_ramp_c",
+      "a": "home_ramp_b",
+      "b": "home_ramp_c",
+      "mode": "walk_cart",
+      "width_m": 4,
+      "length_m": 90.2,
+      "points_m": [
+        [
+          -120,
+          -165,
+          6
+        ],
+        [
+          -30,
+          -165,
+          12
+        ]
+      ]
+    },
+    {
+      "id": "home_ramp_c__home_entry",
+      "a": "home_ramp_c",
+      "b": "home_entry",
+      "mode": "walk_cart",
+      "width_m": 4,
+      "length_m": 59.91,
+      "points_m": [
+        [
+          -30,
+          -165,
+          12
+        ],
+        [
+          -80,
+          -132,
+          12
+        ]
+      ]
+    },
+    {
+      "id": "sunwell__works_junction",
+      "a": "sunwell",
+      "b": "works_junction",
+      "mode": "walk_cart",
+      "width_m": 4,
+      "length_m": 120.0,
+      "points_m": [
+        [
+          0,
+          0,
+          0
+        ],
+        [
+          -120,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "id": "works_junction__workshop",
+      "a": "works_junction",
+      "b": "workshop",
+      "mode": "walk_cart",
+      "width_m": 4,
+      "length_m": 46.62,
+      "points_m": [
+        [
+          -120,
+          0,
+          0
+        ],
+        [
+          -163,
+          18,
+          0
+        ]
+      ]
+    },
+    {
+      "id": "workshop__waterhouse",
+      "a": "workshop",
+      "b": "waterhouse",
+      "mode": "walk_cart",
+      "width_m": 4,
+      "length_m": 38.83,
+      "points_m": [
+        [
+          -163,
+          18,
+          0
+        ],
+        [
+          -185,
+          50,
+          0
+        ]
+      ]
+    },
+    {
+      "id": "works_junction__training",
+      "a": "works_junction",
+      "b": "training",
+      "mode": "walk_cart",
+      "width_m": 4,
+      "length_m": 80.11,
+      "points_m": [
+        [
+          -120,
+          0,
+          0
+        ],
+        [
+          -153,
+          -73,
+          0
+        ]
+      ]
+    },
+    {
+      "id": "training__care",
+      "a": "training",
+      "b": "care",
+      "mode": "walk_cart",
+      "width_m": 4,
+      "length_m": 69.12,
+      "points_m": [
+        [
+          -153,
+          -73,
+          0
+        ],
+        [
+          -86,
+          -56,
+          0
+        ]
+      ]
+    },
+    {
+      "id": "training__home_ramp_a",
+      "a": "training",
+      "b": "home_ramp_a",
+      "mode": "walk_cart",
+      "width_m": 4,
+      "length_m": 37.12,
+      "points_m": [
+        [
+          -153,
+          -73,
+          0
+        ],
+        [
+          -120,
+          -90,
+          0
+        ]
+      ]
+    },
+    {
+      "id": "sunwell__makers",
+      "a": "sunwell",
+      "b": "makers",
+      "mode": "walk_cart",
+      "width_m": 4,
+      "length_m": 66.19,
+      "points_m": [
+        [
+          0,
+          0,
+          0
+        ],
+        [
+          -66,
+          5,
+          0
+        ]
+      ]
+    },
+    {
+      "id": "market_e__records",
+      "a": "market_e",
+      "b": "records",
+      "mode": "walk_cart",
+      "width_m": 4,
+      "length_m": 32.76,
+      "points_m": [
+        [
+          45,
+          0,
+          0
+        ],
+        [
+          62,
+          28,
+          0
+        ]
+      ]
+    },
+    {
+      "id": "lane_e__store",
+      "a": "lane_e",
+      "b": "store",
+      "mode": "walk_cart",
+      "width_m": 4,
+      "length_m": 40.05,
+      "points_m": [
+        [
+          132,
+          0,
+          0
+        ],
+        [
+          130,
+          -40,
+          0
+        ]
+      ]
+    },
+    {
+      "id": "store__tables",
+      "a": "store",
+      "b": "tables",
+      "mode": "walk_cart",
+      "width_m": 4,
+      "length_m": 136.19,
+      "points_m": [
+        [
+          130,
+          -40,
+          0
+        ],
+        [
+          -5,
+          -58,
+          0
+        ]
+      ]
+    },
+    {
+      "id": "sunwell__garden_lower",
+      "a": "sunwell",
+      "b": "garden_lower",
+      "mode": "walk_cart",
+      "width_m": 4,
+      "length_m": 55.0,
+      "points_m": [
+        [
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          55,
+          0
+        ]
+      ]
+    },
+    {
+      "id": "garden_lower__garden_cross",
+      "a": "garden_lower",
+      "b": "garden_cross",
+      "mode": "walk_cart",
+      "width_m": 4,
+      "length_m": 7.0,
+      "points_m": [
+        [
+          0,
+          55,
+          0
+        ],
+        [
+          0,
+          62,
+          0
+        ]
+      ]
+    },
+    {
+      "id": "garden_cross__garden_base",
+      "a": "garden_cross",
+      "b": "garden_base",
+      "mode": "walk_cart",
+      "width_m": 4,
+      "length_m": 18.0,
+      "points_m": [
+        [
+          0,
+          62,
+          0
+        ],
+        [
+          0,
+          80,
+          0
+        ]
+      ]
+    },
+    {
+      "id": "garden_base__garden_ramp_a",
+      "a": "garden_base",
+      "b": "garden_ramp_a",
+      "mode": "walk_cart",
+      "width_m": 4,
+      "length_m": 90.55,
+      "points_m": [
+        [
+          0,
+          80,
+          0
+        ],
+        [
+          -90,
+          70,
+          0
+        ]
+      ]
+    },
+    {
+      "id": "garden_ramp_a__garden_ramp_b",
+      "a": "garden_ramp_a",
+      "b": "garden_ramp_b",
+      "mode": "walk_cart",
+      "width_m": 4,
+      "length_m": 110.62,
+      "points_m": [
+        [
+          -90,
+          70,
+          0
+        ],
+        [
+          -200,
+          80,
+          6
+        ]
+      ]
+    },
+    {
+      "id": "garden_ramp_b__garden_ramp_c",
+      "a": "garden_ramp_b",
+      "b": "garden_ramp_c",
+      "mode": "walk_cart",
+      "width_m": 4,
+      "length_m": 104.58,
+      "points_m": [
+        [
+          -200,
+          80,
+          6
+        ],
+        [
+          -100,
+          110,
+          12
+        ]
+      ]
+    },
+    {
+      "id": "garden_ramp_c__garden_mid",
+      "a": "garden_ramp_c",
+      "b": "garden_mid",
+      "mode": "walk_cart",
+      "width_m": 4,
+      "length_m": 103.08,
+      "points_m": [
+        [
+          -100,
+          110,
+          12
+        ],
+        [
+          0,
+          135,
+          12
+        ]
+      ]
+    },
+    {
+      "id": "garden_ramp_c__garden_ramp_d",
+      "a": "garden_ramp_c",
+      "b": "garden_ramp_d",
+      "mode": "walk_cart",
+      "width_m": 4,
+      "length_m": 102.16,
+      "points_m": [
+        [
+          -100,
+          110,
+          12
+        ],
+        [
+          -200,
+          130,
+          18
+        ]
+      ]
+    },
+    {
+      "id": "garden_ramp_d__spring",
+      "a": "garden_ramp_d",
+      "b": "spring",
+      "mode": "walk_cart",
+      "width_m": 4,
+      "length_m": 40.79,
+      "points_m": [
+        [
+          -200,
+          130,
+          18
+        ],
+        [
+          -160,
+          138,
+          18
+        ]
+      ]
+    },
+    {
+      "id": "training__emergency_door",
+      "a": "training",
+      "b": "emergency_door",
+      "mode": "walk_cart",
+      "width_m": 4,
+      "length_m": 89.74,
+      "points_m": [
+        [
+          -153,
+          -73,
+          0
+        ],
+        [
+          -240,
+          -95,
+          0
+        ]
+      ]
+    },
+    {
+      "id": "home_ramp_c__home_upper",
+      "a": "home_ramp_c",
+      "b": "home_upper",
+      "mode": "walk_cart",
+      "width_m": 4,
+      "length_m": 90.99,
+      "points_m": [
+        [
+          -30,
+          -165,
+          12
+        ],
+        [
+          -120,
+          -177,
+          18
+        ]
+      ]
+    },
+    {
+      "id": "garden_ramp_d__garden_upper",
+      "a": "garden_ramp_d",
+      "b": "garden_upper",
+      "mode": "walk_cart",
+      "width_m": 4,
+      "length_m": 203.04,
+      "points_m": [
+        [
+          -200,
+          130,
+          18
+        ],
+        [
+          0,
+          165,
+          18
+        ]
+      ]
+    },
+    {
+      "id": "garden_mid__garden_upper",
+      "a": "garden_mid",
+      "b": "garden_upper",
+      "mode": "stairs",
+      "width_m": 3,
+      "length_m": 30.59,
+      "points_m": [
+        [
+          0,
+          135,
+          12
+        ],
+        [
+          0,
+          165,
+          18
+        ]
+      ]
+    },
+    {
+      "id": "relay_walk__gate_mouth",
+      "a": "relay_walk",
+      "b": "gate_mouth",
+      "mode": "walk",
+      "width_m": 3,
+      "length_m": 26.0,
+      "points_m": [
+        [
+          270,
+          -26,
+          0
+        ],
+        [
+          270,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "id": "gate_mouth__relay_cabinet",
+      "a": "gate_mouth",
+      "b": "relay_cabinet",
+      "mode": "walk",
+      "width_m": 3,
+      "length_m": 13.42,
+      "points_m": [
+        [
+          270,
+          0,
+          0
+        ],
+        [
+          282,
+          -6,
+          0
+        ]
+      ]
+    },
+    {
+      "id": "garden_base__garden_entry",
+      "a": "garden_base",
+      "b": "garden_entry",
+      "mode": "stairs",
+      "width_m": 3,
+      "length_m": 25.71,
+      "points_m": [
+        [
+          0,
+          80,
+          0
+        ],
+        [
+          0,
+          105,
+          6
+        ]
+      ]
+    },
+    {
+      "id": "garden_entry__garden_mid",
+      "a": "garden_entry",
+      "b": "garden_mid",
+      "mode": "stairs",
+      "width_m": 3,
+      "length_m": 30.59,
+      "points_m": [
+        [
+          0,
+          105,
+          6
+        ],
+        [
+          0,
+          135,
+          12
+        ]
+      ]
+    },
+    {
+      "id": "home_low__home_entry",
+      "a": "home_low",
+      "b": "home_entry",
+      "mode": "stairs",
+      "width_m": 3,
+      "length_m": 60.56,
+      "points_m": [
+        [
+          -30,
+          -100,
+          0
+        ],
+        [
+          -80,
+          -132,
+          12
+        ]
+      ]
+    }
+  ],
+  "crossings": [
+    {
+      "id": "BRW-C01",
+      "name": "East Bridge",
+      "position_m": [
+        170,
+        0,
+        0
+      ],
+      "span_m": 12,
+      "width_m": 4.5,
+      "water_width_m": 6,
+      "material": "pale timber"
+    },
+    {
+      "id": "BRW-C02",
+      "name": "Garden Crossing",
+      "position_m": [
+        0,
+        62,
+        0
+      ],
+      "span_m": 12,
+      "width_m": 4,
+      "water_width_m": 6,
+      "material": "flat limestone slab"
+    },
+    {
+      "id": "BRW-C03",
+      "name": "Service Crossing",
+      "position_m": [
+        170,
+        -90,
+        0
+      ],
+      "span_m": 12,
+      "width_m": 4,
+      "water_width_m": 6,
+      "material": "flat limestone slab"
+    }
+  ],
+  "water": {
+    "utility_race_centerline_m": [
+      [
+        -160,
+        150,
+        18
+      ],
+      [
+        -160,
+        85,
+        6
+      ],
+      [
+        -161,
+        65,
+        -1
+      ],
+      [
+        -160,
+        30,
+        -1.2
+      ],
+      [
+        -95,
+        40,
+        -1.4
+      ],
+      [
+        0,
+        62,
+        -1.6
+      ],
+      [
+        100,
+        62,
+        -1.8
+      ],
+      [
+        170,
+        45,
+        -2
+      ],
+      [
+        170,
+        0,
+        -2.2
+      ],
+      [
+        170,
+        -90,
+        -2.5
+      ],
+      [
+        160,
+        -125,
+        -2.8
+      ],
+      [
+        210,
+        -145,
+        -3
+      ]
+    ],
+    "headrace": "The first two segments are enclosed under the western garden ramp. The open wheelrace begins on the east side of Waterhouse at (-161,65).",
+    "channel_width_m": 6,
+    "water_below_path_m": 2.2,
+    "potable": "Covered spring tanks feed separate buried drinking-water pipes; no sewage, wheelrace water or garden runoff enters this system.",
+    "wastewater": "Sealed collection lines run under service paths to a treatment room in the southeast rock; outflow is distinct from potable and irrigation systems.",
+    "surface_water": "Storm drains and garden overflow enter a screened lower outlet. Canal edges near public paths have continuous simple rails.",
+    "maintenance": "Manual isolation at each branch; log a local failure as local, with a visible fallback."
+  },
+  "heroes": [
+    {
+      "id": "MADGER",
+      "name": "Madger",
+      "place": "Sunwell, Common House and the shared home at Hearth Terraces",
+      "role": "Organizer, explorer and friend; not the ruler.",
+      "design": "Established black-and-cream design, black belly, high cream chest V, natural arms and small even teeth. Clean face; no decorative tear, sweat streak or oversized fang.",
+      "strength": "Initiative, courage and a talent for bringing people together.",
+      "flaw": "Mistakes taking every job for being dependable.",
+      "pilot": "Accepts a neighbor's plan, shares the work, gives away credit and stops to listen to Snow.",
+      "long_arc": "Learns that leadership means building a capable community, including disagreement and checks on his own judgment.",
+      "game": "BURROW is a physical movement through designated soil, with a visible entry, dirt trail and emergence."
+    },
+    {
+      "id": "GORILLA_WHITE",
+      "name": "Gorilla White",
+      "place": "Workshop, Waterhouse, bridge and common tables",
+      "role": "Craftsperson and protector; not an unlimited force.",
+      "design": "Approved white/tan fur and blue eyes; preserve established body proportions.",
+      "strength": "Patience, strength, workmanship and an instinct to shield others.",
+      "flaw": "Carries the burden alone until everyone mistakes his endurance for invulnerability.",
+      "pilot": "Lets neighbors help and sits down for the meal.",
+      "long_arc": "Builds others' skill and trusts a team to protect him as well as the town.",
+      "game": "Guard, rescue and safe support; no infinite saves or casual demolition of the home map."
+    },
+    {
+      "id": "MADGER_BOT",
+      "name": "MADGER Bot",
+      "place": "Records House, relay cabinets and maintenance routes",
+      "role": "Systems keeper and evidence partner; not an omniscient administrator.",
+      "design": "Entirely mechanical face/visor and established metallic body; no fur muzzle, human skin or fang.",
+      "strength": "Memory, method and a sincere wish to make daily life easier.",
+      "flaw": "Feels that being useful requires having a definite answer.",
+      "pilot": "Keeps the duplicate receipt and admits that its cause is not yet known.",
+      "long_arc": "Trusts independent observation, states uncertainty and protects people without taking over their decisions.",
+      "game": "Local electronics, evidence comparison and established boosts; bounded access and visible feedback."
+    },
+    {
+      "id": "SNOW_WHITE",
+      "name": "Snow White",
+      "place": "Shared home, common tables, training yard and walks with the team",
+      "role": "Adult quadrupedal shepherd, companion and scout; a real dog.",
+      "design": "Approved adult shepherd form with rose collar; stable four-legged anatomy. Canine sounds only.",
+      "strength": "Scent, hearing, attention, affection and decisive physical action.",
+      "flaw": "An exciting sensation can pull her ahead before others understand.",
+      "pilot": "Stops, looks back and holds an indication until Madger joins her.",
+      "long_arc": "Develops reliable teamwork through indication, return and restraint; does not gain human speech.",
+      "game": "Established companion support and physical threat response. She detects a physical trace, never a digital packet."
+    }
+  ],
+  "episode_1": [
+    {
+      "time": "00:00-00:50",
+      "locations": [
+        "UG-04",
+        "UG-03",
+        "BRW-03",
+        "BRW-01"
+      ],
+      "beat": "Open with an underground household preparing breakfast, children on the common street and neighbors moving up to the sunlit market. Introduce all four heroes through useful, ordinary actions.",
+      "boundary": "All views remain in the Burrow; show above and below as one everyday town.",
+      "clue": "None. The first impression is warm, crowded, safe and capable."
+    },
+    {
+      "time": "00:50-01:40",
+      "locations": [
+        "BRW-13",
+        "BRW-14",
+        "UG-00",
+        "UG-01",
+        "UG-02"
+      ],
+      "beat": "A visitor is welcomed and a delivery is counted. The main underground route passes through open inner gates with residents moving both directions.",
+      "boundary": "Frame toward interior space. Do not turn the inner gate into a threat reveal.",
+      "clue": "One duplicate D17 receipt; Bot preserves both without accusation."
+    },
+    {
+      "time": "01:40-03:00",
+      "locations": [
+        "BRW-07",
+        "BRW-12",
+        "BRW-01"
+      ],
+      "beat": "Neighbors reopen the weather-repaired bridge. Gorilla accepts help, Madger shares credit and underground residents join the celebration.",
+      "boundary": "Time cuts preserve actual travel distances.",
+      "clue": "No sabotage, attacker or extra bridge."
+    },
+    {
+      "time": "03:00-04:10",
+      "locations": [
+        "UG-03",
+        "UG-06",
+        "BRW-15"
+      ],
+      "beat": "Show learning, shared food and the ordinary use of both districts. After a time cut, Snow holds an indication near the intact gate relay; Madger pays attention.",
+      "boundary": "Snow notices an unfamiliar physical trace, never a digital hack by scent.",
+      "clue": "Source unknown; no forced connection to the duplicate receipt."
+    },
+    {
+      "time": "04:10-04:50",
+      "locations": [
+        "BRW-02",
+        "UG-04",
+        "UG-10"
+      ],
+      "beat": "End the day with friends and households returning home above and below. Bot retains the observations and plans a careful check.",
+      "boundary": "A brief routine evening gate closing can be shown without alarm.",
+      "clue": "The community stays joyful; the audience has a small unresolved question."
+    },
+    {
+      "time": "04:50-05:00",
+      "locations": [
+        "BRW-14",
+        "BRW-15"
+      ],
+      "beat": "After the documented routine closing, the local log receives another D17 acknowledgment although no new passage occurred.",
+      "boundary": "Inward shot of the closed outdoor leaves; no outside silhouette or villain.",
+      "clue": "An unexplained discrepancy, not proof of a cause or attack."
+    }
+  ],
+  "cameras": [
+    {
+      "id": "CAM-01",
+      "name": "South gallery / world master",
+      "at": [
+        0,
+        -175,
+        24
+      ],
+      "target": [
+        0,
+        40,
+        3
+      ],
+      "lens_mm": 28,
+      "required": [
+        "Workshop left/west",
+        "Sunwell center",
+        "Bridge and gate right/east",
+        "Gardens behind/north"
+      ],
+      "note": "Use a wide interior panorama. No view over the exterior rim."
+    },
+    {
+      "id": "CAM-02",
+      "name": "Market / looking east",
+      "at": [
+        -35,
+        0,
+        2
+      ],
+      "target": [
+        170,
+        0,
+        1
+      ],
+      "lens_mm": 40,
+      "required": [
+        "Well foreground",
+        "Gate Lane ahead",
+        "Bridge beyond",
+        "Gate farther east"
+      ],
+      "note": "Do not collapse 294 m into one tiny set; use depth and partial occlusion."
+    },
+    {
+      "id": "CAM-03",
+      "name": "Common porch / looking north",
+      "at": [
+        8,
+        -70,
+        2
+      ],
+      "target": [
+        0,
+        15,
+        1
+      ],
+      "lens_mm": 50,
+      "required": [
+        "Table bases",
+        "Market north",
+        "Green awnings"
+      ],
+      "note": "Kitchen and copper vent remain behind/left of camera."
+    },
+    {
+      "id": "CAM-04",
+      "name": "Workshop court / looking west",
+      "at": [
+        -142,
+        18,
+        2
+      ],
+      "target": [
+        -185,
+        18,
+        1.8
+      ],
+      "lens_mm": 40,
+      "required": [
+        "Workshop double doors",
+        "Waterhouse north/right"
+      ],
+      "note": "Wheel on Waterhouse east wall, never on Workshop facade."
+    },
+    {
+      "id": "CAM-05",
+      "name": "Bridge / looking east",
+      "at": [
+        150,
+        0,
+        1.8
+      ],
+      "target": [
+        225,
+        0,
+        1.4
+      ],
+      "lens_mm": 50,
+      "required": [
+        "Pale flat deck",
+        "Canal under deck",
+        "Arrival court ahead"
+      ],
+      "note": "North is screen-left; south is screen-right."
+    },
+    {
+      "id": "CAM-06",
+      "name": "Gate / interior evidence view",
+      "at": [
+        272,
+        1,
+        1.8
+      ],
+      "target": [
+        294,
+        0,
+        1.6
+      ],
+      "lens_mm": 28,
+      "required": [
+        "Closed leaves",
+        "Manual bar",
+        "Relay on right/south wall"
+      ],
+      "note": "For routine evening closure only, show the closed leaves and inside bar. Daytime public-entry shots face inward and do not imply a closed-to-public settlement."
+    },
+    {
+      "id": "CAM-07",
+      "name": "Service Walk / Snow indication",
+      "at": [
+        274,
+        1,
+        1.1
+      ],
+      "target": [
+        282,
+        -8.5,
+        1.2
+      ],
+      "lens_mm": 40,
+      "required": [
+        "Flush cabinet",
+        "Shallow drain",
+        "Slate paving"
+      ],
+      "note": "No invented cable, scratch, open panel or visible intruder as a clue."
+    },
+    {
+      "id": "CAM-08",
+      "name": "Garden terrace / looking south",
+      "at": [
+        0,
+        135,
+        14
+      ],
+      "target": [
+        0,
+        0,
+        1
+      ],
+      "lens_mm": 35,
+      "required": [
+        "Sunwell below",
+        "Homes beyond/south",
+        "Workshop screen-right/west"
+      ],
+      "note": "A deliberate reverse orientation: east is now screen-left."
+    }
+  ],
+  "palette": [
+    {
+      "name": "Warm limestone",
+      "hex": "#D7C8AA",
+      "use": "Cliffs, foundations and well"
+    },
+    {
+      "name": "Pale plaster",
+      "hex": "#EEE4CE",
+      "use": "Occupied walls"
+    },
+    {
+      "name": "Dark timber",
+      "hex": "#634B39",
+      "use": "Balconies, frames and rails"
+    },
+    {
+      "name": "Garden green",
+      "hex": "#557A53",
+      "use": "Awnings, shutters and plants"
+    },
+    {
+      "name": "Slate blue",
+      "hex": "#667D88",
+      "use": "Roofs and civic workrooms"
+    },
+    {
+      "name": "Copper",
+      "hex": "#B37848",
+      "use": "Service details"
+    },
+    {
+      "name": "Warm light",
+      "hex": "#E6BC73",
+      "use": "Evening windows"
+    },
+    {
+      "name": "Quiet status",
+      "hex": "#7DAD8C",
+      "use": "Normal displays, including pilot clues"
+    }
+  ],
+  "expansion": {
+    "version_policy": "PATCH corrects wording without changing canon; MINOR adds compatible places/people/events; MAJOR records an owner-authorized retcon. Never overwrite the previous meaning silently.",
+    "event_fields": [
+      "event_id",
+      "story_date_or_sequence",
+      "source_episode_or_game_mission",
+      "location_ids",
+      "before",
+      "after",
+      "witnesses",
+      "who_knows",
+      "persistent_effect",
+      "canon_version"
+    ],
+    "location_addition_fields": [
+      "stable_id",
+      "name",
+      "parent_district",
+      "coordinate_and_elevation",
+      "footprint",
+      "doors_and_connections",
+      "access_rules",
+      "utilities",
+      "sightlines",
+      "first_appearance",
+      "reason_it_was_not_visible_before"
+    ],
+    "reserved": [
+      {
+        "id": "BRW-X01",
+        "anchor": [
+          -240,
+          -95,
+          0
+        ],
+        "name": "West emergency door",
+        "status": "Fixed closed threshold; inspected emergency provision. Route beyond it remains unassigned and offscreen. This historical surface threshold has no human passage into the inhabited underground town in v2.0.0. Any future connection must receive a registered plan and its own protective boundary."
+      },
+      {
+        "id": "BRW-X02",
+        "anchor": [
+          210,
+          -145,
+          -3
+        ],
+        "name": "Southeast treatment/service access",
+        "status": "Fixed service threshold; not a free public tunnel or an Episode 1 adventure route. This historical surface threshold has no human passage into the inhabited underground town in v2.0.0. Any future connection must receive a registered plan and its own protective boundary."
+      },
+      {
+        "id": "BRW-X03",
+        "anchor": [
+          294,
+          0,
+          0
+        ],
+        "name": "East exterior threshold",
+        "status": "Fixed boundary; exterior roads/lands to be added later without moving the gate."
+      }
+    ]
+  },
+  "state_baseline": {
+    "id": "BRW-E01-OPENING",
+    "time": "Bridge reopening day / late spring",
+    "gate": "Outdoor public entry and main underground entrance are open by day. Inner gates are normally open. Routine evening closing is an event, not the everyday identity of the Burrow.",
+    "bridge": "Repaired after ordinary weather wear; sound throughout the pilot.",
+    "community": "Two lively, highly populated, connected districts; 800 surface and 1,600 underground residents are the initial production planning baseline.",
+    "knowledge": "No character knows that an attack is underway. Receipt and physical trace are unexplained; they do not prove a shared cause.",
+    "season": "Late spring, dry morning after recent seasonal rain; green gardens, warm afternoon and cool evening."
+  },
+  "voice_reference": {
+    "authority": "MADGER_Official_Voices / approved profiles; unchanged by world development",
+    "madger": "OvSI8qvaDkaFiIdSCWRw",
+    "gorilla_white": "Mtmp3KhFIjYpWYRycDe3 / Chad with approved Baritone R7 processing",
+    "madger_bot": "rHWSYoq8UlV0YIBKMryp / Brodie with approved Friendly Smooth R4 processing",
+    "snow_white": "Approved canine source only; no speech or cloning"
+  },
+  "sources": [
+    {
+      "name": "Owner world-development instruction",
+      "date": "2026-10-19 America/New_York",
+      "scope": "Permanent expandable shared world; interior first; Episode 1 only inside."
+    },
+    {
+      "name": "MADGER A Good Day Production Bible / R6",
+      "library_file_id": "libfile_739d83c74d6c81918c44e31fae68b14c",
+      "scope": "Prior provisional world, character arcs and practical systems."
+    },
+    {
+      "name": "MADGER Animation Project R6",
+      "library_file_id": "libfile_a99a8a5c29a881919ea86f91253118a6",
+      "version": 9,
+      "scope": "Existing production/voice reference; archived, not rewritten by this edition."
+    },
+    {
+      "name": "MADGER 3D Expedition",
+      "url": "https://github.com/madgercoin/madger/blob/a0e7141258cd957f3e44862327c299abb6890e4c/docs/game-expedition.md",
+      "scope": "Existing movement, companion and character requirements. This edition does not change the build or course geometry."
+    }
+  ],
+  "game_contract": {
+    "home_world_id": "MADGER-BRW-HOME",
+    "import_policy": "Use coordinates as layout data and location IDs as stable scene/entity IDs. Convert axes at the engine boundary only.",
+    "mapping": {
+      "Y-up engine": "engine (x,y,z) = bible (x,z,-y); 1 unit = 1 metre",
+      "Z-up engine": "engine (x,y,z) = bible (x,y,z); 1 unit = 1 metre"
+    },
+    "hub": "One continuous fixed home map. Loading screens may partition it without changing distance or adjacency.",
+    "separate_course_scope": "Existing Overgrown Burrow, Forgotten Works and Crystal Grotto courses keep their current game layouts. Their exact geographical connection to the home Burrow is unassigned in Volume 01.",
+    "old_rooms": {
+      "Workshop": "BRW-07",
+      "Training Den": "BRW-08",
+      "Intelligence Room": "BRW-09",
+      "Strategy Chamber": "BRW-09 comparison table",
+      "Rescue Den": "BRW-11",
+      "Trading Post": "BRW-10",
+      "Creator Studio": "BRW-16",
+      "Trophy Chamber": "BRW-16 archive wall"
+    },
+    "ground_rules": "Provide authored soil volumes for BURROW. Stone, foundations, protected garden beds and utility lines block digging. Existing Expedition action timings remain unchanged unless separately revised.",
+    "state": "Store world_canon_version, story_event_cursor and location_state separately from player upgrades, scores and difficulty.",
+    "acceptance": [
+      "Landmarks occupy matching coordinates and compass directions.",
+      "All intended routes connect; bridge maintenance still permits the southern bypass.",
+      "No unspecified secret passage or room is generated in the home hub.",
+      "Doors, stairs, ramps and rails use collision consistent with their visible shapes.",
+      "Hero designs and approved voices are unchanged.",
+      "A saved state restores the same event history and geography."
+    ]
+  },
+  "walking_reference": [
+    {
+      "route": "sunwell to gate_inner",
+      "distance_m": 288,
+      "unhurried_minutes": 4.8
+    },
+    {
+      "route": "tables to relay_walk",
+      "distance_m": 321,
+      "unhurried_minutes": 5.4
+    },
+    {
+      "route": "sunwell to workshop",
+      "distance_m": 167,
+      "unhurried_minutes": 2.8
+    },
+    {
+      "route": "sunwell to garden_mid",
+      "distance_m": 136,
+      "unhurried_minutes": 2.3
+    },
+    {
+      "route": "sunwell to home_entry",
+      "distance_m": 168,
+      "unhurried_minutes": 2.8
+    }
+  ],
+  "walking_reference_note": "Unhurried 1 m/s planning pace; crowding and stops add time. Story scenes may span a day through cuts.",
+  "document_reference": {
+    "current_edition": "v2.0.0/MADGER_World_Bible.json",
+    "underground_blueprints": "v2.0.0/MADGER_Underground_Blueprints.pdf",
+    "surface_geometry_reference": "blueprints/v1.0.0/MADGER_Burrow_Blueprints.pdf",
+    "historical_foundation": "v1.0.0/MADGER_World_Bible.pdf",
+    "precedence": "v2.0.0 overrides conflicting population, access, underground scope and pilot gate-state statements in historical documents."
+  },
+  "validation": {
+    "status": "passed",
+    "checks": {
+      "surface_positions_preserved": true,
+      "surface_watercourse_preserved": true,
+      "surface_routes_preserved": true,
+      "three_surface_crossings": true,
+      "new_area_ids_unique": true,
+      "population_adds_up": true,
+      "ramp_grades_at_most_1_in_12": true,
+      "all_areas_reachable_normal": true,
+      "no_surface_bypass_when_ingress_closed": true,
+      "protected_town_stays_connected": true,
+      "town_connected_without_lifts": true,
+      "alternate_stair_core_survives_one_core_loss": true,
+      "all_room_footprints_nonoverlap_per_level": true
+    },
+    "limits": [
+      "Plans establish fictional world geometry, not a certified structural or evacuation design.",
+      "Final game navigation meshes must follow portals and authored stair/ramp geometry; the route graph is not a collision mesh.",
+      "Underground homes are reserved 100-unit wards; individual apartment interiors and occupants require later registered sub-plans.",
+      "No real attacker identity, exploit method or episode-one attack is established."
+    ]
+  },
+  "visual_reference": {
+    "status": "Materials and light study; the measured map controls placement and scale. Not a replacement for a checked production camera plate.",
+    "method": "ChatGPT built-in image generation; one initial image and one targeted continuity edit.",
+    "runway_credits_used": 0,
+    "elevenlabs_generations": 0
+  },
+  "change_log": [
+    {
+      "version": "1.0.0",
+      "date": "2026-10-19",
+      "change": "Initial shared interior canon established under owner instruction. Inherits prior hero constraints and useful landmark relationships; adds precise home layout and adaptation rules.",
+      "owner_approval_claim": "New foundation commissioned in the current request; no claim of earlier approval for newly invented details."
+    },
+    {
+      "version": "2.0.0",
+      "date": "2026-10-20",
+      "reason": "Latest owner instruction: above-ground and underground highly populated areas, public entrance and a stronger inner defense if the outdoor area is overrun.",
+      "preserved": "All 16 surface world positions and footprints, three crossings, surface route graph and watercourse.",
+      "new": "UG-00 through UG-20, normal/protective states, underground route graph, population plan and updated pilot scope."
+    }
+  ],
+  "underground": {
+    "version": "2.0.0",
+    "areas": [
+      {
+        "id": "UG-00",
+        "name": "Hearth Public Entry",
+        "position_m": [
+          -30,
+          -144,
+          0
+        ],
+        "footprint_m": [
+          30,
+          88
+        ],
+        "kind": "entry",
+        "role": "A welcoming gallery below the Hearth Terraces. Public doors at (-30,-100,0) lead to lifts/stairs landing in the Welcome Hall. A continuous ramp provides a powered-lift-independent route.",
+        "continuity_limits": [
+          "Public in ordinary life. Entry is a civic threshold, not a private club or a token-holder gate."
+        ],
+        "levels_z_m": [
+          0
+        ],
+        "clear_height_m": 4,
+        "portals": [
+          {
+            "id": "UG-00-N-0",
+            "side": "N",
+            "position_m": [
+              -30,
+              -100.0,
+              0
+            ],
+            "width_m": 6
+          }
+        ],
+        "new_in_version": "2.0.0"
+      },
+      {
+        "id": "UG-01",
+        "name": "Welcome Hall",
+        "position_m": [
+          -30,
+          -170,
+          -12
+        ],
+        "footprint_m": [
+          48,
+          36
+        ],
+        "kind": "welcome",
+        "role": "The underground arrival hall: visitor information, seating, stroller/cart space and a steward desk. All main-entry routes arrive here before the inner boundary.",
+        "continuity_limits": [
+          "Queue space remains before the two inner closures. No lift or ramp may discharge directly behind the inner gates."
+        ],
+        "levels_z_m": [
+          -12
+        ],
+        "clear_height_m": 6,
+        "portals": [
+          {
+            "id": "UG-01-N-12",
+            "side": "N",
+            "position_m": [
+              -30,
+              -152.0,
+              -12
+            ],
+            "width_m": 12
+          },
+          {
+            "id": "UG-01-W-12",
+            "side": "W",
+            "position_m": [
+              -54.0,
+              -170,
+              -12
+            ],
+            "width_m": 6
+          }
+        ],
+        "new_in_version": "2.0.0"
+      },
+      {
+        "id": "UG-02",
+        "name": "Inner Gate Gallery",
+        "position_m": [
+          -30,
+          -136,
+          -12
+        ],
+        "footprint_m": [
+          24,
+          32
+        ],
+        "kind": "gate",
+        "role": "A broad civic passage with two independently operated inner closures. Both are open on ordinary days.",
+        "continuity_limits": [
+          "Closure lines at y=-144 and y=-128 protect the town beyond. Staff confirm people are clear; no automatic trapping of a crowded passage."
+        ],
+        "levels_z_m": [
+          -12
+        ],
+        "clear_height_m": 6,
+        "portals": [
+          {
+            "id": "UG-02-S-12",
+            "side": "S",
+            "position_m": [
+              -30,
+              -152.0,
+              -12
+            ],
+            "width_m": 12
+          },
+          {
+            "id": "UG-02-N-12",
+            "side": "N",
+            "position_m": [
+              -30,
+              -120.0,
+              -12
+            ],
+            "width_m": 12
+          }
+        ],
+        "new_in_version": "2.0.0"
+      },
+      {
+        "id": "UG-03",
+        "name": "Underhall Commons",
+        "position_m": [
+          -30,
+          -84,
+          -12
+        ],
+        "footprint_m": [
+          96,
+          72
+        ],
+        "kind": "commons",
+        "role": "A busy indoor high street with everyday shops, shared tables, a meeting square and neighborhood directions.",
+        "continuity_limits": [
+          "The central circulation cross stays open. This is a daily public place, not an empty bunker."
+        ],
+        "levels_z_m": [
+          -12
+        ],
+        "clear_height_m": 6,
+        "portals": [
+          {
+            "id": "UG-03-S-12",
+            "side": "S",
+            "position_m": [
+              -30,
+              -120.0,
+              -12
+            ],
+            "width_m": 12
+          },
+          {
+            "id": "UG-03-W-12",
+            "side": "W",
+            "position_m": [
+              -78.0,
+              -84,
+              -12
+            ],
+            "width_m": 6
+          },
+          {
+            "id": "UG-03-E-12",
+            "side": "E",
+            "position_m": [
+              18.0,
+              -84,
+              -12
+            ],
+            "width_m": 6
+          },
+          {
+            "id": "UG-03-N-12",
+            "side": "N",
+            "position_m": [
+              -30,
+              -48.0,
+              -12
+            ],
+            "width_m": 6
+          }
+        ],
+        "new_in_version": "2.0.0"
+      },
+      {
+        "id": "UG-04",
+        "name": "West Lantern Warren",
+        "position_m": [
+          -136,
+          -84,
+          -12
+        ],
+        "footprint_m": [
+          96,
+          72
+        ],
+        "kind": "homes",
+        "role": "Four household courts, shared play rooms, deliveries, doorways, kitchens and quiet residential galleries. Planning occupancy: 400 residents / 100 homes.",
+        "continuity_limits": [
+          "Lantern is a neighborhood name and ordinary lighting; no magical energy object. Private room layouts stay unassigned until drawn."
+        ],
+        "levels_z_m": [
+          -12
+        ],
+        "clear_height_m": 6,
+        "portals": [
+          {
+            "id": "UG-04-E-12",
+            "side": "E",
+            "position_m": [
+              -88.0,
+              -84,
+              -12
+            ],
+            "width_m": 6
+          },
+          {
+            "id": "UG-04-N-12",
+            "side": "N",
+            "position_m": [
+              -136,
+              -48.0,
+              -12
+            ],
+            "width_m": 6
+          },
+          {
+            "id": "UG-04-S-12",
+            "side": "S",
+            "position_m": [
+              -136,
+              -120.0,
+              -12
+            ],
+            "width_m": 6
+          },
+          {
+            "id": "UG-04-W-12",
+            "side": "W",
+            "position_m": [
+              -184.0,
+              -84,
+              -12
+            ],
+            "width_m": 4
+          }
+        ],
+        "new_in_version": "2.0.0"
+      },
+      {
+        "id": "UG-05",
+        "name": "East Orchard Warren",
+        "position_m": [
+          76,
+          -84,
+          -12
+        ],
+        "footprint_m": [
+          96,
+          72
+        ],
+        "kind": "homes",
+        "role": "Four dense residential courts with family homes, planted gathering pockets and neighbor-run shops. Planning occupancy: 400 residents / 100 homes.",
+        "continuity_limits": [
+          "Plants are decorative and locally grown; they do not imply unlimited daylight or a self-feeding town."
+        ],
+        "levels_z_m": [
+          -12
+        ],
+        "clear_height_m": 6,
+        "portals": [
+          {
+            "id": "UG-05-W-12",
+            "side": "W",
+            "position_m": [
+              28.0,
+              -84,
+              -12
+            ],
+            "width_m": 6
+          },
+          {
+            "id": "UG-05-N-12",
+            "side": "N",
+            "position_m": [
+              76,
+              -48.0,
+              -12
+            ],
+            "width_m": 6
+          },
+          {
+            "id": "UG-05-E-12",
+            "side": "E",
+            "position_m": [
+              124.0,
+              -84,
+              -12
+            ],
+            "width_m": 4
+          }
+        ],
+        "new_in_version": "2.0.0"
+      },
+      {
+        "id": "UG-06",
+        "name": "School & Play Hall",
+        "position_m": [
+          76,
+          0,
+          -12
+        ],
+        "footprint_m": [
+          96,
+          60
+        ],
+        "kind": "school",
+        "role": "Classrooms, reading, supervised play, making and community learning used by children from both surface and underground homes.",
+        "continuity_limits": [
+          "Children retain ordinary routines and protected gathering areas; danger does not turn the school into a combat room."
+        ],
+        "levels_z_m": [
+          -12
+        ],
+        "clear_height_m": 6,
+        "portals": [
+          {
+            "id": "UG-06-S-12",
+            "side": "S",
+            "position_m": [
+              76,
+              -30.0,
+              -12
+            ],
+            "width_m": 6
+          },
+          {
+            "id": "UG-06-W-12",
+            "side": "W",
+            "position_m": [
+              28.0,
+              0,
+              -12
+            ],
+            "width_m": 6
+          }
+        ],
+        "new_in_version": "2.0.0"
+      },
+      {
+        "id": "UG-07",
+        "name": "Care & Community Hall",
+        "position_m": [
+          -136,
+          0,
+          -12
+        ],
+        "footprint_m": [
+          96,
+          60
+        ],
+        "kind": "care",
+        "role": "Clinic rooms, recovery, community meals and a separate kitchen wing, with independent clean and service circulation.",
+        "continuity_limits": [
+          "Clinical rooms remain private. Kitchen noise and deliveries stay outside the care-room aisle."
+        ],
+        "levels_z_m": [
+          -12
+        ],
+        "clear_height_m": 6,
+        "portals": [
+          {
+            "id": "UG-07-S-12",
+            "side": "S",
+            "position_m": [
+              -136,
+              -30.0,
+              -12
+            ],
+            "width_m": 6
+          },
+          {
+            "id": "UG-07-E-12",
+            "side": "E",
+            "position_m": [
+              -88.0,
+              0,
+              -12
+            ],
+            "width_m": 6
+          }
+        ],
+        "new_in_version": "2.0.0"
+      },
+      {
+        "id": "UG-08",
+        "name": "Central Lift & Stair Court",
+        "position_m": [
+          -30,
+          0,
+          -12
+        ],
+        "footprint_m": [
+          60,
+          60
+        ],
+        "kind": "core",
+        "role": "A stacked neighborhood interchange at -12, -24 and -36 m, with ordinary lifts and independent stairs.",
+        "continuity_limits": [
+          "This core has no direct surface entrance. It connects only the protected side of the underground town."
+        ],
+        "levels_z_m": [
+          -12,
+          -24,
+          -36
+        ],
+        "clear_height_m": 6,
+        "portals": [
+          {
+            "id": "UG-08-S-12",
+            "side": "S",
+            "position_m": [
+              -30,
+              -30.0,
+              -12
+            ],
+            "width_m": 6
+          },
+          {
+            "id": "UG-08-W-12",
+            "side": "W",
+            "position_m": [
+              -60.0,
+              0,
+              -12
+            ],
+            "width_m": 6
+          },
+          {
+            "id": "UG-08-E-12",
+            "side": "E",
+            "position_m": [
+              0.0,
+              0,
+              -12
+            ],
+            "width_m": 6
+          },
+          {
+            "id": "UG-08-S-24",
+            "side": "S",
+            "position_m": [
+              -30,
+              -30.0,
+              -24
+            ],
+            "width_m": 6
+          },
+          {
+            "id": "UG-08-W-24",
+            "side": "W",
+            "position_m": [
+              -60.0,
+              0,
+              -24
+            ],
+            "width_m": 6
+          },
+          {
+            "id": "UG-08-E-24",
+            "side": "E",
+            "position_m": [
+              0.0,
+              0,
+              -24
+            ],
+            "width_m": 6
+          },
+          {
+            "id": "UG-08-S-36",
+            "side": "S",
+            "position_m": [
+              -30,
+              -30.0,
+              -36
+            ],
+            "width_m": 6
+          }
+        ],
+        "new_in_version": "2.0.0"
+      },
+      {
+        "id": "UG-09",
+        "name": "Service Receiving Hall",
+        "position_m": [
+          -136,
+          -170,
+          -12
+        ],
+        "footprint_m": [
+          80,
+          36
+        ],
+        "kind": "dock",
+        "role": "Freight from the workshop service passage is checked, staged and handed into the west neighborhood through a local closure.",
+        "continuity_limits": [
+          "The dock gate is a separate surface-to-town defensive boundary; it cannot be left as an unguarded bypass."
+        ],
+        "levels_z_m": [
+          -12
+        ],
+        "clear_height_m": 6,
+        "portals": [
+          {
+            "id": "UG-09-N-12",
+            "side": "N",
+            "position_m": [
+              -136,
+              -152.0,
+              -12
+            ],
+            "width_m": 6
+          },
+          {
+            "id": "UG-09-W-12",
+            "side": "W",
+            "position_m": [
+              -176.0,
+              -170,
+              -12
+            ],
+            "width_m": 6
+          }
+        ],
+        "new_in_version": "2.0.0"
+      },
+      {
+        "id": "UG-10",
+        "name": "West Deep Warren",
+        "position_m": [
+          -136,
+          -84,
+          -24
+        ],
+        "footprint_m": [
+          96,
+          72
+        ],
+        "kind": "homes",
+        "role": "A second residential neighborhood, equal in dignity and quality to the upper warren. Planning occupancy: 400 residents / 100 homes.",
+        "continuity_limits": [
+          "Depth is not a class hierarchy. These residents use surface gardens, markets and celebrations daily."
+        ],
+        "levels_z_m": [
+          -24
+        ],
+        "clear_height_m": 6,
+        "portals": [
+          {
+            "id": "UG-10-E-24",
+            "side": "E",
+            "position_m": [
+              -88.0,
+              -84,
+              -24
+            ],
+            "width_m": 6
+          },
+          {
+            "id": "UG-10-N-24",
+            "side": "N",
+            "position_m": [
+              -136,
+              -48.0,
+              -24
+            ],
+            "width_m": 6
+          },
+          {
+            "id": "UG-10-W-24",
+            "side": "W",
+            "position_m": [
+              -184.0,
+              -84,
+              -24
+            ],
+            "width_m": 4
+          }
+        ],
+        "new_in_version": "2.0.0"
+      },
+      {
+        "id": "UG-11",
+        "name": "East Deep Warren",
+        "position_m": [
+          76,
+          -84,
+          -24
+        ],
+        "footprint_m": [
+          96,
+          72
+        ],
+        "kind": "homes",
+        "role": "Dense family courtyards, homes, doorstep shops and social galleries on the second inhabited level. Planning occupancy: 400 residents / 100 homes.",
+        "continuity_limits": [
+          "The four wards are normal permanent homes, not temporary emergency beds."
+        ],
+        "levels_z_m": [
+          -24
+        ],
+        "clear_height_m": 6,
+        "portals": [
+          {
+            "id": "UG-11-W-24",
+            "side": "W",
+            "position_m": [
+              28.0,
+              -84,
+              -24
+            ],
+            "width_m": 6
+          },
+          {
+            "id": "UG-11-N-24",
+            "side": "N",
+            "position_m": [
+              76,
+              -48.0,
+              -24
+            ],
+            "width_m": 6
+          },
+          {
+            "id": "UG-11-E-24",
+            "side": "E",
+            "position_m": [
+              124.0,
+              -84,
+              -24
+            ],
+            "width_m": 4
+          }
+        ],
+        "new_in_version": "2.0.0"
+      },
+      {
+        "id": "UG-12",
+        "name": "Deep Commons & Kitchens",
+        "position_m": [
+          -30,
+          -84,
+          -24
+        ],
+        "footprint_m": [
+          96,
+          72
+        ],
+        "kind": "kitchens",
+        "role": "A shared meal hall, neighborhood shops and kitchens beside the lower residential streets.",
+        "continuity_limits": [
+          "Keep food preparation, clean stores and waste handling distinct. Household kitchens also exist."
+        ],
+        "levels_z_m": [
+          -24
+        ],
+        "clear_height_m": 6,
+        "portals": [
+          {
+            "id": "UG-12-W-24",
+            "side": "W",
+            "position_m": [
+              -78.0,
+              -84,
+              -24
+            ],
+            "width_m": 6
+          },
+          {
+            "id": "UG-12-E-24",
+            "side": "E",
+            "position_m": [
+              18.0,
+              -84,
+              -24
+            ],
+            "width_m": 6
+          },
+          {
+            "id": "UG-12-N-24",
+            "side": "N",
+            "position_m": [
+              -30,
+              -48.0,
+              -24
+            ],
+            "width_m": 6
+          },
+          {
+            "id": "UG-12-S-24",
+            "side": "S",
+            "position_m": [
+              -30,
+              -120.0,
+              -24
+            ],
+            "width_m": 6
+          }
+        ],
+        "new_in_version": "2.0.0"
+      },
+      {
+        "id": "UG-13",
+        "name": "Food Gardens & Grow Rooms",
+        "position_m": [
+          76,
+          0,
+          -24
+        ],
+        "footprint_m": [
+          96,
+          60
+        ],
+        "kind": "grow",
+        "role": "Powered growing rooms, seed storage and food preparation for selected greens, herbs and plant starts.",
+        "continuity_limits": [
+          "Grow lights require power. Underground cultivation supplements surface gardens and external trade; it does not feed everybody alone."
+        ],
+        "levels_z_m": [
+          -24
+        ],
+        "clear_height_m": 6,
+        "portals": [
+          {
+            "id": "UG-13-S-24",
+            "side": "S",
+            "position_m": [
+              76,
+              -30.0,
+              -24
+            ],
+            "width_m": 6
+          },
+          {
+            "id": "UG-13-W-24",
+            "side": "W",
+            "position_m": [
+              28.0,
+              0,
+              -24
+            ],
+            "width_m": 6
+          }
+        ],
+        "new_in_version": "2.0.0"
+      },
+      {
+        "id": "UG-14",
+        "name": "Assembly & Refuge Hall",
+        "position_m": [
+          -136,
+          0,
+          -24
+        ],
+        "footprint_m": [
+          96,
+          60
+        ],
+        "kind": "refuge",
+        "role": "Used daily for gatherings, sport, performances and clubs. In a protective state it receives surface residents, with rest, care and family reunification zones.",
+        "continuity_limits": [
+          "800 additional refuge places is a production planning target, not a certified capacity. Do not displace underground households to make refuge space."
+        ],
+        "levels_z_m": [
+          -24
+        ],
+        "clear_height_m": 6,
+        "portals": [
+          {
+            "id": "UG-14-S-24",
+            "side": "S",
+            "position_m": [
+              -136,
+              -30.0,
+              -24
+            ],
+            "width_m": 6
+          },
+          {
+            "id": "UG-14-E-24",
+            "side": "E",
+            "position_m": [
+              -88.0,
+              0,
+              -24
+            ],
+            "width_m": 6
+          }
+        ],
+        "new_in_version": "2.0.0"
+      },
+      {
+        "id": "UG-15",
+        "name": "Baths & Laundry",
+        "position_m": [
+          -30,
+          -170,
+          -24
+        ],
+        "footprint_m": [
+          96,
+          36
+        ],
+        "kind": "baths",
+        "role": "Shared baths, private washing rooms, laundry, drying and neighborhood maintenance stores.",
+        "continuity_limits": [
+          "Separate clean water from drainage. No connection opens through the Welcome Hall above."
+        ],
+        "levels_z_m": [
+          -24
+        ],
+        "clear_height_m": 6,
+        "portals": [
+          {
+            "id": "UG-15-N-24",
+            "side": "N",
+            "position_m": [
+              -30,
+              -152.0,
+              -24
+            ],
+            "width_m": 6
+          }
+        ],
+        "new_in_version": "2.0.0"
+      },
+      {
+        "id": "UG-16",
+        "name": "Utility Repair Hall",
+        "position_m": [
+          -136,
+          -84,
+          -36
+        ],
+        "footprint_m": [
+          96,
+          72
+        ],
+        "kind": "repair",
+        "role": "Maintainable local power distribution, battery rooms, spare equipment and repair benches.",
+        "continuity_limits": [
+          "Separate zones can be isolated. A failure here cannot be written as an unexplained instant shutdown of all life support."
+        ],
+        "levels_z_m": [
+          -36
+        ],
+        "clear_height_m": 6,
+        "portals": [
+          {
+            "id": "UG-16-E-36",
+            "side": "E",
+            "position_m": [
+              -88.0,
+              -84,
+              -36
+            ],
+            "width_m": 6
+          },
+          {
+            "id": "UG-16-W-36",
+            "side": "W",
+            "position_m": [
+              -184.0,
+              -84,
+              -36
+            ],
+            "width_m": 4
+          }
+        ],
+        "new_in_version": "2.0.0"
+      },
+      {
+        "id": "UG-17",
+        "name": "Water & Air Service Rooms",
+        "position_m": [
+          -30,
+          -84,
+          -36
+        ],
+        "footprint_m": [
+          96,
+          72
+        ],
+        "kind": "water",
+        "role": "Partitioned potable reserve, wastewater lift plant, drainage sumps and air-handling rooms.",
+        "continuity_limits": [
+          "Wastewater must be pumped up to the existing -3 m service level; it cannot flow uphill by gravity. Independent duty/backup equipment and local controls."
+        ],
+        "levels_z_m": [
+          -36
+        ],
+        "clear_height_m": 6,
+        "portals": [
+          {
+            "id": "UG-17-W-36",
+            "side": "W",
+            "position_m": [
+              -78.0,
+              -84,
+              -36
+            ],
+            "width_m": 6
+          },
+          {
+            "id": "UG-17-E-36",
+            "side": "E",
+            "position_m": [
+              18.0,
+              -84,
+              -36
+            ],
+            "width_m": 6
+          },
+          {
+            "id": "UG-17-N-36",
+            "side": "N",
+            "position_m": [
+              -30,
+              -48.0,
+              -36
+            ],
+            "width_m": 6
+          }
+        ],
+        "new_in_version": "2.0.0"
+      },
+      {
+        "id": "UG-18",
+        "name": "Deep Stores",
+        "position_m": [
+          76,
+          -84,
+          -36
+        ],
+        "footprint_m": [
+          96,
+          72
+        ],
+        "kind": "stores",
+        "role": "Dry staples, household supplies, repair materials and documented community reserves.",
+        "continuity_limits": [
+          "Stock quantities change in the event ledger. No infinite supplies or unearned emergency solution."
+        ],
+        "levels_z_m": [
+          -36
+        ],
+        "clear_height_m": 6,
+        "portals": [
+          {
+            "id": "UG-18-W-36",
+            "side": "W",
+            "position_m": [
+              28.0,
+              -84,
+              -36
+            ],
+            "width_m": 6
+          },
+          {
+            "id": "UG-18-E-36",
+            "side": "E",
+            "position_m": [
+              124.0,
+              -84,
+              -36
+            ],
+            "width_m": 4
+          }
+        ],
+        "new_in_version": "2.0.0"
+      },
+      {
+        "id": "UG-19",
+        "name": "West Stair & Refuge Core",
+        "position_m": [
+          -210,
+          -40,
+          -12
+        ],
+        "footprint_m": [
+          16,
+          20
+        ],
+        "kind": "egress",
+        "role": "An independent protected stair/refuge core links all three underground levels to the surface service walk at (-210,-40,0).",
+        "continuity_limits": [
+          "Outside entry is locally controlled. Occupants can leave from inside without network permission; surface conditions still determine whether evacuation is safe."
+        ],
+        "levels_z_m": [
+          -12,
+          -24,
+          -36
+        ],
+        "clear_height_m": 6,
+        "portals": [
+          {
+            "id": "UG-19-E-12",
+            "side": "E",
+            "position_m": [
+              -202.0,
+              -40,
+              -12
+            ],
+            "width_m": 4
+          },
+          {
+            "id": "UG-19-E-24",
+            "side": "E",
+            "position_m": [
+              -202.0,
+              -40,
+              -24
+            ],
+            "width_m": 4
+          },
+          {
+            "id": "UG-19-E-36",
+            "side": "E",
+            "position_m": [
+              -202.0,
+              -40,
+              -36
+            ],
+            "width_m": 4
+          }
+        ],
+        "new_in_version": "2.0.0"
+      },
+      {
+        "id": "UG-20",
+        "name": "East Stair & Refuge Core",
+        "position_m": [
+          144,
+          -40,
+          -12
+        ],
+        "footprint_m": [
+          16,
+          20
+        ],
+        "kind": "egress",
+        "role": "A second separated protected stair/refuge core links all levels to the surface service walk at (144,-40,0).",
+        "continuity_limits": [
+          "This is a distinct route from the west core. Include it in any surface-overrun state and keep staff able to operate it locally."
+        ],
+        "levels_z_m": [
+          -12,
+          -24,
+          -36
+        ],
+        "clear_height_m": 6,
+        "portals": [
+          {
+            "id": "UG-20-W-12",
+            "side": "W",
+            "position_m": [
+              136.0,
+              -40,
+              -12
+            ],
+            "width_m": 4
+          },
+          {
+            "id": "UG-20-W-24",
+            "side": "W",
+            "position_m": [
+              136.0,
+              -40,
+              -24
+            ],
+            "width_m": 4
+          },
+          {
+            "id": "UG-20-W-36",
+            "side": "W",
+            "position_m": [
+              136.0,
+              -40,
+              -36
+            ],
+            "width_m": 4
+          }
+        ],
+        "new_in_version": "2.0.0"
+      }
+    ],
+    "nodes": {
+      "UG-00": [
+        -30,
+        -144,
+        0
+      ],
+      "UG-01": [
+        -30,
+        -170,
+        -12
+      ],
+      "UG-02": [
+        -30,
+        -136,
+        -12
+      ],
+      "UG-03": [
+        -30,
+        -84,
+        -12
+      ],
+      "UG-04": [
+        -136,
+        -84,
+        -12
+      ],
+      "UG-05": [
+        76,
+        -84,
+        -12
+      ],
+      "UG-06": [
+        76,
+        0,
+        -12
+      ],
+      "UG-07": [
+        -136,
+        0,
+        -12
+      ],
+      "UG-08@-12": [
+        -30,
+        0,
+        -12
+      ],
+      "UG-08@-24": [
+        -30,
+        0,
+        -24
+      ],
+      "UG-08@-36": [
+        -30,
+        0,
+        -36
+      ],
+      "UG-09": [
+        -136,
+        -170,
+        -12
+      ],
+      "UG-10": [
+        -136,
+        -84,
+        -24
+      ],
+      "UG-11": [
+        76,
+        -84,
+        -24
+      ],
+      "UG-12": [
+        -30,
+        -84,
+        -24
+      ],
+      "UG-13": [
+        76,
+        0,
+        -24
+      ],
+      "UG-14": [
+        -136,
+        0,
+        -24
+      ],
+      "UG-15": [
+        -30,
+        -170,
+        -24
+      ],
+      "UG-16": [
+        -136,
+        -84,
+        -36
+      ],
+      "UG-17": [
+        -30,
+        -84,
+        -36
+      ],
+      "UG-18": [
+        76,
+        -84,
+        -36
+      ],
+      "UG-19@-12": [
+        -210,
+        -40,
+        -12
+      ],
+      "UG-19@-24": [
+        -210,
+        -40,
+        -24
+      ],
+      "UG-19@-36": [
+        -210,
+        -40,
+        -36
+      ],
+      "UG-20@-12": [
+        144,
+        -40,
+        -12
+      ],
+      "UG-20@-24": [
+        144,
+        -40,
+        -24
+      ],
+      "UG-20@-36": [
+        144,
+        -40,
+        -36
+      ],
+      "SURFACE-PUBLIC": [
+        -30,
+        -100,
+        0
+      ],
+      "SURFACE-SERVICE": [
+        -173,
+        3,
+        0
+      ],
+      "SURFACE-WEST": [
+        -210,
+        -40,
+        0
+      ],
+      "SURFACE-EAST": [
+        144,
+        -40,
+        0
+      ]
+    },
+    "routes": [
+      {
+        "id": "UG-01__UG-02",
+        "a": "UG-01",
+        "b": "UG-02",
+        "mode": "walk_cart",
+        "width_m": 12,
+        "points_m": [
+          [
+            -30,
+            -152.0,
+            -12
+          ],
+          [
+            -30,
+            -152.0,
+            -12
+          ]
+        ],
+        "closure_id": "IG-A",
+        "status": "normally open / local protective closure"
+      },
+      {
+        "id": "UG-02__UG-03",
+        "a": "UG-02",
+        "b": "UG-03",
+        "mode": "walk_cart",
+        "width_m": 12,
+        "points_m": [
+          [
+            -30,
+            -120.0,
+            -12
+          ],
+          [
+            -30,
+            -120.0,
+            -12
+          ]
+        ],
+        "closure_id": "IG-B",
+        "status": "normally open / local protective closure"
+      },
+      {
+        "id": "UG-03__UG-04",
+        "a": "UG-03",
+        "b": "UG-04",
+        "mode": "walk_cart",
+        "width_m": 6,
+        "points_m": [
+          [
+            -78.0,
+            -84,
+            -12
+          ],
+          [
+            -88.0,
+            -84,
+            -12
+          ]
+        ],
+        "closure_id": null,
+        "status": "ordinary public route"
+      },
+      {
+        "id": "UG-03__UG-05",
+        "a": "UG-03",
+        "b": "UG-05",
+        "mode": "walk_cart",
+        "width_m": 6,
+        "points_m": [
+          [
+            18.0,
+            -84,
+            -12
+          ],
+          [
+            28.0,
+            -84,
+            -12
+          ]
+        ],
+        "closure_id": null,
+        "status": "ordinary public route"
+      },
+      {
+        "id": "UG-03__UG-08___-12",
+        "a": "UG-03",
+        "b": "UG-08@-12",
+        "mode": "walk_cart",
+        "width_m": 6,
+        "points_m": [
+          [
+            -30,
+            -48.0,
+            -12
+          ],
+          [
+            -30,
+            -30.0,
+            -12
+          ]
+        ],
+        "closure_id": null,
+        "status": "ordinary public route"
+      },
+      {
+        "id": "UG-04__UG-07",
+        "a": "UG-04",
+        "b": "UG-07",
+        "mode": "walk_cart",
+        "width_m": 6,
+        "points_m": [
+          [
+            -136,
+            -48.0,
+            -12
+          ],
+          [
+            -136,
+            -30.0,
+            -12
+          ]
+        ],
+        "closure_id": null,
+        "status": "ordinary public route"
+      },
+      {
+        "id": "UG-05__UG-06",
+        "a": "UG-05",
+        "b": "UG-06",
+        "mode": "walk_cart",
+        "width_m": 6,
+        "points_m": [
+          [
+            76,
+            -48.0,
+            -12
+          ],
+          [
+            76,
+            -30.0,
+            -12
+          ]
+        ],
+        "closure_id": null,
+        "status": "ordinary public route"
+      },
+      {
+        "id": "UG-07__UG-08___-12",
+        "a": "UG-07",
+        "b": "UG-08@-12",
+        "mode": "walk_cart",
+        "width_m": 6,
+        "points_m": [
+          [
+            -88.0,
+            0,
+            -12
+          ],
+          [
+            -60.0,
+            0,
+            -12
+          ]
+        ],
+        "closure_id": null,
+        "status": "ordinary public route"
+      },
+      {
+        "id": "UG-08__UG-06___-12",
+        "a": "UG-08@-12",
+        "b": "UG-06",
+        "mode": "walk_cart",
+        "width_m": 6,
+        "points_m": [
+          [
+            0.0,
+            0,
+            -12
+          ],
+          [
+            28.0,
+            0,
+            -12
+          ]
+        ],
+        "closure_id": null,
+        "status": "ordinary public route"
+      },
+      {
+        "id": "UG-09__UG-04",
+        "a": "UG-09",
+        "b": "UG-04",
+        "mode": "walk_cart",
+        "width_m": 6,
+        "points_m": [
+          [
+            -136,
+            -152.0,
+            -12
+          ],
+          [
+            -136,
+            -120.0,
+            -12
+          ]
+        ],
+        "closure_id": "SG-W",
+        "status": "normally open / local protective closure"
+      },
+      {
+        "id": "UG-12__UG-10",
+        "a": "UG-12",
+        "b": "UG-10",
+        "mode": "walk_cart",
+        "width_m": 6,
+        "points_m": [
+          [
+            -78.0,
+            -84,
+            -24
+          ],
+          [
+            -88.0,
+            -84,
+            -24
+          ]
+        ],
+        "closure_id": null,
+        "status": "ordinary public route"
+      },
+      {
+        "id": "UG-12__UG-11",
+        "a": "UG-12",
+        "b": "UG-11",
+        "mode": "walk_cart",
+        "width_m": 6,
+        "points_m": [
+          [
+            18.0,
+            -84,
+            -24
+          ],
+          [
+            28.0,
+            -84,
+            -24
+          ]
+        ],
+        "closure_id": null,
+        "status": "ordinary public route"
+      },
+      {
+        "id": "UG-12__UG-08___-24",
+        "a": "UG-12",
+        "b": "UG-08@-24",
+        "mode": "walk_cart",
+        "width_m": 6,
+        "points_m": [
+          [
+            -30,
+            -48.0,
+            -24
+          ],
+          [
+            -30,
+            -30.0,
+            -24
+          ]
+        ],
+        "closure_id": null,
+        "status": "ordinary public route"
+      },
+      {
+        "id": "UG-10__UG-14",
+        "a": "UG-10",
+        "b": "UG-14",
+        "mode": "walk_cart",
+        "width_m": 6,
+        "points_m": [
+          [
+            -136,
+            -48.0,
+            -24
+          ],
+          [
+            -136,
+            -30.0,
+            -24
+          ]
+        ],
+        "closure_id": null,
+        "status": "ordinary public route"
+      },
+      {
+        "id": "UG-11__UG-13",
+        "a": "UG-11",
+        "b": "UG-13",
+        "mode": "walk_cart",
+        "width_m": 6,
+        "points_m": [
+          [
+            76,
+            -48.0,
+            -24
+          ],
+          [
+            76,
+            -30.0,
+            -24
+          ]
+        ],
+        "closure_id": null,
+        "status": "ordinary public route"
+      },
+      {
+        "id": "UG-14__UG-08___-24",
+        "a": "UG-14",
+        "b": "UG-08@-24",
+        "mode": "walk_cart",
+        "width_m": 6,
+        "points_m": [
+          [
+            -88.0,
+            0,
+            -24
+          ],
+          [
+            -60.0,
+            0,
+            -24
+          ]
+        ],
+        "closure_id": null,
+        "status": "ordinary public route"
+      },
+      {
+        "id": "UG-08__UG-13___-24",
+        "a": "UG-08@-24",
+        "b": "UG-13",
+        "mode": "walk_cart",
+        "width_m": 6,
+        "points_m": [
+          [
+            0.0,
+            0,
+            -24
+          ],
+          [
+            28.0,
+            0,
+            -24
+          ]
+        ],
+        "closure_id": null,
+        "status": "ordinary public route"
+      },
+      {
+        "id": "UG-12__UG-15",
+        "a": "UG-12",
+        "b": "UG-15",
+        "mode": "walk_cart",
+        "width_m": 6,
+        "points_m": [
+          [
+            -30,
+            -120.0,
+            -24
+          ],
+          [
+            -30,
+            -152.0,
+            -24
+          ]
+        ],
+        "closure_id": null,
+        "status": "ordinary public route"
+      },
+      {
+        "id": "UG-17__UG-16",
+        "a": "UG-17",
+        "b": "UG-16",
+        "mode": "walk_cart",
+        "width_m": 6,
+        "points_m": [
+          [
+            -78.0,
+            -84,
+            -36
+          ],
+          [
+            -88.0,
+            -84,
+            -36
+          ]
+        ],
+        "closure_id": null,
+        "status": "ordinary public route"
+      },
+      {
+        "id": "UG-17__UG-18",
+        "a": "UG-17",
+        "b": "UG-18",
+        "mode": "walk_cart",
+        "width_m": 6,
+        "points_m": [
+          [
+            18.0,
+            -84,
+            -36
+          ],
+          [
+            28.0,
+            -84,
+            -36
+          ]
+        ],
+        "closure_id": null,
+        "status": "ordinary public route"
+      },
+      {
+        "id": "UG-17__UG-08___-36",
+        "a": "UG-17",
+        "b": "UG-08@-36",
+        "mode": "walk_cart",
+        "width_m": 6,
+        "points_m": [
+          [
+            -30,
+            -48.0,
+            -36
+          ],
+          [
+            -30,
+            -30.0,
+            -36
+          ]
+        ],
+        "closure_id": null,
+        "status": "ordinary public route"
+      },
+      {
+        "id": "UG-04__UG-19___-12",
+        "a": "UG-04",
+        "b": "UG-19@-12",
+        "mode": "walk_cart",
+        "width_m": 4,
+        "points_m": [
+          [
+            -184.0,
+            -84,
+            -12
+          ],
+          [
+            -194,
+            -84,
+            -12
+          ],
+          [
+            -194,
+            -40,
+            -12
+          ],
+          [
+            -202.0,
+            -40,
+            -12
+          ]
+        ],
+        "closure_id": null,
+        "status": "ordinary public route"
+      },
+      {
+        "id": "UG-05__UG-20___-12",
+        "a": "UG-05",
+        "b": "UG-20@-12",
+        "mode": "walk_cart",
+        "width_m": 4,
+        "points_m": [
+          [
+            124.0,
+            -84,
+            -12
+          ],
+          [
+            134,
+            -84,
+            -12
+          ],
+          [
+            134,
+            -40,
+            -12
+          ],
+          [
+            136.0,
+            -40,
+            -12
+          ]
+        ],
+        "closure_id": null,
+        "status": "ordinary public route"
+      },
+      {
+        "id": "UG-10__UG-19___-24",
+        "a": "UG-10",
+        "b": "UG-19@-24",
+        "mode": "walk_cart",
+        "width_m": 4,
+        "points_m": [
+          [
+            -184.0,
+            -84,
+            -24
+          ],
+          [
+            -194,
+            -84,
+            -24
+          ],
+          [
+            -194,
+            -40,
+            -24
+          ],
+          [
+            -202.0,
+            -40,
+            -24
+          ]
+        ],
+        "closure_id": null,
+        "status": "ordinary public route"
+      },
+      {
+        "id": "UG-11__UG-20___-24",
+        "a": "UG-11",
+        "b": "UG-20@-24",
+        "mode": "walk_cart",
+        "width_m": 4,
+        "points_m": [
+          [
+            124.0,
+            -84,
+            -24
+          ],
+          [
+            134,
+            -84,
+            -24
+          ],
+          [
+            134,
+            -40,
+            -24
+          ],
+          [
+            136.0,
+            -40,
+            -24
+          ]
+        ],
+        "closure_id": null,
+        "status": "ordinary public route"
+      },
+      {
+        "id": "UG-16__UG-19___-36",
+        "a": "UG-16",
+        "b": "UG-19@-36",
+        "mode": "walk_cart",
+        "width_m": 4,
+        "points_m": [
+          [
+            -184.0,
+            -84,
+            -36
+          ],
+          [
+            -194,
+            -84,
+            -36
+          ],
+          [
+            -194,
+            -40,
+            -36
+          ],
+          [
+            -202.0,
+            -40,
+            -36
+          ]
+        ],
+        "closure_id": null,
+        "status": "ordinary public route"
+      },
+      {
+        "id": "UG-18__UG-20___-36",
+        "a": "UG-18",
+        "b": "UG-20@-36",
+        "mode": "walk_cart",
+        "width_m": 4,
+        "points_m": [
+          [
+            124.0,
+            -84,
+            -36
+          ],
+          [
+            134,
+            -84,
+            -36
+          ],
+          [
+            134,
+            -40,
+            -36
+          ],
+          [
+            136.0,
+            -40,
+            -36
+          ]
+        ],
+        "closure_id": null,
+        "status": "ordinary public route"
+      },
+      {
+        "id": "UG-08_stairs_-12_-24",
+        "a": "UG-08@-12",
+        "b": "UG-08@-24",
+        "mode": "stairs",
+        "width_m": 3,
+        "points_m": [
+          [
+            -30,
+            0,
+            -12
+          ],
+          [
+            -30,
+            0,
+            -24
+          ]
+        ],
+        "closure_id": null,
+        "status": "stacked stair geometry; drawn as a section symbol, not a vertical walk surface"
+      },
+      {
+        "id": "UG-08_lift_-12_-24",
+        "a": "UG-08@-12",
+        "b": "UG-08@-24",
+        "mode": "lift",
+        "width_m": 3,
+        "points_m": [
+          [
+            -30,
+            0,
+            -12
+          ],
+          [
+            -30,
+            0,
+            -24
+          ]
+        ],
+        "closure_id": null,
+        "status": "ordinary mobility lift; stairs remain independent"
+      },
+      {
+        "id": "UG-08_stairs_-24_-36",
+        "a": "UG-08@-24",
+        "b": "UG-08@-36",
+        "mode": "stairs",
+        "width_m": 3,
+        "points_m": [
+          [
+            -30,
+            0,
+            -24
+          ],
+          [
+            -30,
+            0,
+            -36
+          ]
+        ],
+        "closure_id": null,
+        "status": "stacked stair geometry; drawn as a section symbol, not a vertical walk surface"
+      },
+      {
+        "id": "UG-08_lift_-24_-36",
+        "a": "UG-08@-24",
+        "b": "UG-08@-36",
+        "mode": "lift",
+        "width_m": 3,
+        "points_m": [
+          [
+            -30,
+            0,
+            -24
+          ],
+          [
+            -30,
+            0,
+            -36
+          ]
+        ],
+        "closure_id": null,
+        "status": "ordinary mobility lift; stairs remain independent"
+      },
+      {
+        "id": "UG-19_stairs_-12_-24",
+        "a": "UG-19@-12",
+        "b": "UG-19@-24",
+        "mode": "stairs",
+        "width_m": 3,
+        "points_m": [
+          [
+            -210,
+            -40,
+            -12
+          ],
+          [
+            -210,
+            -40,
+            -24
+          ]
+        ],
+        "closure_id": null,
+        "status": "stacked stair geometry; drawn as a section symbol, not a vertical walk surface"
+      },
+      {
+        "id": "UG-19_stairs_-24_-36",
+        "a": "UG-19@-24",
+        "b": "UG-19@-36",
+        "mode": "stairs",
+        "width_m": 3,
+        "points_m": [
+          [
+            -210,
+            -40,
+            -24
+          ],
+          [
+            -210,
+            -40,
+            -36
+          ]
+        ],
+        "closure_id": null,
+        "status": "stacked stair geometry; drawn as a section symbol, not a vertical walk surface"
+      },
+      {
+        "id": "UG-20_stairs_-12_-24",
+        "a": "UG-20@-12",
+        "b": "UG-20@-24",
+        "mode": "stairs",
+        "width_m": 3,
+        "points_m": [
+          [
+            144,
+            -40,
+            -12
+          ],
+          [
+            144,
+            -40,
+            -24
+          ]
+        ],
+        "closure_id": null,
+        "status": "stacked stair geometry; drawn as a section symbol, not a vertical walk surface"
+      },
+      {
+        "id": "UG-20_stairs_-24_-36",
+        "a": "UG-20@-24",
+        "b": "UG-20@-36",
+        "mode": "stairs",
+        "width_m": 3,
+        "points_m": [
+          [
+            144,
+            -40,
+            -24
+          ],
+          [
+            144,
+            -40,
+            -36
+          ]
+        ],
+        "closure_id": null,
+        "status": "stacked stair geometry; drawn as a section symbol, not a vertical walk surface"
+      },
+      {
+        "id": "public_gallery",
+        "a": "SURFACE-PUBLIC",
+        "b": "UG-00",
+        "mode": "walk_cart",
+        "width_m": 6,
+        "points_m": [
+          [
+            -30,
+            -100,
+            0
+          ],
+          [
+            -30,
+            -170,
+            0
+          ]
+        ],
+        "closure_id": null,
+        "status": "public entry gallery; surface portal under the Hearth Terraces"
+      },
+      {
+        "id": "public_lift",
+        "a": "UG-00",
+        "b": "UG-01",
+        "mode": "lift",
+        "width_m": 3,
+        "points_m": [
+          [
+            -30,
+            -170,
+            0
+          ],
+          [
+            -30,
+            -170,
+            -12
+          ]
+        ],
+        "closure_id": null,
+        "status": "lands before inner gates"
+      },
+      {
+        "id": "public_stairs",
+        "a": "UG-00",
+        "b": "UG-01",
+        "mode": "stairs",
+        "width_m": 3,
+        "points_m": [
+          [
+            -30,
+            -170,
+            0
+          ],
+          [
+            -30,
+            -170,
+            -12
+          ]
+        ],
+        "closure_id": null,
+        "status": "lands before inner gates"
+      },
+      {
+        "id": "public_step_free_ramp",
+        "a": "SURFACE-PUBLIC",
+        "b": "UG-01",
+        "mode": "ramp",
+        "width_m": 6,
+        "points_m": [
+          [
+            -30,
+            -100,
+            0
+          ],
+          [
+            -90,
+            -100,
+            0
+          ],
+          [
+            -90,
+            -222,
+            -6
+          ],
+          [
+            -54,
+            -222,
+            -8
+          ],
+          [
+            -54,
+            -170,
+            -12
+          ]
+        ],
+        "closure_id": null,
+        "status": "independent of powered lifts; all runs no steeper than 1:12; landings at each turn"
+      },
+      {
+        "id": "workshop_service_ramp",
+        "a": "SURFACE-SERVICE",
+        "b": "UG-09",
+        "mode": "ramp",
+        "width_m": 6,
+        "points_m": [
+          [
+            -173,
+            3,
+            0
+          ],
+          [
+            -222,
+            3,
+            0
+          ],
+          [
+            -222,
+            -100,
+            -6
+          ],
+          [
+            -222,
+            -170,
+            -9
+          ],
+          [
+            -176,
+            -170,
+            -12
+          ]
+        ],
+        "closure_id": null,
+        "status": "service receiving before SG-W; all runs no steeper than 1:12"
+      },
+      {
+        "id": "SURFACE-WEST_stairs",
+        "a": "SURFACE-WEST",
+        "b": "UG-19@-12",
+        "mode": "stairs",
+        "width_m": 3,
+        "points_m": [
+          [
+            -210,
+            -40,
+            0
+          ],
+          [
+            -210,
+            -40,
+            -12
+          ]
+        ],
+        "closure_id": "EX-W",
+        "status": "controlled exterior ingress; mechanical free egress from inside"
+      },
+      {
+        "id": "SURFACE-EAST_stairs",
+        "a": "SURFACE-EAST",
+        "b": "UG-20@-12",
+        "mode": "stairs",
+        "width_m": 3,
+        "points_m": [
+          [
+            144,
+            -40,
+            0
+          ],
+          [
+            144,
+            -40,
+            -12
+          ]
+        ],
+        "closure_id": "EX-E",
+        "status": "controlled exterior ingress; mechanical free egress from inside"
+      }
+    ],
+    "population_plan": {
+      "surface_residents": 800,
+      "underground_residents": 1600,
+      "total_residents": 2400,
+      "underground_households": 400,
+      "basis": "New production planning baseline, not a user-specified census. Four residential wards of 100 homes at an average four residents; shared services support both districts."
+    },
+    "defensive_boundaries": [
+      {
+        "id": "IG-A",
+        "location": "UG-02",
+        "plane_y_m": -144,
+        "description": "Outer inner-gallery closure, open in ordinary life."
+      },
+      {
+        "id": "IG-B",
+        "location": "UG-02",
+        "plane_y_m": -128,
+        "description": "Independent inner-gallery closure, open in ordinary life."
+      },
+      {
+        "id": "SG-W",
+        "location": "UG-09 to UG-04",
+        "plane_y_m": -144,
+        "description": "Workshop freight boundary, independently closed during a protective state."
+      },
+      {
+        "id": "EX-W",
+        "location": "UG-19 surface threshold",
+        "description": "Controlled inward access; locally operated egress."
+      },
+      {
+        "id": "EX-E",
+        "location": "UG-20 surface threshold",
+        "description": "Controlled inward access; locally operated egress."
+      }
+    ],
+    "surface_interfaces": [
+      {
+        "id": "ENT-P",
+        "at": [
+          -30,
+          -100,
+          0
+        ],
+        "connects_to": "UG-00",
+        "type": "main public entry"
+      },
+      {
+        "id": "ENT-S",
+        "at": [
+          -173,
+          3,
+          0
+        ],
+        "connects_to": "UG-09",
+        "type": "workshop service passage"
+      },
+      {
+        "id": "ENT-W",
+        "at": [
+          -210,
+          -40,
+          0
+        ],
+        "connects_to": "UG-19",
+        "type": "protected stair exit"
+      },
+      {
+        "id": "ENT-E",
+        "at": [
+          144,
+          -40,
+          0
+        ],
+        "connects_to": "UG-20",
+        "type": "protected stair exit"
+      },
+      {
+        "id": "LW-W",
+        "at": [
+          -120,
+          -40,
+          0
+        ],
+        "type": "sealed daylight duct / no human passage"
+      },
+      {
+        "id": "LW-E",
+        "at": [
+          55,
+          -40,
+          0
+        ],
+        "type": "sealed daylight duct / no human passage"
+      }
+    ],
+    "services": {
+      "air": "Two separated intake/service paths, zoned air handlers, local dampers, monitoring and backup power. Daylight ducts are not ventilation calculations or person-sized access routes. Do not seal inhabited rooms without maintaining breathable air.",
+      "water": "Independent covered potable reserve. Surface spring feed descends in sealed pipes; pressure control and branch isolation are local. Canal water remains separate.",
+      "waste": "Sealed underground drains collect at -36 m. Duty/backup pumps lift wastewater to the established southeast service/treatment connection at -3 m. Emergency holding is local; no uphill gravity drain.",
+      "power": "Local batteries and distributed supplies support emergency light, communications, air and pumps. A forged record cannot physically open a manual gate.",
+      "food": "Surface gardens, traded staples, household stores and powered grow rooms all contribute. Refuge supplies are tracked finite stock.",
+      "daylight": "Sealed light ducts at LW-W and LW-E serve upper street connectors. Lower streets use comfortable electric lighting and planted communal spaces; no invented sunlight below solid rock."
+    },
+    "operating_states": [
+      {
+        "id": "OPEN",
+        "rule": "Outdoor East Gate and the main underground public entrance welcome normal public use. Inner closures stand open. Homes, clinics and service rooms retain normal privacy and staff access."
+      },
+      {
+        "id": "PROTECT",
+        "rule": "Stewards guide people inward, keep arrival routes legible, account for families and operate local gates only when the closure line is clear. Other entrances receive coordinated local closures."
+      },
+      {
+        "id": "SURFACE_OVERRUN",
+        "rule": "The inhabited underground town remains behind IG-A / IG-B / SG-W and locally controlled stair thresholds. Compartment doors limit a local breach. Civilian refuge, air, water and egress remain operating priorities."
+      },
+      {
+        "id": "RECOVER",
+        "rule": "Inspect routes, verify both physical and digital records, reunite households and reopen by location. Record damage and repairs as dated overlays."
+      }
+    ],
+    "production_limits": [
+      "Plans establish fictional world geometry, not a certified structural or evacuation design.",
+      "Final game navigation meshes must follow portals and authored stair/ramp geometry; the route graph is not a collision mesh.",
+      "Underground homes are reserved 100-unit wards; individual apartment interiors and occupants require later registered sub-plans.",
+      "No real attacker identity, exploit method or episode-one attack is established."
+    ]
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "status": "passed",
+  "checks": {
+    "all_37_primary_footprints_preserved": true,
+    "route_graphs_preserved": true,
+    "water_and_crossings_preserved": true,
+    "heroes_and_voices_preserved": true,
+    "population_preserved": true,
+    "subplans_within_parent_footprints": true,
+    "subplans_nonoverlap": true,
+    "new_ids_unique": true,
+    "resident_ids_unique": true,
+    "subplans_match_v2_room_allocations": true,
+    "door_widths_fit_south_walls": true,
+    "resident_location_references_valid": true
+  },
+  "limits": [
+    "Sub-plans are fictional production layouts, not construction engineering.",
+    "Only one of the 400 allocated underground homes has an internal plan in this edition.",
+    "New resident model sheets, voices and historical biographies are not yet established."
+  ],
+  "pdf": {
+    "pages": 26,
+    "text_within_page_bounds": true,
+    "svg_blueprints": 8,
+    "rendered_previews": 26
+  },
+  "visual_review": {
+    "status": "passed",
+    "review": "All 26 rendered pages inspected in contact sheets; resident register and home blueprint inspected at full resolution. Added the home store opening and moved bedroom labels clear of the north wall.",
+    "historical_invention_check": "Founding motivation, chronology, origins, companion meetings, named antagonists, creatures and exterior geography remain explicitly unassigned."
+  }
+}

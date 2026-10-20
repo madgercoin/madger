@@ -1,0 +1,359 @@
+[
+  {
+    "id": "UG-03-S01",
+    "name": "Mara's Bread Counter",
+    "parent": "UG-03",
+    "center_local_m": [
+      -35,
+      27.5
+    ],
+    "size_m": [
+      16,
+      11
+    ],
+    "door_side": "S",
+    "door_offset_m": 0,
+    "door_width_m": 2.4,
+    "kind": "bread",
+    "purpose": "A small shop with counted bread stock, a pickup counter and room to queue off the public crossing.",
+    "route": "Prepared bread arrives from UG-12 through UG-08 to UG-03; this counter has no industrial oven or new exhaust shaft.",
+    "public": "Front of house and pickup counter. Stock and handwash nook are staff space.",
+    "story": "A promised order competes with Mara's capacity. A correction is visible on the order slate.",
+    "permanent": [
+      "South entrance centered on the bay",
+      "North stock wall",
+      "Counter behind a clear customer zone"
+    ],
+    "state": [
+      "Daily bread, order slate, staff shift, returned baskets"
+    ],
+    "position_m": [
+      -65,
+      -56.5,
+      -12
+    ],
+    "footprint_m": [
+      16,
+      11
+    ],
+    "portal": {
+      "side": "S",
+      "position_m": [
+        -65,
+        -62.0,
+        -12
+      ],
+      "width_m": 2.4,
+      "connects_to": "UG-03",
+      "access": "ordinary internal doorway"
+    },
+    "status": "authored current spatial canon / v2.1.0",
+    "blueprint": "blueprints/UG-03-S01.svg"
+  },
+  {
+    "id": "UG-03-S02",
+    "name": "Repair & Tool Loan",
+    "parent": "UG-03",
+    "center_local_m": [
+      -15,
+      27.5
+    ],
+    "size_m": [
+      16,
+      11
+    ],
+    "door_side": "S",
+    "door_offset_m": 0,
+    "door_width_m": 2.4,
+    "kind": "repair",
+    "purpose": "A neighborhood handoff point for small repairs and loan tools. Large or hazardous work goes to BRW-07.",
+    "route": "Goods arrive through ordinary commons routes. No direct workshop tunnel is added.",
+    "public": "Ticket counter, safe display and pickup. Bench and tool storage are supervised.",
+    "story": "Tavi must admit a repair is not ready. An honestly delayed handoff preserves trust.",
+    "permanent": [
+      "South entrance",
+      "North workbench",
+      "Separate return and ready shelves"
+    ],
+    "state": [
+      "Repair tickets, loan tags, active project, staff shift"
+    ],
+    "position_m": [
+      -45,
+      -56.5,
+      -12
+    ],
+    "footprint_m": [
+      16,
+      11
+    ],
+    "portal": {
+      "side": "S",
+      "position_m": [
+        -45,
+        -62.0,
+        -12
+      ],
+      "width_m": 2.4,
+      "connects_to": "UG-03",
+      "access": "ordinary internal doorway"
+    },
+    "status": "authored current spatial canon / v2.1.0",
+    "blueprint": "blueprints/UG-03-S02.svg"
+  },
+  {
+    "id": "UG-03-S03",
+    "name": "Pantry & Produce",
+    "parent": "UG-03",
+    "center_local_m": [
+      12,
+      27.5
+    ],
+    "size_m": [
+      16,
+      11
+    ],
+    "door_side": "S",
+    "door_offset_m": 0,
+    "door_width_m": 2.4,
+    "kind": "produce",
+    "purpose": "A measured neighborhood supply shop for fresh produce, dry staples and household containers.",
+    "route": "Supplies come from BRW-10, UG-18, surface gardens and UG-13 using recorded routes and receiving handoffs.",
+    "public": "Display and counter. The covered stock zone is staff space.",
+    "story": "A delivery mismatch delays one meal or job; it does not instantly starve the town.",
+    "permanent": [
+      "South entrance",
+      "Covered north stock zone",
+      "Two separated display islands"
+    ],
+    "state": [
+      "Stock quantities, labels, delivery tags, substitute goods"
+    ],
+    "position_m": [
+      -18,
+      -56.5,
+      -12
+    ],
+    "footprint_m": [
+      16,
+      11
+    ],
+    "portal": {
+      "side": "S",
+      "position_m": [
+        -18,
+        -62.0,
+        -12
+      ],
+      "width_m": 2.4,
+      "connects_to": "UG-03",
+      "access": "ordinary internal doorway"
+    },
+    "status": "authored current spatial canon / v2.1.0",
+    "blueprint": "blueprints/UG-03-S03.svg"
+  },
+  {
+    "id": "UG-03-S04",
+    "name": "Jun's Mending Room",
+    "parent": "UG-03",
+    "center_local_m": [
+      32,
+      27.5
+    ],
+    "size_m": [
+      16,
+      11
+    ],
+    "door_side": "S",
+    "door_offset_m": 0,
+    "door_width_m": 2.4,
+    "kind": "mend",
+    "purpose": "Mending, fitting and small sign work, with a clear private fitting area and visible pickup rack.",
+    "route": "Ordinary street access only. Materials move by cart; no new wall opening connects adjacent shops.",
+    "public": "Consultation table and pickup. Fitting privacy is controlled by the person using it.",
+    "story": "A visible repair becomes something a resident values instead of something Jun has to hide.",
+    "permanent": [
+      "South entrance",
+      "East fitting screen",
+      "North fabric rack"
+    ],
+    "state": [
+      "Cloth rolls, appointment cards, repairs and posted signs"
+    ],
+    "position_m": [
+      2,
+      -56.5,
+      -12
+    ],
+    "footprint_m": [
+      16,
+      11
+    ],
+    "portal": {
+      "side": "S",
+      "position_m": [
+        2,
+        -62.0,
+        -12
+      ],
+      "width_m": 2.4,
+      "connects_to": "UG-03",
+      "access": "ordinary internal doorway"
+    },
+    "status": "authored current spatial canon / v2.1.0",
+    "blueprint": "blueprints/UG-03-S04.svg"
+  },
+  {
+    "id": "UG-06-R01",
+    "name": "Learning Room One",
+    "parent": "UG-06",
+    "center_local_m": [
+      -34,
+      16
+    ],
+    "size_m": [
+      20,
+      20
+    ],
+    "door_side": "S",
+    "door_offset_m": 0,
+    "door_width_m": 2.4,
+    "kind": "classroom",
+    "purpose": "One of the four already allocated learning rooms, for a flexible group of about 16 learners. Other rooms and shifts share the school demand.",
+    "route": "South door enters the school's central circulation strip, then the existing west connection to UG-08.",
+    "public": "Classroom access follows the teaching schedule; guardians and visitors check in with staff.",
+    "story": "A group redesigns a confusing wayfinding card. Each learner contributes a different observation.",
+    "permanent": [
+      "South entry and clear central aisle",
+      "North teaching wall",
+      "West materials and east reading corner"
+    ],
+    "state": [
+      "Desk groupings, lesson materials, projects, attendance"
+    ],
+    "position_m": [
+      42,
+      16,
+      -12
+    ],
+    "footprint_m": [
+      20,
+      20
+    ],
+    "portal": {
+      "side": "S",
+      "position_m": [
+        42,
+        6.0,
+        -12
+      ],
+      "width_m": 2.4,
+      "connects_to": "UG-06",
+      "access": "ordinary internal doorway"
+    },
+    "status": "authored current spatial canon / v2.1.0",
+    "blueprint": "blueprints/UG-06-R01.svg"
+  },
+  {
+    "id": "UG-07-R01",
+    "name": "Care Room One",
+    "parent": "UG-07",
+    "center_local_m": [
+      -38,
+      16
+    ],
+    "size_m": [
+      12,
+      20
+    ],
+    "door_side": "S",
+    "door_offset_m": 0,
+    "door_width_m": 2.4,
+    "kind": "care",
+    "purpose": "A private assessment and recovery room within the already allocated clinic zone, with a quiet waiting position and handwash point.",
+    "route": "South door meets the care hall's central circulation, separate from the kitchen and food handling.",
+    "public": "Entry by invitation or a care handoff. Personal records are not visible from the corridor.",
+    "story": "An exhausted helper accepts rest and asks someone else to finish a job.",
+    "permanent": [
+      "South door",
+      "West handwash and covered storage",
+      "Screened northern care area"
+    ],
+    "state": [
+      "Occupancy, screen position, supplies and care handoff"
+    ],
+    "position_m": [
+      -174,
+      16,
+      -12
+    ],
+    "footprint_m": [
+      12,
+      20
+    ],
+    "portal": {
+      "side": "S",
+      "position_m": [
+        -174,
+        6.0,
+        -12
+      ],
+      "width_m": 2.4,
+      "connects_to": "UG-07",
+      "access": "supervised care threshold"
+    },
+    "status": "authored current spatial canon / v2.1.0",
+    "blueprint": "blueprints/UG-07-R01.svg"
+  },
+  {
+    "id": "UG-04-H001",
+    "name": "Lantern Street Home 001",
+    "parent": "UG-04",
+    "center_local_m": [
+      -40,
+      7
+    ],
+    "size_m": [
+      8,
+      6
+    ],
+    "door_side": "S",
+    "door_offset_m": 0,
+    "door_width_m": 1.2,
+    "kind": "home",
+    "purpose": "A compact 48 m2 household home within the southwest frontage of the northwest court. It is one of the ward's 100 planned homes, not an extra unit.",
+    "route": "South door opens onto the ward's existing central street. No private route reaches the surface or another level.",
+    "public": "The doorstep faces a public gallery; the interior requires the household's permission. Occupants are intentionally not assigned yet.",
+    "story": "A private household moment shows why a shared town matters. The heroes are guests, not owners of every room.",
+    "permanent": [
+      "South entry",
+      "Rear sleeping rooms",
+      "West wash compartment and service wall"
+    ],
+    "state": [
+      "Household assignment, furniture, decoration and ordinary wear"
+    ],
+    "position_m": [
+      -176,
+      -77,
+      -12
+    ],
+    "footprint_m": [
+      8,
+      6
+    ],
+    "portal": {
+      "side": "S",
+      "position_m": [
+        -176,
+        -80.0,
+        -12
+      ],
+      "width_m": 1.2,
+      "connects_to": "UG-04",
+      "access": "private household threshold"
+    },
+    "status": "authored current spatial canon / v2.1.0",
+    "blueprint": "blueprints/UG-04-H001.svg"
+  }
+]

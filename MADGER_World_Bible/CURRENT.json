@@ -1,12 +1,16 @@
 {
   "world_id": "MADGER-BRW-HOME",
-  "canon_version": "2.0.0",
-  "volume": "02 / Above and Below",
-  "bible": "v2.0.0/README.md",
-  "data": "v2.0.0/MADGER_World_Bible.json",
+  "canon_version": "2.1.0",
+  "volume": "03 / The Living Burrow",
+  "bible": "v2.1.0/MADGER_Living_World.pdf",
+  "data": "v2.1.0/MADGER_World_Bible.json",
   "underground_blueprints": "v2.0.0/MADGER_Underground_Blueprints.pdf",
   "map": "v2.0.0/previews/UG-A2.png",
   "surface_blueprints": "blueprints/v1.0.0/MADGER_Burrow_Blueprints.pdf",
   "historical_foundation": "v1.0.0/MADGER_World_Bible.pdf",
-  "precedence": "v2.0.0 supersedes conflicting population, underground scope and gate-state statements in v1."
+  "precedence": "v2.1.0 adds present-day detail. v2 public access, underground scope and population continue to supersede conflicting v1 statements.",
+  "source": "v2.1.0/source/",
+  "living_world_text": "v2.1.0/LIVING_WORLD.md",
+  "sub_locations": "v2.1.0/Sub_Locations.json",
+  "history_workbook": "v2.1.0/History_Workbook.json"
 }

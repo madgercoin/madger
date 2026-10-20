@@ -1,13 +1,16 @@
 # MADGER World Bible
 
-**Current canon: [v2.0.0 — Above and Below](v2.0.0/README.md)** · 20 October 2026
+**Current canon: [v2.1.0 - The Living Burrow](v2.1.0/README.md)** · 20 October 2026
 
 The Burrow is one populated town above and below ground. Outdoor markets, gardens and homes connect to permanent underground neighborhoods. Public entrances welcome ordinary daily use; a separate inner defensive boundary protects underground residents if the surface is overrun.
 
 ## Current references
 
-- [World Bible v2.0.0 and continuity rules](v2.0.0/README.md)
-- [Complete structured canon](v2.0.0/MADGER_World_Bible.json)
+- [26-page Living World volume](v2.1.0/MADGER_Living_World.pdf)
+- [Full present-day world text](v2.1.0/LIVING_WORLD.md)
+- [Resident register](v2.1.0/Resident_Register.json) and [history workbook](v2.1.0/History_Workbook.json)
+- [Underground foundation v2.0.0](v2.0.0/README.md)
+- [Complete structured canon](v2.1.0/MADGER_World_Bible.json)
 - [28-page underground blueprint atlas](v2.0.0/MADGER_Underground_Blueprints.pdf)
 - [Connected blueprint index](blueprints/README.md)
 - [Current version pointer](CURRENT.json)
@@ -34,4 +37,6 @@ Exterior geography and attacker identity remain unassigned. Existing Expedition 
 - [Surface Blueprint Atlas, Issue 01](blueprints/v1.0.0/README.md); its geometry remains current, while v2 controls access states and population.
 - [Original complete editable source](v1.0.0/MADGER_World_Bible_Source.json)
 
-Current edition sources, editable SVG sheets and rebuild instructions are archived with [v2.0.0](v2.0.0/README.md).
+Current edition sources, seven detailed sub-plans, eight resident dossiers and rebuild instructions are archived with [v2.1.0](v2.1.0/README.md). The original surface and underground atlases remain the master geometry references.
+
+Version 2.1 develops five neighborhood identities and daily civic life. Madger is the founder; his motives, the founding sequence, companion meetings, origins, named antagonists and creatures remain for the owner-requested history phase.

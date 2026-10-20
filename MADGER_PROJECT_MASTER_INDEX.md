@@ -9,7 +9,7 @@
 
 ## Shared world canon - October 19, 2026
 
-**[MADGER World Bible v2.0.0: Above and Below](MADGER_World_Bible/README.md)** is the current shared world foundation for stories, animation and the game. It preserves all 16 surface areas and adds 21 underground areas across two occupied floors and a service floor. Both districts are populated; entrances welcome normal public access, with a separate inner defensive boundary if the surface is overrun. The current JSON, 28-page underground atlas, individual drawings, source and checksums are archived together. Earlier population, surface-only scope and closed-gate defaults are superseded. This archive does not mean existing video/game releases already implement the map. Later explicit owner character corrections take precedence over older identity notes below.
+**[MADGER World Bible v2.1.0: The Living Burrow](MADGER_World_Bible/README.md)** is the current shared foundation for stories, animation and the game. It preserves 16 surface and 21 underground areas, then adds seven detailed sub-plans, five neighborhood identities, eight recurring residents and present-day civic life in a 26-page volume. Public access, the independent inner defense and the v2 population baseline remain in force. The owner establishes Madger as founder; origins, founding motives, companion meetings, villains and creature histories remain reserved for the next development phase. Full canon, drawings, sources and validation are archived together. Existing video/game releases are not claimed to implement this world yet.
 
 ## 1. Executive project summary
 

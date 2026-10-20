@@ -1,0 +1,167 @@
+[
+  {
+    "id": "RES-01",
+    "name": "Mara Reed",
+    "species": "rabbit",
+    "life_stage": "adult",
+    "home": "UG-04",
+    "work": [
+      "UG-03-S01",
+      "UG-12"
+    ],
+    "role": "Baker and shared-kitchen shift coordinator",
+    "want": "Finish the morning bake on time and keep one afternoon free for drawing.",
+    "strength": "Remembers preferences and plans work well.",
+    "flaw": "Says yes before checking whether she has the time.",
+    "relationship": "Jun pushes her to name the true cost of a favor; Madger recognizes his own overcommitment in her.",
+    "scene": "She gives a child a counted delivery task and lets the child finish it.",
+    "limit": "Generosity does not create unlimited free stock. She can decline an extra order without becoming selfish.",
+    "visual_note": "Flour-marked oat apron, short green neck cloth, practical sleeves; final character model and voice remain unapproved.",
+    "history_open": "Origin, relatives, arrival date and first meeting with Madger remain unassigned."
+  },
+  {
+    "id": "RES-02",
+    "name": "Tavi Moss",
+    "species": "river otter",
+    "life_stage": "older adolescent apprentice",
+    "home": "UG-10",
+    "work": [
+      "BRW-07",
+      "UG-03-S02"
+    ],
+    "role": "Repair apprentice and tool-loan assistant",
+    "want": "Earn responsibility for a complete repair, not only the easy preparation.",
+    "strength": "Notices how parts fit and asks direct questions.",
+    "flaw": "Hides small mistakes while hoping to fix them before anyone notices.",
+    "relationship": "Gorilla White teaches without doing every task for him; Iona asks for measurements before confidence.",
+    "scene": "He marks a chair as unfinished instead of allowing it onto the loan shelf.",
+    "limit": "Skill grows through supervised work. He cannot improvise a life-support repair or a universal gadget.",
+    "visual_note": "Indigo work vest, rolled cuffs and a small repair notebook; model and voice are development notes.",
+    "history_open": "Family, apprenticeship start and reason for coming to the Burrow remain unassigned."
+  },
+  {
+    "id": "RES-03",
+    "name": "Iona Flint",
+    "species": "mole",
+    "life_stage": "adult",
+    "home": "BRW-03",
+    "work": [
+      "BRW-05",
+      "BRW-06",
+      "UG-17"
+    ],
+    "role": "Water and air maintenance lead",
+    "want": "Keep inspections boring enough that everyone else can enjoy the day.",
+    "strength": "Patient verification and excellent practical memory.",
+    "flaw": "Sometimes delivers a correct finding so bluntly that people stop listening.",
+    "relationship": "Bot helps compare records; she insists that a recorded reading and a physical reading are different things.",
+    "scene": "She invites a worried neighbor to see the relevant gauge and explains what it can and cannot show.",
+    "limit": "She is one member of a trained service team, not the sole person capable of keeping the town alive.",
+    "visual_note": "Copper cuff marker, slate work jacket and an ordinary tool roll; no magical blindness compensation.",
+    "history_open": "Training, former home and earlier service incidents remain unassigned."
+  },
+  {
+    "id": "RES-04",
+    "name": "Neri Tern",
+    "species": "red panda",
+    "life_stage": "adult",
+    "home": "UG-05",
+    "work": [
+      "UG-06",
+      "UG-06-R01",
+      "BRW-16"
+    ],
+    "role": "Teacher and makers-club facilitator",
+    "want": "Help students ask better questions and leave room for their own answers.",
+    "strength": "Makes complicated tasks manageable.",
+    "flaw": "Overplans and can mistake an unexpected approach for a distraction.",
+    "relationship": "Snow helps children practice patient observation; Neri respects that Snow is a dog, not a speaking classroom prop.",
+    "scene": "She changes a lesson when a student notices that the delivery map is hard to read.",
+    "limit": "Children are not used as covert investigators or put in danger to prove maturity.",
+    "visual_note": "Chalk-blue overshirt, cream satchel and pockets for reusable cards; final model and voice remain open.",
+    "history_open": "Education, birthplace and why she chose teaching here remain unassigned."
+  },
+  {
+    "id": "RES-05",
+    "name": "Pell Fen",
+    "species": "hedgehog",
+    "life_stage": "adult",
+    "home": "UG-11",
+    "work": [
+      "UG-01",
+      "BRW-13",
+      "BRW-09"
+    ],
+    "role": "Welcome steward and records liaison",
+    "want": "Make a newcomer's first day understandable.",
+    "strength": "Calm, fairness and careful handoffs.",
+    "flaw": "Clings to a procedure when the procedure itself is confusing someone.",
+    "relationship": "Madger encourages a personal welcome; Bot helps Pell explain rather than merely repeat a rule.",
+    "scene": "Pell walks a visitor to the correct counter instead of pointing at another form.",
+    "limit": "Public access is not a personality test. A visitor is not suspicious just because they are unfamiliar.",
+    "visual_note": "Small green steward tab, cream waistcoat and a simple map folder; no fortress-guard uniform.",
+    "history_open": "Arrival, earlier loyalties and any founding-era role remain unassigned."
+  },
+  {
+    "id": "RES-06",
+    "name": "Jun Ash",
+    "species": "field mouse",
+    "life_stage": "adult",
+    "home": "UG-04",
+    "work": [
+      "UG-03-S04",
+      "BRW-16"
+    ],
+    "role": "Mender, sign painter and public-notice contributor",
+    "want": "Make useful objects beautiful and make important information easy to find.",
+    "strength": "Detail, economy of material and a sharp eye for inconsistency.",
+    "flaw": "Treats an imperfect finished piece as a personal failure.",
+    "relationship": "Mara values a practical repair; Jun learns to accept visible seams instead of hiding every repair.",
+    "scene": "Jun adds a picture and a floor number to a sign that previously relied on color alone.",
+    "limit": "Small stature does not become unexplained access through pipes or vents. Route geometry still applies.",
+    "visual_note": "Ochre apron, a measuring ribbon and ink on one cuff; species proportions require a later model sheet.",
+    "history_open": "Family craft traditions and the meaning of any personal keepsake remain unassigned."
+  },
+  {
+    "id": "RES-07",
+    "name": "Edda Brook",
+    "species": "beaver",
+    "life_stage": "adult",
+    "home": "UG-11",
+    "work": [
+      "UG-07",
+      "UG-07-R01",
+      "BRW-11"
+    ],
+    "role": "Care worker and recovery coordinator",
+    "want": "Give people a safe place to recover without making them feel like a burden.",
+    "strength": "Listening, organization and firm practical boundaries.",
+    "flaw": "Finds it easier to ask others to rest than to rest herself.",
+    "relationship": "Gorilla White cannot persuade her that endurance cancels recovery; she also accepts help from him.",
+    "scene": "She asks an injured neighbor whom they want informed, then records the agreed handoff.",
+    "limit": "Care is confidential. Treatment is not instant magic, and she does not diagnose everyone by looking at them.",
+    "visual_note": "Cream work tunic, blue circle badge and a personal green mug; no voice or finished likeness assigned.",
+    "history_open": "Training, family and previous rescue experiences remain unassigned."
+  },
+  {
+    "id": "RES-08",
+    "name": "Sori Wren",
+    "species": "fox",
+    "life_stage": "adult",
+    "home": "BRW-03",
+    "work": [
+      "BRW-04",
+      "UG-13",
+      "UG-03-S03"
+    ],
+    "role": "Grower and produce-stall coordinator",
+    "want": "Get good food to tables while preserving seed and spare stock for the next cycle.",
+    "strength": "Practical optimism and attention to growing conditions.",
+    "flaw": "Hears criticism of a harvest as criticism of personal worth.",
+    "relationship": "Iona and Sori sometimes disagree about allocation, then compare actual supply and need.",
+    "scene": "Sori explains a smaller basket honestly and offers a workable substitute.",
+    "limit": "Species does not determine honesty. Sori is not a disguised villain or a clue to one.",
+    "visual_note": "Garden-green apron, copper plant labels and a sun-faded hat used outdoors only.",
+    "history_open": "Former home, growing knowledge and first trade journey remain unassigned."
+  }
+]
