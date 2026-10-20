@@ -26,9 +26,30 @@ test('repeated overloaded frames promptly trigger a bounded mobile fallback',asy
  let scale=1;
  const observed=[];
  for(let i=0;i<6;i++){scale=adjustedSceneScale(scale,[310,475,960]);observed.push(scale);}
- assert.deepEqual(observed.slice(0,3),[.72,.52,.42]);
+ assert.deepEqual(observed.slice(0,3),[.48,.30,.30]);
  assert(observed.every(n=>n<=1&&n>=MIN_SCENE_SCALE));
  assert.equal(observed.at(-1),MIN_SCENE_SCALE);
+});
+
+test('software rasterizer starts with bounded lightweight 3D before gameplay',async()=>{
+ const {initialSceneScale,MIN_SCENE_SCALE}=await quality;
+ assert(initialSceneScale('ANGLE (Google, Vulkan SwiftShader Device)')>MIN_SCENE_SCALE);
+ assert.equal(initialSceneScale('ANGLE (Google, Vulkan SwiftShader Device)'),.36);
+ assert.equal(initialSceneScale('llvmpipe (LLVM 15)'),.36);
+ assert.equal(initialSceneScale('Intel UHD Graphics 620'),1);
+ assert.equal(initialSceneScale('Qualcomm Adreno 740'),1);
+ assert.equal(initialSceneScale('Apple M3 GPU'),1);
+ assert.equal(initialSceneScale(''),1);
+});
+
+test('a true frame-stall protective pause adjusts visuals but never disables the pause',async()=>{
+ const {recoverScaleAfterPause,MIN_SCENE_SCALE}=await quality;
+ assert.equal(recoverScaleAfterPause(1,700,'running','paused'),.6);
+ assert.equal(recoverScaleAfterPause(.36,700,'running','paused'),MIN_SCENE_SCALE);
+ assert.equal(recoverScaleAfterPause(1,350,'running','paused'),1);
+ assert.equal(recoverScaleAfterPause(1,700,'ready','paused'),1);
+ assert.equal(recoverScaleAfterPause(1,700,'running','running'),1);
+ assert.equal(recoverScaleAfterPause(1,3000,'running','paused'),1);
 });
 
 test('moderately slow screens preserve more detail than severely overloaded ones',async()=>{

@@ -1,0 +1,3 @@
+# Packed glTF JSON must retain the repository's exact bytes on Windows.
+# Git CRLF conversion makes the generated forest.pack integrity test fail.
+mobile/public/blackroot/assets/**/*.gltf text eol=lf

@@ -192,6 +192,8 @@ jobs:
         working-directory: mobile
     steps:
       - uses: actions/checkout@v4
+      - name: Verify strict live-HUD observation safety before emulator QA
+        run: python3 -m unittest discover -s scripts -p 'test_android_foreground_observation.py' -v
       - uses: actions/setup-java@v4
         with:
           distribution: temurin

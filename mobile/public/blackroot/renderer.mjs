@@ -6,7 +6,7 @@ import { GLTFLoader } from './vendor/examples/jsm/loaders/GLTFLoader.js';
 import { RGBELoader } from './vendor/examples/jsm/loaders/RGBELoader.js';
 import { legacyCharacters } from './characters.mjs?v=chambers-20261019-2';
 import { mergeGeometries } from './vendor/examples/jsm/utils/BufferGeometryUtils.js';
-import { adjustedSceneScale } from './quality.mjs';
+import { adjustedSceneScale, initialSceneScale, recoverScaleAfterPause } from './quality.mjs';
 import { terrainBiome, terrainProfile, terrainSurfaceHeight, sceneryProfile } from './terrain.mjs';
 import { MadgerHero } from './madger-hero.mjs';
 import { CavernVault } from './cavern-vault.mjs';
@@ -61,6 +61,14 @@ let bridge;
 class ForestRenderer {
   constructor(gl) {
     this.gl=gl; this.scene=new T.Scene(); this.scene.background=new T.Color('#7b9387');
+    // expo-gl sets responsive canvas CSS width/height before context creation.
+    // For an unstyled standalone canvas, preserve original display dimensions
+    // so lowering backing pixel resolution cannot recursively shrink layout.
+    const canvas=gl.canvas;
+    if(canvas?.style&&!canvas.style.width&&!canvas.style.height){
+      const width=canvas.clientWidth||canvas.width,height=canvas.clientHeight||canvas.height;
+      if(width>1&&height>1){canvas.style.width=width+'px';canvas.style.height=height+'px';}
+    }
     this.scene.fog=new T.FogExp2('#7b9387',.017);
     this.camera=new T.PerspectiveCamera(60,1,.1,145);
     this.gpu=new T.WebGLRenderer({canvas:gl.canvas,context:gl,antialias:false,alpha:false});
@@ -77,7 +85,16 @@ class ForestRenderer {
     this.fill=new T.PointLight('#ffb257',13,15,2);this.fill.position.set(0,3,1);this.scene.add(this.fill);
     this.batches=new Map();this.geometries=new Map();this.materials=new Map();this.scanBatches=[];
     this.travel={value:0};this.temp=new T.Matrix4();this.tint=new T.Color();this.stats={};
-    this.run=null;this.dead=false;this.textures=[];this.quality=1;this.frameSamples=[];this.stableFrames=0;this.renderedFrames=0;
+    const gpuLabel=(()=>{try {
+      const debug=gl.getExtension('WEBGL_debug_renderer_info');
+      return String((debug&&gl.getParameter(debug.UNMASKED_RENDERER_WEBGL))||gl.getParameter(gl.RENDERER)||'');
+    }catch{return ''}})();
+    this.quality=initialSceneScale(gpuLabel);
+    this.softwareGpu=this.quality<1;
+    this.sun.castShadow=this.quality>.53;
+    this.run=null;this.dead=false;this.textures=[];this.frameSamples=[];this.stableFrames=0;this.renderedFrames=0;
+    this.previousRunMode=null;
+    this.stats.softwareGpu=this.softwareGpu;
   }
   async init() {
     const worldRequest=fetch('/blackroot/world-presets.json?v=grounded-scenery-20261020-1',{cache:'force-cache'}).then(async response=>{
@@ -133,7 +150,30 @@ class ForestRenderer {
     this.approvedFace=await loader.loadAsync(ASSETS+'madger-official-face.webp');
     this.approvedFace.colorSpace=T.SRGBColorSpace;this.textures.push(this.approvedFace);
     this.buildLandscape();
-    // Compile materials before countdown: expensive shader setup must not pause a run.
+    // Compile the cave roof's PBR program while still in the loading state.
+    // It is normally hidden outdoors; without prewarming, its first appearance
+    // at Deep Burrow can compile a new shader mid-run and trigger the protective
+    // 400 ms frame-stall pause. Never weaken that safety pause or game physics.
+    const vault=this.cavernVault.mesh,wasVisible=vault.visible;
+    const formations=[this.cavernVault.formations.stone,this.cavernVault.formations.quartz];
+    const oldFormationStates=formations.map(mesh=>({mesh,visible:mesh.visible,count:mesh.count}));
+    vault.visible=true;
+    for(const mesh of formations){
+      mesh.visible=true;mesh.count=1;
+      mesh.setMatrixAt(0,new T.Matrix4().makeTranslation(0,-1000,0));
+      mesh.instanceMatrix.needsUpdate=true;
+    }
+    try {
+      this.gpu.compile(this.scene,this.camera);
+      // A real hidden-frame draw uploads cave geometry and PBR maps to the GPU
+      // BEFORE gameplay begins; compile alone cannot warm texture upload.
+      this.gpu.render(this.scene,this.camera);
+    }
+    catch(error) { console.warn('MADGER_CAVERN_PREWARM_FAILED',String(error)); }
+    finally {
+      vault.visible=wasVisible;
+      for(const {mesh,visible,count} of oldFormationStates){mesh.visible=visible;mesh.count=count;}
+    }
     this.stats.assetsReady=true;
     return this;
   }
@@ -288,6 +328,7 @@ class ForestRenderer {
         if(id==='grass_medium_02'){
           if(underground&&n%2===0)continue;
           for(let j=0;j<3;j++){
+            if(this.quality<.5&&j>0)continue;
             if(this.quality<1&&j===2)continue;
             const lateral=3.95+r*1.3+j*.52,scale=(.34+.18*hash(n*13+side*3+j))*scenery.understory;
             const x=road(s,d)+curve(d)-curve(travel)+side*lateral;
@@ -296,7 +337,7 @@ class ForestRenderer {
           continue;
         }
         if(id==='root_cluster_01'){
-          if(n%3!==0)continue;
+          if(n%3!==0||(this.quality<.5&&n%6!==0))continue;
           const lateral=5.0+r*1.6,scale=(1.25+r*.55)*scenery.rootScale;
           const x=road(s,d)+curve(d)-curve(travel)+side*lateral;
           mesh.setMatrixAt(count++,matrix(x,surface(x,d)-.06,z,scale,scale,scale,0,r*6.28,side*.13));
@@ -305,7 +346,7 @@ class ForestRenderer {
         if(id==='island_tree_02'){
           const near=i<=2&&side===(i%2===0?1:-1);
           const distant=i>2&&n%2===0&&this.quality===1;
-          if(underground||(!near&&!distant))continue;
+          if(underground||(!near&&!distant)||(this.quality<.5&&i>1))continue;
           const spread=6.6+r*1.9,scale=(6.5+r*2.2)*scenery.treeScale;
           const x=road(s,d)+curve(d)-curve(travel)+side*spread;
           mesh.setMatrixAt(count++,matrix(x,surface(x,d)-.02,z,scale,scale,scale,0,r*6.28,side*.035));
@@ -314,7 +355,9 @@ class ForestRenderer {
         if(id==='fern_02'&&underground)continue;if(id==='dead_tree_trunk'&&(underground||n%3!==0))continue;
         if(id==='rock_face_02'&&!underground&&!ruins)continue; // Scanned masonry belongs to ruins and caverns.
         if(id==='rock_face_02'&&ruins&&n%2!==0)continue;
-        if(id==='rock_moss_set_01'&&n%2===0)continue;
+        if(id==='rock_face_02'&&this.quality<.5&&n%4!==0)continue;
+        if(id==='rock_moss_set_01'&&(n%2===0||(this.quality<.5&&n%4!==1)))continue;
+        if(id==='fern_02'&&this.quality<.5&&i%2===0)continue;
         // Tall scanned stumps and boulders sit on the outer banks, not over
         // the gameplay sightline or the three flat collision lanes.
         const bankOffset=id==='rock_face_02'?(ruins?12:9)
@@ -330,7 +373,7 @@ class ForestRenderer {
         if(id==='fern_02'&&!underground){
           // Layer scanned fronds on the ground, not suspended above the player.
           const cx=road(s,d)+curve(d)-curve(travel)+side*(4.0+r),scale=(.7+r*.85)*scenery.understory;
-          for(let j=0;j<3;j++){const spread=.65*j,sz=z-j*2.3,plantX=cx+side*spread;
+          for(let j=0;j<(this.quality<.5?1:3);j++){const spread=.65*j,sz=z-j*2.3,plantX=cx+side*spread;
             const flowerScale=scale*(1-j*.13);
             mesh.setMatrixAt(count++,matrix(plantX,surface(plantX,d+j*2.3)+.07,sz,flowerScale,flowerScale,flowerScale,0,r*6.28+j,0));}
         }
@@ -338,7 +381,7 @@ class ForestRenderer {
       mesh.count=count;mesh.instanceMatrix.needsUpdate=true;
     }
     let trees=0;
-    if(!underground)for(let i=8;i<=12;i++)for(const side of [-1,1]){ // distant silhouettes only; real scanned trees lead foreground
+    if(!underground&&this.quality>=.5)for(let i=8;i<=12;i++)for(const side of [-1,1]){ // distant silhouettes only; real scanned trees lead foreground
       const d=start+i*9,z=travel-d,n=Math.floor(d/9),r=hash(n*3+side+scenery.seed*7),scale=(.88+r*.42)*scenery.treeScale;
       if(z>-8)continue;
       const x=road(s,d)+curve(d)-curve(travel)+side*(5.3+r*2);
@@ -377,11 +420,21 @@ class ForestRenderer {
   }
   render(eye,target,time,zone,travel=0) {
     if(this.dead)return;
-    const now=performance.now();
+    const now=performance.now(),mode=this.run?.mode;
+    const frameMs=now-(this.previousFrame??now);
+    const recovered=recoverScaleAfterPause(this.quality,frameMs,this.previousRunMode,mode);
+    if(recovered!==this.quality){
+      // This only adjusts 3D visual work for a subsequent legitimate Resume.
+      // The >400ms gameplay pause, collision rules and checkpoint remain intact.
+      this.quality=recovered;this.sun.castShadow=this.quality>.53;
+      this.stableFrames=0;this.frameSamples.length=0;
+      console.info('MADGER_FOREST_STALL_LOD',JSON.stringify({frameMs:Math.round(frameMs),resolutionScale:recovered}));
+    }
+    this.previousRunMode=mode;
     // Software graphics and older phones may miss the 400ms frame safety gate.
-    // Include lobby/countdown frames so adaptation acts before a run begins.
-    // Ignore background-tab gaps and initial shader warmup, not persistent
-    // 500-1000ms frames (the old <350ms filter never adapted to those).
+    // Adapt on rendered lobby/countdown/running frames; do not count idle
+    // paused-screen gaps as GPU frame latency. True running-to-pause stalls
+    // are handled by recoverScaleAfterPause above without changing game rules.
     if(['ready','countdown','running'].includes(this.run?.mode)&&this.renderedFrames>3
       &&(typeof document==='undefined'||document.visibilityState==='visible')){
       const elapsed=now-(this.previousFrame??now);
@@ -423,7 +476,10 @@ class ForestRenderer {
     this.stats.photoscannedGrasses=instancesFor('grass_medium_02');
     this.stats.terrainVertices=this.terrain.geometry.attributes.position.count;
     this.stats.cavernVaultTriangles=this.cavernVault.mesh.visible?this.cavernVault.triangles:0;
-    if(typeof window!=='undefined')window.madgerForestDiagnostics={photoscannedTrees:this.stats.photoscannedTrees,photoscannedRoots:this.stats.photoscannedRoots,photoscannedGrasses:this.stats.photoscannedGrasses,terrainVertices:this.stats.terrainVertices,drawCalls:this.stats.drawCalls,triangles:this.stats.triangles,resolutionScale:this.quality,route:this.stats.route,biome:this.stats.biome,terrainProfileLoaded:this.stats.terrainProfileLoaded,sceneryProfileLoaded:this.stats.sceneryProfileLoaded,groundedSceneryInstances:this.stats.groundedSceneryInstances,terrainMaterial:this.terrainBiome,cavernVaultTriangles:this.stats.cavernVaultTriangles,madgerRig:this.stats.madgerRig,madgerMeshCount:this.stats.madgerMeshCount};
+    this.stats.cavernFormationInstances=this.cavernVault.mesh.visible?this.cavernVault.formations.stoneCount:0;
+    this.stats.cavernMineralInstances=this.cavernVault.mesh.visible?this.cavernVault.formations.quartzCount:0;
+    this.stats.cavernFormationTriangles=this.cavernVault.mesh.visible?this.cavernVault.formations.maxTriangles:0;
+    if(typeof window!=='undefined')window.madgerForestDiagnostics={photoscannedTrees:this.stats.photoscannedTrees,photoscannedRoots:this.stats.photoscannedRoots,photoscannedGrasses:this.stats.photoscannedGrasses,terrainVertices:this.stats.terrainVertices,drawCalls:this.stats.drawCalls,triangles:this.stats.triangles,resolutionScale:this.quality,route:this.stats.route,biome:this.stats.biome,terrainProfileLoaded:this.stats.terrainProfileLoaded,sceneryProfileLoaded:this.stats.sceneryProfileLoaded,groundedSceneryInstances:this.stats.groundedSceneryInstances,terrainMaterial:this.terrainBiome,cavernVaultTriangles:this.stats.cavernVaultTriangles,cavernFormationInstances:this.stats.cavernFormationInstances,cavernMineralInstances:this.stats.cavernMineralInstances,cavernFormationTriangles:this.stats.cavernFormationTriangles,madgerRig:this.stats.madgerRig,madgerMeshCount:this.stats.madgerMeshCount};
     if(!this.logged){this.logged=true;console.info('MADGER_FOREST_RENDER',JSON.stringify(this.stats));}
   }
   dispose(){if(this.dead)return;this.dead=true;this.cavernVault?.dispose();for(const b of this.batches.values())b.mesh.dispose();for(const {mesh} of this.scanBatches){mesh.geometry.dispose();for(const value of Object.values(mesh.material))if(value?.isTexture)value.dispose();mesh.material.dispose();mesh.dispose();}for(const object of [this.terrain,this.trees,this.shafts]){object?.geometry.dispose();object?.material.dispose();}for(const g of this.geometries.values())g.dispose();for(const m of this.materials.values())m.dispose();for(const t of this.textures)t.dispose();for(const url of this.assetUrls?.values()||[])URL.revokeObjectURL(url);this.environment?.dispose();this.gpu.dispose();}

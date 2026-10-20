@@ -8,6 +8,7 @@ import time
 import xml.etree.ElementTree as ET
 import atexit
 import uiautomator2 as u2
+from android_foreground_observation import sample_live_pair
 
 PACKAGE = os.environ.get('MADGER_ANDROID_PACKAGE') or 'com.madgercoin.preview'
 APK = os.environ.get('MADGER_ANDROID_APK') or 'android/app/build/outputs/apk/release/app-release.apk'
@@ -114,16 +115,6 @@ def kill_observed_foreground_run():
                    'pre_observation': preparation}
     screenshot = None
 
-    def query(name, operation):
-        sample = {'name': name, 'started': time.monotonic()}
-        observation['queries'].append(sample)
-        try:
-            sample['value'] = operation()
-        finally:
-            sample['finished'] = time.monotonic()
-        assert sample['finished'] - started <= observation['max_age_seconds'], f'Foreground observation became stale during {name}'
-        return sample['value']
-
     def assert_visible(node):
         bounds = list(map(int, re.findall(r'-?\d+', node.get('bounds', ''))))
         assert node.get('enabled') == 'true' and node.get('visible-to-user', 'true') == 'true' and (
@@ -175,23 +166,27 @@ def kill_observed_foreground_run():
                           'enabled': True, 'textMatches': r'\d+s', 'instance': 0}
         observation['timer_selector'] = timer_selector
         timer_object = device(**timer_selector)
-        # One continuous clock covers both fresh observations and the entire
-        # force-stop. Preparation above cannot age a timer not yet sampled.
-        started = time.monotonic()
-        preparation['finished'] = started
-        observation['started'] = started
+        # Pause run exists only in the active route. Reading the live HUD timer
+        # and this control serially aged the two-second observation on slow
+        # software emulators. Query both independent read-only RPCs together,
+        # then require the *same* two-second deadline through force-stop.
+        pause_selector = {'packageName': PACKAGE, 'description': 'Pause run', 'enabled': True}
+        observation['activity_selector'] = pause_selector
+        pause_object = device(**pause_selector)
+        preparation['finished'] = time.monotonic()
         observation['status'] = 'sampling'
-        timer = query('timer-text', lambda: device.jsonrpc.getText(timer_object.selector))
+        pair = sample_live_pair(
+            lambda: device.jsonrpc.getText(timer_object.selector),
+            lambda: pause_object.exists(timeout=0),
+            max_age_seconds=observation['max_age_seconds'],
+            journal=observation,
+        )
+        started = pair['started']
+        timer, active = pair['timer'], pair['pause']
         assert isinstance(timer, str) and re.fullmatch(r'\d+s', timer), ('Invalid live HUD timer', timer)
         live = int(timer[:-1])
         assert 0 < live <= 60, ('Foreground run timer expired or invalid', live)
         observation['live_seconds'] = live
-
-        # Pause run exists only in the active route. The same top-bar control
-        # becomes Resume run when paused and disappears when the run ends.
-        pause_selector = {'packageName': PACKAGE, 'description': 'Pause run', 'enabled': True}
-        observation['activity_selector'] = pause_selector
-        active = query('pause-control-exists', lambda: device(**pause_selector).exists(timeout=0))
         assert active is True, 'Foreground run was paused, ended, or not visible'
         observation['force_stop_requested'] = time.monotonic()
         assert observation['force_stop_requested'] - started <= observation['max_age_seconds'], 'Foreground observation was stale before process kill'

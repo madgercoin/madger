@@ -32,6 +32,25 @@ const server=http.createServer((req,res)=>{
    const course=G.buildOvergrownCourse(s.seed);for(let i=0;i<8&&s.mode==='running';i++)G.fixedStep(s,course,[]);
    assert.equal(s.mode,'chamber');fixtures.push(s);
   }
+  // A software GPU must not repeatedly rescale its own backing canvas.
+  // Check six successive low-detail frames before normal route inspection.
+  const viewport=await page.evaluate(({run,course})=>{
+    const s=window.fixtureScene,canvas=document.querySelector('canvas');
+    s.setCourse(course);s.renderer.quality=.36;
+    const sizes=[];
+    for(let n=0;n<6;n++){
+      s.draw(run,3+n/60,false);
+      sizes.push([canvas.clientWidth,canvas.clientHeight,canvas.width,canvas.height]);
+    }
+    s.renderer.quality=1;
+    return sizes;
+  },{run:fixtures[0],course:G.buildOvergrownCourse(fixtures[0].seed)});
+  assert(viewport.every(row=>row[0]===viewport[0][0]&&row[1]===viewport[0][1]),
+    'Adaptive graphics shrank the CSS display viewport: '+JSON.stringify(viewport));
+  assert(viewport.every(row=>row[2]===viewport[0][2]&&row[3]===viewport[0][3]),
+    'Backing buffer shrank repeatedly at fixed quality: '+JSON.stringify(viewport));
+  assert(viewport[0][2]<viewport[0][0]&&viewport[0][3]<viewport[0][1],
+    'Low-detail mode failed to reduce 3D pixels: '+JSON.stringify(viewport));
   const results=[];
   for(const run of fixtures){
    const data=await page.evaluate(async({run,course})=>{
@@ -44,8 +63,18 @@ const server=http.createServer((req,res)=>{
    assert.equal(data.stats.madgerRig,'authored-3d','Legacy generic character appeared');
    assert(data.stats.madgerMeshCount>=80&&data.stats.madgerTriangles>30000,'Custom animated 3D hero was not rendered');
    assert(data.hero?.approvedFace&&data.hero?.backChevron&&data.hero?.patternedTail,'Required MADGER identity marks missing');
-   if(run.mode==='chamber')assert.equal(data.stats.cavernVaultTriangles,0,'Cavern ceiling obstructed a secret room');
-   else if(['deep','mudslide','crystal-vein','ancient-vault'].includes(run.route))assert(data.stats.cavernVaultTriangles>4000,'Playable underground vault not rendered');
+   if(run.mode==='chamber'){
+     assert.equal(data.stats.cavernVaultTriangles,0,'Cavern ceiling obstructed a secret room');
+     assert.equal(data.stats.cavernFormationInstances,0,'Geological objects intruded into secret room');
+   }else if(['deep','mudslide','crystal-vein','ancient-vault'].includes(run.route)){
+     assert(data.stats.cavernVaultTriangles>4000,'Playable underground vault not rendered');
+     assert(data.stats.cavernFormationInstances>=12,'Cave lacks PBR geological detail: '+run.route);
+     assert(data.stats.cavernFormationTriangles<=17000,'Cave exceeds mobile geological mesh budget: '+run.route);
+     if(run.route==='crystal-vein'||run.route==='ancient-vault')
+       assert(data.stats.cavernMineralInstances>0,'Distinct mineral formation missing: '+run.route);
+   }else{
+     assert.equal(data.stats.cavernFormationInstances,0,'Underground formations leaked outdoors');
+   }
    assert.equal(data.stats.route,run.route,'Live renderer route differs from selected route');
    assert.equal(data.stats.biome,worldPresets.routes[run.route][0],'Wrong environment biome: '+run.route);
    assert.equal(data.stats.terrainProfileLoaded,true,'Authored terrain profile was not loaded: '+run.route);
@@ -59,10 +88,12 @@ const server=http.createServer((req,res)=>{
     scene.setCourse(course);
     renderer.quality=1;scene.draw(run,20,false);const full=renderer.stats.triangles;
     renderer.quality=.52;scene.draw(run,20.016,false);const reduced=renderer.stats.triangles;
+    renderer.quality=.30;scene.draw(run,20.032,false);const emergency=renderer.stats.triangles;
     renderer.quality=1;
-    return {full,reduced};
+    return {full,reduced,emergency};
   },{run:fixtures[0],course:G.buildOvergrownCourse(fixtures[0].seed)});
   assert(lod.full>0&&lod.reduced<lod.full*.95,'Adaptive 3D detail did not lower geometry: '+JSON.stringify(lod));
+  assert(lod.emergency>0&&lod.emergency<lod.reduced*.95,'Emergency software-GPU LOD did not remove enough decorative geometry: '+JSON.stringify(lod));
   const timing=await page.evaluate(async()=>{const s=window.fixtureScene,r=s.renderer.run,gaps=[];r.mode='paused';r.chamber=undefined;r.route='ancient-vault';r.routeSide=1;r.distance=680;let previous=performance.now();for(let i=0;i<55;i++){await new Promise(requestAnimationFrame);const now=performance.now();if(i>4)gaps.push(now-previous);previous=now;r.distance+=.16;s.draw(r,15+i/60,false);}const sorted=gaps.sort((a,b)=>a-b);return {mean:gaps.reduce((a,b)=>a+b,0)/gaps.length,p95:sorted[Math.floor(sorted.length*.95)],triangles:s.stats.triangles,drawCalls:s.stats.drawCalls};});
   assert.deepEqual(errors,[]);assert.deepEqual(failed,[]);
   const report={date:new Date().toISOString(),scope:'Actual exported renderer with deterministic route fixtures, separate from real-control gameplay tests',results,timing,lod,errors,failed};
