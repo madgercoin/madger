@@ -1,5 +1,4 @@
 {
-  "operation": "test",
-  "itemId": "madger-confident",
-  "requestId": "2026-10-19-initial-channel-verification"
+  "operation": "scheduled",
+  "requestId": "2026-10-19-enable-verified-channel-publishing"
 }

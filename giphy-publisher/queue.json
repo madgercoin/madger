@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "enabled": false,
+  "enabled": true,
   "expectedUsername": "MadgerDaBadger",
   "timeZone": "America/New_York",
   "cadence": "Tuesday and Thursday at 19:15 America/New_York; 19:45 catch-up check",

@@ -6,7 +6,7 @@ Publishes approved original GIFs to `MadgerDaBadger` from GitHub Actions using t
 
 `queue.json` lists the approved assets, SHA-256 hashes, tags, source attribution, and earliest publication timestamps. The initial queue contains four future uploads, one per Tuesday/Thursday at 7:15 PM America/New_York, October 20 through October 29, 2026. An extra 7:45 PM check can recover a missed first run, and the publisher allows at most one regular publication per local date. GitHub may delay scheduled runs.
 
-The initial `enabled` value is false. A live test upload must return a GIF whose owner is `MadgerDaBadger` before the queue can be enabled. A valid API key alone does not prove channel upload access. `request.json` starts that one test; after verification it is changed to `scheduled`.
+The queue is enabled after a successful live test upload verified `MadgerDaBadger` as the GIF owner. Test GIF: https://giphy.com/gifs/HEZuwHN3v2nq4jFjgb. Verification run: https://github.com/madgercoin/madger/actions/runs/39354009150. `request.json` now uses `scheduled`, so ordinary runs respect the queue's future publication timestamps.
 
 The clips are excerpts from the owner's approved four-hero cinematic teaser, not actual gameplay. The other seven existing channel GIFs are already published and are not requeued. The creator authorized routine publication without asking for approval for each prepared item.
 

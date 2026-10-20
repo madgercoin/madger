@@ -58,14 +58,32 @@ Shared tags: madger, madgercoin, the burrow, heroes of the burrow, madgerdabadge
 
 The approved teaser was obtained from its existing Buffer publication asset. No credentials or expiring media-access URLs are stored here. Finished GIF files and a downloadable pack are retained with the owner's files.
 
-## Publishing cadence
+## Automatic publishing — enabled
 
-Decision: publish this five-item starter set together to establish a useful character catalog. The channel now has seven published GIFs across two collections.
+The owner stored GIPHY_API_KEY as an encrypted repository Actions secret. Credential check passed, and the live API publication verified the target channel owner as MadgerDaBadger.
 
-No future uploads are scheduled. GIPHY's upload UI and documented upload API expose immediate publishing, and no supported unattended GIPHY scheduler is connected to this account. Do not describe the prepared files as queued or scheduled.
+- Live test GIF, Madger — confident hero: https://giphy.com/gifs/HEZuwHN3v2nq4jFjgb
+- Verified publication run: https://github.com/madgercoin/madger/actions/runs/39354009150
+- The channel now has eight published GIFs.
+- Publisher workflow: .github/workflows/giphy-publisher.yml
+- Queue, source files, tests, and setup: giphy-publisher/
+- Durable publication records: giphy-publisher-state branch, giphy-publisher-ledger/
 
-For future expansion, prepare one small, distinct reaction batch per week when approved source footage is available. Prioritize expressive clips that add new uses (celebration, surprise, thanks, encouragement); avoid duplicate excerpts. Publication remains a separate, verified action until a supported scheduling integration exists.
+Four additional approved GIFs are queued for automatic publication at 7:15 PM America/New_York:
+
+| Local date | Prepared GIF |
+| --- | --- |
+| 2026-10-20 | Snow White — on the attack |
+| 2026-10-22 | Gorilla White — shield up |
+| 2026-10-27 | Madger Bot — energy boost |
+| 2026-10-29 | Welcome to The Burrow |
+
+The workflow runs Tuesday/Thursday at 19:15 with a 19:45 catch-up check, explicitly using the America/New_York timezone. GitHub may delay scheduled runs. It publishes at most one regular item per local date and records successful uploads to prevent reposting. No browser session or routine owner approval is needed. The creator explicitly authorized automatic publication of prepared relevant content.
+
+A durable reservation is saved before each upload. An uncertain response, unverified channel owner, or rejected upload pauses the queue rather than risking a duplicate. The initial queue covers these four future posts; an empty queue does not generate or recycle content. Add distinct approved GIFs to extend it.
+
+The publisher's ten behavior tests and the repository CI checks passed on initial deployment. No API key, token, cookie, private Google email identifier, or password is stored in this public document or source files.
 
 References:
-- https://support.giphy.com/hc/en-us/articles/360019977552-How-to-Upload
 - https://developers.giphy.com/docs/api/endpoint/upload/
+- https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows#schedule
