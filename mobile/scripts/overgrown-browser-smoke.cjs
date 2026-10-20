@@ -13,11 +13,14 @@ const server=http.createServer((req,res)=>{try{const u=new URL(req.url,'http://l
  const nonblank=async()=>page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>{const canvas=document.querySelector('canvas');if(!canvas)return resolve(false);const c=document.createElement('canvas');c.width=64;c.height=64;const g=c.getContext('2d');g.drawImage(canvas,0,0,64,64);const v=g.getImageData(0,0,64,64).data;let bright=0;for(let i=0;i<v.length;i+=4)if(v[i]+v[i+1]+v[i+2]>30)bright++;resolve(bright>1100);})));
  try{
   const url='http://127.0.0.1:'+server.address().port+'/expedition';
-  await page.goto(url,{waitUntil:'networkidle',timeout:60000});
-  await page.getByRole('button',{name:'Start expedition'}).waitFor({timeout:30000});
+  const startedAt=Date.now();
+  await page.goto(url,{waitUntil:'networkidle',timeout:90000});
+  await page.getByRole('button',{name:'Start expedition'}).waitFor({timeout:90000});
+  console.log('FOREST_BOOT_TIME_MS',Date.now()-startedAt);
   await assert3DButton(page.getByRole('button',{name:'Start expedition'}),'Start expedition');
   await assert3DButton(page.getByRole('button',{name:'Mute sound'}),'Sound icon');
   assert(await nonblank(),'lobby scenery must be 3D and nonblank');
+  await page.waitForFunction(()=>window.madgerActiveRenderer==='pbr'&&window.madgerForestDiagnostics?.photoscannedTrees>0,{timeout:30000});
   await shot('01-overgrown-lobby');
   await page.getByRole('button',{name:'Visit the Burrow Workshop'}).click();
   await page.getByText('Earn it. Keep it.').waitFor();
@@ -44,10 +47,16 @@ const server=http.createServer((req,res)=>{try{const u=new URL(req.url,'http://l
   await page.waitForTimeout(1200);
   await shot('05-rootway-physical-branch');
   assert(await nonblank(),'selected branch must render');
+  const forest=await page.evaluate(()=>window.madgerForestDiagnostics);
+  assert(forest.photoscannedTrees>0,'Photogrammetry trees did not render');
+  assert(forest.photoscannedGrasses>0,'3D ground-cover grass did not render');
+  assert(forest.photoscannedRoots>0,'Real scanned roots did not render');
+  assert(forest.terrainVertices>4000,'Continuous deformable terrain missing');
+  console.log('FOREST_WORLD_DIAGNOSTICS',JSON.stringify(forest));
   assert(await page.getByLabel(/HERO ENERGY/).count()>=0);
   assert.equal(errors.length,0,JSON.stringify(errors));
   assert.equal(badRequests.length,0,JSON.stringify(badRequests));
-  const report={date:new Date().toISOString(),status:'PASS',checks:['rendered 3D lobby','raised layered Start button and sound symbol','workshop opens and displays earned-only upgrades','heroes begin locked','three choices appear in real time','raised route-choice buttons with beveled edges','BURROW input retains raised tactile control','fork freezes progress','selection opens physical Rootway route','selected branch remains nonblank','no JS errors or failed assets'],errors,badRequests};
+  const report={date:new Date().toISOString(),status:'PASS',checks:['rendered 3D lobby','raised layered Start button and sound symbol','workshop opens and displays earned-only upgrades','heroes begin locked','three choices appear in real time','raised route-choice buttons with beveled edges','BURROW input retains raised tactile control','fork freezes progress','selection opens physical Rootway route','selected branch remains nonblank','photoscanned CC0 trees, 3D roots, grass and contoured terrain load','no JS errors or failed assets'],errors,badRequests};
   fs.writeFileSync(path.join(out,'browser-branch-acceptance.json'),JSON.stringify(report,null,2));console.log('OVERGROWN_BROWSER_PASS',JSON.stringify(report));
  }catch(e){await shot('failure').catch(()=>{});console.error('OVERGROWN_BROWSER_FAIL',String(e),'ERRORS',errors);throw e;}
  finally{await context.close();await browser.close();await new Promise(resolve=>server.close(resolve));}

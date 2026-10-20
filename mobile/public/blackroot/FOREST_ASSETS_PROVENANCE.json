@@ -1,0 +1,144 @@
+{
+  "schema": 1,
+  "date": "2026-10-20T03:09:45.343Z",
+  "assets": [
+    {
+      "id": "island_tree_02",
+      "license": "CC0-1.0",
+      "source": "Poly Haven",
+      "homepage": "https://polyhaven.com/a/island_tree_02",
+      "downloadApi": "https://api.polyhaven.com/files/island_tree_02",
+      "optimizedFile": "assets/island_tree_02/island_tree_02_mobile.glb",
+      "optimizedBytes": 10098392,
+      "sha256": "edfdb5873b907af3f5a999dd30c895e30225a818fa6b6326e1a3615cce633e10",
+      "triangles": 68282,
+      "offlineProcess": "@gltf-transform/cli 4.5.1 simplify",
+      "simplifyRatio": 0.065,
+      "errorLimit": 0.025,
+      "originalBinaryBytes": 40686576,
+      "originalSourceBytes": 46172406,
+      "originalSourceHashes": [
+        {
+          "name": "island_tree_02.gltf",
+          "sha256": "d8c5d9ead41cdbef91a648f40ff60470faa19eb3a7010e59e44cb1a01250f75d"
+        },
+        {
+          "name": "textures/island_tree_02_nor_gl_1k.jpg",
+          "sha256": "1580d5a42d02f4ede51bfb03972ab0aef3d8acafbd3692276879171007bb70ec"
+        },
+        {
+          "name": "textures/island_tree_02_diff_1k.jpg",
+          "sha256": "8fc20397ab5d514c119d7a025868414d78e436138d3867a4b7ba12334a72ec3a"
+        },
+        {
+          "name": "textures/island_tree_02_arm_1k.jpg",
+          "sha256": "ada61dd4fad023e699b6314b8b76590017b301719bf74ffc9e20b95893ed62b6"
+        },
+        {
+          "name": "textures/island_tree_02_leaves_nor_gl_1k.jpg",
+          "sha256": "07ba461c0c95da4e49a42981766bdb6191d4c3c4d815796c082266dcc3cecdb8"
+        },
+        {
+          "name": "textures/island_tree_02_leaves_diff_1k.jpg",
+          "sha256": "f56d762a1507754752abf164cc12acbc1e87ce87fa609ac44b98a1b0037c89d8"
+        },
+        {
+          "name": "textures/island_tree_02_leaves_arm_1k.jpg",
+          "sha256": "90da3a072dbcb052715b1313b9dbc69a4aa8a09a31a4b3868411a2bb51d72037"
+        },
+        {
+          "name": "textures/island_tree_02_branches_nor_gl_1k.jpg",
+          "sha256": "2d67393ba76a0f49cf965fa0c99d8c16268e71e87b1203d35539bfdb971a514e"
+        },
+        {
+          "name": "textures/island_tree_02_branches_diff_1k.jpg",
+          "sha256": "bee5ec22196e9e31ad0c95a5a9b4636571cc0124d5bb27a92f1e307d289cc60d"
+        },
+        {
+          "name": "textures/island_tree_02_branches_arm_1k.jpg",
+          "sha256": "9e3f82263247ce4f619692cea4c4f6fe9936ff465a86623481849062642c7d05"
+        },
+        {
+          "name": "island_tree_02.bin",
+          "sha256": "427d69ccc1ea12d1fb9c6af89691563b4a097f39a6f34c15be6e45ef5e5fd4ce"
+        }
+      ]
+    },
+    {
+      "id": "root_cluster_01",
+      "license": "CC0-1.0",
+      "source": "Poly Haven",
+      "homepage": "https://polyhaven.com/a/root_cluster_01",
+      "downloadApi": "https://api.polyhaven.com/files/root_cluster_01",
+      "optimizedFile": "assets/root_cluster_01/root_cluster_01_mobile.glb",
+      "optimizedBytes": 3303136,
+      "sha256": "e816ebd08b94d465dd80197f32f616caa49bea8598e2e8573a75db0918f2b0a8",
+      "triangles": 12359,
+      "offlineProcess": "@gltf-transform/cli 4.5.1 simplify",
+      "simplifyRatio": 0.055,
+      "errorLimit": 0.03,
+      "originalBinaryBytes": 6464764,
+      "originalSourceBytes": 9453108,
+      "originalSourceHashes": [
+        {
+          "name": "root_cluster_01.gltf",
+          "sha256": "b9060cfe2c1db4326428a0bf834e8409a99988082c8e5465cb09738d72117463"
+        },
+        {
+          "name": "textures/root_cluster_01_arm_1k.jpg",
+          "sha256": "493dde9d58cd89366af63277148bcdfef50e3df9167ce965742eecd111cbd798"
+        },
+        {
+          "name": "textures/root_cluster_01_nor_gl_1k.jpg",
+          "sha256": "4e16ca657a47112137cfbb2985e4473c1f2554631739826985fd61fc49c25e5b"
+        },
+        {
+          "name": "textures/root_cluster_01_diff_1k.jpg",
+          "sha256": "3f4dbb0864982d228d37ee283125b8f8eb442b019fa5469249b332cb7b9d6d62"
+        },
+        {
+          "name": "root_cluster_01.bin",
+          "sha256": "8f91654c0b72edf978082e8edf97bf3f0cde72027a8a4d8d5e6c1b84231b5f93"
+        }
+      ]
+    },
+    {
+      "id": "grass_medium_02",
+      "license": "CC0-1.0",
+      "source": "Poly Haven",
+      "homepage": "https://polyhaven.com/a/grass_medium_02",
+      "downloadApi": "https://api.polyhaven.com/files/grass_medium_02",
+      "optimizedFile": "assets/grass_medium_02/grass_medium_02_mobile.glb",
+      "optimizedBytes": 703396,
+      "sha256": "e644c3215c3c3c1dc4ec5d299aa8b6b1e7ff74e865d2aacd9693419390406427",
+      "triangles": 4702,
+      "offlineProcess": "@gltf-transform/cli 4.5.1 simplify",
+      "simplifyRatio": 0.6,
+      "errorLimit": 0.03,
+      "originalBinaryBytes": 272048,
+      "originalSourceBytes": 801474,
+      "originalSourceHashes": [
+        {
+          "name": "grass_medium_02.gltf",
+          "sha256": "7037f8d2dfc6aeec0bf72f4eeb96cfa3f6b3a5e6c6f0bc5de537c055b2fd5d04"
+        },
+        {
+          "name": "textures/grass_medium_02_nor_gl_1k.jpg",
+          "sha256": "0b464550366ed72a6cad9c357e19ac4c83fc9adc87272771479138129853b300"
+        },
+        {
+          "name": "textures/grass_medium_02_diff_1k.jpg",
+          "sha256": "91ae99005b449011aceb207a68a937258fd9bfd66ff367d344c50398b1df389c"
+        },
+        {
+          "name": "textures/grass_medium_02_arm_1k.jpg",
+          "sha256": "f0d57bfd95bff7710526b49d47cf2326ee3796e425639d53b983d1472480b57d"
+        },
+        {
+          "name": "grass_medium_02.bin",
+          "sha256": "aa8493bc1544a89e08bf440c7ba361042bfe6ea48b1fefc7e4af2dfff42fdf4a"
+        }
+      ]
+    }
+  ]
+}

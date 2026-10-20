@@ -1,5 +1,24 @@
 # MADGER 3D Expedition
 
+## Forest environment realism pass — October 2026
+
+The browser-playable Overgrown Burrow now uses real, CC0-scanned **3D broadleaf tree, forest roots and grass** assets instead of relying on large synthetic trees, blocky cliffs and fake floor foliage. Original Poly Haven models were converted offline into mobile game-ready glTF LODs and bundled with the Expo browser preview. Provenance, image/geometry checksums and LOD triangle budgets are recorded in `mobile/public/blackroot/FOREST_ASSETS_PROVENANCE.json` and guarded by `mobile/scripts/test-forest-environment.cjs`.
+
+| New source asset | Mobile LOD triangles | Bundled GLB bytes | Gameplay purpose |
+| --- | ---: | ---: | --- |
+| `island_tree_02` | 68,282 | 10,098,392 | Actual textured and branched leafy trees flanking forest paths |
+| `root_cluster_01` | 12,359 | 3,303,136 | Photoscanned roots and believable trail-side obstacles |
+| `grass_medium_02` | 4,702 | 703,396 | Dense 3D grass and low plants under the tree canopy |
+
+The optimized `forest.pack` is 24,699,375 bytes and contains 33 model, environment-lighting and texture assets. This is **larger** than the earlier web preview; network startup and real-phone GPU performance still require verification. Only one pack loads; the original 46 MB tree source and other large high-polygon scans are excluded from deployment. The runtime samples frame time and reduces 3D resolution/visible foliage on slower devices without altering HUD size.
+
+The old environment mistake was traced to normalizing every scanned object by its height. Flat logs and rocks became canyon-sized and obstructed the camera. Logs, root clusters and rock formations now normalize by their **longest axis**, while standing trees preserve correct height scaling. The corridor no longer has an enormous false rock wall. The ground is now one continuous deformed and vertex-tinted PBR terrain mesh (5,529 control vertices), with mossy shoulders, varied earthen trail, banks and gaps instead of repeated rectangular track slabs. Photogrammetry foliage and near-ground vegetation use instancing; cavern and ruin route gameplay remains unchanged.
+
+Browser QA uses the **real exported game** and normal controls, not injected game-state. Tests assert that the new trees, roots, grasses and contoured terrain truly render after the first fork. In the desktop reference run, the forest scene displayed up to 8 tree instances, 6 roots and 48 grass patches with adaptive resolution. The three hidden-chamber tests independently confirmed enter, pause, cold reload, selectable rewards and preserved checkpoint recovery. Source test suite and Android native regression still need to be considered separately.
+
+**Visual limitations:** This is a tangible realism improvement to a procedural Three.js/Expo web preview, not a completed photorealistic game or a Unity migration. The existing MADGER hero rig, distant biomes, and lighting remain less detailed than finished commercial 3D artwork. New signed Android APK and physical-phone performance acceptance are not yet claimed.
+
+
 ## Flagship Overgrown Burrow web test (October 19, 2026)
 
 **Verified playable browser preview:** https://madger-expedition--52lqwih09c.expo.app/expedition (Expo EAS web deployment, tested Oct 19). Hosted Playwright QA confirmed PBR renderer/forest pack load, real asset HTTP responses, interactive training and fork, hero-unlock workshop, pause, cold reload, and resuming the saved same-route run. This is not a signed new Android APK or Google Play release; Build 14 remains the older Android-only build.

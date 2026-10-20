@@ -2,6 +2,11 @@ THE OVERGROWN BURROW / MADGER
 
 Photoscanned models and materials: Poly Haven (CC0 1.0)
 rock_moss_set_01, fern_02, dead_tree_trunk, rock_face_02, forest_ground_04, aerial_grass_rock, bark_brown_02, spruit_sunrise
+Additional mobile-optimized photoscans: island_tree_02, root_cluster_01, grass_medium_02
+https://polyhaven.com/a/island_tree_02
+https://polyhaven.com/a/root_cluster_01
+https://polyhaven.com/a/grass_medium_02
+See FOREST_ASSETS_PROVENANCE.json for the mobile LOD mesh checksums and triangle budgets.
 https://polyhaven.com/license
 
 Rendering: Three.js 0.180.0 (MIT; vendor/LICENSE).

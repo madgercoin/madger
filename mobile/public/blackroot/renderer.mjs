@@ -20,7 +20,7 @@ async function loadForestPack(){
  const buffer=await response.arrayBuffer(),header=new DataView(buffer).getUint32(0,true);
  if(header>1000000||header+4>buffer.byteLength)throw Error('Forest asset index is invalid');
  const entries=JSON.parse(new TextDecoder().decode(new Uint8Array(buffer,4,header))),urls=new Map();
- const types={jpg:'image/jpeg',png:'image/png',gltf:'model/gltf+json',bin:'application/octet-stream',hdr:'application/octet-stream'};
+ const types={jpg:'image/jpeg',png:'image/png',gltf:'model/gltf+json',glb:'model/gltf-binary',bin:'application/octet-stream',hdr:'application/octet-stream'};
  for(const entry of entries){
   if(typeof entry.path!=='string'||entry.path.includes('..')||entry.offset<0||entry.length<0||4+header+entry.offset+entry.length>buffer.byteLength)throw Error('Forest asset entry is invalid');
   const blob=new Blob([new Uint8Array(buffer,4+header+entry.offset,entry.length)],{type:types[entry.path.split('.').pop()]||'application/octet-stream'});
@@ -95,19 +95,26 @@ class ForestRenderer {
     const pmrem=new T.PMREMGenerator(this.gpu);this.environment=pmrem.fromEquirectangular(hdr);
     this.scene.environment=this.environment.texture;this.scene.environmentIntensity=.32;hdr.dispose();pmrem.dispose();
     const gltf=new GLTFLoader(manager);
-    const models=await Promise.all(['fern_02','rock_face_02','dead_tree_trunk','rock_moss_set_01'].map(async id=>({id,model:(await gltf.loadAsync(ASSETS+id+'/'+id+'.gltf')).scene})));
+    const models=await Promise.all(['fern_02','rock_face_02','dead_tree_trunk','rock_moss_set_01','island_tree_02','root_cluster_01','grass_medium_02'].map(async id=>({id,model:(await gltf.loadAsync(['island_tree_02','root_cluster_01','grass_medium_02'].includes(id)?ASSETS+id+'/'+id+'_mobile.glb':ASSETS+id+'/'+id+'.gltf')).scene})));
     for(const {id,model} of models) {
       model.updateMatrixWorld(true);const bounds=new T.Box3().setFromObject(model),size=bounds.getSize(new T.Vector3()),centre=bounds.getCenter(new T.Vector3());
-      const normalizer=new T.Matrix4().makeScale(1/size.y,1/size.y,1/size.y);
+      const longest=Math.max(size.x,size.y,size.z);
+      // Logs and rock faces are far wider than tall; height-based normalization
+      // produced a canyon-sized backdrop and obscured the playable forest.
+      const unit=['dead_tree_trunk','rock_face_02','rock_moss_set_01','root_cluster_01'].includes(id)?longest:size.y;
+      const normalizer=new T.Matrix4().makeScale(1/unit,1/unit,1/unit);
       normalizer.multiply(new T.Matrix4().makeTranslation(-centre.x,-bounds.min.y,-centre.z));
       let rockVariant=0;
       model.traverse(node=>{if(!node.isMesh)return;
         if(id==='rock_moss_set_01'&&rockVariant++>=2)return;
         let geometry=node.geometry.clone();geometry.applyMatrix4(node.matrixWorld);geometry.applyMatrix4(normalizer);
-        if(id!=='fern_02')geometry=clusterScan(geometry,id==='dead_tree_trunk'?.025:id==='rock_face_02'?.045:.04);
-        const material=id==='fern_02'?new T.MeshLambertMaterial({map:node.material.map,color:'#a6b987',side:T.DoubleSide}):node.material.clone();material.envMapIntensity=.4;material.side=id==='fern_02'?T.DoubleSide:T.FrontSide;
-        const mesh=new T.InstancedMesh(geometry,material,32);mesh.instanceMatrix.setUsage(T.DynamicDrawUsage);
-        mesh.castShadow=false;mesh.receiveShadow=true;mesh.frustumCulled=false;mesh.count=0;
+        if(!['fern_02','island_tree_02','root_cluster_01','grass_medium_02'].includes(id))geometry=clusterScan(geometry,id==='dead_tree_trunk'?.025:id==='rock_face_02'?.045:.04);
+        const material=id==='fern_02'?new T.MeshLambertMaterial({map:node.material.map,color:'#a6b987',side:T.DoubleSide}):node.material.clone();
+        const foliageCutout=['island_tree_02','grass_medium_02'].includes(id)&&material.transparent;
+        if(foliageCutout){material.alphaTest=.16;material.transparent=false;material.depthWrite=true;material.alphaToCoverage=true;}
+        material.envMapIntensity=.4;material.side=['fern_02','island_tree_02','grass_medium_02'].includes(id)?T.DoubleSide:T.FrontSide;
+        const mesh=new T.InstancedMesh(geometry,material,['fern_02','grass_medium_02'].includes(id)?96:32);mesh.instanceMatrix.setUsage(T.DynamicDrawUsage);
+        mesh.castShadow=id==='island_tree_02'&&!foliageCutout;mesh.receiveShadow=true;mesh.frustumCulled=false;mesh.count=0;
         this.scene.add(mesh);this.scanBatches.push({id,mesh});
       });
     }
@@ -117,8 +124,10 @@ class ForestRenderer {
     return this;
   }
   buildLandscape() {
-    const ground=new T.PlaneGeometry(90,145,40,60);ground.rotateX(-Math.PI/2);
-    this.terrain=new T.Mesh(ground,new T.MeshStandardMaterial({...this.ground,color:'#a6b196',roughness:1}));
+    const ground=new T.PlaneGeometry(100,205,56,96);ground.rotateX(-Math.PI/2);
+    ground.setAttribute('color',new T.BufferAttribute(new Float32Array(ground.attributes.position.count*3),3));
+    this.trailTint=new T.Color('#B3A68F');this.mossTint=new T.Color('#526747');this.soilTint=new T.Color();
+    this.terrain=new T.Mesh(ground,new T.MeshStandardMaterial({...this.ground,vertexColors:true,color:'#E8DFCD',roughness:1}));
     this.terrain.receiveShadow=true;this.terrain.frustumCulled=false;this.scene.add(this.terrain);
     const tubes=[];
     const limb=(points,r)=>tubes.push(new T.TubeGeometry(new T.CatmullRomCurve3(points.map(p=>new T.Vector3(...p))),9,r,7,false));
@@ -204,8 +213,15 @@ class ForestRenderer {
   reset(){for(const b of this.batches.values())b.count=0;this.stats.instances=0;}
   add(shape,values,c) {
     const category=this.category(shape,c),key=shape+':'+category;
-    // Replace the old faceted canopy balls with scanned foliage and branched trees.
-    if(this.run?.board==='overgrown'&&shape==='rock'&&values[13]>3&&c[3]===0&&c[1]>c[0]*1.6&&c[1]>c[2]*1.3)return;
+    // The PBR terrain and scanned foliage now replace repeated straight
+    // walkway tiles, flat fake leaves and faceted synthetic green shrubs.
+    // Collision logic is renderer-independent and remains unchanged.
+    if(this.run?.board==='overgrown'){
+      if(shape==='box'&&c[3]===-1)return;
+      if(shape==='leaf'&&c[3]===0)return;
+      if(shape==='rock'&&c[3]===0&&c[1]>c[0]*1.27&&c[1]>c[2]*1.09)return;
+      if(shape==='rock'&&c[3]===-8&&['main','rootway','mosswalk','root-arch','log-crossing'].includes(this.run.route))return; // Forest rocks are scanned meshes, not large procedural cliff slabs.
+    }
     let b=this.batches.get(key);
     if(!b){const mesh=new T.InstancedMesh(this.geometry(shape),this.material(category),64);mesh.instanceMatrix.setUsage(T.DynamicDrawUsage);mesh.frustumCulled=false;mesh.castShadow=!['halo','shadow','leaf'].includes(shape);mesh.receiveShadow=!['halo','shadow'].includes(shape);this.scene.add(mesh);b={mesh,count:0,capacity:64};this.batches.set(key,b);}
     if(b.count>=4096)return;
@@ -239,8 +255,33 @@ class ForestRenderer {
       for(let i=1;i<=8;i++)for(const side of [-1,1]){
         const d=start+i*12,z=travel-d,n=Math.floor(d/12),r=hash(n*19+side);
         if(z>-8)continue;
+        if(id==='grass_medium_02'){
+          if(underground&&n%2===0)continue;
+          for(let j=0;j<3;j++){
+            if(this.quality<1&&j===2)continue;
+            const lateral=3.95+r*1.3+j*.52,scale=.34+.18*hash(n*13+side*3+j);
+            const x=road(s,d)+curve(d)-curve(travel)+side*lateral;
+            mesh.setMatrixAt(count++,matrix(x,-.20,z-j*2.1,scale,scale,scale,0,r*6.28+j*.8,0));
+          }
+          continue;
+        }
+        if(id==='root_cluster_01'){
+          if(n%3!==0)continue;
+          const lateral=5.0+r*1.6,scale=1.25+r*.55;
+          mesh.setMatrixAt(count++,matrix(road(s,d)+curve(d)-curve(travel)+side*lateral,-.27,z,scale,scale,scale,0,r*6.28,side*.13));
+          continue;
+        }
+        if(id==='island_tree_02'){
+          const near=i<=2&&side===(i%2===0?1:-1);
+          const distant=i>2&&n%2===0&&this.quality===1;
+          if(underground||(!near&&!distant))continue;
+          const spread=6.6+r*1.9,scale=6.5+r*2.2;
+          const x=road(s,d)+curve(d)-curve(travel)+side*spread;
+          mesh.setMatrixAt(count++,matrix(x,-.35,z,scale,scale,scale,0,r*6.28,side*.035));
+          continue;
+        }
         if(id==='fern_02'&&underground)continue;if(id==='dead_tree_trunk'&&(underground||n%3!==0))continue;
-        if(id==='rock_face_02'&&!underground&&n%3!==1)continue;
+        if(id==='rock_face_02'&&!underground)continue; // Avoid an opaque stone wall across the woodland path.
         if(id==='rock_moss_set_01'&&n%2===0)continue;
         const x=road(s,d)+curve(d)-curve(travel)+side*(id==='rock_face_02'?9:5.4+r*1.8);
         const height=id==='fern_02'?1.1+r*.9:id==='dead_tree_trunk'?7+r*3:id==='rock_face_02'?(underground?7:4)+r*3:1.4+r*1.4;
@@ -250,14 +291,16 @@ class ForestRenderer {
           mesh.setMatrixAt(count++,matrix(centre+5,8,z,1.8,10,6,0,0,Math.PI/2));
         }
         if(id==='fern_02'&&!underground){
-          const cx=road(s,d)+curve(d)-curve(travel)+side*(4.8+r),cy=5.1+r*.6,scale=3.2+r;
-          mesh.setMatrixAt(count++,matrix(cx,cy,z,scale,scale*.58,scale,0,r*6.28,.1*side));
+          // Layer scanned fronds on the ground, not suspended above the player.
+          const cx=road(s,d)+curve(d)-curve(travel)+side*(4.0+r),scale=.7+r*.85;
+          for(let j=0;j<3;j++){const spread=.65*j,sz=z-j*2.3;
+            mesh.setMatrixAt(count++,matrix(cx+side*spread,-.20,sz,scale*(1-j*.13),scale*(1-j*.13),scale*(1-j*.13),0,r*6.28+j,0));}
         }
       }
       mesh.count=count;mesh.instanceMatrix.needsUpdate=true;
     }
     let trees=0;
-    if(!underground)for(let i=1;i<=12;i++)for(const side of [-1,1]){
+    if(!underground)for(let i=8;i<=12;i++)for(const side of [-1,1]){ // distant silhouettes only; real scanned trees lead foreground
       const d=start+i*9,z=travel-d,n=Math.floor(d/9),r=hash(n*3+side),scale=.88+r*.42;
       if(z>-8)continue;
       this.trees.setMatrixAt(trees++,matrix(road(s,d)+curve(d)-curve(travel)+side*(5.3+r*2),-.45,z,scale,scale,scale,0,r*6.28,side*.06));
@@ -265,13 +308,23 @@ class ForestRenderer {
     this.trees.count=trees;this.trees.instanceMatrix.needsUpdate=true;
     if(this.terrainRoute!==s.route||Math.abs(travel-(this.terrainD??-100))>1.8){
     this.terrainRoute=s.route;this.terrainD=travel;
-    const vertices=this.terrain.geometry.attributes.position,uv=this.terrain.geometry.attributes.uv;
+    const vertices=this.terrain.geometry.attributes.position,uv=this.terrain.geometry.attributes.uv,tint=this.terrain.geometry.attributes.color;
+    this.trailTint.set(underground?'#80746D':ruins?'#A19782':'#B5A184');
+    this.mossTint.set(underground?'#52605D':ruins?'#6A7967':'#4C6648');
     for(let i=0;i<vertices.count;i++){
-      const x=vertices.getX(i),z=vertices.getZ(i)-57,d=travel-z,centre=road(s,d)+curve(d)-curve(travel),edge=smooth((Math.abs(x-centre)-3.5)/6);
-      const inGap=this.course?.some(o=>o.route===s.route&&o.kind==='gap'&&Math.abs(o.d-d)<2.3&&Math.abs(x-centre-o.lane*2.15)<1.3);
-      vertices.setY(i,inGap?-2.4:-.33+edge*(1.5+Math.sin(d*.13+x*.2)*.9));uv.setXY(i,x*.18,d*.18);
+      const x=vertices.getX(i),z=vertices.getZ(i)-84,d=travel-z,centre=road(s,d)+curve(d)-curve(travel),lateral=Math.abs(x-centre);
+      const bank=smooth((lateral-3.15)/4.5),ridge=smooth((lateral-8.0)/12);
+      const undulation=Math.sin(d*.13+x*.26)*.35+Math.sin(d*.047-x*.09)*.55+Math.cos(d*.27+x*.15)*.12;
+      const routeFloor=-.30+.025*Math.sin(d*.5+x*.42);
+      const embankment=bank*(.42+Math.max(-.23,undulation)*.26)+ridge*(2.1+undulation*.75);
+      const inGap=this.course?.some(o=>o.route===s.route&&o.kind==='gap'&&Math.abs(o.d-d)<2.8&&Math.abs(x-centre-o.lane*2.15)<1.55);
+      vertices.setY(i,inGap?-3.3:routeFloor+embankment);
+      uv.setXY(i,x*.18,d*.18);
+      this.soilTint.copy(this.trailTint).lerp(this.mossTint,smooth((lateral-2.9)/4.6));
+      this.soilTint.multiplyScalar(.87+.11*Math.sin(d*.63+x*.55)+.07*Math.cos(x*.36-d*.29));
+      tint.setXYZ(i,this.soilTint.r,this.soilTint.g,this.soilTint.b);
     }
-    this.terrain.position.z=-57;vertices.needsUpdate=uv.needsUpdate=true;this.terrain.geometry.computeVertexNormals();
+    this.terrain.position.z=-84;vertices.needsUpdate=uv.needsUpdate=tint.needsUpdate=true;this.terrain.geometry.computeVertexNormals();
     }
     this.shafts.count=underground?0:3;
     for(let i=0;i<3;i++){const d=start+30+i*27;this.shafts.setMatrixAt(i,matrix(road(s,d)+curve(d)-curve(travel)-1,7,travel-d,1.2,1,1.2,0,0,-.35));}this.shafts.instanceMatrix.needsUpdate=true;
@@ -323,6 +376,12 @@ class ForestRenderer {
       this.stats.instances+=count;
     }
     this.gpu.render(this.scene,this.camera);this.stats.resolutionScale=this.quality;this.stats.drawCalls=this.gpu.info.render.calls;this.stats.triangles=this.gpu.info.render.triangles;
+    const instancesFor=id=>Math.max(0,...this.scanBatches.filter(b=>b.id===id).map(b=>b.mesh.count));
+    this.stats.photoscannedTrees=instancesFor('island_tree_02');
+    this.stats.photoscannedRoots=instancesFor('root_cluster_01');
+    this.stats.photoscannedGrasses=instancesFor('grass_medium_02');
+    this.stats.terrainVertices=this.terrain.geometry.attributes.position.count;
+    if(typeof window!=='undefined')window.madgerForestDiagnostics={photoscannedTrees:this.stats.photoscannedTrees,photoscannedRoots:this.stats.photoscannedRoots,photoscannedGrasses:this.stats.photoscannedGrasses,terrainVertices:this.stats.terrainVertices,drawCalls:this.stats.drawCalls,triangles:this.stats.triangles,resolutionScale:this.quality};
     if(!this.logged){this.logged=true;console.info('MADGER_FOREST_RENDER',JSON.stringify(this.stats));}
   }
   dispose(){if(this.dead)return;this.dead=true;for(const b of this.batches.values())b.mesh.dispose();for(const {mesh} of this.scanBatches){mesh.geometry.dispose();for(const value of Object.values(mesh.material))if(value?.isTexture)value.dispose();mesh.material.dispose();mesh.dispose();}for(const object of [this.terrain,this.trees,this.shafts]){object?.geometry.dispose();object?.material.dispose();}for(const g of this.geometries.values())g.dispose();for(const m of this.materials.values())m.dispose();for(const t of this.textures)t.dispose();for(const url of this.assetUrls?.values()||[])URL.revokeObjectURL(url);this.environment?.dispose();this.gpu.dispose();}
