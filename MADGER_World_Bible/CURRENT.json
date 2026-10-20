@@ -12,5 +12,15 @@
   "source": "v2.1.0/source/",
   "living_world_text": "v2.1.0/LIVING_WORLD.md",
   "sub_locations": "v2.1.0/Sub_Locations.json",
-  "history_workbook": "v2.1.0/History_Workbook.json"
+  "history_workbook": "v2.1.0/History_Workbook.json",
+  "character_development": {
+    "edition": "1.0.0",
+    "index": "characters/README.md",
+    "register": "characters/v1.0.0/Character_Register.json",
+    "complete_cards": [
+      "characters/v1.0.0/MADGER_001.json"
+    ],
+    "google_drive": "https://drive.google.com/drive/folders/1FpiwodNq-qeQmoDikp6_cDKG0jxbYe70",
+    "precedence": "Completed Madger card adds age, origin, founding motive and relative chronology to the v2.1 present-day foundation. Other new register entries remain development seeds. Existing maps, approved models/voices and pilot restrictions remain controlling."
+  }
 }

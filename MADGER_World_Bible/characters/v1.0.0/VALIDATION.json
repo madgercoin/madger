@@ -1,0 +1,35 @@
+{
+  "date": "2026-10-20",
+  "character_count": 27,
+  "faction_count": 6,
+  "completed_cards": [
+    "MADGER"
+  ],
+  "google_docs_verified": true,
+  "native_register_tables": 6,
+  "pdf_pages": {
+    "madger": 6,
+    "register": 11
+  },
+  "visual_review": "All card pages and register layouts reviewed; blank page, split antagonist table and orphan heading corrected.",
+  "content_checks": [
+    "Existing hero IDs and eight resident IDs retained",
+    "Pell home corrected to East Deep / UG-11",
+    "Faction membership IDs resolve",
+    "Madger relative ages consistent",
+    "D17 and physical trace unassigned",
+    "Approved voice and likeness retained",
+    "No exterior route or blueprint inferred",
+    "Native Docs text readback complete",
+    "All local index links resolve",
+    "World archive absent from production dist"
+  ],
+  "repository_checks": {
+    "npm_ci": "passed",
+    "git_diff_check": "passed",
+    "npm_run_validate": "passed",
+    "npm_audit_omit_dev": "0 vulnerabilities",
+    "npm_run_check": "Automatic approval review rejected deployment-check polling because it could transmit build artifacts/configuration to Cloudflare. Not retried; no claim of a completed approved gate."
+  },
+  "archive_policy": "Save this documentation on a dedicated GitHub archive branch; do not trigger the main-branch CI dry-run deployment that was rejected. Google Drive contains the finished editable deliverables."
+}

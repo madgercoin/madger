@@ -1,5 +1,12 @@
 # Changelog
 
+## 2026-10-20 - Character development / first Madger card
+
+- Add a 27-character register, three allied and three hostile factions, an independent broker, and six unmapped exterior place concepts.
+- Complete Madger's first character card with family, Reedbank origin, age, founding motive, bounded abilities, relationships and a gradual arc. Preserve the four heroes, eight residents, approved likenesses and voices, world geometry, and pilot mystery boundaries.
+- Save editable register and card in Google Drive, with readable PDF copies and reciprocal links. Record new authored history separately from inherited facts and unexpanded seeds.
+- Register the additive character extension in CURRENT.json. No game, video, voice or production build changes.
+
 ## 2026-10-20 - Living Burrow / World Bible v2.1.0
 
 - Add a 26-page present-day world volume, five neighborhood identities, eight resident dossiers and seven measured sub-plans within existing allocations.

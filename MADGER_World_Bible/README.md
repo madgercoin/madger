@@ -6,6 +6,8 @@ The Burrow is one populated town above and below ground. Outdoor markets, garden
 
 ## Current references
 
+- [Character and faction development](characters/README.md): 27-character register, six factions and completed Madger card; native Google Docs and PDF copies.
+
 - [26-page Living World volume](v2.1.0/MADGER_Living_World.pdf)
 - [Full present-day world text](v2.1.0/LIVING_WORLD.md)
 - [Resident register](v2.1.0/Resident_Register.json) and [history workbook](v2.1.0/History_Workbook.json)
@@ -39,4 +41,4 @@ Exterior geography and attacker identity remain unassigned. Existing Expedition 
 
 Current edition sources, seven detailed sub-plans, eight resident dossiers and rebuild instructions are archived with [v2.1.0](v2.1.0/README.md). The original surface and underground atlases remain the master geometry references.
 
-Version 2.1 develops five neighborhood identities and daily civic life. Madger is the founder; his motives, the founding sequence, companion meetings, origins, named antagonists and creatures remain for the owner-requested history phase.
+Version 2.1 develops five neighborhood identities and daily civic life. The [character-development extension](characters/README.md) now establishes Madger's founding motive, Reedbank origin, family, age and relative meeting anchors. It adds six faction concepts and a cast register. Other new biographies remain seeds; the detailed construction history, exterior maps, full companion histories and creature dossiers continue in later installments. The v2.1 archive retains its original history reservations; CURRENT.json records the additive extension and its precedence.
