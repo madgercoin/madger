@@ -1,0 +1,1990 @@
+{
+  "title": "MADGER Burrow Blueprint Atlas",
+  "blueprint_version": "1.0.0",
+  "issue": "01",
+  "date": "2026-10-20",
+  "world_id": "MADGER-BRW-HOME",
+  "base_canon_version": "1.0.0",
+  "source_canon_sha256": "6de2dfcb0e02e0c5887c764bfb2c70a9b68b03ab22152d0617584ba29c9c9b9e",
+  "status": "Authored production design under owner instruction. Geometry inherited from canon is immutable; local detail is additive. Not a real-world construction specification.",
+  "coordinates": {
+    "world_id": "MADGER-BRW-HOME",
+    "units": "metres",
+    "coordinates": "right-handed: +X east, +Y north, +Z up",
+    "origin": "Sunwell center at finished market paving level",
+    "planning_envelope_m": [
+      600,
+      440
+    ],
+    "rim_height_m": 54,
+    "open_sky_aperture_m": [
+      430,
+      300
+    ],
+    "occupied_terraces_z_m": [
+      0,
+      6,
+      12,
+      18
+    ],
+    "baseline_population_approx": 400,
+    "perimeter": "Ellipse x^2/300^2 + y^2/220^2 = 1 is the planning boundary. Render rock as irregular inside this envelope without moving anchors.",
+    "inside_definition": "The open-air basin counts as interior. Surrounding cliffs shelter the settlement; homes and service rooms extend into their inner faces. No view outside is required to show daylight.",
+    "scale_policy": "Coordinates and anchored footprints are fixed production layout. Local decoration and rock texture vary only within their allocated bounds. Roof heights and building shell details remain production specifications, not surveyed real-world engineering."
+  },
+  "areas": {
+    "BRW-01": {
+      "sheet": "BP-01",
+      "name": "Sunwell Market",
+      "world_anchor_m": [
+        0,
+        0,
+        0
+      ],
+      "footprint_m": [
+        84,
+        64
+      ],
+      "rotation_deg": 0,
+      "portals": [
+        {
+          "id": "BRW-01-P1",
+          "side": "E",
+          "width_m": 8,
+          "world_position_m": [
+            42,
+            0,
+            0
+          ],
+          "status": "authored production portal"
+        },
+        {
+          "id": "BRW-01-P2",
+          "side": "S",
+          "width_m": 6,
+          "world_position_m": [
+            0,
+            -32,
+            0
+          ],
+          "status": "authored production portal"
+        },
+        {
+          "id": "BRW-01-P3",
+          "side": "W",
+          "width_m": 6,
+          "world_position_m": [
+            -42,
+            0,
+            0
+          ],
+          "status": "authored production portal"
+        },
+        {
+          "id": "BRW-01-P4",
+          "side": "N",
+          "width_m": 6,
+          "world_position_m": [
+            0,
+            32,
+            0
+          ],
+          "status": "authored production portal"
+        }
+      ],
+      "connections": "East: BRW-12 via Gate Lane. South: BRW-02. West: BRW-07 / BRW-16. North: BRW-C02 then BRW-04.",
+      "detail_status": "Additive production design; original world anchor and footprint preserved",
+      "private_interiors": "Unassigned where not drawn; no permission to invent hidden passages"
+    },
+    "BRW-02": {
+      "sheet": "BP-02",
+      "name": "Common House & Tables",
+      "world_anchor_m": [
+        -5,
+        -58,
+        0
+      ],
+      "footprint_m": [
+        50,
+        28
+      ],
+      "rotation_deg": 0,
+      "portals": [
+        {
+          "id": "BRW-02-P1",
+          "side": "N",
+          "width_m": 3,
+          "world_position_m": [
+            -5,
+            -44,
+            0
+          ],
+          "status": "authored production portal"
+        },
+        {
+          "id": "BRW-02-P2",
+          "side": "W",
+          "width_m": 2,
+          "world_position_m": [
+            -30,
+            -62,
+            0
+          ],
+          "status": "authored production portal"
+        },
+        {
+          "id": "BRW-02-P3",
+          "side": "S",
+          "width_m": 2,
+          "world_position_m": [
+            16,
+            -72,
+            0
+          ],
+          "status": "authored production portal"
+        }
+      ],
+      "connections": "North to BRW-01. West service approach to BRW-11. South neighborhood approach to BRW-03. East delivery route to BRW-10.",
+      "detail_status": "Additive production design; original world anchor and footprint preserved",
+      "private_interiors": "Unassigned where not drawn; no permission to invent hidden passages"
+    },
+    "BRW-03": {
+      "sheet": "BP-03",
+      "name": "Hearth Terraces",
+      "world_anchor_m": [
+        -30,
+        -132,
+        12
+      ],
+      "footprint_m": [
+        140,
+        52
+      ],
+      "rotation_deg": 0,
+      "portals": [
+        {
+          "id": "BRW-03-P1",
+          "side": "W",
+          "width_m": 2,
+          "world_position_m": [
+            -80,
+            -132,
+            12
+          ],
+          "status": "authored production portal"
+        }
+      ],
+      "connections": "Public galleries connect to the western ramp and home_low stair route. The exact Madger / Snow entry remains (-80, -132, +12).",
+      "detail_status": "Additive production design; original world anchor and footprint preserved",
+      "private_interiors": "Unassigned where not drawn; no permission to invent hidden passages"
+    },
+    "BRW-04": {
+      "sheet": "BP-04",
+      "name": "Garden Terraces",
+      "world_anchor_m": [
+        0,
+        135,
+        12
+      ],
+      "footprint_m": [
+        160,
+        62
+      ],
+      "rotation_deg": 0,
+      "portals": [
+        {
+          "id": "BRW-04-P1",
+          "side": "S",
+          "width_m": 3,
+          "world_position_m": [
+            0,
+            104,
+            6
+          ],
+          "status": "authored production portal"
+        },
+        {
+          "id": "BRW-04-P2",
+          "side": "W",
+          "width_m": 4,
+          "world_position_m": [
+            -80,
+            135,
+            12
+          ],
+          "status": "authored production portal"
+        }
+      ],
+      "connections": "South stair via BRW-C02. West cart ramp connects +0 / +6 / +12 / +18 landings and BRW-05. Terrace paths never cross planted beds.",
+      "detail_status": "Additive production design; original world anchor and footprint preserved",
+      "private_interiors": "Unassigned where not drawn; no permission to invent hidden passages"
+    },
+    "BRW-05": {
+      "sheet": "BP-05",
+      "name": "Spring House",
+      "world_anchor_m": [
+        -160,
+        150,
+        18
+      ],
+      "footprint_m": [
+        32,
+        24
+      ],
+      "rotation_deg": 0,
+      "portals": [
+        {
+          "id": "BRW-05-P1",
+          "side": "S",
+          "width_m": 2,
+          "world_position_m": [
+            -160,
+            138,
+            18
+          ],
+          "status": "authored production portal"
+        }
+      ],
+      "connections": "South inspection entry (-160, 138, +18) joins the upper garden ramp. Water exits into the enclosed headrace; no public tunnel.",
+      "detail_status": "Additive production design; original world anchor and footprint preserved",
+      "private_interiors": "Unassigned where not drawn; no permission to invent hidden passages"
+    },
+    "BRW-06": {
+      "sheet": "BP-06",
+      "name": "Waterhouse",
+      "world_anchor_m": [
+        -185,
+        65,
+        0
+      ],
+      "footprint_m": [
+        40,
+        30
+      ],
+      "rotation_deg": 0,
+      "portals": [
+        {
+          "id": "BRW-06-P1",
+          "side": "S",
+          "width_m": 3,
+          "world_position_m": [
+            -185,
+            50,
+            0
+          ],
+          "status": "authored production portal"
+        },
+        {
+          "id": "BRW-06-P2",
+          "side": "W",
+          "width_m": 4,
+          "world_position_m": [
+            -205,
+            65,
+            0
+          ],
+          "status": "authored production portal"
+        }
+      ],
+      "connections": "South approach to BRW-07. West equipment access. East wheel interfaces with the existing race; no pedestrian crossing is added.",
+      "detail_status": "Additive production design; original world anchor and footprint preserved",
+      "private_interiors": "Unassigned where not drawn; no permission to invent hidden passages"
+    },
+    "BRW-07": {
+      "sheet": "BP-07",
+      "name": "Gorilla White's Workshop",
+      "world_anchor_m": [
+        -185,
+        18,
+        0
+      ],
+      "footprint_m": [
+        44,
+        30
+      ],
+      "rotation_deg": 0,
+      "portals": [
+        {
+          "id": "BRW-07-P1",
+          "side": "E",
+          "width_m": 5,
+          "world_position_m": [
+            -163,
+            18,
+            0
+          ],
+          "status": "authored production portal"
+        },
+        {
+          "id": "BRW-07-P2",
+          "side": "N",
+          "width_m": 2,
+          "world_position_m": [
+            -185,
+            33,
+            0
+          ],
+          "status": "authored production portal"
+        },
+        {
+          "id": "BRW-07-P3",
+          "side": "S",
+          "width_m": 2,
+          "world_position_m": [
+            -173,
+            3,
+            0
+          ],
+          "status": "authored production portal"
+        }
+      ],
+      "connections": "East court to works_junction and BRW-01. North service route to BRW-06. South walk to BRW-08.",
+      "detail_status": "Additive production design; original world anchor and footprint preserved",
+      "private_interiors": "Unassigned where not drawn; no permission to invent hidden passages"
+    },
+    "BRW-08": {
+      "sheet": "BP-08",
+      "name": "Training Court",
+      "world_anchor_m": [
+        -182,
+        -73,
+        0
+      ],
+      "footprint_m": [
+        58,
+        42
+      ],
+      "rotation_deg": 0,
+      "portals": [
+        {
+          "id": "BRW-08-P1",
+          "side": "E",
+          "width_m": 6,
+          "world_position_m": [
+            -153,
+            -73,
+            0
+          ],
+          "status": "authored production portal"
+        },
+        {
+          "id": "BRW-08-P2",
+          "side": "N",
+          "width_m": 4,
+          "world_position_m": [
+            -182,
+            -52,
+            0
+          ],
+          "status": "authored production portal"
+        }
+      ],
+      "connections": "East entrance to the lower walk. North equipment route to BRW-07. West emergency threshold BRW-X01 remains closed.",
+      "detail_status": "Additive production design; original world anchor and footprint preserved",
+      "private_interiors": "Unassigned where not drawn; no permission to invent hidden passages"
+    },
+    "BRW-09": {
+      "sheet": "BP-09",
+      "name": "Records House",
+      "world_anchor_m": [
+        62,
+        42,
+        0
+      ],
+      "footprint_m": [
+        38,
+        28
+      ],
+      "rotation_deg": 0,
+      "portals": [
+        {
+          "id": "BRW-09-P1",
+          "side": "S",
+          "width_m": 2.4,
+          "world_position_m": [
+            62,
+            28,
+            0
+          ],
+          "status": "authored production portal"
+        },
+        {
+          "id": "BRW-09-P2",
+          "side": "E",
+          "width_m": 2,
+          "world_position_m": [
+            81,
+            42,
+            0
+          ],
+          "status": "authored production portal"
+        }
+      ],
+      "connections": "South entrance to market_e. East maintenance door stays local. Cable links serve local records; no physical control of the gate bar.",
+      "detail_status": "Additive production design; original world anchor and footprint preserved",
+      "private_interiors": "Unassigned where not drawn; no permission to invent hidden passages"
+    },
+    "BRW-10": {
+      "sheet": "BP-10",
+      "name": "Storehouse & Trading Court",
+      "world_anchor_m": [
+        104,
+        -40,
+        0
+      ],
+      "footprint_m": [
+        52,
+        38
+      ],
+      "rotation_deg": 0,
+      "portals": [
+        {
+          "id": "BRW-10-P1",
+          "side": "E",
+          "width_m": 5,
+          "world_position_m": [
+            130,
+            -40,
+            0
+          ],
+          "status": "authored production portal"
+        },
+        {
+          "id": "BRW-10-P2",
+          "side": "N",
+          "width_m": 2,
+          "world_position_m": [
+            104,
+            -21,
+            0
+          ],
+          "status": "authored production portal"
+        },
+        {
+          "id": "BRW-10-P3",
+          "side": "W",
+          "width_m": 2,
+          "world_position_m": [
+            78,
+            -40,
+            0
+          ],
+          "status": "authored production portal"
+        }
+      ],
+      "connections": "East receiving court to Gate Lane. North staff approach to lane_e. West inventory exit to the common-house delivery route.",
+      "detail_status": "Additive production design; original world anchor and footprint preserved",
+      "private_interiors": "Unassigned where not drawn; no permission to invent hidden passages"
+    },
+    "BRW-11": {
+      "sheet": "BP-11",
+      "name": "Care House",
+      "world_anchor_m": [
+        -86,
+        -68,
+        0
+      ],
+      "footprint_m": [
+        30,
+        24
+      ],
+      "rotation_deg": 0,
+      "portals": [
+        {
+          "id": "BRW-11-P1",
+          "side": "N",
+          "width_m": 2.4,
+          "world_position_m": [
+            -86,
+            -56,
+            0
+          ],
+          "status": "authored production portal"
+        },
+        {
+          "id": "BRW-11-P2",
+          "side": "W",
+          "width_m": 2,
+          "world_position_m": [
+            -101,
+            -64,
+            0
+          ],
+          "status": "authored production portal"
+        }
+      ],
+      "connections": "North reception from the public walk. West service exit. Quiet south rooms remain private; no shortcut through patient space.",
+      "detail_status": "Additive production design; original world anchor and footprint preserved",
+      "private_interiors": "Unassigned where not drawn; no permission to invent hidden passages"
+    },
+    "BRW-12": {
+      "sheet": "BP-12",
+      "name": "East Bridge",
+      "world_anchor_m": [
+        170,
+        0,
+        0
+      ],
+      "footprint_m": [
+        12,
+        4.5
+      ],
+      "rotation_deg": 0,
+      "portals": [
+        {
+          "id": "BRW-12-P1",
+          "side": "W",
+          "width_m": 4.5,
+          "world_position_m": [
+            164,
+            0,
+            0
+          ],
+          "status": "authored production portal"
+        },
+        {
+          "id": "BRW-12-P2",
+          "side": "E",
+          "width_m": 4.5,
+          "world_position_m": [
+            176,
+            0,
+            0
+          ],
+          "status": "authored production portal"
+        }
+      ],
+      "connections": "West landing (164, 0, 0); east landing (176, 0, 0). C03 at y=-90 provides the existing maintenance bypass.",
+      "detail_status": "Additive production design; original world anchor and footprint preserved",
+      "private_interiors": "Unassigned where not drawn; no permission to invent hidden passages"
+    },
+    "BRW-13": {
+      "sheet": "BP-13",
+      "name": "Inner Arrival Court",
+      "world_anchor_m": [
+        225,
+        0,
+        0
+      ],
+      "footprint_m": [
+        72,
+        52
+      ],
+      "rotation_deg": 0,
+      "portals": [
+        {
+          "id": "BRW-13-P1",
+          "side": "W",
+          "width_m": 8,
+          "world_position_m": [
+            189,
+            0,
+            0
+          ],
+          "status": "authored production portal"
+        },
+        {
+          "id": "BRW-13-P2",
+          "side": "E",
+          "width_m": 8,
+          "world_position_m": [
+            261,
+            0,
+            0
+          ],
+          "status": "authored production portal"
+        },
+        {
+          "id": "BRW-13-P3",
+          "side": "S",
+          "width_m": 5,
+          "world_position_m": [
+            245,
+            -26,
+            0
+          ],
+          "status": "authored production portal"
+        }
+      ],
+      "connections": "West to BRW-12. East to BRW-14 mouth at x=270. South to BRW-15 and BRW-C03. No exterior view in Episode 1.",
+      "detail_status": "Additive production design; original world anchor and footprint preserved",
+      "private_interiors": "Unassigned where not drawn; no permission to invent hidden passages"
+    },
+    "BRW-14": {
+      "sheet": "BP-14",
+      "name": "East Gate",
+      "world_anchor_m": [
+        282,
+        0,
+        0
+      ],
+      "footprint_m": [
+        24,
+        18
+      ],
+      "rotation_deg": 0,
+      "portals": [
+        {
+          "id": "BRW-14-P1",
+          "side": "W",
+          "width_m": 12,
+          "world_position_m": [
+            270,
+            0,
+            0
+          ],
+          "status": "authored production portal"
+        },
+        {
+          "id": "BRW-14-P2",
+          "side": "E",
+          "width_m": 12,
+          "world_position_m": [
+            294,
+            0,
+            0
+          ],
+          "status": "closed exterior threshold"
+        }
+      ],
+      "connections": "Enter from west at x=270. Exterior leaf plane x=294 stays closed in shown pilot scenes. Relay is on the SOUTH wall.",
+      "detail_status": "Additive production design; original world anchor and footprint preserved",
+      "private_interiors": "Unassigned where not drawn; no permission to invent hidden passages"
+    },
+    "BRW-15": {
+      "sheet": "BP-15",
+      "name": "Service Walk & Gate Relay",
+      "world_anchor_m": [
+        270,
+        -26,
+        0
+      ],
+      "footprint_m": [
+        34,
+        14
+      ],
+      "rotation_deg": 0,
+      "portals": [
+        {
+          "id": "BRW-15-P1",
+          "side": "W",
+          "width_m": 4,
+          "world_position_m": [
+            253,
+            -26,
+            0
+          ],
+          "status": "authored production portal"
+        },
+        {
+          "id": "BRW-15-P2",
+          "side": "N",
+          "width_m": 3,
+          "world_position_m": [
+            270,
+            -19,
+            0
+          ],
+          "status": "authored production portal"
+        }
+      ],
+      "connections": "Return north to gate_mouth (270, 0, 0), then inside to the cabinet. The walk and cabinet are two parts of one location record.",
+      "detail_status": "Additive production design; original world anchor and footprint preserved",
+      "private_interiors": "Unassigned where not drawn; no permission to invent hidden passages"
+    },
+    "BRW-16": {
+      "sheet": "BP-16",
+      "name": "Makers' Room & Archive",
+      "world_anchor_m": [
+        -66,
+        16,
+        0
+      ],
+      "footprint_m": [
+        38,
+        22
+      ],
+      "rotation_deg": 0,
+      "portals": [
+        {
+          "id": "BRW-16-P1",
+          "side": "S",
+          "width_m": 2.4,
+          "world_position_m": [
+            -66,
+            5,
+            0
+          ],
+          "status": "authored production portal"
+        },
+        {
+          "id": "BRW-16-P2",
+          "side": "W",
+          "width_m": 2,
+          "world_position_m": [
+            -85,
+            16,
+            0
+          ],
+          "status": "authored production portal"
+        }
+      ],
+      "connections": "South public entrance to the market / west lane. West service exit. Archive and Creator Studio share this one footprint.",
+      "detail_status": "Additive production design; original world anchor and footprint preserved",
+      "private_interiors": "Unassigned where not drawn; no permission to invent hidden passages"
+    }
+  },
+  "route_graph": [
+    {
+      "id": "sunwell__market_e",
+      "a": "sunwell",
+      "b": "market_e",
+      "mode": "walk_cart",
+      "width_m": 4,
+      "length_m": 45.0,
+      "points_m": [
+        [
+          0,
+          0,
+          0
+        ],
+        [
+          45,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "id": "market_e__lane_e",
+      "a": "market_e",
+      "b": "lane_e",
+      "mode": "walk_cart",
+      "width_m": 4,
+      "length_m": 87.0,
+      "points_m": [
+        [
+          45,
+          0,
+          0
+        ],
+        [
+          132,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "id": "lane_e__bridge_w",
+      "a": "lane_e",
+      "b": "bridge_w",
+      "mode": "walk_cart",
+      "width_m": 4,
+      "length_m": 32.0,
+      "points_m": [
+        [
+          132,
+          0,
+          0
+        ],
+        [
+          164,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "id": "bridge_w__bridge_e",
+      "a": "bridge_w",
+      "b": "bridge_e",
+      "mode": "walk_cart",
+      "width_m": 4,
+      "length_m": 12.0,
+      "points_m": [
+        [
+          164,
+          0,
+          0
+        ],
+        [
+          176,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "id": "bridge_e__arrival",
+      "a": "bridge_e",
+      "b": "arrival",
+      "mode": "walk_cart",
+      "width_m": 4,
+      "length_m": 49.0,
+      "points_m": [
+        [
+          176,
+          0,
+          0
+        ],
+        [
+          225,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "id": "arrival__gate_mouth",
+      "a": "arrival",
+      "b": "gate_mouth",
+      "mode": "walk_cart",
+      "width_m": 4,
+      "length_m": 45.0,
+      "points_m": [
+        [
+          225,
+          0,
+          0
+        ],
+        [
+          270,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "id": "gate_mouth__gate_inner",
+      "a": "gate_mouth",
+      "b": "gate_inner",
+      "mode": "walk_cart",
+      "width_m": 4,
+      "length_m": 18.0,
+      "points_m": [
+        [
+          270,
+          0,
+          0
+        ],
+        [
+          288,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "id": "arrival__relay_walk",
+      "a": "arrival",
+      "b": "relay_walk",
+      "mode": "walk_cart",
+      "width_m": 4,
+      "length_m": 51.97,
+      "points_m": [
+        [
+          225,
+          0,
+          0
+        ],
+        [
+          270,
+          -26,
+          0
+        ]
+      ]
+    },
+    {
+      "id": "lane_e__south_w",
+      "a": "lane_e",
+      "b": "south_w",
+      "mode": "walk_cart",
+      "width_m": 4,
+      "length_m": 90.35,
+      "points_m": [
+        [
+          132,
+          0,
+          0
+        ],
+        [
+          140,
+          -90,
+          0
+        ]
+      ]
+    },
+    {
+      "id": "south_w__south_cross_w",
+      "a": "south_w",
+      "b": "south_cross_w",
+      "mode": "walk_cart",
+      "width_m": 4,
+      "length_m": 24.0,
+      "points_m": [
+        [
+          140,
+          -90,
+          0
+        ],
+        [
+          164,
+          -90,
+          0
+        ]
+      ]
+    },
+    {
+      "id": "south_cross_w__south_cross_e",
+      "a": "south_cross_w",
+      "b": "south_cross_e",
+      "mode": "walk_cart",
+      "width_m": 4,
+      "length_m": 12.0,
+      "points_m": [
+        [
+          164,
+          -90,
+          0
+        ],
+        [
+          176,
+          -90,
+          0
+        ]
+      ]
+    },
+    {
+      "id": "south_cross_e__south_e",
+      "a": "south_cross_e",
+      "b": "south_e",
+      "mode": "walk_cart",
+      "width_m": 4,
+      "length_m": 26.0,
+      "points_m": [
+        [
+          176,
+          -90,
+          0
+        ],
+        [
+          202,
+          -90,
+          0
+        ]
+      ]
+    },
+    {
+      "id": "south_e__arrival",
+      "a": "south_e",
+      "b": "arrival",
+      "mode": "walk_cart",
+      "width_m": 4,
+      "length_m": 92.89,
+      "points_m": [
+        [
+          202,
+          -90,
+          0
+        ],
+        [
+          225,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "id": "sunwell__tables",
+      "a": "sunwell",
+      "b": "tables",
+      "mode": "walk_cart",
+      "width_m": 4,
+      "length_m": 58.22,
+      "points_m": [
+        [
+          0,
+          0,
+          0
+        ],
+        [
+          -5,
+          -58,
+          0
+        ]
+      ]
+    },
+    {
+      "id": "tables__care",
+      "a": "tables",
+      "b": "care",
+      "mode": "walk_cart",
+      "width_m": 4,
+      "length_m": 81.02,
+      "points_m": [
+        [
+          -5,
+          -58,
+          0
+        ],
+        [
+          -86,
+          -56,
+          0
+        ]
+      ]
+    },
+    {
+      "id": "tables__home_low",
+      "a": "tables",
+      "b": "home_low",
+      "mode": "walk_cart",
+      "width_m": 4,
+      "length_m": 48.88,
+      "points_m": [
+        [
+          -5,
+          -58,
+          0
+        ],
+        [
+          -30,
+          -100,
+          0
+        ]
+      ]
+    },
+    {
+      "id": "home_low__home_ramp_a",
+      "a": "home_low",
+      "b": "home_ramp_a",
+      "mode": "walk_cart",
+      "width_m": 4,
+      "length_m": 90.55,
+      "points_m": [
+        [
+          -30,
+          -100,
+          0
+        ],
+        [
+          -120,
+          -90,
+          0
+        ]
+      ]
+    },
+    {
+      "id": "home_ramp_a__home_ramp_b",
+      "a": "home_ramp_a",
+      "b": "home_ramp_b",
+      "mode": "walk_cart",
+      "width_m": 4,
+      "length_m": 75.24,
+      "points_m": [
+        [
+          -120,
+          -90,
+          0
+        ],
+        [
+          -120,
+          -165,
+          6
+        ]
+      ]
+    },
+    {
+      "id": "home_ramp_b__home_ramp_c",
+      "a": "home_ramp_b",
+      "b": "home_ramp_c",
+      "mode": "walk_cart",
+      "width_m": 4,
+      "length_m": 90.2,
+      "points_m": [
+        [
+          -120,
+          -165,
+          6
+        ],
+        [
+          -30,
+          -165,
+          12
+        ]
+      ]
+    },
+    {
+      "id": "home_ramp_c__home_entry",
+      "a": "home_ramp_c",
+      "b": "home_entry",
+      "mode": "walk_cart",
+      "width_m": 4,
+      "length_m": 59.91,
+      "points_m": [
+        [
+          -30,
+          -165,
+          12
+        ],
+        [
+          -80,
+          -132,
+          12
+        ]
+      ]
+    },
+    {
+      "id": "sunwell__works_junction",
+      "a": "sunwell",
+      "b": "works_junction",
+      "mode": "walk_cart",
+      "width_m": 4,
+      "length_m": 120.0,
+      "points_m": [
+        [
+          0,
+          0,
+          0
+        ],
+        [
+          -120,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "id": "works_junction__workshop",
+      "a": "works_junction",
+      "b": "workshop",
+      "mode": "walk_cart",
+      "width_m": 4,
+      "length_m": 46.62,
+      "points_m": [
+        [
+          -120,
+          0,
+          0
+        ],
+        [
+          -163,
+          18,
+          0
+        ]
+      ]
+    },
+    {
+      "id": "workshop__waterhouse",
+      "a": "workshop",
+      "b": "waterhouse",
+      "mode": "walk_cart",
+      "width_m": 4,
+      "length_m": 38.83,
+      "points_m": [
+        [
+          -163,
+          18,
+          0
+        ],
+        [
+          -185,
+          50,
+          0
+        ]
+      ]
+    },
+    {
+      "id": "works_junction__training",
+      "a": "works_junction",
+      "b": "training",
+      "mode": "walk_cart",
+      "width_m": 4,
+      "length_m": 80.11,
+      "points_m": [
+        [
+          -120,
+          0,
+          0
+        ],
+        [
+          -153,
+          -73,
+          0
+        ]
+      ]
+    },
+    {
+      "id": "training__care",
+      "a": "training",
+      "b": "care",
+      "mode": "walk_cart",
+      "width_m": 4,
+      "length_m": 69.12,
+      "points_m": [
+        [
+          -153,
+          -73,
+          0
+        ],
+        [
+          -86,
+          -56,
+          0
+        ]
+      ]
+    },
+    {
+      "id": "training__home_ramp_a",
+      "a": "training",
+      "b": "home_ramp_a",
+      "mode": "walk_cart",
+      "width_m": 4,
+      "length_m": 37.12,
+      "points_m": [
+        [
+          -153,
+          -73,
+          0
+        ],
+        [
+          -120,
+          -90,
+          0
+        ]
+      ]
+    },
+    {
+      "id": "sunwell__makers",
+      "a": "sunwell",
+      "b": "makers",
+      "mode": "walk_cart",
+      "width_m": 4,
+      "length_m": 66.19,
+      "points_m": [
+        [
+          0,
+          0,
+          0
+        ],
+        [
+          -66,
+          5,
+          0
+        ]
+      ]
+    },
+    {
+      "id": "market_e__records",
+      "a": "market_e",
+      "b": "records",
+      "mode": "walk_cart",
+      "width_m": 4,
+      "length_m": 32.76,
+      "points_m": [
+        [
+          45,
+          0,
+          0
+        ],
+        [
+          62,
+          28,
+          0
+        ]
+      ]
+    },
+    {
+      "id": "lane_e__store",
+      "a": "lane_e",
+      "b": "store",
+      "mode": "walk_cart",
+      "width_m": 4,
+      "length_m": 40.05,
+      "points_m": [
+        [
+          132,
+          0,
+          0
+        ],
+        [
+          130,
+          -40,
+          0
+        ]
+      ]
+    },
+    {
+      "id": "store__tables",
+      "a": "store",
+      "b": "tables",
+      "mode": "walk_cart",
+      "width_m": 4,
+      "length_m": 136.19,
+      "points_m": [
+        [
+          130,
+          -40,
+          0
+        ],
+        [
+          -5,
+          -58,
+          0
+        ]
+      ]
+    },
+    {
+      "id": "sunwell__garden_lower",
+      "a": "sunwell",
+      "b": "garden_lower",
+      "mode": "walk_cart",
+      "width_m": 4,
+      "length_m": 55.0,
+      "points_m": [
+        [
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          55,
+          0
+        ]
+      ]
+    },
+    {
+      "id": "garden_lower__garden_cross",
+      "a": "garden_lower",
+      "b": "garden_cross",
+      "mode": "walk_cart",
+      "width_m": 4,
+      "length_m": 7.0,
+      "points_m": [
+        [
+          0,
+          55,
+          0
+        ],
+        [
+          0,
+          62,
+          0
+        ]
+      ]
+    },
+    {
+      "id": "garden_cross__garden_base",
+      "a": "garden_cross",
+      "b": "garden_base",
+      "mode": "walk_cart",
+      "width_m": 4,
+      "length_m": 18.0,
+      "points_m": [
+        [
+          0,
+          62,
+          0
+        ],
+        [
+          0,
+          80,
+          0
+        ]
+      ]
+    },
+    {
+      "id": "garden_base__garden_ramp_a",
+      "a": "garden_base",
+      "b": "garden_ramp_a",
+      "mode": "walk_cart",
+      "width_m": 4,
+      "length_m": 90.55,
+      "points_m": [
+        [
+          0,
+          80,
+          0
+        ],
+        [
+          -90,
+          70,
+          0
+        ]
+      ]
+    },
+    {
+      "id": "garden_ramp_a__garden_ramp_b",
+      "a": "garden_ramp_a",
+      "b": "garden_ramp_b",
+      "mode": "walk_cart",
+      "width_m": 4,
+      "length_m": 110.62,
+      "points_m": [
+        [
+          -90,
+          70,
+          0
+        ],
+        [
+          -200,
+          80,
+          6
+        ]
+      ]
+    },
+    {
+      "id": "garden_ramp_b__garden_ramp_c",
+      "a": "garden_ramp_b",
+      "b": "garden_ramp_c",
+      "mode": "walk_cart",
+      "width_m": 4,
+      "length_m": 104.58,
+      "points_m": [
+        [
+          -200,
+          80,
+          6
+        ],
+        [
+          -100,
+          110,
+          12
+        ]
+      ]
+    },
+    {
+      "id": "garden_ramp_c__garden_mid",
+      "a": "garden_ramp_c",
+      "b": "garden_mid",
+      "mode": "walk_cart",
+      "width_m": 4,
+      "length_m": 103.08,
+      "points_m": [
+        [
+          -100,
+          110,
+          12
+        ],
+        [
+          0,
+          135,
+          12
+        ]
+      ]
+    },
+    {
+      "id": "garden_ramp_c__garden_ramp_d",
+      "a": "garden_ramp_c",
+      "b": "garden_ramp_d",
+      "mode": "walk_cart",
+      "width_m": 4,
+      "length_m": 102.16,
+      "points_m": [
+        [
+          -100,
+          110,
+          12
+        ],
+        [
+          -200,
+          130,
+          18
+        ]
+      ]
+    },
+    {
+      "id": "garden_ramp_d__spring",
+      "a": "garden_ramp_d",
+      "b": "spring",
+      "mode": "walk_cart",
+      "width_m": 4,
+      "length_m": 40.79,
+      "points_m": [
+        [
+          -200,
+          130,
+          18
+        ],
+        [
+          -160,
+          138,
+          18
+        ]
+      ]
+    },
+    {
+      "id": "training__emergency_door",
+      "a": "training",
+      "b": "emergency_door",
+      "mode": "walk_cart",
+      "width_m": 4,
+      "length_m": 89.74,
+      "points_m": [
+        [
+          -153,
+          -73,
+          0
+        ],
+        [
+          -240,
+          -95,
+          0
+        ]
+      ]
+    },
+    {
+      "id": "home_ramp_c__home_upper",
+      "a": "home_ramp_c",
+      "b": "home_upper",
+      "mode": "walk_cart",
+      "width_m": 4,
+      "length_m": 90.99,
+      "points_m": [
+        [
+          -30,
+          -165,
+          12
+        ],
+        [
+          -120,
+          -177,
+          18
+        ]
+      ]
+    },
+    {
+      "id": "garden_ramp_d__garden_upper",
+      "a": "garden_ramp_d",
+      "b": "garden_upper",
+      "mode": "walk_cart",
+      "width_m": 4,
+      "length_m": 203.04,
+      "points_m": [
+        [
+          -200,
+          130,
+          18
+        ],
+        [
+          0,
+          165,
+          18
+        ]
+      ]
+    },
+    {
+      "id": "garden_mid__garden_upper",
+      "a": "garden_mid",
+      "b": "garden_upper",
+      "mode": "stairs",
+      "width_m": 3,
+      "length_m": 30.59,
+      "points_m": [
+        [
+          0,
+          135,
+          12
+        ],
+        [
+          0,
+          165,
+          18
+        ]
+      ]
+    },
+    {
+      "id": "relay_walk__gate_mouth",
+      "a": "relay_walk",
+      "b": "gate_mouth",
+      "mode": "walk",
+      "width_m": 3,
+      "length_m": 26.0,
+      "points_m": [
+        [
+          270,
+          -26,
+          0
+        ],
+        [
+          270,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "id": "gate_mouth__relay_cabinet",
+      "a": "gate_mouth",
+      "b": "relay_cabinet",
+      "mode": "walk",
+      "width_m": 3,
+      "length_m": 13.42,
+      "points_m": [
+        [
+          270,
+          0,
+          0
+        ],
+        [
+          282,
+          -6,
+          0
+        ]
+      ]
+    },
+    {
+      "id": "garden_base__garden_entry",
+      "a": "garden_base",
+      "b": "garden_entry",
+      "mode": "stairs",
+      "width_m": 3,
+      "length_m": 25.71,
+      "points_m": [
+        [
+          0,
+          80,
+          0
+        ],
+        [
+          0,
+          105,
+          6
+        ]
+      ]
+    },
+    {
+      "id": "garden_entry__garden_mid",
+      "a": "garden_entry",
+      "b": "garden_mid",
+      "mode": "stairs",
+      "width_m": 3,
+      "length_m": 30.59,
+      "points_m": [
+        [
+          0,
+          105,
+          6
+        ],
+        [
+          0,
+          135,
+          12
+        ]
+      ]
+    },
+    {
+      "id": "home_low__home_entry",
+      "a": "home_low",
+      "b": "home_entry",
+      "mode": "stairs",
+      "width_m": 3,
+      "length_m": 60.56,
+      "points_m": [
+        [
+          -30,
+          -100,
+          0
+        ],
+        [
+          -80,
+          -132,
+          12
+        ]
+      ]
+    }
+  ],
+  "route_graph_policy": "Canonical route graph expresses destinations and topology. It is not an indoor collision mesh. Authored portals govern wall openings; final walkable paths must approach them without penetrating solid walls.",
+  "crossings": [
+    {
+      "id": "BRW-C01",
+      "name": "East Bridge",
+      "position_m": [
+        170,
+        0,
+        0
+      ],
+      "span_m": 12,
+      "width_m": 4.5,
+      "water_width_m": 6,
+      "material": "pale timber"
+    },
+    {
+      "id": "BRW-C02",
+      "name": "Garden Crossing",
+      "position_m": [
+        0,
+        62,
+        0
+      ],
+      "span_m": 12,
+      "width_m": 4,
+      "water_width_m": 6,
+      "material": "flat limestone slab"
+    },
+    {
+      "id": "BRW-C03",
+      "name": "Service Crossing",
+      "position_m": [
+        170,
+        -90,
+        0
+      ],
+      "span_m": 12,
+      "width_m": 4,
+      "water_width_m": 6,
+      "material": "flat limestone slab"
+    }
+  ],
+  "water": {
+    "utility_race_centerline_m": [
+      [
+        -160,
+        150,
+        18
+      ],
+      [
+        -160,
+        85,
+        6
+      ],
+      [
+        -161,
+        65,
+        -1
+      ],
+      [
+        -160,
+        30,
+        -1.2
+      ],
+      [
+        -95,
+        40,
+        -1.4
+      ],
+      [
+        0,
+        62,
+        -1.6
+      ],
+      [
+        100,
+        62,
+        -1.8
+      ],
+      [
+        170,
+        45,
+        -2
+      ],
+      [
+        170,
+        0,
+        -2.2
+      ],
+      [
+        170,
+        -90,
+        -2.5
+      ],
+      [
+        160,
+        -125,
+        -2.8
+      ],
+      [
+        210,
+        -145,
+        -3
+      ]
+    ],
+    "headrace": "The first two segments are enclosed under the western garden ramp. The open wheelrace begins on the east side of Waterhouse at (-161,65).",
+    "channel_width_m": 6,
+    "water_below_path_m": 2.2,
+    "potable": "Covered spring tanks feed separate buried drinking-water pipes; no sewage, wheelrace water or garden runoff enters this system.",
+    "wastewater": "Sealed collection lines run under service paths to a treatment room in the southeast rock; outflow is distinct from potable and irrigation systems.",
+    "surface_water": "Storm drains and garden overflow enter a screened lower outlet. Canal edges near public paths have continuous simple rails.",
+    "maintenance": "Manual isolation at each branch; log a local failure as local, with a visible fallback."
+  },
+  "reserved_expansion": [
+    {
+      "id": "BRW-X01",
+      "anchor": [
+        -240,
+        -95,
+        0
+      ],
+      "name": "West emergency door",
+      "status": "Fixed closed threshold; inspected emergency provision. Route beyond it remains unassigned and offscreen."
+    },
+    {
+      "id": "BRW-X02",
+      "anchor": [
+        210,
+        -145,
+        -3
+      ],
+      "name": "Southeast treatment/service access",
+      "status": "Fixed service threshold; not a free public tunnel or an Episode 1 adventure route."
+    },
+    {
+      "id": "BRW-X03",
+      "anchor": [
+        294,
+        0,
+        0
+      ],
+      "name": "East exterior threshold",
+      "status": "Fixed boundary; exterior roads/lands to be added later without moving the gate."
+    }
+  ],
+  "sheets": [
+    {
+      "sheet": "BP-00",
+      "title": "The Burrow / master blueprint",
+      "page": 1,
+      "svg": "svg/BP-00.svg"
+    },
+    {
+      "sheet": "BP-17",
+      "title": "East precinct / connected assembly",
+      "page": 2,
+      "svg": "svg/BP-17.svg"
+    },
+    {
+      "sheet": "BP-01",
+      "title": "Sunwell Market",
+      "page": 3,
+      "svg": "svg/BP-01.svg"
+    },
+    {
+      "sheet": "BP-02",
+      "title": "Common House & Tables",
+      "page": 4,
+      "svg": "svg/BP-02.svg"
+    },
+    {
+      "sheet": "BP-03",
+      "title": "Hearth Terraces",
+      "page": 5,
+      "svg": "svg/BP-03.svg"
+    },
+    {
+      "sheet": "BP-04",
+      "title": "Garden Terraces",
+      "page": 6,
+      "svg": "svg/BP-04.svg"
+    },
+    {
+      "sheet": "BP-05",
+      "title": "Spring House",
+      "page": 7,
+      "svg": "svg/BP-05.svg"
+    },
+    {
+      "sheet": "BP-06",
+      "title": "Waterhouse",
+      "page": 8,
+      "svg": "svg/BP-06.svg"
+    },
+    {
+      "sheet": "BP-07",
+      "title": "Gorilla White's Workshop",
+      "page": 9,
+      "svg": "svg/BP-07.svg"
+    },
+    {
+      "sheet": "BP-08",
+      "title": "Training Court",
+      "page": 10,
+      "svg": "svg/BP-08.svg"
+    },
+    {
+      "sheet": "BP-09",
+      "title": "Records House",
+      "page": 11,
+      "svg": "svg/BP-09.svg"
+    },
+    {
+      "sheet": "BP-10",
+      "title": "Storehouse & Trading Court",
+      "page": 12,
+      "svg": "svg/BP-10.svg"
+    },
+    {
+      "sheet": "BP-11",
+      "title": "Care House",
+      "page": 13,
+      "svg": "svg/BP-11.svg"
+    },
+    {
+      "sheet": "BP-12",
+      "title": "East Bridge",
+      "page": 14,
+      "svg": "svg/BP-12.svg"
+    },
+    {
+      "sheet": "BP-13",
+      "title": "Inner Arrival Court",
+      "page": 15,
+      "svg": "svg/BP-13.svg"
+    },
+    {
+      "sheet": "BP-14",
+      "title": "East Gate",
+      "page": 16,
+      "svg": "svg/BP-14.svg"
+    },
+    {
+      "sheet": "BP-15",
+      "title": "Service Walk & Gate Relay",
+      "page": 17,
+      "svg": "svg/BP-15.svg"
+    },
+    {
+      "sheet": "BP-16",
+      "title": "Makers' Room & Archive",
+      "page": 18,
+      "svg": "svg/BP-16.svg"
+    },
+    {
+      "sheet": "BP-18",
+      "title": "Three crossings / fixed connections",
+      "page": 19,
+      "svg": "svg/BP-18.svg"
+    },
+    {
+      "sheet": "BP-19",
+      "title": "Systems that support daily life",
+      "page": 20,
+      "svg": "svg/BP-19.svg"
+    },
+    {
+      "sheet": "BP-20",
+      "title": "How the Madger world grows",
+      "page": 21,
+      "svg": "svg/BP-20.svg"
+    }
+  ],
+  "engine_mapping": {
+    "Y-up engine": "engine (x,y,z) = bible (x,z,-y); 1 unit = 1 metre",
+    "Z-up engine": "engine (x,y,z) = bible (x,y,z); 1 unit = 1 metre"
+  },
+  "design_exceptions": [
+    {
+      "area": "BRW-15",
+      "rule": "Service Walk footprint and relay cabinet are disjoint components. Cabinet stays at (282,-8.5,1.2), on BRW-14 south wall. Route through gate_mouth, never through wall."
+    },
+    {
+      "area": "BRW-03",
+      "rule": "Residential bands show allocation, not an exhaustive dwelling inventory. Existing ramp anchors extend beyond the neighborhood planning footprint."
+    },
+    {
+      "area": "BRW-06",
+      "rule": "Wheel shown on east wall. Race interface routing and hardware require a future mechanism sheet; do not shift wall or race."
+    }
+  ]
+}

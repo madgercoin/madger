@@ -14,6 +14,10 @@ This is the shared world reference for MADGER stories, animation, promotional en
 - [View the environment materials and light study](v1.0.0/source/Burrow_Atmosphere.png)
 - [Review validation](v1.0.0/validation.json) and [file checksums](v1.0.0/manifest.json)
 
+## Connected area blueprints
+
+[Open the Burrow Blueprint Atlas](blueprints/README.md): 21 drawing sheets, including a plan for each of the 16 established areas, shared coordinates, entrances, crossings, systems and expansion anchors. Every future area receives its own blueprint and documented joins before use in stories, animation or the game.
+
 ## What is fixed
 
 The inhabited basin, 16 location IDs and footprints, compass directions, elevations, three canal crossings, public routes, gate/cabinet orientation and infrastructure relationships. The measured map and JSON control geometry; atmosphere art establishes materials and light.

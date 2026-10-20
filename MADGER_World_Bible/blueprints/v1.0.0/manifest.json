@@ -1,0 +1,250 @@
+{
+  "blueprint_version": "1.0.0",
+  "files": [
+    {
+      "path": "MADGER_Blueprint_Data.json",
+      "bytes": 41837,
+      "sha256": "a56d6590a12334568f972085fcceb46b4c051d35a54e0b15866363d4ff55034d"
+    },
+    {
+      "path": "MADGER_Blueprint_Overview.jpg",
+      "bytes": 704454,
+      "sha256": "57d5c98c93beb30e970f29c353f713792e1d3ceb86ae39b646bdf600b57d203c"
+    },
+    {
+      "path": "MADGER_Burrow_Blueprints.pdf",
+      "bytes": 231162,
+      "sha256": "515e4c252858271f8fad1a09e279b321e08b753b268dd428f01ba9dec09e087d"
+    },
+    {
+      "path": "README.md",
+      "bytes": 4736,
+      "sha256": "d11cdaf383420c8ec57d65112da595bc05f3c280299671f7a686bb815c43f758"
+    },
+    {
+      "path": "canon/MADGER_World_Bible.json",
+      "bytes": 62524,
+      "sha256": "6de2dfcb0e02e0c5887c764bfb2c70a9b68b03ab22152d0617584ba29c9c9b9e"
+    },
+    {
+      "path": "previews/BP-00.png",
+      "bytes": 195564,
+      "sha256": "fffd4057d5e9e3b3f56d8d7ea3b3f9fba637ee2b47af4a146edb0da668180922"
+    },
+    {
+      "path": "previews/BP-01.png",
+      "bytes": 160084,
+      "sha256": "edace02e551083b663179bf8e1f529fe299b9a514a9d592337fb2897bb6b09db"
+    },
+    {
+      "path": "previews/BP-02.png",
+      "bytes": 162315,
+      "sha256": "a7d5c0a2407d075ba12738fc748c596df3f886bb337f5cf9a92cdbb19697953d"
+    },
+    {
+      "path": "previews/BP-03.png",
+      "bytes": 159578,
+      "sha256": "fc5aeae413b0b20197dbf58a9680da64b21af72707b61477e435487fd6d4c42c"
+    },
+    {
+      "path": "previews/BP-04.png",
+      "bytes": 154599,
+      "sha256": "b71df1f32beb2dabf2e4de3a111f9106ff2de84f214dbc27f8aa185f7152de8f"
+    },
+    {
+      "path": "previews/BP-05.png",
+      "bytes": 159527,
+      "sha256": "f6835427ef2081e88b09972efd1a93dbc8303ed070c308ec4f908a96bf3f5ad0"
+    },
+    {
+      "path": "previews/BP-06.png",
+      "bytes": 160088,
+      "sha256": "fc108ee586a8c9d0e6a7d7b859bf5e90e7e33bfb2870629017d31b095b342a2b"
+    },
+    {
+      "path": "previews/BP-07.png",
+      "bytes": 155876,
+      "sha256": "c4f017117c5678b1193e8f0b729cbfc371fccdf56a11490c3e7aef6960f1da47"
+    },
+    {
+      "path": "previews/BP-08.png",
+      "bytes": 161603,
+      "sha256": "d84a0ce417d29e338291b1fe3ef9b139c45e7fb66ec24e10001fa39b27100d83"
+    },
+    {
+      "path": "previews/BP-09.png",
+      "bytes": 154035,
+      "sha256": "17966380fac88cfcdddc84ec709fd1bebc9cdb2d43d2826d7fe4593cd56b4589"
+    },
+    {
+      "path": "previews/BP-10.png",
+      "bytes": 160704,
+      "sha256": "8f8993464fe34402965b0bb2790bf6013014f0c551a762bfa5354c18149e7c5a"
+    },
+    {
+      "path": "previews/BP-11.png",
+      "bytes": 152430,
+      "sha256": "45b6050941d609d7207b5fe1eaa7a38e36c04e751bc85ca691bdde9d07f27ebb"
+    },
+    {
+      "path": "previews/BP-12.png",
+      "bytes": 147645,
+      "sha256": "43bcde95e8da36c0a61ce78206ccd0ab3cb8229fa8ca348d593183e20d7c2bad"
+    },
+    {
+      "path": "previews/BP-13.png",
+      "bytes": 159102,
+      "sha256": "81075594c2839db16ba1a1782847eb5fda82b4030a1226f99d07006471c4e8d2"
+    },
+    {
+      "path": "previews/BP-14.png",
+      "bytes": 149421,
+      "sha256": "e53d6c07abe330ed1feed2efd8cbb79e71453d6a06ce8ce58e372cecd868faa6"
+    },
+    {
+      "path": "previews/BP-15.png",
+      "bytes": 157121,
+      "sha256": "dd9608ca25c0118253baa7ce1c645e49a24a8a62d373383ca41d1374bc8f9a1e"
+    },
+    {
+      "path": "previews/BP-16.png",
+      "bytes": 152450,
+      "sha256": "b307238f77bac0a58390e8003128db6024c3f921468c9fb4d0b10f0dc45e2291"
+    },
+    {
+      "path": "previews/BP-17.png",
+      "bytes": 157777,
+      "sha256": "35d4a6262578f10a47be787500ef18bb6ea677146f883859302257585aca98ea"
+    },
+    {
+      "path": "previews/BP-18.png",
+      "bytes": 113057,
+      "sha256": "e4e0ae7692d31688f35dc6f3433cb9a0eefa8f72d7d669c284f62b99cf937959"
+    },
+    {
+      "path": "previews/BP-19.png",
+      "bytes": 219827,
+      "sha256": "eeb5c3115542457c21b62fba219f1b64a8fccdda9c6ee742c0ab1fd3e41c034b"
+    },
+    {
+      "path": "previews/BP-20.png",
+      "bytes": 216115,
+      "sha256": "cf25b53424dbd6067d639371d21f74a5b36788ee895a562ab96d327e3cdfb3c9"
+    },
+    {
+      "path": "source/build_blueprints.py",
+      "bytes": 37692,
+      "sha256": "d42cc93e85f493fc97c6e2caa32d4c677725e67df6004186630febf43dc53991"
+    },
+    {
+      "path": "svg/BP-00.svg",
+      "bytes": 33524,
+      "sha256": "97ce0100e14edcdf3c913bd95948c71e01f8902fda087abfe949219382f51ec2"
+    },
+    {
+      "path": "svg/BP-01.svg",
+      "bytes": 36628,
+      "sha256": "53437860817c46900875ce5b90a52fcf816bcdfed6ca1ce37a0076da45b94838"
+    },
+    {
+      "path": "svg/BP-02.svg",
+      "bytes": 38708,
+      "sha256": "68d71c461fe5685cef25045fed596597a5922904e2237f2a273970a8e50f27ec"
+    },
+    {
+      "path": "svg/BP-03.svg",
+      "bytes": 33499,
+      "sha256": "dbaaeece60dda3bc5a8f267cf3d6ce1a08d9dce03ee40e58dbe32f4a3eb92461"
+    },
+    {
+      "path": "svg/BP-04.svg",
+      "bytes": 44414,
+      "sha256": "3515206666bc366cb07d1daf506558b9f656db17c90367b85ab3626ed14f89b0"
+    },
+    {
+      "path": "svg/BP-05.svg",
+      "bytes": 33004,
+      "sha256": "001daeb2325904214bdb47319e656563aeb51aab92db1dc86ecb43bb06ffa68a"
+    },
+    {
+      "path": "svg/BP-06.svg",
+      "bytes": 34120,
+      "sha256": "9bd29730553a659e13db19c6722bb4b92308390cd8a4b1d1b7b87f0f1bc197a8"
+    },
+    {
+      "path": "svg/BP-07.svg",
+      "bytes": 36425,
+      "sha256": "9c77523a7772402bfc0422b46ae386e6dd6b591cec02edf4df6cd1e72a8703e0"
+    },
+    {
+      "path": "svg/BP-08.svg",
+      "bytes": 34839,
+      "sha256": "1f670c9e7c5efd162b25b8d1cf7d7e421edf15773931b6f11132c4d60fdf671e"
+    },
+    {
+      "path": "svg/BP-09.svg",
+      "bytes": 34171,
+      "sha256": "b1b95dee602eeaa29b8b54c296c37c7a049b5dc2d868adae991af1e6ae8f388a"
+    },
+    {
+      "path": "svg/BP-10.svg",
+      "bytes": 37210,
+      "sha256": "9679a337b5b4f0e200d232dc317469cfa96a84374e4c2df30d013b075ddd8b49"
+    },
+    {
+      "path": "svg/BP-11.svg",
+      "bytes": 33349,
+      "sha256": "c4134d172eefa15952dc765a2c863c55f9a873be00efdd4c9a18b32c0421a306"
+    },
+    {
+      "path": "svg/BP-12.svg",
+      "bytes": 32793,
+      "sha256": "051fb3d87391cd2c36582dd521f9559e7282f31c783dfbad3d66a984c8e1f274"
+    },
+    {
+      "path": "svg/BP-13.svg",
+      "bytes": 33701,
+      "sha256": "9141036b653d99dd26b97b3997e05e33822736a93790a2012438845aa79d6572"
+    },
+    {
+      "path": "svg/BP-14.svg",
+      "bytes": 32031,
+      "sha256": "df8c3701fb7899832d159660842c80362283b54c394e4ab9880bb9e44a055328"
+    },
+    {
+      "path": "svg/BP-15.svg",
+      "bytes": 32096,
+      "sha256": "868aba341ab7454d12aa69699afac162039ed6a8657057f92fb072e9befb2d02"
+    },
+    {
+      "path": "svg/BP-16.svg",
+      "bytes": 34834,
+      "sha256": "f87f2f884ec8bc4954092d6ce20562a08d652909e295fec354a9fe5f66408ccc"
+    },
+    {
+      "path": "svg/BP-17.svg",
+      "bytes": 20781,
+      "sha256": "74a0a6271e178a47b334ec9299b7a18b408e6d074ff996dd2b135c46be406aed"
+    },
+    {
+      "path": "svg/BP-18.svg",
+      "bytes": 17405,
+      "sha256": "5cf741731e3492780e02490b8a04892964ca8cd42e0d7411a2efabc77f3fef26"
+    },
+    {
+      "path": "svg/BP-19.svg",
+      "bytes": 32370,
+      "sha256": "d7650b13f5bda472cd7fad7377e97e92947d7ab67bdb209df18ca751abcfd1b4"
+    },
+    {
+      "path": "svg/BP-20.svg",
+      "bytes": 14985,
+      "sha256": "e5f32fcb7aa2a77f81acb3cca644523b78dc497c3a3a31461ce12afe05a39424"
+    },
+    {
+      "path": "validation.json",
+      "bytes": 1040,
+      "sha256": "4d6d160b2cc528b1076f9b7ca3f35013a292efe72e3ec6e6a0d1c36044f0b664"
+    }
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "status": "passed",
+  "checks": {
+    "all_16_areas_present": true,
+    "all_world_anchors_and_footprints_unchanged": true,
+    "route_graph_preserved": true,
+    "exactly_three_canal_crossings": true,
+    "fixed_crossing_positions_preserved": true,
+    "watercourse_preserved": true,
+    "unique_portal_ids": true,
+    "all_drawings_registered": true,
+    "gate_accessible_with_east_bridge_closed": true,
+    "relay_reached_via_west_mouth": true,
+    "pdf_text_within_page": true,
+    "pdf_bookmarks_21": true
+  },
+  "limits": [
+    "Route graph validation is topological; final game collision and walkable surface meshes are not delivered here.",
+    "Door dimensions and internal zoning are production-design additions, not independently approved prior canon.",
+    "Private residential rooms, exterior lands and utility branch engineering remain unassigned."
+  ],
+  "visual_review": "All 21 sheets rendered and reviewed. Corrected overlapping labels and the Garden Crossing dimension orientation; final changed sheets rechecked."
+}

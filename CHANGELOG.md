@@ -1,5 +1,12 @@
 # Changelog
 
+## 2026-10-20 - Connected Burrow blueprint atlas
+
+- Add 21 production blueprint sheets: master assembly, all 16 areas, the east precinct, three crossings, systems and growth contract.
+- Preserve World Bible v1.0.0 anchors, footprints, watercourse and route graph; record added portal dimensions and internal zoning separately.
+- Archive the PDF, individual PNG/SVG sheets, structured data, renderer, exact canon source and validation/checksums.
+- Establish the rule that every future area gets a measured blueprint and documented joins. No production build allowlist, game behavior, voices or video changed.
+
 ## 2026-10-19 - MADGER World Bible foundation archive
 
 - Archive Volume 01, Inside the Burrow, version 1.0.0: illustrated 23-page Bible, master map, structured canon data and complete editable source.
