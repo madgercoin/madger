@@ -133,7 +133,30 @@ class ForestRenderer {
     this.approvedFace=await loader.loadAsync(ASSETS+'madger-official-face.webp');
     this.approvedFace.colorSpace=T.SRGBColorSpace;this.textures.push(this.approvedFace);
     this.buildLandscape();
-    // Compile materials before countdown: expensive shader setup must not pause a run.
+    // Compile the cave roof's PBR program while still in the loading state.
+    // It is normally hidden outdoors; without prewarming, its first appearance
+    // at Deep Burrow can compile a new shader mid-run and trigger the protective
+    // 400 ms frame-stall pause. Never weaken that safety pause or game physics.
+    const vault=this.cavernVault.mesh,wasVisible=vault.visible;
+    const formations=[this.cavernVault.formations.stone,this.cavernVault.formations.quartz];
+    const oldFormationStates=formations.map(mesh=>({mesh,visible:mesh.visible,count:mesh.count}));
+    vault.visible=true;
+    for(const mesh of formations){
+      mesh.visible=true;mesh.count=1;
+      mesh.setMatrixAt(0,new T.Matrix4().makeTranslation(0,-1000,0));
+      mesh.instanceMatrix.needsUpdate=true;
+    }
+    try {
+      this.gpu.compile(this.scene,this.camera);
+      // A real hidden-frame draw uploads cave geometry and PBR maps to the GPU
+      // BEFORE gameplay begins; compile alone cannot warm texture upload.
+      this.gpu.render(this.scene,this.camera);
+    }
+    catch(error) { console.warn('MADGER_CAVERN_PREWARM_FAILED',String(error)); }
+    finally {
+      vault.visible=wasVisible;
+      for(const {mesh,visible,count} of oldFormationStates){mesh.visible=visible;mesh.count=count;}
+    }
     this.stats.assetsReady=true;
     return this;
   }
@@ -423,7 +446,10 @@ class ForestRenderer {
     this.stats.photoscannedGrasses=instancesFor('grass_medium_02');
     this.stats.terrainVertices=this.terrain.geometry.attributes.position.count;
     this.stats.cavernVaultTriangles=this.cavernVault.mesh.visible?this.cavernVault.triangles:0;
-    if(typeof window!=='undefined')window.madgerForestDiagnostics={photoscannedTrees:this.stats.photoscannedTrees,photoscannedRoots:this.stats.photoscannedRoots,photoscannedGrasses:this.stats.photoscannedGrasses,terrainVertices:this.stats.terrainVertices,drawCalls:this.stats.drawCalls,triangles:this.stats.triangles,resolutionScale:this.quality,route:this.stats.route,biome:this.stats.biome,terrainProfileLoaded:this.stats.terrainProfileLoaded,sceneryProfileLoaded:this.stats.sceneryProfileLoaded,groundedSceneryInstances:this.stats.groundedSceneryInstances,terrainMaterial:this.terrainBiome,cavernVaultTriangles:this.stats.cavernVaultTriangles,madgerRig:this.stats.madgerRig,madgerMeshCount:this.stats.madgerMeshCount};
+    this.stats.cavernFormationInstances=this.cavernVault.mesh.visible?this.cavernVault.formations.stoneCount:0;
+    this.stats.cavernMineralInstances=this.cavernVault.mesh.visible?this.cavernVault.formations.quartzCount:0;
+    this.stats.cavernFormationTriangles=this.cavernVault.mesh.visible?this.cavernVault.formations.maxTriangles:0;
+    if(typeof window!=='undefined')window.madgerForestDiagnostics={photoscannedTrees:this.stats.photoscannedTrees,photoscannedRoots:this.stats.photoscannedRoots,photoscannedGrasses:this.stats.photoscannedGrasses,terrainVertices:this.stats.terrainVertices,drawCalls:this.stats.drawCalls,triangles:this.stats.triangles,resolutionScale:this.quality,route:this.stats.route,biome:this.stats.biome,terrainProfileLoaded:this.stats.terrainProfileLoaded,sceneryProfileLoaded:this.stats.sceneryProfileLoaded,groundedSceneryInstances:this.stats.groundedSceneryInstances,terrainMaterial:this.terrainBiome,cavernVaultTriangles:this.stats.cavernVaultTriangles,cavernFormationInstances:this.stats.cavernFormationInstances,cavernMineralInstances:this.stats.cavernMineralInstances,cavernFormationTriangles:this.stats.cavernFormationTriangles,madgerRig:this.stats.madgerRig,madgerMeshCount:this.stats.madgerMeshCount};
     if(!this.logged){this.logged=true;console.info('MADGER_FOREST_RENDER',JSON.stringify(this.stats));}
   }
   dispose(){if(this.dead)return;this.dead=true;this.cavernVault?.dispose();for(const b of this.batches.values())b.mesh.dispose();for(const {mesh} of this.scanBatches){mesh.geometry.dispose();for(const value of Object.values(mesh.material))if(value?.isTexture)value.dispose();mesh.material.dispose();mesh.dispose();}for(const object of [this.terrain,this.trees,this.shafts]){object?.geometry.dispose();object?.material.dispose();}for(const g of this.geometries.values())g.dispose();for(const m of this.materials.values())m.dispose();for(const t of this.textures)t.dispose();for(const url of this.assetUrls?.values()||[])URL.revokeObjectURL(url);this.environment?.dispose();this.gpu.dispose();}

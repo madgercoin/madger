@@ -26,7 +26,7 @@ async function reachApproach(page,minimumDistance,chamber){
   const distance=/(?:Expedition )?distance (\d+)/.exec(current||'');
   if(distance)meters=Number(distance[1]);
   if(meters>=minimumDistance)return {resumes,meters};
-  await page.waitForTimeout(220);
+  await page.waitForTimeout(65);
  }
  throw new Error('Chamber approach did not reach '+minimumDistance+'m for '+chamber+
    '; last observed='+meters+'m; protective resumes='+resumes);
@@ -44,8 +44,11 @@ async function reachApproach(page,minimumDistance,chamber){
    await page.addInitScript(({profile,key})=>{if(!localStorage.getItem(key))localStorage.setItem(key,JSON.stringify(profile));},{profile,key:P.EXPEDITION_KEY});
    try{
     await page.goto(process.env.MADGER_CHAMBER_URL||('http://127.0.0.1:'+server.address().port+'/expedition'),{waitUntil:'networkidle',timeout:90000});
-    await page.getByText('Your run is safe.',{exact:true}).waitFor();await page.waitForFunction(()=>window.madgerActiveRenderer==='pbr',{timeout:60000});assert.equal(await page.evaluate(()=>window.madgerActiveRenderer),'pbr','secret rooms require the actual PBR renderer');await page.getByRole('button',{name:'Resume expedition',exact:true}).last().click();
-    const approach=await reachApproach(page,meta.d-6,meta.id);
+    await page.getByText('Your run is safe.',{exact:true}).waitFor();await page.waitForFunction(()=>window.madgerActiveRenderer==='pbr',undefined,{timeout:90000});assert.equal(await page.evaluate(()=>window.madgerActiveRenderer),'pbr','secret rooms require the actual PBR renderer');await page.getByRole('button',{name:'Resume expedition',exact:true}).last().click();
+    // Jump doors require vertical clearance at the actual hatch, so initiate
+    // nearer to the door than a longer-duration burrow; all inputs remain real.
+    const approach=await reachApproach(page,meta.d-(meta.action==='jump'?4:6),meta.id);
+    console.log('CHAMBER_ENTRY_INPUT',JSON.stringify({chamber:meta.id,action:meta.action,approach}));
     await page.keyboard.press(meta.action==='burrow'?'ArrowDown':'ArrowUp');
     for(let attempt=0;attempt<70&&!await page.getByText(meta.name,{exact:true}).isVisible();attempt++){if(await page.getByText('Your run is safe.',{exact:true}).isVisible()){await page.getByRole('button',{name:'Resume expedition',exact:true}).last().click();await page.keyboard.press(meta.action==='burrow'?'ArrowDown':'ArrowUp');}await page.waitForTimeout(150);}await page.getByText(meta.name,{exact:true}).waitFor({timeout:5000});
     await page.screenshot({path:path.join(out,meta.id+'.png')});

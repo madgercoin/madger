@@ -3,6 +3,7 @@
  * collision corridors, secrets and checkpoint serialization are unchanged.
  */
 import * as T from './vendor/build/three.module.js';
+import { CavernFormations } from './cavern-formations.mjs';
 const THREE_PI=Math.PI;
 const hash=n=>{const x=Math.sin(n*127.31+31.1)*43758.55;return x-Math.floor(x);};
 export class CavernVault {
@@ -35,6 +36,7 @@ export class CavernVault {
     this.mesh.frustumCulled=false;this.mesh.castShadow=false;
     this.mesh.receiveShadow=true;this.mesh.visible=false;
     this.scene=scene;scene.add(this.mesh);
+    this.formations=new CavernFormations(scene,stonePbr);
     this.lastTravel=-10000;this.lastRoute=null;
     this.triangles=indices.length/3;
   }
@@ -42,6 +44,7 @@ export class CavernVault {
     const cavern=['deep','mudslide','crystal-vein','ancient-vault','hollow','grotto'].includes(run.route);
     const visible=cavern&&run.mode!=='chamber'&&run.board==='overgrown';
     this.mesh.visible=visible;
+    this.formations.setVisible(visible);
     if(!visible)return;
     if(this.lastRoute===run.route&&Math.abs(travel-this.lastTravel)<1.7)return;
     this.lastRoute=run.route;this.lastTravel=travel;
@@ -77,8 +80,10 @@ export class CavernVault {
     }
     position.needsUpdate=tint.needsUpdate=uv.needsUpdate=true;
     this.mesh.geometry.computeVertexNormals();
+    this.formations.update(run,travel,offset,curve);
   }
   dispose(){
+    this.formations.dispose();
     this.scene.remove(this.mesh);
     this.mesh.geometry.dispose();this.mesh.material.dispose();
   }
