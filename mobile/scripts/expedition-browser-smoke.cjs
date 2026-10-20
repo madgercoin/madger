@@ -9,7 +9,7 @@ const digest=buffer=>crypto.createHash('sha256').update(buffer).digest('hex');
  const executablePath=process.env.CHROMIUM_PATH||(process.platform==='win32'?'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe':undefined);
  const browser=await chromium.launch({executablePath,headless:true,args:process.env.MADGER_SOFTWARE_GL==='1'?['--enable-webgl','--use-angle=swiftshader','--enable-unsafe-swiftshader']:[]});
  const context=await browser.newContext({viewport:{width:430,height:920},deviceScaleFactor:1,isMobile:true,hasTouch:true,recordVideo:process.env.MADGER_RECORD_VIDEO==='1'?{dir:path.join(out,'video'),size:{width:430,height:920}}:undefined});
- const page=await context.newPage(),errors=[],requests=[];page.on('console',m=>{if(m.type()==='error')console.error('BROWSER_CONSOLE',m.text())});page.on('pageerror',error=>errors.push(error.message));page.on('response',response=>{if(response.status()>=400&&!response.url().endsWith('favicon.ico'))requests.push({url:response.url(),status:response.status()});});
+ const page=await context.newPage(),errors=[],requests=[],frameStalls=[];page.on('console',m=>{if(m.type()==='error')console.error('BROWSER_CONSOLE',m.text());if(m.text().includes('MADGER_EXPEDITION_FRAME_STALL'))frameStalls.push(m.text());});page.on('pageerror',error=>errors.push(error.message));page.on('response',response=>{if(response.status()>=400&&!response.url().endsWith('favicon.ico'))requests.push({url:response.url(),status:response.status()});});
  await page.addInitScript(()=>{window.__mediaObservations=[];window.__mediaPlayers=new Set();const play=HTMLMediaElement.prototype.play;HTMLMediaElement.prototype.play=function(...args){window.__mediaPlayers.add(this);const record={src:this.currentSrc||this.src,status:'requested',time:performance.now()};window.__mediaObservations.push(record);const result=play.apply(this,args);Promise.resolve(result).then(()=>{record.status='playing';},error=>{record.status='error';record.error=error.name;});return result;};
   window.__glSubmissions=0;for(const prototype of [WebGLRenderingContext.prototype,WebGL2RenderingContext.prototype])for(const name of ['drawArrays','drawArraysInstanced','drawElements','drawElementsInstanced']){if(!Object.hasOwn(prototype,name))continue;const draw=prototype[name];prototype[name]=function(...args){window.__glSubmissions++;return draw.apply(this,args);};}
  });
@@ -40,7 +40,12 @@ const digest=buffer=>crypto.createHash('sha256').update(buffer).digest('hex');
   await ensureRunning();
   const activeDrawStart=await page.evaluate(()=>window.__glSubmissions);
   timing=await page.evaluate(()=>new Promise(resolve=>{const gaps=[];let start=performance.now(),last=start;const tick=t=>{gaps.push(t-last);last=t;if(t-start>=3500){const sorted=[...gaps].sort((a,b)=>a-b);resolve({frames:gaps.length,ms:t-start,mean:(t-start)/gaps.length,p95:sorted[Math.floor(sorted.length*.95)],max:sorted.at(-1),over400:gaps.filter(g=>g>400).length});}else requestAnimationFrame(tick);};requestAnimationFrame(tick);}));console.log('UNINTERRUPTED_FRAME_TIMING',JSON.stringify(timing));
+  if(timing.over400||frameStalls.length){
+    const latest=await page.evaluate(()=>window.madgerForestDiagnostics||null).catch(()=>null);
+    console.warn('APP_FRAME_STALL_DIAGNOSTICS',JSON.stringify({timing,frameStalls,latest}));
+  }
   assert.equal(timing.over400,0,'Uninterrupted rendering is stalling the run');
+  assert.equal(frameStalls.length,0,'Gameplay emitted protective frame-stall warnings');
   timing.drawSubmissions=(await page.evaluate(()=>window.__glSubmissions))-activeDrawStart;assert(timing.drawSubmissions>0,'Active run did not submit any observed 3D draws');
   await ensureRunning();await page.keyboard.press('ArrowRight');await page.keyboard.press('ArrowUp');await page.waitForTimeout(280);await snap('app-02-jump');
   await ensureRunning();await page.waitForTimeout(900);await page.keyboard.press('ArrowDown');await waitAction('burrowing');await page.waitForTimeout(220);await snap('app-03-burrow-keyboard');

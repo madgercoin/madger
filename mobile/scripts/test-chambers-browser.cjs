@@ -37,7 +37,7 @@ async function reachApproach(page,minimumDistance,chamber){
   for(const meta of G.CHAMBERS){
    if(process.env.MADGER_CHAMBER_URL&&results.length)await new Promise(resolve=>setTimeout(resolve,20000));
    const profile=P.emptyExpeditionProfile(),s=G.freshOvergrownExpedition(23,'browser-'+meta.id);
-   Object.assign(s,{mode:'paused',forkStage:2,majorPath:meta.route==='root-arch'?'rootway':meta.route==='gearworks'?'ridge':'deep',subPath:meta.route,route:meta.route,routeStart:455,routeEnd:900,distance:meta.d-9,x:meta.lane*G.LANE_WIDTH,lane:meta.lane,hp:1});
+   Object.assign(s,{mode:'paused',forkStage:2,majorPath:meta.route==='root-arch'?'rootway':meta.route==='gearworks'?'ridge':'deep',subPath:meta.route,route:meta.route,routeStart:455,routeEnd:900,distance:meta.d-(meta.action==='jump'?4.2:6.4),x:meta.lane*G.LANE_WIDTH,lane:meta.lane,hp:1});
    s.routeSide=G.SUB_FORKS[s.majorPath].find(c=>c.id===meta.route).side;profile.checkpoint=s;
    const context=await browser.newContext({viewport:{width:430,height:920},deviceScaleFactor:1,isMobile:true,hasTouch:true}),page=await context.newPage(),errors=[],warnings=[],requests=[];
    page.on('response',r=>{if(r.status()>=400)requests.push({url:r.url(),status:r.status()})});page.on('pageerror',e=>errors.push(e.stack||e.message));page.on('console',m=>{if(m.type()==='error')errors.push(m.text());if(m.type()==='warning')warnings.push(m.text())});
@@ -45,12 +45,27 @@ async function reachApproach(page,minimumDistance,chamber){
    try{
     await page.goto(process.env.MADGER_CHAMBER_URL||('http://127.0.0.1:'+server.address().port+'/expedition'),{waitUntil:'networkidle',timeout:90000});
     await page.getByText('Your run is safe.',{exact:true}).waitFor();await page.waitForFunction(()=>window.madgerActiveRenderer==='pbr',undefined,{timeout:90000});assert.equal(await page.evaluate(()=>window.madgerActiveRenderer),'pbr','secret rooms require the actual PBR renderer');await page.getByRole('button',{name:'Resume expedition',exact:true}).last().click();
-    // Jump doors require vertical clearance at the actual hatch, so initiate
-    // nearer to the door than a longer-duration burrow; all inputs remain real.
-    const approach=await reachApproach(page,meta.d-(meta.action==='jump'?4:6),meta.id);
+    // The exact saved approach is a fixture, not a gameplay-speed override.
+    // A slow software-GPU hierarchy poll previously overshot the door at
+    // 707m (704m entrance) before sending BURROW. Begin the real keyboard
+    // input immediately on Resume, leaving the full normal collision test in
+    // charge of whether we enter. Jump and burrow need different lead distance.
+    const input=meta.action==='burrow'?'ArrowDown':'ArrowUp';
+    const approach={resumes:0,meters:s.distance,doorMeters:meta.d};
     console.log('CHAMBER_ENTRY_INPUT',JSON.stringify({chamber:meta.id,action:meta.action,approach}));
-    await page.keyboard.press(meta.action==='burrow'?'ArrowDown':'ArrowUp');
-    for(let attempt=0;attempt<70&&!await page.getByText(meta.name,{exact:true}).isVisible();attempt++){if(await page.getByText('Your run is safe.',{exact:true}).isVisible()){await page.getByRole('button',{name:'Resume expedition',exact:true}).last().click();await page.keyboard.press(meta.action==='burrow'?'ArrowDown':'ArrowUp');}await page.waitForTimeout(150);}await page.getByText(meta.name,{exact:true}).waitFor({timeout:5000});
+    await page.keyboard.press(input);
+    for(let attempt=0;attempt<70&&!await page.getByText(meta.name,{exact:true}).isVisible();attempt++){
+      const current=await page.locator('[aria-label^="Expedition distance"]').first().getAttribute('aria-label').catch(()=>null);
+      const metres=Number(/distance (\d+)/.exec(current||'')?.[1]||-1);
+      if(metres>meta.d+2)throw new Error('Normal input missed '+meta.name+' hatch at '+meta.d+'m; already at '+metres+'m');
+      if(await page.getByText('Your run is safe.',{exact:true}).isVisible()){
+        if(++approach.resumes>5)throw new Error('Repeated real GPU safety pauses during '+meta.id);
+        await page.getByRole('button',{name:'Resume expedition',exact:true}).last().click();
+        await page.keyboard.press(input);
+      }
+      await page.waitForTimeout(80);
+    }
+    await page.getByText(meta.name,{exact:true}).waitFor({timeout:5000});
     await page.screenshot({path:path.join(out,meta.id+'.png')});
     const stored=()=>page.evaluate(key=>JSON.parse(localStorage.getItem(key)).checkpoint,P.EXPEDITION_KEY);
     const before=await stored();assert.equal(before.mode,'chamber');
