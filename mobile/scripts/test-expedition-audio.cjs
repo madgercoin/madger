@@ -1,0 +1,187 @@
+const test = require('node:test');
+const assert = require('node:assert/strict');
+const fs = require('node:fs');
+const path = require('node:path');
+const vm = require('node:vm');
+const ts = require('typescript');
+
+const source = fs.readFileSync(path.join(__dirname, '../src/game/expedition/audio.ts'), 'utf8');
+const compiled = ts.transpileModule(source, {
+  compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022 },
+}).outputText;
+
+// Native seek completion can arrive after pause(), a priority cue or unmount.
+// These promises deliberately stay unresolved until each test chooses an order.
+function harness({web=false}={}) {
+  const players = new Map();
+  const exports = {};
+  const audioMock = {
+    createAudioPlayer(asset) {
+      const player = {
+        volume: 0, loop: false, playing: false, playCalls: 0, pauseCalls: 0,
+        removed: false, seeks: [], throwOnPause: false,
+        seekTo(position) {
+          assert.equal(position, 0);
+          return new Promise((resolve, reject) => this.seeks.push({ resolve, reject }));
+        },
+        play() { assert.equal(this.removed, false); if(web)this.media.play();this.playing = true; this.playCalls++; },
+        pause() {
+          this.pauseCalls++;
+          if (this.throwOnPause) throw new Error('Native route unavailable');
+          this.playing = false;
+        },
+        remove() { this.removed = true; this.playing = false; },
+      };
+      if(web)player.media={play:()=>player.rejectMediaPlay?Promise.reject(new Error('HTML play interrupted')):Promise.resolve()};
+      players.set(path.basename(asset), player);
+      return player;
+    },
+    setAudioModeAsync: () => Promise.resolve(),
+  };
+  vm.runInNewContext(compiled, {
+    exports,
+    ...(web?{document:{}}:{}),
+    require(id) {
+      if (id === 'expo-audio') return audioMock;
+      if (/\.(wav|mp3)$/.test(id)) return id;
+      throw new Error('Unexpected dependency: ' + id);
+    },
+  }, { filename: 'expedition-audio.js' });
+  const audio = exports.createExpeditionAudio();
+  audio.active(true);
+  return {
+    audio, players,
+    emit: (kind, at) => audio.events([{ kind, at }], 0),
+    player: name => { const player = players.get(name); assert(player, name); return player; },
+    async complete(name, index = 0) {
+      const player = players.get(name);
+      assert(player && player.seeks[index], 'Expected pending seek for ' + name);
+      player.seeks.splice(index, 1)[0].resolve();
+      await Promise.resolve();
+      await Promise.resolve();
+    },
+    async completeAll() {
+      for (const player of players.values()) {
+        for (const seek of player.seeks.splice(0)) seek.resolve();
+      }
+      await Promise.resolve();
+      await Promise.resolve();
+    },
+  };
+}
+
+test('an allowed delayed cue plays once at its requested volume', async () => {
+  const h = harness();
+  h.emit('companion-attack', 1);
+  const snow = h.player('snow-bark.wav');
+  assert.equal(snow.playCalls, 0);
+  await h.complete('snow-bark.wav');
+  assert.equal(snow.playCalls, 1);
+  assert.equal(snow.volume, .30);
+  assert.equal(snow.playing, true);
+});
+
+test('web audio fetches only active beds and requested cues, reusing players',async()=>{
+ const h=harness({web:true});assert.equal(h.players.size,2,'only the two active audio beds preload');
+ assert(!h.players.has('snow-bark.wav'));assert(!h.players.has('finish.wav'));
+ h.emit('coin',1);assert.equal(h.players.size,3);await h.complete('pickup.wav');assert.equal(h.player('pickup.wav').playCalls,1);
+ h.emit('coin',2);assert.equal(h.players.size,3);await h.complete('pickup.wav');assert.equal(h.player('pickup.wav').playCalls,2);
+ h.audio.active(false);assert([...h.players.values()].every(p=>!p.playing));
+});
+test('a browser play promise interrupted by pause is consumed without an unhandled rejection',async()=>{
+ const h=harness({web:true});h.emit('coin',1);
+ h.player('pickup.wav').play=()=>Promise.reject(new Error('play interrupted by pause'));
+ await h.complete('pickup.wav');await new Promise(resolve=>setImmediate(resolve));
+});
+test('the pinned web player can drop its internal media promise without leaking cancellation',async()=>{
+ const h=harness({web:true});h.emit('coin',1);h.player('pickup.wav').rejectMediaPlay=true;
+ await h.complete('pickup.wav');await new Promise(resolve=>setImmediate(resolve));
+ assert.equal(h.player('pickup.wav').playCalls,1);
+});
+
+for (const guardFirst of [false, true]) {
+  test('Gorilla cancels pending Snow and Bot cues, guard resolves ' + (guardFirst ? 'first' : 'last'), async () => {
+    const h = harness();
+    h.emit('companion-attack', 1);
+    h.emit('companion-boost', 1.25);
+    h.emit('companion-guard', 1.3);
+    const names = guardFirst ? ['gorilla-guard.wav', 'snow-bark.wav', 'bot-hack.wav']
+      : ['snow-bark.wav', 'bot-hack.wav', 'gorilla-guard.wav'];
+    for (const name of names) await h.complete(name);
+    assert.equal(h.player('snow-bark.wav').playCalls, 0);
+    assert.equal(h.player('bot-hack.wav').playCalls, 0);
+    assert.equal(h.player('gorilla-guard.wav').playCalls, 1);
+  });
+}
+
+for (const [first, second, firstAsset, secondAsset, secondAt] of [
+  ['secret', 'hit', 'happy.mp3', 'hurt.mp3', 1.6],
+  ['hit', 'secret', 'hurt.mp3', 'happy.mp3', 2.7],
+]) {
+  test(secondAsset + ' excludes an unresolved ' + firstAsset + ' seek', async () => {
+    const h = harness();
+    h.emit(first, 1);
+    h.emit(second, secondAt);
+    await h.complete(secondAsset);
+    await h.complete(firstAsset);
+    assert.equal(h.player(firstAsset).playCalls, 0);
+    assert.equal(h.player(secondAsset).playCalls, 1);
+  });
+}
+
+test('a newer request for the same cue supersedes the older pending seek', async () => {
+  const h = harness();
+  h.emit('coin', 1);
+  h.emit('coin', 1.2);
+  await h.complete('pickup.wav', 1);
+  await h.complete('pickup.wav');
+  assert.equal(h.player('pickup.wav').playCalls, 1);
+});
+
+test('priority pause invalidates a pending seek even if native pause throws', async () => {
+  const h = harness();
+  h.emit('companion-attack', 1);
+  h.player('snow-bark.wav').throwOnPause = true;
+  assert.doesNotThrow(() => h.emit('companion-guard', 1.1));
+  await h.completeAll();
+  assert.equal(h.player('snow-bark.wav').playCalls, 0);
+  assert.equal(h.player('gorilla-guard.wav').playCalls, 1);
+});
+
+for (const [name, cancel] of [
+  ['stop', audio => audio.stop()],
+  ['pause and resume', audio => { audio.active(false); audio.active(true); }],
+  ['mute and unmute', audio => { audio.settings(false, true); audio.settings(true, true); }],
+  ['reset', audio => audio.reset()],
+  ['dispose', audio => audio.dispose()],
+]) {
+  test(name + ' prevents a stale seek from reviving a cue', async () => {
+    const h = harness();
+    h.emit('coin', 1);
+    cancel(h.audio);
+    await h.completeAll();
+    assert.equal(h.player('pickup.wav').playCalls, 0);
+  });
+}
+
+test('priority cancellation leaves unrelated valid sound effects available', async () => {
+  const h = harness();
+  h.emit('coin', 1);
+  h.emit('companion-attack', 1);
+  h.emit('companion-guard', 1.1);
+  await h.completeAll();
+  assert.equal(h.player('pickup.wav').playCalls, 1);
+  assert.equal(h.player('snow-bark.wav').playCalls, 0);
+  assert.equal(h.player('gorilla-guard.wav').playCalls, 1);
+});
+
+test('a cue can play again after a prior request is cancelled', async () => {
+  const h = harness();
+  h.emit('companion-attack', 1);
+  h.emit('companion-guard', 1.1);
+  h.emit('companion-attack', 2);
+  await h.complete('snow-bark.wav');
+  assert.equal(h.player('snow-bark.wav').playCalls, 0);
+  await h.complete('snow-bark.wav');
+  assert.equal(h.player('snow-bark.wav').playCalls, 1);
+});

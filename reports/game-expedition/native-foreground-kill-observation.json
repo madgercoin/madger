@@ -1,0 +1,143 @@
+{
+  "status": "killed_while_observed_running",
+  "clock": "host monotonic seconds",
+  "started": 173.827555066,
+  "max_age_seconds": 2.0,
+  "queries": [
+    {
+      "name": "timer-text",
+      "started": 173.827558171,
+      "value": "53s",
+      "finished": 174.085617794
+    },
+    {
+      "name": "pause-control-exists",
+      "started": 174.085642201,
+      "value": true,
+      "finished": 174.480599961
+    }
+  ],
+  "freshness_scope": "Before live getText through completed force-stop",
+  "pre_observation": {
+    "started": 173.189039142,
+    "queries": [
+      {
+        "name": "driver-config",
+        "started": 173.189333125,
+        "value": {
+          "actionAcknowledgmentTimeout": 500,
+          "keyInjectionDelay": 0,
+          "scrollAcknowledgmentTimeout": 200,
+          "uiAutomationFlags": 0,
+          "waitForIdleTimeout": 0,
+          "waitForSelectorTimeout": 0
+        },
+        "finished": 173.315192217
+      },
+      {
+        "name": "screenshot",
+        "role": "pre-observation reference",
+        "started": 173.315204666,
+        "file": "foreground-reference.png",
+        "bytes": 465859,
+        "finished": 173.827468997
+      }
+    ],
+    "finished": 173.827555066
+  },
+  "paused_reference": [
+    {
+      "index": "7",
+      "text": "57s",
+      "resource-id": "",
+      "class": "android.widget.TextView",
+      "package": "com.madgercoin.expedition.preview",
+      "content-desc": "",
+      "checkable": "false",
+      "checked": "false",
+      "clickable": "false",
+      "enabled": "true",
+      "focusable": "false",
+      "focused": "false",
+      "scrollable": "false",
+      "long-clickable": "false",
+      "password": "false",
+      "selected": "false",
+      "visible-to-user": "true",
+      "bounds": "[418,110][456,147]",
+      "drawing-order": "9",
+      "hint": "",
+      "display-id": "0"
+    },
+    {
+      "index": "2",
+      "text": "",
+      "resource-id": "",
+      "class": "android.widget.Button",
+      "package": "com.madgercoin.expedition.preview",
+      "content-desc": "Resume run",
+      "checkable": "false",
+      "checked": "false",
+      "clickable": "true",
+      "enabled": "true",
+      "focusable": "true",
+      "focused": "false",
+      "scrollable": "false",
+      "long-clickable": "false",
+      "password": "false",
+      "selected": "false",
+      "visible-to-user": "true",
+      "bounds": "[412,47][460,95]",
+      "drawing-order": "3",
+      "hint": "",
+      "display-id": "0"
+    },
+    {
+      "index": "19",
+      "text": "",
+      "resource-id": "",
+      "class": "android.widget.Button",
+      "package": "com.madgercoin.expedition.preview",
+      "content-desc": "Back to the run",
+      "checkable": "false",
+      "checked": "false",
+      "clickable": "true",
+      "enabled": "true",
+      "focusable": "true",
+      "focused": "false",
+      "scrollable": "false",
+      "long-clickable": "false",
+      "password": "false",
+      "selected": "false",
+      "visible-to-user": "true",
+      "bounds": "[20,790][235,842]",
+      "drawing-order": "20",
+      "hint": "",
+      "display-id": "0"
+    }
+  ],
+  "driver_config": {
+    "actionAcknowledgmentTimeout": 500,
+    "keyInjectionDelay": 0,
+    "scrollAcknowledgmentTimeout": 200,
+    "uiAutomationFlags": 0,
+    "waitForIdleTimeout": 0,
+    "waitForSelectorTimeout": 0
+  },
+  "timer_selector": {
+    "packageName": "com.madgercoin.expedition.preview",
+    "className": "android.widget.TextView",
+    "enabled": true,
+    "textMatches": "\\d+s",
+    "instance": 0
+  },
+  "live_seconds": 53,
+  "activity_selector": {
+    "packageName": "com.madgercoin.expedition.preview",
+    "description": "Pause run",
+    "enabled": true
+  },
+  "force_stop_requested": 174.480604407,
+  "force_stop_completed": 174.534742158,
+  "observation_delay_seconds": 0.7071870919999981
+}

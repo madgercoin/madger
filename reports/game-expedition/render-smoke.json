@@ -1,0 +1,15 @@
+{
+  "errors": [],
+  "stats": {
+    "instances": 559,
+    "culledInstances": 832,
+    "drawCalls": 11,
+    "indexedDrawCalls": 11,
+    "triangles": 59088,
+    "nativeDrainMs": 0,
+    "particles": 0,
+    "glError": 0
+  },
+  "date": "2026-10-19T08:24:30.069Z",
+  "browser": "155.0.8059.82"
+}

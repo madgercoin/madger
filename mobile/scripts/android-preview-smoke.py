@@ -1,5 +1,6 @@
 """Exercise the actual standalone preview APK through Android accessibility UI."""
 import json
+import os
 from pathlib import Path
 import re
 import subprocess
@@ -8,9 +9,10 @@ import xml.etree.ElementTree as ET
 import atexit
 import uiautomator2 as u2
 
-PACKAGE = 'com.madgercoin.preview'
-OUT = Path('android-smoke')
-OUT.mkdir(exist_ok=True)
+PACKAGE = os.environ.get('MADGER_ANDROID_PACKAGE') or 'com.madgercoin.preview'
+APK = os.environ.get('MADGER_ANDROID_APK') or 'android/app/build/outputs/apk/release/app-release.apk'
+OUT = Path(os.environ.get('MADGER_ANDROID_LEGACY_EVIDENCE_DIR') or 'android-smoke')
+OUT.mkdir(parents=True, exist_ok=True)
 checks = []
 last_root = None
 device = u2.connect()
@@ -50,6 +52,43 @@ def wait_for(label, seconds=30):
     raise AssertionError(f'Enabled action did not appear: {label}')
 
 
+def home_action(label, max_swipes=5, forbidden_label=None):
+    """Find a Home action with bounded swipes inside the app's scroll view."""
+    for swipe_count in range(max_swipes + 1):
+        root = hierarchy()
+        if forbidden_label is not None:
+            assert not any(
+                forbidden_label in (node.get('content-desc'), node.get('text'))
+                for node in root.iter('node')
+            ), 'Completed run was resurrected'
+        scroll_view = next((
+            node for node in root.iter('node')
+            if node.get('scrollable') == 'true' and node.get('package') == PACKAGE
+        ), None)
+        assert scroll_view is not None, 'Home scroll view is missing'
+        viewport = list(map(int, re.findall(r'-?\d+', scroll_view.get('bounds', ''))))
+        assert len(viewport) == 4, 'Home scroll view has invalid bounds'
+        left, top, right, bottom = viewport
+        assert right > left and bottom > top, 'Home scroll view is not visible'
+        for node in root.iter('node'):
+            if label not in (node.get('content-desc'), node.get('text')) or node.get('enabled') != 'true':
+                continue
+            bounds = list(map(int, re.findall(r'-?\d+', node.get('bounds', ''))))
+            if len(bounds) == 4 and (
+                left <= bounds[0] < bounds[2] <= right
+                and top <= bounds[1] < bounds[3] <= bottom
+                and node.get('visible-to-user', 'true') == 'true'
+            ):
+                return node
+        if swipe_count == max_swipes:
+            break
+        x = (left + right) // 2
+        height = bottom - top
+        device.swipe(x, top + int(height * 0.78), x, top + int(height * 0.28), duration=0.35)
+        time.sleep(0.5)
+    raise AssertionError(f'Enabled Home action not visible after {max_swipes} swipes: {label}')
+
+
 def tap(label):
     click_node(wait_for(label))
 
@@ -63,6 +102,116 @@ def cached_node(label):
     node = next((node for node in last_root.iter('node') if label in (node.get('content-desc'), node.get('text'))), None)
     assert node is not None, f'Action missing from the running screen: {label}'
     return node
+
+
+def kill_observed_foreground_run():
+    """Read only the live HUD/controls, then kill before that observation is stale."""
+    started = None
+    preparation = {'started': time.monotonic(), 'queries': []}
+    observation = {'status': 'preparing', 'clock': 'host monotonic seconds',
+                   'started': started, 'max_age_seconds': 2.0, 'queries': [],
+                   'freshness_scope': 'Before live getText through completed force-stop',
+                   'pre_observation': preparation}
+    screenshot = None
+
+    def query(name, operation):
+        sample = {'name': name, 'started': time.monotonic()}
+        observation['queries'].append(sample)
+        try:
+            sample['value'] = operation()
+        finally:
+            sample['finished'] = time.monotonic()
+        assert sample['finished'] - started <= observation['max_age_seconds'], f'Foreground observation became stale during {name}'
+        return sample['value']
+
+    def assert_visible(node):
+        bounds = list(map(int, re.findall(r'-?\d+', node.get('bounds', ''))))
+        assert node.get('enabled') == 'true' and node.get('visible-to-user', 'true') == 'true' and (
+            len(bounds) == 4 and bounds[2] > bounds[0] and bounds[3] > bounds[1]
+        ), ('Live HUD/control was not visible and enabled', node.attrib)
+
+    try:
+        # Validate the HUD identity/visibility from the existing paused tree.
+        # This HUD also renders while running; only its timer value changes.
+        reference_nodes = [node for node in last_root.iter('node') if node.get('package') == PACKAGE]
+        timers = [node for node in reference_nodes if re.fullmatch(r'\d+s', node.get('text', ''))]
+        assert len({node.get('text') for node in timers}) == 1, 'Paused HUD timer was missing or ambiguous'
+        assert all(node.get('class') == 'android.widget.TextView' for node in timers), 'Paused HUD timer class changed'
+        for node in timers:
+            assert_visible(node)
+        reference_controls = [node for node in reference_nodes if node.get('content-desc') in ('Resume run', 'Back to the run')]
+        assert {'Resume run', 'Back to the run'} <= {node.get('content-desc') for node in reference_controls}, 'Paused HUD reference was missing controls'
+        for node in reference_controls:
+            assert_visible(node)
+        observation['paused_reference'] = [node.attrib for node in timers + reference_controls]
+        # Read back the zero-idle/selector waits set at connection time. The
+        # driver must not wait for this continuously animated game to go idle.
+        configuration = {'name': 'driver-config', 'started': time.monotonic()}
+        preparation['queries'].append(configuration)
+        try:
+            configuration['value'] = device.jsonrpc.getConfigurator()
+        finally:
+            configuration['finished'] = time.monotonic()
+        observation['driver_config'] = configuration['value']
+        assert all(observation['driver_config'].get(key) == 0 for key in ('waitForIdleTimeout', 'waitForSelectorTimeout')), 'Live-query driver waits were not disabled'
+
+        # This raw image is a pre-observation visual reference, outside the
+        # fresh live-HUD window. It does not establish the later kill state.
+        visual = {'name': 'screenshot', 'role': 'pre-observation reference',
+                  'started': time.monotonic(), 'file': 'foreground-reference.png'}
+        preparation['queries'].append(visual)
+        try:
+            screenshot = adb('exec-out', 'screencap', '-p')
+            visual['bytes'] = len(screenshot)
+        finally:
+            visual['finished'] = time.monotonic()
+        assert screenshot.startswith(b'\x89PNG\r\n\x1a\n'), 'Foreground reference screenshot was not a PNG'
+
+        # Scalar getText/exist avoid full hierarchy scans, count/absence
+        # searches, and .info's repeated accessibility property refreshes.
+        # instance=0 selects the UiSelector getText path, avoiding this
+        # backend's two UiObject2 lookups for a single timer value.
+        timer_selector = {'packageName': PACKAGE, 'className': 'android.widget.TextView',
+                          'enabled': True, 'textMatches': r'\d+s', 'instance': 0}
+        observation['timer_selector'] = timer_selector
+        timer_object = device(**timer_selector)
+        # One continuous clock covers both fresh observations and the entire
+        # force-stop. Preparation above cannot age a timer not yet sampled.
+        started = time.monotonic()
+        preparation['finished'] = started
+        observation['started'] = started
+        observation['status'] = 'sampling'
+        timer = query('timer-text', lambda: device.jsonrpc.getText(timer_object.selector))
+        assert isinstance(timer, str) and re.fullmatch(r'\d+s', timer), ('Invalid live HUD timer', timer)
+        live = int(timer[:-1])
+        assert 0 < live <= 60, ('Foreground run timer expired or invalid', live)
+        observation['live_seconds'] = live
+
+        # Pause run exists only in the active route. The same top-bar control
+        # becomes Resume run when paused and disappears when the run ends.
+        pause_selector = {'packageName': PACKAGE, 'description': 'Pause run', 'enabled': True}
+        observation['activity_selector'] = pause_selector
+        active = query('pause-control-exists', lambda: device(**pause_selector).exists(timeout=0))
+        assert active is True, 'Foreground run was paused, ended, or not visible'
+        observation['force_stop_requested'] = time.monotonic()
+        assert observation['force_stop_requested'] - started <= observation['max_age_seconds'], 'Foreground observation was stale before process kill'
+        adb('shell', 'am', 'force-stop', PACKAGE)
+        observation['force_stop_completed'] = time.monotonic()
+        delay = observation['force_stop_completed'] - started
+        observation['observation_delay_seconds'] = delay
+        assert delay <= observation['max_age_seconds'], 'Foreground observation was stale when process kill completed'
+        observation['status'] = 'killed_while_observed_running'
+        return live, delay
+    except Exception as error:
+        observation['status'] = 'failed'
+        observation['error'] = str(error)
+        raise
+    finally:
+        if 'finished' not in preparation:
+            preparation['finished'] = time.monotonic()
+        if screenshot is not None:
+            OUT.joinpath('foreground-reference.png').write_bytes(screenshot)
+        OUT.joinpath('foreground-kill-observation.json').write_text(json.dumps(observation, indent=2))
 
 
 def capture(name):
@@ -93,13 +242,16 @@ def collect_debug():
 atexit.register(collect_debug)
 
 
-adb('install', '-r', 'android/app/build/outputs/apk/release/app-release.apk')
+adb('install', '-r', APK)
+# The Expedition suite leaves this package on its paused game route. Start a
+# fresh activity/task while preserving both games' stored checkpoints and scores.
+adb('shell', 'am', 'force-stop', PACKAGE)
 adb('logcat', '-c')
 adb('shell', 'am', 'start', '-W', '-n', PACKAGE + '/.MainActivity')
-wait_for('Play Burrow Run')
+wait_for('Play the 3D Expedition')
 capture('01-home')
 passed('Standalone APK launches and renders the Home entry')
-tap('Play Burrow Run')
+click_node(home_action('Play Burrow Run'))
 wait_for('Let’s dig')
 capture('02-lobby')
 passed('Game lobby loads with an enabled start action')
@@ -143,20 +295,14 @@ paused_seconds = {int(node.get('text')[:-1]) for node in last_root.iter('node') 
 assert len(paused_seconds) == 1, paused_seconds
 tap('Back to the run')
 time.sleep(3.2)
-scan_started = time.monotonic()
-root = hierarchy()
-assert any(node.get('content-desc') == 'Pause run' for node in root.iter('node')), 'Foreground run was not active'
-assert not any(node.get('content-desc') == 'Back to the run' for node in root.iter('node')), 'Foreground run had paused'
-live_seconds = {int(node.get('text')[:-1]) for node in root.iter('node') if re.fullmatch(r'\d+s', node.get('text', ''))}
-assert len(live_seconds) == 1, live_seconds
-adb('shell', 'am', 'force-stop', PACKAGE)
-observation_delay = time.monotonic() - scan_started
+live, observation_delay = kill_observed_foreground_run()
 adb('shell', 'am', 'start', '-W', '-n', PACKAGE + '/.MainActivity')
-tap('Continue interrupted run')
+wait_for('Play the 3D Expedition')
+click_node(home_action('Continue interrupted run'))
 wait_for('Back to the run')
 recovered_seconds = {int(node.get('text')[:-1]) for node in last_root.iter('node') if re.fullmatch(r'\d+s', node.get('text', ''))}
 assert len(recovered_seconds) == 1, recovered_seconds
-live, recovered, earlier_pause = next(iter(live_seconds)), next(iter(recovered_seconds)), next(iter(paused_seconds))
+recovered, earlier_pause = next(iter(recovered_seconds)), next(iter(paused_seconds))
 # One-second checkpoint cadence plus integer HUD rounding permits at most two
 # displayed seconds of rollback. Scanning/force-stop can consume foreground time.
 assert live - int(observation_delay + 1) <= recovered <= live + 2, (live, recovered, observation_delay)
@@ -174,7 +320,8 @@ for attempt in range(2):
     assert before_score, 'Paused score not found'
     adb('shell', 'am', 'force-stop', PACKAGE)
     adb('shell', 'am', 'start', '-W', '-n', PACKAGE + '/.MainActivity')
-    tap('Continue interrupted run')
+    wait_for('Play the 3D Expedition')
+    click_node(home_action('Continue interrupted run'))
     wait_for('Back to the run')
     wait_for('MADGER in the center lane')
     after = {node.get('text') for node in last_root.iter('node') if re.fullmatch(r'\d+s', node.get('text', ''))}
@@ -201,7 +348,8 @@ capture('07-high-scores')
 passed('The native high-score table displays the banked daily score')
 adb('shell', 'am', 'force-stop', PACKAGE)
 adb('shell', 'am', 'start', '-W', '-n', PACKAGE + '/.MainActivity')
-wait_for('Play Burrow Run')
+wait_for('Play the 3D Expedition')
+home_action('Play Burrow Run', forbidden_label='Continue interrupted run')
 assert not any(node.get('content-desc') == 'Continue interrupted run' for node in last_root.iter('node')), 'Completed run was resurrected'
 tap('Scores')
 wait_for('Your scores')
@@ -213,6 +361,6 @@ passed('The high score survives a full native app process restart')
 assert adb('shell', 'pidof', PACKAGE).strip(), 'App process stopped'
 logs = adb('logcat', '-d').decode(errors='replace')
 OUT.joinpath('logcat.txt').write_text(logs)
-assert not re.search(r'FATAL EXCEPTION|ANR in com\.madgercoin\.preview|ReactNativeJS.*(?:TypeError|ReferenceError|Invariant Violation)', logs), 'Native runtime failure; inspect logcat.txt'
+assert not re.search(rf'FATAL EXCEPTION|ANR in {re.escape(PACKAGE)}|ReactNativeJS.*(?:TypeError|ReferenceError|Invariant Violation)', logs), 'Native runtime failure; inspect logcat.txt'
 passed('App stays running with no fatal native or JavaScript errors')
 OUT.joinpath('report.json').write_text(json.dumps({'checks': checks, 'package': PACKAGE}, indent=2))

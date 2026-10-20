@@ -24,3 +24,8 @@
 /mobile/mode-smoke
 /mobile/completion-smoke
 /mobile/scripts/__pycache__
+
+mobile/.qa-tools/
+mobile/expedition-evidence/
+mobile/dist-expedition/
+mobile/assets/audio/expedition/*-source.mp3

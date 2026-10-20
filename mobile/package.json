@@ -1,7 +1,7 @@
 {
   "name": "madger-mobile",
   "main": "expo-router/entry",
-  "version": "1.4.0",
+  "version": "1.5.0",
   "packageManager": "npm@10.9.9",
   "dependencies": {
     "@expo/ui": "~57.0.25",
@@ -14,6 +14,7 @@
     "expo-constants": "~57.0.22",
     "expo-device": "~57.0.2",
     "expo-font": "~57.0.1",
+    "expo-gl": "~57.0.2",
     "expo-glass-effect": "~57.0.4",
     "expo-haptics": "~57.0.3",
     "expo-image": "~57.0.5",
@@ -40,7 +41,8 @@
     "@types/react": "~19.2.2",
     "eslint": "^9.0.0",
     "eslint-config-expo": "~57.0.2",
-    "typescript": "~6.0.3"
+    "typescript": "~6.0.3",
+    "playwright": "1.64.1"
   },
   "overrides": {
     "uuid": "11.1.1"
@@ -54,14 +56,17 @@
     "web": "expo start --web",
     "lint": "expo lint",
     "typecheck": "tsc --noEmit",
-    "validate": "npm run test:game && npm run test:daily-dig && npm run test:profile && npm run test:dependencies && npm run typecheck && npm run lint",
+    "validate": "npm run test:game && npm run test:daily-dig && npm run test:profile && npm run test:dependencies && npm run test:expedition && npm run test:companions && npm run test:expedition-audio && npm run typecheck && npm run lint",
     "test:dependencies": "node --test scripts/test-uri-decoder.mjs",
     "test:game": "node --test scripts/test-burrow-run.mjs",
     "test:daily-dig": "node --test scripts/test-daily-dig.mjs",
     "release:metadata": "node scripts/release-readiness.mjs",
     "release:check": "npm run validate && npx expo install --check && npx expo export --platform web && npm run release:metadata",
     "release:distribution": "npm run release:check && node scripts/release-readiness.mjs --distribution",
-    "test:profile": "node --test scripts/test-game-profile.mjs scripts/test-run-mode.mjs"
+    "test:profile": "node --test scripts/test-game-profile.mjs scripts/test-run-mode.mjs",
+    "test:expedition": "node --test scripts/test-expedition.cjs scripts/test-expedition-render.cjs scripts/test-expedition-render-memory.cjs scripts/test-expedition-culling.cjs scripts/test-expedition-indices.cjs scripts/test-overgrown.cjs scripts/test-overgrown-asset-pack.cjs scripts/test-forest-quality.cjs",
+    "test:companions": "node --test scripts/test-companions.cjs",
+    "test:expedition-audio": "node --test scripts/test-expedition-audio.cjs"
   },
   "private": true
 }

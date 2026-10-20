@@ -18,6 +18,7 @@ export default function HomeScreen() {
   return <Screen>
     <GameHeader title="Keep digging" subtitle="Small badger. Your next big run." />
     <SaveStatus />
+    <Card><View style={gameStyles.row}><MaterialCommunityIcons name="compass-rose" size={30} color={COLORS.gold} /><View style={{flex:1}}><Text style={gameStyles.eyebrow}>NEW / FULL 3D EXPEDITION</Text><Text style={gameStyles.section}>A world worth discovering.</Text></View></View><Text style={gameStyles.body}>Run, jump and slide through living forests, forgotten machinery and crystal caverns. Find hidden shortcuts, choose upgrades and bank valuable discoveries.</Text><ActionButton label="Play the 3D Expedition" icon="play" onPress={() => router.push("/expedition")} /><Text style={gameStyles.body}>Snow White attacks. Gorilla White guards. MADGER Bot powers you up. Recruit the crew, uncover secrets and bring the treasure home.</Text></Card>
     {profile.checkpoint ? <Card><Text style={gameStyles.section}>Your tunnel is waiting.</Text><Text style={gameStyles.body}>Continue your interrupted {profile.checkpoint.mode === "daily" ? `Daily run (${profile.checkpoint.day})` : "Classic run"}. It stays paused until you resume.</Text><ActionButton label="Continue interrupted run" icon="play" onPress={() => router.push("/play")} /></Card> : null}
     <View style={styles.hero}>
       <Image accessible={false} source={require("../../../assets/images/burrow-tunnel.png")} contentFit="cover" style={StyleSheet.absoluteFill} />

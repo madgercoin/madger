@@ -1,5 +1,50 @@
 # Changelog
 
+## 2026-10-19 - Verified Expedition Android preview
+
+- Completed the signed MADGER Expedition 1.5.0 build 14 APK from app source a69220e80d8132b2e4dbe29d724f80c7dc01289f. Signature, SHA-256, package, version and permission inspection passed.
+- Exact-APK QA run 39229821033 passed all seven Expedition checks, including BURROW, and all eleven legacy Burrow Run checks. The successful run contains no scoped crash or frame-stall findings.
+- Source validation passed 130 tests; all 27 renderer pixel comparisons and 12 exported-browser checks passed. Detailed evidence and test scope are recorded in reports/game-expedition/README.md.
+- Removed a duplicate native timer lookup in the recovery harness while preserving the two-second freshness and saved-progress gates. The complete live observation and force-stop took 0.707 seconds.
+- Preserved the earlier same-APK emulator failure (440 ms protective pause at 8 metres) in the evidence history. The accepted short run does not establish sustained physical-phone performance or rule out intermittent software-emulator stalls.
+
+## 2026-10-19 - Down makes MADGER burrow
+
+- Replaced the player-facing slide action with BURROW on the Down and S keys, downward swipe, and touch button. MADGER dives beneath the surface, leaves a moving dirt trail, and emerges smoothly.
+- Preserved action timing, cooldown, airborne fast descent, hazard rules, hidden routes, and version-one saved-run compatibility. Finished runs surface MADGER even when they end mid-burrow.
+- Fixed quick web game-button taps by using completed press events on web while retaining immediate native press-in controls.
+- Added grounded/airborne input, cooldown, hazard, saved-run, animation-depth and finished-emergence checks. Browser and Android smoke checks now require the BURROW control and burrowing response.
+
+## 2026-10-19 - Shared Expedition mesh vertices
+
+- Added indexed instanced drawing to reuse shared position and normal records, reducing repeated vertex processing while preserving every triangle, shader, and material.
+- Kept the animated tail's indices stable across poses and retained the existing array-based draw paths for contexts without indexed instancing.
+- Added exact byte-stream reconstruction, tail-pose, native/ANGLE/fallback, disposal, and native-drain coverage. The native frame diagnostics report indexed draw counts.
+- Build 13's exact-APK runs still found native stalls despite camera culling. Build 14's later acceptance and remaining emulator limitations are recorded above.
+
+## 2026-10-19 - Conservative camera visibility
+
+- Excluded only complete primitive bounds outside the camera clipping volume, reducing native GPU work while preserving visible geometry, shaders, materials and animations.
+- Kept animated bounds current, retained source instance ordering, and preserved native frame synchronization and the existing long-frame safety pause.
+- Added geometric corner-oracle coverage and a pixel-by-pixel WebGL comparison across all worlds, secret routes, companion states and three viewport sizes.
+- Run the Expedition and legacy Burrow native checks independently within one verified-APK suite, retaining both results and failing if either check fails.
+
+## 2026-10-19 - Native Expedition frame submission
+
+- Bound pending native GL work to one rendered frame so the HUD cannot outrun a growing presentation backlog.
+- Stopped unchanged paused scenes from redrawing, bounded animated material caching, reused tail geometry buffers, and indexed immutable course features to reduce rendering work without changing their appearance.
+- Corrected the camera when a saved hidden-route run loads after the lobby has already drawn.
+- Added renderer queue and batching regression coverage, plus limited native drain timing diagnostics. Native APK validation is still required; this entry does not claim device acceptance.
+
+## 2026-10-18 — 3D Expedition and animated companion support
+
+- Added the existing Expedition upgrade to the app: three 3D environments, natural character movement and reactions, moving hazards, hidden routes, workshop upgrades, vaults, extra lives, audio, and persistent discoveries.
+- Added Snow White attack support, Gorilla White defensive saves, and MADGER Bot electronic boosts, with entrances, exits, timed support, status displays, effects, and saved companion state.
+- Removed obsolete oversized-fang geometry, made Bot's face mechanical, and corrected Gorilla White's rear-foot swing.
+- Prevented companions from reserving the same unresolved target and prevented delayed audio seeks from restarting interrupted cues.
+- Hardened mobile shader precision and expanded gameplay, companion, and asynchronous audio regression coverage. Android build evidence and distribution status are recorded separately; this entry does not imply Google Play publication.
+- Documented behavior and validation in `docs/game-expedition.md`.
+
 ## 2026-10-15 — Signals discovery and visual reading trails
 
 - Added the image-led Signal Finder with purpose filters for proof, safer crypto, community utility, investor diligence, and brand/culture, plus full-archive search and an unread-only view.

@@ -1,0 +1,16 @@
+{
+  "checks": [
+    "Standalone APK launches and renders the Home entry",
+    "Game lobby loads with an enabled start action",
+    "Both native steering buttons change the runner lane",
+    "Pause and resume work in the standalone app",
+    "Backgrounding automatically pauses the native run",
+    "Foreground process kill recovers a periodic checkpoint with at most two HUD seconds of rollback",
+    "Unfinished native run survives repeated process restarts, frozen with its lane and timer",
+    "Ending the run banks the score in native storage",
+    "The native high-score table displays the banked daily score",
+    "The high score survives a full native app process restart",
+    "App stays running with no fatal native or JavaScript errors"
+  ],
+  "package": "com.madgercoin.expedition.preview"
+}

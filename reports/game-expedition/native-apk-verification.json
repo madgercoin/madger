@@ -1,0 +1,18 @@
+{
+  "status": "passed",
+  "sha256": "081f4eb7d9e92d010f683796f48cb3f3ccf2bd252d47076679c936ab28e59bf9",
+  "easBuildId": "00d385dd-5d9c-477b-bc6d-031ac469be97",
+  "apkBytes": 121149692,
+  "package": "com.madgercoin.expedition.preview",
+  "version": "1.5.0",
+  "buildNumber": 14,
+  "signatureVerified": true,
+  "permissions": [
+    "android.permission.ACCESS_NETWORK_STATE",
+    "android.permission.INTERNET",
+    "android.permission.MODIFY_AUDIO_SETTINGS",
+    "android.permission.VIBRATE",
+    "android.permission.WAKE_LOCK",
+    "com.madgercoin.expedition.preview.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
+  ]
+}
