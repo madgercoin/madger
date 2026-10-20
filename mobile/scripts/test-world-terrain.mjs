@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-import { terrainHeight, terrainProfile, terrainBiome } from '../public/blackroot/terrain.mjs';
+import { terrainHeight, terrainProfile, terrainBiome, terrainSurfaceHeight, sceneryProfile } from '../public/blackroot/terrain.mjs';
 
 const presets = JSON.parse(readFileSync(new URL('../public/blackroot/world-presets.json', import.meta.url), 'utf8'));
 const routes = Object.keys(presets.routes);
@@ -48,4 +48,55 @@ test('malformed or unavailable visual presets cannot break the route surface', (
   assert.equal(terrainHeight(sanitized,2.15,33,0),-.33,'Playable running lanes remain flat');
   const shoulder=terrainHeight(sanitized,5,33,0);
   assert(Number.isFinite(shoulder)&&shoulder>=-.33&&shoulder<=5,'Malformed relief is bounded');
+});
+
+test('all fifteen boards have unique bounded, repeatable scenery direction', () => {
+  assert.deepEqual(Object.keys(presets.sceneryProfiles).sort(), [...routes].sort());
+  const placements = new Set();
+  for (const route of routes) {
+    const visual = sceneryProfile(presets, route);
+    assert.deepEqual(visual, sceneryProfile(presets, route), route + ' changed between evaluations');
+    assert(Number.isSafeInteger(visual.seed) && visual.seed >= 0, route);
+    assert(visual.understory >= .15 && visual.understory <= 1.4, route);
+    assert(visual.rootScale >= .2 && visual.rootScale <= 1.6, route);
+    assert(visual.treeScale >= 0 && visual.treeScale <= 1.4, route);
+    if (terrainBiome(presets, route) === 'cavern') assert.equal(visual.treeScale, 0, route);
+    placements.add(visual.seed);
+  }
+  assert.equal(placements.size, routes.length, 'Distinct paths must not repeat the same planting layout');
+  assert(sceneryProfile(presets, 'mosswalk').understory > sceneryProfile(presets, 'gearworks').understory);
+  assert(sceneryProfile(presets, 'root-arch').rootScale > sceneryProfile(presets, 'causeway').rootScale);
+});
+
+test('rendered terrain and anchored scenery agree without changing the three safe lanes', () => {
+  for (const route of routes) for (const centre of [-8.5, 0, 8.5]) {
+    const profile = terrainProfile(presets, route);
+    for (const distance of [0, 19.4, 140, 455, 680, 1080]) {
+      for (const lane of [-2.15, 0, 2.15]) {
+        assert.equal(terrainSurfaceHeight(profile, centre + lane, distance, centre), -.33, route);
+        assert.equal(terrainSurfaceHeight(profile, centre + lane, distance, centre, true), -2.4, route);
+      }
+      for (const offset of [-13, -7, -4.5, 4.5, 7, 13]) {
+        const x = centre + offset;
+        const elevation = terrainSurfaceHeight(profile, x, distance, centre);
+        assert(Number.isFinite(elevation) && elevation >= -.33 && elevation <= 5, route);
+        const shoulder = Math.max(0, Math.min(1, (Math.abs(offset) - 3.5) / 3.8));
+        const eased = shoulder * shoulder * (3 - 2 * shoulder);
+        const expectedSurface = Math.max(-.33, Math.min(5,
+          terrainHeight(profile, x, distance, centre)
+          + eased * (Math.sin(distance * .31 + x * .37) * .16
+            + Math.sin(distance * .67 - x * .21) * .08)));
+        assert(Math.abs(elevation - expectedSurface) < 1e-10, route + ' anchor detached from terrain');
+      }
+    }
+  }
+});
+
+test('bad scenery configuration cannot produce nonfinite transforms', () => {
+  const fallback = sceneryProfile(null, 'main');
+  assert.deepEqual(fallback, { seed: 0, treeScale: 1, understory: 1, rootScale: 1 });
+  const invalid = sceneryProfile({ sceneryProfiles: { main: {
+    seed: Infinity, treeScale: -999, understory: NaN, rootScale: 9e20
+  } } }, 'missing-route');
+  assert.deepEqual(invalid, { seed: 0, treeScale: 0, understory: 1, rootScale: 1.6 });
 });
