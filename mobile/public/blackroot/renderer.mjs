@@ -8,12 +8,14 @@ import { legacyCharacters } from './characters.mjs?v=chambers-20261019-2';
 import { mergeGeometries } from './vendor/examples/jsm/utils/BufferGeometryUtils.js';
 import { adjustedSceneScale } from './quality.mjs';
 import { terrainBiome, terrainProfile, terrainHeight } from './terrain.mjs';
+import { MadgerHero } from './madger-hero.mjs';
+import { CavernVault } from './cavern-vault.mjs';
 
 const ASSETS = '/blackroot/assets/';
 async function loadForestPack(){
  let response;
  for(let attempt=0;attempt<3;attempt++){
-  response=await fetch('/blackroot/forest.pack?v=biomes-scans-20261020-1');
+  response=await fetch('/blackroot/forest.pack?v=madger-hero-cavern-20261020-1');
   if(response.ok)break;
   if(![429,502,503,504].includes(response.status)||attempt===2)throw Error('Forest asset download: '+response.status);
   await new Promise(resolve=>setTimeout(resolve,Math.min(5000,Number(response.headers.get('Retry-After'))*1000||1000*(attempt+1))));
@@ -21,7 +23,7 @@ async function loadForestPack(){
  const buffer=await response.arrayBuffer(),header=new DataView(buffer).getUint32(0,true);
  if(header>1000000||header+4>buffer.byteLength)throw Error('Forest asset index is invalid');
  const entries=JSON.parse(new TextDecoder().decode(new Uint8Array(buffer,4,header))),urls=new Map();
- const types={jpg:'image/jpeg',png:'image/png',gltf:'model/gltf+json',glb:'model/gltf-binary',bin:'application/octet-stream',hdr:'application/octet-stream'};
+ const types={jpg:'image/jpeg',jpeg:'image/jpeg',png:'image/png',webp:'image/webp',gltf:'model/gltf+json',glb:'model/gltf-binary',bin:'application/octet-stream',hdr:'application/octet-stream'};
  for(const entry of entries){
   if(typeof entry.path!=='string'||entry.path.includes('..')||entry.offset<0||entry.length<0||4+header+entry.offset+entry.length>buffer.byteLength)throw Error('Forest asset entry is invalid');
   const blob=new Blob([new Uint8Array(buffer,4+header+entry.offset,entry.length)],{type:types[entry.path.split('.').pop()]||'application/octet-stream'});
@@ -78,7 +80,7 @@ class ForestRenderer {
     this.run=null;this.dead=false;this.textures=[];this.quality=1;this.frameSamples=[];this.stableFrames=0;this.renderedFrames=0;
   }
   async init() {
-    const worldRequest=fetch('/blackroot/world-presets.json?v=biomes-scans-20261020-1',{cache:'force-cache'}).then(async response=>{
+    const worldRequest=fetch('/blackroot/world-presets.json?v=madger-hero-cavern-20261020-1',{cache:'force-cache'}).then(async response=>{
       if(!response.ok)throw Error('World presets: HTTP '+response.status);
       const presets=await response.json();
       if(presets?.schemaVersion!==1||!presets.routes||!presets.terrainProfiles)throw Error('Invalid world presets');
@@ -126,6 +128,10 @@ class ForestRenderer {
         this.scene.add(mesh);this.scanBatches.push({id,mesh});
       });
     }
+    // Project unchanged, approved MADGER facial pixels onto the 3D head.
+    // The original mascot image is included in the same prepacked asset request.
+    this.approvedFace=await loader.loadAsync(ASSETS+'madger-official-face.webp');
+    this.approvedFace.colorSpace=T.SRGBColorSpace;this.textures.push(this.approvedFace);
     this.buildLandscape();
     // Compile materials before countdown: expensive shader setup must not pause a run.
     this.stats.assetsReady=true;
@@ -149,6 +155,7 @@ class ForestRenderer {
     this.trees.castShadow=true;this.trees.receiveShadow=true;this.trees.frustumCulled=false;this.scene.add(this.trees);
     const shaftMaterial=new T.MeshBasicMaterial({color:'#ffdda1',transparent:true,opacity:.035,depthWrite:false,side:T.DoubleSide,blending:T.AdditiveBlending});
     this.shafts=new T.InstancedMesh(new T.ConeGeometry(1,13,12,1,true),shaftMaterial,4);this.shafts.frustumCulled=false;this.scene.add(this.shafts);
+    this.cavernVault=new CavernVault(this.scene,this.stone);
   }
   category(shape,c) {
     if(shape==='halo'||shape==='shadow')return shape;
@@ -261,6 +268,7 @@ class ForestRenderer {
     }
     this.stats.terrainMaterial=this.terrainBiome;
     this.terrain.visible=s.mode!=='chamber';
+    this.cavernVault.update(s,travel,road,curve);
     if(s.mode==='chamber'){
       for(const {mesh} of this.scanBatches)mesh.count=0;this.trees.count=0;this.shafts.count=0;
       const x=s.x+road(s,travel),accent=s.chamber==='guardian-nest'?'#ffd8a0':s.chamber==='moonwell'?'#b8a7ff':'#79d9e6';
@@ -403,18 +411,40 @@ class ForestRenderer {
     this.stats.photoscannedRoots=instancesFor('root_cluster_01');
     this.stats.photoscannedGrasses=instancesFor('grass_medium_02');
     this.stats.terrainVertices=this.terrain.geometry.attributes.position.count;
-    if(typeof window!=='undefined')window.madgerForestDiagnostics={photoscannedTrees:this.stats.photoscannedTrees,photoscannedRoots:this.stats.photoscannedRoots,photoscannedGrasses:this.stats.photoscannedGrasses,terrainVertices:this.stats.terrainVertices,drawCalls:this.stats.drawCalls,triangles:this.stats.triangles,resolutionScale:this.quality,route:this.stats.route,biome:this.stats.biome,terrainProfileLoaded:this.stats.terrainProfileLoaded,terrainMaterial:this.terrainBiome};
+    this.stats.cavernVaultTriangles=this.cavernVault.mesh.visible?this.cavernVault.triangles:0;
+    if(typeof window!=='undefined')window.madgerForestDiagnostics={photoscannedTrees:this.stats.photoscannedTrees,photoscannedRoots:this.stats.photoscannedRoots,photoscannedGrasses:this.stats.photoscannedGrasses,terrainVertices:this.stats.terrainVertices,drawCalls:this.stats.drawCalls,triangles:this.stats.triangles,resolutionScale:this.quality,route:this.stats.route,biome:this.stats.biome,terrainProfileLoaded:this.stats.terrainProfileLoaded,terrainMaterial:this.terrainBiome,cavernVaultTriangles:this.stats.cavernVaultTriangles,madgerRig:this.stats.madgerRig,madgerMeshCount:this.stats.madgerMeshCount};
     if(!this.logged){this.logged=true;console.info('MADGER_FOREST_RENDER',JSON.stringify(this.stats));}
   }
-  dispose(){if(this.dead)return;this.dead=true;for(const b of this.batches.values())b.mesh.dispose();for(const {mesh} of this.scanBatches){mesh.geometry.dispose();for(const value of Object.values(mesh.material))if(value?.isTexture)value.dispose();mesh.material.dispose();mesh.dispose();}for(const object of [this.terrain,this.trees,this.shafts]){object?.geometry.dispose();object?.material.dispose();}for(const g of this.geometries.values())g.dispose();for(const m of this.materials.values())m.dispose();for(const t of this.textures)t.dispose();for(const url of this.assetUrls?.values()||[])URL.revokeObjectURL(url);this.environment?.dispose();this.gpu.dispose();}
+  dispose(){if(this.dead)return;this.dead=true;this.cavernVault?.dispose();for(const b of this.batches.values())b.mesh.dispose();for(const {mesh} of this.scanBatches){mesh.geometry.dispose();for(const value of Object.values(mesh.material))if(value?.isTexture)value.dispose();mesh.material.dispose();mesh.dispose();}for(const object of [this.terrain,this.trees,this.shafts]){object?.geometry.dispose();object?.material.dispose();}for(const g of this.geometries.values())g.dispose();for(const m of this.materials.values())m.dispose();for(const t of this.textures)t.dispose();for(const url of this.assetUrls?.values()||[])URL.revokeObjectURL(url);this.environment?.dispose();this.gpu.dispose();}
 }
 bridge=legacyCharacters(ForestRenderer);
 window.madgerOvergrownScene=async gl=> {
   const scene=new bridge.Scene(gl);
   try{await scene.renderer.init();}catch(e){scene.dispose();throw e;}
+  // The original renderer had only primitive spheres for the playable badger.
+  // Replace ONLY the visible Overgrown hero, not deterministic movement,
+  // companion logic, saved records, UI controls or legacy fallback gameplay.
+  const hero=new MadgerHero(scene.renderer.scene,road,scene.renderer.approvedFace);
+  const previousMadger=scene.madger.bind(scene);
+  scene.madger=(s,time,calm)=>{
+    if(s?.board!=='overgrown')return previousMadger(s,time,calm);
+    hero.update(s,time,calm);
+    if(s.slide>0&&typeof scene.burrowTrail==='function')
+      scene.burrowTrail(s,Math.min(1,(s.slide||0)/.83),calm);
+    if(s.shields>0)scene.shape('ring',[.26,.83,.75,.35],s.x+road(s,s.distance),
+      Math.sin(s.distance/34)*.12+s.y+1.18,0,.90,1,.90,Math.PI/2,time*.8,0);
+    if(s.magnet>0)scene.shape('ring',[.55,.42,.91,.28],s.x+road(s,s.distance),
+      Math.sin(s.distance/34)*.12+.11,0,1.15,1,1.15,0,time*.35,0);
+    scene.renderer.stats.madgerRig='authored-3d';
+    scene.renderer.stats.madgerMeshCount=hero.meshCount;
+    scene.renderer.stats.madgerTriangles=Math.round(hero.triangles);
+    if(typeof window!=='undefined')window.madgerHeroDiagnostics=hero.lastPose;
+  };
   const draw=scene.draw.bind(scene);
   scene.draw=(s,time,calm)=>{scene.renderer.run=s;draw(s,time,calm);};
   const setCourse=scene.setCourse.bind(scene);
   scene.setCourse=course=>{scene.renderer.course=course.filter(i=>i.kind==='gap');setCourse(course);};
+  const previousDispose=scene.dispose.bind(scene);
+  scene.dispose=()=>{hero.dispose();previousDispose();};
   return scene;
 };

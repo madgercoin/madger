@@ -32,9 +32,13 @@ fs.mkdirSync(out,{recursive:true});
   assert(forest?.photoscannedRoots>0,'shipped photoscanned root geometry missing');
   assert(forest?.photoscannedGrasses>0,'shipped 3D ground-cover grass missing');
   assert(forest?.terrainVertices>4000,'authored terrain geometry missing');
+  assert.equal(forest?.madgerRig,'authored-3d','Hosted game still uses generic sphere character');
+  assert(forest?.madgerMeshCount>=80,'Custom 3D character geometry was not loaded');
+  const hero=await page.evaluate(()=>window.madgerHeroDiagnostics);
+  assert(hero?.approvedFace&&hero?.rearCreamBlaze&&hero?.backChevron&&hero?.patternedTail,'Approved hero identity markings missing from the playable hosted game');
   console.log('HOSTED_FOREST_METRICS',JSON.stringify(forest));
   assert.deepEqual(errors,[]);assert.deepEqual(bad,[]);
-  const report={date:new Date().toISOString(),status:'PASS',url,checks:['hosted game loads and enables play','beveled 3D buttons and symbols on lobby, controls and route choices','real scanned models and material maps load from Expo','workshop opens','heroes start locked','ordinary movement and burrow inputs','live three-way fork','physical Rootway selection','pause and cold reload preserve the same checkpoint','saved run resumes'],assets:assets.length,errors,bad};
+  const report={date:new Date().toISOString(),status:'PASS',url,checks:['hosted game loads and enables play','beveled 3D buttons and symbols on lobby, controls and route choices','real scanned models and material maps load from Expo','curved approved MADGER face, head/back cream blaze, and articulated tail render','workshop opens','heroes start locked','ordinary movement and burrow inputs','live three-way fork','physical Rootway selection','pause and cold reload preserve the same checkpoint','saved run resumes'],assets:assets.length,errors,bad};
   fs.writeFileSync(path.join(out,'overgrown-live-verification.json'),JSON.stringify(report,null,2));console.log('HOSTED_OVERGROWN_PASS',JSON.stringify(report));
  }catch(e){await shot('hosted-failure').catch(()=>{});console.error('HOSTED_OVERGROWN_FAIL',String(e),errors,bad);throw e;}
  finally{await browser.close();}

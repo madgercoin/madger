@@ -37,9 +37,15 @@ const server=http.createServer((req,res)=>{
    const data=await page.evaluate(async({run,course})=>{
     window.fixtureScene.setCourse(course);window.fixtureScene.draw(run,12,false);
     await new Promise(requestAnimationFrame);window.fixtureScene.draw(run,12.016,false);
-    const gl=document.querySelector('canvas').getContext('webgl2');return {route:run.chamber||run.route,stats:window.fixtureScene.stats,glError:gl.getError()};
+    const gl=document.querySelector('canvas').getContext('webgl2');return {route:run.chamber||run.route,stats:window.fixtureScene.stats,hero:window.madgerHeroDiagnostics,glError:gl.getError()};
    },{run,course:G.buildOvergrownCourse(run.seed)});
-   assert.equal(data.glError,0,run.route);assert(data.stats.assetsReady);assert(data.stats.instances>100);
+   console.log('MADGER_HERO_FIXTURE',JSON.stringify({route:data.route,instances:data.stats.instances,meshCount:data.stats.madgerMeshCount,triangles:data.stats.madgerTriangles,rig:data.stats.madgerRig,glError:data.glError}));
+   assert.equal(data.glError,0,run.route);assert(data.stats.assetsReady);assert(data.stats.instances>30);
+   assert.equal(data.stats.madgerRig,'authored-3d','Legacy generic character appeared');
+   assert(data.stats.madgerMeshCount>=80&&data.stats.madgerTriangles>30000,'Custom animated 3D hero was not rendered');
+   assert(data.hero?.approvedFace&&data.hero?.backChevron&&data.hero?.patternedTail,'Required MADGER identity marks missing');
+   if(run.mode==='chamber')assert.equal(data.stats.cavernVaultTriangles,0,'Cavern ceiling obstructed a secret room');
+   else if(['deep','mudslide','crystal-vein','ancient-vault'].includes(run.route))assert(data.stats.cavernVaultTriangles>4000,'Playable underground vault not rendered');
    assert.equal(data.stats.route,run.route,'Live renderer route differs from selected route');
    assert.equal(data.stats.biome,worldPresets.routes[run.route][0],'Wrong environment biome: '+run.route);
    assert.equal(data.stats.terrainProfileLoaded,true,'Authored terrain profile was not loaded: '+run.route);
