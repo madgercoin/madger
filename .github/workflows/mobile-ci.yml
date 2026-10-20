@@ -95,6 +95,46 @@ jobs:
           path: mobile/completion-smoke
           retention-days: 14
 
+  overgrown-scenes:
+    name: Play and inspect every Overgrown Burrow route
+    needs: validate
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    defaults:
+      run:
+        working-directory: mobile
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: mobile/package-lock.json
+      - uses: actions/download-artifact@v4
+        with:
+          name: madger-web-preview
+          path: mobile/dist
+      - run: npm ci
+      - name: Install headless Chromium for exported 3D preview
+        run: npx playwright install --with-deps chromium
+      - name: Render all nine branches and three playable chamber interiors
+        run: node scripts/render-overgrown-routes.cjs
+      - name: Play the normal opening, earned-only workshop, first fork and BURROW controls
+        run: node scripts/overgrown-browser-smoke.cjs
+      - name: Exercise each hidden chamber through real input and checkpoint reloads
+        run: node scripts/test-chambers-browser.cjs
+      - name: Retain all screenshots and route performance diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: madger-overgrown-scene-qa
+          path: |
+            mobile/expedition-evidence/overgrown-routes/
+            mobile/expedition-evidence/overgrown-board/
+            mobile/expedition-evidence/secret-chambers/
+          retention-days: 14
+          if-no-files-found: warn
+
   android-preview:
     name: Android preview APK
     needs: validate
@@ -192,7 +232,7 @@ jobs:
   publish-preview:
     name: Publish tested Android preview
     if: github.event_name == 'push'
-    needs: [android-runtime, browser-runtime]
+    needs: [android-runtime, browser-runtime, overgrown-scenes]
     runs-on: ubuntu-latest
     permissions:
       contents: write
