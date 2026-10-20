@@ -30,7 +30,7 @@ jobs:
           persist-credentials: false
 
       - name: Check isolated native harness guard
-        run: python3 -m unittest discover -s mobile/scripts -p 'test-android-quickstep-dialog.py' -v
+        run: python3 mobile/scripts/test-android-quickstep-dialog.py -v
 
       - name: Set up Java 17
         uses: actions/setup-java@v4
