@@ -1,0 +1,36 @@
+name: GIPHY Credential Check
+
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/giphy-publisher-preflight.yml']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - name: Verify stored key
+        env:
+          GIPHY_API_KEY: ${{ secrets.GIPHY_API_KEY }}
+        shell: bash
+        run: |
+          node --input-type=module <<'NODE'
+          const key = process.env.GIPHY_API_KEY?.trim();
+          if (!key) { console.error('GIPHY_API_KEY is not configured as a repository Actions secret.'); process.exit(1); }
+          console.log('Repository Actions secret is present.');
+          const url = new URL('https://api.giphy.com/v1/gifs/AXEeScZX5ZN0tzZWg7');
+          url.searchParams.set('api_key', key);
+          try {
+            const response = await fetch(url, {signal: AbortSignal.timeout(30000)});
+            if (!response.ok) { console.error(`GIPHY credential check returned HTTP ${response.status}.`); process.exit(1); }
+            const body = await response.json();
+            if (body.data?.id !== 'AXEeScZX5ZN0tzZWg7') { console.error('Expected existing GIF was not returned.'); process.exit(1); }
+            console.log('GIPHY read access verified.');
+            console.log(`Existing GIF owner: ${body.data?.user?.username || body.data?.username || 'not returned'}`);
+          } catch { console.error('GIPHY credential check could not reach the API.'); process.exit(1); }
+          NODE
