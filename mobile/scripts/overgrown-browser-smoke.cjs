@@ -9,11 +9,14 @@ const server=http.createServer((req,res)=>{try{const u=new URL(req.url,'http://l
  const context=await browser.newContext({viewport:{width:430,height:920},deviceScaleFactor:1,isMobile:true,hasTouch:true});
  const page=await context.newPage(),errors=[],badRequests=[];page.on('console',m=>{if(m.type()==='error')console.error('BROWSER_CONSOLE',m.text())});page.on('pageerror',e=>errors.push(String(e)));page.on('response',r=>{if(r.status()>=400&&!r.url().endsWith('favicon.ico'))badRequests.push({url:r.url(),status:r.status()});});
  const shot=async name=>page.screenshot({path:path.join(out,name+'.png')});
+ const assert3DButton=async (locator,name)=>{const detail=await locator.evaluate(element=>({bevel:parseFloat(getComputedStyle(element).borderBottomWidth)||0,children:element.querySelectorAll('*').length}));assert(detail.bevel>=4,`${name} missing raised lower bevel: ${JSON.stringify(detail)}`);assert(detail.children>=4,`${name} missing layered icon or button face: ${JSON.stringify(detail)}`);};
  const nonblank=async()=>page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>{const canvas=document.querySelector('canvas');if(!canvas)return resolve(false);const c=document.createElement('canvas');c.width=64;c.height=64;const g=c.getContext('2d');g.drawImage(canvas,0,0,64,64);const v=g.getImageData(0,0,64,64).data;let bright=0;for(let i=0;i<v.length;i+=4)if(v[i]+v[i+1]+v[i+2]>30)bright++;resolve(bright>1100);})));
  try{
   const url='http://127.0.0.1:'+server.address().port+'/expedition';
   await page.goto(url,{waitUntil:'networkidle',timeout:60000});
   await page.getByRole('button',{name:'Start expedition'}).waitFor({timeout:30000});
+  await assert3DButton(page.getByRole('button',{name:'Start expedition'}),'Start expedition');
+  await assert3DButton(page.getByRole('button',{name:'Mute sound'}),'Sound icon');
   assert(await nonblank(),'lobby scenery must be 3D and nonblank');
   await shot('01-overgrown-lobby');
   await page.getByRole('button',{name:'Visit the Burrow Workshop'}).click();
@@ -25,11 +28,13 @@ const server=http.createServer((req,res)=>{try{const u=new URL(req.url,'http://l
   await shot('03-locked-hero-roster');
   await page.getByRole('button',{name:'Back to the expedition'}).click();
   await page.getByRole('button',{name:'Start expedition'}).click();
+  await assert3DButton(page.getByRole('button',{name:'BURROW',exact:true}),'Raised BURROW control');
   await page.getByText('HERO ENERGY',{exact:false}).waitFor({timeout:10000}).catch(()=>{});
   await page.getByRole('button',{name:/Choose Mossbound Rootway/}).waitFor({timeout:38000});
   assert(await page.locator('canvas').count()>0,'fork 3D canvas must exist');
   await shot('04-three-branch-choice');
   assert(await page.getByRole('button',{name:/Choose Deep Burrow/}).isVisible());
+  await assert3DButton(page.getByRole('button',{name:/Choose Mossbound Rootway/}),'Raised route choice');
   const d1=await page.getByLabel(/Expedition distance \d+ meters; lane/).getAttribute('aria-label');
   await page.waitForTimeout(350);
   const d2=await page.getByLabel(/Expedition distance \d+ meters; lane/).getAttribute('aria-label');
@@ -42,7 +47,7 @@ const server=http.createServer((req,res)=>{try{const u=new URL(req.url,'http://l
   assert(await page.getByLabel(/HERO ENERGY/).count()>=0);
   assert.equal(errors.length,0,JSON.stringify(errors));
   assert.equal(badRequests.length,0,JSON.stringify(badRequests));
-  const report={date:new Date().toISOString(),status:'PASS',checks:['rendered 3D lobby','workshop opens and displays earned-only upgrades','heroes begin locked','three choices appear in real time','fork freezes progress','selection opens physical Rootway route','selected branch remains nonblank','no JS errors or failed assets'],errors,badRequests};
+  const report={date:new Date().toISOString(),status:'PASS',checks:['rendered 3D lobby','raised layered Start button and sound symbol','workshop opens and displays earned-only upgrades','heroes begin locked','three choices appear in real time','raised route-choice buttons with beveled edges','BURROW input retains raised tactile control','fork freezes progress','selection opens physical Rootway route','selected branch remains nonblank','no JS errors or failed assets'],errors,badRequests};
   fs.writeFileSync(path.join(out,'browser-branch-acceptance.json'),JSON.stringify(report,null,2));console.log('OVERGROWN_BROWSER_PASS',JSON.stringify(report));
  }catch(e){await shot('failure').catch(()=>{});console.error('OVERGROWN_BROWSER_FAIL',String(e),'ERRORS',errors);throw e;}
  finally{await context.close();await browser.close();await new Promise(resolve=>server.close(resolve));}
