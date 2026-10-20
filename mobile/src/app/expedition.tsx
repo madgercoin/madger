@@ -113,11 +113,15 @@ export default function ExpeditionScreen(){
   const s=runRef.current,events:GameEvent[]=[];
   if(foreground.current&&focused.current){
    const was=s.mode;
-   if(seconds>.4&&(was==='running'||was==='countdown'))console.warn('MADGER_EXPEDITION_FRAME_STALL',JSON.stringify({frameMs:Math.round(seconds*1000),drawMs:Math.round(lastDrawMs.current),phase:was,...sceneRef.current.stats}));
-   // Countdown has no physical motion or hazards. Ignore a one-time GPU warm-up
-   // frame rather than treating it as a dangerous in-run stall. Running frames
-   // still pause before any unseen damage when they exceed the 400ms limit.
-   if(was==='running'||was==='countdown')advance(s,courseRef.current,was==='countdown'&&seconds>.4?0:seconds,clockRef.current,events);
+   // New PBR materials may compile in a long first frame. The starting
+   // tutorial is guaranteed to have no hazards before metre 63. Discard a
+   // warm-up time gap only in that verified hazard-free opening, so no unseen
+   // damage or distance is ever simulated. Keep the 400ms protective pause
+   // everywhere else, including all forks and difficult subpaths.
+   const introWarmup=was==='running'&&s.board==='overgrown'&&s.distance<53&&seconds>.4;
+   if(seconds>.4&&(was==='running'||was==='countdown')&&!introWarmup)console.warn('MADGER_EXPEDITION_FRAME_STALL',JSON.stringify({frameMs:Math.round(seconds*1000),drawMs:Math.round(lastDrawMs.current),phase:was,...sceneRef.current.stats}));
+   if(introWarmup)console.info('MADGER_INTRO_GPU_WARMUP',Math.round(seconds*1000));
+   if(was==='running'||was==='countdown')advance(s,courseRef.current,(was==='countdown'&&seconds>.4)||introWarmup?0:seconds,clockRef.current,events);
    if(s.mode==='ready'||s.mode==='running'||s.mode==='countdown'||s.mode==='won'||s.mode==='lost')visualTime.current+=Math.min(seconds,.075);
    // Let the final reaction finish; do not continue physics after completion.
    if(s.finished&&finishedBanked.current!==s.id){finishedBanked.current=s.id;lastFinish.current=timestamp;void store.finish(s);}
