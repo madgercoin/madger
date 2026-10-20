@@ -1,0 +1,66 @@
+{
+  "schemaVersion": 1,
+  "enabled": false,
+  "expectedUsername": "MadgerDaBadger",
+  "timeZone": "America/New_York",
+  "cadence": "Tuesday and Thursday at 19:15 America/New_York; 19:45 catch-up check",
+  "sourceCampaign": "social/campaigns/2026-10-19-game-teaser.json",
+  "items": [
+    {
+      "id": "madger-confident",
+      "title": "Madger — confident hero",
+      "file": "giphy-publisher/assets/madger-confident.gif",
+      "sha256": "ea154420ce62cf5431a962b546bea4e2e9d3b8e667b725f96b618e1bafa5846e",
+      "tags": ["madger", "madgercoin", "the burrow", "madgerdabadger", "honey badger", "confident", "ready", "hero", "animation"],
+      "sourceUrl": "https://madgercoin.com",
+      "approved": true,
+      "test": true,
+      "sourceIntervalSeconds": [26, 29],
+      "publishAt": "2026-10-20T00:00:00Z"
+    },
+    {
+      "id": "snow-white-pounce",
+      "title": "Snow White — on the attack",
+      "file": "giphy-publisher/assets/snow-white-pounce.gif",
+      "sha256": "9274af06f9bf5b7916d2adc1db89f54f94d3936c70bdc8e5225fcc861fb06fec",
+      "tags": ["madger", "madgercoin", "the burrow", "madgerdabadger", "snow white", "white dog", "pounce", "attack", "lets go", "animation"],
+      "sourceUrl": "https://madgercoin.com",
+      "approved": true,
+      "sourceIntervalSeconds": [36, 39],
+      "publishAt": "2026-10-20T23:15:00Z"
+    },
+    {
+      "id": "gorilla-white-shield",
+      "title": "Gorilla White — shield up",
+      "file": "giphy-publisher/assets/gorilla-white-shield.gif",
+      "sha256": "5c112f754caabd3ad9c73b8574047e735593b4b0ab32c059f36bbd9c33e73957",
+      "tags": ["madger", "madgercoin", "the burrow", "madgerdabadger", "gorilla white", "gorilla", "shield", "protection", "defense", "animation"],
+      "sourceUrl": "https://madgercoin.com",
+      "approved": true,
+      "sourceIntervalSeconds": [46, 49],
+      "publishAt": "2026-10-22T23:15:00Z"
+    },
+    {
+      "id": "madger-bot-energy",
+      "title": "Madger Bot — energy boost",
+      "file": "giphy-publisher/assets/madger-bot-energy.gif",
+      "sha256": "d8faac74d9bb1bdb4779beebe6229bf7de91b7772823684f5b83da7c71c9f145",
+      "tags": ["madger", "madgercoin", "the burrow", "madgerdabadger", "madger bot", "robot", "energy", "power up", "boost", "animation"],
+      "sourceUrl": "https://madgercoin.com",
+      "approved": true,
+      "sourceIntervalSeconds": [56, 59],
+      "publishAt": "2026-10-27T23:15:00Z"
+    },
+    {
+      "id": "welcome-to-the-burrow",
+      "title": "Welcome to The Burrow",
+      "file": "giphy-publisher/assets/welcome-to-the-burrow.gif",
+      "sha256": "7454c4d0f8b00d60d121a58f543465f371f07cdfefc47e4e756994c93b0bff8c",
+      "tags": ["madger", "madgercoin", "the burrow", "madgerdabadger", "welcome", "home", "adventure", "fantasy world", "animation"],
+      "sourceUrl": "https://madgercoin.com",
+      "approved": true,
+      "sourceIntervalSeconds": [62, 64],
+      "publishAt": "2026-10-29T23:15:00Z"
+    }
+  ]
+}

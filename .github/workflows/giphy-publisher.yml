@@ -1,0 +1,36 @@
+name: MADGER GIPHY Publisher
+
+on:
+  push:
+    branches: [main]
+    paths: ['giphy-publisher/request.json']
+  workflow_dispatch:
+  schedule:
+    - cron: '15 19 * * 2,4'
+      timezone: America/New_York
+    - cron: '45 19 * * 2,4'
+      timezone: America/New_York
+
+permissions:
+  contents: write
+
+concurrency:
+  group: madger-giphy-publisher
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5
+        with:
+          node-version: 22
+      - name: Check publisher behavior
+        run: node --test giphy-publisher/publish.test.mjs
+      - name: Publish next approved GIF
+        env:
+          GIPHY_API_KEY: ${{ secrets.GIPHY_API_KEY }}
+          GITHUB_TOKEN: ${{ github.token }}
+        run: node giphy-publisher/publish.mjs
