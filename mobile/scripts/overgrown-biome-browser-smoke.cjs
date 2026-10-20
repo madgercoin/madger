@@ -94,6 +94,17 @@ assert(selectedCases.length,'No matching biome selected');
         }
         if(item.biome!=='cavern') assert(diagnostics.photoscannedTrees>0,
           'Scanned trees missing from the outdoor scene');
+        // The real game pauses when an uninterrupted frame exceeds 400ms.
+        // Chrome screenshot readback can itself block its GPU for >400ms,
+        // falsely creating a gameplay stall in this visual-only fixture.
+        // Observe the live route first, then use the *real Pause control*
+        // before the heavyweight screenshot. Never override engine state.
+        const safetyBeforeScreenshot=await page.getByText('Your run is safe.',{exact:true}).isVisible();
+        const liveWarnings=stallWarnings.length;
+        if(!safetyBeforeScreenshot){
+          await page.getByRole('button',{name:'Pause expedition',exact:true}).click();
+          await page.getByText('Your run is safe.',{exact:true}).waitFor();
+        }
         // Browser screenshots preserve the composited WebGL frame even when
         // drawingBuffer preservation is off and direct canvas readback is blank.
         const screenshot=await page.locator('canvas').first().screenshot({
@@ -106,7 +117,7 @@ assert(selectedCases.length,'No matching biome selected');
         }
         console.log('BIOME_VISIBLE_PIXELS',item.route,JSON.stringify({lit,colors:colors.size}));
         assert(lit>1000 && colors.size>65,'Composited 3D scene is blank: '+item.route);
-        const unexpectedlyPaused=await page.getByText('Your run is safe.',{exact:true}).isVisible();
+        const unexpectedlyPaused=safetyBeforeScreenshot;
         if(unexpectedlyPaused||stallWarnings.length) {
           console.warn('BIOME_STALL_DIAGNOSTICS',item.route,JSON.stringify({unexpectedlyPaused,stallWarnings}));
           // A safety pause is a release failure, but inspect whether ordinary
@@ -126,6 +137,8 @@ assert(selectedCases.length,'No matching biome selected');
             JSON.stringify({before,attempts,stallCount:stallWarnings.length}));
         }
         assert.equal(unexpectedlyPaused,false,'Route unexpectedly paused from a long frame: '+item.route);
+        assert.equal(liveWarnings,0,'Safety warning during live route selection: '+item.route);
+        assert.equal(stallWarnings.length,0,'Protective frame stall detected in visual fixture: '+item.route);
         assert.deepEqual(errors,[],'JS errors: '+item.route);
         assert.deepEqual(requests,[],'Asset errors: '+item.route);
         results.push({route:item.route,biome:item.biome,diagnostics,errors,requests});
