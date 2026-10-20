@@ -75,7 +75,19 @@ async function reachApproach(page,minimumDistance,chamber){
     await page.getByRole('button',{name:choice==='supplies'?'Take survival supplies':'Take '+require(path.join(temp,'companions.js')).COMPANIONS[meta.hero].name+' fragment',exact:true}).click();
     if(!await page.getByText('Your run is safe.',{exact:true}).isVisible()){try{await page.getByRole('button',{name:'Pause expedition',exact:true}).click({timeout:2500});}catch(e){if(!await page.getByText('Your run is safe.',{exact:true}).isVisible())throw e;}}await page.getByText('Your run is safe.',{exact:true}).waitFor();
     const rewarded=await stored();assert(rewarded.coins>=8);assert(rewarded.gems>=2);assert(rewarded.secrets.includes(meta.id));
-    if(choice==='fragment')assert(rewarded.heroShards[meta.hero]>=1);else assert(rewarded.magnet>16);
+    if(choice==='fragment')assert(rewarded.heroShards[meta.hero]>=1);
+    else {
+      // The 18s reward ticks with GAME time after the modal closes. Slow
+      // software-GPU screenshots may consume >2 actual seconds; a fixed
+      // >16s remaining threshold would reject a valid rewarded checkpoint.
+      // Verify BOTH components of the earned reward and its exact countdown.
+      const elapsed=rewarded.time-before.time;
+      assert(Number.isFinite(elapsed)&&elapsed>=0,'Rewarded game clock cannot run backwards');
+      assert(rewarded.energy>=40,'Bot survival choice must grant 40 burst energy');
+      assert(rewarded.magnet>0&&rewarded.magnet<=18,'Bot magnet must be active and bounded');
+      assert(Math.abs(rewarded.magnet-Math.max(0,18-elapsed))<.35,
+        'Bot magnet must decay by actual simulated time since chamber reward');
+    }
     await page.reload({waitUntil:'domcontentloaded',timeout:60000});await page.getByText('Your run is safe.',{exact:true}).waitFor();await page.waitForFunction(()=>window.madgerActiveRenderer==='pbr',undefined,{timeout:60000});const restored=await stored();assert.equal(restored.coins,rewarded.coins);assert.deepEqual(restored.heroShards,rewarded.heroShards);
     assert.equal(await page.getByText('SECRET CHAMBER DISCOVERED',{exact:true}).count(),0);assert.deepEqual(errors,[]);
     results.push({chamber:meta.id,entry:meta.action,choice,protectivePauses:approach.resumes,checks:['movement enters secret','interior renders','timers freeze','chamber cold-reloads','choice grants real reward','reward checkpoint survives another reload']});

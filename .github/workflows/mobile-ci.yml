@@ -157,6 +157,29 @@ jobs:
       - uses: android-actions/setup-android@v3
         with:
           packages: platform-tools platforms;android-36 build-tools;36.0.0
+      - name: Verify pinned Android NDK with bounded download retries
+        shell: bash
+        run: |
+          set -euo pipefail
+          ndk="$ANDROID_HOME/ndk/27.1.12297006"
+          sdkmanager="$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager"
+          check_ndk() {
+            [[ -f "$ndk/source.properties" ]] &&
+              grep -Eq '^Pkg.Revision[[:space:]]*=[[:space:]]*27\.1\.12297006[[:space:]]*$' "$ndk/source.properties"
+          }
+          for attempt in 1 2 3; do
+            if check_ndk; then echo 'Verified Android NDK 27.1.12297006'; exit 0; fi
+            echo "NDK provision attempt $attempt/3"
+            rm -rf "$ndk"
+            if "$sdkmanager" --install 'ndk;27.1.12297006' > /tmp/madger-ndk-install.log 2>&1 && check_ndk; then
+              echo 'Verified freshly installed Android NDK 27.1.12297006'
+              exit 0
+            fi
+            tail -35 /tmp/madger-ndk-install.log || true
+            sleep $((attempt*6))
+          done
+          echo 'Unable to verify pinned Android NDK after three attempts' >&2
+          exit 1
       - run: npm ci
       - run: npx expo prebuild --platform android --no-install
         env:
