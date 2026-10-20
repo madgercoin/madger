@@ -126,10 +126,49 @@ class Smoke:
         # Resume exists as both a small HUD icon and a full modal button.
         return max(matches, key=lambda pair: (pair[0][2] - pair[0][0]) * (pair[0][3] - pair[0][1]), default=None)
 
+    def dismiss_quickstep_anr(self, nodes):
+        """Dismiss only an Android-owned Quickstep launcher ANR, never a game ANR.
+
+        Cold software emulators can show this system dialog over a healthy
+        running app. A missing/mismatched Close app control remains a failure.
+        """
+        launcher_anr = any(
+            node.get("text") == "Quickstep isn't responding"
+            and node.get("package") == "android"
+            and node.get("resource-id") == "android:id/alertTitle"
+            for node in nodes
+        )
+        if not launcher_anr:
+            return False
+        if len(self.report.get("system_dialog_dismissals", [])) >= 2:
+            raise AssertionError("Repeated Quickstep launcher ANRs; emulator is unstable")
+        close = next((
+            node for node in nodes
+            if node.get("text") == "Close app"
+            and node.get("package") == "android"
+            and node.get("resource-id") == "android:id/aerr_close"
+            and node.get("clickable") == "true"
+            and node.get("enabled") == "true"
+        ), None)
+        bounds = self.bounds(close) if close is not None else None
+        if not bounds:
+            raise AssertionError("Quickstep ANR was visible without a safe system Close app action")
+        x1, y1, x2, y2 = bounds
+        self.timed("dismiss:android-quickstep-anr",
+                   lambda: self.device.click((x1 + x2) // 2, (y1 + y2) // 2))
+        self.report.setdefault("system_dialog_dismissals", []).append({
+            "dialog": "Quickstep isn't responding", "action": "Close app",
+            "elapsed_s": round(time.monotonic() - self.started, 3),
+        })
+        print("[emulator] Dismissed Android Quickstep launcher ANR", flush=True)
+        return True
+
     def wait_label(self, label, timeout=20, enabled=True, clickable=False):
         deadline = time.monotonic() + timeout
         while time.monotonic() < deadline:
             _, nodes, _ = self.tree()
+            if self.dismiss_quickstep_anr(nodes):
+                continue
             found = self.label_node(nodes, label, enabled, clickable)
             if found:
                 return found
