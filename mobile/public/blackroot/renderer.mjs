@@ -6,6 +6,7 @@ import { GLTFLoader } from './vendor/examples/jsm/loaders/GLTFLoader.js';
 import { RGBELoader } from './vendor/examples/jsm/loaders/RGBELoader.js';
 import { legacyCharacters } from './characters.mjs?v=chambers-20261019-2';
 import { mergeGeometries } from './vendor/examples/jsm/utils/BufferGeometryUtils.js';
+import { adjustedSceneScale } from './quality.mjs';
 
 const ASSETS = '/blackroot/assets/';
 async function loadForestPack(){
@@ -73,7 +74,7 @@ class ForestRenderer {
     this.fill=new T.PointLight('#ffb257',13,15,2);this.fill.position.set(0,3,1);this.scene.add(this.fill);
     this.batches=new Map();this.geometries=new Map();this.materials=new Map();this.scanBatches=[];
     this.travel={value:0};this.temp=new T.Matrix4();this.tint=new T.Color();this.stats={};
-    this.run=null;this.dead=false;this.textures=[];this.quality=1;this.frameSamples=[];
+    this.run=null;this.dead=false;this.textures=[];this.quality=1;this.frameSamples=[];this.stableFrames=0;this.renderedFrames=0;
   }
   async init() {
     this.assetUrls=await loadForestPack();
@@ -283,15 +284,34 @@ class ForestRenderer {
   render(eye,target,time,zone,travel=0) {
     if(this.dead)return;
     const now=performance.now();
-    if(this.run?.mode==='running'||this.run?.mode==='countdown'){
+    // Software graphics and older phones may miss the 400ms frame safety gate.
+    // Include lobby/countdown frames so adaptation acts before a run begins.
+    // Ignore background-tab gaps and initial shader warmup, not persistent
+    // 500-1000ms frames (the old <350ms filter never adapted to those).
+    if(['ready','countdown','running'].includes(this.run?.mode)&&this.renderedFrames>3
+      &&(typeof document==='undefined'||document.visibilityState==='visible')){
       const elapsed=now-(this.previousFrame??now);
-      if(elapsed>0&&elapsed<350)this.frameSamples.push(elapsed);
-      if(this.frameSamples.length===24){
-        if(this.frameSamples.reduce((a,b)=>a+b,0)/24>40&&this.quality===1)this.quality=.8;
-        this.frameSamples=[];
+      if(elapsed>0&&elapsed<1800)this.frameSamples.push(elapsed);
+      if(this.frameSamples.length>=3){
+        const next=adjustedSceneScale(this.quality,this.frameSamples);
+        const rapid=this.frameSamples.every(ms=>ms<24);
+        this.stableFrames=rapid?this.stableFrames+3:0;
+        // Restore visual quality only after sustained fast rendering.
+        const restored=this.stableFrames>=90&&next===this.quality&&next<1
+          ?Math.min(1,Math.round((next+.07)*100)/100):next;
+        if(restored!==this.quality){
+          this.quality=restored;
+          this.sun.castShadow=this.quality>.53;
+          this.stableFrames=0;
+          console.info('MADGER_FOREST_QUALITY',JSON.stringify({
+            resolutionScale:this.quality, dynamicShadows:this.sun.castShadow,
+            recentFrameMs:this.frameSamples.map(v=>Math.round(v))
+          }));
+        }
+        this.frameSamples.length=0;
       }
     }
-    this.previousFrame=now;
+    this.previousFrame=now;this.renderedFrames++;
     // UI remains at native resolution; lower only the 3D buffer on slow devices.
     const w=Math.round((this.gl.canvas.clientWidth||this.gl.drawingBufferWidth)*this.quality),h=Math.round((this.gl.canvas.clientHeight||this.gl.drawingBufferHeight)*this.quality);if(w<2||h<2)return;
     if(this.width!==w||this.height!==h){this.width=w;this.height=h;this.gpu.setSize(w,h,false);this.camera.aspect=w/h;this.camera.fov=T.MathUtils.radToDeg(2*Math.atan(Math.max(Math.tan(33*Math.PI/180),Math.tan(17*Math.PI/180)/(w/h))));this.camera.updateProjectionMatrix();}
