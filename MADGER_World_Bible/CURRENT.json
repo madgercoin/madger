@@ -1,0 +1,9 @@
+{
+  "world_id": "MADGER-BRW-HOME",
+  "canon_version": "1.0.0",
+  "volume": "01 / Inside the Burrow",
+  "bible": "v1.0.0/MADGER_World_Bible.pdf",
+  "data": "v1.0.0/MADGER_World_Bible.json",
+  "map": "v1.0.0/MADGER_Burrow_Master_Map.png",
+  "source": "v1.0.0/MADGER_World_Bible_Source.json"
+}

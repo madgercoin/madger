@@ -8,6 +8,8 @@ MADGER's character is resilient, confident, determined, and attentive to detail.
 
 ## Documentation map
 
+- **[MADGER World Bible](MADGER_World_Bible/README.md)** - permanent shared Burrow interior canon, illustrated Bible, master map and reusable game/story data.
+
 These files are the contributor source of truth. When implementation and documentation disagree, verify the implementation, correct the documentation in the same change, and call out any unresolved product decision.
 
 - [`README.md`](README.md) — project purpose, repository architecture, contributor standards, and verified status.

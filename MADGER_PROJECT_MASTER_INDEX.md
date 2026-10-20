@@ -7,6 +7,10 @@
 
 > **Status labels:** **CONFIRMED** = established fact or binding instruction. **PLANNED** = approved or proposed work not proven complete. **SUPERSEDED** = older instruction replaced by a later one. **UNRESOLVED** = requires verification before public use.
 
+## Shared world canon - October 19, 2026
+
+**[MADGER World Bible v1.0.0: Inside the Burrow](MADGER_World_Bible/README.md)** is the new shared interior foundation for stories, animation and the game. It records 16 locations, fixed geography, daily life, systems, hero arcs, the interior-only Episode 1 boundary and rules for future additions. The PDF, master map, structured data, editable source and checksums are archived together. Earlier schematic world layouts are superseded where they conflict with this edition. This archive does not mean existing video/game releases have already adopted the map. Later explicit owner character corrections take precedence over older identity notes below.
+
 ## 1. Executive project summary
 
 $MADGER is a community-first Solana memecoin and character-led entertainment/utility project built around Madger, an original premium 3D honey-badger mascot. The immediate product is a Solana token, brand, story world, social community, and content engine. The long-range strategy is to add useful ecosystem functions before considering any independent Madger blockchain.

@@ -1,0 +1,45 @@
+{
+  "canon_version": "1.0.0",
+  "files": [
+    {
+      "path": "MADGER_Burrow_Master_Map.png",
+      "bytes": 264414,
+      "sha256": "0c834a475bf0e9cb66fb99f7f6d8727494c607d9f9fbf80a8662422b8dd82b33"
+    },
+    {
+      "path": "MADGER_World_Bible.json",
+      "bytes": 62524,
+      "sha256": "6de2dfcb0e02e0c5887c764bfb2c70a9b68b03ab22152d0617584ba29c9c9b9e"
+    },
+    {
+      "path": "MADGER_World_Bible.pdf",
+      "bytes": 5699609,
+      "sha256": "2d4d5977b3e1e8343ce7571f77fd66b69a25f804dd3885b09bfdd5bd194dd339"
+    },
+    {
+      "path": "MADGER_World_Bible_Source.json",
+      "bytes": 4683405,
+      "sha256": "b314ba177e5097a2f6458425a00a317b5fb4b8e4d2afe283748eb456488b544e"
+    },
+    {
+      "path": "source/Burrow_Atmosphere.png",
+      "bytes": 3382016,
+      "sha256": "3853c590c89a949a2e62d6e796e955df600c73fbc299e97dc4fb6c0d0289b8cf"
+    },
+    {
+      "path": "source/build_world.py",
+      "bytes": 36060,
+      "sha256": "63f7ebd62fee31d9ca5eceb1a6f377a9d1d4877debf353b20f19d9a71ef23c65"
+    },
+    {
+      "path": "source/render_bible.py",
+      "bytes": 32389,
+      "sha256": "71734ce046d3a6c9624a98e62b52aa3b6707308f021549448b95a753b98299ac"
+    },
+    {
+      "path": "validation.json",
+      "bytes": 443,
+      "sha256": "906c4bed9e5ecf2b65843825f8fe15ae69d5ff907ce8433aa2984e9199d9ecf5"
+    }
+  ]
+}

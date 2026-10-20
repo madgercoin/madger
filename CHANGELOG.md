@@ -1,5 +1,12 @@
 # Changelog
 
+## 2026-10-19 - MADGER World Bible foundation archive
+
+- Archive Volume 01, Inside the Burrow, version 1.0.0: illustrated 23-page Bible, master map, structured canon data and complete editable source.
+- Preserve measured location anchors, routes, crossing count, interior-only pilot scope and additive canon rules for reuse across stories and the game.
+- Add a stable World Bible index, current-version pointer, validation record and SHA-256 manifest; link the archive from the repository README and project master index.
+- Archive only: no production website allowlist, game code, video export or approved voice files changed.
+
 ## 2026-10-15 — Signals discovery and visual reading trails
 
 - Added the image-led Signal Finder with purpose filters for proof, safer crypto, community utility, investor diligence, and brand/culture, plus full-archive search and an unread-only view.

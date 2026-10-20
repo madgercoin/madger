@@ -1,0 +1,13 @@
+{
+  "status": "passed",
+  "pages": 23,
+  "location_ids_unique": 16,
+  "fixed_crossings": 3,
+  "all_route_nodes_connected": true,
+  "gate_reachable_when_main_bridge_closed": true,
+  "mapped_footprints_and_cameras_inside": true,
+  "canal_flows_downhill": true,
+  "walk_cart_grades_max_1_in_12": true,
+  "episode_location_refs_valid": true,
+  "visual_review": "All 23 pages reviewed; refreshed cover and master map checked after final changes."
+}
