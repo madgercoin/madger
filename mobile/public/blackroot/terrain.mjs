@@ -40,3 +40,40 @@ export function terrainBiome(presets, route) {
   const name = presets?.routes?.[route]?.[0];
   return ['forest', 'ruins', 'cavern'].includes(name) ? name : 'forest';
 }
+
+/** Return the *rendered* terrain surface, including its small-scale shoulder
+ * relief. All scan anchors use this exact height so 3D roots, rocks and plants
+ * grow from the ground rather than float or disappear into the slope.
+ * Renderer-only: the deterministic course and its collision model do not move.
+ */
+export function terrainSurfaceHeight(profile, x, distance, roadCentre, isGap = false) {
+  const base = terrainHeight(profile, x, distance, roadCentre, isGap);
+  if (isGap) return base;
+  const lateral = Math.abs(x - roadCentre);
+  const shoulder = smooth((lateral - 3.5) / 3.8);
+  const fineRelief = shoulder * (
+    Math.sin(distance * .31 + x * .37) * .16
+    + Math.sin(distance * .67 - x * .21) * .08
+  );
+  return Math.max(-.33, Math.min(5, base + fineRelief));
+}
+
+export const DEFAULT_SCENERY_PROFILE = Object.freeze({
+  seed: 0, treeScale: 1, understory: 1, rootScale: 1
+});
+/** Route-authoring controls, bounded against missing or malformed presets.
+ * Layout seeds keep a persistent, reproducible scene for each selected fork.
+ */
+export function sceneryProfile(presets, route) {
+  const values = presets?.sceneryProfiles?.[route]
+    ?? presets?.sceneryProfiles?.main
+    ?? DEFAULT_SCENERY_PROFILE;
+  const bounded = (key, min, max) => Math.max(min, Math.min(max,
+    finite(values?.[key], DEFAULT_SCENERY_PROFILE[key])));
+  return {
+    seed: Math.floor(bounded('seed', 0, 1024)),
+    treeScale: bounded('treeScale', 0, 1.4),
+    understory: bounded('understory', .15, 1.4),
+    rootScale: bounded('rootScale', .2, 1.6)
+  };
+}

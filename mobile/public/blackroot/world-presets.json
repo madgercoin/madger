@@ -140,6 +140,23 @@
     ],
     "publication": "only after CI and native acceptance; no claim of photorealism"
   },
+  "sceneryProfiles": {
+    "main":          { "seed": 0,   "treeScale": 1.00, "understory": 1.00, "rootScale": 1.00 },
+    "rootway":       { "seed": 17,  "treeScale": 1.14, "understory": 1.12, "rootScale": 1.22 },
+    "ridge":         { "seed": 41,  "treeScale": 0.62, "understory": 0.65, "rootScale": 0.70 },
+    "deep":          { "seed": 53,  "treeScale": 0.00, "understory": 0.38, "rootScale": 1.28 },
+    "mosswalk":      { "seed": 67,  "treeScale": 1.12, "understory": 1.18, "rootScale": 0.95 },
+    "root-arch":     { "seed": 79,  "treeScale": 1.08, "understory": 0.82, "rootScale": 1.30 },
+    "log-crossing":  { "seed": 97,  "treeScale": 1.24, "understory": 0.94, "rootScale": 1.07 },
+    "causeway":      { "seed": 111, "treeScale": 0.50, "understory": 0.48, "rootScale": 0.55 },
+    "watchtower":    { "seed": 137, "treeScale": 0.60, "understory": 0.52, "rootScale": 0.48 },
+    "gearworks":     { "seed": 151, "treeScale": 0.42, "understory": 0.35, "rootScale": 0.60 },
+    "mudslide":      { "seed": 173, "treeScale": 0.00, "understory": 0.36, "rootScale": 0.68 },
+    "crystal-vein":  { "seed": 191, "treeScale": 0.00, "understory": 0.32, "rootScale": 0.78 },
+    "ancient-vault": { "seed": 211, "treeScale": 0.00, "understory": 0.20, "rootScale": 0.55 },
+    "hollow":        { "seed": 223, "treeScale": 0.00, "understory": 0.58, "rootScale": 1.40 },
+    "grotto":        { "seed": 241, "treeScale": 0.00, "understory": 0.40, "rootScale": 0.78 }
+  },
   "terrainProfiles": {
     "main": {
       "bank": 1.5,

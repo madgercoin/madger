@@ -52,11 +52,13 @@ const server=http.createServer((req,res)=>{try{const u=new URL(req.url,'http://l
   assert(forest.photoscannedGrasses>0,'3D ground-cover grass did not render');
   assert(forest.photoscannedRoots>0,'Real scanned roots did not render');
   assert(forest.terrainVertices>4000,'Continuous deformable terrain missing');
+  assert.equal(forest.sceneryProfileLoaded,true,'Route-specific authored foliage profile missing');
+  assert(forest.groundedSceneryInstances>20,'Scanned vegetation is not anchored to the terrain surface');
   console.log('FOREST_WORLD_DIAGNOSTICS',JSON.stringify(forest));
   assert(await page.getByLabel(/HERO ENERGY/).count()>=0);
   assert.equal(errors.length,0,JSON.stringify(errors));
   assert.equal(badRequests.length,0,JSON.stringify(badRequests));
-  const report={date:new Date().toISOString(),status:'PASS',checks:['rendered 3D lobby','raised layered Start button and sound symbol','workshop opens and displays earned-only upgrades','heroes begin locked','three choices appear in real time','raised route-choice buttons with beveled edges','BURROW input retains raised tactile control','fork freezes progress','selection opens physical Rootway route','selected branch remains nonblank','photoscanned CC0 trees, 3D roots, grass and contoured terrain load','no JS errors or failed assets'],errors,badRequests};
+  const report={date:new Date().toISOString(),status:'PASS',checks:['rendered 3D lobby','raised layered Start button and sound symbol','workshop opens and displays earned-only upgrades','heroes begin locked','three choices appear in real time','raised route-choice buttons with beveled edges','BURROW input retains raised tactile control','fork freezes progress','selection opens physical Rootway route','selected branch remains nonblank','photoscanned CC0 trees, 3D roots, grass and contoured terrain load','per-route scenery configuration and grounded 3D instances verified','no JS errors or failed assets'],errors,badRequests};
   fs.writeFileSync(path.join(out,'browser-branch-acceptance.json'),JSON.stringify(report,null,2));console.log('OVERGROWN_BROWSER_PASS',JSON.stringify(report));
  }catch(e){await shot('failure').catch(()=>{});console.error('OVERGROWN_BROWSER_FAIL',String(e),'ERRORS',errors);throw e;}
  finally{await context.close();await browser.close();await new Promise(resolve=>server.close(resolve));}
