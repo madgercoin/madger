@@ -6,6 +6,31 @@ for(const name of ['companions','core','profile'])fs.writeFileSync(path.join(tem
 const G=require(path.join(temp,'core.js')),P=require(path.join(temp,'profile.js'));
 const types={'.html':'text/html','.js':'application/javascript','.mjs':'application/javascript','.jpg':'image/jpeg','.png':'image/png','.css':'text/css','.ttf':'font/ttf','.wav':'audio/wav','.mp3':'audio/mpeg'};
 const server=http.createServer((req,res)=>{let file=path.resolve(dist,'.'+decodeURIComponent(req.url.split('?')[0]));if(!path.extname(file))file+='.html';if(!file.startsWith(dist+path.sep)||!fs.existsSync(file)){res.writeHead(404);res.end();return;}res.writeHead(200,{'Content-Type':types[path.extname(file)]||'application/octet-stream'});fs.createReadStream(file).pipe(res);});
+// Slow software-GPU frames can legitimately trigger MADGER's protective pause.
+// A normal Resume click is required; this test must never bypass game rules
+// or pretend the runner kept moving while it was safely paused.
+async function reachApproach(page,minimumDistance,chamber){
+ const safe=page.getByText('Your run is safe.',{exact:true});
+ const label=page.locator('[aria-label^="Expedition distance"]').first();
+ const until=Date.now()+75000;
+ let resumes=0,meters=-1;
+ while(Date.now()<until){
+  if(await safe.isVisible()){
+   if(++resumes>5)throw new Error('Repeated protective graphics pauses near '+chamber+
+     ' after five real Resume clicks; gameplay was not reliable');
+   const checkpoint=await label.getAttribute('aria-label').catch(()=>null);
+   console.log('CHAMBER_SAFE_PAUSE',JSON.stringify({chamber,resumes,checkpoint}));
+   await page.getByRole('button',{name:'Resume expedition',exact:true}).last().click();
+  }
+  const current=await label.getAttribute('aria-label').catch(()=>null);
+  const distance=/(?:Expedition )?distance (\d+)/.exec(current||'');
+  if(distance)meters=Number(distance[1]);
+  if(meters>=minimumDistance)return {resumes,meters};
+  await page.waitForTimeout(220);
+ }
+ throw new Error('Chamber approach did not reach '+minimumDistance+'m for '+chamber+
+   '; last observed='+meters+'m; protective resumes='+resumes);
+}
 (async()=>{
  await new Promise(r=>server.listen(0,'127.0.0.1',r));const browser=await chromium.launch({headless:true,executablePath:process.platform==='win32'?'C:/Program Files/Google/Chrome/Application/chrome.exe':undefined}),results=[];
  try{
@@ -20,7 +45,7 @@ const server=http.createServer((req,res)=>{let file=path.resolve(dist,'.'+decode
    try{
     await page.goto(process.env.MADGER_CHAMBER_URL||('http://127.0.0.1:'+server.address().port+'/expedition'),{waitUntil:'networkidle',timeout:90000});
     await page.getByText('Your run is safe.',{exact:true}).waitFor();await page.waitForFunction(()=>window.madgerActiveRenderer==='pbr',{timeout:60000});assert.equal(await page.evaluate(()=>window.madgerActiveRenderer),'pbr','secret rooms require the actual PBR renderer');await page.getByRole('button',{name:'Resume expedition',exact:true}).last().click();
-    await page.waitForFunction(d=>{const n=[...document.querySelectorAll('[aria-label]')].find(e=>/^Expedition distance/.test(e.getAttribute('aria-label')));return Number(n?.getAttribute('aria-label').match(/distance (\d+)/)?.[1])>=d;},meta.d-6);
+    const approach=await reachApproach(page,meta.d-6,meta.id);
     await page.keyboard.press(meta.action==='burrow'?'ArrowDown':'ArrowUp');
     for(let attempt=0;attempt<70&&!await page.getByText(meta.name,{exact:true}).isVisible();attempt++){if(await page.getByText('Your run is safe.',{exact:true}).isVisible()){await page.getByRole('button',{name:'Resume expedition',exact:true}).last().click();await page.keyboard.press(meta.action==='burrow'?'ArrowDown':'ArrowUp');}await page.waitForTimeout(150);}await page.getByText(meta.name,{exact:true}).waitFor({timeout:5000});
     await page.screenshot({path:path.join(out,meta.id+'.png')});
@@ -35,7 +60,7 @@ const server=http.createServer((req,res)=>{let file=path.resolve(dist,'.'+decode
     if(choice==='fragment')assert(rewarded.heroShards[meta.hero]>=1);else assert(rewarded.magnet>16);
     await page.reload({waitUntil:'domcontentloaded',timeout:60000});await page.getByText('Your run is safe.',{exact:true}).waitFor();await page.waitForFunction(()=>window.madgerActiveRenderer==='pbr',undefined,{timeout:60000});const restored=await stored();assert.equal(restored.coins,rewarded.coins);assert.deepEqual(restored.heroShards,rewarded.heroShards);
     assert.equal(await page.getByText('SECRET CHAMBER DISCOVERED',{exact:true}).count(),0);assert.deepEqual(errors,[]);
-    results.push({chamber:meta.id,entry:meta.action,choice,checks:['movement enters secret','interior renders','timers freeze','chamber cold-reloads','choice grants real reward','reward checkpoint survives another reload']});
+    results.push({chamber:meta.id,entry:meta.action,choice,protectivePauses:approach.resumes,checks:['movement enters secret','interior renders','timers freeze','chamber cold-reloads','choice grants real reward','reward checkpoint survives another reload']});
    }catch(e){const debug={error:String(e),errors,warnings,requests,state:await page.evaluate(()=>({renderer:window.madgerActiveRenderer,body:document.body.innerText.slice(-3000)})).catch(()=>null)};fs.writeFileSync(path.join(out,meta.id+'-failure.json'),JSON.stringify(debug,null,2));console.error('CHAMBER_DEBUG',JSON.stringify(debug));await page.screenshot({path:path.join(out,meta.id+'-failure.png')});throw e;}
    finally{await context.close();console.log('CHAMBER_CHECK_FINISHED',meta.id);}
   }
