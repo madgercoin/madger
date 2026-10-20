@@ -234,6 +234,11 @@ export class ExpeditionScene {
   */
  private overgrownScenery(s:Expedition,time:number,calm:boolean){
   const d=s.distance,base=curve(d);
+  // Native GL has a measured, hysteretic GPU-drain budget. Preserve every
+  // playable lane and hazard at full fidelity; trim ONLY off-track distance
+  // dressing when a software renderer or older phone is falling behind.
+  const sceneryBudget=this.renderer.sceneryBudget;
+  const sceneryFar=sceneryBudget===0?42:sceneryBudget===1?65:95;
   const mainTheme=(route:string)=>['main','rootway','mosswalk','root-arch','log-crossing'].includes(route)?'forest':
     ['ridge','causeway','watchtower','gearworks'].includes(route)?'ruins':'cavern';
   const approach={id:'main',name:'The Overgrown Burrow',risk:'LOW',reward:'Coins',description:'Forest approach',side:0,accent:'#B1DC88'} as const;
@@ -272,7 +277,10 @@ export class ExpeditionScene {
      // Opaque trees, foliage and rock faces behind the camera can block
      // the entire screen as a fork curves. Keep the track under the runner,
      // but render tall scenery only ahead of the playing/camera corridor.
-     if(z>-7)continue;
+     if(z>-7||-z>sceneryFar)continue;
+     // Keep detailed close-up vegetation and masonry. Thin only off-track
+     // props beyond 30 metres; forks, pickups, road and hero are untouched.
+     if(sceneryBudget<2&&-z>30&&n%(sceneryBudget===0?4:2)!==0)continue;
      // Wet border rock, ancient edging and root networks never occupy lanes.
      for(const side of [-1,1]){
       const bx=x+side*4.33,t=(hash(n*43+side*9)*2-1),bark=theme==='ruins'?color('#807B73',-8):theme==='cavern'?edge:color('#735438',-7);

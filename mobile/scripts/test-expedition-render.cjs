@@ -14,7 +14,7 @@ for (const name of ['math', 'gl']) {
     compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022 },
   }).outputText);
 }
-const { ExpeditionRenderer } = require(path.join(dir, 'gl.js'));
+const { ExpeditionRenderer, adaptNativeSceneryBudget } = require(path.join(dir, 'gl.js'));
 
 // Model Expo's asynchronous frame batches: submission does not present them.
 // A blocking native drain must finish the preceding batch before JS gets ahead.
@@ -100,4 +100,30 @@ test('a failed native drain propagates so the screen can pause and save', () => 
   const { gl } = context();
   gl.flushEXP = () => { throw Error('GPU unavailable'); };
   assert.throws(() => frame(new ExpeditionRenderer(gl), 2), /GPU unavailable/);
+});
+
+test('native-only scenery budget reacts to expensive drains without oscillation', () => {
+  let state = { level: 2, fastFrames: 0, slowFrames: 0 };
+  state = adaptNativeSceneryBudget(state, 218.72); // Observed software-emulator drain
+  assert.equal(state.level, 1);
+  state = adaptNativeSceneryBudget(state, 110);
+  assert.equal(state.level, 0, 'slow devices retain playable collision geometry and discard far dressing');
+  for (let i = 0; i < 20; i++) state = adaptNativeSceneryBudget(state, 25);
+  assert.equal(state.level, 0, 'ordinary frame timings cannot immediately raise detail');
+  for (let i = 0; i < 149; i++) state = adaptNativeSceneryBudget(state, 12);
+  assert.equal(state.level, 0);
+  state = adaptNativeSceneryBudget(state, 12);
+  assert.equal(state.level, 1, 'sustained real headroom restores some scenery');
+  state = adaptNativeSceneryBudget(state, 62);
+  assert.equal(state.level, 1, 'one moderately slow frame cannot oscillate quality');
+  state = adaptNativeSceneryBudget(state, 62);
+  assert.equal(state.level, 0);
+  assert.equal(adaptNativeSceneryBudget(state, NaN), state, 'invalid timing must not invent an upgrade');
+});
+test('native starts conservative but browser scene retains full detail', () => {
+  const native = new ExpeditionRenderer(context({ native:true }).gl);
+  const web = new ExpeditionRenderer(context({ native:false }).gl);
+  assert.equal(native.sceneryBudget, 1);
+  assert.equal(web.sceneryBudget, 2);
+  native.dispose();web.dispose();
 });

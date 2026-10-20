@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-import { terrainHeight, terrainProfile, terrainBiome, terrainSurfaceHeight, sceneryProfile } from '../public/blackroot/terrain.mjs';
+import { terrainHeight, terrainProfile, terrainBiome, terrainSurfaceHeight, sceneryProfile, atmosphereProfile, foliageSway } from '../public/blackroot/terrain.mjs';
 
 const presets = JSON.parse(readFileSync(new URL('../public/blackroot/world-presets.json', import.meta.url), 'utf8'));
 const routes = Object.keys(presets.routes);
@@ -99,4 +99,51 @@ test('bad scenery configuration cannot produce nonfinite transforms', () => {
     seed: Infinity, treeScale: -999, understory: NaN, rootScale: 9e20
   } } }, 'missing-route');
   assert.deepEqual(invalid, { seed: 0, treeScale: 0, understory: 1, rootScale: 1.6 });
+});
+test('all 15 routes have unique, bounded natural-light and depth-haze presets', () => {
+  assert.deepEqual(Object.keys(presets.atmosphereProfiles).sort(), [...routes].sort());
+  const signatures=new Set();
+  for(const route of routes){
+    const profile=atmosphereProfile(presets,route);
+    assert.deepEqual(profile,atmosphereProfile(presets,route),'Lighting must be stable across reloads');
+    assert(profile.fogDensity>=.006&&profile.fogDensity<=.038,route+' haze');
+    assert(profile.hemisphere>=.8&&profile.hemisphere<=2.5,route+' ambient');
+    assert(profile.environment>=.1&&profile.environment<=.5,route+' PBR environment');
+    assert(profile.fill>=5&&profile.fill<=40,route+' localized fill');
+    assert(profile.exposure>=.95&&profile.exposure<=1.4,route+' exposure');
+    assert(/^#[a-fA-F0-9]{6}$/.test(profile.fillColor),route+' color');
+    signatures.add(profile.fogDensity+':'+profile.fillColor);
+  }
+  assert.equal(signatures.size,routes.length,'Biome lighting must distinguish each route');
+  assert(atmosphereProfile(presets,'ridge').fogDensity<atmosphereProfile(presets,'deep').fogDensity,
+    'Distant exterior architecture should be clearer than subterranean tunnels');
+  assert(atmosphereProfile(presets,'crystal-vein').fill>atmosphereProfile(presets,'deep').fill,
+    'Crystal veins require distinct mineral illumination');
+});
+
+test('malformed atmospheric metadata never changes gameplay or produces unsafe lighting', () => {
+  const fallback=atmosphereProfile(null,'main');
+  assert.equal(fallback.fogDensity,.012);
+  assert.equal(fallback.fillColor,'#ffb257');
+  const broken=atmosphereProfile({atmosphereProfiles:{main:{
+    fogDensity:-100,hemisphere:NaN,environment:Infinity,fill:1e40,
+    exposure:-Infinity,fillColor:'javascript:alert(1)'
+  }}},'missing');
+  assert.deepEqual(broken,{
+    fogDensity:.006,hemisphere:2,environment:.32,fill:40,
+    exposure:1.2,fillColor:'#ffb257'
+  });
+});
+
+test('forest foliage has subtle reproducible breeze without affecting track geometry', () => {
+  for(const time of [0,1.25,3,12,120])for(const distance of [0,31,140,670]){
+    const tilt=foliageSway(time,distance,1);
+    assert(Number.isFinite(tilt)&&Math.abs(tilt)<=.04601,'Wind exceeds safe angular bound');
+    assert.equal(tilt,foliageSway(time,distance,1),'Animated plants must be deterministic');
+  }
+  assert.notEqual(foliageSway(1,52,1),foliageSway(2,52,1),'Frozen foliage');
+  assert.equal(foliageSway(NaN,52,1),foliageSway(0,52,1),'Invalid frame time');
+  const p=terrainProfile(presets,'rootway');
+  assert.equal(terrainSurfaceHeight(p,2.15,52,0),-.33,
+    'Sway must never change lane, collision or save geometry');
 });

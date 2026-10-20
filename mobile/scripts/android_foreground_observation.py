@@ -40,3 +40,42 @@ def sample_live_pair(read_timer, read_pause_control, *,
             )
     return {"started": started, "queries": samples,
             "timer": samples[0]["value"], "pause": samples[1]["value"]}
+
+
+
+def sample_live_pair_with_retry(read_timer, read_pause_control, *,
+                                max_age_seconds=2.0, max_attempts=2,
+                                clock=time.monotonic, journal=None):
+    """Retake a rejected *stale* observation rather than accepting it.
+
+    Each attempt independently begins a new unchanged freshness window. Only
+    the final verified timer and Pause values may justify a force-stop, which
+    must also finish within two seconds of that final attempt's start. RPC
+    errors, missing controls and unrelated assertions do not authorize retries.
+    """
+    if max_attempts < 1 or max_attempts > 3:
+        raise ValueError("Foreground observation attempts must be between 1 and 3")
+    attempts = []
+    for index in range(max_attempts):
+        record = {"attempt": index + 1}
+        try:
+            result = sample_live_pair(read_timer, read_pause_control,
+                                      max_age_seconds=max_age_seconds,
+                                      clock=clock, journal=record)
+        except AssertionError as error:
+            record["error"] = str(error)
+            record["status"] = "rejected"
+            attempts.append(record)
+            if journal is not None:
+                journal["attempts"] = attempts
+            if not str(error).startswith("Foreground observation became stale") or index == max_attempts - 1:
+                raise
+            continue
+        record["status"] = "fresh"
+        attempts.append(record)
+        if journal is not None:
+            journal["attempts"] = attempts
+            journal["started"] = result["started"]
+            journal["queries"] = result["queries"]
+        return result
+    raise AssertionError("No sufficiently fresh foreground observation")

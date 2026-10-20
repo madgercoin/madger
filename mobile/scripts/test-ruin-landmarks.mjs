@@ -22,6 +22,8 @@ test('four ruins routes have four GPU-instanced, mapped PBR architecture types',
       const s=environment.stats;
       assert(s.archStones>=15 && s.archStones<=100,route+' arch stones absent/budget exceeded');
       assert(s.pierBlocks>=10 && s.pierBlocks<=160,route+' piers absent/budget exceeded');
+      assert(s.rubbleStones>=4 && s.rubbleStones<=20,route+' collapsed masonry missing or over budget');
+      assert(s.pierBlocks>=s.rubbleStones+10,route+' rubble displaced intact piers');
       assert(s.towerCourses<=25 && s.rotatingGears<=15,route+' mobile instance cap exceeded');
       assert.equal(s.towerCourses>0,route==='watchtower',route+' tower identity');
       assert.equal(s.rotatingGears>0,route==='gearworks',route+' machinery identity');
@@ -68,6 +70,7 @@ test('scenery deterministically rebuilds at same time, and lower graphics scale 
     assert.deepEqual(Array.from(e.arch.instanceColor.array.slice(0,high*3)),colors,
       'PBR stone colours must remain deterministic without per-frame colour clones');
     assert.equal(e.counts,counts,'animated scenery should reuse its instance counter');
+    assert(e.stats.rubbleStones>0,'scattered PBR ruins must survive repeated scene updates');
     assert.equal(e.patinas.ridge,patina,'route colours should be cached');
     assert.equal(e.stoneTint,tint,'arch tint scratch should be reused');
     e.update(state,330,offset,curve,surface,8,.55);
@@ -76,6 +79,7 @@ test('scenery deterministically rebuilds at same time, and lower graphics scale 
     assert(e.meshes.every(mesh=>!mesh.visible),'chambers cannot show surface ruins');
     e.update(run('rootway'),330,offset,curve,surface,8,1);
     assert(e.meshes.every(mesh=>!mesh.visible),'forest cannot show ruin architecture');
+    assert.equal(e.stats.rubbleStones,0,'route transitions must clear ruin debris');
   }finally{e.dispose();}
 });
 test('gearwork machinery rotates visually without changing route progress',()=>{
@@ -89,4 +93,37 @@ test('gearwork machinery rotates visually without changing route progress',()=>{
     assert.notDeepEqual(first,next,'gears should animate');
   }finally{e.dispose();}
   assert.equal(scene.children.length,0,'GPU resources must be detached on disposal');
+});
+
+test('weathered stone remains deterministic, UV-mapped and geometry-budgeted',()=>{
+  const a=make(),b=make();
+  try{
+    assert.equal(a.meshes.length,4,'erosion cannot add GPU draw batches');
+    for(const key of ['blocks','arch']) {
+      const first=a[key].geometry,second=b[key].geometry;
+      const positions=first.getAttribute('position');
+      const normals=first.getAttribute('normal'),uvs=first.getAttribute('uv');
+      assert(positions.count>50 && positions.count<2000,key+' topology budget');
+      assert.equal(normals.count,positions.count,key+' broken normals');
+      assert.equal(uvs.count,positions.count,key+' broken PBR mapping');
+      assert(positions.array.every(Number.isFinite),key+' invalid displacement');
+      assert(normals.array.every(Number.isFinite),key+' invalid shading');
+      assert.deepEqual([...positions.array],[...second.getAttribute('position').array],
+        key+' weathering must reproduce the same geometry every load');
+      assert(first.boundingSphere?.radius>0 && Number.isFinite(first.boundingSphere.radius),
+        key+' missing finite culling sphere');
+      assert(uvs.array.every(Number.isFinite),key+' invalid PBR UV coordinates');
+      const p=new T.Vector3(),q=new T.Vector3(),r=new T.Vector3();
+      const edgeA=new T.Vector3(),edgeB=new T.Vector3();
+      let soundFaces=0;
+      for(let index=0;index+2<positions.count;index+=3) {
+        p.fromBufferAttribute(positions,index);
+        q.fromBufferAttribute(positions,index+1);
+        r.fromBufferAttribute(positions,index+2);
+        const areaSq=edgeA.subVectors(q,p).cross(edgeB.subVectors(r,p)).lengthSq();
+        if(areaSq>1e-10)soundFaces++;
+      }
+      assert(soundFaces>positions.count/6,key+' stone surface degenerated');
+    }
+  }finally{a.dispose();b.dispose();}
 });

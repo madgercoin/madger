@@ -10,6 +10,27 @@ const SEEDS = Object.freeze({ridge:7,causeway:23,watchtower:41,gearworks:59});
 const hash = n => {const x=Math.sin(n*127.13+41.7)*43758.5453;return x-Math.floor(x);};
 const ANGLE_STEP=Math.PI/13;
 
+/* Break perfectly planar procedural stone silhouettes once at construction.
+ * Vertices sharing identical coordinates get identical erosion, so bevels stay
+ * watertight. Reuse the same triangle, UV, PBR and draw-call budgets on mobile.
+ */
+function weatherStone(geometry, salt, depth) {
+  const positions=geometry.getAttribute('position');
+  for(let index=0;index<positions.count;index++) {
+    const x=positions.getX(index),y=positions.getY(index),z=positions.getZ(index);
+    const coarse=Math.sin(x*12.1+y*9.7+salt*1.3)
+      *Math.cos(z*10.3-x*4.3+salt);
+    const grain=Math.sin(x*36.1-z*19.3+salt)
+      *Math.sin(y*26.3+z*12.7-salt);
+    const chip=depth*(coarse*.72+grain*.28);
+    positions.setXYZ(index,x+chip*.61,y+chip*.78,z+chip*.33);
+  }
+  positions.needsUpdate=true;
+  geometry.computeVertexNormals();
+  geometry.computeBoundingSphere();
+  return geometry;
+}
+
 function masonryBlock() {
   // Irregular, beveled corners catch environmental highlights unlike cubes.
   const p=new T.Shape();
@@ -18,7 +39,7 @@ function masonryBlock() {
   p.lineTo(-.51,.23);p.lineTo(-.51,-.23);p.closePath();
   const g=new T.ExtrudeGeometry(p,{depth:.78,steps:1,bevelEnabled:true,
     bevelSegments:1,bevelSize:.035,bevelThickness:.035});
-  g.translate(0,0,-.39);g.computeVertexNormals();return g;
+  g.translate(0,0,-.39);return weatherStone(g,3.7,.032);
 }
 function voussoir() {
   // One wedge is rotated around the arch's centre to build true stone courses.
@@ -37,7 +58,7 @@ function voussoir() {
   s.closePath();
   const g=new T.ExtrudeGeometry(s,{depth:.84,steps:1,bevelEnabled:true,
     bevelSize:.027,bevelThickness:.027,bevelSegments:1});
-  g.translate(0,0,-.42);g.computeVertexNormals();return g;
+  g.translate(0,0,-.42);return weatherStone(g,11.2,.027);
 }
 function toothedGear() {
   // Physically cut centre, sixteen relief teeth and a shallow bronze rim.
@@ -89,7 +110,7 @@ export class RuinLandmarks {
     // Otherwise first entering a ruins route changes shader defines mid-run.
     for(const mesh of [this.blocks,this.arch,this.tower])
       mesh.setColorAt(0,new T.Color('#ffffff'));
-    this.stats={archStones:0,pierBlocks:0,towerCourses:0,rotatingGears:0};
+    this.stats={archStones:0,pierBlocks:0,rubbleStones:0,towerCourses:0,rotatingGears:0};
     this.temp=new T.Matrix4();this.position=new T.Vector3();
     this.rotation=new T.Quaternion();this.scale=new T.Vector3();
     this.euler=new T.Euler();
@@ -112,12 +133,13 @@ export class RuinLandmarks {
       &&RUIN_ROUTES.includes(route);
     if(!visible) {
       for(const mesh of this.meshes)mesh.count=0;
-      this.stats={archStones:0,pierBlocks:0,towerCourses:0,rotatingGears:0};
+      this.stats={archStones:0,pierBlocks:0,rubbleStones:0,towerCourses:0,rotatingGears:0};
       this.setVisible(false);return;
     }
     const counts=this.counts;
     for(const mesh of this.meshes)counts.set(mesh,0);
     const seed=SEEDS[route];
+    let rubbleStones=0;
     const first=Math.ceil((travel+18)/36);
     const end=Math.floor((travel+(quality<.7?83:112))/36);
     for(let k=first;k<=Math.min(end,first+3);k++) {
@@ -148,6 +170,22 @@ export class RuinLandmarks {
         this.put(this.arch,counts,archX,base+2.44,z,1,1,1,-angle,
           this.stoneTint.copy(patina).multiplyScalar(.86+hash(j*17+k*3+seed)*.18));
       }
+      // Physically scattered collapsed masonry stays on the outer bank. Reuse
+      // the same PBR stone batch: additional depth without a draw call or
+      // collision/save-path changes. Causeway has more collapsed stones.
+      const fragments=route==='causeway'?5:route==='ridge'?2:3;
+      for(let piece=0;piece<fragments;piece++) {
+        const key=k*181+piece*31+seed;
+        const edge=hash(key+3)>.5?1:-1;
+        const x=archX+edge*(2.30+hash(key+5)*1.35);
+        const d=distance+(hash(key+7)-.5)*2.4;
+        const size=.44+hash(key+11)*.36;
+        this.put(this.blocks,counts,x,surface(x,d)+.14+size*.07,travel-d,
+          size, .38+hash(key+13)*.22, size*.88,
+          (hash(key+17)-.5)*1.5,
+          this.stoneTint.copy(patina).multiplyScalar(.78+hash(key+19)*.16));
+        rubbleStones++;
+      }
       if(route==='watchtower'&&k%2===0) {
         const x=centre+side*(11.2+noise),floor=surface(x,distance);
         for(let tier=0;tier<6;tier++) {
@@ -176,7 +214,7 @@ export class RuinLandmarks {
       mesh.visible=mesh.count>0;
     }
     this.stats={
-      archStones:this.arch.count,pierBlocks:this.blocks.count,
+      archStones:this.arch.count,pierBlocks:this.blocks.count,rubbleStones,
       towerCourses:this.tower.count,rotatingGears:this.gears.count
     };
   }

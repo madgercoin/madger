@@ -58,6 +58,41 @@ export function terrainSurfaceHeight(profile, x, distance, roadCentre, isGap = f
   return Math.max(-.33, Math.min(5, base + fineRelief));
 }
 
+/** Small deterministic forest understory sway. Visual-only; time changes
+ * the instanced mesh orientation, never saved inventory or course physics.
+ * Bound the sine amplitudes to avoid plants crossing the protected lanes.
+ */
+export function foliageSway(time,distance,phase=0){
+  const t=finite(time,0),d=finite(distance,0),p=finite(phase,0);
+  return .038*Math.sin(t*1.55+d*.21+p*.7)
+    +.008*Math.sin(t*.65-d*.43+p);
+}
+
+/** Authored daylight, haze and PBR exposure, with no extra draw calls.
+ * Visual-only profiles: never used by route generation, physics or persistence.
+ */
+export const DEFAULT_ATMOSPHERE_PROFILE = Object.freeze({
+  fogDensity: .012, hemisphere: 2, environment: .32,
+  fill: 13, exposure: 1.2, fillColor: '#ffb257'
+});
+export function atmosphereProfile(presets, route) {
+  const candidate=presets?.atmosphereProfiles?.[route]
+    ??presets?.atmosphereProfiles?.main??DEFAULT_ATMOSPHERE_PROFILE;
+  const bounded=(key,min,max)=>Math.max(min,Math.min(max,
+    finite(candidate?.[key],DEFAULT_ATMOSPHERE_PROFILE[key])));
+  const fillColor=typeof candidate?.fillColor==='string'
+    &&/^#[0-9a-f]{6}$/i.test(candidate.fillColor)
+    ?candidate.fillColor:DEFAULT_ATMOSPHERE_PROFILE.fillColor;
+  return {
+    fogDensity:bounded('fogDensity',.006,.038),
+    hemisphere:bounded('hemisphere',.8,2.5),
+    environment:bounded('environment',.1,.5),
+    fill:bounded('fill',5,40),
+    exposure:bounded('exposure',.95,1.4),
+    fillColor
+  };
+}
+
 export const DEFAULT_SCENERY_PROFILE = Object.freeze({
   seed: 0, treeScale: 1, understory: 1, rootScale: 1
 });

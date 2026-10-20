@@ -8,7 +8,7 @@ import time
 import xml.etree.ElementTree as ET
 import atexit
 import uiautomator2 as u2
-from android_foreground_observation import sample_live_pair
+from android_foreground_observation import sample_live_pair_with_retry
 
 PACKAGE = os.environ.get('MADGER_ANDROID_PACKAGE') or 'com.madgercoin.preview'
 APK = os.environ.get('MADGER_ANDROID_APK') or 'android/app/build/outputs/apk/release/app-release.apk'
@@ -175,7 +175,10 @@ def kill_observed_foreground_run():
         pause_object = device(**pause_selector)
         preparation['finished'] = time.monotonic()
         observation['status'] = 'sampling'
-        pair = sample_live_pair(
+        # Under software-emulator contention one read can miss its freshness
+        # limit. Discard that sample and take at most one new, independently
+        # timed observation; never extend the two-second kill requirement.
+        pair = sample_live_pair_with_retry(
             lambda: device.jsonrpc.getText(timer_object.selector),
             lambda: pause_object.exists(timeout=0),
             max_age_seconds=observation['max_age_seconds'],

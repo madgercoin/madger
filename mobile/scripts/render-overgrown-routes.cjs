@@ -8,7 +8,7 @@ for(const name of ['companions','core'])fs.writeFileSync(path.join(temporary,nam
 const G=require(path.join(temporary,'core.js'));
 const types={'.mjs':'application/javascript','.js':'application/javascript','.html':'text/html','.jpg':'image/jpeg','.png':'image/png','.gltf':'model/gltf+json'};
 const server=http.createServer((req,res)=>{
- if(req.url==='/fixture'){res.writeHead(200,{'Content-Type':'text/html'});res.end('<body style="margin:0"><canvas width="430" height="920"></canvas><script type="module">import "/blackroot/renderer.mjs";window.rendererLoaded=true;</script>');return;}
+ if(req.url==='/fixture'){res.writeHead(200,{'Content-Type':'text/html'});res.end('<body style="margin:0;background:#101d1d"><canvas width="430" height="920" style="display:block;width:430px;height:920px"></canvas><script type="module">import "/blackroot/renderer.mjs";window.rendererLoaded=true;</script>');return;}
  const file=path.resolve(dist,'.'+decodeURIComponent(req.url.split('?')[0]));if(!file.startsWith(dist+path.sep)||!fs.existsSync(file)){res.writeHead(404);res.end();return;}res.writeHead(200,{'Content-Type':types[path.extname(file)]||'application/octet-stream'});fs.createReadStream(file).pipe(res);
 });
 (async()=>{
@@ -32,34 +32,68 @@ const server=http.createServer((req,res)=>{
    const course=G.buildOvergrownCourse(s.seed);for(let i=0;i<8&&s.mode==='running';i++)G.fixedStep(s,course,[]);
    assert.equal(s.mode,'chamber');fixtures.push(s);
   }
+  // The current branch graph covers twelve routes. Include the launch approach
+  // and two grandfathered shortcuts so ALL persistent route IDs get a live PBR
+  // render check; do not edit the course graph or any save schema.
+  for(const route of ['main','hollow','grotto']){
+   const s=G.freshOvergrownExpedition(19,'render-'+route);
+   Object.assign(s,{route,mode:'paused',distance:route==='main'?86:680,
+     routeStart:route==='main'?0:455,routeEnd:900,routeSide:0,
+     majorPath:route==='main'?null:'deep',subPath:route==='main'?null:route});
+   fixtures.push(s);
+  }
+  const covered=new Set(fixtures.filter(s=>s.mode!=='chamber').map(s=>s.route));
+  assert.deepEqual([...covered].sort(),Object.keys(worldPresets.routes).sort(),
+   'Every authored and legacy saved route must have its own rendered fixture');
+  assert.equal(fixtures.length,covered.size+G.CHAMBERS.length,
+   'No route may silently replace a secret chamber or duplicate another test');
   const results=[];
   for(const run of fixtures){
    const data=await page.evaluate(async({run,course})=>{
     window.fixtureScene.setCourse(course);window.fixtureScene.draw(run,12,false);
     await new Promise(requestAnimationFrame);window.fixtureScene.draw(run,12.016,false);
-    const gl=document.querySelector('canvas').getContext('webgl2');return {route:run.chamber||run.route,stats:window.fixtureScene.stats,hero:window.madgerHeroDiagnostics,glError:gl.getError()};
+    const gl=document.querySelector('canvas').getContext('webgl2');
+    const canvas=document.querySelector('canvas'),viewport=canvas.getBoundingClientRect();
+    const display={width:viewport.width,height:viewport.height,bufferWidth:gl.drawingBufferWidth,bufferHeight:gl.drawingBufferHeight};
+    const material=window.fixtureScene.renderer.terrain.material;
+    const terrainPbr=Boolean(material.isMeshStandardMaterial&&material.map&&material.normalMap&&material.roughnessMap);
+    return {route:run.chamber||run.route,stats:window.fixtureScene.stats,hero:window.madgerHeroDiagnostics,terrainPbr,display,glError:gl.getError()};
    },{run,course:G.buildOvergrownCourse(run.seed)});
-   console.log('MADGER_HERO_FIXTURE',JSON.stringify({route:data.route,instances:data.stats.instances,meshCount:data.stats.madgerMeshCount,triangles:data.stats.madgerTriangles,rig:data.stats.madgerRig,glError:data.glError}));
-   assert.equal(data.glError,0,run.route);assert(data.stats.assetsReady);assert(data.stats.instances>30);
+   console.log('MADGER_HERO_FIXTURE',JSON.stringify({route:data.route,instances:data.stats.instances,meshCount:data.stats.madgerMeshCount,heroTriangles:data.stats.madgerTriangles,renderedTriangles:data.stats.triangles,drawCalls:data.stats.drawCalls,rig:data.stats.madgerRig,glError:data.glError}));
+   assert.equal(data.glError,0,run.route);assert(data.stats.assetsReady);
+   assert.equal(data.display.width,430,'Route screenshot must occupy full 430px mobile width');
+   assert.equal(data.display.height,920,'Route screenshot must occupy full 920px mobile height');
+   assert(data.display.bufferWidth>=200&&data.display.bufferHeight>=420,
+     'Canvas backing pixels must not shrink over repeated frames: '+run.route);
+   assert(data.stats.triangles>10000&&data.stats.drawCalls>10,'No playable 3D scenery: '+run.route);
+   // The grandfathered shortcuts contain scenery but deliberately have no
+   // modern course-prop batches. Their PBR geometry is checked separately.
+   if(!['hollow','grotto'].includes(run.route))assert(data.stats.instances>30,'Missing authored running props: '+run.route);
+   assert.equal(data.terrainPbr,true,'Terrain missing diffuse, normal or roughness PBR channels: '+run.route);
    assert.equal(data.stats.madgerRig,'authored-3d','Legacy generic character appeared');
    assert(data.stats.madgerMeshCount>=80&&data.stats.madgerTriangles>30000,'Custom animated 3D hero was not rendered');
    assert(data.hero?.approvedFace&&data.hero?.backChevron&&data.hero?.patternedTail,'Required MADGER identity marks missing');
    if(run.mode==='chamber'){
      assert.equal(data.stats.cavernVaultTriangles,0,'Cavern ceiling obstructed a secret room');
      assert.equal(data.stats.cavernFormationInstances,0,'Geological objects intruded into secret room');
-   }else if(['deep','mudslide','crystal-vein','ancient-vault'].includes(run.route)){
+   }else if(worldPresets.routes[run.route][0]==='cavern'){
      assert(data.stats.cavernVaultTriangles>4000,'Playable underground vault not rendered');
      assert(data.stats.cavernFormationInstances>=12,'Cave lacks PBR geological detail: '+run.route);
      assert(data.stats.cavernFormationTriangles<=17000,'Cave exceeds mobile geological mesh budget: '+run.route);
-     if(run.route==='crystal-vein'||run.route==='ancient-vault')
+     if(['crystal-vein','ancient-vault','grotto'].includes(run.route))
        assert(data.stats.cavernMineralInstances>0,'Distinct mineral formation missing: '+run.route);
    }else{
      assert.equal(data.stats.cavernFormationInstances,0,'Underground formations leaked outdoors');
    }
+   if(run.mode!=='chamber'&&worldPresets.routes[run.route][0]==='ruins')
+     assert(data.stats.ruinRubbleStones>=4,'PBR collapsed masonry is missing on '+run.route);
+   else assert.equal(data.stats.ruinRubbleStones,0,'Surface rubble intruded into another biome');
    assert.equal(data.stats.route,run.route,'Live renderer route differs from selected route');
    assert.equal(data.stats.biome,worldPresets.routes[run.route][0],'Wrong environment biome: '+run.route);
    assert.equal(data.stats.terrainProfileLoaded,true,'Authored terrain profile was not loaded: '+run.route);
    assert.equal(data.stats.terrainMaterial,data.stats.biome,'PBR ground texture does not match biome');
+   if(run.mode!=='chamber')assert.equal(data.stats.atmosphereProfileLoaded,true,'No route-specific lighting profile: '+run.route);
+   assert.equal(data.stats.sunbeamPrimitives,0,'Unrealistic solid light cone returned: '+run.route);
    await page.screenshot({path:path.join(out,(run.chamber||run.route)+'.png')});results.push(data);
   }
   // Prove that the existing mobile fallback actually reduces rendered geometry,
@@ -73,9 +107,24 @@ const server=http.createServer((req,res)=>{
     return {full,reduced};
   },{run:fixtures[0],course:G.buildOvergrownCourse(fixtures[0].seed)});
   assert(lod.full>0&&lod.reduced<lod.full*.95,'Adaptive 3D detail did not lower geometry: '+JSON.stringify(lod));
+  // Exercise real 3D foliage instance transforms at two visual times. Route,
+  // collision and checkpoint state are never changed by the renderer.
+  const foliageMotion=await page.evaluate(({run,course})=>{
+    const scene=window.fixtureScene,copy=structuredClone(run);
+    copy.mode='paused';copy.time=1;scene.setCourse(course);
+    scene.draw(copy,31,false);
+    const grass=scene.renderer.scanBatches.find(item=>item.id==='grass_medium_02')?.mesh;
+    if(!grass?.count)return {count:0,changed:false};
+    const before=Array.from(grass.instanceMatrix.array.slice(0,16));
+    copy.time=3;scene.draw(copy,33,false);
+    const after=Array.from(grass.instanceMatrix.array.slice(0,16));
+    return {count:grass.count,changed:before.some((v,i)=>v!==after[i])};
+  },{run:fixtures[0],course:G.buildOvergrownCourse(fixtures[0].seed)});
+  assert(foliageMotion.count>0&&foliageMotion.changed,
+    'PBR instanced understory must animate subtly without new geometry');
   const timing=await page.evaluate(async()=>{const s=window.fixtureScene,r=s.renderer.run,gaps=[];r.mode='paused';r.chamber=undefined;r.route='ancient-vault';r.routeSide=1;r.distance=680;let previous=performance.now();for(let i=0;i<55;i++){await new Promise(requestAnimationFrame);const now=performance.now();if(i>4)gaps.push(now-previous);previous=now;r.distance+=.16;s.draw(r,15+i/60,false);}const sorted=gaps.sort((a,b)=>a-b);return {mean:gaps.reduce((a,b)=>a+b,0)/gaps.length,p95:sorted[Math.floor(sorted.length*.95)],triangles:s.stats.triangles,drawCalls:s.stats.drawCalls};});
   assert.deepEqual(errors,[]);assert.deepEqual(failed,[]);
-  const report={date:new Date().toISOString(),scope:'Actual exported renderer with deterministic route fixtures, separate from real-control gameplay tests',results,timing,lod,errors,failed};
-  fs.writeFileSync(path.join(out,'renderer-routes.json'),JSON.stringify(report,null,2));console.log('ALL_ROUTES_RENDER_PASS',JSON.stringify({routes:results.length,timing,lod}));
+  const report={date:new Date().toISOString(),scope:'Actual exported renderer with deterministic route fixtures, separate from real-control gameplay tests',results,timing,lod,foliageMotion,errors,failed};
+  fs.writeFileSync(path.join(out,'renderer-routes.json'),JSON.stringify(report,null,2));console.log('ALL_ROUTES_RENDER_PASS',JSON.stringify({routes:results.length,timing,lod,foliageMotion}));
  }finally{await browser.close();server.closeAllConnections();await new Promise(r=>server.close(r));fs.rmSync(temporary,{recursive:true,force:true});}
 })().catch(e=>{console.error(e.stack||e);process.exitCode=1;});
