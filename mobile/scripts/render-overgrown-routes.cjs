@@ -69,10 +69,12 @@ const server=http.createServer((req,res)=>{
     scene.setCourse(course);
     renderer.quality=1;scene.draw(run,20,false);const full=renderer.stats.triangles;
     renderer.quality=.52;scene.draw(run,20.016,false);const reduced=renderer.stats.triangles;
+    renderer.quality=.30;scene.draw(run,20.032,false);const emergency=renderer.stats.triangles;
     renderer.quality=1;
-    return {full,reduced};
+    return {full,reduced,emergency};
   },{run:fixtures[0],course:G.buildOvergrownCourse(fixtures[0].seed)});
   assert(lod.full>0&&lod.reduced<lod.full*.95,'Adaptive 3D detail did not lower geometry: '+JSON.stringify(lod));
+  assert(lod.emergency>0&&lod.emergency<lod.reduced*.95,'Emergency software-GPU LOD did not remove enough decorative geometry: '+JSON.stringify(lod));
   const timing=await page.evaluate(async()=>{const s=window.fixtureScene,r=s.renderer.run,gaps=[];r.mode='paused';r.chamber=undefined;r.route='ancient-vault';r.routeSide=1;r.distance=680;let previous=performance.now();for(let i=0;i<55;i++){await new Promise(requestAnimationFrame);const now=performance.now();if(i>4)gaps.push(now-previous);previous=now;r.distance+=.16;s.draw(r,15+i/60,false);}const sorted=gaps.sort((a,b)=>a-b);return {mean:gaps.reduce((a,b)=>a+b,0)/gaps.length,p95:sorted[Math.floor(sorted.length*.95)],triangles:s.stats.triangles,drawCalls:s.stats.drawCalls};});
   assert.deepEqual(errors,[]);assert.deepEqual(failed,[]);
   const report={date:new Date().toISOString(),scope:'Actual exported renderer with deterministic route fixtures, separate from real-control gameplay tests',results,timing,lod,errors,failed};

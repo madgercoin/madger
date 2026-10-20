@@ -7,3 +7,10 @@ The underground web renderer now adds a deterministic limestone stalactite field
 Local evidence: 88 Expedition tests passed (2 skips), all 15 real browser renderer route/chamber fixtures passed, and all three interactive secret rooms passed ordinary action/choice/cold-reload testing after the normal jump-entry timing was aligned to the hatch. The desktop screenshots still show visually crude rocks and props; this geometry pass alone is not production-level realism or a verified Android build.
 
 Browser acceptance and the same-source Android release test in GitHub remain independent publication gates. Do not merge or call the game complete based only on local graphics fixtures.
+
+
+## Adaptive software-GPU graphics fallback
+
+On devices presenting an actual software rasterizer (SwiftShader, llvmpipe or softpipe), the existing web game starts the 3D scene at reduced resolution and omits distant ornamental meshes; on hardware GPUs it retains the high-quality default. Observed sustained frame latency further adjusts the LOD. A transition from a real running phase into a >400ms protective pause can lower subsequent visual complexity before the user clicks the normal Resume button. **The game pause, input, hazard collision, hero unlocks, fragment banking and saved-progress contract are unchanged.** This is not a test-only bypass.
+
+The 15-route local browser fixture passed with normal detail and a forced emergency 3D comparison: full 1,310,812 triangles; medium 825,888; emergency 316,806 (about 76% fewer than full). User-interface resolution is not reduced. This is a desktop browser geometry comparison only, **not** measured physical Android FPS, smoothness, or thermal behavior. Slow software GPU acceptance and exact signed Android verification remain release gates.
