@@ -1,7 +1,7 @@
 /** Companion state is deterministic and saved with the run. Rendering never grants rewards. */
 export type CompanionId = 'snow' | 'gorilla' | 'bot';
 export type CompanionPickup = 'snow-white' | 'gorilla-white' | 'madger-bot';
-export type CompanionRoute = 'main' | 'hollow' | 'grotto';
+export type CompanionRoute = 'main' | 'hollow' | 'grotto' | 'rootway' | 'ridge' | 'deep' | 'mosswalk' | 'root-arch' | 'log-crossing' | 'causeway' | 'watchtower' | 'gearworks' | 'mudslide' | 'crystal-vein' | 'ancient-vault';
 export const COMPANION_IDS: readonly CompanionId[] = ['snow', 'gorilla', 'bot'];
 export const COMPANIONS = {
   snow: { name: 'Snow White', role: 'ATTACK', duration: 18, cooldown: 1.8, actionDuration: .90, impactAt: .40, color: '#D990B0', item: 'snow-white', offset: -1.35,
@@ -43,7 +43,7 @@ export function sanitizeCompanions(input: unknown, validIds: Set<number>, time: 
       lastActionAt: finite(p.lastActionAt, -100, time, -100), cooldown: finite(p.cooldown, 0, meta.cooldown),
       charges: id === 'gorilla' ? count(p.charges, 3) : 0, arrivals: count(p.arrivals, 100), actions: count(p.actions, 1000),
       followX: finite(p.followX, -5, 5), followVx: finite(p.followVx, -25, 25), targetD: finite(p.targetD, 0, 1080),
-      targetX: finite(p.targetX, -2.6, 2.6), targetRoute: ['main', 'hollow', 'grotto'].includes(p.targetRoute ?? '') ? p.targetRoute : 'main',
+      targetX: finite(p.targetX, -2.6, 2.6), targetRoute: ['main', 'hollow', 'grotto', 'rootway', 'ridge', 'deep', 'mosswalk', 'root-arch', 'log-crossing', 'causeway', 'watchtower', 'gearworks', 'mudslide', 'crystal-vein', 'ancient-vault'].includes(p.targetRoute ?? '') ? p.targetRoute : 'main',
       actionRemaining: finite(p.actionRemaining, 0, meta.actionDuration), resolved: p.resolved === true,
       targetId: Number.isSafeInteger(p.targetId) && validIds.has(p.targetId as number) ? p.targetId : null });
     if (c.timeLeft <= 0) { c.charges = 0; clearCompanionAction(c); }

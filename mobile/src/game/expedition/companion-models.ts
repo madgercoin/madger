@@ -122,6 +122,7 @@ export function drawCompanion(r:ExpeditionRenderer,id:CompanionId,p:Pose){
 export function drawTeam(r:ExpeditionRenderer,s:Expedition,time:number,calm:boolean,curve:(d:number)=>number,floor:(d:number)=>number){
  const {shape,bone}=primitives(r);
  if(s.mode==='ready'){
+  if(s.board==='overgrown')return;
   drawCompanion(r,'snow',{x:-1.22,y:floor(0),z:-.30,yaw:Math.PI-.3,scale:.86,time,distance:0,running:false,calm});
   drawCompanion(r,'gorilla',{x:1.40,y:floor(0),z:-1.13,yaw:Math.PI+.15,scale:.80,time,distance:0,running:false,calm});
   drawCompanion(r,'bot',{x:-.83,y:2.08,z:-1.37,yaw:Math.PI-.12,scale:.78,time,distance:0,running:false,calm});return;

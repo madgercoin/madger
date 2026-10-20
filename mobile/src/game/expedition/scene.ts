@@ -1,4 +1,4 @@
-import { branchOffset, clamp, hazardPose, LANE_WIDTH, routeOffset, smooth, type CourseItem, type Expedition, type GameEvent } from './core';
+import { branchOffset, clamp, hazardPose, LANE_WIDTH, routeOffset, overgrownPathOffset, MAJOR_FORKS, SUB_FORKS, CHAMBERS, smooth, type ForkOption, type CourseItem, type Expedition, type GameEvent } from './core';
 import { ExpeditionRenderer, color, type Color, type GL, type Shape } from './gl';
 import { multiply, segment, transform, type Mat4, type Vec3 } from './math';
 import { gaitPose, burrowPose, reactionEnvelope } from './animation';
@@ -148,6 +148,7 @@ export class ExpeditionScene {
   for(let i=0;i<10;i++){const a=i/10*TAU+time;this.shape('box',C.iron,x+Math.cos(a)*r,y+Math.sin(a)*r,z,.20,.26,.23,0,0,a);}
  }
  private scenery(s:Expedition,time:number,calm:boolean){
+  if(s.board==='overgrown'){this.overgrownScenery(s,time,calm);return;}
   const d=s.distance,zone=s.zone,c0=curve(d);const worldX=(wd:number)=>curve(wd)-c0;
   const branchSide=(wd:number,side:number)=>this.burrows.some(g=>g.lane===side&&wd>=g.d-14&&wd<=g.d+103);
   for(let i=0;i<13;i++){
@@ -166,7 +167,7 @@ export class ExpeditionScene {
   }
   const start=Math.floor(d/4)*4-12;
   for(let wd=start;wd<d+108;wd+=4){
-   const z=d-wd,x=worldX(wd),y=floorY(wd),index=Math.floor(wd/4),zoneTile=Math.min(2,Math.floor(Math.max(0,wd)/360));
+   const z=d-wd,x=worldX(wd),y=floorY(wd),index=Math.floor(wd/4),zoneTile=s.board==='overgrown'?0:Math.min(2,Math.floor(Math.max(0,wd)/360));
    for(const lane of [-1,0,1]){
     const hole=s.route==='main'&&this.mainGaps.some(o=>o.lane===lane&&Math.abs(o.d-wd)<2.8);
     if(hole){this.shape('box',C.water,x+lane*LANE_WIDTH,y-1.75,z,2.1,.05,4);continue;}
@@ -227,17 +228,129 @@ export class ExpeditionScene {
   if(!calm)for(let i=0;i<25;i++){const zz=-((i*7.3+d*.6)%95)+8;this.orb(Math.sin(i*9.7)*9+Math.sin(time+i)*.14,1.2+hash(i)*5+Math.sin(time*.7+i)*.18,zz,.025+(i%3)*.008,i%3?C.mint:C.goldGlow);}
   if(d>970){const z=d-1090;this.arch(worldX(1090),1.2,z,4.5,C.gold,.5);for(let i=0;i<5;i++)this.shape('box',C.goldGlow,worldX(1090)+(i-2)*1.4,1.8,z,.8,3.2,.25);}
  }
+ /** Physical branching roads and authored biome props for the Overgrown Burrow.
+  * Each child route gets a separate offset road and themed geometry. Only the
+  * chosen road is detailed once the player has committed to a fork.
+  */
+ private overgrownScenery(s:Expedition,time:number,calm:boolean){
+  const d=s.distance,base=curve(d);
+  const mainTheme=(route:string)=>['main','rootway','mosswalk','root-arch','log-crossing'].includes(route)?'forest':
+    ['ridge','causeway','watchtower','gearworks'].includes(route)?'ruins':'cavern';
+  const approach={id:'main',name:'The Overgrown Burrow',risk:'LOW',reward:'Coins',description:'Forest approach',side:0,accent:'#B1DC88'} as const;
+  const phases:{start:number;end:number;options:readonly (ForkOption|typeof approach)[]}[]=[
+   {start:0,end:140,options:[approach]},
+   {start:140,end:450,options:MAJOR_FORKS},
+   {start:445,end:461,options:[approach]},
+   {start:455,end:900,options:SUB_FORKS[(s.majorPath==='ridge'||s.majorPath==='deep')?s.majorPath:'rootway']},
+   {start:900,end:1080,options:[approach]},
+  ];
+  for(const phase of phases){
+   if(d>phase.end+8||d+94<phase.start)continue;
+   const allRoutes=(s.mode==='fork'||d<phase.start)&&d<phase.start+25;
+   const options=allRoutes?phase.options:phase.options.filter(o=>o.id===s.route);
+   for(const option of options){
+    const theme=mainTheme(option.id),highlight=option.accent;
+    const mud=theme==='cavern'?color('#5D4E59',-1):theme==='ruins'?color('#716458',-1):color('#625848',-1);
+    const edge=theme==='cavern'?color('#3A3446',-8):theme==='ruins'?color('#4F504D',-8):color('#4B4638',-8);
+    const vegetation=theme==='cavern'?color('#4B6D69'):theme==='ruins'?C.leaf:C.leafLight;
+    const step=6,first=Math.max(phase.start+3,Math.floor((d-9)/step)*step);
+    for(let wd=first;wd<Math.min(phase.end-2,d+90);wd+=step){
+     const z=d-wd,off=overgrownPathOffset(option.id,wd),x=off+curve(wd)-base,y=floorY(wd),n=Math.floor(wd/6);
+     const delta=(overgrownPathOffset(option.id,wd+1)+curve(wd+1)-overgrownPathOffset(option.id,wd-1)-curve(wd-1))*.5;
+     const roadYaw=-Math.atan(delta);
+     // Three walkable physical lanes. Their dirt and stone retain the same
+     // independently interpolated fork offset as Madger and collectibles.
+     for(const lane of [-1,0,1]){
+      const lx=x+lane*LANE_WIDTH;
+      this.shape('box',mud,lx,y-.24,z,2.12,.40,6.7,0,roadYaw,0);
+      if((n+lane)%3===0){
+       this.shape('rock',vegetation,lx+.60,y+.025,z+.5,.42,.026,1.55,0,n*.48,0);
+       this.shape('rock',edge,lx-.67,y+.023,z-.6,.37,.042,.39,0,n,0);
+      }
+      if((n+lane)%4===0)this.shape('rock',color('#454A37',-8),lx-.13,y+.023,z+1.1,.61,.035,.77,0,n*.51,0);
+     }
+     // Opaque trees, foliage and rock faces behind the camera can block
+     // the entire screen as a fork curves. Keep the track under the runner,
+     // but render tall scenery only ahead of the playing/camera corridor.
+     if(z>-7)continue;
+     // Wet border rock, ancient edging and root networks never occupy lanes.
+     for(const side of [-1,1]){
+      const bx=x+side*4.33,t=(hash(n*43+side*9)*2-1),bark=theme==='ruins'?color('#807B73',-8):theme==='cavern'?edge:color('#735438',-7);
+      this.shape('rock',edge,bx,y+.16,z,1.08,.42,2.8,0,n*.21,0);
+      if(n%3===0){
+       if(theme==='forest'){
+        // Tapering trunks, forked branches, layered leaf crowns and hanging vines.
+        this.link([bx,y+.15,z],[bx+side*.14,y+3.65,z-.18],.30,bark);
+        this.link([bx+side*.14,y+2.65,z-.18],[bx-side*.92,y+4.26,z-.72],.15,bark);
+        this.link([bx+side*.14,y+3.05,z-.18],[bx+side*.86,y+4.72,z+.32],.13,bark);
+        for(let j=0;j<5;j++)this.shape('rock',j%2?C.leaf:C.leafLight,bx+Math.sin(j*2.32)*.67,y+4.6+Math.cos(j*3.1)*.37,z-.3+Math.cos(j*2.1)*.57,1.05,.53,.90,0,j,0);
+        if(!calm)this.link([bx-side*.5,y+4.1,z-.5],[bx-side*.48+Math.sin(time+n)*.05,y+2.65,z-.45],.020,C.leaf);
+       }else if(theme==='ruins'){
+        const broken=.65+hash(n*17+side)*1.75;
+        this.shape('cylinder',C.stone,bx,y+broken/2,z,.40,broken,.39);
+        this.shape('rock',C.stoneDark,bx+t*.35,y+broken+.05,z,.60,.16,.61,0,n*.3,.11);
+        this.shape('box',C.copper,bx+side*.30,y+.35,z+.28,.11,.56,.10,0,n*.22,0);
+        if(n%6===0)this.gear(bx-side*.7,y+1.1,z,.48,time*.2);
+       }else{
+        // A low ceiling of layered shale, mineral veins and damp formations.
+        this.shape('rock',edge,bx-side*.2,y+2.0,z,1.44,2.9,2.15,0,n*.22,.12);
+        this.shape('cone',C.stoneDark,bx-side*.7,y+3.82,z,.30,1.28,.28,Math.PI,0,0);
+        if(n%6===0)this.crystal(bx-side*.7,y+.18,z,.62,n);
+        this.shape('sphere',color('#48626A',-2),bx-side*.75,y+.012,z,.72,.02,1.03);
+       }
+      }else if(n%2===0){
+       for(let j=0;j<3;j++)this.shape('rock',j%2?edge:vegetation,bx+Math.sin(j*4+n)*.35,y+.15+j*.11,z+(j-1)*.69,.55,.25,.50,0,n+j,0);
+      }
+     }
+     // Distant cliff silhouettes and softer outer banks fill the sky without
+     // covering the runner or inventing hazards beyond the selected path.
+     if(n%4===0){
+      for(const side of [-1,1]){
+       const far=x+side*(17+hash(n*11+side)*4);
+       this.shape('rock',color(theme==='cavern'?'#383949':theme==='ruins'?'#43514F':'#344F49',-8),far,y+3.1,z-9,5.4,6.5,8.0,.1,n*.18,.04);
+       this.shape('rock',color(theme==='cavern'?'#456A67':'#476354',-8),far-side*3,y+.7,z-6,3.1,1.6,5.3,0,n*.19,0);
+      }
+     }
+     // Path-specific recognizable landmarks, not interchangeable filler props.
+     if(option.id==='main'&&n%7===0){
+      for(const side of [-1,1])this.shape('rock',C.leaf,x+side*3.6,y+.25,z+.6,.58,.35,.75,0,n*.31,0);
+      if(n%14===0)for(const side of [-1,1])this.shape('sphere',color('#D6B494',.15),x+side*3.48,y+.57,z,.12,.12,.12);
+     }
+     if(n%9===0){
+      if(option.id==='root-arch')this.arch(x,y+.98,z,3.1,C.wood,.28);
+      if(option.id==='log-crossing')this.link([x-2.6,y+.15,z],[x+2.6,y+.17,z],.20,C.wood);
+      if(option.id==='watchtower')this.arch(x+3.9,y+3.1,z,2.5,C.stone,.36);
+      if(option.id==='gearworks')this.gear(x-3.4,y+.95,z,.71,time*.5);
+      if(option.id==='crystal-vein')for(const side of [-1,1])this.crystal(x+side*3.9,y+.1,z,.9,n+side);
+      if(option.id==='ancient-vault'){this.shape('box',C.wood,x+3.8,y+.65,z,1.1,1.2,.9);this.shape('ring',C.goldGlow,x+3.8,y+1.12,z+.49,.29,1,.29);}
+     }
+    }
+    // At an imminent fork every doorway remains visible, even before choosing.
+    if(allRoutes){
+     const portal=phase.start+13,z=d-portal;
+     if(z>-95&&z<14){
+      const x=curve(portal)-base+overgrownPathOffset(option.id,portal),y=floorY(portal);
+      this.arch(x,y+1.15,z,3.1,theme==='cavern'?C.stone:theme==='ruins'?C.copper:C.wood,.35);
+      this.shape('sphere',color(highlight,.75),x,y+3.80+Math.sin(time*2+option.side)*.09,z,.21,.33,.21);
+      for(const side of [-1,1])this.shape('rock',edge,x+side*3.1,y+.30,z,.81,.75,.88);
+     }
+    }
+   }
+  }
+ }
  private course:CourseItem[]=[];private burrows:CourseItem[]=[];private mainGaps:CourseItem[]=[];
  setCourse(course:CourseItem[]){this.course=course;this.burrows=course.filter(o=>o.kind==='burrow');this.mainGaps=course.filter(o=>o.kind==='gap'&&o.route==='main');this.initializedCamera=false;}
  private item(item:CourseItem,s:Expedition,time:number){
   const ahead=item.d-s.distance;if(ahead < -6||ahead>102||s.used.includes(item.id))return;
-  if(item.route!==s.route&&item.route!=='main'&&s.route!=='main')return;
+  if(s.board==='overgrown'){if(item.route!==s.route&&item.route!=='main')return;}
+  else if(item.route!==s.route&&item.route!=='main'&&s.route!=='main')return;
   let offset=0;
-  if(item.route!=='main'){const gate=this.burrows.find(g=>(item.route==='hollow'&&g.d<500)||(item.route==='grotto'&&g.d>500));if(gate)offset=branchOffset(item.d,gate.d,gate.d+90,gate.lane);}
+  if(s.board==='overgrown')offset=overgrownPathOffset(item.route,item.d);
+  else if(item.route!=='main'){const gate=this.burrows.find(g=>(item.route==='hollow'&&g.d<500)||(item.route==='grotto'&&g.d>500));if(gate)offset=branchOffset(item.d,gate.d,gate.d+90,gate.lane);}
   const pose=hazardPose(item,s.time,s.distance),x=pose.x+offset+curve(item.d)-curve(s.distance),z=-ahead,y=floorY(item.d),phase=time+item.phase;
   const bob=Math.sin(phase*3)*.09;
   const shadow=(size:number)=>this.shape('shadow',C.shadow,x,y+.020,z,size,1,size);
-  if(['coin','gem','life','key','shield','magnet'].includes(item.kind))this.shape('halo',color(item.kind==='gem'?'#b6a4ff':item.kind==='shield'?'#69efcf':'#ffc363',-6),x,y+1+bob,z,.68,.68,.68);
+  if(['coin','gem','life','key','shield','magnet','snow-sigil','guardian-totem','tech-cell','treasure-cache'].includes(item.kind))this.shape('halo',color(item.kind==='gem'?'#b6a4ff':item.kind==='shield'?'#69efcf':'#ffc363',-6),x,y+1+bob,z,.68,.68,.68);
   const ally=companionId(item.kind);
   if(ally){
    const c=color(COMPANIONS[ally].color,.45),active=s.companions[ally].timeLeft>0;
@@ -247,6 +360,47 @@ export class ExpeditionScene {
    return;
   }
   switch(item.kind){
+   case 'chamber-door':{
+    const chamber=CHAMBERS.find(c=>c.route===item.route&&c.d===item.d);if(!chamber)break;
+    const tech=chamber.hero==='bot',accent=color(chamber.accent,.55),height=tech?1.25:.16;
+    this.arch(x,y+height,z,tech?.85:1.0,tech?C.copper:color('#5B503D',-7),.22);
+    this.shape('box',color('#122723'),x,y+.55+height,z-.12,1.45,1.0,.20);
+    this.shape('ring',accent,x,y+height+.75,z+.18,.35,1,.35,Math.PI/2,0,0);
+    for(const side of [-1,1]){
+     this.shape('rock',color('#6D7567',-8),x+side*1.0,y+.37,z,.32,.52,.6);
+     this.orb(x+side*.8,y+height+.72,z+.1,.075,accent);
+    }
+    if(tech){this.gear(x,y+2.65,z,.24,time*.4);this.shape('box',C.copper,x,y+.28,z+.3,1.5,.15,1.0);}
+    else for(let i=0;i<4;i++)this.link([x-.5+i*.3,y+1.1,z+.12],[x-.48+i*.3,y+.84,z+.15],.025,C.cream);
+    break;
+   }
+   case 'snow-sigil':{
+    this.shape('cylinder',C.iron,x,y+.18,z,.50,.26,.50);
+    this.shape('cone',color('#A6DCE8',.5),x,y+1.10+bob,z,.33,.94,.33,0,phase*.55,0);
+    this.shape('cone',color('#F6D8F2',.7),x,y+1.44+bob,z,.21,.52,.23,Math.PI,phase*.55,0);
+    for(let i=0;i<5;i++){const a=i*TAU/5;this.shape('sphere',C.pale,x+Math.cos(a)*.30,y+.90+Math.sin(a*2+phase)*.10,z+Math.sin(a)*.30,.055,.075,.05);}
+    shadow(.52);break;
+   }
+   case 'guardian-totem':{
+    this.shape('cylinder',C.stoneDark,x,y+.37,z,.45,.68,.43);
+    this.shape('rock',C.stone,x,y+.83+bob,z,.47,.54,.37,0,phase*.16,0);
+    this.shape('box',C.goldGlow,x,y+.86+bob,z-.39,.16,.47,.045);
+    for(const side of [-1,1])this.shape('rock',C.cream,x+side*.31,y+1.06+bob,z-.26,.14,.21,.16,0,0,side*.28);
+    shadow(.60);break;
+   }
+   case 'tech-cell':{
+    this.shape('cylinder',C.iron,x,y+.82+bob,z,.33,.92,.33);
+    this.shape('cylinder',C.mint,x,y+.82+bob,z,.26,.68,.26);
+    for(const level of [.38,.70,1.03,1.26])this.shape('ring',C.copper,x,y+level+bob,z,.36,1,.36);
+    this.orb(x,y+1.43+bob,z,.16,C.mint);shadow(.45);break;
+   }
+   case 'treasure-cache':{
+    this.shape('rock',C.stoneDark,x,y+.18,z,.79,.33,.66);
+    this.shape('box',C.wood,x,y+.48,z,.83,.52,.67);
+    this.shape('rock',C.goldGlow,x,y+.75+bob,z,.53,.23,.48);
+    for(let i=0;i<5;i++)this.orb(x+(i-2)*.18,y+.78+bob,z-.24,.085,i%2?C.gold:C.violet);
+    shadow(.72);break;
+   }
    case 'coin':
     this.shape('ring',C.goldGlow,x,y+.92+bob,z,.32,.9,.32,Math.PI/2,phase*2.5,0);this.shape('cylinder',C.gold,x,y+.92+bob,z,.225,.055,.225,Math.PI/2,phase*2.5,0);shadow(.32);break;
    case 'gem':
@@ -307,10 +461,45 @@ export class ExpeditionScene {
     this.shape('box',C.goldGlow,x,y+.72,z+.54,.21,.27,.075);shadow(.9);break;
   }
  }
+ private chamberRoom(s:Expedition,time:number){
+  const chamber=CHAMBERS.find(c=>c.id===s.chamber);if(!chamber)return;
+  const x=s.x+routeOffset(s),floor=floorY(s.distance),tech=chamber.hero==='bot',nest=chamber.hero==='gorilla';
+  const wall=color(nest?'#5A6352':tech?'#626666':'#5A596C',-8),wood=color('#695139',-7),accent=color(chamber.accent,.7);
+  for(let row=0;row<6;row++)for(let col=-2;col<=2;col++){
+   this.shape('box',wall,x+col*1.6,floor-.18,-row*1.8,1.57,.35,1.76,0,0,0);
+   if((row+col)%3===0)this.shape('rock',nest?C.leaf:C.stoneDark,x+col*1.6+.4,floor+.01,-row*1.8,.33,.025,.52);
+  }
+  for(const side of [-1,1])for(let row=0;row<5;row++){
+   for(let layer=0;layer<3;layer++)this.shape('box',wall,x+side*3.8,floor+.5+layer*.98,-1-row*2.0,1.0,.96,1.94,0,0,side*.025);
+   this.shape('cylinder',tech?C.copper:wall,x+side*3.4,floor+1.65,-1-row*2.0,.23,3.3,.23);
+   if(row%2===0){this.orb(x+side*3.0,floor+2.1,-1-row*2,.12,accent);this.shape('halo',color(chamber.accent,-6),x+side*3.0,floor+2.1,-.96-row*2,.60,.60,.60);}
+  }
+  this.arch(x,floor+1.8,-8.9,3.25,wall,.48);
+  for(let layer=0;layer<4;layer++)this.shape('box',wall,x,floor+.5+layer*.98,-10.3,8.2,.96,1.0);
+  this.shape('cylinder',C.stoneDark,x,floor+.24,-5.8,1.55,.45,1.55);
+  this.shape('ring',accent,x,floor+.49,-5.8,1.45,1,1.45);
+  if(nest){
+   for(let i=0;i<8;i++){const a=i/8*TAU;this.link([x+Math.cos(a)*1.15,floor+.45,-5.8+Math.sin(a)*1.15],[x+Math.cos(a+.45)*.4,floor+.66,-5.8+Math.sin(a+.45)*.4],.15,wood);}
+   this.shape('rock',wall,x,floor+1.3,-5.8,.66,.91,.60);
+   for(const side of [-1,1]){this.shape('rock',C.cream,x+side*.25,floor+1.4,-5.15,.16,.28,.10);this.plant(x+side*2.7,floor+.1,-7,side,time);}
+   for(const side of [-1,1])this.link([x+side*3.6,floor+3.5,-7],[x+side*.5,floor+3.0,-8],.27,wood);
+  }else if(tech){
+   for(const side of [-1,1]){this.gear(x+side*2.9,floor+2.6,-8.1,1.15,time*.25*side);this.link([x+side*2.6,floor+.3,-7],[x+side*2.6,floor+3.2,-7],.18,C.copper);}
+   this.shape('cylinder',C.iron,x,floor+1.1,-5.8,.66,1.2,.66);
+   this.shape('cylinder',accent,x,floor+1.25,-5.8,.43,.93,.43);
+   for(let i=0;i<4;i++)this.shape('ring',C.copper,x,floor+.67+i*.35,-5.8,.73,1,.73);
+  }else{
+   this.shape('cylinder',color('#243A50',-2),x,floor+.48,-5.8,1.23,.035,1.23);
+   for(let i=0;i<7;i++){const a=i/7*TAU;this.crystal(x+Math.cos(a)*2.3,floor+.1,-5.8+Math.sin(a)*2,.7+i%2*.3,i);}
+   this.shape('cone',accent,x,floor+1.5,-5.8,.42,1.2,.42,0,time*.2,0);
+   this.shape('ring',C.pale,x,floor+2.1,-5.8,.60,1,.60);
+  }
+ }
  draw(s:Expedition,visualTime:number,calm=false){
   if(this.disposed)return;const dt=Math.min(.08,Math.max(0,visualTime-this.lastTime));this.lastTime=visualTime;this.clock=visualTime;
-  this.renderer.reset();this.scenery(s,visualTime,calm);
-  for(const item of this.course)this.item(item,s,visualTime);
+  this.renderer.reset();if(s.mode==='chamber')this.chamberRoom(s,visualTime);else{
+   this.scenery(s,visualTime,calm);for(const item of this.course)this.item(item,s,visualTime);
+  }
   this.madger(s,visualTime,calm);
   drawTeam(this.renderer,s,visualTime,calm,curve,floorY);
   this.particles=this.particles.filter(p=>visualTime-p.born<p.life);
@@ -320,8 +509,9 @@ export class ExpeditionScene {
   this.cameraX+=(targetX-this.cameraX)*(1-Math.exp(-dt*4));
   this.cameraY+=(s.y*.18-this.cameraY)*(1-Math.exp(-dt*3));
   const shake=!calm&&this.clock-this.reaction.at<.26&&this.reaction.kind==='hurt'?Math.sin(this.clock*73)*.055*(1-(this.clock-this.reaction.at)/.26):0;
-  const eye:Vec3=lobby?[3.8,3.3,8.6]:[this.cameraX+shake,4.4+this.cameraY,9.6];
-  const target:Vec3=lobby?[0,1.35,-.6]:[this.cameraX+curve(s.distance+22)-curve(s.distance),.9,-14];
+  const chamber=s.mode==='chamber',cx=s.x+routeOffset(s);
+  const eye:Vec3=chamber?[cx+1.9,3.8,8]:lobby?[3.8,3.3,8.6]:[this.cameraX+shake,4.4+this.cameraY,9.6];
+  const target:Vec3=chamber?[cx,1.3,-5]:lobby?[0,1.35,-.6]:[this.cameraX+curve(s.distance+22)-curve(s.distance),.9,-14];
   this.renderer.render(eye,target,visualTime,s.zone,s.distance);
  }
  dispose(){this.disposed=true;this.particles=[];this.renderer.dispose();}

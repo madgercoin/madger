@@ -30,24 +30,39 @@ export function createExpeditionAudio(){
   let enabled=true,musicEnabled=true,active=false,disposed=false,generation=0,lastVoice=-100,lastAlly=-100;
   const players=new Map<Cue,ReturnType<typeof createAudioPlayer>>(),lastPlayed=new Map<Cue,number>();
   const cueGeneration=new Map<Cue,number>();
-  for(const [key,source] of Object.entries(SOURCES)){
-    try{const p=createAudioPlayer(source,{updateInterval:1000});p.volume=0;players.set(key as Cue,p);}catch{/* Optional audio stays unavailable without affecting play. */}
-  }
-  for(const key of ['ambience','music'] as Cue[]){const p=players.get(key);if(p)p.loop=true;}
+  const player=(key:Cue)=>{
+    const existing=players.get(key);if(existing)return existing;
+    if(disposed)return undefined;
+    try{
+      const p=createAudioPlayer(SOURCES[key],{updateInterval:1000});p.volume=0;p.loop=key==='ambience'||key==='music';
+      // Expo 57's web player drops HTMLMediaElement.play()'s promise. Observe
+      // that instance's rejection so a deliberate pause never escapes unhandled.
+      if(typeof document!=='undefined'){
+        const media=(p as unknown as {media?:HTMLMediaElement}).media;
+        if(media){const play=media.play.bind(media);media.play=()=>{const pending=play();void pending.catch(()=>{});return pending;};}
+      }
+      players.set(key,p);return p;
+    }catch{return undefined;}
+  };
+  // Browser audio elements fetch their sources immediately. Paused recovery and
+  // secret rooms need none; instantiate a sound only when play actually needs it.
+  // Native retains its established preloading behavior.
+  if(typeof document==='undefined')for(const key of Object.keys(SOURCES) as Cue[])player(key);
   void setAudioModeAsync({playsInSilentMode:false,shouldPlayInBackground:false,interruptionMode:'mixWithOthers'}).catch(()=>{});
   const safePause=(key:Cue)=>{cueGeneration.set(key,(cueGeneration.get(key)??0)+1);try{players.get(key)?.pause();}catch{}};
   const stop=()=>{generation++;for(const key of players.keys())safePause(key);};
+  const safePlay=(p:ReturnType<typeof createAudioPlayer>)=>{try{void Promise.resolve(p.play()).catch(()=>{});}catch{}};
   const beds=()=>{
     if(disposed||!enabled||!active)return;
-    try{const p=players.get('ambience');if(p){p.volume=.22;p.play();}}catch{}
-    try{const p=players.get('music');if(p){p.volume=musicEnabled?.12:0;if(musicEnabled)p.play();else p.pause();}}catch{}
+    try{const p=player('ambience');if(p){p.volume=.22;safePlay(p);}}catch{}
+    try{const p=musicEnabled?player('music'):players.get('music');if(p){p.volume=musicEnabled?.12:0;if(musicEnabled)safePlay(p);else p.pause();}}catch{}
   };
   function cue(key:Cue,time:number,volume:number,cooldown=.10){
     if(!enabled||!active||disposed)return;
     if(time-(lastPlayed.get(key)??-100)<cooldown)return;
-    const p=players.get(key);if(!p)return;lastPlayed.set(key,time);const token=generation;
+    const p=player(key);if(!p)return;lastPlayed.set(key,time);const token=generation;
     const cueToken=(cueGeneration.get(key)??0)+1;cueGeneration.set(key,cueToken);
-    try{p.volume=volume;void p.seekTo(0).then(()=>{if(!disposed&&enabled&&active&&generation===token&&cueGeneration.get(key)===cueToken)p.play();}).catch(()=>{});}catch{}
+    try{p.volume=volume;void p.seekTo(0).then(()=>{if(!disposed&&enabled&&active&&generation===token&&cueGeneration.get(key)===cueToken)safePlay(p);}).catch(()=>{});}catch{}
   }
   function voice(key:'happy'|'hurt',time:number){
     if(key==='happy'&&time-lastVoice<1.6)return;
@@ -72,6 +87,8 @@ export function createExpeditionAudio(){
         if(e.kind==='step')cue(zone===1?'metal':'step',e.at,.28,.12);
         if(e.kind==='coin')cue('coin',e.at,.24,.085);
         if(e.kind==='gem')cue('gem',e.at,.27,.14);
+        if(e.kind==='hero-shard'){cue('power',e.at,.35,.16);voice('happy',e.at);}
+        if(e.kind==='fork')cue('secret',e.at,.32,.30);
         if(e.kind==='jump')cue('jump',e.at,.34,.16);
         if(e.kind==='land')cue('land',e.at,.32,.16);
         if(e.kind==='slide')cue('slide',e.at,.32,.20);

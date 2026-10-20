@@ -8,12 +8,12 @@ export const LANE_WIDTH = 2.15;
 export const MAX_HP = 3;
 export const ENGINE_VERSION = 1;
 export type Lane = -1 | 0 | 1;
-export type Mode = 'ready' | 'countdown' | 'running' | 'paused' | 'upgrade' | 'won' | 'lost';
-export type Kind = 'coin' | 'gem' | 'heart' | 'shield' | 'magnet' | 'life' | 'key' | 'vault' | 'workshop' | 'burrow' | 'boulder' | 'saw' | 'roots' | 'steam' | 'gap' | 'mud' | 'drone' | 'crate' | 'snow-white' | 'gorilla-white' | 'madger-bot';
+export type Mode = 'ready' | 'countdown' | 'running' | 'paused' | 'fork' | 'chamber' | 'upgrade' | 'won' | 'lost';
+export type Kind = 'coin' | 'gem' | 'heart' | 'shield' | 'magnet' | 'life' | 'key' | 'vault' | 'workshop' | 'burrow' | 'boulder' | 'saw' | 'roots' | 'steam' | 'gap' | 'mud' | 'drone' | 'crate' | 'snow-white' | 'gorilla-white' | 'madger-bot' | 'snow-sigil' | 'guardian-totem' | 'tech-cell' | 'treasure-cache' | 'chamber-door';
 export type Upgrade = 'magnet' | 'armor' | 'fortune';
-export type Route = 'main' | 'hollow' | 'grotto';
+export type Route = 'main' | 'hollow' | 'grotto' | 'rootway' | 'ridge' | 'deep' | 'mosswalk' | 'root-arch' | 'log-crossing' | 'causeway' | 'watchtower' | 'gearworks' | 'mudslide' | 'crystal-vein' | 'ancient-vault';
 export type CourseItem = { id: number; d: number; lane: Lane; kind: Kind; phase: number; route: Route };
-export type EventKind = 'coin' | 'gem' | 'hit' | 'block' | 'jump' | 'land' | 'slide' | 'burst' | 'power' | 'secret' | 'revive' | 'upgrade' | 'near' | 'zone' | 'win' | 'lose' | 'step' | 'splash' | 'hint' | 'companion-join' | 'companion-attack' | 'companion-guard' | 'companion-boost' | 'companion-leave';
+export type EventKind = 'coin' | 'gem' | 'hit' | 'block' | 'jump' | 'land' | 'slide' | 'burst' | 'power' | 'secret' | 'revive' | 'upgrade' | 'near' | 'zone' | 'win' | 'lose' | 'step' | 'splash' | 'hint' | 'companion-join' | 'companion-attack' | 'companion-guard' | 'companion-boost' | 'companion-leave' | 'hero-shard' | 'fork';
 export type GameEvent = { id: number; kind: EventKind; at: number; x: number; text: string; value: number; companion?: CompanionId; targetD?: number; targetX?: number };
 export type Expedition = {
   version: 1; seed: number; id: string; mode: Mode; resumeMode: 'countdown' | 'running';
@@ -26,8 +26,12 @@ export type Expedition = {
   route: Route; routeStart: number; routeEnd: number; routeSide: Lane; secrets: string[];
   upgrade: Upgrade | null; used: number[]; eventId: number; lastHurt: number; lastGood: number;
   lastFoot: number; zone: number; finished: boolean; companions: CompanionTeam;
+  board?: 'overgrown'; forkStage?: number; majorPath?: Route; subPath?: Route;
+  heroShards?: Record<CompanionId,number>; baseShards?: Record<CompanionId,number>;
+  heroUnlocked?: Record<CompanionId,boolean>; heroCharge?: number; metaFortune?: number;
+  chamber?: ChamberId;
 };
-export const KINDS: Kind[] = ['coin','gem','heart','shield','magnet','life','key','vault','workshop','burrow','boulder','saw','roots','steam','gap','mud','drone','crate','snow-white','gorilla-white','madger-bot'];
+export const KINDS: Kind[] = ['coin','gem','heart','shield','magnet','life','key','vault','workshop','burrow','boulder','saw','roots','steam','gap','mud','drone','crate','snow-white','gorilla-white','madger-bot','snow-sigil','guardian-totem','tech-cell','treasure-cache','chamber-door'];
 export const HAZARDS = new Set<Kind>(['boulder','saw','roots','steam','gap','mud','drone','crate']);
 export const clamp = (v: number, lo: number, hi: number) => Math.max(lo, Math.min(hi, v));
 export const smooth = (v: number) => { const x = clamp(v, 0, 1); return x*x*(3-2*x); };
@@ -110,6 +114,7 @@ export function branchOffset(distance: number, start: number, end: number, side:
   return side * (LANE_WIDTH + (8.5-LANE_WIDTH)*entry) * exit;
 }
 export function routeOffset(s: Expedition, distance = s.distance) {
+  if(s.board==='overgrown')return overgrownPathOffset(s.route,distance);
   return s.route === 'main' ? 0 : branchOffset(distance,s.routeStart,s.routeEnd,s.routeSide);
 }
 function event(s: Expedition, events: GameEvent[], kind: EventKind, text = '', value = 0) {
@@ -203,9 +208,23 @@ function reward(s: Expedition, item: CourseItem, events: GameEvent[]) {
   const ally=companionId(item.kind);if(ally){recruitCompanion(s,ally,events);return;}
   const base = item.kind === 'coin' ? 50 : item.kind === 'gem' ? 175 : 150;
   const multiplier = 1+Math.min(4,Math.floor(s.combo/8));
-  const points = base * multiplier * (s.burst>0?2:1) * (item.kind==='gem' && s.upgrade==='fortune'?2:1);
+  const points = Math.round(base * multiplier * (s.burst>0?2:1) * (item.kind==='gem' && s.upgrade==='fortune'?2:1) * (s.board==='overgrown'?1+Math.min(3,s.metaFortune??0)*.15:1));
+  if(s.board==='overgrown' && ['snow-sigil','guardian-totem','tech-cell'].includes(item.kind)){
+    const id:CompanionId=item.kind==='snow-sigil'?'snow':item.kind==='guardian-totem'?'gorilla':'bot';
+    if(!s.heroShards||!s.baseShards||!s.heroUnlocked)return;
+    s.heroShards[id]++;s.heroCharge=clamp((s.heroCharge??0)+24,0,100);s.score+=300;
+    const count=s.heroShards[id]+s.baseShards[id];
+    if(!s.heroUnlocked[id]&&count>=HERO_SHARD_TARGET){s.heroUnlocked[id]=true;event(s,events,'hero-shard',COMPANIONS[id].name.toUpperCase()+' UNLOCKED! · CHARGE TO SUMMON',300);}
+    else event(s,events,'hero-shard',COMPANIONS[id].name.toUpperCase()+' FRAGMENT · '+Math.min(count,HERO_SHARD_TARGET)+'/'+HERO_SHARD_TARGET,300);
+    s.lastGood=s.time;return;
+  }
+  if(s.board==='overgrown'&&item.kind==='treasure-cache'){
+    s.gems+=3;s.coins+=5;s.score+=650;s.heroCharge=clamp((s.heroCharge??0)+30,0,100);
+    s.lastGood=s.time;event(s,events,'secret','ANCIENT TREASURE CACHE · +5 COINS / +3 RELICS',650);return;
+  }
   if(item.kind==='coin'||item.kind==='gem') {
     s.combo++; s.bestCombo=Math.max(s.bestCombo,s.combo); s.score+=points; s.energy=clamp(s.energy+7,0,100);
+    if(s.board==='overgrown')s.heroCharge=clamp((s.heroCharge??0)+(item.kind==='gem'?12:5),0,100);
     if(item.kind==='coin') s.coins++; else s.gems++;
     s.lastGood=s.time; event(s,events,item.kind,item.kind==='gem'?`RELIC +${points}`:'',points); return;
   }
@@ -262,14 +281,18 @@ export function fixedStep(s: Expedition, course: CourseItem[], events: GameEvent
   const targetSpeed=base*(s.mud>0?.65:1)*(s.burst>0?1.10:1);
   s.speed+=(targetSpeed-s.speed)*Math.min(1,STEP*5);
   s.distance=Math.min(TRACK_LENGTH,s.distance+s.speed*STEP);
-  const zone=zoneAt(s.distance);if(zone!==s.zone){s.zone=zone;event(s,events,'zone',ZONES[zone].name);}
-  if(s.route!=='main' && s.distance>=s.routeEnd){s.route='main';s.immune=Math.max(s.immune,2);event(s,events,'hint','SHORTCUT COMPLETE · SAFE REJOIN');}
+  const zone=s.board==='overgrown'?0:zoneAt(s.distance);if(zone!==s.zone){s.zone=zone;event(s,events,'zone',ZONES[zone].name);}
+  if(s.route!=='main' && s.distance>=s.routeEnd){s.route='main';s.immune=Math.max(s.immune,2);event(s,events,'hint',s.board==='overgrown'?'PATHS REJOIN · PICK YOUR NEXT CHALLENGE':'SHORTCUT COMPLETE · SAFE REJOIN');}
+  if(s.board==='overgrown'&&((s.forkStage===0&&s.distance>=140)||(s.forkStage===1&&s.distance>=455))){
+    s.forkStage=(s.forkStage??0)+1;s.mode='fork';s.immune=Math.max(s.immune,1.1);
+    event(s,events,'fork',s.forkStage===1?'THREE WAYS INTO THE WILD · CHOOSE YOUR PATH':'DEEPER STILL · CHOOSE YOUR SUB-PATH');return;
+  }
   const used=new Set(s.used);
   stepCompanions(s,course,used,events);
   for(const item of course) {
     if(item.d > s.distance+5)break;
     if(item.d < oldDistance-4 || used.has(item.id) || item.route!==s.route)continue;
-    const pose=hazardPose(item,s.time,s.distance), halfLength=item.kind==='gap'?1.55:item.kind==='mud'?1.25:.62;
+    const pose=hazardPose(item,s.time,s.distance), halfLength=item.kind==='gap'?1.55:item.kind==='chamber-door'?1.35:item.kind==='mud'?1.25:.62;
     if(item.d < s.distance-halfLength && item.d >= oldDistance-halfLength) {
       if(HAZARDS.has(item.kind) && item.kind!=='mud' && Math.abs(pose.x-s.x)>1.05 && Math.abs(pose.x-s.x)<1.65){s.score+=75;s.nearMisses++;event(s,events,'near','CLOSE CALL +75',75);}
       used.add(item.id);continue;
@@ -280,6 +303,16 @@ export function fixedStep(s: Expedition, course: CourseItem[], events: GameEvent
     const radius=isHazard?(item.kind==='drone'?.72:.82):.83;
     const attracted=(item.kind==='coin'||item.kind==='gem')&&(s.magnet>0||s.companions.bot.timeLeft>0);
     if(dx>radius&&!attracted)continue;
+    if(item.kind==='chamber-door') {
+      const chamber=CHAMBERS.find(c=>c.route===item.route&&c.d===item.d);
+      if(!chamber||s.secrets.includes(chamber.id))continue;
+      const entered=chamber.action==='burrow'?s.slide>0&&s.y<.25:s.y>.65;
+      if(entered){
+        s.chamber=chamber.id;s.mode='chamber';s.y=0;s.vy=0;s.slide=0;s.slideAge=0;s.jumpBuffer=0;
+        used.add(item.id);event(s,events,'secret',chamber.name.toUpperCase()+' DISCOVERED');break;
+      }
+      continue;
+    }
     if(item.kind==='burrow') {
       if(s.slide>0 && s.y<.25 && s.route==='main') {
         s.route=item.d<500?'hollow':'grotto';s.routeStart=item.d;s.routeEnd=item.d+90;s.routeSide=item.lane;
@@ -313,6 +346,14 @@ export function advance(s: Expedition, course: CourseItem[], seconds: number, cl
   while(clock.accumulator>=STEP-1e-9){fixedStep(s,course,events);clock.accumulator=Math.max(0,clock.accumulator-STEP);if(s.mode!=='running'&&s.mode!=='countdown'){clock.accumulator=0;break;}}
 }
 export function nearbyHint(s: Expedition, course: CourseItem[]) {
+  if(s.board==='overgrown'){
+    const chamber=CHAMBERS.find(c=>c.route===s.route&&c.d>s.distance-1&&c.d<s.distance+65);
+    if(chamber)return `${chamber.clue.toUpperCase()} · ${['LEFT','CENTRE','RIGHT'][chamber.lane+1]} · ${chamber.action==='burrow'?'BURROW':'JUMP'} AT ${chamber.d}m`;
+    if(s.forkStage===0)return 'FIRST FORK AT 140m · CHOOSE YOUR DESTINY';
+    if(s.forkStage===1&&s.distance<455)return (s.majorPath??'ROOTWAY').toUpperCase()+' · SUB-PATH FORK AT 455m';
+    if(s.route!=='main')return (s.subPath??'FOREST').toUpperCase().replace(/-/g,' ')+' · RARE FRAGMENTS AHEAD';
+    return 'THE BURROW TREASURY · 1080m FINISH';
+  }
   if(s.route!=='main')return 'Hidden route · gems, upgrades and life reserves';
   const item=course.find(i=>i.route==='main'&&i.d>s.distance+6&&i.d<s.distance+45&&['burrow','workshop','vault','key'].includes(i.kind));
   if(!item){const ally=course.find(i=>i.route===s.route&&i.d>s.distance+3&&i.d<s.distance+40&&companionId(i.kind)&&!s.used.includes(i.id));if(!ally)return '';const id=companionId(ally.kind)!;return COMPANIONS[id].name.toUpperCase()+' · '+COMPANIONS[id].role+' · '+['LEFT','CENTRE','RIGHT'][ally.lane+1];}
@@ -321,4 +362,153 @@ export function nearbyHint(s: Expedition, course: CourseItem[]) {
   if(item.kind==='workshop')return `WORKSHOP ${lane} · JUMP THROUGH THE ARCH`;
   if(item.kind==='key')return `VAULT KEY ${lane} · KEEP IT FOR THE GOLD DOOR`;
   return `${item.d>1000?'TREASURE':'SEALED VAULT'} ${lane}${s.keys>0?' · KEY READY':''}`;
+}
+
+/** Overgrown Burrow: a single authored board, three major paths and nine subpaths.
+ * Route rewards are fixed per seed; no purchase, ad or RNG may unlock a hero.
+ * Kept alongside the v1 course so historical saved games remain playable.
+ */
+export const HERO_SHARD_TARGET=4;
+export type ChamberId='guardian-nest'|'capacitor-sanctum'|'moonwell';
+export const CHAMBERS:readonly {id:ChamberId;route:Route;d:number;lane:Lane;action:'burrow'|'jump';name:string;clue:string;story:string;hero:CompanionId;supplies:string;accent:string}[]=[
+ {id:'guardian-nest',route:'root-arch',d:704,lane:-1,action:'burrow',name:'The Guardian Nest',clue:'Claw marks beneath the living roots',story:'Ancient roots cradle a guardian altar. Choose the carved totem, or leave it for a reserve of protective sap.',hero:'gorilla',supplies:'Restore 2 grit + one shield for 45 seconds',accent:'#A3DE85'},
+ {id:'capacitor-sanctum',route:'gearworks',d:716,lane:1,action:'jump',name:'The Capacitor Sanctum',clue:'A raised copper hatch sparks above the gears',story:'A dormant machine still holds one charge. Salvage a Bot cell, or route its power into your treasure magnet.',hero:'bot',supplies:'Treasure magnet for 18 seconds + 40 burst energy',accent:'#79D9E6'},
+ {id:'moonwell',route:'crystal-vein',d:704,lane:0,action:'burrow',name:'The Buried Moonwell',clue:'Silver roots conceal a low crystal doorway',story:'A moonlit spring hides beneath the crystal seam. Take a Snow Sigil, or carry its restorative water as an extra life.',hero:'snow',supplies:'One extra life + restore 1 grit',accent:'#C4B1FF'},
+];
+export function resolveChamber(s:Expedition,choice:'fragment'|'supplies',events:GameEvent[]) {
+ if(s.board!=='overgrown'||s.mode!=='chamber'||!['fragment','supplies'].includes(choice))return false;
+ const chamber=CHAMBERS.find(c=>c.id===s.chamber&&c.route===s.route);
+ if(!chamber||s.secrets.includes(chamber.id))return false;
+ s.secrets.push(chamber.id);s.coins+=8;s.gems+=2;s.score+=900;
+ if(choice==='fragment'){
+  const kind:Kind=chamber.hero==='snow'?'snow-sigil':chamber.hero==='gorilla'?'guardian-totem':'tech-cell';
+  reward(s,{id:-1,route:s.route,d:s.distance,lane:s.lane,kind,phase:0},events);
+ }else if(chamber.hero==='gorilla'){s.hp=clamp(s.hp+2,0,3);s.shields=Math.max(s.shields,1);s.shieldTime=Math.max(s.shieldTime,45);}
+ else if(chamber.hero==='bot'){s.magnet=18;s.energy=clamp(s.energy+40,0,100);}
+ else{s.lives=clamp(s.lives+1,0,2);s.hp=clamp(s.hp+1,0,3);}
+ s.chamber=undefined;s.mode='running';s.immune=Math.max(s.immune,2);s.lastGood=s.time;
+ event(s,events,'secret','CHAMBER TREASURE · +8 COINS / +2 RELICS');return true;
+}
+export type OvergrownRoute = Exclude<Route,'main'|'hollow'|'grotto'>;
+export type ForkOption={id:OvergrownRoute;name:string;risk:'LOW'|'MEDIUM'|'HIGH';reward:string;description:string;side:Lane;accent:string};
+export const MAJOR_FORKS:readonly ForkOption[]=[
+ {id:'rootway',name:'Mossbound Rootway',risk:'LOW',reward:'Guardian Totems',description:'Stable paths, healing nests, and steady earnings',side:-1,accent:'#A3DE85'},
+ {id:'ridge',name:'Ruined Watchridge',risk:'MEDIUM',reward:'Tech Cells',description:'Fallen causeways, machine traps, ancient mechanisms',side:0,accent:'#F5C680'},
+ {id:'deep',name:'Deep Burrow',risk:'HIGH',reward:'Snow Sigils',description:'Mud chasms, crystal deposits, valuable hidden vaults',side:1,accent:'#BFA4F7'},
+] as const;
+export const SUB_FORKS:Record<'rootway'|'ridge'|'deep',readonly ForkOption[]>={
+ rootway:[
+  {id:'mosswalk',name:'Mossy Walk',risk:'LOW',reward:'Coins and healing',description:'Reliable treasure, forgiving hazards',side:-1,accent:'#A3DE85'},
+  {id:'root-arch',name:'Root Arch Hollow',risk:'MEDIUM',reward:'Guardian Totems',description:'Burrow through roots for a guardian cache',side:0,accent:'#7CD7AE'},
+  {id:'log-crossing',name:'Fallen Log Crossing',risk:'HIGH',reward:'Snow Sigils',description:'Leap precision gaps to reach rare sigils',side:1,accent:'#EAC58B'},
+ ],
+ ridge:[
+  {id:'causeway',name:'Broken Causeway',risk:'MEDIUM',reward:'Snow Sigils',description:'Falling stones, high-value collections',side:-1,accent:'#EAC58B'},
+  {id:'watchtower',name:'Watchtower Climb',risk:'HIGH',reward:'Tech Cells',description:'Unforgiving jumps and sealed caches',side:0,accent:'#D5AEEA'},
+  {id:'gearworks',name:'Chamber of Gears',risk:'HIGH',reward:'Tech Cells',description:'Timed steam traps and electric relics',side:1,accent:'#79D9E6'},
+ ],
+ deep:[
+  {id:'mudslide',name:'Mudslide Channel',risk:'HIGH',reward:'Guardian Totems',description:'Mud hazards, quick rewards and recovery caches',side:-1,accent:'#B28E76'},
+  {id:'crystal-vein',name:'Crystal Vein',risk:'HIGH',reward:'Snow Sigils',description:'Rare stones beyond narrow burrow tunnels',side:0,accent:'#B8A7FF'},
+  {id:'ancient-vault',name:'Ancient Vault',risk:'HIGH',reward:'Tech Cells and vault keys',description:'Deadly traps guard the richest final chamber',side:1,accent:'#FFD89D'},
+ ],
+};
+export const OVERGROWN_ROUTES:readonly Route[]=[
+ ...MAJOR_FORKS.map(f=>f.id),...Object.values(SUB_FORKS).flatMap(group=>group.map(f=>f.id)),
+];
+export function availableForks(s:Expedition):readonly ForkOption[]{
+ if(s.forkStage===1)return MAJOR_FORKS;
+ if(s.forkStage===2)return SUB_FORKS[(s.majorPath==='ridge'||s.majorPath==='deep')?s.majorPath:'rootway'];
+ return [];
+}
+export function overgrownPathOffset(route:Route,d:number){
+ const option=[...MAJOR_FORKS,...Object.values(SUB_FORKS).flat()].find(o=>o.id===route);
+ if(!option)return 0;
+ const major=option.id==='rootway'||option.id==='ridge'||option.id==='deep';
+ const start=major?140:455,end=major?450:900;
+ return option.side*8.5*smooth((d-start)/24)*smooth((end-d)/24);
+}
+export function freshOvergrownExpedition(seed:number,id:string,shards:Record<CompanionId,number>={snow:0,gorilla:0,bot:0},upgrades:{armor:number;magnet:number;fortune:number}={armor:0,magnet:0,fortune:0}):Expedition{
+ const s=freshExpedition(seed,id);
+ s.board='overgrown';s.forkStage=0;s.majorPath=undefined;s.subPath=undefined;
+ s.heroShards={snow:0,gorilla:0,bot:0};
+ s.baseShards={snow:shards.snow||0,gorilla:shards.gorilla||0,bot:shards.bot||0};
+ s.heroUnlocked={snow:shards.snow>=HERO_SHARD_TARGET,gorilla:shards.gorilla>=HERO_SHARD_TARGET,bot:shards.bot>=HERO_SHARD_TARGET};
+ s.heroCharge=0;s.metaFortune=upgrades.fortune||0;
+ if(upgrades.armor>0){s.shields=1;s.shieldTime=45+upgrades.armor*15;}
+ if(upgrades.magnet>0)s.magnet=4+upgrades.magnet*3;
+ return s;
+}
+export function chooseFork(s:Expedition,chosen:Route,events:GameEvent[]){
+ if(s.board!=='overgrown'||s.mode!=='fork')return false;
+ const choice=availableForks(s).find(o=>o.id===chosen);
+ if(!choice)return false;
+ if(chosen==='ancient-vault'&&s.keys<1){event(s,events,'hint','ANCIENT VAULT · FIND THE DEEP BURROW KEY');return false;}
+ if(chosen==='ancient-vault')s.keys--;
+ const stage=s.forkStage;
+ if(stage===1)s.majorPath=chosen;else s.subPath=chosen;
+ if(!s.secrets.includes(chosen))s.secrets.push(chosen);
+ s.route=chosen;s.routeStart=stage===1?140:455;s.routeEnd=stage===1?450:900;s.routeSide=choice.side;
+ s.mode='running';s.immune=Math.max(s.immune,1.2);
+ s.lastGood=s.time;
+ event(s,events,'fork',choice.name.toUpperCase()+' · '+choice.reward.toUpperCase());
+ return true;
+}
+export function activateHero(s:Expedition,id:CompanionId,events:GameEvent[]){
+ if(s.board!=='overgrown'||s.mode!=='running'||s.heroUnlocked?.[id]!==true||(s.heroCharge??0)<100||COMPANION_IDS.some(hero=>s.companions[hero].timeLeft>0))return false;
+ s.heroCharge=0;recruitCompanion(s,id,events);return true;
+}
+export function buildOvergrownCourse(seed:number):CourseItem[]{
+ const random=randomGenerator(seed),items:CourseItem[]=[];
+ const add=(d:number,lane:Lane,kind:Kind,route:Route='main')=>{
+  items.push({id:items.length,d,lane,kind,route,phase:random()*Math.PI*2});
+ };
+ // Training area: player learns to steer and collect before the first decision.
+ for(const d of [16,24,32,40,48,78,94,113])add(d,0,d===113?'gem':'coin');
+ add(63,-1,'roots');add(86,1,'crate');add(106,-1,'heart');
+ const laneChoices:readonly Lane[]=[-1,0,1];
+ const shardKind:Record<'rootway'|'ridge'|'deep',Kind>={rootway:'guardian-totem',ridge:'tech-cell',deep:'snow-sigil'};
+ const subShard:Record<OvergrownRoute,Kind>={
+  rootway:'guardian-totem',ridge:'tech-cell',deep:'snow-sigil',
+  mosswalk:'guardian-totem','root-arch':'guardian-totem','log-crossing':'snow-sigil',
+  causeway:'snow-sigil',watchtower:'tech-cell',gearworks:'tech-cell',
+  mudslide:'guardian-totem','crystal-vein':'snow-sigil','ancient-vault':'tech-cell',
+ };
+ // Each route has a mechanical identity, rather than sharing a difficulty palette.
+ const hazards:Record<OvergrownRoute,Kind[]>={
+  rootway:['roots','crate','mud'],ridge:['boulder','saw','crate'],deep:['gap','drone','boulder'],
+  mosswalk:['mud','crate'],'root-arch':['roots','roots','crate'],'log-crossing':['gap','boulder'],
+  causeway:['gap','boulder','crate'],watchtower:['gap','drone'],gearworks:['steam','saw','drone'],
+  mudslide:['mud','mud','boulder'],'crystal-vein':['roots','gap','drone'],'ancient-vault':['steam','saw','gap'],
+ };
+ const section=(route:OvergrownRoute,start:number,end:number,risk:'LOW'|'MEDIUM'|'HIGH',shard:Kind)=>{
+  const rows=risk==='LOW'?6:risk==='MEDIUM'?8:10;
+  let safe:Lane=0;
+  for(let i=0;i<rows;i++){
+   const d=Math.round(start+(end-start)*(i+.55)/(rows+.2));
+   safe=laneChoices[Math.floor(random()*3)];
+   const obstacle=hazards[route];
+   const occupied=laneChoices.filter(l=>l!==safe);
+   add(d,occupied[0],obstacle[Math.floor(random()*obstacle.length)],route);
+   if(risk!=='LOW'&&i%2===0)add(d,occupied[1],obstacle[Math.floor(random()*obstacle.length)],route);
+   add(d-6,safe,i%3===0?'gem':'coin',route);
+   add(d-3,safe,'coin',route);
+   if(i%3===2)add(d+5,safe,risk==='LOW'?'heart':'gem',route);
+  }
+  for(let i=0;i<3;i++)add(start+45+i*Math.floor((end-start-105)/3),0,shard,route);
+  if(risk==='LOW')add(end-37,0,'heart',route);
+  if(risk==='MEDIUM')add(end-52,0,'magnet',route);
+  if(risk==='HIGH'){add(end-90,0,'treasure-cache',route);add(end-42,0,'key',route);}
+ };
+ for(const choice of MAJOR_FORKS)section(choice.id,155,425,choice.risk,shardKind[choice.id as 'rootway'|'ridge'|'deep']);
+ for(const group of Object.values(SUB_FORKS))for(const choice of group){
+  section(choice.id,470,865,choice.risk,subShard[choice.id]);
+  if(choice.id==='ancient-vault')add(884,0,'vault',choice.id);
+  if(choice.id==='root-arch'||choice.id==='crystal-vein')add(874,0,'life',choice.id);
+ }
+ for(const d of [918,928,938,954,965,974,988,1004,1023,1040])add(d,0,d%3===0?'gem':'coin');
+ add(991,-1,'boulder');add(1008,1,'roots');add(1053,0,'vault');
+ // Append new IDs after the existing course: earlier recovery points keep item identity.
+ for(const chamber of CHAMBERS)add(chamber.d,chamber.lane,'chamber-door',chamber.route);
+ return items.sort((a,b)=>a.d-b.d||a.id-b.id);
 }

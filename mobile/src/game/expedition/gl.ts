@@ -32,7 +32,7 @@ float hash(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
 float hash(vec2 p){p=mod(p,vec2(32.0));return fract(sin(dot(p,vec2(17.13,41.7)))*437.58545);}
 #endif
 void main(){
- if(vColor.a < -5.5){float a=max(0.0,1.0-dot(vLocal.xy,vLocal.xy));gl_FragColor=vec4(vColor.rgb*1.8,a*a*.38);return;}
+ if(vColor.a < -5.5 && vColor.a > -6.5){float a=max(0.0,1.0-dot(vLocal.xy,vLocal.xy));gl_FragColor=vec4(vColor.rgb*1.8,a*a*.38);return;}
  if(vColor.a < -2.5 && vColor.a > -3.5){float a=max(0.0,1.0-dot(vLocal.xz,vLocal.xz));gl_FragColor=vec4(0.015,0.016,0.018,a*a*.32);return;}
  vec3 n=normalize(vNormal),view=normalize(uEye-vWorld);
  vec3 base=vColor.rgb;float em=max(0.0,vColor.a);
@@ -46,7 +46,7 @@ void main(){
    n=normalize(n+vec3(wave*.10,0.0,sin((uTravel-vWorld.z)*4.0+uTime)*.07));
    base=mix(base,vec3(.13,.32,.31),.12+.1*wave);
  }
- if(vColor.a < -3.5){
+ if(vColor.a < -3.5 && vColor.a > -5.5){
  float fibre=hash(floor(vLocal.xy*260.0+vLocal.z*73.0));
  base*=.87+fibre*.25;
  if(vColor.a < -4.5){float chevron=sin(vLocal.z*18.0+abs(vLocal.x)*7.5);
@@ -54,6 +54,24 @@ void main(){
  float dorsal=smoothstep(-.03,.10,vLocal.y-centre);
  base=mix(base,vec3(.86,.68,.38),smoothstep(.17,.35,chevron)*.91*dorsal);}
  n=normalize(n+vec3(sin(vLocal.y*175.0+vLocal.x*92.0)*.025,0.0,sin(vLocal.x*130.0)*.026));
+ }
+ // Authored Overgrown Burrow materials: wood grain follows trunk height, and
+ // irregular rock patches are calculated at world scale to avoid tiled cubes.
+ if(vColor.a < -6.5 && vColor.a > -7.5){
+  float grain=sin(vWorld.y*5.2+sin(vWorld.x*4.7+vWorld.z*3.6)*1.4);
+  float grooves=pow(abs(sin(vWorld.y*17.0+vWorld.z*8.0)),10.0);
+  float knots=hash(floor(vWorld.xz*7.0+vWorld.y));
+  base*=.73+.12*grain+.18*knots-.14*grooves;
+  n=normalize(n+vec3(.13*grain,.015,.065*sin(vWorld.y*20.0)));
+ }
+ if(vColor.a < -7.5 && vColor.a > -8.5){
+  vec3 cells=floor(vWorld*5.0);
+  float lichen=hash(cells.xz+vec2(cells.y*3.0,cells.y*5.0));
+  float mottling=sin(vWorld.x*2.4+vWorld.z*4.1)*sin(vWorld.y*3.3);
+  float seams=pow(abs(sin(vWorld.x*7.0+vWorld.z*8.2)),26.0);
+  base=mix(base,base*vec3(.65,.92,.73),smoothstep(.53,.85,lichen)*.42);
+  base*=.76+.17*mottling+.20*lichen-.10*seams;
+  n=normalize(n+vec3(.048*mottling,.036*sin(vWorld.x*11.0),.048*sin(vWorld.z*9.0)));
  }
  float sun=max(0.0,dot(n,normalize(vec3(-.45,.85,.45))));
  float rim=pow(1.0-max(0.0,dot(n,view)),3.0);

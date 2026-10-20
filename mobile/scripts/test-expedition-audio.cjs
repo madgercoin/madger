@@ -12,7 +12,7 @@ const compiled = ts.transpileModule(source, {
 
 // Native seek completion can arrive after pause(), a priority cue or unmount.
 // These promises deliberately stay unresolved until each test chooses an order.
-function harness() {
+function harness({web=false}={}) {
   const players = new Map();
   const exports = {};
   const audioMock = {
@@ -24,7 +24,7 @@ function harness() {
           assert.equal(position, 0);
           return new Promise((resolve, reject) => this.seeks.push({ resolve, reject }));
         },
-        play() { assert.equal(this.removed, false); this.playing = true; this.playCalls++; },
+        play() { assert.equal(this.removed, false); if(web)this.media.play();this.playing = true; this.playCalls++; },
         pause() {
           this.pauseCalls++;
           if (this.throwOnPause) throw new Error('Native route unavailable');
@@ -32,6 +32,7 @@ function harness() {
         },
         remove() { this.removed = true; this.playing = false; },
       };
+      if(web)player.media={play:()=>player.rejectMediaPlay?Promise.reject(new Error('HTML play interrupted')):Promise.resolve()};
       players.set(path.basename(asset), player);
       return player;
     },
@@ -39,6 +40,7 @@ function harness() {
   };
   vm.runInNewContext(compiled, {
     exports,
+    ...(web?{document:{}}:{}),
     require(id) {
       if (id === 'expo-audio') return audioMock;
       if (/\.(wav|mp3)$/.test(id)) return id;
@@ -77,6 +79,24 @@ test('an allowed delayed cue plays once at its requested volume', async () => {
   assert.equal(snow.playCalls, 1);
   assert.equal(snow.volume, .30);
   assert.equal(snow.playing, true);
+});
+
+test('web audio fetches only active beds and requested cues, reusing players',async()=>{
+ const h=harness({web:true});assert.equal(h.players.size,2,'only the two active audio beds preload');
+ assert(!h.players.has('snow-bark.wav'));assert(!h.players.has('finish.wav'));
+ h.emit('coin',1);assert.equal(h.players.size,3);await h.complete('pickup.wav');assert.equal(h.player('pickup.wav').playCalls,1);
+ h.emit('coin',2);assert.equal(h.players.size,3);await h.complete('pickup.wav');assert.equal(h.player('pickup.wav').playCalls,2);
+ h.audio.active(false);assert([...h.players.values()].every(p=>!p.playing));
+});
+test('a browser play promise interrupted by pause is consumed without an unhandled rejection',async()=>{
+ const h=harness({web:true});h.emit('coin',1);
+ h.player('pickup.wav').play=()=>Promise.reject(new Error('play interrupted by pause'));
+ await h.complete('pickup.wav');await new Promise(resolve=>setImmediate(resolve));
+});
+test('the pinned web player can drop its internal media promise without leaking cancellation',async()=>{
+ const h=harness({web:true});h.emit('coin',1);h.player('pickup.wav').rejectMediaPlay=true;
+ await h.complete('pickup.wav');await new Promise(resolve=>setImmediate(resolve));
+ assert.equal(h.player('pickup.wav').playCalls,1);
 });
 
 for (const guardFirst of [false, true]) {

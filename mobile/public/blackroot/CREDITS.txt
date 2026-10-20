@@ -1,0 +1,9 @@
+THE OVERGROWN BURROW / MADGER
+
+Photoscanned models and materials: Poly Haven (CC0 1.0)
+rock_moss_set_01, fern_02, dead_tree_trunk, rock_face_02, forest_ground_04, aerial_grass_rock, bark_brown_02, spruit_sunrise
+https://polyhaven.com/license
+
+Rendering: Three.js 0.180.0 (MIT; vendor/LICENSE).
+MADGER identities, game rules and custom level/terrain geometry: MADGER project.
+No outside-host asset requests occur during play.
