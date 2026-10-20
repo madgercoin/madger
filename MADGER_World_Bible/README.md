@@ -1,43 +1,37 @@
 # MADGER World Bible
 
-**Current foundation: v1.0.0 - Volume 01: Inside the Burrow**
-Established October 19, 2026. Archived here at the owner's request.
+**Current canon: [v2.0.0 — Above and Below](v2.0.0/README.md)** · 20 October 2026
 
-This is the shared world reference for MADGER stories, animation, promotional environments and the video game. The geography stays fixed; adventures add documented history and compatible extensions.
+The Burrow is one populated town above and below ground. Outdoor markets, gardens and homes connect to permanent underground neighborhoods. Public entrances welcome ordinary daily use; a separate inner defensive boundary protects underground residents if the surface is overrun.
 
-## Open the Bible
+## Current references
 
-- [Read the complete 23-page World Bible](v1.0.0/MADGER_World_Bible.pdf)
-- [View the permanent Burrow master map](v1.0.0/MADGER_Burrow_Master_Map.png)
-- [Use the structured canon and map data](v1.0.0/MADGER_World_Bible.json)
-- [Recover the complete editable source project](v1.0.0/MADGER_World_Bible_Source.json)
-- [View the environment materials and light study](v1.0.0/source/Burrow_Atmosphere.png)
-- [Review validation](v1.0.0/validation.json) and [file checksums](v1.0.0/manifest.json)
+- [World Bible v2.0.0 and continuity rules](v2.0.0/README.md)
+- [Complete structured canon](v2.0.0/MADGER_World_Bible.json)
+- [28-page underground blueprint atlas](v2.0.0/MADGER_Underground_Blueprints.pdf)
+- [Connected blueprint index](blueprints/README.md)
+- [Current version pointer](CURRENT.json)
 
-## Connected area blueprints
-
-[Open the Burrow Blueprint Atlas](blueprints/README.md): 21 drawing sheets, including a plan for each of the 16 established areas, shared coordinates, entrances, crossings, systems and expansion anchors. Every future area receives its own blueprint and documented joins before use in stories, animation or the game.
+![The Burrow above and below](v2.0.0/previews/UG-A0.png)
 
 ## What is fixed
 
-The inhabited basin, 16 location IDs and footprints, compass directions, elevations, three canal crossings, public routes, gate/cabinet orientation and infrastructure relationships. The measured map and JSON control geometry; atmosphere art establishes materials and light.
+The original 16 surface area positions and footprints, three canal crossings, watercourse and surface route graph stay fixed. Twenty-one underground areas now share their coordinate system, with occupied levels at -12 and -24 m and services at -36 m. Each area has a measured blueprint and registered connections.
 
-Episode 1 stays entirely inside the Burrow. Preserve the four established heroes and their approved voices. Snow White has canine sounds only. Later owner corrections, including removal of the oversized Madger fang, supersede conflicting older brand notes.
+Version 2 supersedes the earlier surface-only scope, roughly 400-resident population and closed-gate default. Its new planning baseline is 800 surface and 1,600 underground residents. Population figures are authored assumptions. Public daytime access and protective closure are distinct states.
 
-## How the world grows
+Episode 1 stays inside the Burrow, above and below, beginning with joyful ordinary life before subtle clues. Preserve all four established heroes and their approved voices. Snow White uses canine sounds only. Later owner corrections, including removal of the oversized Madger fang, supersede conflicting older brand notes.
 
-1. Read the current Bible before planning a story, environment image or game location.
-2. Attach scenes and assets to the recorded location/camera IDs and the correct event state.
-3. Record new people, rooms and compatible extensions before their first appearance.
-4. Keep damage, repairs, discoveries and character knowledge in a dated event ledger.
-5. Add a new version and change notes when canon expands. Preserve prior editions; never silently replace their meaning.
+## Growing the world
 
-The data includes provenance, reserved boundaries and explicit unknowns. Exterior geography and attacker identity are not established in Volume 01. The existing Expedition courses keep their own layouts until their world connections are defined.
+Read the current Bible before planning content. Assign new locations stable IDs, levels, footprints and measured connections. Attach scenes to recorded locations and the correct event state. Track damage, repairs, discoveries and character knowledge in a dated ledger. Preserve previous editions and record changes explicitly.
 
-## Source and rebuilding
+Exterior geography and attacker identity remain unassigned. Existing Expedition courses retain their own layouts until their world connections are defined. These archives do not claim released video or game content has already been rebuilt against the map.
 
-The four delivered files are archived byte-for-byte. `v1.0.0/source/` also contains the authoring scripts and accepted atmosphere image. The source JSON includes the complete document text, world data, source code and embedded image.
+## Historical references
 
-The archived scripts retain their original workspace paths. To regenerate in another checkout, change their ROOT/R path to the chosen working directory, restore the canonical JSON under `output/` and the image under `source/`, and run the renderer with ReportLab and DejaVu fonts available. Preserve the final JSON metadata when rebuilding; the original builder predates the final archive metadata.
+- [v1.0.0 foundation Bible](v1.0.0/MADGER_World_Bible.pdf) and [original surface map](v1.0.0/MADGER_Burrow_Master_Map.png)
+- [Surface Blueprint Atlas, Issue 01](blueprints/v1.0.0/README.md); its geometry remains current, while v2 controls access states and population.
+- [Original complete editable source](v1.0.0/MADGER_World_Bible_Source.json)
 
-This archive is documentation and source material. It does not claim that the current pilot or shipped game has already been rebuilt against this map.
+Current edition sources, editable SVG sheets and rebuild instructions are archived with [v2.0.0](v2.0.0/README.md).

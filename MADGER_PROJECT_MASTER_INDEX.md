@@ -9,7 +9,7 @@
 
 ## Shared world canon - October 19, 2026
 
-**[MADGER World Bible v1.0.0: Inside the Burrow](MADGER_World_Bible/README.md)** is the new shared interior foundation for stories, animation and the game. It records 16 locations, fixed geography, daily life, systems, hero arcs, the interior-only Episode 1 boundary and rules for future additions. The PDF, master map, structured data, editable source and checksums are archived together. Earlier schematic world layouts are superseded where they conflict with this edition. This archive does not mean existing video/game releases have already adopted the map. Later explicit owner character corrections take precedence over older identity notes below.
+**[MADGER World Bible v2.0.0: Above and Below](MADGER_World_Bible/README.md)** is the current shared world foundation for stories, animation and the game. It preserves all 16 surface areas and adds 21 underground areas across two occupied floors and a service floor. Both districts are populated; entrances welcome normal public access, with a separate inner defensive boundary if the surface is overrun. The current JSON, 28-page underground atlas, individual drawings, source and checksums are archived together. Earlier population, surface-only scope and closed-gate defaults are superseded. This archive does not mean existing video/game releases already implement the map. Later explicit owner character corrections take precedence over older identity notes below.
 
 ## 1. Executive project summary
 

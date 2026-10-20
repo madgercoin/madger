@@ -1,11 +1,14 @@
 # MADGER world blueprints
 
-**Current issue: [Burrow Blueprint Atlas v1.0.0](v1.0.0/README.md)**
+**Current world canon: [v2.0.0 — Above and Below](../v2.0.0/README.md)**
 
-The Burrow is the first district of one connected MADGER world. This atlas contains the master plan, a blueprint for each of its 16 established areas, and shared connection/system sheets.
+The Burrow is the first district of one connected MADGER world. Its outdoor and underground plans share a coordinate system. Every future area needs its own measured blueprint and documented joins before use in stories, animation or the game.
 
-Every new area must have its own measured blueprint and documented connections before it is used in content. Future district plans extend the existing coordinate system without silently moving or mirroring prior locations.
+| Drawing set | Contents | Open |
+| --- | --- | --- |
+| Underground, Issue 02 | 28 sheets: section, surface joins, three levels, defensive states, all 21 new areas and continuity | [PDF](../v2.0.0/MADGER_Underground_Blueprints.pdf) · [Index](../v2.0.0/README.md) |
+| Surface, Issue 01 | 21 sheets: all 16 original areas, master plan, precinct, crossings, systems and growth | [PDF](v1.0.0/MADGER_Burrow_Blueprints.pdf) · [Index](v1.0.0/README.md) |
 
-[Open the 21-sheet PDF](v1.0.0/MADGER_Burrow_Blueprints.pdf)
+Surface geometry stays fixed. Version 2 overrides older closed-gate, population and underground-scope assumptions. Public daytime access and protective closure are separate states.
 
-![Master blueprint](v1.0.0/previews/BP-00.png)
+![Underground master blueprint](../v2.0.0/previews/UG-A2.png)

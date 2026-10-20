@@ -1,9 +1,12 @@
 {
   "world_id": "MADGER-BRW-HOME",
-  "canon_version": "1.0.0",
-  "volume": "01 / Inside the Burrow",
-  "bible": "v1.0.0/MADGER_World_Bible.pdf",
-  "data": "v1.0.0/MADGER_World_Bible.json",
-  "map": "v1.0.0/MADGER_Burrow_Master_Map.png",
-  "source": "v1.0.0/MADGER_World_Bible_Source.json"
+  "canon_version": "2.0.0",
+  "volume": "02 / Above and Below",
+  "bible": "v2.0.0/README.md",
+  "data": "v2.0.0/MADGER_World_Bible.json",
+  "underground_blueprints": "v2.0.0/MADGER_Underground_Blueprints.pdf",
+  "map": "v2.0.0/previews/UG-A2.png",
+  "surface_blueprints": "blueprints/v1.0.0/MADGER_Burrow_Blueprints.pdf",
+  "historical_foundation": "v1.0.0/MADGER_World_Bible.pdf",
+  "precedence": "v2.0.0 supersedes conflicting population, underground scope and gate-state statements in v1."
 }

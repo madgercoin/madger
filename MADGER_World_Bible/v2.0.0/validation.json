@@ -1,0 +1,32 @@
+{
+  "status": "passed",
+  "checks": {
+    "surface_positions_preserved": true,
+    "surface_watercourse_preserved": true,
+    "surface_routes_preserved": true,
+    "three_surface_crossings": true,
+    "new_area_ids_unique": true,
+    "population_adds_up": true,
+    "ramp_grades_at_most_1_in_12": true,
+    "all_areas_reachable_normal": true,
+    "no_surface_bypass_when_ingress_closed": true,
+    "protected_town_stays_connected": true,
+    "town_connected_without_lifts": true,
+    "alternate_stair_core_survives_one_core_loss": true,
+    "all_room_footprints_nonoverlap_per_level": true
+  },
+  "limits": [
+    "Plans establish fictional world geometry, not a certified structural or evacuation design.",
+    "Final game navigation meshes must follow portals and authored stair/ramp geometry; the route graph is not a collision mesh.",
+    "Underground homes are reserved 100-unit wards; individual apartment interiors and occupants require later registered sub-plans.",
+    "No real attacker identity, exploit method or episode-one attack is established."
+  ],
+  "drawing_review": {
+    "pages": 28,
+    "svg_sheets": 28,
+    "png_previews": 28,
+    "page_boundary_text_check": "passed",
+    "visual_review": "All 28 rendered sheets inspected in contact sheets; section, surface joins, level plan and residential blueprint inspected full size. Section labels adjusted to avoid shaft/gate overlap.",
+    "status": "passed"
+  }
+}

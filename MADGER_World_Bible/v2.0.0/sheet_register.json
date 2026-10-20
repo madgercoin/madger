@@ -1,0 +1,170 @@
+[
+  {
+    "sheet": "UG-A0",
+    "title": "The Burrow / life above and below",
+    "page": 1,
+    "svg": "svg/UG-A0.svg"
+  },
+  {
+    "sheet": "UG-A1",
+    "title": "Surface connections / one joined world",
+    "page": 2,
+    "svg": "svg/UG-A1.svg"
+  },
+  {
+    "sheet": "UG-A2",
+    "title": "Upper underground / homes and civic life",
+    "page": 3,
+    "svg": "svg/UG-A2.svg"
+  },
+  {
+    "sheet": "UG-A3",
+    "title": "Deep neighborhood / homes and shared life",
+    "page": 4,
+    "svg": "svg/UG-A3.svg"
+  },
+  {
+    "sheet": "UG-A4",
+    "title": "Service level / maintainable infrastructure",
+    "page": 5,
+    "svg": "svg/UG-A4.svg"
+  },
+  {
+    "sheet": "UG-A5",
+    "title": "Open community / protected inner town",
+    "page": 6,
+    "svg": "svg/UG-A5.svg"
+  },
+  {
+    "sheet": "UG-00",
+    "title": "Hearth Public Entry",
+    "page": 7,
+    "svg": "svg/UG-00.svg"
+  },
+  {
+    "sheet": "UG-01",
+    "title": "Welcome Hall",
+    "page": 8,
+    "svg": "svg/UG-01.svg"
+  },
+  {
+    "sheet": "UG-02",
+    "title": "Inner Gate Gallery",
+    "page": 9,
+    "svg": "svg/UG-02.svg"
+  },
+  {
+    "sheet": "UG-03",
+    "title": "Underhall Commons",
+    "page": 10,
+    "svg": "svg/UG-03.svg"
+  },
+  {
+    "sheet": "UG-04",
+    "title": "West Lantern Warren",
+    "page": 11,
+    "svg": "svg/UG-04.svg"
+  },
+  {
+    "sheet": "UG-05",
+    "title": "East Orchard Warren",
+    "page": 12,
+    "svg": "svg/UG-05.svg"
+  },
+  {
+    "sheet": "UG-06",
+    "title": "School & Play Hall",
+    "page": 13,
+    "svg": "svg/UG-06.svg"
+  },
+  {
+    "sheet": "UG-07",
+    "title": "Care & Community Hall",
+    "page": 14,
+    "svg": "svg/UG-07.svg"
+  },
+  {
+    "sheet": "UG-08",
+    "title": "Central Lift & Stair Court",
+    "page": 15,
+    "svg": "svg/UG-08.svg"
+  },
+  {
+    "sheet": "UG-09",
+    "title": "Service Receiving Hall",
+    "page": 16,
+    "svg": "svg/UG-09.svg"
+  },
+  {
+    "sheet": "UG-10",
+    "title": "West Deep Warren",
+    "page": 17,
+    "svg": "svg/UG-10.svg"
+  },
+  {
+    "sheet": "UG-11",
+    "title": "East Deep Warren",
+    "page": 18,
+    "svg": "svg/UG-11.svg"
+  },
+  {
+    "sheet": "UG-12",
+    "title": "Deep Commons & Kitchens",
+    "page": 19,
+    "svg": "svg/UG-12.svg"
+  },
+  {
+    "sheet": "UG-13",
+    "title": "Food Gardens & Grow Rooms",
+    "page": 20,
+    "svg": "svg/UG-13.svg"
+  },
+  {
+    "sheet": "UG-14",
+    "title": "Assembly & Refuge Hall",
+    "page": 21,
+    "svg": "svg/UG-14.svg"
+  },
+  {
+    "sheet": "UG-15",
+    "title": "Baths & Laundry",
+    "page": 22,
+    "svg": "svg/UG-15.svg"
+  },
+  {
+    "sheet": "UG-16",
+    "title": "Utility Repair Hall",
+    "page": 23,
+    "svg": "svg/UG-16.svg"
+  },
+  {
+    "sheet": "UG-17",
+    "title": "Water & Air Service Rooms",
+    "page": 24,
+    "svg": "svg/UG-17.svg"
+  },
+  {
+    "sheet": "UG-18",
+    "title": "Deep Stores",
+    "page": 25,
+    "svg": "svg/UG-18.svg"
+  },
+  {
+    "sheet": "UG-19",
+    "title": "West Stair & Refuge Core",
+    "page": 26,
+    "svg": "svg/UG-19.svg"
+  },
+  {
+    "sheet": "UG-20",
+    "title": "East Stair & Refuge Core",
+    "page": 27,
+    "svg": "svg/UG-20.svg"
+  },
+  {
+    "sheet": "UG-C0",
+    "title": "World canon / a populated Burrow",
+    "page": 28,
+    "svg": "svg/UG-C0.svg"
+  }
+]

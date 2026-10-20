@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026-10-20 - Populated underground Burrow / World Bible v2.0.0
+
+- Add 21 underground areas, two occupied floors and a service level, with 28 measured blueprint sheets and reproducible sources.
+- Preserve all 16 surface positions/footprints, surface routes, watercourse and three crossings.
+- Establish normal public access, separate inner defensive closures, controlled secondary ingress and independent stair routes.
+- Set an authored planning baseline of 800 surface and 1,600 underground residents; add daily civic life, utilities and refuge planning.
+- Update the current-version pointer and pilot continuity; archive v1 as historical without overwriting it. No game, voice, video or production allowlist changes.
+
 ## 2026-10-20 - Connected Burrow blueprint atlas
 
 - Add 21 production blueprint sheets: master assembly, all 16 areas, the east precinct, three crossings, systems and growth contract.
