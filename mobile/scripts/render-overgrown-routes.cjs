@@ -2,6 +2,7 @@
 const fs=require('node:fs'),path=require('node:path'),http=require('node:http'),assert=require('node:assert/strict'),os=require('node:os'),ts=require('typescript');
 const {chromium}=require('playwright');
 const root=path.resolve(__dirname,'..'),dist=path.join(root,'dist'),out=path.join(root,'expedition-evidence','overgrown-routes');fs.mkdirSync(out,{recursive:true});
+const worldPresets=JSON.parse(fs.readFileSync(path.join(root,'public','blackroot','world-presets.json'),'utf8'));
 const temporary=fs.mkdtempSync(path.join(os.tmpdir(),'overgrown-render-'));
 for(const name of ['companions','core'])fs.writeFileSync(path.join(temporary,name+'.js'),ts.transpileModule(fs.readFileSync(path.join(root,'src/game/expedition',name+'.ts'),'utf8'),{compilerOptions:{module:ts.ModuleKind.CommonJS,target:ts.ScriptTarget.ES2022}}).outputText);
 const G=require(path.join(temporary,'core.js'));
@@ -39,11 +40,26 @@ const server=http.createServer((req,res)=>{
     const gl=document.querySelector('canvas').getContext('webgl2');return {route:run.chamber||run.route,stats:window.fixtureScene.stats,glError:gl.getError()};
    },{run,course:G.buildOvergrownCourse(run.seed)});
    assert.equal(data.glError,0,run.route);assert(data.stats.assetsReady);assert(data.stats.instances>100);
+   assert.equal(data.stats.route,run.route,'Live renderer route differs from selected route');
+   assert.equal(data.stats.biome,worldPresets.routes[run.route][0],'Wrong environment biome: '+run.route);
+   assert.equal(data.stats.terrainProfileLoaded,true,'Authored terrain profile was not loaded: '+run.route);
+   assert.equal(data.stats.terrainMaterial,data.stats.biome,'PBR ground texture does not match biome');
    await page.screenshot({path:path.join(out,(run.chamber||run.route)+'.png')});results.push(data);
   }
+  // Prove that the existing mobile fallback actually reduces rendered geometry,
+  // not merely canvas resolution. This is a browser LOD comparison, not phone FPS.
+  const lod=await page.evaluate(({run,course})=>{
+    const scene=window.fixtureScene,renderer=scene.renderer;
+    scene.setCourse(course);
+    renderer.quality=1;scene.draw(run,20,false);const full=renderer.stats.triangles;
+    renderer.quality=.52;scene.draw(run,20.016,false);const reduced=renderer.stats.triangles;
+    renderer.quality=1;
+    return {full,reduced};
+  },{run:fixtures[0],course:G.buildOvergrownCourse(fixtures[0].seed)});
+  assert(lod.full>0&&lod.reduced<lod.full*.95,'Adaptive 3D detail did not lower geometry: '+JSON.stringify(lod));
   const timing=await page.evaluate(async()=>{const s=window.fixtureScene,r=s.renderer.run,gaps=[];r.mode='paused';r.chamber=undefined;r.route='ancient-vault';r.routeSide=1;r.distance=680;let previous=performance.now();for(let i=0;i<55;i++){await new Promise(requestAnimationFrame);const now=performance.now();if(i>4)gaps.push(now-previous);previous=now;r.distance+=.16;s.draw(r,15+i/60,false);}const sorted=gaps.sort((a,b)=>a-b);return {mean:gaps.reduce((a,b)=>a+b,0)/gaps.length,p95:sorted[Math.floor(sorted.length*.95)],triangles:s.stats.triangles,drawCalls:s.stats.drawCalls};});
   assert.deepEqual(errors,[]);assert.deepEqual(failed,[]);
-  const report={date:new Date().toISOString(),scope:'Actual exported renderer with deterministic route fixtures, separate from real-control gameplay tests',results,timing,errors,failed};
-  fs.writeFileSync(path.join(out,'renderer-routes.json'),JSON.stringify(report,null,2));console.log('ALL_ROUTES_RENDER_PASS',JSON.stringify({routes:results.length,timing}));
+  const report={date:new Date().toISOString(),scope:'Actual exported renderer with deterministic route fixtures, separate from real-control gameplay tests',results,timing,lod,errors,failed};
+  fs.writeFileSync(path.join(out,'renderer-routes.json'),JSON.stringify(report,null,2));console.log('ALL_ROUTES_RENDER_PASS',JSON.stringify({routes:results.length,timing,lod}));
  }finally{await browser.close();server.closeAllConnections();await new Promise(r=>server.close(r));fs.rmSync(temporary,{recursive:true,force:true});}
 })().catch(e=>{console.error(e.stack||e);process.exitCode=1;});

@@ -13,7 +13,7 @@ export async function createWebExpeditionScene(gl: GL): Promise<ExpeditionScene>
   if (typeof window === 'undefined') return new ExpeditionScene(gl);
   if (!loading) loading = new Promise<void>((resolve, reject) => {
     const script = document.createElement('script');
-    script.type = 'module'; script.src = '/blackroot/renderer.mjs?v=chambers-20261019-3';
+    script.type = 'module'; script.src = '/blackroot/renderer.mjs?v=biomes-scans-20261020-1';
     script.onload = () => resolve();
     script.onerror = () => { loading = null; script.remove(); reject(new Error('Optional high-detail renderer not available')); };
     document.head.appendChild(script);

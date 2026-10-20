@@ -7,12 +7,13 @@ import { RGBELoader } from './vendor/examples/jsm/loaders/RGBELoader.js';
 import { legacyCharacters } from './characters.mjs?v=chambers-20261019-2';
 import { mergeGeometries } from './vendor/examples/jsm/utils/BufferGeometryUtils.js';
 import { adjustedSceneScale } from './quality.mjs';
+import { terrainBiome, terrainProfile, terrainHeight } from './terrain.mjs';
 
 const ASSETS = '/blackroot/assets/';
 async function loadForestPack(){
  let response;
  for(let attempt=0;attempt<3;attempt++){
-  response=await fetch('/blackroot/forest.pack?v=20261019-1');
+  response=await fetch('/blackroot/forest.pack?v=biomes-scans-20261020-1');
   if(response.ok)break;
   if(![429,502,503,504].includes(response.status)||attempt===2)throw Error('Forest asset download: '+response.status);
   await new Promise(resolve=>setTimeout(resolve,Math.min(5000,Number(response.headers.get('Retry-After'))*1000||1000*(attempt+1))));
@@ -77,7 +78,14 @@ class ForestRenderer {
     this.run=null;this.dead=false;this.textures=[];this.quality=1;this.frameSamples=[];this.stableFrames=0;this.renderedFrames=0;
   }
   async init() {
+    const worldRequest=fetch('/blackroot/world-presets.json?v=biomes-scans-20261020-1',{cache:'force-cache'}).then(async response=>{
+      if(!response.ok)throw Error('World presets: HTTP '+response.status);
+      const presets=await response.json();
+      if(presets?.schemaVersion!==1||!presets.routes||!presets.terrainProfiles)throw Error('Invalid world presets');
+      return presets;
+    }).catch(error=>{console.warn('MADGER_WORLD_PRESETS_FALLBACK',String(error));return null;});
     this.assetUrls=await loadForestPack();
+    this.worldPresets=await worldRequest;
     const manager=new T.LoadingManager();manager.setURLModifier(url=>this.assetUrls.get(new URL(url,location.href).pathname)||url);
     const loader=new T.TextureLoader(manager);
     const materialSet=async (folder,name,scale)=> {
@@ -241,7 +249,17 @@ class ForestRenderer {
   updateTail(time,bank){const g=this.geometry('tail'),raw=bridge.tailGeometry(time,bank),p=g.attributes.position,n=g.attributes.normal;
     for(let i=0,j=0;i<raw.length;i+=6,j+=3){p.array[j]=raw[i];p.array[j+1]=raw[i+1];p.array[j+2]=raw[i+2];n.array[j]=raw[i+3];n.array[j+1]=raw[i+4];n.array[j+2]=raw[i+5];}p.needsUpdate=n.needsUpdate=true;}
   scans(travel) {
-    const s=this.run;if(!s)return;const underground=['deep','mudslide','crystal-vein','ancient-vault'].includes(s.route),ruins=['ridge','causeway','watchtower','gearworks'].includes(s.route);
+    const s=this.run;if(!s)return;
+    const biome=terrainBiome(this.worldPresets,s.route),profile=terrainProfile(this.worldPresets,s.route);
+    const underground=biome==='cavern',ruins=biome==='ruins';
+    this.stats.biome=biome;this.stats.route=s.route;
+    this.stats.terrainProfileLoaded=Boolean(this.worldPresets?.terrainProfiles?.[s.route]);
+    if(this.terrainBiome!==biome){
+      const material=this.terrain.material,source=biome==='forest'?this.ground:this.stone;
+      material.map=source.map;material.normalMap=source.normalMap;material.roughnessMap=source.roughnessMap;
+      material.normalScale.copy(source.normalScale);material.needsUpdate=true;this.terrainBiome=biome;
+    }
+    this.stats.terrainMaterial=this.terrainBiome;
     this.terrain.visible=s.mode!=='chamber';
     if(s.mode==='chamber'){
       for(const {mesh} of this.scanBatches)mesh.count=0;this.trees.count=0;this.shafts.count=0;
@@ -281,9 +299,10 @@ class ForestRenderer {
           continue;
         }
         if(id==='fern_02'&&underground)continue;if(id==='dead_tree_trunk'&&(underground||n%3!==0))continue;
-        if(id==='rock_face_02'&&!underground)continue; // Avoid an opaque stone wall across the woodland path.
+        if(id==='rock_face_02'&&!underground&&!ruins)continue; // Scanned masonry belongs to ruins and caverns.
+        if(id==='rock_face_02'&&ruins&&n%2!==0)continue;
         if(id==='rock_moss_set_01'&&n%2===0)continue;
-        const x=road(s,d)+curve(d)-curve(travel)+side*(id==='rock_face_02'?9:5.4+r*1.8);
+        const x=road(s,d)+curve(d)-curve(travel)+side*(id==='rock_face_02'?(ruins?12:9):5.4+r*1.8);
         const height=id==='fern_02'?1.1+r*.9:id==='dead_tree_trunk'?7+r*3:id==='rock_face_02'?(underground?7:4)+r*3:1.4+r*1.4;
         mesh.setMatrixAt(count++,matrix(x,Math.sin(d/34)*.12-.2,z,height,height,height,0,r*6.28,0));
         if(id==='rock_face_02'&&underground&&side===1&&n%2===0){
@@ -313,12 +332,13 @@ class ForestRenderer {
     this.mossTint.set(underground?'#52605D':ruins?'#6A7967':'#4C6648');
     for(let i=0;i<vertices.count;i++){
       const x=vertices.getX(i),z=vertices.getZ(i)-84,d=travel-z,centre=road(s,d)+curve(d)-curve(travel),lateral=Math.abs(x-centre);
-      const bank=smooth((lateral-3.15)/4.5),ridge=smooth((lateral-8.0)/12);
-      const undulation=Math.sin(d*.13+x*.26)*.35+Math.sin(d*.047-x*.09)*.55+Math.cos(d*.27+x*.15)*.12;
-      const routeFloor=-.30+.025*Math.sin(d*.5+x*.42);
-      const embankment=bank*(.42+Math.max(-.23,undulation)*.26)+ridge*(2.1+undulation*.75);
       const inGap=this.course?.some(o=>o.route===s.route&&o.kind==='gap'&&Math.abs(o.d-d)<2.8&&Math.abs(x-centre-o.lane*2.15)<1.55);
-      vertices.setY(i,inGap?-3.3:routeFloor+embankment);
+      // Authored profiles shape each route while preserving the three flat
+      // gameplay lanes and original collision gap depth.
+      const landform=terrainHeight(profile,x,d,centre,Boolean(inGap));
+      const shoulder=smooth((lateral-3.5)/3.8);
+      const fineRelief=shoulder*(Math.sin(d*.31+x*.37)*.16+Math.sin(d*.67-x*.21)*.08);
+      vertices.setY(i,inGap?landform:Math.max(-.33,Math.min(5,landform+fineRelief)));
       uv.setXY(i,x*.18,d*.18);
       this.soilTint.copy(this.trailTint).lerp(this.mossTint,smooth((lateral-2.9)/4.6));
       this.soilTint.multiplyScalar(.87+.11*Math.sin(d*.63+x*.55)+.07*Math.cos(x*.36-d*.29));
@@ -328,9 +348,11 @@ class ForestRenderer {
     }
     this.shafts.count=underground?0:3;
     for(let i=0;i<3;i++){const d=start+30+i*27;this.shafts.setMatrixAt(i,matrix(road(s,d)+curve(d)-curve(travel)-1,7,travel-d,1.2,1,1.2,0,0,-.35));}this.shafts.instanceMatrix.needsUpdate=true;
-    const fog=underground?'#1e343a':ruins?'#73837d':'#7b9387';
+    const biomeSettings=this.worldPresets?.biomes?.[biome];
+    const fog=biomeSettings?.fog||(underground?'#1e343a':ruins?'#73837d':'#7b9387');
     this.scene.fog.color.set(fog);this.scene.background.set(fog);
-    this.sun.intensity=underground?.65:3.2;this.scene.environmentIntensity=underground?.16:.32;
+    this.sun.intensity=Number.isFinite(biomeSettings?.sun)?biomeSettings.sun:(underground?.65:3.2);
+    this.scene.environmentIntensity=underground?.16:.32;
     const x=road(s,travel);this.sun.position.set(x-12,19,8);this.sun.target.position.set(x,0,-18);
     this.fill.position.set(x,2.8,-3);this.fill.color.set(underground?'#83c9e4':'#ffb257');this.fill.intensity=underground?23:13;
   }
@@ -381,7 +403,7 @@ class ForestRenderer {
     this.stats.photoscannedRoots=instancesFor('root_cluster_01');
     this.stats.photoscannedGrasses=instancesFor('grass_medium_02');
     this.stats.terrainVertices=this.terrain.geometry.attributes.position.count;
-    if(typeof window!=='undefined')window.madgerForestDiagnostics={photoscannedTrees:this.stats.photoscannedTrees,photoscannedRoots:this.stats.photoscannedRoots,photoscannedGrasses:this.stats.photoscannedGrasses,terrainVertices:this.stats.terrainVertices,drawCalls:this.stats.drawCalls,triangles:this.stats.triangles,resolutionScale:this.quality};
+    if(typeof window!=='undefined')window.madgerForestDiagnostics={photoscannedTrees:this.stats.photoscannedTrees,photoscannedRoots:this.stats.photoscannedRoots,photoscannedGrasses:this.stats.photoscannedGrasses,terrainVertices:this.stats.terrainVertices,drawCalls:this.stats.drawCalls,triangles:this.stats.triangles,resolutionScale:this.quality,route:this.stats.route,biome:this.stats.biome,terrainProfileLoaded:this.stats.terrainProfileLoaded,terrainMaterial:this.terrainBiome};
     if(!this.logged){this.logged=true;console.info('MADGER_FOREST_RENDER',JSON.stringify(this.stats));}
   }
   dispose(){if(this.dead)return;this.dead=true;for(const b of this.batches.values())b.mesh.dispose();for(const {mesh} of this.scanBatches){mesh.geometry.dispose();for(const value of Object.values(mesh.material))if(value?.isTexture)value.dispose();mesh.material.dispose();mesh.dispose();}for(const object of [this.terrain,this.trees,this.shafts]){object?.geometry.dispose();object?.material.dispose();}for(const g of this.geometries.values())g.dispose();for(const m of this.materials.values())m.dispose();for(const t of this.textures)t.dispose();for(const url of this.assetUrls?.values()||[])URL.revokeObjectURL(url);this.environment?.dispose();this.gpu.dispose();}
