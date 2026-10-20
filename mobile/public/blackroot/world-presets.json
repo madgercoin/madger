@@ -1,1 +1,141 @@
-{"forest":{"sky":"#7b9387"},"ruins":{"sky":"#73837d"},"cavern":{"sky":"#1e343a"}}
+{
+  "schemaVersion": 1,
+  "status": "asset-production-specification-not-yet-loaded-by-renderer",
+  "sourceBranch": "upgrade/expedition-3d-preview",
+  "preserve": [
+    "madger-expedition-3d-v1",
+    "existing route IDs",
+    "earned hero fragments",
+    "persistent purchases",
+    "paused checkpoints"
+  ],
+  "existingAssets": [
+    "forest_ground_04",
+    "aerial_grass_rock",
+    "bark_brown_02",
+    "fern_02",
+    "rock_face_02",
+    "rock_moss_set_01",
+    "dead_tree_trunk",
+    "sunrise.hdr"
+  ],
+  "biomes": {
+    "forest": {
+      "fog": "#7b9387",
+      "ground": "forest_ground_04",
+      "canopy": "fern_02",
+      "tree": "dead_tree_trunk",
+      "sun": 3.2,
+      "notes": "canopy shadow, layered moss, hand-shaped roots, walkable fork shoulders"
+    },
+    "ruins": {
+      "fog": "#73837d",
+      "ground": "aerial_grass_rock",
+      "masonry": "rock_face_02",
+      "sun": 2.5,
+      "notes": "fractured arches, weathered retaining walls, bridges, copper machinery"
+    },
+    "cavern": {
+      "fog": "#1e343a",
+      "ground": "aerial_grass_rock",
+      "rock": "rock_moss_set_01",
+      "sun": 0.65,
+      "notes": "low shale vaults, water, mineral seams, distinct subterranean chambers"
+    }
+  },
+  "routes": {
+    "main": [
+      "forest",
+      "Overgrown Burrow approach",
+      "trunk arch and sunlit landing"
+    ],
+    "rootway": [
+      "forest",
+      "Mossbound Rootway",
+      "guardian nests"
+    ],
+    "ridge": [
+      "ruins",
+      "Ruined Watchridge",
+      "broken battlements"
+    ],
+    "deep": [
+      "cavern",
+      "Deep Burrow",
+      "wet sinkholes"
+    ],
+    "mosswalk": [
+      "forest",
+      "Mossy Walk",
+      "moss stepping stones"
+    ],
+    "root-arch": [
+      "forest",
+      "Root Arch Hollow",
+      "living arch and guardian altar"
+    ],
+    "log-crossing": [
+      "forest",
+      "Fallen Log Crossing",
+      "fallen tree bridge"
+    ],
+    "causeway": [
+      "ruins",
+      "Broken Causeway",
+      "collapsed stone bridge"
+    ],
+    "watchtower": [
+      "ruins",
+      "Watchtower Climb",
+      "tiered lookout"
+    ],
+    "gearworks": [
+      "ruins",
+      "Chamber of Gears",
+      "rotating brass gear alcove"
+    ],
+    "mudslide": [
+      "cavern",
+      "Mudslide Channel",
+      "sliding wet stone"
+    ],
+    "crystal-vein": [
+      "cavern",
+      "Crystal Vein",
+      "luminous mineral ribs"
+    ],
+    "ancient-vault": [
+      "cavern",
+      "Ancient Vault",
+      "sealed key chamber"
+    ],
+    "hollow": [
+      "cavern",
+      "Legacy Root Hollow",
+      "protected older shortcut"
+    ],
+    "grotto": [
+      "cavern",
+      "Legacy Crystal Passage",
+      "protected older shortcut"
+    ]
+  },
+  "gates": {
+    "browser": [
+      "real branching lane traversal",
+      "all 9 route combinations",
+      "three chamber interactions",
+      "cold-reload checkpoint and fragment banking",
+      "shader and network error audit"
+    ],
+    "native": [
+      "source-matched APK",
+      "Android emulator sustained movement",
+      "physical phone GPU/thermal measurement",
+      "frame rate minimum 30",
+      "input and burrow animations",
+      "save migration check"
+    ],
+    "publication": "only after CI and native acceptance; no claim of photorealism"
+  }
+}
