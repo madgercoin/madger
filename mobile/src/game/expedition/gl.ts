@@ -3,6 +3,26 @@ export type Shape='box'|'sphere'|'rock'|'cylinder'|'cone'|'ring'|'leaf'|'shadow'
 export type Color=[number,number,number,number];
 export type GL=WebGLRenderingContext|WebGL2RenderingContext;
 type NativeGL=GL & {endFrameEXP?:()=>void;flushEXP?:()=>void};
+export type SceneryBudget=0|1|2;
+export type SceneryBudgetState={level:SceneryBudget;fastFrames:number;slowFrames:number};
+/** Only noninteractive distant dressing scales down: controls, lanes, traps,
+ * branch gates, rewards and persisted state are never changed by this budget.
+ * The native command queue can drain slowly on software and older mobile GPUs. */
+export function adaptNativeSceneryBudget(state:SceneryBudgetState,drainMs:number):SceneryBudgetState {
+ if(!Number.isFinite(drainMs)||drainMs<0)return state;
+ if(drainMs>=90)return {level:Math.max(0,state.level-1) as SceneryBudget,fastFrames:0,slowFrames:0};
+ if(drainMs>=45){
+  const slowFrames=state.slowFrames+1;
+  return slowFrames>=2?{level:Math.max(0,state.level-1) as SceneryBudget,fastFrames:0,slowFrames:0}
+    :{...state,fastFrames:0,slowFrames};
+ }
+ if(drainMs<=20){
+  const fastFrames=state.fastFrames+1;
+  return fastFrames>=150?{level:Math.min(2,state.level+1) as SceneryBudget,fastFrames:0,slowFrames:0}
+    :{...state,fastFrames,slowFrames:0};
+ }
+ return {...state,fastFrames:0,slowFrames:0};
+}
 const VERTEX=`
 precision highp float;
 attribute vec3 aPosition;
@@ -221,9 +241,12 @@ export class ExpeditionRenderer {
  private drawIndexedInstanced:((mode:number,count:number,type:number,offset:number,instances:number)=>void)|null=null;
  private tailVertices=new Float32Array(TAIL_INDICES.length*6);private tailGrid=new Float64Array((TAIL_RINGS+1)*(TAIL_SIDES+1)*6);
  private clipPlanes=new Float64Array(24);
- private dead=false;private nativeFrames=0;public stats={instances:0,culledInstances:0,drawCalls:0,indexedDrawCalls:0,triangles:0,nativeDrainMs:0};
+ private dead=false;private nativeFrames=0;private sceneryState:SceneryBudgetState={level:2,fastFrames:0,slowFrames:0};
+ public sceneryBudget:SceneryBudget=2;
+ public stats={instances:0,culledInstances:0,drawCalls:0,indexedDrawCalls:0,triangles:0,nativeDrainMs:0};
  constructor(gl:GL){
   this.gl=gl as NativeGL;
+  if(typeof this.gl.flushEXP==='function'){this.sceneryState.level=1;this.sceneryBudget=1;}
   const compile=(type:number,source:string)=>{const s=gl.createShader(type);if(!s)throw Error('Could not allocate a GPU shader');gl.shaderSource(s,source);gl.compileShader(s);if(!gl.getShaderParameter(s,gl.COMPILE_STATUS)){const message=gl.getShaderInfoLog(s);gl.deleteShader(s);throw Error('3D shader: '+message);}return s;};
   const vert=compile(gl.VERTEX_SHADER,VERTEX),frag=compile(gl.FRAGMENT_SHADER,FRAGMENT),program=gl.createProgram();if(!program)throw Error('Could not allocate GPU program');
   gl.attachShader(program,vert);gl.attachShader(program,frag);['aPosition','aNormal','aM0','aM1','aM2','aM3','aColor'].forEach((name,i)=>gl.bindAttribLocation(program,i,name));gl.linkProgram(program);gl.deleteShader(vert);gl.deleteShader(frag);
@@ -280,7 +303,11 @@ export class ExpeditionRenderer {
   // The web context has no flushEXP and retains its normal browser scheduling.
   if(typeof this.gl.flushEXP==='function'){
    const started=performance.now();this.gl.flushEXP();this.stats.nativeDrainMs=performance.now()-started;
-   if(++this.nativeFrames===1||this.nativeFrames===30)console.info('MADGER_EXPEDITION_RENDER '+JSON.stringify({frame:this.nativeFrames,instanced:!!this.drawInstanced,...this.stats}));
+   const previous=this.sceneryBudget;
+   this.sceneryState=adaptNativeSceneryBudget(this.sceneryState,this.stats.nativeDrainMs);
+   this.sceneryBudget=this.sceneryState.level;
+   if(previous!==this.sceneryBudget)console.info('MADGER_NATIVE_SCENERY_BUDGET',JSON.stringify({level:this.sceneryBudget,drainMs:Math.round(this.stats.nativeDrainMs)}));
+   if(++this.nativeFrames===1||this.nativeFrames===30)console.info('MADGER_EXPEDITION_RENDER '+JSON.stringify({frame:this.nativeFrames,instanced:!!this.drawInstanced,...this.stats,sceneryBudget:this.sceneryBudget}));
   }
  }
  dispose(){if(this.dead)return;this.dead=true;try{for(const b of this.batches.values()){this.gl.deleteBuffer(b.vertex);this.gl.deleteBuffer(b.instances);if(b.elements)this.gl.deleteBuffer(b.elements);}this.gl.deleteProgram(this.program);}catch{/* A lost context has already freed its GPU resources. */}this.batches.clear();}

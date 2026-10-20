@@ -7,7 +7,7 @@ import { RGBELoader } from './vendor/examples/jsm/loaders/RGBELoader.js';
 import { legacyCharacters } from './characters.mjs?v=chambers-20261019-2';
 import { mergeGeometries } from './vendor/examples/jsm/utils/BufferGeometryUtils.js';
 import { adjustedSceneScale } from './quality.mjs';
-import { terrainBiome, terrainProfile, terrainSurfaceHeight, sceneryProfile } from './terrain.mjs';
+import { terrainBiome, terrainProfile, terrainSurfaceHeight, sceneryProfile, atmosphereProfile, foliageSway } from './terrain.mjs';
 import { MadgerHero } from './madger-hero.mjs';
 import { CavernVault } from './cavern-vault.mjs';
 import { RuinLandmarks } from './ruin-landmarks.mjs';
@@ -71,14 +71,27 @@ class ForestRenderer {
     this.hemi=new T.HemisphereLight('#c8e2e5','#343d22',2);this.scene.add(this.hemi);
     this.sun=new T.DirectionalLight('#ffe1a3',3.2);
     this.sun.position.set(-12,19,8); this.sun.castShadow=true;
-    this.sun.shadow.mapSize.set(768,768);
+    // On narrow/mobile viewports, keep physically based material/light response
+    // without high-cost shadow passes or mid-run shader recompilation.
+    // Wide screens can use dynamic shadows when performance permits.
+    this.mobileViewport=typeof window!=='undefined' && window.matchMedia?.('(max-width: 600px)').matches;
+    this.sun.shadow.mapSize.set(this.mobileViewport?512:768,this.mobileViewport?512:768);
     Object.assign(this.sun.shadow.camera,{left:-18,right:18,top:30,bottom:-22,near:1,far:85});
     this.sun.shadow.bias=-.0005;this.sun.shadow.normalBias=.035;
     this.scene.add(this.sun,this.sun.target);
     this.fill=new T.PointLight('#ffb257',13,15,2);this.fill.position.set(0,3,1);this.scene.add(this.fill);
     this.batches=new Map();this.geometries=new Map();this.materials=new Map();this.scanBatches=[];
     this.travel={value:0};this.temp=new T.Matrix4();this.tint=new T.Color();this.stats={};
-    this.run=null;this.dead=false;this.textures=[];this.quality=1;this.frameSamples=[];this.stableFrames=0;this.renderedFrames=0;
+    this.run=null;this.dead=false;this.textures=[];this.quality=this.mobileViewport?.84:1;
+    // Mobile viewport retains native-resolution UI and near-native 3D detail.
+    // Avoid late shader recompiles from realtime shadow restoration on phones.
+    this.maxSceneScale=this.mobileViewport?.93:1;
+    this.frameSamples=[];this.stableFrames=0;this.renderedFrames=0;
+    // Narrow/mobile screens keep PBR directional, IBL, normal and roughness
+    // lighting but never switch on an extra dynamic-shadow shader mid-run.
+    // Turning shadows on after a few fast seconds caused 905ms route-entry
+    // submission spikes in the actual mobile-viewport cave-choice test.
+    this.sun.castShadow=!this.mobileViewport&&this.quality>=.95;
   }
   async init() {
     const worldRequest=fetch('/blackroot/world-presets.json?v=grounded-scenery-20261020-1',{cache:'force-cache'}).then(async response=>{
@@ -305,6 +318,7 @@ class ForestRenderer {
     let anchored=0;
     const surface=(x,d)=>{anchored++;return terrainSurfaceHeight(profile,x,d,road(s,d)+curve(d)-curve(travel));};
     const underground=biome==='cavern',ruins=biome==='ruins';
+    const breezeTime=Number.isFinite(s.time)?s.time:0;
     this.stats.biome=biome;this.stats.route=s.route;
     this.stats.terrainProfileLoaded=Boolean(this.worldPresets?.terrainProfiles?.[s.route]);
     this.stats.sceneryProfileLoaded=Boolean(this.worldPresets?.sceneryProfiles?.[s.route]);
@@ -323,10 +337,16 @@ class ForestRenderer {
     if(s.mode==='chamber'){
       for(const {mesh} of this.scanBatches)mesh.count=0;this.trees.count=0;this.shafts.count=0;
       const x=s.x+road(s,travel),accent=s.chamber==='guardian-nest'?'#ffd8a0':s.chamber==='moonwell'?'#b8a7ff':'#79d9e6';
-      this.scene.fog.color.set('#16252a');this.scene.background.set('#16252a');this.sun.intensity=.3;this.hemi.intensity=1.05;
+      this.scene.fog.color.set('#16252a');this.scene.fog.density=.033;this.scene.background.set('#16252a');this.sun.intensity=.3;this.hemi.intensity=1.05;
       this.fill.position.set(x,2.8,-4);this.fill.color.set(accent);this.fill.intensity=65;this.scene.environmentIntensity=.25;return;
     }
-    this.hemi.intensity=underground?1.4:2;
+    // Fully authored route atmosphere costs no geometry or extra draw calls.
+    // Keep all route/physics data immutable; renderer state alone is adjusted.
+    const atmosphere=atmosphereProfile(this.worldPresets,s.route);
+    this.hemi.intensity=atmosphere.hemisphere;
+    this.scene.fog.density=atmosphere.fogDensity;
+    this.gpu.toneMappingExposure=atmosphere.exposure;
+    this.stats.atmosphereProfileLoaded=Boolean(this.worldPresets?.atmosphereProfiles?.[s.route]);
     const start=Math.floor(travel/12)*12;
     for(const {id,mesh} of this.scanBatches){let count=0;
       for(let i=1;i<=8;i++)for(const side of [-1,1]){
@@ -338,7 +358,8 @@ class ForestRenderer {
             if(this.quality<1&&j===2)continue;
             const lateral=3.95+r*1.3+j*.52,scale=(.34+.18*hash(n*13+side*3+j))*scenery.understory;
             const x=road(s,d)+curve(d)-curve(travel)+side*lateral;
-            mesh.setMatrixAt(count++,matrix(x,surface(x,d+j*2.1)+.07,z-j*2.1,scale,scale,scale,0,r*6.28+j*.8,0));
+            mesh.setMatrixAt(count++,matrix(x,surface(x,d+j*2.1)+.07,z-j*2.1,scale,scale,scale,0,r*6.28+j*.8,
+              ruins||underground?0:foliageSway(breezeTime,d+j*2.1,side+j*4)));
           }
           continue;
         }
@@ -375,7 +396,8 @@ class ForestRenderer {
           :id==='rock_moss_set_01'?6.7+r*1.7:5.4+r*1.8;
         const x=road(s,d)+curve(d)-curve(travel)+side*bankOffset;
         const height=id==='fern_02'?1.1+r*.9:id==='dead_tree_trunk'?7+r*3:id==='rock_face_02'?(underground?7:4)+r*3:1.4+r*1.4;
-        mesh.setMatrixAt(count++,matrix(x,surface(x,d)-.04,z,height,height,height,0,r*6.28,0));
+        mesh.setMatrixAt(count++,matrix(x,surface(x,d)-.04,z,height,height,height,0,r*6.28,
+          id==='fern_02'&&!ruins?foliageSway(breezeTime,d,side):0));
         if(id==='rock_face_02'&&underground&&side===1&&n%2===0){
           const centre=road(s,d)+curve(d)-curve(travel);
           mesh.setMatrixAt(count++,matrix(centre+5,8,z,1.8,10,6,0,0,Math.PI/2));
@@ -385,7 +407,8 @@ class ForestRenderer {
           const cx=road(s,d)+curve(d)-curve(travel)+side*(4.0+r),scale=(.7+r*.85)*scenery.understory;
           for(let j=0;j<(ruins||this.quality<.5?1:3);j++){const spread=.65*j,sz=z-j*2.3,plantX=cx+side*spread;
             const flowerScale=scale*(1-j*.13);
-            mesh.setMatrixAt(count++,matrix(plantX,surface(plantX,d+j*2.3)+.07,sz,flowerScale,flowerScale,flowerScale,0,r*6.28+j,0));}
+            mesh.setMatrixAt(count++,matrix(plantX,surface(plantX,d+j*2.3)+.07,sz,flowerScale,flowerScale,flowerScale,0,r*6.28+j,
+              ruins?0:foliageSway(breezeTime,d+j*2.3,side+j)));}
         }
       }
       mesh.count=count;mesh.instanceMatrix.needsUpdate=true;
@@ -418,15 +441,16 @@ class ForestRenderer {
     }
     this.terrain.position.z=-84;vertices.needsUpdate=uv.needsUpdate=tint.needsUpdate=true;this.terrain.geometry.computeVertexNormals();
     }
-    this.shafts.count=underground?0:3;
-    for(let i=0;i<3;i++){const d=start+30+i*27;this.shafts.setMatrixAt(i,matrix(road(s,d)+curve(d)-curve(travel)-1,7,travel-d,1.2,1,1.2,0,0,-.35));}this.shafts.instanceMatrix.needsUpdate=true;
+    // Previous opaque cone beams appeared as giant solid spikes in screenshots.
+    // Remove those unrealistic primitives; retain actual directional/IBL PBR light.
+    this.shafts.count=0;
     const biomeSettings=this.worldPresets?.biomes?.[biome];
     const fog=biomeSettings?.fog||(underground?'#1e343a':ruins?'#73837d':'#7b9387');
     this.scene.fog.color.set(fog);this.scene.background.set(fog);
     this.sun.intensity=Number.isFinite(biomeSettings?.sun)?biomeSettings.sun:(underground?.65:3.2);
-    this.scene.environmentIntensity=underground?.16:.32;
+    this.scene.environmentIntensity=atmosphere.environment;
     const x=road(s,travel);this.sun.position.set(x-12,19,8);this.sun.target.position.set(x,0,-18);
-    this.fill.position.set(x,2.8,-3);this.fill.color.set(underground?'#83c9e4':'#ffb257');this.fill.intensity=underground?23:13;
+    this.fill.position.set(x,2.8,-3);this.fill.color.set(atmosphere.fillColor);this.fill.intensity=atmosphere.fill;
   }
   render(eye,target,time,zone,travel=0) {
     if(this.dead)return;
@@ -440,15 +464,15 @@ class ForestRenderer {
       const elapsed=now-(this.previousFrame??now);
       if(elapsed>0&&elapsed<1800)this.frameSamples.push(elapsed);
       if(this.frameSamples.length>=3){
-        const next=adjustedSceneScale(this.quality,this.frameSamples);
+        const next=Math.min(this.maxSceneScale,adjustedSceneScale(this.quality,this.frameSamples));
         const rapid=this.frameSamples.every(ms=>ms<24);
         this.stableFrames=rapid?this.stableFrames+3:0;
         // Restore visual quality only after sustained fast rendering.
-        const restored=this.stableFrames>=90&&next===this.quality&&next<1
-          ?Math.min(1,Math.round((next+.07)*100)/100):next;
+        const restored=this.stableFrames>=120&&next===this.quality&&next<this.maxSceneScale
+          ?Math.min(this.maxSceneScale,Math.round((next+.05)*100)/100):next;
         if(restored!==this.quality){
           this.quality=restored;
-          this.sun.castShadow=this.quality>.53;
+          this.sun.castShadow=!this.mobileViewport&&this.quality>=.95;
           this.stableFrames=0;
           console.info('MADGER_FOREST_QUALITY',JSON.stringify({
             resolutionScale:this.quality, dynamicShadows:this.sun.castShadow,
@@ -473,7 +497,7 @@ class ForestRenderer {
     }
     const submitStart=performance.now();this.gpu.render(this.scene,this.camera);
     this.stats.webglSubmitMs=Math.round((performance.now()-submitStart)*10)/10;
-    this.stats.resolutionScale=this.quality;this.stats.drawCalls=this.gpu.info.render.calls;this.stats.triangles=this.gpu.info.render.triangles;
+    this.stats.resolutionScale=this.quality;this.stats.dynamicShadows=this.sun.castShadow;this.stats.drawCalls=this.gpu.info.render.calls;this.stats.triangles=this.gpu.info.render.triangles;
     const instancesFor=id=>Math.max(0,...this.scanBatches.filter(b=>b.id===id).map(b=>b.mesh.count));
     this.stats.photoscannedTrees=instancesFor('island_tree_02');
     this.stats.photoscannedRoots=instancesFor('root_cluster_01');
@@ -485,9 +509,11 @@ class ForestRenderer {
     this.stats.cavernFormationTriangles=this.cavernVault.mesh.visible?this.cavernVault.formations.maxTriangles:0;
     this.stats.ruinArchStones=this.ruins.stats.archStones;
     this.stats.ruinPierBlocks=this.ruins.stats.pierBlocks;
+    this.stats.ruinRubbleStones=this.ruins.stats.rubbleStones;
     this.stats.ruinTowerCourses=this.ruins.stats.towerCourses;
     this.stats.ruinGears=this.ruins.stats.rotatingGears;
-    if(typeof window!=='undefined')window.madgerForestDiagnostics={photoscannedTrees:this.stats.photoscannedTrees,photoscannedRoots:this.stats.photoscannedRoots,photoscannedGrasses:this.stats.photoscannedGrasses,terrainVertices:this.stats.terrainVertices,drawCalls:this.stats.drawCalls,triangles:this.stats.triangles,scanCpuMs:this.stats.scanCpuMs,webglSubmitMs:this.stats.webglSubmitMs,resolutionScale:this.quality,route:this.stats.route,biome:this.stats.biome,terrainProfileLoaded:this.stats.terrainProfileLoaded,sceneryProfileLoaded:this.stats.sceneryProfileLoaded,groundedSceneryInstances:this.stats.groundedSceneryInstances,terrainMaterial:this.terrainBiome,cavernVaultTriangles:this.stats.cavernVaultTriangles,cavernFormationInstances:this.stats.cavernFormationInstances,cavernMineralInstances:this.stats.cavernMineralInstances,cavernFormationTriangles:this.stats.cavernFormationTriangles,ruinArchStones:this.stats.ruinArchStones,ruinPierBlocks:this.stats.ruinPierBlocks,ruinTowerCourses:this.stats.ruinTowerCourses,ruinGears:this.stats.ruinGears,madgerRig:this.stats.madgerRig,madgerMeshCount:this.stats.madgerMeshCount};
+    this.stats.sunbeamPrimitives=this.shafts.count;
+    if(typeof window!=='undefined')window.madgerForestDiagnostics={photoscannedTrees:this.stats.photoscannedTrees,photoscannedRoots:this.stats.photoscannedRoots,photoscannedGrasses:this.stats.photoscannedGrasses,terrainVertices:this.stats.terrainVertices,drawCalls:this.stats.drawCalls,triangles:this.stats.triangles,scanCpuMs:this.stats.scanCpuMs,webglSubmitMs:this.stats.webglSubmitMs,resolutionScale:this.quality,dynamicShadows:this.stats.dynamicShadows,route:this.stats.route,biome:this.stats.biome,terrainProfileLoaded:this.stats.terrainProfileLoaded,sceneryProfileLoaded:this.stats.sceneryProfileLoaded,atmosphereProfileLoaded:this.stats.atmosphereProfileLoaded,sunbeamPrimitives:this.shafts.count,groundedSceneryInstances:this.stats.groundedSceneryInstances,terrainMaterial:this.terrainBiome,cavernVaultTriangles:this.stats.cavernVaultTriangles,cavernFormationInstances:this.stats.cavernFormationInstances,cavernMineralInstances:this.stats.cavernMineralInstances,cavernFormationTriangles:this.stats.cavernFormationTriangles,ruinArchStones:this.stats.ruinArchStones,ruinPierBlocks:this.stats.ruinPierBlocks,ruinRubbleStones:this.stats.ruinRubbleStones,ruinTowerCourses:this.stats.ruinTowerCourses,ruinGears:this.stats.ruinGears,madgerRig:this.stats.madgerRig,madgerMeshCount:this.stats.madgerMeshCount};
     if(!this.logged){this.logged=true;console.info('MADGER_FOREST_RENDER',JSON.stringify(this.stats));}
   }
   dispose(){if(this.dead)return;this.dead=true;this.cavernVault?.dispose();this.ruins?.dispose();for(const b of this.batches.values())b.mesh.dispose();for(const {mesh} of this.scanBatches){mesh.geometry.dispose();for(const value of Object.values(mesh.material))if(value?.isTexture)value.dispose();mesh.material.dispose();mesh.dispose();}for(const object of [this.terrain,this.trees,this.shafts]){object?.geometry.dispose();object?.material.dispose();}for(const g of this.geometries.values())g.dispose();for(const m of this.materials.values())m.dispose();for(const t of this.textures)t.dispose();for(const url of this.assetUrls?.values()||[])URL.revokeObjectURL(url);this.environment?.dispose();this.gpu.dispose();}

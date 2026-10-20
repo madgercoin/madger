@@ -157,6 +157,128 @@
     "hollow":        { "seed": 223, "treeScale": 0.00, "understory": 0.58, "rootScale": 1.40 },
     "grotto":        { "seed": 241, "treeScale": 0.00, "understory": 0.40, "rootScale": 0.78 }
   },
+  "atmosphereProfiles": {
+    "main": {
+      "fogDensity": 0.0115,
+      "hemisphere": 2,
+      "environment": 0.34,
+      "fill": 14,
+      "exposure": 1.17,
+      "fillColor": "#ffbf7a"
+    },
+    "rootway": {
+      "fogDensity": 0.0125,
+      "hemisphere": 1.8,
+      "environment": 0.31,
+      "fill": 11,
+      "exposure": 1.18,
+      "fillColor": "#ffcf92"
+    },
+    "ridge": {
+      "fogDensity": 0.009,
+      "hemisphere": 2,
+      "environment": 0.38,
+      "fill": 12,
+      "exposure": 1.19,
+      "fillColor": "#ffcfaa"
+    },
+    "deep": {
+      "fogDensity": 0.026,
+      "hemisphere": 1.2,
+      "environment": 0.18,
+      "fill": 24,
+      "exposure": 1.24,
+      "fillColor": "#7ed2eb"
+    },
+    "mosswalk": {
+      "fogDensity": 0.014,
+      "hemisphere": 1.75,
+      "environment": 0.31,
+      "fill": 10,
+      "exposure": 1.18,
+      "fillColor": "#eccc8d"
+    },
+    "root-arch": {
+      "fogDensity": 0.013,
+      "hemisphere": 1.7,
+      "environment": 0.34,
+      "fill": 10,
+      "exposure": 1.17,
+      "fillColor": "#e8c57e"
+    },
+    "log-crossing": {
+      "fogDensity": 0.011,
+      "hemisphere": 2.1,
+      "environment": 0.4,
+      "fill": 14,
+      "exposure": 1.17,
+      "fillColor": "#ffd59b"
+    },
+    "causeway": {
+      "fogDensity": 0.0095,
+      "hemisphere": 2,
+      "environment": 0.37,
+      "fill": 11,
+      "exposure": 1.19,
+      "fillColor": "#f6c093"
+    },
+    "watchtower": {
+      "fogDensity": 0.0085,
+      "hemisphere": 2.08,
+      "environment": 0.41,
+      "fill": 12,
+      "exposure": 1.19,
+      "fillColor": "#ffdbb4"
+    },
+    "gearworks": {
+      "fogDensity": 0.013,
+      "hemisphere": 1.8,
+      "environment": 0.28,
+      "fill": 18,
+      "exposure": 1.19,
+      "fillColor": "#fac079"
+    },
+    "mudslide": {
+      "fogDensity": 0.027,
+      "hemisphere": 1.3,
+      "environment": 0.18,
+      "fill": 23,
+      "exposure": 1.22,
+      "fillColor": "#8ab7ba"
+    },
+    "crystal-vein": {
+      "fogDensity": 0.023,
+      "hemisphere": 1.25,
+      "environment": 0.21,
+      "fill": 29,
+      "exposure": 1.25,
+      "fillColor": "#80dce4"
+    },
+    "ancient-vault": {
+      "fogDensity": 0.028,
+      "hemisphere": 1.15,
+      "environment": 0.22,
+      "fill": 28,
+      "exposure": 1.24,
+      "fillColor": "#d4b787"
+    },
+    "hollow": {
+      "fogDensity": 0.026,
+      "hemisphere": 1.35,
+      "environment": 0.19,
+      "fill": 24,
+      "exposure": 1.22,
+      "fillColor": "#87b8a5"
+    },
+    "grotto": {
+      "fogDensity": 0.022,
+      "hemisphere": 1.3,
+      "environment": 0.23,
+      "fill": 28,
+      "exposure": 1.23,
+      "fillColor": "#8cccd1"
+    }
+  },
   "terrainProfiles": {
     "main": {
       "bank": 1.5,
