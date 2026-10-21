@@ -1,8 +1,10 @@
 {
-    "apkUrl":  "https://expo.dev/artifacts/eas/-n5ogmb04gyjo30P6TAJDgGLYrAoDIeg0M0eiCl_AVw.apk",
-    "sha256":  "081f4eb7d9e92d010f683796f48cb3f3ccf2bd252d47076679c936ab28e59bf9",
-    "package":  "com.madgercoin.expedition.preview",
-    "version":  "1.5.0",
-    "buildNumber":  14,
-    "easBuildId":  "00d385dd-5d9c-477b-bc6d-031ac469be97"
+    "githubRunId": 39526076428,
+    "githubArtifactId": 12312889684,
+    "sha256": "8aee84c49d647c19a5dd774a172e38efb8597a611c7c81ece85e034f52f3fbf7",
+    "package": "com.madgercoin.preview",
+    "version": "1.5.1",
+    "buildNumber": 21,
+    "sourceRevision": "6d14a33c663765038176944c7da71e398ebf1ea4",
+    "sourceHeadRevision": "3d618442414ed8888786c0be08578c6a77e3385b"
 }

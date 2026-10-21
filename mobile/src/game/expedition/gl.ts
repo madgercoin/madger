@@ -1,10 +1,66 @@
 import { multiply, perspective, lookAt, transform, type Mat4, type Vec3 } from './math';
-export type Shape='box'|'sphere'|'rock'|'cylinder'|'cone'|'ring'|'leaf'|'shadow'|'headStripe'|'tail'|'halo'|'ridge';
+export type Shape='box'|'sphere'|'rock'|'cylinder'|'cone'|'ring'|'leaf'|'shadow'|'headStripe'|'tail'|'halo'|'ridge'|'face';
 export type Color=[number,number,number,number];
 export type GL=WebGLRenderingContext|WebGL2RenderingContext;
 type NativeGL=GL & {endFrameEXP?:()=>void;flushEXP?:()=>void};
 export type SceneryBudget=0|1|2;
 export type SceneryBudgetState={level:SceneryBudget;fastFrames:number;slowFrames:number};
+/** Bound native fragment work independently of the phone's high-density UI.
+ * A 1440p screen otherwise shades millions of pixels for every overlapping
+ * tree/particle, even after distant geometry has been culled. */
+export function nativeSceneSize(width:number,height:number,budget:SceneryBudget){
+ const scale=Math.min([.55,.75,1][budget],Math.sqrt(800000/Math.max(1,width*height)));
+ return {width:Math.max(1,Math.floor(width*scale)),height:Math.max(1,Math.floor(height*scale))};
+}
+/** Offscreen scene only; React Native text and controls stay at device resolution.
+ * Expo GL presents the default framebuffer when explicitly bound to null.
+ * Never call its unsupported FRAMEBUFFER_BINDING getParameter HostFunction. */
+export class NativeSceneTarget {
+ private framebuffer:WebGLFramebuffer;private texture:WebGLTexture;private depth:WebGLRenderbuffer;
+ private program:WebGLProgram;private quad:WebGLBuffer;private sampler:WebGLUniformLocation;
+ private width=0;private height=0;
+ constructor(private gl:GL){
+  const framebuffer=gl.createFramebuffer(),texture=gl.createTexture(),depth=gl.createRenderbuffer(),quad=gl.createBuffer();
+  if(!framebuffer||!texture||!depth||!quad)throw Error('Native scene target allocation failed');
+  this.framebuffer=framebuffer;this.texture=texture;this.depth=depth;this.quad=quad;
+  const shaders=[
+   [gl.VERTEX_SHADER,'attribute vec2 aPosition;varying vec2 vUV;void main(){vUV=aPosition*.5+.5;gl_Position=vec4(aPosition,0.,1.);}'],
+   [gl.FRAGMENT_SHADER,'precision mediump float;uniform sampler2D uScene;varying vec2 vUV;void main(){gl_FragColor=texture2D(uScene,vUV);}'],
+  ] as const;
+  const program=gl.createProgram();if(!program)throw Error('Native scene composite allocation failed');
+  this.program=program;
+  for(const [type,source]of shaders){const shader=gl.createShader(type);if(!shader)throw Error('Native composite shader allocation failed');gl.shaderSource(shader,source);gl.compileShader(shader);if(!gl.getShaderParameter(shader,gl.COMPILE_STATUS))throw Error('Native composite shader: '+gl.getShaderInfoLog(shader));gl.attachShader(program,shader);gl.deleteShader(shader);}
+  gl.bindAttribLocation(program,0,'aPosition');gl.linkProgram(program);
+  if(!gl.getProgramParameter(program,gl.LINK_STATUS))throw Error('Native composite: '+gl.getProgramInfoLog(program));
+  const sampler=gl.getUniformLocation(program,'uScene');if(sampler===null)throw Error('Native composite sampler unavailable');this.sampler=sampler;
+  gl.bindBuffer(gl.ARRAY_BUFFER,quad);gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([-1,-1,1,-1,-1,1,1,1]),gl.STATIC_DRAW);
+  gl.bindTexture(gl.TEXTURE_2D,texture);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.LINEAR);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MAG_FILTER,gl.LINEAR);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_S,gl.CLAMP_TO_EDGE);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_T,gl.CLAMP_TO_EDGE);gl.bindTexture(gl.TEXTURE_2D,null);
+ }
+ begin(width:number,height:number,budget:SceneryBudget){
+  const gl=this.gl,size=nativeSceneSize(width,height,budget);
+  // Expo GL's native HostFunction rejects gl.getParameter(FRAMEBUFFER_BINDING).
+  // GLView presents the default framebuffer selected by binding null; never
+  // query an unsupported binding and never infer a custom output object.
+  gl.bindFramebuffer(gl.FRAMEBUFFER,this.framebuffer);
+  if(size.width!==this.width||size.height!==this.height){
+   gl.bindTexture(gl.TEXTURE_2D,this.texture);gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA,size.width,size.height,0,gl.RGBA,gl.UNSIGNED_BYTE,null);
+   gl.bindRenderbuffer(gl.RENDERBUFFER,this.depth);gl.renderbufferStorage(gl.RENDERBUFFER,gl.DEPTH_COMPONENT16,size.width,size.height);
+   gl.framebufferTexture2D(gl.FRAMEBUFFER,gl.COLOR_ATTACHMENT0,gl.TEXTURE_2D,this.texture,0);gl.framebufferRenderbuffer(gl.FRAMEBUFFER,gl.DEPTH_ATTACHMENT,gl.RENDERBUFFER,this.depth);
+   if(gl.checkFramebufferStatus(gl.FRAMEBUFFER)!==gl.FRAMEBUFFER_COMPLETE){gl.bindFramebuffer(gl.FRAMEBUFFER,null);throw Error('Native scene framebuffer is incomplete');}
+   this.width=size.width;this.height=size.height;gl.bindTexture(gl.TEXTURE_2D,null);gl.bindRenderbuffer(gl.RENDERBUFFER,null);
+  }
+  gl.viewport(0,0,this.width,this.height);return size;
+ }
+ present(width:number,height:number){
+  const gl=this.gl;gl.bindFramebuffer(gl.FRAMEBUFFER,null);gl.viewport(0,0,width,height);
+  gl.disable(gl.DEPTH_TEST);gl.disable(gl.BLEND);gl.depthMask(false);gl.useProgram(this.program);
+  gl.activeTexture(gl.TEXTURE0);gl.bindTexture(gl.TEXTURE_2D,this.texture);gl.uniform1i(this.sampler,0);
+  gl.bindBuffer(gl.ARRAY_BUFFER,this.quad);gl.enableVertexAttribArray(0);gl.vertexAttribPointer(0,2,gl.FLOAT,false,0,0);
+  for(let i=1;i<=6;i++)gl.disableVertexAttribArray(i);
+  gl.drawArrays(gl.TRIANGLE_STRIP,0,4);gl.bindTexture(gl.TEXTURE_2D,null);gl.depthMask(true);gl.enable(gl.DEPTH_TEST);
+ }
+ dispose(){const gl=this.gl;gl.deleteFramebuffer(this.framebuffer);gl.deleteRenderbuffer(this.depth);gl.deleteTexture(this.texture);gl.deleteBuffer(this.quad);gl.deleteProgram(this.program);}
+}
 /** Only noninteractive distant dressing scales down: controls, lanes, traps,
  * branch gates, rewards and persisted state are never changed by this budget.
  * The native command queue can drain slowly on software and older mobile GPUs. */
@@ -44,6 +100,7 @@ precision highp float;
 #else
 precision mediump float;
 #endif
+uniform sampler2D uPortrait;
 uniform vec3 uEye;uniform vec3 uFog;uniform vec2 uFogRange;uniform float uTime;uniform float uTravel;
 varying vec3 vWorld;varying vec3 vNormal;varying vec3 vLocal;varying vec4 vColor;
 #ifdef GL_FRAGMENT_PRECISION_HIGH
@@ -52,6 +109,15 @@ float hash(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
 float hash(vec2 p){p=mod(p,vec2(32.0));return fract(sin(dot(p,vec2(17.13,41.7)))*437.58545);}
 #endif
 void main(){
+ if(vColor.a < -9.5 && vColor.a > -10.5){
+  vec2 uv=vec2(vLocal.x/1.18+.5,vLocal.y/1.07+.5);
+  float radius=length((uv-vec2(.5))/vec2(.52,.53));
+  float mask=1.0-smoothstep(.83,1.02,radius);if(mask<.02)discard;
+  vec3 portrait=texture2D(uPortrait,vec2(.285,.595)+uv*vec2(.43,.30)).rgb;
+  float light=.84+.16*max(0.0,dot(normalize(vNormal),normalize(vec3(-.4,.8,-.8))));
+  gl_FragColor=vec4(portrait*light,mask);return;
+ }
+ if(vColor.a < -10.5 && vColor.a > -11.5 && vLocal.z < .08)discard;
  // Outdoor sky is an eye-centred instanced sphere in the existing sphere
  // batch. World-space angular bands add animated clouds and a real horizon
  // without a postprocess pass, extra GL program, or additional draw call.
@@ -140,6 +206,16 @@ function geometry(shape:Shape) {
    {n:[0,1,0],p:[[-.5,.5,.5],[.5,.5,.5],[.5,.5,-.5],[-.5,.5,-.5]]},
    {n:[0,-1,0],p:[[-.5,-.5,-.5],[.5,-.5,-.5],[.5,-.5,.5],[-.5,-.5,.5]]},
   ];for(const f of faces){triangle(v,f.p[0],f.p[1],f.p[2],f.n);triangle(v,f.p[0],f.p[2],f.p[3],f.n);}
+ }else if(shape==='face'){
+  // Same curved portrait surface and UV crop as the browser's approved rig.
+  const point=(i:number,j:number):Vec3=>{
+   const x=(i/24-.5)*1.18,y=(j/22-.5)*1.07;
+   return [x,y,-.515*Math.sqrt(Math.max(.015,1-(x/.67)**2-(y/.58)**2))-.065];
+  };
+  for(let j=0;j<22;j++)for(let i=0;i<24;i++){
+   const a=point(i,j),b=point(i+1,j),c=point(i,j+1),d=point(i+1,j+1);
+   triangle(v,a,c,b);triangle(v,b,c,d);
+  }
  }else if(shape==='ridge'){
   // Coherent sculpted bank: 192 shaded triangles instead of large faceted
   // primitive rocks. Instanced as a single low-cost native GL material batch.
@@ -272,14 +348,16 @@ function cullBatch(batch:Batch,planes:Float64Array){
 }
 export class ExpeditionRenderer {
  private gl:NativeGL;private program:WebGLProgram;private batches=new Map<Shape,Batch>();
- private uniforms:{vp:WebGLUniformLocation;eye:WebGLUniformLocation;fog:WebGLUniformLocation;range:WebGLUniformLocation;time:WebGLUniformLocation;travel:WebGLUniformLocation};
+ private uniforms:{portrait:WebGLUniformLocation;vp:WebGLUniformLocation;eye:WebGLUniformLocation;fog:WebGLUniformLocation;range:WebGLUniformLocation;time:WebGLUniformLocation;travel:WebGLUniformLocation};
  private divisor:((i:number,v:number)=>void)|null=null;private drawInstanced:((mode:number,first:number,count:number,instances:number)=>void)|null=null;
  private drawIndexedInstanced:((mode:number,count:number,type:number,offset:number,instances:number)=>void)|null=null;
  private tailVertices=new Float32Array(TAIL_INDICES.length*6);private tailGrid=new Float64Array((TAIL_RINGS+1)*(TAIL_SIDES+1)*6);
  private clipPlanes=new Float64Array(24);
+ private portrait:WebGLTexture|null=null;public portraitReady=false;
  private dead=false;private nativeFrames=0;private sceneryState:SceneryBudgetState={level:2,fastFrames:0,slowFrames:0};
+ private sceneTarget:NativeSceneTarget|null=null;
  public sceneryBudget:SceneryBudget=2;
- public stats={instances:0,culledInstances:0,drawCalls:0,indexedDrawCalls:0,triangles:0,nativeDrainMs:0};
+ public stats={instances:0,culledInstances:0,drawCalls:0,indexedDrawCalls:0,triangles:0,nativeDrainMs:0,sceneWidth:0,sceneHeight:0};
  constructor(gl:GL){
   this.gl=gl as NativeGL;
   if(typeof this.gl.flushEXP==='function'){this.sceneryState.level=1;this.sceneryBudget=1;}
@@ -288,7 +366,7 @@ export class ExpeditionRenderer {
   gl.attachShader(program,vert);gl.attachShader(program,frag);['aPosition','aNormal','aM0','aM1','aM2','aM3','aColor'].forEach((name,i)=>gl.bindAttribLocation(program,i,name));gl.linkProgram(program);gl.deleteShader(vert);gl.deleteShader(frag);
   if(!gl.getProgramParameter(program,gl.LINK_STATUS)){const message=gl.getProgramInfoLog(program);gl.deleteProgram(program);throw Error('3D program: '+message);}this.program=program;
   const uniform=(name:string)=>{const u=gl.getUniformLocation(program,name);if(u===null)throw Error('Missing shader uniform '+name);return u;};
-  this.uniforms={vp:uniform('uVP'),eye:uniform('uEye'),fog:uniform('uFog'),range:uniform('uFogRange'),time:uniform('uTime'),travel:uniform('uTravel')};
+  this.uniforms={portrait:uniform('uPortrait'),vp:uniform('uVP'),eye:uniform('uEye'),fog:uniform('uFog'),range:uniform('uFogRange'),time:uniform('uTime'),travel:uniform('uTravel')};
   const g=gl as WebGL2RenderingContext;
   if(typeof g.drawArraysInstanced==='function'){
    this.drawInstanced=g.drawArraysInstanced.bind(g);this.divisor=g.vertexAttribDivisor.bind(g);
@@ -296,7 +374,7 @@ export class ExpeditionRenderer {
   }else{
    const ext=gl.getExtension('ANGLE_instanced_arrays');if(ext){this.drawInstanced=ext.drawArraysInstancedANGLE.bind(ext);this.divisor=ext.vertexAttribDivisorANGLE.bind(ext);if('drawElementsInstancedANGLE' in ext&&typeof ext.drawElementsInstancedANGLE==='function')this.drawIndexedInstanced=ext.drawElementsInstancedANGLE.bind(ext);}
   }
-  for(const shape of ['box','sphere','rock','ridge','cylinder','cone','ring','leaf','headStripe','tail','shadow','halo'] as Shape[]){
+  for(const shape of ['box','sphere','rock','ridge','cylinder','cone','ring','leaf','headStripe','tail','shadow','halo','face'] as Shape[]){
    const data=shape==='tail'?tailGeometry(0,0,this.tailVertices,this.tailGrid):geometry(shape),vertex=gl.createBuffer(),instances=gl.createBuffer();if(!vertex||!instances)throw Error('GPU buffer allocation failed');
    gl.bindBuffer(gl.ARRAY_BUFFER,vertex);gl.bufferData(gl.ARRAY_BUFFER,data,gl.STATIC_DRAW);
    let elements:WebGLBuffer|null=null;
@@ -304,21 +382,37 @@ export class ExpeditionRenderer {
    this.batches.set(shape,{vertex,instances,elements,vertices:data.length/6,data:new Float32Array(20*4096),visible:new Float32Array(0),bounds:geometryBounds(data),count:0});
   }
   gl.enable(gl.DEPTH_TEST);gl.depthFunc(gl.LEQUAL);gl.disable(gl.CULL_FACE);
+  if(typeof this.gl.flushEXP==='function'&&gl.getParameter(gl.MAX_TEXTURE_SIZE)>0)this.sceneTarget=new NativeSceneTarget(gl);
+ }
+ setMadgerPortrait(source:TexImageSource|{localUri:string}){
+  const gl=this.gl,texture=gl.createTexture();if(!texture)throw Error('Approved portrait texture allocation failed');
+  try{gl.activeTexture(gl.TEXTURE1);gl.bindTexture(gl.TEXTURE_2D,texture);
+  gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL,true);
+  gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA,gl.RGBA,gl.UNSIGNED_BYTE,source as TexImageSource);
+  gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL,false);
+  gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.LINEAR);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MAG_FILTER,gl.LINEAR);
+  gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_S,gl.CLAMP_TO_EDGE);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_T,gl.CLAMP_TO_EDGE);
+  if(this.portrait)gl.deleteTexture(this.portrait);this.portrait=texture;this.portraitReady=true;
+  }catch(error){gl.deleteTexture(texture);throw error;}finally{gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL,false);gl.activeTexture(gl.TEXTURE0);}
  }
  updateTail(time:number,bank:number){const b=this.batches.get('tail')!;const data=tailGeometry(time,bank,this.tailVertices,this.tailGrid);geometryBounds(data,b.bounds);this.gl.bindBuffer(this.gl.ARRAY_BUFFER,b.vertex);this.gl.bufferData(this.gl.ARRAY_BUFFER,data,this.gl.DYNAMIC_DRAW);b.vertices=data.length/6;}
- reset(){for(const b of this.batches.values())b.count=0;this.stats={instances:0,culledInstances:0,drawCalls:0,indexedDrawCalls:0,triangles:0,nativeDrainMs:0};}
+ reset(){for(const b of this.batches.values())b.count=0;this.stats={instances:0,culledInstances:0,drawCalls:0,indexedDrawCalls:0,triangles:0,nativeDrainMs:0,sceneWidth:0,sceneHeight:0};}
  add(shape:Shape,matrix:Mat4,c:Color){const b=this.batches.get(shape)!;if(b.count>=4096)return;const offset=b.count*20;b.data.set(matrix,offset);b.data.set(c,offset+16);b.count++;}
  shape(shape:Shape,c:Color,x:number,y:number,z:number,sx=1,sy=1,sz=1,rx=0,ry=0,rz=0,parent?:Mat4){const t=transform(x,y,z,sx,sy,sz,rx,ry,rz);this.add(shape,parent?multiply(parent,t):t,c);}
  render(eye:Vec3,target:Vec3,time:number,zone:number,travel=0){
   if(this.dead)return;const gl=this.gl,width=gl.drawingBufferWidth,height=gl.drawingBufferHeight;if(width<2||height<2)return;
   const fog:Vec3=zone===0?[.024,.060,.057]:zone===1?[.024,.045,.057]:[.036,.026,.075];
-  const sky=fog.map(x=>Math.pow(x/(x+.65),.4545));gl.viewport(0,0,width,height);gl.clearColor(sky[0],sky[1],sky[2],1);gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT);
+  const sky=fog.map(x=>Math.pow(x/(x+.65),.4545));
+  const size=this.sceneTarget?.begin(width,height,this.sceneryBudget)??{width,height};
+  this.stats.sceneWidth=size.width;this.stats.sceneHeight=size.height;
+  gl.viewport(0,0,size.width,size.height);gl.clearColor(sky[0],sky[1],sky[2],1);gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT);
   gl.useProgram(this.program);const vp=multiply(perspective(2*Math.atan(Math.max(Math.tan(33*Math.PI/180),Math.tan(17*Math.PI/180)/(width/height))),width/height,.1,180),lookAt(eye,target));
   updateClipPlanes(vp,this.clipPlanes);
+  if(this.portrait){gl.activeTexture(gl.TEXTURE1);gl.bindTexture(gl.TEXTURE_2D,this.portrait);gl.uniform1i(this.uniforms.portrait,1);gl.activeTexture(gl.TEXTURE0);}
   gl.uniformMatrix4fv(this.uniforms.vp,false,vp);gl.uniform3f(this.uniforms.eye,eye[0],eye[1],eye[2]);gl.uniform3f(this.uniforms.fog,fog[0],fog[1],fog[2]);gl.uniform2f(this.uniforms.range,30,115);gl.uniform1f(this.uniforms.time,time);gl.uniform1f(this.uniforms.travel,travel);
   for(const [shape,b] of this.batches){if(!b.count)continue;
    const count=cullBatch(b,this.clipPlanes);this.stats.culledInstances+=b.count-count;if(!count)continue;
-   if(shape==='shadow'||shape==='halo'){gl.enable(gl.BLEND);gl.blendFunc(gl.SRC_ALPHA,shape==='halo'?gl.ONE:gl.ONE_MINUS_SRC_ALPHA);gl.depthMask(false);}else{gl.disable(gl.BLEND);gl.depthMask(true);}
+   if(shape==='shadow'||shape==='halo'||shape==='face'){gl.enable(gl.BLEND);gl.blendFunc(gl.SRC_ALPHA,shape==='halo'?gl.ONE:gl.ONE_MINUS_SRC_ALPHA);gl.depthMask(shape==='face');}else{gl.disable(gl.BLEND);gl.depthMask(true);}
    gl.bindBuffer(gl.ARRAY_BUFFER,b.vertex);gl.enableVertexAttribArray(0);gl.enableVertexAttribArray(1);gl.vertexAttribPointer(0,3,gl.FLOAT,false,24,0);gl.vertexAttribPointer(1,3,gl.FLOAT,false,24,12);
    if(this.divisor&&this.drawInstanced){
     this.divisor(0,0);this.divisor(1,0);gl.bindBuffer(gl.ARRAY_BUFFER,b.instances);gl.bufferData(gl.ARRAY_BUFFER,b.visible.subarray(0,count*20),gl.DYNAMIC_DRAW);
@@ -332,7 +426,7 @@ export class ExpeditionRenderer {
    }
    this.stats.instances+=count;this.stats.triangles+=count*b.vertices/3;
   }
-  gl.depthMask(true);gl.disable(gl.BLEND);gl.flush();if(this.gl.endFrameEXP)this.gl.endFrameEXP();
+  gl.depthMask(true);gl.disable(gl.BLEND);if(this.sceneTarget){this.sceneTarget.present(width,height);this.stats.drawCalls++;}gl.flush();if(this.gl.endFrameEXP)this.gl.endFrameEXP();
   // Expo presents after draining its native command backlog. Synchronize this
   // frame before a fast JS loop can queue another; otherwise a slow GPU can
   // display seconds-old geometry while the simulation and HUD continue ahead.
@@ -346,5 +440,5 @@ export class ExpeditionRenderer {
    if(++this.nativeFrames===1||this.nativeFrames===30)console.info('MADGER_EXPEDITION_RENDER '+JSON.stringify({frame:this.nativeFrames,instanced:!!this.drawInstanced,...this.stats,sceneryBudget:this.sceneryBudget}));
   }
  }
- dispose(){if(this.dead)return;this.dead=true;try{for(const b of this.batches.values()){this.gl.deleteBuffer(b.vertex);this.gl.deleteBuffer(b.instances);if(b.elements)this.gl.deleteBuffer(b.elements);}this.gl.deleteProgram(this.program);}catch{/* A lost context has already freed its GPU resources. */}this.batches.clear();}
+ dispose(){if(this.dead)return;this.dead=true;try{this.sceneTarget?.dispose();if(this.portrait)this.gl.deleteTexture(this.portrait);for(const b of this.batches.values()){this.gl.deleteBuffer(b.vertex);this.gl.deleteBuffer(b.instances);if(b.elements)this.gl.deleteBuffer(b.elements);}this.gl.deleteProgram(this.program);}catch{/* A lost context has already freed its GPU resources. */}this.batches.clear();}
 }
