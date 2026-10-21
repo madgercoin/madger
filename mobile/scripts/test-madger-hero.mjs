@@ -4,6 +4,8 @@ import {readFileSync} from 'node:fs';
 import {createHash} from 'node:crypto';
 import {fileURLToPath} from 'node:url';
 import path from 'node:path';
+import {createRequire} from 'node:module';
+const {PNG}=createRequire(import.meta.url)('pngjs');
 import * as THREE from '../public/blackroot/vendor/build/three.module.js';
 import {MadgerHero} from '../public/blackroot/madger-hero.mjs';
 
@@ -68,4 +70,14 @@ test('run, idle, jump and burrow animate geometry without changing any saved gam
    hero.update(fixture({y:0}),47);
    assert.notEqual(hero.tail.rotation.z,before,'tail animation was fixed');
  }finally{hero.dispose();}
+});
+
+
+test('native portrait is a decoder-compatible PNG with identical approved RGBA pixels',()=>{
+ const bytes=readFileSync(path.join(mobile,'assets/images/madger-mascot-native.png'));
+ assert.equal(bytes.subarray(0,8).toString('hex'),'89504e470d0a1a0a');
+ const decoded=PNG.sync.read(bytes);
+ assert.equal(decoded.width,1254);assert.equal(decoded.height,1254);
+ // Hash of decoded approved WebP, independently checked with Pillow and sharp.
+ assert.equal(sha(decoded.data),'deaedace5829d58ad744fe0fccba3fadeb264e7ba4c296c86fc2c8a4243f56b5');
 });

@@ -50,6 +50,21 @@ function scenery(bundle,course,capture=true){
  instance.setCourse(course);return {instance,records};
 }
 
+test('burst trails remain attached to Madger on raised and lowered routes',()=>{
+ for(const route of ['main','root-arch','mosswalk','ancient-vault']){
+  const s=current.Core.freshOvergrownExpedition(23,'burst-height');
+  Object.assign(s,{mode:'running',distance:500,route,burst:1,y:.3});
+  const {instance,records}=scenery(current,[]);
+  instance.clock=4;instance.reaction={kind:'none',at:-10};instance.renderer.updateTail=()=>{};
+  instance.madger(s,4,false);
+  const expected=Math.sin(s.distance/34)*.12+current.Core.overgrownPathHeight(route,s.distance)+.45+s.y;
+  assert.equal(records.slice(-7).length,7);
+  for(const [shape,matrix] of records.slice(-7)){
+   assert.equal(shape,'cone');assert(Math.abs(matrix[13]-expected)<1e-6,route+' burst must follow the physical floor');
+  }
+ }
+});
+
 test('continuous lantern emission stays exact and the color cache stays bounded',()=>{
  const original=current.GL.color('#ffd994',1.5),before=[...original];
  for(let i=0;i<5000;i++){
@@ -94,7 +109,7 @@ test('restoring a paused secret route reinitializes the camera after the lobby',
  scene.setCourse(course);scene.draw(saved,0);
  const expected=current.Core.routeOffset(saved)+saved.x*.72;
  assert(Math.abs(gl.eye[0]-expected)<1e-12);
- assert(Math.abs(gl.eye[1]-(4.4+saved.y*.18))<1e-12);
+ assert(Math.abs(gl.eye[1]-(4.4+Math.sin(saved.distance/34)*.12+saved.y*.18))<1e-12);
  scene.dispose();
 });
 

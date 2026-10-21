@@ -147,7 +147,8 @@ function officialFaceSurface(reference) {
 }
 
 export class MadgerHero {
-  constructor(scene,pathX,approvedFaceTexture=null) {
+  constructor(scene,pathX,approvedFaceTexture=null,pathHeight=()=>0) {
+    this.pathHeight=pathHeight;
     this.scene=scene;this.pathX=pathX;
     this.mats={};
     this.mats.fur=new T.MeshStandardMaterial({
@@ -318,14 +319,15 @@ export class MadgerHero {
     const distance=Number.isFinite(run.distance)?run.distance:0;
     const laneX=Number.isFinite(run.x)?run.x:0;
     const bx=laneX+this.pathX(run,distance);
-    const floor=Math.sin(distance/34)*.12;
+    const floor=Math.sin(distance/34)*.12+this.pathHeight(run,distance);
     const y=Math.max(0,Number.isFinite(run.y)?run.y:0);
+    const support=Math.max(0,run.groundHeight||0),airHeight=Math.max(0,y-support);
     const digging=clamp((run.slide||0)/.83),burrow=smooth(digging);
     const walking=run.mode==='running'&&distance>0;
     const lobby=run.mode==='ready';
     const stride=distance*1.63;
     const sway=walking&&!calm?Math.sin(stride)*.065:0;
-    const bob=walking&&y<.025&&!burrow?Math.abs(Math.sin(stride))*.046:0;
+    const bob=walking&&airHeight<.025&&!burrow?Math.abs(Math.sin(stride))*.046:0;
     this.root.position.set(bx,floor+y-burrow*.29+bob,0);
     this.root.rotation.y=lobby?Math.PI+.09*Math.sin(t*.65):0;
     this.root.rotation.z=clamp(-(run.vx||0)*.028,-.17,.17);
@@ -348,12 +350,12 @@ export class MadgerHero {
       &&run.time-run.lastHurt>=0&&run.time-run.lastHurt<.34;
     this.mats.fur.emissive.set(hurt?'#802c27':'#000000');
     this.mats.fur.emissiveIntensity=hurt?.42:0;
-    this.shadow.position.set(bx,floor-.30+.025,0);
-    const shadowScale=clamp(1-y*.15,.55,1)*(1-burrow*.3);
+    this.shadow.position.set(bx,floor+support-.30+.025,0);
+    const shadowScale=clamp(1-airHeight*.15,.55,1)*(1-burrow*.3);
     this.shadow.scale.set(shadowScale,shadowScale,1);
     this.root.updateMatrixWorld(true);
     this.lastPose={route:run.route,phase:run.mode,
-      burrowing:burrow>.05,jumping:y>.08,position:[bx,this.root.position.y,0],
+      burrowing:burrow>.05,jumping:airHeight>.08,position:[bx,this.root.position.y,0],
       triangleCount:Math.round(this.triangles),meshCount:this.meshCount,
       rearCreamBlaze:this.root.getObjectByName('rear-head-blaze')!==undefined,
       backChevron:this.root.getObjectByName('signature-back-V-left')!==undefined

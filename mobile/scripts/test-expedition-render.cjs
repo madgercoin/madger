@@ -8,7 +8,7 @@ const ts = require('typescript');
 
 const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'madger-render-test-'));
 test.after(() => fs.rmSync(dir, { recursive: true, force: true }));
-for (const name of ['math', 'gl']) {
+for (const name of ['math', 'gl', 'native-asset']) {
   const source = fs.readFileSync(path.join(__dirname, '../src/game/expedition', name + '.ts'), 'utf8');
   fs.writeFileSync(path.join(dir, name + '.js'), ts.transpileModule(source, {
     compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022 },
@@ -26,7 +26,7 @@ function context({ native = true, instanced = true, webShim = false } = {}) {
     createShader: () => ({}), createProgram: () => ({}), createBuffer: () => ({}),
     getShaderParameter: () => true, getProgramParameter: () => true,
     getUniformLocation: (_, name) => ({ name }), getExtension: () => null,
-    uniform1f: (location, value) => { if (location.name === 'uTravel') state.travel = value; },
+    uniform1f: (location, value) => { if (location.name === 'uTravel') state.travel = value; if (location.name === 'uDetail') state.detail = value; },
     flush: () => { state.flushes++; },
     drawArrays: () => { state.draws++; },
     drawArraysInstanced: instanced ? () => { state.instancedDraws++; } : undefined,
@@ -169,4 +169,140 @@ test('animated native sky uses the existing sphere batch and completes frame dra
     assert.equal(state.pending.length,0,'sky cannot queue unpresented frames');
     assert.equal(renderer.stats.triangles,renderer.batches.get('sphere').vertices/3);
   }finally{renderer.dispose();}
+});
+
+test('native scene pixel budget preserves aspect and bounds high-density fill cost', () => {
+  const {nativeSceneSize}=require(path.join(dir,'gl.js'));
+  for(const [w,h] of [[480,960],[1080,2400],[1440,3120],[2400,1080]]) {
+    let previous=0;
+    for(const budget of [0,1,2]) {
+      const size=nativeSceneSize(w,h,budget);
+      assert(size.width*size.height<=[800000,800000,1400000][budget], 'native tier exceeds its bounded shading budget');
+      assert(size.width*size.height>=previous);
+      assert(Math.abs(size.width/size.height-w/h)<.01);
+      previous=size.width*size.height;
+    }
+  }
+});
+
+test('maximum clarity is an adaptive privilege, never a permanent native GPU penalty', () => {
+  const {nativeSceneSize}=require(path.join(dir,'gl.js'));
+  const mid=nativeSceneSize(1440,3120,1),high=nativeSceneSize(1440,3120,2);
+  assert(mid.width*mid.height<=800000);
+  assert(high.width*high.height>mid.width*mid.height*1.5,'high-detail image should be visibly sharper');
+  assert(high.width*high.height<=1400000,'high-detail framebuffer must remain bounded');
+  let state={level:1,fastFrames:0,slowFrames:0};
+  for(let i=0;i<149;i++)state=adaptNativeSceneryBudget(state,12);
+  assert.equal(state.level,1,'no premature high-detail switch');
+  state=adaptNativeSceneryBudget(state,12);
+  assert.equal(state.level,2,'sustained fast frame drains may unlock sharp rendering');
+  state=adaptNativeSceneryBudget(state,100);
+  assert.equal(state.level,1,'one slow drain must immediately revoke extra resolution');
+});
+
+test('native scanned-texture anisotropy is optional and capped by the device', () => {
+  const {gl}=context({native:false});
+  const applied=[];
+  gl.createTexture=()=>({});
+  gl.getExtension=name=>name==='EXT_texture_filter_anisotropic'?
+    {MAX_TEXTURE_MAX_ANISOTROPY_EXT:34047,TEXTURE_MAX_ANISOTROPY_EXT:34046}:null;
+  gl.getParameter=()=>2; // Device supports only 2x, not the requested 4x.
+  gl.texParameterf=(_target,pname,value)=>applied.push([pname,value]);
+  const shapes=['scanTreeTrunk','scanTreeCrown','scanTreeTwigs','scanRock',
+    'scanFern','scanLog','scanRoots','scanCliff'];
+  const triangle=[0,0,0,0,1,0,0,0,1,0,0,0,1,0,1,0,0,1,0,0,1,1,1,1];
+  const renderer=new ExpeditionRenderer(gl);
+  try{
+    renderer.setWorldAssets({version:1,meshes:shapes.map(name=>({
+      name,tile:0,wind:0,vertices:triangle,indices:[0,1,2]}))},
+    {},[{},{},{}]);
+    assert.equal(renderer.worldReady,true);
+    assert.deepEqual(applied,[[34046,2],[34046,2],[34046,2]]);
+  }finally{renderer.dispose();}
+});
+
+test('browser fixture composites into its existing framebuffer and releases GPU resources', () => {
+  const {NativeSceneTarget}=require(path.join(dir,'gl.js'));
+  const {gl}=context();const output={expoPresentation:true};let bound=output;
+  gl.flushEXP=undefined;
+  const allocations=[],deletions=[],viewports=[],draws=[];
+  gl.createFramebuffer=()=>({kind:'framebuffer'});gl.createTexture=()=>({kind:'texture'});
+  gl.createRenderbuffer=()=>({kind:'depth'});
+  gl.getParameter=()=>bound;gl.bindFramebuffer=(_,value)=>{bound=value;};
+  gl.checkFramebufferStatus=()=>gl.FRAMEBUFFER_COMPLETE;
+  gl.texImage2D=(...args)=>allocations.push(args.slice(3,5));
+  gl.viewport=(...args)=>viewports.push(args);
+  gl.drawArrays=()=>draws.push(bound);
+  for(const method of ['deleteFramebuffer','deleteTexture','deleteRenderbuffer','deleteBuffer','deleteProgram'])gl[method]=obj=>deletions.push(obj);
+  const target=new NativeSceneTarget(gl);
+  const first=target.begin(1080,2400,1);
+  assert.notEqual(bound,output);target.present(1080,2400);
+  assert.equal(bound,output);assert.deepEqual(draws,[output]);
+  assert.deepEqual(viewports.at(-1),[0,0,1080,2400]);
+  target.begin(1080,2400,1);target.present(1080,2400);
+  assert.equal(allocations.length,1,'stable targets do not reallocate each frame');
+  target.begin(480,960,0);target.present(480,960);
+  assert.equal(allocations.length,2,'rotation/size/quality changes recreate bounded attachments');
+  assert(first.width*first.height<=800000);
+  target.dispose();assert.equal(deletions.length,5);
+});
+
+test('an incomplete framebuffer restores the presentation target and fails closed',()=>{
+ const {NativeSceneTarget}=require(path.join(dir,'gl.js'));
+ const {gl}=context();const output={expo:true};let bound=output;
+ gl.flushEXP=undefined;
+ gl.createFramebuffer=()=>({});gl.createTexture=()=>({});gl.createRenderbuffer=()=>({});
+ gl.getParameter=()=>bound;gl.bindFramebuffer=(_,value)=>{bound=value;};
+ gl.checkFramebufferStatus=()=>-1;
+ const target=new NativeSceneTarget(gl);
+ assert.throws(()=>target.begin(480,960,1),/incomplete/);
+ assert.equal(bound,output);
+ target.dispose();
+});
+
+test('Expo presentation uses its null binding without unsupported framebuffer queries',()=>{
+ const {NativeSceneTarget}=require(path.join(dir,'gl.js'));
+ const {gl}=context();let bound;
+ gl.flushEXP=()=>{};
+ gl.createFramebuffer=()=>({});gl.createTexture=()=>({});gl.createRenderbuffer=()=>({});
+ gl.getParameter=()=>{throw Error('EXGL: FRAMEBUFFER_BINDING is unsupported');};
+ gl.bindFramebuffer=(_,value)=>{bound=value;};
+ gl.checkFramebufferStatus=()=>gl.FRAMEBUFFER_COMPLETE;
+ const target=new NativeSceneTarget(gl);
+ target.begin(480,960,1);assert.notEqual(bound,null);
+ target.present(480,960);assert.equal(bound,null);
+ target.dispose();
+});
+
+
+test('measured native fallback reduces shading without changing submitted gameplay geometry', t => {
+  t.mock.method(console, 'info', () => {});
+  for (const native of [true, false]) {
+    const { gl, state } = context({native});
+    const renderer = new ExpeditionRenderer(gl);
+    renderer.sceneryBudget = 1; frame(renderer, 1);
+    const instances = renderer.stats.instances, triangles = renderer.stats.triangles;
+    assert.equal(state.detail, 1);
+    renderer.sceneryBudget = 0; frame(renderer, 2);
+    assert.equal(state.detail, native ? 0 : 1);
+    assert.equal(renderer.stats.instances, instances);
+    assert.equal(renderer.stats.triangles, triangles);
+  }
+});
+
+const { nativeTextureSource } = require(path.join(dir, 'native-asset.js'));
+test('Android drawable resources are copied to real files before GL decoding', async () => {
+  for (const uri of ['assets_images_madgermascotnative', 'file:///android_res/drawable/madger.png', null]) {
+    let copied = 0;
+    const asset = {localUri:uri, downloaded:true, async downloadAsync() {
+      if (!this.downloaded) {copied++;this.localUri='file:///data/user/0/test/cache/portrait.png';this.downloaded=true;}
+    }};
+    assert.deepEqual(await nativeTextureSource(asset), {localUri:'file:///data/user/0/test/cache/portrait.png'});
+    assert.equal(copied,1);
+    await nativeTextureSource(asset);assert.equal(copied,1,'reuse the valid cached file');
+  }
+});
+test('failed native portrait extraction fails closed rather than marking a black texture ready', async () => {
+  const asset={localUri:'drawable_name',downloaded:true,async downloadAsync(){}};
+  await assert.rejects(nativeTextureSource(asset), /readable local file/);
 });

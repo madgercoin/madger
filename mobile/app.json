@@ -3,7 +3,7 @@
     "name": "MADGER",
     "slug": "dollarmadger",
     "owner": "madgercoins-team",
-    "version": "1.5.0",
+    "version": "1.5.1",
     "orientation": "portrait",
     "icon": "./assets/images/madger-app-icon.png",
     "scheme": "madger",
@@ -21,7 +21,7 @@
     },
     "android": {
       "package": "com.madgercoin.app",
-      "versionCode": 9,
+      "versionCode": 28,
       "blockedPermissions": [
         "android.permission.READ_EXTERNAL_STORAGE",
         "android.permission.WRITE_EXTERNAL_STORAGE",

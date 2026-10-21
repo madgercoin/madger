@@ -5,10 +5,30 @@ import time
 import unittest
 
 sys.path.insert(0, str(Path(__file__).parent))
-from android_foreground_observation import sample_live_pair, sample_live_pair_with_retry
+from android_foreground_observation import sample_live_pair, sample_live_pair_with_retry, sample_live_snapshot
 
 
 class ForegroundObservationTests(unittest.TestCase):
+    def test_snapshot_retains_both_values_and_start_time(self):
+        journal = {}
+        result = sample_live_snapshot(lambda: {'timer': '47s', 'pause': True}, journal=journal)
+        self.assertEqual((result['timer'], result['pause']), ('47s', True))
+        self.assertEqual(result['started'], journal['started'])
+        self.assertEqual(len(journal['queries']), 1)
+
+    def test_stale_snapshot_fails_closed(self):
+        ticks = iter([1.0, 3.01])
+        with self.assertRaisesRegex(AssertionError, 'became stale'):
+            sample_live_snapshot(lambda: {'timer': '47s', 'pause': True}, clock=lambda: next(ticks))
+
+    def test_snapshot_observation_failure_is_preserved(self):
+        journal = {}
+        def missing():
+            raise AssertionError('Live Pause control missing')
+        with self.assertRaisesRegex(AssertionError, 'Live Pause control missing'):
+            sample_live_snapshot(missing, journal=journal)
+        self.assertIn('error', journal['queries'][0])
+
     def test_two_required_live_values_are_recorded(self):
         journal = {}
         result = sample_live_pair(
