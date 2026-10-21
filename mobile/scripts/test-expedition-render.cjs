@@ -170,3 +170,61 @@ test('animated native sky uses the existing sphere batch and completes frame dra
     assert.equal(renderer.stats.triangles,renderer.batches.get('sphere').vertices/3);
   }finally{renderer.dispose();}
 });
+
+test('native scene pixel budget preserves aspect and bounds high-density fill cost', () => {
+  const {nativeSceneSize}=require(path.join(dir,'gl.js'));
+  for(const [w,h] of [[480,960],[1080,2400],[1440,3120],[2400,1080]]) {
+    let previous=0;
+    for(const budget of [0,1,2]) {
+      const size=nativeSceneSize(w,h,budget);
+      assert(size.width*size.height<=800000);
+      assert(size.width*size.height>=previous);
+      assert(Math.abs(size.width/size.height-w/h)<.01);
+      previous=size.width*size.height;
+    }
+  }
+});
+
+test('native scene composites to Expo default without unsupported FRAMEBUFFER_BINDING query', () => {
+  const {NativeSceneTarget}=require(path.join(dir,'gl.js'));
+  const {gl}=context();let bound=null;
+  const allocations=[],deletions=[],viewports=[],draws=[],bindings=[];
+  gl.createFramebuffer=()=>({kind:'framebuffer'});gl.createTexture=()=>({kind:'texture'});
+  gl.createRenderbuffer=()=>({kind:'depth'});
+  gl.getParameter=parameter=>{
+    if(parameter===gl.FRAMEBUFFER_BINDING)throw Error("EXGL: getParameter() doesn't support gl.36006 yet!");
+    return 4096;
+  };
+  gl.bindFramebuffer=(_,value)=>{bound=value;bindings.push(value);};
+  gl.checkFramebufferStatus=()=>gl.FRAMEBUFFER_COMPLETE;
+  gl.texImage2D=(...args)=>allocations.push(args.slice(3,5));
+  gl.viewport=(...args)=>viewports.push(args);
+  gl.drawArrays=()=>draws.push(bound);
+  for(const method of ['deleteFramebuffer','deleteTexture','deleteRenderbuffer','deleteBuffer','deleteProgram'])gl[method]=obj=>deletions.push(obj);
+  const target=new NativeSceneTarget(gl);
+  const first=target.begin(1080,2400,1);
+  assert(bound&&bound.kind==='framebuffer');target.present(1080,2400);
+  assert.equal(bound,null,'Expo default presentation must be restored');
+  assert.deepEqual(draws,[null],'the image must composite to the visible Expo target');
+  assert(bindings.some(value=>value&&value.kind==='framebuffer')&&bindings.at(-1)===null);
+  assert.deepEqual(viewports.at(-1),[0,0,1080,2400]);
+  target.begin(1080,2400,1);target.present(1080,2400);
+  assert.equal(allocations.length,1,'stable targets do not reallocate each frame');
+  target.begin(480,960,0);target.present(480,960);
+  assert.equal(allocations.length,2,'rotation/size/quality changes recreate bounded attachments');
+  assert(first.width*first.height<=800000);
+  target.dispose();assert.equal(deletions.length,5);
+});
+
+test('an incomplete native framebuffer restores Expo default and fails closed',()=>{
+ const {NativeSceneTarget}=require(path.join(dir,'gl.js'));
+ const {gl}=context();let bound=null;
+ gl.createFramebuffer=()=>({});gl.createTexture=()=>({});gl.createRenderbuffer=()=>({});
+ gl.getParameter=()=>{throw Error('Expo getParameter unavailable');};
+ gl.bindFramebuffer=(_,value)=>{bound=value;};
+ gl.checkFramebufferStatus=()=>-1;
+ const target=new NativeSceneTarget(gl);
+ assert.throws(()=>target.begin(480,960,1),/incomplete/);
+ assert.equal(bound,null);
+ target.dispose();
+});

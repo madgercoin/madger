@@ -96,5 +96,77 @@ class ForegroundObservationTests(unittest.TestCase):
         self.assertIn("assert active is True", main)
 
 
+    def sample_xml(self, timer="49s", pause_enabled="true", include_pause=True):
+        nodes = [
+            f'<node package="com.madgercoin.preview" class="android.widget.TextView" '
+            f'text="{timer}" enabled="true" visible-to-user="true" bounds="[418,110][456,147]"/>'
+        ]
+        if include_pause:
+            nodes.append('<node package="com.madgercoin.preview" class="android.widget.Button" '
+                         f'content-desc="Pause run" enabled="{pause_enabled}" '
+                         'visible-to-user="true" bounds="[412,47][460,95]"/>')
+        return "<hierarchy>" + "".join(nodes) + "</hierarchy>"
+
+    def test_real_single_accessibility_snapshot_records_both_required_values(self):
+        from android_foreground_observation import sample_live_hierarchy_with_retry
+        calls = []
+        journal = {}
+
+        def read():
+            calls.append("actual-hierarchy-query")
+            return self.sample_xml(timer="49s")
+        result = sample_live_hierarchy_with_retry(read, package="com.madgercoin.preview", journal=journal)
+        self.assertEqual(calls, ["actual-hierarchy-query"])
+        self.assertEqual(result["timer"], "49s")
+        self.assertIs(result["pause"], True)
+        self.assertEqual(len(result["queries"]), 1)
+        self.assertEqual(result["queries"][0]["source"], "one actual foreground accessibility snapshot")
+        self.assertEqual(journal["attempts"][0]["status"], "fresh")
+        self.assertTrue(journal["snapshot_observations"]["same_snapshot"])
+
+    def test_missing_disabled_or_foreign_control_cannot_authorize_kill(self):
+        from android_foreground_observation import sample_live_hierarchy
+        for data in [
+            self.sample_xml(include_pause=False),
+            self.sample_xml(pause_enabled="false"),
+            self.sample_xml(timer="0s"),
+            self.sample_xml(timer="x"),
+            self.sample_xml().replace("Pause run", "Resume run"),
+            self.sample_xml().replace('package="com.madgercoin.preview"', 'package="another.app"'),
+        ]:
+            with self.subTest(data=data[:100]):
+                with self.assertRaises(AssertionError):
+                    sample_live_hierarchy(lambda: data, package="com.madgercoin.preview")
+
+    def test_single_snapshot_still_rejects_a_stale_rpc(self):
+        from android_foreground_observation import sample_live_hierarchy
+        journal = {}
+        def slow():
+            time.sleep(.035)
+            return self.sample_xml()
+        with self.assertRaisesRegex(AssertionError, "Foreground observation became stale"):
+            sample_live_hierarchy(slow, package="com.madgercoin.preview", max_age_seconds=.01, journal=journal)
+        self.assertIn("error", journal["queries"][0])
+
+    def test_stale_snapshot_retry_is_bounded_and_never_accepts_missing_pause(self):
+        from android_foreground_observation import sample_live_hierarchy_with_retry
+        count = [0]
+        def retry():
+            count[0] += 1
+            if count[0] == 1:
+                time.sleep(.040)
+            return self.sample_xml()
+        journal={}
+        result=sample_live_hierarchy_with_retry(retry,package="com.madgercoin.preview",
+                                                 max_age_seconds=.02,journal=journal)
+        self.assertEqual(result["timer"],"49s")
+        self.assertEqual(count[0],2)
+        self.assertEqual([a["status"] for a in journal["attempts"]],["rejected","fresh"])
+        count[0]=0
+        with self.assertRaisesRegex(AssertionError, "visible enabled Pause"):
+            sample_live_hierarchy_with_retry(lambda: self.sample_xml(include_pause=False),
+                package="com.madgercoin.preview", max_attempts=2)
+
+
 if __name__ == "__main__":
     unittest.main()

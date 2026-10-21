@@ -8,7 +8,7 @@ import time
 import xml.etree.ElementTree as ET
 import atexit
 import uiautomator2 as u2
-from android_foreground_observation import sample_live_pair_with_retry
+from android_foreground_observation import sample_live_hierarchy_with_retry
 
 PACKAGE = os.environ.get('MADGER_ANDROID_PACKAGE') or 'com.madgercoin.preview'
 APK = os.environ.get('MADGER_ANDROID_APK') or 'android/app/build/outputs/apk/release/app-release.apk'
@@ -111,7 +111,7 @@ def kill_observed_foreground_run():
     preparation = {'started': time.monotonic(), 'queries': []}
     observation = {'status': 'preparing', 'clock': 'host monotonic seconds',
                    'started': started, 'max_age_seconds': 2.0, 'queries': [],
-                   'freshness_scope': 'Before live getText through completed force-stop',
+                   'freshness_scope': 'Before fresh live hierarchy with timer and Pause through completed force-stop',
                    'pre_observation': preparation}
     screenshot = None
 
@@ -158,29 +158,21 @@ def kill_observed_foreground_run():
             visual['finished'] = time.monotonic()
         assert screenshot.startswith(b'\x89PNG\r\n\x1a\n'), 'Foreground reference screenshot was not a PNG'
 
-        # Scalar getText/exist avoid full hierarchy scans, count/absence
-        # searches, and .info's repeated accessibility property refreshes.
-        # instance=0 selects the UiSelector getText path, avoiding this
-        # backend's two UiObject2 lookups for a single timer value.
-        timer_selector = {'packageName': PACKAGE, 'className': 'android.widget.TextView',
-                          'enabled': True, 'textMatches': r'\d+s', 'instance': 0}
-        observation['timer_selector'] = timer_selector
-        timer_object = device(**timer_selector)
-        # Pause run exists only in the active route. Reading the live HUD timer
-        # and this control serially aged the two-second observation on slow
-        # software emulators. Query both independent read-only RPCs together,
-        # then require the *same* two-second deadline through force-stop.
-        pause_selector = {'packageName': PACKAGE, 'description': 'Pause run', 'enabled': True}
-        observation['activity_selector'] = pause_selector
-        pause_object = device(**pause_selector)
+        # The two separate getText/exists RPCs took 3-4 seconds EACH in
+        # Android CI. A single real accessibility hierarchy captures BOTH
+        # required properties in the same observable foreground frame.
+        # It is not a cached pre-observation XML or injected HUD value.
+        observation['activity_selector'] = {'packageName': PACKAGE, 'description': 'Pause run', 'enabled': True}
+        observation['timer_selector'] = {'packageName': PACKAGE, 'className': 'android.widget.TextView',
+                                         'enabled': True, 'textMatches': r'\d+s'}
         preparation['finished'] = time.monotonic()
         observation['status'] = 'sampling'
-        # Under software-emulator contention one read can miss its freshness
-        # limit. Discard that sample and take at most one new, independently
-        # timed observation; never extend the two-second kill requirement.
-        pair = sample_live_pair_with_retry(
-            lambda: device.jsonrpc.getText(timer_object.selector),
-            lambda: pause_object.exists(timeout=0),
+        # The unchanged 2s deadline begins BEFORE the live RPC, includes
+        # local parsing of timer and Pause, and extends through force-stop.
+        # A stale snapshot can be rejected and retaken ONCE, never waived.
+        pair = sample_live_hierarchy_with_retry(
+            lambda: device.dump_hierarchy(compressed=False),
+            package=PACKAGE,
             max_age_seconds=observation['max_age_seconds'],
             journal=observation,
         )

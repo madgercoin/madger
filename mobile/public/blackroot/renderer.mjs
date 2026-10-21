@@ -196,6 +196,8 @@ class ForestRenderer {
     return this;
   }
   buildLandscape() {
+    // Keep the source-proven 56x96 ground grid: denser geometry triggered
+    // mobile viewport resolution fallback and made PBR soil look less sharp.
     const ground=new T.PlaneGeometry(100,205,56,96);ground.rotateX(-Math.PI/2);
     ground.setAttribute('color',new T.BufferAttribute(new Float32Array(ground.attributes.position.count*3),3));
     this.trailTint=new T.Color('#B3A68F');this.mossTint=new T.Color('#526747');this.soilTint=new T.Color();
@@ -357,11 +359,15 @@ class ForestRenderer {
     // Keep all route/physics data immutable; renderer state alone is adjusted.
     const atmosphere=atmosphereProfile(this.worldPresets,s.route);
     this.hemi.intensity=atmosphere.hemisphere;
-    this.scene.fog.density=atmosphere.fogDensity;
+    // Outdoor route landmarks should remain legible past the midground.
+    // Do not thin enclosed cave haze or let decorative detail hide hazards.
+    this.scene.fog.density=biome==='cavern'?atmosphere.fogDensity:atmosphere.fogDensity*.80;
     this.gpu.toneMappingExposure=atmosphere.exposure;
     this.stats.atmosphereProfileLoaded=Boolean(this.worldPresets?.atmosphereProfiles?.[s.route]);
     const start=Math.floor(travel/12)*12;
     for(const {id,mesh} of this.scanBatches){let count=0;
+      // Keep the established eight bounded scenic cells: extra dense scanned
+      // canopies caused the quality controller to blur the entire viewport.
       for(let i=1;i<=8;i++)for(const side of [-1,1]){
         const d=start+i*12,z=travel-d,n=Math.floor(d/12),r=hash(n*19+side+scenery.seed*7);
         if(z>-8)continue;
