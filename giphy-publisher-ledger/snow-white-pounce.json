@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "id": "snow-white-pounce",
+  "sha256": "9274af06f9bf5b7916d2adc1db89f54f94d3936c70bdc8e5225fcc861fb06fec",
+  "file": "giphy-publisher/assets/snow-white-pounce.gif",
+  "title": "Snow White — on the attack",
+  "test": false,
+  "scheduledFor": "2026-10-20T23:15:00Z",
+  "expectedOwner": "MadgerDaBadger",
+  "status": "reserved",
+  "reservedAt": "2026-10-21T01:36:08.599Z",
+  "runId": "39528245949"
+}
