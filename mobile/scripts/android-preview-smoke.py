@@ -111,7 +111,7 @@ def kill_observed_foreground_run():
     preparation = {'started': time.monotonic(), 'queries': []}
     observation = {'status': 'preparing', 'clock': 'host monotonic seconds',
                    'started': started, 'max_age_seconds': 2.0, 'queries': [],
-                   'freshness_scope': 'Before live getText through completed force-stop',
+                   'freshness_scope': 'Before current UI hierarchy capture through completed force-stop',
                    'pre_observation': preparation}
     screenshot = None
 
