@@ -94,6 +94,13 @@ const server=http.createServer((req,res)=>{
    assert.equal(data.stats.terrainMaterial,data.stats.biome,'PBR ground texture does not match biome');
    if(run.mode!=='chamber')assert.equal(data.stats.atmosphereProfileLoaded,true,'No route-specific lighting profile: '+run.route);
    assert.equal(data.stats.sunbeamPrimitives,0,'Unrealistic solid light cone returned: '+run.route);
+    // Only outdoor scenes stream the new layered PBR backdrop. Indoor
+    // chamber/underground routes must never render the sky or distant banks.
+    const outdoor=run.mode!=='chamber'&&['forest','ruins'].includes(data.stats.biome);
+    assert.equal(data.stats.skyVisible,outdoor,'Sky leaked into wrong biome: '+run.route);
+    if(outdoor)assert(data.stats.backgroundLandforms>=4&&data.stats.backgroundLandforms<=20,
+      'Seamless PBR far banks absent or over budget: '+run.route);
+    else assert.equal(data.stats.backgroundLandforms,0,'Distant hills leaked into underground: '+run.route);
    await page.screenshot({path:path.join(out,(run.chamber||run.route)+'.png')});results.push(data);
   }
   // Prove that the existing mobile fallback actually reduces rendered geometry,
