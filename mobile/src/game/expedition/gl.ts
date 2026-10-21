@@ -1,5 +1,7 @@
 import { multiply, perspective, lookAt, transform, type Mat4, type Vec3 } from './math';
-export type Shape='box'|'sphere'|'rock'|'cylinder'|'cone'|'ring'|'leaf'|'shadow'|'headStripe'|'tail'|'halo'|'ridge'|'face';
+export type Shape='box'|'sphere'|'rock'|'cylinder'|'cone'|'ring'|'leaf'|'shadow'|'headStripe'|'tail'|'halo'|'ridge'|'face'|'terrain'|'trail'|ScanShape;
+export type ScanShape='scanTreeTrunk'|'scanTreeCrown'|'scanTreeTwigs'|'scanRock'|'scanFern'|'scanLog'|'scanRoots'|'scanCliff';
+export type NativeWorldPack={version:number;meshes:{name:string;tile:number;wind:number;vertices:number[];indices:number[]}[]};
 export type Color=[number,number,number,number];
 export type GL=WebGLRenderingContext|WebGL2RenderingContext;
 type NativeGL=GL & {endFrameEXP?:()=>void;flushEXP?:()=>void};
@@ -54,7 +56,7 @@ export class NativeSceneTarget {
   gl.disable(gl.DEPTH_TEST);gl.disable(gl.BLEND);gl.depthMask(false);gl.useProgram(this.program);
   gl.activeTexture(gl.TEXTURE0);gl.bindTexture(gl.TEXTURE_2D,this.texture);gl.uniform1i(this.sampler,0);
   gl.bindBuffer(gl.ARRAY_BUFFER,this.quad);gl.enableVertexAttribArray(0);gl.vertexAttribPointer(0,2,gl.FLOAT,false,0,0);
-  for(let i=1;i<=6;i++)gl.disableVertexAttribArray(i);
+  for(let i=1;i<=7;i++)gl.disableVertexAttribArray(i);
   gl.drawArrays(gl.TRIANGLE_STRIP,0,4);gl.bindTexture(gl.TEXTURE_2D,null);gl.depthMask(true);gl.enable(gl.DEPTH_TEST);
  }
  dispose(){const gl=this.gl;gl.deleteFramebuffer(this.framebuffer);gl.deleteRenderbuffer(this.depth);gl.deleteTexture(this.texture);gl.deleteBuffer(this.quad);gl.deleteProgram(this.program);}
@@ -80,14 +82,18 @@ export function adaptNativeSceneryBudget(state:SceneryBudgetState,drainMs:number
 const VERTEX=`
 precision highp float;
 attribute vec3 aPosition;
-attribute vec3 aNormal;
+attribute vec3 aNormal; attribute vec2 aUV;
+uniform float uTime;uniform float uWind;
+varying vec2 vUV;
 attribute vec4 aM0; attribute vec4 aM1; attribute vec4 aM2; attribute vec4 aM3;
 attribute vec4 aColor;
 uniform mat4 uVP;
 varying vec3 vWorld; varying vec3 vNormal; varying vec3 vLocal; varying vec4 vColor;
 void main(){
  mat4 model=mat4(aM0,aM1,aM2,aM3);
- vec4 p=model*vec4(aPosition,1.0);vWorld=p.xyz;vLocal=aPosition;
+ vec3 local=aPosition;
+ local.x+=sin(uTime*.72+aM3.x*.37+aM3.z*.13+local.y*3.0)*.009*local.y*uWind;
+ vec4 p=model*vec4(local,1.0);vWorld=p.xyz;vLocal=aPosition;vUV=aUV;
  vNormal=normalize(aM0.xyz*aNormal.x/max(dot(aM0.xyz,aM0.xyz),0.00001)+aM1.xyz*aNormal.y/max(dot(aM1.xyz,aM1.xyz),0.00001)+aM2.xyz*aNormal.z/max(dot(aM2.xyz,aM2.xyz),0.00001));
  vColor=aColor;gl_Position=uVP*p;
 }`;
@@ -98,7 +104,9 @@ precision highp float;
 #else
 precision mediump float;
 #endif
-uniform sampler2D uPortrait;
+uniform sampler2D uPortrait;uniform sampler2D uAtlas;uniform sampler2D uGround;uniform sampler2D uBark;uniform sampler2D uStone;
+uniform float uAtlasReady;uniform float uSurface;uniform float uTile;
+varying vec2 vUV;
 uniform vec3 uEye;uniform vec3 uFog;uniform vec2 uFogRange;uniform float uTime;uniform float uTravel;uniform float uDetail;
 varying vec3 vWorld;varying vec3 vNormal;varying vec3 vLocal;varying vec4 vColor;
 #ifdef GL_FRAGMENT_PRECISION_HIGH
@@ -106,6 +114,25 @@ float hash(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
 #else
 float hash(vec2 p){p=mod(p,vec2(32.0));return fract(sin(dot(p,vec2(17.13,41.7)))*437.58545);}
 #endif
+vec4 surfaceTex(float tile,vec2 uv){
+ vec2 origin=vec2(mod(tile,4.0),floor(tile/4.0))*.25;
+ // PNG upload is unflipped: both glTF and the atlas use top-left image UVs.
+ return texture2D(uAtlas,origin+vec2(.002)+fract(uv)*.246);
+}
+vec3 surfaceColor(vec3 base,vec3 n){
+ if(uAtlasReady<.5)return base;
+ if(uSurface>.5){vec4 tex=surfaceTex(uTile,vUV);if(tex.a<.40)discard;return tex.rgb*tex.rgb*base;}
+ float tile=-1.0,scale=.30;
+ if(vColor.a < -.5 && vColor.a > -1.5)tile=0.0;
+ if(vColor.a < -6.5 && vColor.a > -7.5){tile=1.0;scale=.45;}
+ if(vColor.a < -7.5 && vColor.a > -8.5){tile=2.0;scale=.32;}
+ if(tile<0.0)return base;
+ // World anchoring prevents the earth texture swimming as the course moves.
+ vec3 p=vec3(vWorld.x,vWorld.y,uTravel-vWorld.z)*scale;
+ vec3 a=abs(n);vec2 uv=a.y>a.x&&a.y>a.z?p.xz:(a.x>a.z?p.zy:p.xy);
+ vec3 tex=tile<.5?texture2D(uGround,uv).rgb:tile<1.5?texture2D(uBark,uv).rgb:texture2D(uStone,uv).rgb;
+ return tex*tex*mix(vec3(1.12),base*2.0,.20);
+}
 void main(){
  if(vColor.a < -9.5 && vColor.a > -10.5){
   vec2 uv=vec2(vLocal.x/1.18+.5,vLocal.y/1.07+.5);
@@ -128,11 +155,11 @@ void main(){
   if(uDetail<.5){gl_FragColor=vec4(sqrt(max(atmosphere,vec3(0.0))),1.0);return;}
   float azimuth=atan(direction.x,direction.z);
   float drift=uTime*.023;
-  float cloudWave=sin(azimuth*9.0+direction.y*17.0+drift)
-   *sin(azimuth*17.0-direction.y*12.0-drift*.63);
+  float cloudWave=sin(azimuth*9.0+sin(azimuth*5.0+direction.y*17.0)+drift)
+   *sin(direction.y*47.0+sin(azimuth*13.0)*.6+drift*.6);
   float cloudBand=smoothstep(.08,.26,direction.y)
    *(1.0-smoothstep(.43,.75,direction.y));
-  float cirrus=smoothstep(.37,.76,cloudWave)*cloudBand*.27;
+  float cirrus=smoothstep(.37,.76,cloudWave)*cloudBand*.12;
   atmosphere=mix(atmosphere,vec3(.84,.88,.85),cirrus);
   gl_FragColor=vec4(pow(max(atmosphere,vec3(0.0)),vec3(.4545)),1.0);
   return;
@@ -144,10 +171,10 @@ void main(){
  // lamp calculations only when measured GPU drain has exhausted the budget.
  // Those details are especially costly on software and older phone GPUs.
  if(uDetail<.5){
-  vec3 base=vColor.rgb,n=normalize(vNormal);
+  vec3 n=normalize(vNormal),base=surfaceColor(vColor.rgb,n);
   if(vColor.a < -.5 && vColor.a > -1.5){
    float edge=max(smoothstep(.455,.499,abs(vLocal.x)),smoothstep(.468,.499,abs(vLocal.z)));
-   base*=1.0-edge*.24;
+   base*=1.0-edge*.24*(1.0-uAtlasReady);
   }
   if(vColor.a < -4.5 && vColor.a > -5.5){
    float chevron=sin(vLocal.z*18.0+abs(vLocal.x)*7.5);
@@ -155,17 +182,17 @@ void main(){
    base=mix(base,vec3(.86,.68,.38),smoothstep(.17,.35,chevron)*.91*smoothstep(-.03,.10,vLocal.y-centre));
   }
   float sun=max(0.0,dot(n,vec3(-.423,.800,.423)));
-  vec3 lit=base*(vec3(.18,.23,.24)+vec3(.82,.65,.41)*sun+vec3(.12,.21,.21)*max(0.0,n.y)+max(0.0,vColor.a)*1.15);
+  vec3 lit=base*(vec3(.32,.38,.37)+vec3(.95,.83,.62)*sun+vec3(.16,.23,.22)*max(0.0,n.y)+max(0.0,vColor.a)*1.15);
   lit=mix(lit,uFog,smoothstep(uFogRange.x,uFogRange.y,length(uEye-vWorld)));
   gl_FragColor=vec4(sqrt(max(lit/(lit+vec3(.65)),vec3(0.0))),1.0);return;
  }
  vec3 n=normalize(vNormal),view=normalize(uEye-vWorld);
- vec3 base=vColor.rgb;float em=max(0.0,vColor.a);
+ vec3 base=surfaceColor(vColor.rgb,n);float em=max(0.0,vColor.a);
  if(vColor.a < -.5 && vColor.a > -1.5){vec2 surface=vec2(vWorld.x,uTravel-vWorld.z);
  float grain=hash(floor(mod(surface,vec2(32.0))*24.0));
  float mottling=sin(surface.x*2.13+sin(surface.y*.75))*sin(surface.y*1.84);
  float edge=max(smoothstep(.455,.499,abs(vLocal.x)),smoothstep(.468,.499,abs(vLocal.z)));
- base*=.89+grain*.14+mottling*.05;base*=1.0-edge*.24;}
+ base*=.89+grain*.14+mottling*.05;base*=1.0-edge*.24*(1.0-uAtlasReady);}
  if(vColor.a < -1.5 && vColor.a > -2.5){
    float wave=sin(vWorld.x*3.0+uTime*1.4)*sin((uTravel-vWorld.z)*1.7-uTime*.8);
    n=normalize(n+vec3(wave*.10,0.0,sin((uTravel-vWorld.z)*4.0+uTime)*.07));
@@ -201,7 +228,7 @@ void main(){
  float sun=max(0.0,dot(n,normalize(vec3(-.45,.85,.45))));
  float rim=pow(1.0-max(0.0,dot(n,view)),3.0);
  float spec=pow(max(0.0,dot(n,normalize(view+normalize(vec3(-.45,.85,.45))))),36.0);
- vec3 light=vec3(.16,.20,.22)+vec3(.82,.65,.41)*sun+vec3(.12,.21,.21)*max(0.0,n.y);
+ vec3 light=vec3(.30,.36,.36)+vec3(.95,.83,.62)*sun+vec3(.16,.23,.22)*max(0.0,n.y);
  vec3 lamp=vec3(sign(vWorld.x)*4.0-vWorld.x,2.45-vWorld.y,mod(uTravel-vWorld.z+10.0,20.0)-10.0);
  float falloff=1.0/(1.0+dot(lamp,lamp)*.24);
  light+=vec3(.75,.36,.09)*falloff*(.4+.6*max(0.0,dot(n,normalize(lamp))))*(.98+.02*sin(uTime*6.0));
@@ -232,6 +259,18 @@ function geometry(shape:Shape) {
    return [x,y,-.515*Math.sqrt(Math.max(.015,1-(x/.67)**2-(y/.58)**2))-.065];
   };
   for(let j=0;j<22;j++)for(let i=0;i<24;i++){
+   const a=point(i,j),b=point(i+1,j),c=point(i,j+1),d=point(i+1,j+1);
+   triangle(v,a,c,b);triangle(v,b,c,d);
+  }
+ }else if(shape==='trail'){
+  triangle(v,[-.5,0,-.5],[.5,0,.5],[.5,0,-.5],[0,1,0]);triangle(v,[-.5,0,-.5],[-.5,0,.5],[.5,0,.5],[0,1,0]);
+ }else if(shape==='terrain'){
+  // One continuous, noninteractive forest floor under the road. Raised outer
+  // banks add true depth while the inner edge stays below collision height.
+  const nx=16,nz=12;
+  const point=(i:number,j:number):Vec3=>{const x=i/nx,z=-1+2*j/nz;
+   return [x,Math.pow(x,1.25)*(.16+.10*Math.sin(x*13+z*2)+.08*Math.cos(x*21-z*5)),z];};
+  for(let j=0;j<nz;j++)for(let i=0;i<nx;i++){
    const a=point(i,j),b=point(i+1,j),c=point(i,j+1),d=point(i+1,j+1);
    triangle(v,a,c,b);triangle(v,b,c,d);
   }
@@ -318,9 +357,9 @@ export function color(hex:string,material=0):Color {
  colorCache.set(key,c);return c;
 }
 type Bounds={center:Vec3;half:Vec3};
-function geometryBounds(vertices:Float32Array,bounds:Bounds={center:[0,0,0],half:[0,0,0]}):Bounds {
+function geometryBounds(vertices:Float32Array,bounds:Bounds={center:[0,0,0],half:[0,0,0]},stride=6):Bounds {
  const low=[Infinity,Infinity,Infinity],high=[-Infinity,-Infinity,-Infinity];
- for(let i=0;i<vertices.length;i+=6)for(let axis=0;axis<3;axis++){low[axis]=Math.min(low[axis],vertices[i+axis]);high[axis]=Math.max(high[axis],vertices[i+axis]);}
+ for(let i=0;i<vertices.length;i+=stride)for(let axis=0;axis<3;axis++){low[axis]=Math.min(low[axis],vertices[i+axis]);high[axis]=Math.max(high[axis],vertices[i+axis]);}
  for(let axis=0;axis<3;axis++){bounds.center[axis]=(low[axis]+high[axis])/2;bounds.half[axis]=(high[axis]-low[axis])/2;}return bounds;
 }
 function elementIndices(shape:Shape,vertices:Float32Array){
@@ -334,7 +373,7 @@ function elementIndices(shape:Shape,vertices:Float32Array){
  }
  return indices;
 }
-type Batch={vertex:WebGLBuffer;instances:WebGLBuffer;elements:WebGLBuffer|null;vertices:number;data:Float32Array;visible:Float32Array;bounds:Bounds;count:number;};
+type Batch={vertex:WebGLBuffer;instances:WebGLBuffer;elements:WebGLBuffer|null;vertices:number;data:Float32Array;visible:Float32Array;bounds:Bounds;count:number;stride?:number;tile?:number;wind?:number;};
 function updateClipPlanes(vp:Mat4,planes:Float64Array){
  // Matrices are column-major; clip inequalities are row 4 +/- rows 1, 2, 3.
  for(let axis=0;axis<3;axis++)for(let side=0;side<2;side++){
@@ -367,12 +406,13 @@ function cullBatch(batch:Batch,planes:Float64Array){
 }
 export class ExpeditionRenderer {
  private gl:NativeGL;private program:WebGLProgram;private batches=new Map<Shape,Batch>();
- private uniforms:{portrait:WebGLUniformLocation;vp:WebGLUniformLocation;eye:WebGLUniformLocation;fog:WebGLUniformLocation;range:WebGLUniformLocation;time:WebGLUniformLocation;travel:WebGLUniformLocation;detail:WebGLUniformLocation};
+ private uniforms:{ground:WebGLUniformLocation;bark:WebGLUniformLocation;stone:WebGLUniformLocation;atlas:WebGLUniformLocation;atlasReady:WebGLUniformLocation;surface:WebGLUniformLocation;tile:WebGLUniformLocation;wind:WebGLUniformLocation;portrait:WebGLUniformLocation;vp:WebGLUniformLocation;eye:WebGLUniformLocation;fog:WebGLUniformLocation;range:WebGLUniformLocation;time:WebGLUniformLocation;travel:WebGLUniformLocation;detail:WebGLUniformLocation};
  private divisor:((i:number,v:number)=>void)|null=null;private drawInstanced:((mode:number,first:number,count:number,instances:number)=>void)|null=null;
  private drawIndexedInstanced:((mode:number,count:number,type:number,offset:number,instances:number)=>void)|null=null;
  private tailVertices=new Float32Array(TAIL_INDICES.length*6);private tailGrid=new Float64Array((TAIL_RINGS+1)*(TAIL_SIDES+1)*6);
  private clipPlanes=new Float64Array(24);
  private portrait:WebGLTexture|null=null;public portraitReady=false;
+ private atlas:WebGLTexture|null=null;private surfaces:WebGLTexture[]=[];public worldReady=false;
  private dead=false;private nativeFrames=0;private sceneryState:SceneryBudgetState={level:2,fastFrames:0,slowFrames:0};
  private sceneTarget:NativeSceneTarget|null=null;
  public sceneryBudget:SceneryBudget=2;
@@ -382,10 +422,10 @@ export class ExpeditionRenderer {
   if(typeof this.gl.flushEXP==='function'){this.sceneryState.level=1;this.sceneryBudget=1;}
   const compile=(type:number,source:string)=>{const s=gl.createShader(type);if(!s)throw Error('Could not allocate a GPU shader');gl.shaderSource(s,source);gl.compileShader(s);if(!gl.getShaderParameter(s,gl.COMPILE_STATUS)){const message=gl.getShaderInfoLog(s);gl.deleteShader(s);throw Error('3D shader: '+message);}return s;};
   const vert=compile(gl.VERTEX_SHADER,VERTEX),frag=compile(gl.FRAGMENT_SHADER,FRAGMENT),program=gl.createProgram();if(!program)throw Error('Could not allocate GPU program');
-  gl.attachShader(program,vert);gl.attachShader(program,frag);['aPosition','aNormal','aM0','aM1','aM2','aM3','aColor'].forEach((name,i)=>gl.bindAttribLocation(program,i,name));gl.linkProgram(program);gl.deleteShader(vert);gl.deleteShader(frag);
+  gl.attachShader(program,vert);gl.attachShader(program,frag);['aPosition','aNormal','aM0','aM1','aM2','aM3','aColor','aUV'].forEach((name,i)=>gl.bindAttribLocation(program,i,name));gl.linkProgram(program);gl.deleteShader(vert);gl.deleteShader(frag);
   if(!gl.getProgramParameter(program,gl.LINK_STATUS)){const message=gl.getProgramInfoLog(program);gl.deleteProgram(program);throw Error('3D program: '+message);}this.program=program;
   const uniform=(name:string)=>{const u=gl.getUniformLocation(program,name);if(u===null)throw Error('Missing shader uniform '+name);return u;};
-  this.uniforms={portrait:uniform('uPortrait'),vp:uniform('uVP'),eye:uniform('uEye'),fog:uniform('uFog'),range:uniform('uFogRange'),time:uniform('uTime'),travel:uniform('uTravel'),detail:uniform('uDetail')};
+  this.uniforms={ground:uniform('uGround'),bark:uniform('uBark'),stone:uniform('uStone'),atlas:uniform('uAtlas'),atlasReady:uniform('uAtlasReady'),surface:uniform('uSurface'),tile:uniform('uTile'),wind:uniform('uWind'),portrait:uniform('uPortrait'),vp:uniform('uVP'),eye:uniform('uEye'),fog:uniform('uFog'),range:uniform('uFogRange'),time:uniform('uTime'),travel:uniform('uTravel'),detail:uniform('uDetail')};
   const g=gl as WebGL2RenderingContext;
   if(typeof g.drawArraysInstanced==='function'){
    this.drawInstanced=g.drawArraysInstanced.bind(g);this.divisor=g.vertexAttribDivisor.bind(g);
@@ -393,7 +433,7 @@ export class ExpeditionRenderer {
   }else{
    const ext=gl.getExtension('ANGLE_instanced_arrays');if(ext){this.drawInstanced=ext.drawArraysInstancedANGLE.bind(ext);this.divisor=ext.vertexAttribDivisorANGLE.bind(ext);if('drawElementsInstancedANGLE' in ext&&typeof ext.drawElementsInstancedANGLE==='function')this.drawIndexedInstanced=ext.drawElementsInstancedANGLE.bind(ext);}
   }
-  for(const shape of ['box','sphere','rock','ridge','cylinder','cone','ring','leaf','headStripe','tail','shadow','halo','face'] as Shape[]){
+  for(const shape of ['box','sphere','rock','ridge','terrain','trail','cylinder','cone','ring','leaf','headStripe','tail','shadow','halo','face'] as Shape[]){
    const data=shape==='tail'?tailGeometry(0,0,this.tailVertices,this.tailGrid):geometry(shape),vertex=gl.createBuffer(),instances=gl.createBuffer();if(!vertex||!instances)throw Error('GPU buffer allocation failed');
    gl.bindBuffer(gl.ARRAY_BUFFER,vertex);gl.bufferData(gl.ARRAY_BUFFER,data,gl.STATIC_DRAW);
    let elements:WebGLBuffer|null=null;
@@ -402,6 +442,36 @@ export class ExpeditionRenderer {
   }
   gl.enable(gl.DEPTH_TEST);gl.depthFunc(gl.LEQUAL);gl.disable(gl.CULL_FACE);
   if(typeof this.gl.flushEXP==='function'&&gl.getParameter(gl.MAX_TEXTURE_SIZE)>0)this.sceneTarget=new NativeSceneTarget(gl);
+ }
+ /** Install the project's offline-baked scans once, before enabling Start.
+  * Asset errors fail the loading screen instead of silently shipping flat props. */
+ setWorldAssets(pack:NativeWorldPack,source:TexImageSource|{localUri:string},surfaces:(TexImageSource|{localUri:string})[]){
+  if(this.worldReady)throw Error('Native world is already installed');
+  if(pack.version!==1||pack.meshes.length!==8||surfaces.length!==3)throw Error('Invalid native world pack');
+  const gl=this.gl,texture=gl.createTexture();if(!texture)throw Error('Forest texture allocation failed');
+  this.atlas=texture;gl.activeTexture(gl.TEXTURE2);gl.bindTexture(gl.TEXTURE_2D,texture);
+  gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL,false);
+  gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA,gl.RGBA,gl.UNSIGNED_BYTE,source as TexImageSource);
+  gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.LINEAR_MIPMAP_LINEAR);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MAG_FILTER,gl.LINEAR);
+  gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_S,gl.CLAMP_TO_EDGE);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_T,gl.CLAMP_TO_EDGE);gl.generateMipmap(gl.TEXTURE_2D);gl.activeTexture(gl.TEXTURE0);
+  for(let i=0;i<surfaces.length;i++){
+   const t=gl.createTexture();if(!t)throw Error('Native ground texture allocation failed');this.surfaces.push(t);
+   gl.activeTexture(gl.TEXTURE0+3+i);gl.bindTexture(gl.TEXTURE_2D,t);
+   gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA,gl.RGBA,gl.UNSIGNED_BYTE,surfaces[i] as TexImageSource);
+   gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.LINEAR_MIPMAP_LINEAR);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MAG_FILTER,gl.LINEAR);
+   gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_S,gl.REPEAT);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_T,gl.REPEAT);gl.generateMipmap(gl.TEXTURE_2D);
+  }
+  gl.activeTexture(gl.TEXTURE0);
+  for(const mesh of pack.meshes){
+   if(!mesh.name.startsWith('scan')||mesh.vertices.length%8||mesh.indices.length%3||mesh.vertices.length/8>65535||mesh.indices.some(i=>i<0||i>=mesh.vertices.length/8)||mesh.vertices.some(v=>!Number.isFinite(v)))throw Error('Invalid native mesh '+mesh.name);
+   const data=new Float32Array(mesh.vertices),vertex=gl.createBuffer(),instances=gl.createBuffer(),elements=gl.createBuffer();
+   if(!vertex||!instances||!elements)throw Error('Native mesh allocation failed');
+   gl.bindBuffer(gl.ARRAY_BUFFER,vertex);gl.bufferData(gl.ARRAY_BUFFER,data,gl.STATIC_DRAW);
+   gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER,elements);gl.bufferData(gl.ELEMENT_ARRAY_BUFFER,new Uint16Array(mesh.indices),gl.STATIC_DRAW);
+   const bounds=geometryBounds(data,undefined,8);bounds.half[0]+=.02;
+   this.batches.set(mesh.name as ScanShape,{vertex,instances,elements,vertices:mesh.indices.length,data:new Float32Array(20*64),visible:new Float32Array(0),bounds,count:0,stride:8,tile:mesh.tile,wind:mesh.wind});
+  }
+  this.worldReady=true;
  }
  setMadgerPortrait(source:TexImageSource|{localUri:string}){
   const gl=this.gl,texture=gl.createTexture();if(!texture)throw Error('Approved portrait texture allocation failed');
@@ -416,11 +486,11 @@ export class ExpeditionRenderer {
  }
  updateTail(time:number,bank:number){const b=this.batches.get('tail')!;const data=tailGeometry(time,bank,this.tailVertices,this.tailGrid);geometryBounds(data,b.bounds);this.gl.bindBuffer(this.gl.ARRAY_BUFFER,b.vertex);this.gl.bufferData(this.gl.ARRAY_BUFFER,data,this.gl.DYNAMIC_DRAW);b.vertices=data.length/6;}
  reset(){for(const b of this.batches.values())b.count=0;this.stats={instances:0,culledInstances:0,drawCalls:0,indexedDrawCalls:0,triangles:0,nativeDrainMs:0,sceneWidth:0,sceneHeight:0,materialDetail:1};}
- add(shape:Shape,matrix:Mat4,c:Color){const b=this.batches.get(shape)!;if(b.count>=4096)return;const offset=b.count*20;b.data.set(matrix,offset);b.data.set(c,offset+16);b.count++;}
+ add(shape:Shape,matrix:Mat4,c:Color){const b=this.batches.get(shape);if(!b||b.count>=b.data.length/20)return;const offset=b.count*20;b.data.set(matrix,offset);b.data.set(c,offset+16);b.count++;}
  shape(shape:Shape,c:Color,x:number,y:number,z:number,sx=1,sy=1,sz=1,rx=0,ry=0,rz=0,parent?:Mat4){const t=transform(x,y,z,sx,sy,sz,rx,ry,rz);this.add(shape,parent?multiply(parent,t):t,c);}
  render(eye:Vec3,target:Vec3,time:number,zone:number,travel=0){
   if(this.dead)return;const gl=this.gl,width=gl.drawingBufferWidth,height=gl.drawingBufferHeight;if(width<2||height<2)return;
-  const fog:Vec3=zone===0?[.024,.060,.057]:zone===1?[.024,.045,.057]:[.036,.026,.075];
+  const fog:Vec3=zone===0?(this.worldReady?[.18,.25,.22]:[.024,.060,.057]):zone===1?[.024,.045,.057]:[.036,.026,.075];
   const sky=fog.map(x=>Math.pow(x/(x+.65),.4545));
   const size=this.sceneTarget?.begin(width,height,this.sceneryBudget)??{width,height};
   this.stats.sceneWidth=size.width;this.stats.sceneHeight=size.height;
@@ -428,14 +498,23 @@ export class ExpeditionRenderer {
   gl.useProgram(this.program);const vp=multiply(perspective(2*Math.atan(Math.max(Math.tan(33*Math.PI/180),Math.tan(17*Math.PI/180)/(width/height))),width/height,.1,180),lookAt(eye,target));
   updateClipPlanes(vp,this.clipPlanes);
   if(this.portrait){gl.activeTexture(gl.TEXTURE1);gl.bindTexture(gl.TEXTURE_2D,this.portrait);gl.uniform1i(this.uniforms.portrait,1);gl.activeTexture(gl.TEXTURE0);}
-  gl.uniformMatrix4fv(this.uniforms.vp,false,vp);gl.uniform3f(this.uniforms.eye,eye[0],eye[1],eye[2]);gl.uniform3f(this.uniforms.fog,fog[0],fog[1],fog[2]);gl.uniform2f(this.uniforms.range,30,115);gl.uniform1f(this.uniforms.time,time);gl.uniform1f(this.uniforms.travel,travel);
+  gl.uniform1f(this.uniforms.atlasReady,this.worldReady?1:0);
+  // Assign distinct texture units even before either texture is ready.
+  gl.uniform1i(this.uniforms.portrait,1);gl.uniform1i(this.uniforms.atlas,2);gl.uniform1i(this.uniforms.ground,3);gl.uniform1i(this.uniforms.bark,4);gl.uniform1i(this.uniforms.stone,5);
+  if(this.atlas){gl.activeTexture(gl.TEXTURE2);gl.bindTexture(gl.TEXTURE_2D,this.atlas);gl.activeTexture(gl.TEXTURE0);}
+  for(let i=0;i<this.surfaces.length;i++){gl.activeTexture(gl.TEXTURE0+3+i);gl.bindTexture(gl.TEXTURE_2D,this.surfaces[i]);}gl.activeTexture(gl.TEXTURE0);
+  gl.uniformMatrix4fv(this.uniforms.vp,false,vp);gl.uniform3f(this.uniforms.eye,eye[0],eye[1],eye[2]);gl.uniform3f(this.uniforms.fog,fog[0],fog[1],fog[2]);gl.uniform2f(this.uniforms.range,this.worldReady?48:30,115);gl.uniform1f(this.uniforms.time,time);gl.uniform1f(this.uniforms.travel,travel);
   this.stats.materialDetail=typeof this.gl.flushEXP==='function'&&this.sceneryBudget===0?0:1;
   gl.uniform1f(this.uniforms.detail,this.stats.materialDetail);
   for(const [shape,b] of this.batches){if(!b.count)continue;
    const count=cullBatch(b,this.clipPlanes);this.stats.culledInstances+=b.count-count;if(!count)continue;
    if(shape==='shadow'||shape==='halo'||shape==='face'){gl.enable(gl.BLEND);gl.blendFunc(gl.SRC_ALPHA,shape==='halo'?gl.ONE:gl.ONE_MINUS_SRC_ALPHA);gl.depthMask(shape==='face');}else{gl.disable(gl.BLEND);gl.depthMask(true);}
-   gl.bindBuffer(gl.ARRAY_BUFFER,b.vertex);gl.enableVertexAttribArray(0);gl.enableVertexAttribArray(1);gl.vertexAttribPointer(0,3,gl.FLOAT,false,24,0);gl.vertexAttribPointer(1,3,gl.FLOAT,false,24,12);
-   if(this.divisor&&this.drawInstanced){
+   gl.uniform1f(this.uniforms.surface,b.stride===8?1:0);gl.uniform1f(this.uniforms.tile,b.tile??0);gl.uniform1f(this.uniforms.wind,b.wind??0);
+   const stride=(b.stride??6)*4;
+   gl.bindBuffer(gl.ARRAY_BUFFER,b.vertex);gl.enableVertexAttribArray(0);gl.enableVertexAttribArray(1);gl.vertexAttribPointer(0,3,gl.FLOAT,false,stride,0);gl.vertexAttribPointer(1,3,gl.FLOAT,false,stride,12);
+   if(b.stride===8){gl.enableVertexAttribArray(7);gl.vertexAttribPointer(7,2,gl.FLOAT,false,stride,24);}else{gl.disableVertexAttribArray(7);gl.vertexAttrib2f(7,0,0);}
+   this.divisor?.(7,0);
+   if(this.divisor&&this.drawInstanced&&(b.stride!==8||this.drawIndexedInstanced)){
     this.divisor(0,0);this.divisor(1,0);gl.bindBuffer(gl.ARRAY_BUFFER,b.instances);gl.bufferData(gl.ARRAY_BUFFER,b.visible.subarray(0,count*20),gl.DYNAMIC_DRAW);
     for(let i=2;i<=6;i++){gl.enableVertexAttribArray(i);gl.vertexAttribPointer(i,4,gl.FLOAT,false,80,(i-2)*16);this.divisor(i,1);}
     if(b.elements&&this.drawIndexedInstanced){gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER,b.elements);this.drawIndexedInstanced(gl.TRIANGLES,b.vertices,gl.UNSIGNED_SHORT,0,count);this.stats.indexedDrawCalls++;}else this.drawInstanced(gl.TRIANGLES,0,b.vertices,count);
@@ -443,7 +522,7 @@ export class ExpeditionRenderer {
     for(let i=2;i<=6;i++)this.divisor(i,0);
    }else{
     for(let i=2;i<=6;i++)gl.disableVertexAttribArray(i);
-    for(let j=0;j<count;j++){for(let i=2;i<=6;i++)gl.vertexAttrib4fv(i,b.visible.subarray(j*20+(i-2)*4,j*20+(i-1)*4));gl.drawArrays(gl.TRIANGLES,0,b.vertices);this.stats.drawCalls++;}
+    for(let j=0;j<count;j++){for(let i=2;i<=6;i++)gl.vertexAttrib4fv(i,b.visible.subarray(j*20+(i-2)*4,j*20+(i-1)*4));if(b.stride===8&&b.elements){gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER,b.elements);gl.drawElements(gl.TRIANGLES,b.vertices,gl.UNSIGNED_SHORT,0);}else gl.drawArrays(gl.TRIANGLES,0,b.vertices);this.stats.drawCalls++;}
    }
    this.stats.instances+=count;this.stats.triangles+=count*b.vertices/3;
   }
@@ -461,5 +540,5 @@ export class ExpeditionRenderer {
    if(++this.nativeFrames===1||this.nativeFrames===30)console.info('MADGER_EXPEDITION_RENDER '+JSON.stringify({frame:this.nativeFrames,instanced:!!this.drawInstanced,...this.stats,sceneryBudget:this.sceneryBudget}));
   }
  }
- dispose(){if(this.dead)return;this.dead=true;try{this.sceneTarget?.dispose();if(this.portrait)this.gl.deleteTexture(this.portrait);for(const b of this.batches.values()){this.gl.deleteBuffer(b.vertex);this.gl.deleteBuffer(b.instances);if(b.elements)this.gl.deleteBuffer(b.elements);}this.gl.deleteProgram(this.program);}catch{/* A lost context has already freed its GPU resources. */}this.batches.clear();}
+ dispose(){if(this.dead)return;this.dead=true;try{this.sceneTarget?.dispose();if(this.portrait)this.gl.deleteTexture(this.portrait);if(this.atlas)this.gl.deleteTexture(this.atlas);for(const t of this.surfaces)this.gl.deleteTexture(t);this.surfaces=[];for(const b of this.batches.values()){this.gl.deleteBuffer(b.vertex);this.gl.deleteBuffer(b.instances);if(b.elements)this.gl.deleteBuffer(b.elements);}this.gl.deleteProgram(this.program);}catch{/* A lost context has already freed its GPU resources. */}this.batches.clear();}
 }

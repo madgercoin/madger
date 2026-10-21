@@ -4,7 +4,7 @@ import { multiply, segment, transform, type Mat4, type Vec3 } from './math';
 import { gaitPose, burrowPose, reactionEnvelope } from './animation';
 import { companionId, COMPANIONS } from './companions';
 import { drawCompanion, drawTeam } from './companion-models';
-const C={fur:color('#24272a',-4),furLight:color('#353237',-4),black:color('#0d1117'),cream:color('#f2d9a2'),pale:color('#fff0c7'),gold:color('#ffcb5a'),goldGlow:color('#ffc765',1.15),mint:color('#70e4d7',.35),violet:color('#b4a0fa',.45),red:color('#e8795e'),pink:color('#da818b'),stone:color('#758474'),stoneDark:color('#425450'),wood:color('#6c4b35'),woodLight:color('#a47c4b'),leaf:color('#427763'),leafLight:color('#75aa63'),iron:color('#657579'),copper:color('#ad8155'),water:color('#254d56',-2),shadow:color('#000000',-3)};
+const C={fur:color('#24272a',-4),furLight:color('#353237',-4),black:color('#0d1117'),cream:color('#f2d9a2'),pale:color('#fff0c7'),gold:color('#ffcb5a'),goldGlow:color('#ffc765',1.15),mint:color('#70e4d7',.35),violet:color('#b4a0fa',.45),red:color('#e8795e'),pink:color('#da818b'),stone:color('#758474',-8),stoneDark:color('#425450',-8),wood:color('#6c4b35',-7),woodLight:color('#a47c4b',-7),leaf:color('#427763'),leafLight:color('#75aa63'),iron:color('#657579'),copper:color('#ad8155'),water:color('#254d56',-2),shadow:color('#000000',-3)};
 const TAU=Math.PI*2;
 const hash=(n:number)=>{const x=Math.sin(n*127.13+91.7)*43758.5453;return x-Math.floor(x);};
 export const CHARACTER_CONTRACT={fangCount:0,teeth:'small-even',clawsPerPaw:5,fur:'black',markings:'cream',eyes:'amber-gold'} as const;
@@ -16,7 +16,7 @@ export class ExpeditionScene {
  private reaction:{kind:'good'|'hurt'|'revive'|'discovery';at:number}={kind:'good',at:-10};
  private cameraX=0;private cameraY=0;private initializedCamera=false;private disposed=false;private particleId=0;
  constructor(gl:GL){this.renderer=new ExpeditionRenderer(gl);}
- get stats(){return {...this.renderer.stats,particles:this.particles.length};}
+ get stats(){return {...this.renderer.stats,particles:this.particles.length,nativeWorldReady:this.renderer.worldReady===true};}
  events(events:GameEvent[],s:Expedition,calm=false){
   for(const e of events){
    if(e.kind==='hit')this.reaction={kind:'hurt',at:this.clock};
@@ -236,8 +236,61 @@ export class ExpeditionScene {
   * Each child route gets a separate offset road and themed geometry. Only the
   * chosen road is detailed once the player has committed to a fork.
   */
+ /** Native scanned woodland, rooted in a continuous contoured ground mesh.
+  * Geometry and texture detail survive the lowest GPU budget. Only counts and
+  * draw distance change. Trees are full meshes, never camera-facing sprites. */
+ private nativeLandscape(s:Expedition,time:number,calm:boolean){
+  const d=s.distance,base=curve(d),budget=this.renderer.sceneryBudget;
+  const cave=['deep','mudslide','crystal-vein','ancient-vault'].includes(s.route);
+  const ruins=['ridge','causeway','watchtower','gearworks'].includes(s.route);
+  const white=color('#f2f1dd'),stone=color(cave?'#a4bbc9':'#d6d8cc'),ground=color(cave?'#717a85':ruins?'#a7a48a':'#9eab7b',cave?-8:-1);
+  const far=[44,64,86][budget];
+  const centre=(wd:number)=>curve(wd)-base+overgrownPathOffset(s.route,wd);
+  // Fill from the edge of the playable road out into the forest and hills.
+  // The playable surface itself remains open at every authored gap.
+  for(let wd=Math.floor((d-18)/12)*12;wd<d+112;wd+=12){
+   const z=d-wd,x=centre(wd),y=floorY(wd);
+   for(const side of [-1,1])this.shape('terrain',ground,x+side*3.14,y-.10,z,side*29,6,6.3,0,0,0);
+   if(cave){
+    this.shape('ridge',color('#607582',-8),x,y+9.3,z,8.8,-4.2,6.3,0,0,0);
+    for(const side of [-1,1])this.shape('cone',color('#70838a',-8),x+side*4.7,y+6.8,z,.45,2.1,.52,Math.PI,0,0);
+   }
+  }
+  for(let n=Math.floor(d/14);n*14<d+far;n++){
+   const wd=n*14+7,ahead=wd-d;if(ahead<7)continue;
+   const z=-ahead,x=centre(wd),y=floorY(wd),side=n%2?1:-1;
+   const yaw=hash(n*17)*TAU,h=9.2+hash(n*31)*2.2;
+   if(!cave){
+    const bx=x+side*(8.0+hash(n)*1.7);
+    for(const part of ['scanTreeTrunk','scanTreeCrown','scanTreeTwigs'] as const)
+     this.shape(part,white,bx,y-.12,z,h,h,h,0,yaw,0);
+    this.shape('shadow',C.shadow,bx,y+.015,z,2.1,1,1.9);
+    if(budget>0&&n%2===0)for(const part of ['scanTreeTrunk','scanTreeCrown','scanTreeTwigs'] as const)
+     this.shape(part,color('#c9d8c1'),x-side*10,y+.25,z-5,h*.85,h*.85,h*.85,0,yaw+1,0);
+    if(ahead<32||budget>0){
+     this.shape('scanFern',color('#b7cc94'),x+side*4.25,y-.02,z+2,.90,.90,.90,0,yaw,0);
+     if(ahead<25)this.shape('scanFern',color('#b7cc94'),x-side*3.95,y-.02,z+4,.65,.65,.65,0,yaw+2,0);
+     this.shape('scanRoots',white,x+side*5.7,y-.05,z-2,3.1,1.5,2.5,0,yaw,0);
+    }
+   }else{
+    this.shape('scanCliff',stone,x+side*7.9,y-.7,z,7.3,9.2,5.8,0,yaw,0);
+    this.shape('scanCliff',stone,x-side*7.9,y-.7,z-4,7.3,9.2,5.8,0,yaw+2,0);
+    this.crystal(x+side*4.35,y+.05,z,.72,n);
+   }
+   this.shape('scanRock',stone,x-side*4.6,y-.10,z-2,2.1,1.9,1.8,0,yaw,0);
+   this.shape('shadow',C.shadow,x-side*4.6,y+.01,z-2,1.2,1,1.1);
+   if(n%3===0&&!cave)this.shape('scanLog',white,x-side*6.0,y+.05,z+3,4.2,5.4,4.0,0,yaw*.3,0);
+   if(ruins&&n%2===0){
+    for(let row=0;row<4;row++)for(let col=0;col<2;col++)this.shape('box',C.stone,x+side*(5.1+col*.8),y+.36+row*.73,z, .77,.71,1.14,0,.1*side,0);
+    this.shape('scanCliff',stone,x+side*9,y-.3,z-5,5.3,4.2,4.7,0,yaw,0);
+   }
+   // Moving air is subtle. No particle curtain over collision silhouettes.
+   if(!calm&&ahead<35&&n%2===0)this.shape('leaf',C.leaf,x+side*(4.0+Math.sin(time*.5+n)),y+1.5+Math.sin(time*.7+n)*.5,z+Math.cos(time*.4+n),.16,.22,.26,time*.4,n,time*.6);
+  }
+ }
  private overgrownScenery(s:Expedition,time:number,calm:boolean){
   const d=s.distance,base=curve(d);
+  if(this.renderer.worldReady)this.nativeLandscape(s,time,calm);
   // Native GL has a measured, hysteretic GPU-drain budget. Preserve every
   // playable lane and hazard at full fidelity; trim ONLY off-track distance
   // dressing when a software renderer or older phone is falling behind.
@@ -247,7 +300,7 @@ export class ExpeditionScene {
     ['ridge','causeway','watchtower','gearworks'].includes(route)?'ruins':'cavern';
   const approach={id:'main',name:'The Overgrown Burrow',risk:'LOW',reward:'Coins',description:'Forest approach',side:0,accent:'#B1DC88'} as const;
   const phases:{start:number;end:number;options:readonly (ForkOption|typeof approach)[]}[]=[
-   {start:0,end:140,options:[approach]},
+   {start:this.renderer.worldReady?-24:0,end:140,options:[approach]},
    {start:140,end:450,options:MAJOR_FORKS},
    {start:445,end:461,options:[approach]},
    {start:455,end:900,options:SUB_FORKS[(s.majorPath==='ridge'||s.majorPath==='deep')?s.majorPath:'rootway']},
@@ -259,7 +312,7 @@ export class ExpeditionScene {
    const options=allRoutes?phase.options:phase.options.filter(o=>o.id===s.route);
    for(const option of options){
     const theme=mainTheme(option.id),highlight=option.accent;
-    const mud=theme==='cavern'?color('#5D4E59',-1):theme==='ruins'?color('#716458',-1):color('#625848',-1);
+    const mud=theme==='cavern'?color('#6c7b85',-8):theme==='ruins'?color('#716458',-1):color('#625848',-1);
     const edge=theme==='cavern'?color('#3A3446',-8):theme==='ruins'?color('#4F504D',-8):color('#4B4638',-8);
     const vegetation=theme==='cavern'?color('#4B6D69'):theme==='ruins'?C.leaf:C.leafLight;
     const step=6,first=Math.max(phase.start+3,Math.floor((d-9)/step)*step);
@@ -271,17 +324,23 @@ export class ExpeditionScene {
      // independently interpolated fork offset as Madger and collectibles.
      for(const lane of [-1,0,1]){
       const lx=x+lane*LANE_WIDTH;
-      this.shape('box',mud,lx,y-.24,z,2.12,.40,6.7,0,roadYaw,0);
-      if((n+lane)%3===0){
+      if(this.renderer.worldReady){
+       for(let j=0;j<4;j++){
+        const td=wd-2.25+j*1.5;
+        const gap=this.course.some(o=>o.kind==='gap'&&o.route===option.id&&o.lane===lane&&Math.abs(o.d-td)<2.0);
+        if(!gap)this.shape('trail',mud,overgrownPathOffset(option.id,td)+curve(td)-base+lane*LANE_WIDTH,floorY(td),d-td,2.19,1,1.67,Math.atan((floorY(td+.75)-floorY(td-.75))/1.5),roadYaw,0);
+       }
+      }else this.shape('box',mud,lx,y-.24,z,2.12,.40,6.7,0,roadYaw,0);
+      if(!this.renderer.worldReady&&(n+lane)%3===0){
        this.shape('rock',vegetation,lx+.60,y+.025,z+.5,.42,.026,1.55,0,n*.48,0);
        this.shape('rock',edge,lx-.67,y+.023,z-.6,.37,.042,.39,0,n,0);
       }
-      if((n+lane)%4===0)this.shape('rock',color('#454A37',-8),lx-.13,y+.023,z+1.1,.61,.035,.77,0,n*.51,0);
+      if(!this.renderer.worldReady&&(n+lane)%4===0)this.shape('rock',color('#454A37',-8),lx-.13,y+.023,z+1.1,.61,.035,.77,0,n*.51,0);
      }
      // Opaque trees, foliage and rock faces behind the camera can block
      // the entire screen as a fork curves. Keep the track under the runner,
      // but render tall scenery only ahead of the playing/camera corridor.
-     if(z>-7||-z>sceneryFar)continue;
+     if(this.renderer.worldReady||z>-7||-z>sceneryFar)continue;
      // Keep detailed close-up vegetation and masonry. Thin only off-track
      // props beyond 30 metres; forks, pickups, road and hero are untouched.
      if(sceneryBudget<2&&-z>30&&n%(sceneryBudget===0?4:2)!==0)continue;
@@ -447,7 +506,10 @@ export class ExpeditionScene {
    case 'key':
     this.shape('ring',C.goldGlow,x,y+1.27+bob,z,.22,.7,.22,Math.PI/2,0,0);this.shape('box',C.gold,x,y+.91+bob,z,.08,.54,.09);this.shape('box',C.gold,x+.10,y+.72+bob,z,.25,.09,.09);shadow(.4);break;
    case 'boulder':
-    this.shape('rock',color('#947d66'),x,y+.80+pose.y,z,.85,.80,.85,phase*1.5,phase*.5,0);this.shape('ring',color('#c59164'),x,y+.10,z,.83,1,.83);shadow(.9);break;
+    if(this.renderer.worldReady){
+     const roll=transform(x,y+.80+pose.y,z,1,1,1,phase*1.5,phase*.5,0);
+     this.shape('scanRock',color('#ddd4c5'),0,-.80,0,1.72,3.05,1.72,0,0,0,roll);
+    }else this.shape('rock',color('#947d66'),x,y+.80+pose.y,z,.85,.80,.85,phase*1.5,phase*.5,0);this.shape('ring',color('#c59164'),x,y+.10,z,.83,1,.83);shadow(.9);break;
    case 'saw':
     this.shape('box',C.wood,x,y+.16,z,1.3,.3,.9);
     this.shape('cylinder',C.iron,x,y+.53,z,.52,.12,.52,Math.PI/2,0,0);
@@ -475,6 +537,18 @@ export class ExpeditionScene {
     for(const side of [-1,1]){this.link([x,y+1.05,z],[x+side*.6,y+1.13,z],.045,C.iron);this.shape('box',C.iron,x+side*.6,y+1.2,z,.82,.035,.10,0,phase*35,0);}
     shadow(.65);break;
    case 'crate':
+    if(this.renderer.worldReady){
+     // Separate slats, inset faces and corner hardware retain depth in motion.
+     for(let j=0;j<4;j++){
+      this.shape('box',C.woodLight,x,y+.14+j*.23,z,1,.20,.98);
+      for(const side of [-1,1])this.shape('box',C.wood,x+side*.51,y+.14+j*.23,z,.08,.20,1.0);
+     }
+     for(const side of [-1,1])for(const end of [-1,1]){
+      this.shape('box',C.copper,x+side*.43,y+.47,z+end*.51,.13,.95,.08);
+      for(const h of [.10,.82])this.orb(x+side*.43,y+h,z+end*.56,.033,C.iron);
+     }
+     this.shape('box',C.wood,x,y+.47,z+.55,1.2,.12,.09,0,0,.7);shadow(.7);break;
+    }
     this.shape('box',C.woodLight,x,y+.47,z,1,.95,1,0,Math.sin(phase)*.02,0);for(const side of [-1,1])this.shape('box',C.wood,x+side*.35,y+.47,z+.51,.10,.94,.05);this.shape('box',C.copper,x,y+.47,z+.53,1,.09,.06,0,0,.65);shadow(.7);break;
    case 'burrow':{
     const archX=branchOffset(item.d+7,item.d,item.d+90,item.lane)+curve(item.d+7)-curve(s.distance);
