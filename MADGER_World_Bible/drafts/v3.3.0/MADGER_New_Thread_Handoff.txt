@@ -1,0 +1,66 @@
+MADGER WORLD BIBLE - CONTINUE IN A NEW THREAD
+Checkpoint date: 21 October 2026
+User request: Move this ongoing world-development task to a new thread. Continue existing work; do not restart or redirect to the separate Android app task.
+
+CANONICAL PROJECT
+Repository: madgercoin/madger
+Archive branch: world/character-cards-2026-10-20
+Released canon: MADGER_World_Bible/CURRENT.json, edition 3.2.0.
+Last released commit: ab09a910dce920270ec8f1ec802bed6e6b722c12.
+The new work is saved under MADGER_World_Bible/drafts/v3.3.0/. It is a WORK-IN-PROGRESS CHECKPOINT, not a released new canon edition. CURRENT.json must remain 3.2 until completion and validation.
+
+CURRENT WORK: THE WILDS BETWEEN (planned 3.3)
+Completed draft source:
+- author_wilds.py: twelve detailed creature cards, eight regional ecology/culture/season records, eight continuity/production rules.
+- build_habitats.py: four detailed habitat plans, preserving exact 3.0 site boundaries and refuge footprints.
+- output/Wilds_Bible.json; output/cards/CR-01.json through CR-12.json.
+- output/Habitat_Plans.json and plans/HAB-SITE-01.svg, HAB-SITE-02.svg, HAB-SITE-03.svg, HAB-SITE-08.svg.
+- Two new illustrated artboards (four environments) generated with built-in imagegen and the original bestiary as appearance reference.
+- output/Art_Manifest.json contains exact prompts and saved image links.
+
+DURABLE ART
+Draft Drive folder: https://drive.google.com/drive/folders/1uPFDIIWmIopoeEJU3siFfrqIVQHUo26Z
+WILDS-01.png: Drive id 1fdf5Q3Uj46o5j6QsEH3TPexa59EV4EE3 (Floodglass Ford / Walking Root Crossing).
+WILDS-02.png: Drive id 1vOV9gHj_lMMJ0lHrdfdmaP9OFo4vj2zA (Buried Lens / Bellwater Narrows).
+Original ART-03_Bestiary.png: Drive id 1V12D9RUAzhVMJIgDe_t4nl56bCJZ3FIo; twelve creatures in 4 columns x 3 rows.
+New artboards have unequal-height panels despite equal-panel prompts. Layout crops currently suggested: top [0,0,1536,462], bottom [0,480,1536,1024]. Inspect final crops in layout; retain original bytes.
+Art is appearance/atmosphere reference. JSON and SVG govern exact dimensions, access and creature anatomy.
+
+LOCAL WORKSPACE (may not survive transfer; use Git/Drive when absent)
+/workspace/scratch/ae9a6a9bf3bf/world-wilds
+Baseline JSON currently read from sibling world-depth/source/World_Atlas.json and Blueprint_Data.json.
+On a fresh workspace, retrieve these exact baseline files from MADGER_World_Bible/v3.0.0/ in Git, or adapt the source loader to canonical repository paths.
+Prior rendering example: world-threats/render_conflict.py, archived in v3.2.0. ReportLab/MuPDF workflow, all pages visually checked.
+
+EXECUTION PLAN - DO NEXT, WITHOUT ASKING FOR RECONFIRMATION
+1. Review draft anatomy and ecology against 3.0. Twelve creature baselines are copied unchanged. Correct any drift; author_wilds.py was corrected from "human-made" to "mechanically pulled" tow scar and rerun before checkpoint. No human population belongs in this world.
+2. Finish and validate the four habitat sheets. Bounds/refuge equality and feature bounds already pass, but spatial circulation and elevations still need a meaningful review. SITE-01 is an L-shaped shallow river with a south ford and dry north-bank refuge route. SITE-02 has west fixed ridge, three 35 x 4 m root spans, a lower rescue shelf and unchanged northern hut. SITE-03 fixes exterior footprints but currently RESERVES the internal maintenance-ramp profile. Resolve a coherent measured ramp/stair detail before claiming complete reproducibility. SITE-08 uses an east natural high rock arch, water at z=-8, refuge floor z=0; water passes under the arch. Its boat landing-to-ascent connection and final measured ascent also require completion. These are fictional production sets, not certified construction plans.
+3. Write TWO complete stories (not yet written): one Madger/Hollis river encounter exploring listening and a false animal accusation; one Namu/Bot rescue exploring bounded chart sharing and local expertise. Use existing character cards. Keep these as authored options pending dated episode-ledger adoption.
+4. Build polished illustrated PDFs: MADGER_The_Wilds_Between.pdf plus MADGER_Habitat_Blueprints.pdf. Main volume should include all twelve illustrated creature cards, eight regional ecology records, four illustrated habitat pages, condition states, production continuity, two complete stories and a navigation index. Individual editable creature JSON cards already exist. No PDFs exist for 3.3 yet.
+5. Render all PDF pages, inspect layout, text bounds and plan clarity. Correct overlaps and misleading route/elevation treatment. Verify art anatomy and avoid treating conceptual perspectives as exact geometry.
+6. Save final PDFs to Library and the established new Drive folder. Upload scripts/JSON/SVGs and art manifest to that folder. Archive finished source under v3.3.0 in Git; preserve all earlier editions. Only then update CURRENT.json additively, with explicit precedence. Update the EXISTING Google Docs master index, preserving earlier sections and using fresh revision guards.
+7. Deliver concise previews and saved links, no ZIP. Do not claim a finished anime video, app build, or production deployment.
+
+EXISTING MASTER INDEX
+Google Doc id: 1mVmWBzLV7j1UFi5k8HSUqEnDxckAFl5X-jNZuhegg0M
+https://docs.google.com/document/d/1mVmWBzLV7j1UFi5k8HSUqEnDxckAFl5X-jNZuhegg0M/edit
+Root Drive collection: 1FpiwodNq-qeQmoDikp6_cDKG0jxbYe70.
+Read fresh before editing; preserve TITLE/SUBTITLE styles. Do not recreate the index.
+
+LOCKED CONSTRAINTS
+- Burrow 2.1 geometry/population remains current: 800 surface and 1,600 underground; occupied levels -12 and -24 m, service level -36 m; public entrance with separate defensive interior. No secret wildlife/deep-sea tunnel under its defense.
+- Madger, Gorilla White, MADGER Bot and Snow White keep approved designs/voices. Madger normal teeth, no decorative tear. Bot fully mechanical face, amber optics/blue joints. Snow quadruped female shepherd with rose collar/SW charm and frosted tail; canine sounds only.
+- Pilot exactly five minutes, entirely inside the Burrow, joyful start, subtle clues only. D17 discrepancy and unrelated resin clue remain distinct; no exterior animals/villain cutaway.
+- Stable body poses, separate mouth shapes/blinks and intentional action. No image-to-image body jitter.
+- Wildlife are animals, not moral factions. Species does not determine allegiance.
+- Original twelve creature sizes, anatomy and powers remain controlling. Mantas cannot summon storms; choirwraiths do not resurrect minds; bell-eels are not repelled by light; ashmaws cannot swim lava; mawroot is rooted; sailfins have six legs.
+- No new paid Runway/ElevenLabs calls are needed. This work used built-in imagegen only.
+- 3.3 is ADDITIVE; no arbitrary reboot. Stories are proposed until adopted into the episode ledger.
+- User wants autonomous execution, high quality, saved references and no repeated permission questions.
+- No subagents unless user/applicable instructions explicitly authorize delegation.
+
+SKILL / OPERATION NOTES
+PDF authoring marker was run exactly once in the current request for create, expected-output-count 2. No PDFs were produced yet. Do not rerun in the same authoring operation; if a genuinely new operation in a new runtime requires a fresh marker, follow current PDF skill.
+Current skills read: personal-context, Library + prepared uploads, imagegen, PDF, Google Drive. Current context was complete; personal-context search not needed.
+Do not confuse the user's separate active Android game development threads with THIS world Bible continuation.
+

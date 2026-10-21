@@ -1,0 +1,43 @@
+{
+  "id": "CR-09",
+  "name": "Sailfin packbeast",
+  "baseline": {
+    "id": "CR-09",
+    "name": "Sailfin packbeast",
+    "region": "REG-03",
+    "look": "Six-legged dune herbivore with a foldable cooling sail and broad padded feet.",
+    "ecology": "Domestic herds graze salt grass near oasis margins.",
+    "limit": "Needs water and rest; refuses unstable glass crust.",
+    "encounter": "Caravan teams treat refusal as information, not disobedience.",
+    "envelope_m": {
+      "length": 3.6,
+      "width_or_span": 1.4,
+      "height": 2.6
+    },
+    "scale_note": "Adult representative staging envelope; individuals vary by up to 10%. Not shown at common scale on the art plate."
+  },
+  "daily": "A packbeast grazes salt grass, chews slowly and folds its cooling sail in narrow shade. Six broad padded feet spread weight. Caravans plan feed, rest and water as actual cargo costs.",
+  "cycle": "Herds remain near oasis margins during vulnerable young-rearing periods. Training builds tolerance for harness and routine; it does not remove fear or fatigue.",
+  "signs": "A lowered head and widely planted front pair often precede refusal. A damaged harness can cause the same behavior as unstable crust, so handlers inspect both.",
+  "escalation": "Slows -> stops -> turns head toward handler -> backs away under pressure. It is not stubborn comic machinery that moves when struck.",
+  "community": "Ossara handlers can stop a departure without the merchant’s consent. Their reputation rests on reading animals accurately, not claiming they are infallible.",
+  "scene": "An impatient courier blames the lead animal. Maela first checks the harness, then discovers hollow glass under the shortcut; neither explanation is assumed in advance.",
+  "motion": "Maintain six contact points with a readable alternating gait. Fold the sail along consistent ribs. Cargo and harness must remain attached to the same landmarks.",
+  "sounds": "Breath, chewing and low contact calls. No speaking role or transformation into a warrior.",
+  "palette": [
+    "#B39A70",
+    "#D3BF8F",
+    "#D3A363"
+  ],
+  "rule": "Domestic herbivore with six legs, broad padded feet and foldable sail. Needs water and rest; never an inexhaustible engine.",
+  "art": {
+    "file": "ART-03_Bestiary.png",
+    "column": 0,
+    "row": 2,
+    "grid": [
+      4,
+      3
+    ]
+  },
+  "canon_status": "Additive ecology and production guidance; proposed scene remains unadopted."
+}

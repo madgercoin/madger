@@ -1,0 +1,43 @@
+{
+  "id": "CR-08",
+  "name": "Bell-eel",
+  "baseline": {
+    "id": "CR-08",
+    "name": "Bell-eel",
+    "region": "REG-08",
+    "look": "Long translucent eel with mineral-rimmed resonator chambers.",
+    "ecology": "Hunts vibration in deep channels and nests in quiet rock pockets.",
+    "limit": "Sound carries far through water; light alone does not repel it.",
+    "encounter": "Reduce hull impacts, use known quiet passages and avoid nesting seasons.",
+    "envelope_m": {
+      "length": 7,
+      "width_or_span": 0.5,
+      "height": 0.6
+    },
+    "scale_note": "Adult representative staging envelope; individuals vary by up to 10%. Not shown at common scale on the art plate."
+  },
+  "daily": "Bell-eels hunt vibrations in deep channels. Mineral-rimmed chambers resonate as the flexible body moves. Brightness may reveal position but does not frighten them away.",
+  "cycle": "Nesting occurs in quiet rock pockets when local water conditions permit. Lumen Tide observers record the season by the channel, not by a surface calendar.",
+  "signs": "A hull tap answered by a low water-borne ring suggests investigation. Suspended silt and chamber glints help locate movement; sound can travel from elsewhere.",
+  "escalation": "Distant orienting -> parallel follow -> close investigation -> strike at a strong local stimulus. A quiet boat is less conspicuous, not magically invisible.",
+  "community": "Navigators teach quiet handling and protect nesting charts. Rescue partners receive the route facts they need without automatic access to every protected pocket.",
+  "scene": "Namu shares a narrow rescue chart and accepts a visitor’s correction to a sounding. Trust grows through usable, bounded information rather than surrender of the whole archive.",
+  "motion": "Lock chamber number and spacing for each animal design; bend the body continuously. Do not generate disconnected glowing beads or growing extra fins.",
+  "sounds": "Low resonances conducted through water and occasional surface ripples. No sonar that reads minds or understands messages.",
+  "palette": [
+    "#829DA3",
+    "#B9CECA",
+    "#D7B16D"
+  ],
+  "rule": "Blind channel hunter; seven-metre representative length, no light-repulsion shortcut and no tunnel to the Burrow.",
+  "art": {
+    "file": "ART-03_Bestiary.png",
+    "column": 3,
+    "row": 1,
+    "grid": [
+      4,
+      3
+    ]
+  },
+  "canon_status": "Additive ecology and production guidance; proposed scene remains unadopted."
+}

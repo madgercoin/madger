@@ -1,0 +1,43 @@
+{
+  "id": "CR-10",
+  "name": "Moss lantern beetle",
+  "baseline": {
+    "id": "CR-10",
+    "name": "Moss lantern beetle",
+    "region": "REG-02",
+    "look": "Palm-sized green beetle with a soft amber abdomen and leaflike wing cases.",
+    "ecology": "Pollinates night flowers; light indicates mating and temperature.",
+    "limit": "Light fades when cold or stressed; not an endless lamp battery.",
+    "encounter": "Residents use shaded observation gardens and leave wild colonies intact.",
+    "envelope_m": {
+      "length": 0.12,
+      "width_or_span": 0.08,
+      "height": 0.06
+    },
+    "scale_note": "Adult representative staging envelope; individuals vary by up to 10%. Not shown at common scale on the art plate."
+  },
+  "daily": "At dusk adults pollinate night flowers. Their amber abdomens brighten with temperature and mating behavior, while leaflike wing cases conceal them in daylight.",
+  "cycle": "Larvae develop in decaying plant matter. Gardeners leave a small litter patch instead of polishing every surface bare. A cold spell dims an entire colony without a conspiracy.",
+  "signs": "Pollen on leaf edges and feeding nicks connect insects to a living garden. Brightness alone is not a weather forecast or a magical danger detector.",
+  "escalation": "Rest -> antenna sweep -> wing-case lift -> short flight. Handling and confinement can suppress the light.",
+  "community": "Willowmere observation gardens invite visitors to watch without collecting jars of insects. Ordinary lamps still light the path home.",
+  "scene": "Neri’s planned glowing lesson goes dark. The class discovers the cold litter bed and measures what actually changed; she lets the unexpected result stand.",
+  "motion": "Keep six legs and two wing cases. Use a held body, antenna action and a short flight loop. Amber pulse does not alter the insect’s outline.",
+  "sounds": "Tiny wing buzz and leaf contact. Do not amplify it into a companion voice.",
+  "palette": [
+    "#467247",
+    "#A4B86A",
+    "#E9B74F"
+  ],
+  "rule": "Palm-sized pollinator, 12 cm representative length. Not a reusable battery, magical beacon or proof of moral goodness.",
+  "art": {
+    "file": "ART-03_Bestiary.png",
+    "column": 1,
+    "row": 2,
+    "grid": [
+      4,
+      3
+    ]
+  },
+  "canon_status": "Additive ecology and production guidance; proposed scene remains unadopted."
+}

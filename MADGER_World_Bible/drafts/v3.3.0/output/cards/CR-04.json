@@ -1,0 +1,43 @@
+{
+  "id": "CR-04",
+  "name": "Reefback",
+  "baseline": {
+    "id": "CR-04",
+    "name": "Reefback",
+    "region": "REG-04",
+    "look": "Huge slow shelled sea animal carrying living reef gardens.",
+    "ecology": "Migrates between feeding grounds; young shelter near warmer shallows.",
+    "limit": "Can wreck a careless mooring without aggression; migration changes local currents.",
+    "encounter": "Reef tenders post seasonal channels; no riding one as an obedient vehicle.",
+    "envelope_m": {
+      "length": 24,
+      "width_or_span": 16,
+      "height": 8
+    },
+    "scale_note": "Adult representative staging envelope; individuals vary by up to 10%. Not shown at common scale on the art plate."
+  },
+  "daily": "A reefback grazes slowly while smaller fish work around its living shell garden. Turning its heavy body changes the water around pilings even when it never notices a boat.",
+  "cycle": "Adults migrate between feeding grounds; young use warmer shallows. Reef growth takes years. Storm damage remains visible across later scenes until the calendar supports recovery.",
+  "signs": "A moving line of reef fish, an unfamiliar current against the tide and a rising shell ridge precede a full silhouette. Coral seen through water can be mistaken for a fixed reef.",
+  "escalation": "Cruise -> slow turn -> sheltering young -> accidental crush risk. It does not become vindictive after a boat touches its shell.",
+  "community": "Nacre Quay reef tenders close seasonal channels. Fishers and salvagers dispute lost working hours, and the tide council must explain whose income bears the cost.",
+  "scene": "Toma can secure a valuable crate only by tying to a living shell garden. Letting the crate go saves the reef and costs a real claim, without the animal rewarding him with treasure.",
+  "motion": "Keep shell profile and major coral clusters fixed. Use a few massive flipper beats and water parallax; do not make the animal bob like a small pet.",
+  "sounds": "Water pressure, shell scrape and distant low movement. No obedient transport commands.",
+  "palette": [
+    "#687F79",
+    "#C28B64",
+    "#5EA6A3"
+  ],
+  "rule": "A 24 m living habitat. It is neither a convenient mount nor an island that instantly grows new buildings.",
+  "art": {
+    "file": "ART-03_Bestiary.png",
+    "column": 3,
+    "row": 0,
+    "grid": [
+      4,
+      3
+    ]
+  },
+  "canon_status": "Additive ecology and production guidance; proposed scene remains unadopted."
+}
