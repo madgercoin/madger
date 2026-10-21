@@ -31,7 +31,7 @@ Episode 1 stays inside the Burrow, above and below, beginning with joyful ordina
 
 Read the current Bible before planning content. Assign new locations stable IDs, levels, footprints and measured connections. Attach scenes to recorded locations and the correct event state. Track damage, repairs, discoveries and character knowledge in a dated ledger. Preserve previous editions and record changes explicitly.
 
-Exterior geography and attacker identity remain unassigned. Existing Expedition courses retain their own layouts until their world connections are defined. These archives do not claim released video or game content has already been rebuilt against the map.
+Measured exterior geography remains unassigned. The character-development extension adds eight regional concepts and writer-only antagonist plans; episode-one audience restrictions remain intact. Existing Expedition courses retain their own layouts until their world connections are defined. These archives do not claim released video or game content has already been rebuilt against the map.
 
 ## Historical references
 
@@ -42,3 +42,6 @@ Exterior geography and attacker identity remain unassigned. Existing Expedition 
 Current edition sources, seven detailed sub-plans, eight resident dossiers and rebuild instructions are archived with [v2.1.0](v2.1.0/README.md). The original surface and underground atlases remain the master geometry references.
 
 Version 2.1 develops five neighborhood identities and daily civic life. The [character-development extension](characters/README.md) now establishes Madger's founding motive, Reedbank origin, family, age and relative meeting anchors. It adds six faction concepts and a cast register. Other new biographies remain seeds; the detailed construction history, exterior maps, full companion histories and creature dossiers continue in later installments. The v2.1 archive retains its original history reservations; CURRENT.json records the additive extension and its precedence.
+
+
+Character revision 1.1 expands the setting beyond the Burrow through the [Beyond the Burrow story framework](characters/v1.1.0/BEYOND_THE_BURROW.md). Existing Burrow blueprints remain current. New lore, personal reveals and their superseded reservations are recorded explicitly in the character extension.

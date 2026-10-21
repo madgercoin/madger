@@ -1,0 +1,623 @@
+{
+  "title": "MADGER — Beyond the Burrow",
+  "edition": "1.1.0",
+  "date": "2026-10-20",
+  "regions": [
+    {
+      "id": "REG-01",
+      "name": "Lowland Reach",
+      "environment": "River terraces, reed marshes, wooded escarpments and inhabited hills; the Burrow has daylight neighborhoods and a deep civic interior.",
+      "culture": "Reedbank, Latchford and Millmere belong to this regional cluster. Willowmere sits toward the canopy frontier; Stonewake serves the mountain approaches. Exact road lengths await the atlas.",
+      "travel_rule": "Boats, footpaths and maintained crossings; spring floods alter safe passage.",
+      "stories": "Flood rescue, town comedy, investigation, a surface defense and a lantern-lit underground supper.",
+      "creatures": "Flood-wyrms are huge river animals drawn to spawning grounds; a disturbed one is dangerous without being a moral villain."
+    },
+    {
+      "id": "REG-02",
+      "name": "Wandering Canopy",
+      "environment": "Immense trees migrate slowly between valleys during the wet season. Villages travel with some crowns; other communities stay on fixed stone ridges.",
+      "culture": "Local route singers preserve dated observations in practical songs; growers, climbers and instrument makers disagree about how much migration should be restrained.",
+      "travel_rule": "Living bridges separate as trees move. Respect the seasonal migration, local guides and climbing gear; no instantaneous forest teleportation.",
+      "stories": "A pursuit over folding root bridges; a harvest festival above the clouds; the missing caravan stranded between moving crowns.",
+      "creatures": "Mawroot blooms lure prey with warmth and a shelter-like glow. Some trees are ordinary and some predators are truly dangerous."
+    },
+    {
+      "id": "REG-03",
+      "name": "Mirrorglass Expanse",
+      "environment": "Storm-polished glass dunes, dry salt basins and buried observatories that briefly emerge after wind scours the surface.",
+      "culture": "Caravan cities maintain shaded markets and rotating well access. Their history includes rival trade leagues, astronomy and water-sharing victories, not only ruins.",
+      "travel_rule": "Travel at safe light angles with marked water reserves. Fused glass defeats Madger’s burrowing. Mirage-glass retains brief light impressions that may be incomplete or misleading.",
+      "stories": "A moving sand-sail race, a night-market theft, an apparent eyewitness image with the decisive moment missing.",
+      "creatures": "Glassback drakes feel vibration through the dunes; they cannot be distracted by an invisible digital signal."
+    },
+    {
+      "id": "REG-04",
+      "name": "Tidemark Sea",
+      "environment": "Reef islands and drowned civic halls exposed for short low-tide windows. Glowing shoals pass above submerged courtyards.",
+      "culture": "Independent harbor communities disagree over who owns objects recovered from flooded homes. Fishers, historians and salvagers have their own priorities.",
+      "travel_rule": "Charts, boats, breathable limits and tide clocks matter. A sunken archive can be visited only with a safe return plan.",
+      "stories": "An underwater heist, a rescue in a bell tower as water rises, a mystery where taking evidence damages somebody’s inheritance.",
+      "creatures": "Reefbacks are enormous living habitats. Hunting them for an easy resource creates consequences beyond one episode."
+    },
+    {
+      "id": "REG-05",
+      "name": "Saffron Isles",
+      "environment": "Floating basalt landmasses above amber storm clouds, linked by cargo sails, tether lifts and occasional living vine spans.",
+      "culture": "Terrace farmers, sailwrights and competing sky-port councils measure wealth partly in safe landing space. Some ports welcome guests; others refuse rescue alliances.",
+      "travel_rule": "Natural liftstone requires local counterweights and maintenance. Flight is weather-bound; cargo and passengers have weight. Islands do not hover because of one portable crystal.",
+      "stories": "A vertical pursuit through a crowded sky market, a cargo race, negotiating shelter with people who value distance over connection.",
+      "creatures": "Storm mantas feed along charged cloud fronts. Their migration grounds sky travel even when the sky looks clear."
+    },
+    {
+      "id": "REG-06",
+      "name": "Frostspine",
+      "environment": "Aurora-lit glaciers, warm caverns and observatories embedded in blue ice above a chain of winter settlements.",
+      "culture": "Winter guilds keep communal heat and weather records. Old route closures divided families, but the people now living here have ordinary art, rivalry and celebrations.",
+      "travel_rule": "Ropes, heat and pressure limits govern exploration. Echo-ice can retain fragments of old sound, never a complete mind or guaranteed truthful testimony.",
+      "stories": "A survival mystery, an ancestral argument heard out of context, deciding whether a sealed span should reopen.",
+      "creatures": "Choir wraiths mimic sounds they have heard to lure travelers away from shelter. They are predators, not resurrected relatives."
+    },
+    {
+      "id": "REG-07",
+      "name": "Ember Steps",
+      "environment": "Volcanic terraces, obsidian channels, hot-spring gardens and forge towns above cooling lava shelves. The Cinder Cuts lie on its disused freight fringe.",
+      "culture": "Smiths, thermal gardeners and freight families compete over workable ground. Riven Claw occupies one neglected site, not the entire region.",
+      "travel_rule": "Heat shields, stable footing and changing gas conditions constrain travel. Useful heat is not immunity to fire.",
+      "stories": "A forge tournament, a rescue on a stopped freight lift, a raid seen from the people who must live beside the raiders.",
+      "creatures": "Ashmaws are armored burrowing predators that follow heat gradients; moving a nest may redirect a threat toward another community."
+    },
+    {
+      "id": "REG-08",
+      "name": "Hollow Sea",
+      "environment": "Vast underground waters beneath mineral vaults, fungal shore forests and cities built on rock shelves above dark tides.",
+      "culture": "Deep-dwelling trading communities have their own navigation traditions and histories; surface visitors are guests. Some old passages are taboo for practical reasons.",
+      "travel_rule": "Mapped entry points, pressure changes, air supplies and boats matter. There is no new secret route under the Burrow’s existing defense line.",
+      "stories": "A luminous voyage, a missing expedition, a negotiation in darkness where the loudest voice gives away a position.",
+      "creatures": "Blind bell-eels hunt by vibration. Brilliant fungal blooms can be beautiful, nourishing or toxic depending on species and season."
+    }
+  ],
+  "episodes": [
+    {
+      "number": "01",
+      "title": "A Day Worth Keeping",
+      "setting": "The Burrow only",
+      "plot": "Warmth, play and competence; D17 duplicate receipt and Snow’s unrelated scent create two small pauses.",
+      "character_turn": "Madger accepts help with an ordinary task. No attack or named villain reveal."
+    },
+    {
+      "number": "02",
+      "title": "The Wagon That Did Not Arrive",
+      "setting": "Burrow and its later-mapped approaches",
+      "plot": "A missed arrival has real people attached to it. Two independent reports disagree; a legitimate delay becomes a rescue inquiry.",
+      "character_turn": "Madger states what he knows and leaves a functioning team at home."
+    },
+    {
+      "number": "03",
+      "title": "Where the Road Walks",
+      "setting": "Lowland frontier / Wandering Canopy",
+      "plot": "A local guide leads the group onto moving crowns. A familiar joke announces Nix’s return before the criminal connection is known.",
+      "character_turn": "His longing for the old friendship weakens his judgment."
+    },
+    {
+      "number": "04",
+      "title": "The Wrong Way Home",
+      "setting": "Canopy settlements",
+      "plot": "A forged route instruction draws travelers toward a closing bridge. Bot compares the instruction with physical travel conditions; Snow locates a real trail.",
+      "character_turn": "Madger corrects a confident error publicly and accepts the guide’s route."
+    },
+    {
+      "number": "05",
+      "title": "Someone Below",
+      "setting": "Migrating root bridges",
+      "plot": "Nix’s distinctive improvised equipment exposes the link to Glass Thread. Madger can pursue the fleeing friend or secure the travelers below.",
+      "character_turn": "He chooses the rescue and loses the best portable evidence; the choice changes the investigation."
+    },
+    {
+      "number": "06",
+      "title": "The Price of Rescue",
+      "setting": "Burrow / Reedbank evidence carried home",
+      "plot": "A charter record and the surviving boat operator independently establish Veyra’s flood funding. Sela admits her deliberate omission.",
+      "character_turn": "Madger can acknowledge an enemy’s good act without accepting her control."
+    },
+    {
+      "number": "07",
+      "title": "An Offer at the Gate",
+      "setting": "Burrow and surface supply routes",
+      "plot": "Veyra offers dependable supply in return for exclusive control. Brakka learns that strained outside routes have concentrated stores in the Burrow.",
+      "character_turn": "Madger gives residents the complete information before they decide."
+    },
+    {
+      "number": "08",
+      "title": "Above and Below",
+      "setting": "Burrow surface and underground",
+      "plot": "Brakka’s independent raid begins. Public spaces evacuate; physical inner defenses hold while contradictory outside messages complicate the response.",
+      "character_turn": "Madger follows a role assigned by the defense plan rather than inventing a private rescue mission."
+    },
+    {
+      "number": "09",
+      "title": "Hold the Way",
+      "setting": "Burrow / registered approaches",
+      "plot": "Gorilla protects a retreat, Bot verifies local signals, Snow finds stranded travelers and Madger secures the final crossing. Nix helps stop one consequence of the intrusion but escapes accountability for the rest.",
+      "character_turn": "The missing group arrives through teamwork and local expertise; Brakka’s immediate raid fails."
+    },
+    {
+      "number": "10",
+      "title": "A Place to Return To",
+      "setting": "Burrow",
+      "plot": "Recovery, disagreement, thanks and a shared meal. Evidence points toward other erased refuge routes; residents choose a limited outward rescue partnership.",
+      "character_turn": "Resolve the missing caravan and local attack. End with a new voyage chosen freely, not a withheld rescue ending."
+    }
+  ],
+  "blocks": [
+    {
+      "kind": "title",
+      "text": "MADGER: BEYOND THE BURROW"
+    },
+    {
+      "kind": "subtitle",
+      "text": "Story review and fantasy-adventure framework • Revision 1.1"
+    },
+    {
+      "kind": "p",
+      "text": "Editorial verdict: the first card has a sound emotional foundation but insufficient adventure, surprise and scale. Madger is likable; the plot around him is too dominated by work allocation, supplies and civic procedure. Those details can make a home believable. They cannot carry the whole series."
+    },
+    {
+      "kind": "h1",
+      "text": "01  What makes this a story now"
+    },
+    {
+      "kind": "p",
+      "text": "Series premise: after building a refuge for people once left waiting for rescue, Madger discovers that safe roads across the wider world are disappearing from trusted maps. Bringing missing travelers home forces him into extraordinary landscapes, a dangerous reunion with an old friend and a truth that makes his enemy part of his own survival story."
+    },
+    {
+      "kind": "p",
+      "text": "Emotional conflict: he loves the Burrow and aches to see what lies beyond it. He wants to protect everyone and enjoys being the one who takes the impossible leap. His mistakes come from those competing desires, not merely from forgetting to delegate."
+    },
+    {
+      "kind": "p",
+      "text": "What stays: warmth, humor, the four heroes’ useful differences, a home with real inhabitants, his flawed promise during a natural flood and his earned founding role. The pilot remains a five-minute day inside the Burrow, with only subtle unease."
+    },
+    {
+      "kind": "p",
+      "text": "What changes: the season becomes a missing-caravan adventure with a friendship betrayal and a morally difficult rescue history. The wider setting gains eight distinct regions, active cultures, monsters, travel constraints and conflicts that matter even when Madger is absent."
+    },
+    {
+      "kind": "p",
+      "text": "The Burrow is the place viewers want him to return to. It is not the boundary of the setting. Later stories can be expeditions, heists, races, creature encounters, local mysteries, comedies or wars of competing interests. Not every episode needs a new conspiracy or a threat to the same town."
+    },
+    {
+      "kind": "small",
+      "text": "This is authoring material, including spoilers and future story plans. It does not claim that episodes, exterior maps, character models or game mechanics have already been produced or approved."
+    },
+    {
+      "kind": "h1",
+      "text": "02  History with consequences",
+      "page_break": true
+    },
+    {
+      "kind": "p",
+      "text": "Centuries before the pilot, many communities gradually built the Open Ways: a loose system of roads, bridges, signal posts, shared shelters and locally powered waycraft. It had no single king, heart-crystal or universal control room. Some routes welcomed everyone; others excluded outsiders. The past was impressive and imperfect."
+    },
+    {
+      "kind": "p",
+      "text": "Ninety-two years before the pilot, a cascade through linked resonance spans caused catastrophic failures. Routekeepers deliberately severed some couplings to stop the damage spreading. This event became known as the Severance. Other routes later failed through neglect, weather or conflict. “All old roads are unsafe” became a useful simplification for merchants who controlled the surviving passages."
+    },
+    {
+      "kind": "p",
+      "text": "The important future revelation is not that the whole collapse was secretly caused by one modern villain. It is that some closures protected people, while other closures were prolonged for profit. Madger cannot repair the world by switching every old system back on. He must learn which connection serves the people living there now."
+    },
+    {
+      "kind": "p",
+      "text": "Ten to eight years before the pilot: Madger and Nix become friends around Reedbank’s yards and river routes. Seven years before: the natural flood, Madger’s unverified promise and the second evacuation. Six years before: the first Burrow camp, his meeting with Gorilla and his rejection of Veyra’s exclusive supply terms. Five years before: Bot joins by choice. Three years before: adult Snow comes to live with Madger. At the pilot he is twenty-four and Snow is six."
+    },
+    {
+      "kind": "p",
+      "text": "New personal history: Nix’s separation from Madger was a disagreement and a dispersal, not a false death. Veyra, then a depot manager, diverted company reserves to charter the second flood convoy without her partners’ approval. She demanded anonymity to protect her position. Sela agreed to get people out, then continued the concealment from shame and fear of losing the evacuees’ trust. The later revelation damages that trust anyway."
+    },
+    {
+      "kind": "p",
+      "text": "Madger’s parents remain alive, ordinary and significant. No secret royal bloodline, destined birthmark or inherited master key is needed to make him important. His choices have consequences because other people have choices too."
+    },
+    {
+      "kind": "h1",
+      "text": "03  Twists planted before they pay off",
+      "page_break": true
+    },
+    {
+      "kind": "h2",
+      "text": "An old friend is the intruder"
+    },
+    {
+      "kind": "p",
+      "text": "Plant: Nix’s recognizable improvisations, shared humor and contempt for gatekeepers appear during the reunion, before criminal involvement is proved. Reveal: Nix leads Glass Thread and helped falsify route information. Consequence: Madger must save people his friend endangered and give up the fantasy that affection proves innocence. Nix’s grievance explains the crime; it does not excuse it."
+    },
+    {
+      "kind": "h2",
+      "text": "The enemy once helped save his people"
+    },
+    {
+      "kind": "p",
+      "text": "Plant: a distinctive charter stamp on a remembered evacuation token; Sela’s discomfort when Madger condemns every Ledger act. Reveal: a charter record and a surviving operator independently confirm Veyra funded the second convoy. Consequence: he owes honest gratitude, while her later coercive demand still deserves refusal. The flood itself remains natural, and his original overpromise remains his mistake."
+    },
+    {
+      "kind": "h2",
+      "text": "The road was closed for a reason"
+    },
+    {
+      "kind": "p",
+      "text": "Plant in later journeys: paired break marks, warning patterns that do not match raider damage, and conflicting regional accounts. Reveal across later arcs: some Open Ways couplings were deliberately cut to stop resonance failures. Consequence: recovering history creates a new decision, not automatic permission to reopen everything. Local experts must help distinguish safe repairs from dangerous reconnections."
+    },
+    {
+      "kind": "h2",
+      "text": "The threatening scent belongs to an ally"
+    },
+    {
+      "kind": "p",
+      "text": "Pilot planning answer: Snow notices canopy resin carried on an ordinary traveler’s repaired gear. The traveler later supplies useful route knowledge; the scent is not a moral detector. D17, by contrast, is Tessera’s limited receipt-replay test through a compromised trade relay. These clues are causally separate. Episode one explains neither; later physical and record evidence establish their different meanings."
+    },
+    {
+      "kind": "small",
+      "text": "Writer-only decisions introduced in revision 1.1: D17 now has a planned cause; Nix is an old friend; Veyra financed the second convoy. These replace previously unassigned fields. Madger and the audience do not automatically know the writer’s answers. No hacker remotely opens independent physical gate bars."
+    },
+    {
+      "kind": "h1",
+      "text": "04  The world has different kinds of wonder",
+      "page_break": true
+    },
+    {
+      "kind": "h2",
+      "text": "Lowland Reach • REG-01"
+    },
+    {
+      "kind": "p",
+      "text": "River terraces, reed marshes, wooded escarpments and inhabited hills; the Burrow has daylight neighborhoods and a deep civic interior. Reedbank, Latchford and Millmere belong to this regional cluster. Willowmere sits toward the canopy frontier; Stonewake serves the mountain approaches. Exact road lengths await the atlas."
+    },
+    {
+      "kind": "p",
+      "text": "Story possibilities: Flood rescue, town comedy, investigation, a surface defense and a lantern-lit underground supper. Travel rule: Boats, footpaths and maintained crossings; spring floods alter safe passage."
+    },
+    {
+      "kind": "h2",
+      "text": "Wandering Canopy • REG-02"
+    },
+    {
+      "kind": "p",
+      "text": "Immense trees migrate slowly between valleys during the wet season. Villages travel with some crowns; other communities stay on fixed stone ridges. Local route singers preserve dated observations in practical songs; growers, climbers and instrument makers disagree about how much migration should be restrained."
+    },
+    {
+      "kind": "p",
+      "text": "Story possibilities: A pursuit over folding root bridges; a harvest festival above the clouds; the missing caravan stranded between moving crowns. Travel rule: Living bridges separate as trees move. Respect the seasonal migration, local guides and climbing gear; no instantaneous forest teleportation."
+    },
+    {
+      "kind": "h2",
+      "text": "Mirrorglass Expanse • REG-03"
+    },
+    {
+      "kind": "p",
+      "text": "Storm-polished glass dunes, dry salt basins and buried observatories that briefly emerge after wind scours the surface. Caravan cities maintain shaded markets and rotating well access. Their history includes rival trade leagues, astronomy and water-sharing victories, not only ruins."
+    },
+    {
+      "kind": "p",
+      "text": "Story possibilities: A moving sand-sail race, a night-market theft, an apparent eyewitness image with the decisive moment missing. Travel rule: Travel at safe light angles with marked water reserves. Fused glass defeats Madger’s burrowing. Mirage-glass retains brief light impressions that may be incomplete or misleading."
+    },
+    {
+      "kind": "h2",
+      "text": "Tidemark Sea • REG-04"
+    },
+    {
+      "kind": "p",
+      "text": "Reef islands and drowned civic halls exposed for short low-tide windows. Glowing shoals pass above submerged courtyards. Independent harbor communities disagree over who owns objects recovered from flooded homes. Fishers, historians and salvagers have their own priorities."
+    },
+    {
+      "kind": "p",
+      "text": "Story possibilities: An underwater heist, a rescue in a bell tower as water rises, a mystery where taking evidence damages somebody’s inheritance. Travel rule: Charts, boats, breathable limits and tide clocks matter. A sunken archive can be visited only with a safe return plan."
+    },
+    {
+      "kind": "h1",
+      "text": "05  Horizons beyond the first journeys",
+      "page_break": true
+    },
+    {
+      "kind": "h2",
+      "text": "Saffron Isles • REG-05"
+    },
+    {
+      "kind": "p",
+      "text": "Floating basalt landmasses above amber storm clouds, linked by cargo sails, tether lifts and occasional living vine spans. Terrace farmers, sailwrights and competing sky-port councils measure wealth partly in safe landing space. Some ports welcome guests; others refuse rescue alliances."
+    },
+    {
+      "kind": "p",
+      "text": "Story possibilities: A vertical pursuit through a crowded sky market, a cargo race, negotiating shelter with people who value distance over connection. Travel rule: Natural liftstone requires local counterweights and maintenance. Flight is weather-bound; cargo and passengers have weight. Islands do not hover because of one portable crystal."
+    },
+    {
+      "kind": "h2",
+      "text": "Frostspine • REG-06"
+    },
+    {
+      "kind": "p",
+      "text": "Aurora-lit glaciers, warm caverns and observatories embedded in blue ice above a chain of winter settlements. Winter guilds keep communal heat and weather records. Old route closures divided families, but the people now living here have ordinary art, rivalry and celebrations."
+    },
+    {
+      "kind": "p",
+      "text": "Story possibilities: A survival mystery, an ancestral argument heard out of context, deciding whether a sealed span should reopen. Travel rule: Ropes, heat and pressure limits govern exploration. Echo-ice can retain fragments of old sound, never a complete mind or guaranteed truthful testimony."
+    },
+    {
+      "kind": "h2",
+      "text": "Ember Steps • REG-07"
+    },
+    {
+      "kind": "p",
+      "text": "Volcanic terraces, obsidian channels, hot-spring gardens and forge towns above cooling lava shelves. The Cinder Cuts lie on its disused freight fringe. Smiths, thermal gardeners and freight families compete over workable ground. Riven Claw occupies one neglected site, not the entire region."
+    },
+    {
+      "kind": "p",
+      "text": "Story possibilities: A forge tournament, a rescue on a stopped freight lift, a raid seen from the people who must live beside the raiders. Travel rule: Heat shields, stable footing and changing gas conditions constrain travel. Useful heat is not immunity to fire."
+    },
+    {
+      "kind": "h2",
+      "text": "Hollow Sea • REG-08"
+    },
+    {
+      "kind": "p",
+      "text": "Vast underground waters beneath mineral vaults, fungal shore forests and cities built on rock shelves above dark tides. Deep-dwelling trading communities have their own navigation traditions and histories; surface visitors are guests. Some old passages are taboo for practical reasons."
+    },
+    {
+      "kind": "p",
+      "text": "Story possibilities: A luminous voyage, a missing expedition, a negotiation in darkness where the loudest voice gives away a position. Travel rule: Mapped entry points, pressure changes, air supplies and boats matter. There is no new secret route under the Burrow’s existing defense line."
+    },
+    {
+      "kind": "h1",
+      "text": "06  Fantasy that changes the action",
+      "page_break": true
+    },
+    {
+      "kind": "p",
+      "text": "Waycraft is a family of learned practices for working with extraordinary materials, living structures and regional phenomena. It is not one universal spell system. Each effect requires a medium, a usable source of energy or natural condition, a skilled operator and a limit. Weather, damage and exhaustion can change the outcome."
+    },
+    {
+      "kind": "p",
+      "text": "Liftstone supports the Saffron Isles under local geological conditions. Cut out a chunk and it does not become an unlimited flying vehicle. Living-root crossings change with a tree’s movement. Mirage-glass can preserve short light impressions, and echo-ice can preserve fragments of sound; neither supplies complete, unbiased history. Replayed or forged signals can mislead operators without magically operating every device."
+    },
+    {
+      "kind": "p",
+      "text": "Madger remains capable but provincial. Glass dunes remove his burrowing advantage; high islands force him to rely on rigging and balance; submerged halls impose a real return deadline; fungal darkness rewards patient observation. Local people sometimes understand the danger before any hero does. Adventure changes what competence looks like."
+    },
+    {
+      "kind": "p",
+      "text": "Creature palette: flood-wyrms and storm mantas create hazardous migrations; glassback drakes hunt through vibration; reefbacks carry living habitats; ashmaws follow heat; bell-eels make loud heroics dangerous. Mawroot flowers lure prey into false shelter, and choir wraiths use stolen sounds to draw victims into the cold. Some encounters require escape or defense. Others require understanding an animal’s behavior."
+    },
+    {
+      "kind": "p",
+      "text": "Each region also needs pleasure: food, games, music, courtship, festivals, workmanship and humor. A sky market is worth visiting before it becomes a chase scene. A deep-sea settlement must be somebody’s ordinary home before it becomes a mystery. Avoid using every culture as a clue dispenser for Madger."
+    },
+    {
+      "kind": "h1",
+      "text": "07  Season one: The Missing Roads",
+      "page_break": true
+    },
+    {
+      "kind": "p",
+      "text": "Ten episode development spine. The pilot retains its established five-minute target; later running times are decided after scripts and performance timing. Only the Lowland Reach and Wandering Canopy need exterior development in this first season. The other regions remain available for later, properly paced adventures."
+    },
+    {
+      "kind": "h2",
+      "text": "01  A Day Worth Keeping"
+    },
+    {
+      "kind": "p",
+      "text": "The Burrow only. Warmth, play and competence; D17 duplicate receipt and Snow’s unrelated scent create two small pauses. Character turn: Madger accepts help with an ordinary task. No attack or named villain reveal."
+    },
+    {
+      "kind": "h2",
+      "text": "02  The Wagon That Did Not Arrive"
+    },
+    {
+      "kind": "p",
+      "text": "Burrow and its later-mapped approaches. A missed arrival has real people attached to it. Two independent reports disagree; a legitimate delay becomes a rescue inquiry. Character turn: Madger states what he knows and leaves a functioning team at home."
+    },
+    {
+      "kind": "h2",
+      "text": "03  Where the Road Walks"
+    },
+    {
+      "kind": "p",
+      "text": "Lowland frontier / Wandering Canopy. A local guide leads the group onto moving crowns. A familiar joke announces Nix’s return before the criminal connection is known. Character turn: His longing for the old friendship weakens his judgment."
+    },
+    {
+      "kind": "h2",
+      "text": "04  The Wrong Way Home"
+    },
+    {
+      "kind": "p",
+      "text": "Canopy settlements. A forged route instruction draws travelers toward a closing bridge. Bot compares the instruction with physical travel conditions; Snow locates a real trail. Character turn: Madger corrects a confident error publicly and accepts the guide’s route."
+    },
+    {
+      "kind": "h2",
+      "text": "05  Someone Below"
+    },
+    {
+      "kind": "p",
+      "text": "Migrating root bridges. Nix’s distinctive improvised equipment exposes the link to Glass Thread. Madger can pursue the fleeing friend or secure the travelers below. Character turn: He chooses the rescue and loses the best portable evidence; the choice changes the investigation."
+    },
+    {
+      "kind": "h1",
+      "text": "08  The return and the defense",
+      "page_break": true
+    },
+    {
+      "kind": "h2",
+      "text": "06  The Price of Rescue"
+    },
+    {
+      "kind": "p",
+      "text": "Burrow / Reedbank evidence carried home. A charter record and the surviving boat operator independently establish Veyra’s flood funding. Sela admits her deliberate omission. Character turn: Madger can acknowledge an enemy’s good act without accepting her control."
+    },
+    {
+      "kind": "h2",
+      "text": "07  An Offer at the Gate"
+    },
+    {
+      "kind": "p",
+      "text": "Burrow and surface supply routes. Veyra offers dependable supply in return for exclusive control. Brakka learns that strained outside routes have concentrated stores in the Burrow. Character turn: Madger gives residents the complete information before they decide."
+    },
+    {
+      "kind": "h2",
+      "text": "08  Above and Below"
+    },
+    {
+      "kind": "p",
+      "text": "Burrow surface and underground. Brakka’s independent raid begins. Public spaces evacuate; physical inner defenses hold while contradictory outside messages complicate the response. Character turn: Madger follows a role assigned by the defense plan rather than inventing a private rescue mission."
+    },
+    {
+      "kind": "h2",
+      "text": "09  Hold the Way"
+    },
+    {
+      "kind": "p",
+      "text": "Burrow / registered approaches. Gorilla protects a retreat, Bot verifies local signals, Snow finds stranded travelers and Madger secures the final crossing. Nix helps stop one consequence of the intrusion but escapes accountability for the rest. Character turn: The missing group arrives through teamwork and local expertise; Brakka’s immediate raid fails."
+    },
+    {
+      "kind": "h2",
+      "text": "10  A Place to Return To"
+    },
+    {
+      "kind": "p",
+      "text": "Burrow. Recovery, disagreement, thanks and a shared meal. Evidence points toward other erased refuge routes; residents choose a limited outward rescue partnership. Character turn: Resolve the missing caravan and local attack. End with a new voyage chosen freely, not a withheld rescue ending."
+    },
+    {
+      "kind": "h1",
+      "text": "09  Why the conflict keeps producing stories",
+      "page_break": true
+    },
+    {
+      "kind": "p",
+      "text": "Gilt Ledger wants dependent customers and controlled passage. Glass Thread wants influence, information and recognition; Nix also wants erased communities acknowledged. Riven Claw wants supplies and submission. Their interests overlap intermittently. Brakka’s raid is opportunistic, and can damage Ledger interests too. Avoid revealing that every rival, monster and historic catastrophe serves one hidden mastermind."
+    },
+    {
+      "kind": "p",
+      "text": "The Burrow Commons protects a lived community. Commonworks spreads practical knowledge. The Wayfarer Accord keeps travel and rescue possible. Good factions can disagree over an expedition, a dangerous reopening or an obligation they cannot fulfill. A settlement may decline their help for a sound reason. Nobody is obliged to join Madger’s ideal."
+    },
+    {
+      "kind": "p",
+      "text": "Later arc: Mirrorglass and Tidemark. A fragmentary image appears to accuse an ally; recovering the missing context requires crossing a desert and entering a tidal archive. The climax forces a choice between the evidence and a living adversary. The discovery should resolve a local injustice as well as advance the route history."
+    },
+    {
+      "kind": "p",
+      "text": "Later arc: Saffron and Frostspine. A joyful sky-port visit becomes a dispute over reopening a route that separated families. Echo-ice reveals that one old closure saved lives. Madger must help people choose a safe new connection, rather than impose the vanished world he romanticized."
+    },
+    {
+      "kind": "p",
+      "text": "Independent adventures: a forge contest in Ember Steps; a lost expedition on the Hollow Sea; a quiet Snow-led search; a courier race; a Burrow festival episode; a caper in which the heroes have no official authority. Monster stories, friendship stories and mysteries can have complete endings without explaining the global route history."
+    },
+    {
+      "kind": "p",
+      "text": "Long-term moral: a home becomes stronger when its people can face the truth, accept help and choose their obligations freely. That lesson must emerge from who is rescued, what is sacrificed and which decision changes, rather than from a closing lecture."
+    },
+    {
+      "kind": "h1",
+      "text": "10  Continuity and the next character",
+      "page_break": true
+    },
+    {
+      "kind": "p",
+      "text": "Established foundation retained: all four heroes and approved voices; Snow’s canine-only communication; normal Madger teeth and a clean face unless a scene warrants injury or exertion; present-day Burrow geometry and population; natural flood; eighteen surviving households; living parents; age twenty-four; six-year founding chronology; companion meeting anchors."
+    },
+    {
+      "kind": "p",
+      "text": "Explicit revisions: Nix is now a former friend whose criminal role is unknown at the pilot. Veyra’s rescue funding and Sela’s concealment are new history. The earlier mainly civic season outline is replaced. D17’s writer-only cause is now assigned to Tessera’s relay probe; the physical scent is benign canopy resin and remains unrelated. The original edition is preserved as history, not silently treated as having contained these revelations."
+    },
+    {
+      "kind": "p",
+      "text": "Exterior scope: eight authored region concepts are now part of story development. The six existing exterior settlement IDs remain. The atlas still needs their measured roads, distances, entrances and travel times before scene blocking or game construction. No new tunnel bypasses the Burrow’s existing defenses. No geographic image has been approved by this text revision."
+    },
+    {
+      "kind": "p",
+      "text": "Information discipline: record what each character knows after each scene. Plant a clue before a reveal, require independent confirmation when a record can be forged, and give the discovery an immediate cost or decision. Keep at least one plausible alternative explanation until the decisive evidence appears. Do not explain an earlier contradiction by inventing a new power afterward."
+    },
+    {
+      "kind": "p",
+      "text": "Before Gorilla White’s full card: carry forward his first-year meeting with Madger and his defensive role. Give him a personal stake in a place beyond the Burrow and a desire unrelated to protecting Madger. His exact family, formative history and secrets remain for his own installment; this revision does not prewrite them."
+    },
+    {
+      "kind": "link",
+      "text": "Updated Madger character card",
+      "url": "https://docs.google.com/document/d/1pOjStZtLeLm1m2Y7TW_ATQElXyuwWi2JWqRrwaccCEE/edit?usp=drivesdk"
+    },
+    {
+      "kind": "link",
+      "text": "Character and faction register",
+      "url": "https://docs.google.com/document/d/1g5qaZ925kGQYRpeblnXFQjnBwawV7_dQ-w1NW66iZZA/edit?usp=drivesdk"
+    },
+    {
+      "kind": "h1",
+      "text": "11  Scene sample: Someone Below",
+      "page_break": true
+    },
+    {
+      "kind": "small",
+      "text": "Illustrative midpoint scene, not pilot footage or a finished shooting script. The root crossing and equipment require their own continuity design before production."
+    },
+    {
+      "kind": "p",
+      "text": "The bridge began to turn before the last wagon reached it. Far below, the forest floor moved sideways. One great tree was walking away from another."
+    },
+    {
+      "kind": "p",
+      "text": "Nix landed on the far rail, laughing the way they had laughed beside the half-sunk boats in Reedbank. “Last one across buys breakfast.”"
+    },
+    {
+      "kind": "p",
+      "text": "Madger almost laughed back. Then he saw the copper clamp in Nix’s hand: bent backward, with the little tooth they always filed into the corner. The same clamp was pictured on Bot’s captured relay record."
+    },
+    {
+      "kind": "p",
+      "text": "“You changed the route.”"
+    },
+    {
+      "kind": "p",
+      "text": "“I made them notice it.” Nix closed the instrument case. “They ignore a village for years. Stop one rich convoy and suddenly everybody can read a map.”"
+    },
+    {
+      "kind": "p",
+      "text": "A wheel slipped between the roots. The wagon lurched. Snow barked once, low and sharp, and planted herself beside a frightened traveler who had fallen clear of the harness. Gorilla caught the wagon’s frame; the root beneath him started to peel."
+    },
+    {
+      "kind": "p",
+      "text": "“There are people on it,” Madger said."
+    },
+    {
+      "kind": "p",
+      "text": "Nix’s smile disappeared. “It was supposed to stop before the crossing.”"
+    },
+    {
+      "kind": "p",
+      "text": "Bot’s tether snapped taut across the gap. “The next root is moving. We have one crossing left.”"
+    },
+    {
+      "kind": "p",
+      "text": "Nix was already backing toward a waiting sail. The case held the route evidence. Madger could still make the jump. He knew the distance. He had spent his whole life wanting to be the one who could make it."
+    },
+    {
+      "kind": "p",
+      "text": "Gorilla’s footing shifted."
+    },
+    {
+      "kind": "p",
+      "text": "Madger turned. “Snow, bring them here. Bot, with me.” He dropped beside Gorilla and threaded the tether under the wagon’s axle."
+    },
+    {
+      "kind": "p",
+      "text": "When he looked up again, the sail was a pale triangle between the trees."
+    },
+    {
+      "kind": "p",
+      "text": "Nix had got away. The wagon had not fallen. Neither fact made the other feel smaller."
+    }
+  ],
+  "links": {
+    "framework": "https://docs.google.com/document/d/1P5poxZmoklCfgY9_EP7bmxMTFYXQkRC9ZeQV8UB8DmI/edit?usp=drivesdk",
+    "folder": "https://drive.google.com/drive/folders/1FpiwodNq-qeQmoDikp6_cDKG0jxbYe70",
+    "register": "https://docs.google.com/document/d/1g5qaZ925kGQYRpeblnXFQjnBwawV7_dQ-w1NW66iZZA/edit?usp=drivesdk",
+    "madger": "https://docs.google.com/document/d/1pOjStZtLeLm1m2Y7TW_ATQElXyuwWi2JWqRrwaccCEE/edit?usp=drivesdk"
+  }
+}

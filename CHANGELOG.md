@@ -1,5 +1,12 @@
 # Changelog
 
+## 2026-10-20 - Madger story revision / Beyond the Burrow
+
+- Revise Madger before Gorilla White: add an estranged-friend antagonist, hidden rescue funding, a consequential missing-caravan adventure and a ten-episode season outline.
+- Develop eight fantasy regions, bounded regional waycraft, creature concepts, the Open Ways history and an illustrative midpoint scene.
+- Preserve approved designs/voices, Burrow geography, the interior-only subtle pilot and founding anchors. Mark new writer-only causes and history as explicit revisions.
+- Update the same Google Docs, PDF records and the archive branch; preserve edition 1.0. No game, website, deployment or voice-generation changes.
+
 ## 2026-10-20 - Character development / first Madger card
 
 - Add a 27-character register, three allied and three hostile factions, an independent broker, and six unmapped exterior place concepts.
@@ -443,3 +450,4 @@ Notable repository changes are recorded here. Dates use UTC. This project does n
 ## Future Decisions
 
 Release versioning, tag format, changelog automation, and whether historical commits should be backfilled are not defined.
+

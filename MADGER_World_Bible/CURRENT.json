@@ -14,13 +14,14 @@
   "sub_locations": "v2.1.0/Sub_Locations.json",
   "history_workbook": "v2.1.0/History_Workbook.json",
   "character_development": {
-    "edition": "1.0.0",
+    "edition": "1.1.0",
     "index": "characters/README.md",
-    "register": "characters/v1.0.0/Character_Register.json",
+    "register": "characters/v1.1.0/Character_Register.json",
     "complete_cards": [
-      "characters/v1.0.0/MADGER_001.json"
+      "characters/v1.1.0/MADGER_001.json"
     ],
     "google_drive": "https://drive.google.com/drive/folders/1FpiwodNq-qeQmoDikp6_cDKG0jxbYe70",
-    "precedence": "Completed Madger card adds age, origin, founding motive and relative chronology to the v2.1 present-day foundation. Other new register entries remain development seeds. Existing maps, approved models/voices and pilot restrictions remain controlling."
+    "precedence": "Character revision 1.1 adds a fantasy-adventure spine, eight wider regions, Nix as an estranged friend, Veyra rescue funding, Sela concealment and writer-only answers for D17 and the scent. It explicitly supersedes conflicting unassigned fields in 1.0; pilot audience restrictions, existing maps, approved models and voices remain controlling.",
+    "story_framework": "characters/v1.1.0/Story_Framework.json"
   }
 }

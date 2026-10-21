@@ -1,0 +1,43 @@
+{
+  "edition": "1.1.0",
+  "date": "2026-10-20",
+  "scope": "Documentation-only character and story revision on the existing archive branch. No production changes or deployment.",
+  "checks": {
+    "characters": 27,
+    "factions": 6,
+    "regions": 8,
+    "season_one_episodes": 10,
+    "ids_unique_and_inherited_cast_preserved": true,
+    "faction_members_resolve": true,
+    "madger_identity_and_voice_preserved": true,
+    "final_pdf_pages": {
+      "MADGER_001.pdf": 7,
+      "MADGER_Character_Register.pdf": 12,
+      "MADGER_Beyond_the_Burrow.pdf": 11
+    },
+    "native_docs_readback_matches_authored_blocks": true,
+    "approved_inline_portrait_preserved": true,
+    "pdf_pages_visually_reviewed": true,
+    "drive_pdf_updates_verified": true,
+    "persistent_pdf_replacements_and_framework_creation_verified": true
+  },
+  "continuity_review": [
+    "Burrow geometry and population planning unchanged",
+    "Pilot remains inside the Burrow with subtle clues only",
+    "Nix knowledge and pilot clue causes explicitly supersede earlier reserved fields",
+    "All 18 Reedbank households survive the natural flood",
+    "Veyra funding is separately corroborated and grants no ownership",
+    "Regional concepts require measured maps before production",
+    "Gorilla White full biography remains unwritten"
+  ],
+  "limitations": [
+    "No game, website, voice or video generation changes.",
+    "No repository application tests or deployment checks rerun for this documentation archive.",
+    "New lore is explicitly authored development, not retroactively represented as prior approval."
+  ],
+  "artifact_sha256": {
+    "MADGER_001.pdf": "5aa4a886378b61378a6a01575a5579c5a967a3c24ca3243e091ef5cb60c9ef72",
+    "MADGER_Character_Register.pdf": "5bb2306cc6801a33182f19c9fb452b3616cc66c56d1554afe43dee6ed239dedf",
+    "MADGER_Beyond_the_Burrow.pdf": "c69ea843eda360d2793d4aeadd244ac75f1d72bdb7d8c370ca53f7e9ee084add"
+  }
+}
