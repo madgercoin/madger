@@ -28,9 +28,9 @@ const server = http.createServer((req,res) => {
   } catch {res.writeHead(400);res.end();}
 });
 const cases = [
-  {route:'rootway',biome:'forest',choice:/Choose Mossbound Rootway/},
-  {route:'ridge',biome:'ruins',choice:/Choose Ruined Watchridge/},
-  {route:'deep',biome:'cavern',choice:/Choose Deep Burrow/}
+  {route:'rootway',biome:'forest',input:'ArrowLeft'},
+  {route:'ridge',biome:'ruins',input:null},
+  {route:'deep',biome:'cavern',input:'ArrowRight'}
 ];
 const selectedCases = process.env.MADGER_BIOME_ONLY
   ? cases.filter(item=>item.route===process.env.MADGER_BIOME_ONLY) : cases;
@@ -56,17 +56,11 @@ assert(selectedCases.length,'No matching biome selected');
         assert.equal(await page.evaluate(()=>window.madgerActiveRenderer),'pbr',
           'PBR renderer not active for '+item.route);
         await page.getByRole('button',{name:'Start expedition',exact:true}).click();
-        const choice=page.getByRole('button',{name:item.choice});
-        await choice.waitFor({timeout:60000}).catch(async error=>{
-          await page.screenshot({path:path.join(evidence,item.route+'-fork-timeout.png')}).catch(()=>{});
-          const view=await page.locator('body').innerText().catch(()=>'<unavailable>');
-          console.error('BIOME_FORK_TIMEOUT',item.route,view.slice(-1200),JSON.stringify(stallWarnings));
-          throw error;
-        });
-        await choice.click();
+        await page.getByText(/LIVE PATH · \d+ m · STEER BEFORE THE JUNCTION/).waitFor({timeout:60000});
+        await page.waitForFunction(()=>{const label=document.querySelector('[aria-label^="Expedition distance"]')?.getAttribute('aria-label')||'';const metres=Number(label.match(/distance (\d+)/)?.[1]||0);return metres>=119&&metres<140;},{},{timeout:60000});
+        if(item.input)await page.keyboard.press(item.input);
         await page.waitForFunction(route=>window.madgerForestDiagnostics?.route===route,
-          item.route,{timeout:10000});
-        await page.waitForTimeout(450);
+          item.route,{timeout:12000});        await page.waitForTimeout(450);
         const diagnostics=await page.evaluate(()=>window.madgerForestDiagnostics);
         assert.equal(diagnostics.route,item.route);
         assert.equal(diagnostics.biome,item.biome);

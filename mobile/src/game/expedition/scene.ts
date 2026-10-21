@@ -351,6 +351,33 @@ export class ExpeditionScene {
        0,(noise-.5)*.13,0);
      }
     }
+    // A visible route junction accompanies the actual fixed-step choice:
+    // three approach lanes at 140m, then a low descent, raised jump ledge and
+    // root-clad burrow tunnel at 455m. Only artwork; the fixed-step engine
+    // decides which path was genuinely reached, without scripted teleports.
+    if(allRoutes&&phase.start===455){
+     const junction=455,jz=d-junction,ix=curve(junction)-base+option.side*LANE_WIDTH,iy=floorY(junction);
+     if(jz>-60&&jz<11){
+      const metal=theme==='ruins'?C.copper:C.stone;
+      if(option.side===-1){
+       // Open lower channel: a clearly down-sloping earth lip and side stones.
+       this.shape('box',C.stoneDark,ix,iy-.36,jz-.8,1.77,.25,3.1,-.17,0,0);
+       for(const side of [-1,1])this.shape('rock',C.stone,ix+side*.98,iy-.16,jz-1.0,.21,.24,.8);
+      }else if(option.side===0){
+       // Mid-path is not accessible merely by steering: reach the high lip
+       // with a correctly timed jump above the untouched .65m physics gate.
+       this.shape('box',metal,ix,iy+.71,jz-1.25,1.86,.26,2.3);
+       this.shape('box',C.stoneDark,ix,iy+.36,jz-.8,1.72,.70,.9);
+       for(const side of [-1,1])this.shape('cylinder',metal,ix+side*.90,iy+.60,jz-1.4,.11,1.2,.11);
+      }else{
+       // Crawl under the roots to find the hidden branch. Normal running
+       // fails the action gate and safely falls back to the lower channel.
+       for(const side of [-1,1])this.shape('rock',C.wood,ix+side*.70,iy+.72,jz-.8,.26,.72,.73);
+       this.link([ix-.77,iy+1.26,jz-.8],[ix+.77,iy+1.26,jz-.8],.19,C.wood);
+       this.shape('box',C.goldGlow,ix,iy+.22,jz-.71,.68,.08,.20);
+      }
+     }
+    }
     // At an imminent fork every doorway remains visible, even before choosing.
     if(allRoutes){
      const portal=phase.start+13,z=d-portal;

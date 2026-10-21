@@ -24,8 +24,9 @@ fs.mkdirSync(out,{recursive:true});
     undefined,{timeout:70000});
   await page.screenshot({path:path.join(out,'approved-madger-front.png')});
   await page.getByRole('button',{name:'Start expedition',exact:true}).click();
-  await page.getByRole('button',{name:/Choose Deep Burrow/}).waitFor({timeout:65000});
-  await page.getByRole('button',{name:/Choose Deep Burrow/}).click();
+  await page.getByText(/LIVE PATH · \d+ m · STEER BEFORE THE JUNCTION/).waitFor({timeout:65000});
+  await page.waitForFunction(()=>{const label=document.querySelector('[aria-label^="Expedition distance"]')?.getAttribute('aria-label')||'';const metres=Number(label.match(/distance (\d+)/)?.[1]||0);return metres>=119&&metres<140;},{},{timeout:65000});
+  await page.keyboard.press('ArrowRight');
   await page.getByLabel(/Expedition distance 1\d\d meters; lane .*; route deep/).waitFor({timeout:10000});
   await page.waitForFunction(()=>window.madgerForestDiagnostics?.cavernVaultTriangles>4000,
     undefined,{timeout:12000});

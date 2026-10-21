@@ -17,17 +17,59 @@ test('the new board is deterministic and every branch has its own viable danger/
   assert(!course.some(i=>['snow-white','gorilla-white','madger-bot'].includes(i.kind)),'no free hero spawn');
  }
 });
-test('major and sub forks freeze the world, restrict choices, rejoin without teleport and resume explicitly',()=>{
+test('live three-way major fork never freezes physics, and the subfork lands on a lower trail if the ledge is missed',()=>{
  const s=run(),c=G.buildOvergrownCourse(s.seed),events=[];
- s.distance=139.97;step(s,c,events);assert.equal(s.mode,'fork');assert.equal(s.forkStage,1);
- const frozen=s.distance;for(let i=0;i<200;i++)step(s,c,events);assert.equal(s.distance,frozen);
- assert.equal(G.chooseFork(s,'gearworks',events),false,'cannot choose another family subpath early');
- assert.equal(G.chooseFork(s,'deep',events),true);assert.equal(s.mode,'running');assert.equal(s.majorPath,'deep');assert(Math.abs(G.routeOffset(s))<.2);
- const prev=G.routeOffset(s);s.distance+=.04;assert(Math.abs(G.routeOffset(s)-prev)<.2);
- s.distance=454.99;step(s,c,events);assert.equal(s.mode,'fork');assert.equal(s.route,'main');assert.equal(s.forkStage,2);
+ s.distance=139.97;s.lane=1;s.x=G.LANE_WIDTH;step(s,c,events);
+ assert.equal(s.mode,'running');assert.equal(s.forkStage,1);assert.equal(s.majorPath,'deep');
+ const before=s.distance;for(let i=0;i<20;i++)step(s,c,events);
+ assert(s.distance>before,'physics must continue during route selection');
+ const x=G.routeOffset(s);s.distance+=.04;assert(Math.abs(G.routeOffset(s)-x)<.2,'no horizontal teleport');
+ s.distance=454.97;s.lane=0;s.x=0;s.y=0;s.vy=0;step(s,c,events);
+ assert.equal(s.mode,'running');assert.equal(s.forkStage,2);
+ assert.equal(s.subPath,'mudslide','missing the middle ledge drops to the lower branch, not a damage screen');
+ assert(s.secrets.includes('deep')&&s.secrets.includes('mudslide'));
+ assert(events.some(e=>e.kind==='hint'&&e.text.includes('LOWER PATH')));
+});
+test('route commitment uses actual lateral position rather than an unrealized last-frame steer',()=>{
+ const s=run(),course=G.buildOvergrownCourse(s.seed);
+ Object.assign(s,{distance:139.97,lane:1,x:0,vx:0});
+ step(s,course,[]);
+ assert.equal(s.majorPath,'ridge','unreached right lane must not teleport into Deep Burrow');
+ const miss=run();
+ Object.assign(miss,{forkStage:1,majorPath:'rootway',route:'rootway',routeStart:140,routeEnd:450,routeSide:-1,
+   distance:454.97,lane:0,x:G.LANE_WIDTH,vx:0,y:1,vy:0,slide:0});
+ step(miss,course,[]);
+ assert.equal(miss.subPath,'mosswalk','last-frame center input cannot bypass an unreached tunnel');
+});
+test('all families select lower / elevated / hidden paths from actual lane and action',()=>{
+ const c=G.buildOvergrownCourse(23);
+ for(const major of G.MAJOR_FORKS){
+  for(const side of [-1,0,1]){
+   const s=run(23),events=[],options=G.SUB_FORKS[major.id];
+   Object.assign(s,{forkStage:1,majorPath:major.id,route:major.id,routeStart:140,routeEnd:450,routeSide:major.side,distance:454.97,lane:side,x:side*G.LANE_WIDTH});
+   if(side===0){s.y=1;s.vy=0;}
+   if(side===1){s.slide=.65;s.slideCooldown=.8;s.y=0;if(options[2].id==='ancient-vault')s.keys=1;}
+   const previousTime=s.time;step(s,c,events);
+   assert.equal(s.subPath,options[side+1].id,major.id+' requires physical route selection');
+   assert.equal(s.mode,'running');assert(s.time>previousTime);
+   if(options[2].id==='ancient-vault'&&side===1)assert.equal(s.keys,0,'vault entry consumes a real key');
+  }
+  for(const side of [0,1]){
+   const s=run(23),events=[],lower=G.SUB_FORKS[major.id][0].id;
+   Object.assign(s,{forkStage:1,majorPath:major.id,route:major.id,routeStart:140,routeEnd:450,routeSide:major.side,distance:454.97,lane:side,x:side*G.LANE_WIDTH});
+   step(s,c,events);assert.equal(s.subPath,lower,'missing the action should drop to lower path');
+   assert.equal(s.hp,3,'fall to lower branch must not cause automatic unseen damage');
+  }
+ }
+});
+test('historical paused fork checkpoints still accept explicit choices',()=>{
+ const s=run(),events=[];Object.assign(s,{mode:'fork',forkStage:1,distance:140});
+ assert.equal(G.chooseFork(s,'gearworks',events),false);
+ assert(G.chooseFork(s,'deep',events));assert.equal(s.majorPath,'deep');
+ Object.assign(s,{mode:'fork',forkStage:2,distance:455,route:'main'});
  assert.deepEqual(G.availableForks(s).map(o=>o.id),['mudslide','crystal-vein','ancient-vault']);
  assert.equal(G.chooseFork(s,'mosswalk',events),false);
- assert.equal(G.chooseFork(s,'crystal-vein',events),true);assert.equal(s.subPath,'crystal-vein');assert(s.secrets.includes('deep')&&s.secrets.includes('crystal-vein'));
+ assert(G.chooseFork(s,'crystal-vein',events));assert.equal(s.subPath,'crystal-vein');
 });
 test('hero fragments unlock a single selectable hero, no companion appears automatically',()=>{
  const s=run(),course=G.buildOvergrownCourse(s.seed),events=[];s.forkStage=1;s.majorPath='deep';s.route='deep';s.routeStart=140;s.routeEnd=450;s.routeSide=1;
@@ -94,26 +136,37 @@ test('subpaths have distinct mechanical hazard families for every seed',()=>{
  }
 });
 
-test('all nine route combinations reach the finish using steering, jumping and burrowing',()=>{
+test('all nine route combinations remain winnable with steering and timed jump/burrow',()=>{
  for(const major of G.MAJOR_FORKS)for(const sub of G.SUB_FORKS[major.id]){
   const s=run(19),course=G.buildOvergrownCourse(19),events=[];
   for(let frame=0;frame<22000&&!s.finished;frame++){
    if(s.mode==='chamber')assert(G.resolveChamber(s,'supplies',events));
-   if(s.mode==='fork')assert(G.chooseFork(s,s.forkStage===1?major.id:sub.id,events),sub.id+' gate must be reachable');
-   const ahead=course.filter(i=>i.route===s.route&&!s.used.includes(i.id)&&i.d>=s.distance-2&&i.d<s.distance+12);
-   const threats=ahead.filter(i=>G.HAZARDS.has(i.kind));
-   const key=ahead.find(i=>i.kind==='key');
-   const free=[0,-1,1].filter(lane=>!threats.some(i=>i.lane===lane));
-   const desired=key?key.lane:(free.includes(s.lane)?s.lane:free[0]??0);
-   if(desired!==s.lane)G.steer(s,desired<s.lane?-1:1);
-   const danger=threats.find(i=>Math.abs(G.hazardPose(i,s.time,s.distance).x-s.x)<1&&i.d-s.distance<5.5&&i.d>s.distance);
-   if(danger){if(danger.kind==='roots'||danger.kind==='drone')G.burrow(s,events);else if(s.y<.02)G.jump(s,events);}
+   const choosingMajor=s.forkStage===0&&s.distance>=128;
+   const choosingSub=s.forkStage===1&&s.distance>=438;
+   if(choosingMajor||choosingSub){
+    const want=choosingMajor?major.side:sub.side;
+    if(s.lane!==want)G.steer(s,want<s.lane?-1:1);
+    if(choosingSub&&s.distance>=452&&s.distance<455){
+     if(sub.side===0&&s.y<=.025)G.jump(s,events);
+     if(sub.side===1&&s.slide<=.01)G.burrow(s,events);
+    }
+   }else{
+    const ahead=course.filter(i=>i.route===s.route&&!s.used.includes(i.id)&&i.d>=s.distance-2&&i.d<s.distance+12);
+    const threats=ahead.filter(i=>G.HAZARDS.has(i.kind));
+    const key=ahead.find(i=>i.kind==='key');
+    const free=[0,-1,1].filter(lane=>!threats.some(i=>i.lane===lane));
+    const desired=key?key.lane:(free.includes(s.lane)?s.lane:free[0]??0);
+    if(desired!==s.lane)G.steer(s,desired<s.lane?-1:1);
+    const danger=threats.find(i=>Math.abs(G.hazardPose(i,s.time,s.distance).x-s.x)<1&&i.d-s.distance<5.5&&i.d>s.distance);
+    if(danger){if(danger.kind==='roots'||danger.kind==='drone')G.burrow(s,events);else if(s.y<.02)G.jump(s,events);}
+   }
    step(s,course,events);
   }
   assert.equal(s.mode,'won',major.id+' / '+sub.id+' must be beatable with ordinary inputs');
+  assert.equal(s.majorPath,major.id,'first junction is steered, not modal');
+  assert.equal(s.subPath,sub.id,'second junction requires physical action');
  }
 });
-
 function chamberApproach(meta){
  const s=run(23);s.forkStage=2;s.majorPath=meta.route==='root-arch'?'rootway':meta.route==='gearworks'?'ridge':'deep';s.subPath=meta.route;
  s.route=meta.route;s.routeStart=455;s.routeEnd=900;s.routeSide=G.SUB_FORKS[s.majorPath].find(c=>c.id===meta.route).side;
