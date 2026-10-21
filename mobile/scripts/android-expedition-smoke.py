@@ -458,6 +458,12 @@ class Smoke:
         self.report["burst_scope"] = "Control and charge label checked; burst activation is not exercised by this short route."
         self.mark("Left, right, jump, and burrow respond through the visible HUD", burst_control=charge)
 
+        # Test the actual first choice deliberately, before lifecycle checks.
+        # Otherwise its 140m boundary can correctly stop gameplay in the middle
+        # of the later restored-run motion window, depending on driver speed.
+        self.tap("Choose Mossbound Rootway, low risk, Guardian Totems", timeout=30)
+        self.wait_hud(lambda state: state['route'] == 'rootway', 'selected Rootway branch')
+        self.mark("First route decision selects the visible low-risk Rootway")
         self.manual_pause()
         paused = self.paused_state("05-manual-pause")
         self.mark("Manual pause freezes distance, score, lane, and action")

@@ -173,7 +173,10 @@ def kill_observed_foreground_run():
             # Keep the same hierarchy mode used by the preceding observations.
             # Toggling accessibility compression here refreshes Android's service
             # and traverses animated nonessential nodes inside the strict deadline.
-            current = ET.fromstring(device.dump_hierarchy(compressed=False, max_depth=hud_depth))
+            # The active window is also a stronger foreground check than
+            # traversing unrelated status-bar/background window roots.
+            current = ET.fromstring(device.dump_hierarchy(
+                compressed=False, max_depth=hud_depth, root_in_active=True))
             nodes = [n for n in current.iter('node') if n.get('package') == PACKAGE]
             timers = [n for n in nodes if n.get('class') == 'android.widget.TextView'
                       and re.fullmatch(r'\d+s', n.get('text', ''))]
