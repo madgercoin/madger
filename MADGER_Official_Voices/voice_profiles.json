@@ -1,5 +1,5 @@
 {
-  "version": 8,
+  "version": 9,
   "project": "MADGER game",
   "created": "2026-10-19",
   "visual_rules": [
@@ -10,7 +10,7 @@
     "Gorilla White exact white silverback pose-card proportions, tan face/chest and blue eyes.",
     "Snow White approved slightly smaller subtly cartoony adult shepherd; long muzzle, soft forehead, slender legs, short coat, cream-frosted tail, long tongue, rose collar and matching SW charm."
   ],
-  "reuse_rule": "MADGER, Gorilla White R7 and MADGER_Bot Friendly Smooth R4 voices approved for future speaking scenes. Snow White NEVER has a speaking voice; natural canine sounds only. Current ability previews contain no spoken dialogue.",
+  "reuse_rule": "MADGER, Gorilla White Clear Dry Master 2026-10-21 and MADGER_Bot Friendly Smooth R4 voices approved for future speaking scenes. Snow White NEVER has a speaking voice; natural canine sounds only. Current ability previews contain no spoken dialogue.",
   "characters": {
     "MADGER": {
       "provider": "ElevenLabs",
@@ -32,27 +32,110 @@
       }
     },
     "GORILLA_WHITE": {
-      "provider": "Runway speech",
-      "preset": "Chad",
-      "model": "eleven_v3",
-      "speed": 0.97,
-      "delivery": "Friendly youthful baritone with chest resonance; preserve approved rhythm",
-      "line": "[friendly] Stay close. I've got you! [excited] Let's do this, together!",
-      "task_id": "99f09971-551c-4a53-aed2-5c00eb1cd822",
-      "prior_audition": {
-        "provider": "Runway speech",
-        "preset": "Ragnar",
-        "model": "eleven_v3",
-        "speed": 0.95,
-        "delivery": "Deep resonant protective male; controlled strength, short clear phrases",
-        "line": "[confident] Stay behind me. Nothing gets through.",
-        "task_id": "c65fa6c7-6468-458e-b3ab-ea54b672b70e"
+      "character": "GORILLA_WHITE",
+      "display_name": "Gorilla White",
+      "approved_version": "Clear Dry Master 2026-10-21",
+      "status": "CURRENT APPROVED DEFAULT FOR ALL FUTURE GORILLA WHITE CONTENT",
+      "approval_date": "2026-10-21",
+      "scope": "All Gorilla White speaking content, including fantasy football, MADGER, animation, game and social content. Character appearance and project story remain context-specific.",
+      "owner_approval": "It's great. Save that voice as gorilla White voice for all content moving forward. Save everywhere you will find it when I ask you to make gorilla White content",
+      "voice_description": "Youthful masculine baritone, strong and emphatic with natural comic authority; intimate, crystal-clear and dry, without chamber echo or reverberation.",
+      "reference_audio": "Gorilla_White_Approved_Clear_Dry_Master.wav",
+      "preview_audio": "Gorilla_White.mp3",
+      "transcript": "Dinner\u2019s on me. I\u2019m eating cheeseburgers tonight.",
+      "reference_source": {
+        "library_file_id": "libfile_3891a7f2f9e081919b65be2c79782734",
+        "version": 2,
+        "name": "Gorilla_White_Cheeseburgers_Tonight.mp4"
       },
-      "status": "User approved baritone R7 on October 18 2026",
-      "r2_rejected": "User rejected both; requires teenage good-guy voices",
-      "post_processing": "From R3 source: pitch factors 1.05 * 0.97 * 0.98 * 0.985 * 0.94; tempo 0.95. EQ boosts 170Hz +2.3dB, 340Hz +1dB, 150Hz +1.5dB; 2800Hz -1dB. Loudness -16 LUFS.",
-      "approved_audio_library_id": "libfile_d78e7ae52db081918ea2608ef4d2354a",
-      "approved_audio_file": "Gorilla_White_Baritone_R7.mp3"
+      "provider": "Runway Stylize Audio speech-to-speech",
+      "preset": "Chad",
+      "conversion_asset_id": "dc291222-d5e3-49f0-bfc9-4c456bea1b42",
+      "delivery_rule": "Use performance-preserving speech-to-speech and the complete saved processing chain. Chad text-to-speech alone is not an equivalent replacement. Preserve natural timing; match the reference by ear in final review.",
+      "timing_rule": "Keep mouth timing natural; do not add the legacy blanket slowdown. Tempo 1.0 was used for this approval.",
+      "pitch_factor": 0.8964435099899998,
+      "loudness_lufs": -17,
+      "audio_format": {
+        "sample_rate": 48000,
+        "master_codec": "24-bit PCM WAV",
+        "channels": 2
+      },
+      "forbidden_processing": [
+        "added room reverb",
+        "echo/delay",
+        "stereo widening/chorus",
+        "different voice or generic preset substitution"
+      ],
+      "supersedes": [
+        "Baritone R7 and older default Gorilla White audio",
+        "echo-bearing clubhouse and butcher drafts"
+      ],
+      "processing_script": "process_gorilla_white.py",
+      "reference_note": "Reference is only 3.65 seconds. Do not claim it is a trained persistent voice clone or a sufficient long-form cloning dataset.",
+      "processing": {
+        "first_wpe": {
+          "fft": 2048,
+          "hop": 512,
+          "taps": 16,
+          "delay": 3,
+          "iterations": 5,
+          "blend": 0.95
+        },
+        "pitch_eq": "rubberband=tempo=1:pitch=0.8964435099899998:pitchq=quality:window=short:smoothing=on,highpass=f=70,equalizer=f=175:t=o:w=1:g=2.0,equalizer=f=350:t=o:w=1:g=-1.5,equalizer=f=2400:t=o:w=1.2:g=2.0,acompressor=threshold=0.12:ratio=2.5:attack=12:release=90:makeup=1:knee=2.8",
+        "final_wpe": {
+          "fft": 1536,
+          "hop": 384,
+          "taps": 40,
+          "delay": 2,
+          "iterations": 8,
+          "untreated_blend": 0
+        },
+        "late_reflection_suppression": {
+          "decay_seconds": 0.2,
+          "strength": 0.72,
+          "power_floor": 0.1
+        },
+        "clarity_eq": "highpass=f=78,equalizer=f=310:t=o:w=1:g=-2.4,equalizer=f=3400:t=o:w=1:g=1.7",
+        "final_limiter": {
+          "peak_linear": 0.79,
+          "attack_ms": 5,
+          "release_ms": 70
+        },
+        "approved_speech_segments_seconds": [
+          [
+            0.35,
+            1.33
+          ],
+          [
+            1.82,
+            3.37
+          ]
+        ]
+      },
+      "master_sha256": "1598dd9647825e38263f9b5305abc4d3a3f6c69f5f09b7bfb985d657c59f468d",
+      "superseded_profile": {
+        "provider": "Runway speech",
+        "preset": "Chad",
+        "model": "eleven_v3",
+        "speed": 0.97,
+        "delivery": "Friendly youthful baritone with chest resonance; preserve approved rhythm",
+        "line": "[friendly] Stay close. I've got you! [excited] Let's do this, together!",
+        "task_id": "99f09971-551c-4a53-aed2-5c00eb1cd822",
+        "prior_audition": {
+          "provider": "Runway speech",
+          "preset": "Ragnar",
+          "model": "eleven_v3",
+          "speed": 0.95,
+          "delivery": "Deep resonant protective male; controlled strength, short clear phrases",
+          "line": "[confident] Stay behind me. Nothing gets through.",
+          "task_id": "c65fa6c7-6468-458e-b3ab-ea54b672b70e"
+        },
+        "status": "User approved baritone R7 on October 18 2026",
+        "r2_rejected": "User rejected both; requires teenage good-guy voices",
+        "post_processing": "From R3 source: pitch factors 1.05 * 0.97 * 0.98 * 0.985 * 0.94; tempo 0.95. EQ boosts 170Hz +2.3dB, 340Hz +1dB, 150Hz +1.5dB; 2800Hz -1dB. Loudness -16 LUFS.",
+        "approved_audio_library_id": "libfile_d78e7ae52db081918ea2608ef4d2354a",
+        "approved_audio_file": "Gorilla_White_Baritone_R7.mp3"
+      }
     },
     "MADGER_Bot": {
       "provider": "Runway speech",
@@ -83,5 +166,6 @@
       "superseded_voice": "Lara speech approval revoked; do not use earlier speech samples."
     }
   },
-  "video_status": "Four eight-second clips and combined reel restored to original generated effects/music/canine sounds with no added dialogue. Snow White bark preserved."
+  "video_status": "Four eight-second clips and combined reel restored to original generated effects/music/canine sounds with no added dialogue. Snow White bark preserved.",
+  "updated": "2026-10-21"
 }
