@@ -121,6 +121,7 @@ exports.daySeed = daySeed;
 exports.freshExpedition = freshExpedition;
 exports.buildCourse = buildCourse;
 exports.zoneAt = zoneAt;
+exports.environmentZone = environmentZone;
 exports.hazardPose = hazardPose;
 exports.branchOffset = branchOffset;
 exports.routeOffset = routeOffset;
@@ -140,6 +141,8 @@ exports.nearbyHint = nearbyHint;
 exports.resolveChamber = resolveChamber;
 exports.availableForks = availableForks;
 exports.overgrownPathOffset = overgrownPathOffset;
+exports.overgrownPathWidth = overgrownPathWidth;
+exports.overgrownPathHeight = overgrownPathHeight;
 exports.freshOvergrownExpedition = freshOvergrownExpedition;
 exports.chooseFork = chooseFork;
 exports.activateHero = activateHero;
@@ -240,6 +243,13 @@ function buildCourse(seed) {
     return items.sort((a, b) => a.d - b.d || a.id - b.id);
 }
 function zoneAt(distance) { return Math.min(2, Math.floor(distance / 360)); }
+/** Presentation biome follows the selected route, not the legacy distance zone. */
+function environmentZone(s) {
+    if (s.board !== 'overgrown')
+        return s.zone;
+    return ['deep', 'mudslide', 'crystal-vein', 'ancient-vault'].includes(s.route) ? 2 :
+        ['ridge', 'causeway', 'watchtower', 'gearworks'].includes(s.route) ? 1 : 0;
+}
 exports.ZONES = [
     { name: 'THE OVERGROWN BURROW', subtitle: 'Lanterns, roots and hidden hollows', color: '#ffc766' },
     { name: 'THE FORGOTTEN WORKS', subtitle: 'Pressure, machinery and buried treasure', color: '#74e5df' },
@@ -256,9 +266,20 @@ function hazardPose(item, time, distance) {
         x += Math.sin(time * 1.8 + item.phase) * .28;
     if (item.kind === 'steam')
         active = ((time + item.phase) % 3.2) > 1.05;
-    if (item.kind === 'boulder')
-        y = .07 * Math.abs(Math.sin(time * 7 + item.phase));
-    return { x, y, active, ahead: item.d - distance };
+    const ahead = item.d - distance;
+    let worldD = item.d, roll = 0;
+    if (item.kind === 'boulder') {
+        // A distance-keyed rockfall starts on a visible bank 32m ahead. Its
+        // lateral descent finishes before the collision corridor; the same pose
+        // drives drawing, swept collision and recovery, independent of frame rate.
+        const side = item.lane || (Math.sin(item.phase) >= 0 ? 1 : -1);
+        const fall = (0, exports.smooth)((32 - ahead) / 22), travel = (0, exports.clamp)(32 - ahead, 0, 40);
+        x = side * 6.6 + (item.lane * exports.LANE_WIDTH - side * 6.6) * fall;
+        y = 2.6 * (1 - fall) + .045 * Math.abs(Math.sin(travel * 3.1)) * fall;
+        worldD = item.d + .18 * (0, exports.clamp)(ahead, -8, 32);
+        roll = travel * .62;
+    }
+    return { x, y, active, ahead: worldD - distance, d: worldD, roll };
 }
 /** Branch paths visibly diverge and rejoin. Coordinates are continuous at both ends. */
 function branchOffset(distance, start, end, side) {
@@ -610,7 +631,7 @@ function fixedStep(s, course, events) {
         return;
     s.tick++;
     // Collision uses the damped physical x, never an instantly changed lane index.
-    const target = s.lane * exports.LANE_WIDTH, acceleration = 95 * (target - s.x) - 19 * s.vx;
+    const target = s.lane * exports.LANE_WIDTH * (s.board === 'overgrown' ? overgrownPathWidth(s.route, s.distance) : 1), acceleration = 95 * (target - s.x) - 19 * s.vx;
     s.vx += acceleration * exports.STEP;
     s.x = (0, exports.clamp)(s.x + s.vx * exports.STEP, -exports.LANE_WIDTH - .04, exports.LANE_WIDTH + .04);
     if (s.mode === 'countdown') {
@@ -654,12 +675,33 @@ function fixedStep(s, course, events) {
         s.immune = Math.max(s.immune, 2);
         event(s, events, 'hint', s.board === 'overgrown' ? 'PATHS REJOIN · PICK YOUR NEXT CHALLENGE' : 'SHORTCUT COMPLETE · SAFE REJOIN');
     }
-    if (s.board === 'overgrown' && ((s.forkStage === 0 && s.distance >= 140) || (s.forkStage === 1 && s.distance >= 455))) {
-        s.forkStage = (s.forkStage ?? 0) + 1;
-        s.mode = 'fork';
-        s.immune = Math.max(s.immune, 1.1);
-        event(s, events, 'fork', s.forkStage === 1 ? 'THREE WAYS INTO THE WILD · CHOOSE YOUR PATH' : 'DEEPER STILL · CHOOSE YOUR SUB-PATH');
-        return;
+    // Real-time three-way junctions: steering determines the road while the
+    // game keeps moving. The second junction has a low trail, a jump-only
+    // elevated ledge and a properly timed burrow tunnel. Saved v1 modal fork
+    // checkpoints remain supported by chooseFork below.
+    // Use the damped actual player x at a fork, not the requested lane, so
+    // last-millisecond steering cannot teleport Madger onto an unreachable road.
+    const physicalLane = s.x < -exports.LANE_WIDTH * .56 ? -1 : s.x > exports.LANE_WIDTH * .56 ? 1 : 0;
+    if (s.board === 'overgrown' && s.forkStage === 0 && s.distance >= 140) {
+        s.forkStage = 1;
+        commitFork(s, exports.MAJOR_FORKS[physicalLane + 1], events);
+    }
+    else if (s.board === 'overgrown' && s.forkStage === 1 && s.distance >= 455) {
+        s.forkStage = 2;
+        const family = (s.majorPath === 'ridge' || s.majorPath === 'deep') ? s.majorPath : 'rootway';
+        const options = exports.SUB_FORKS[family], desired = options[physicalLane + 1];
+        const clearedLedge = physicalLane === 0 && s.y > .65;
+        const foundTunnel = physicalLane === 1 && s.slide > 0 && s.y < .25;
+        // Not reaching an elevated platform or tunnel entrance is a fall to the
+        // visible lower road, NOT an arbitrary damage event or a paused menu.
+        const accessible = (physicalLane === -1 || clearedLedge || foundTunnel) &&
+            (desired.id !== 'ancient-vault' || s.keys > 0);
+        const chosen = accessible ? desired : options[0];
+        if (!accessible)
+            event(s, events, 'hint', desired.id === 'ancient-vault' && s.keys < 1 && foundTunnel
+                ? 'VAULT LOCKED · DESCEND TO THE LOWER CHANNEL'
+                : physicalLane === 0 ? 'MISSED THE UPPER LEDGE · LOWER PATH' : 'MISSED THE LOW TUNNEL · LOWER PATH');
+        commitFork(s, chosen, events);
     }
     const used = new Set(s.used);
     stepCompanions(s, course, used, events);
@@ -669,7 +711,8 @@ function fixedStep(s, course, events) {
         if (item.d < oldDistance - 4 || used.has(item.id) || item.route !== s.route)
             continue;
         const pose = hazardPose(item, s.time, s.distance), halfLength = item.kind === 'gap' ? 1.55 : item.kind === 'chamber-door' ? 1.35 : item.kind === 'mud' ? 1.25 : .62;
-        if (item.d < s.distance - halfLength && item.d >= oldDistance - halfLength) {
+        const previousPose = hazardPose(item, s.time - exports.STEP, oldDistance);
+        if (pose.ahead < -halfLength && previousPose.ahead >= -halfLength) {
             if (exports.HAZARDS.has(item.kind) && item.kind !== 'mud' && Math.abs(pose.x - s.x) > 1.05 && Math.abs(pose.x - s.x) < 1.65) {
                 s.score += 75;
                 s.nearMisses++;
@@ -678,7 +721,7 @@ function fixedStep(s, course, events) {
             used.add(item.id);
             continue;
         }
-        const withinLongitudinal = s.distance + halfLength >= item.d && oldDistance - halfLength <= item.d;
+        const withinLongitudinal = pose.ahead <= halfLength && previousPose.ahead >= -halfLength;
         if (!withinLongitudinal)
             continue;
         const dx = Math.abs(pose.x - s.x), isHazard = exports.HAZARDS.has(item.kind);
@@ -800,9 +843,13 @@ function nearbyHint(s, course) {
         if (chamber)
             return `${chamber.clue.toUpperCase()} · ${['LEFT', 'CENTRE', 'RIGHT'][chamber.lane + 1]} · ${chamber.action === 'burrow' ? 'BURROW' : 'JUMP'} AT ${chamber.d}m`;
         if (s.forkStage === 0)
-            return 'FIRST FORK AT 140m · CHOOSE YOUR DESTINY';
+            return s.distance >= 98
+                ? 'LIVE FORK ' + Math.max(0, Math.ceil(140 - s.distance)) + 'm · STEER LEFT / MIDDLE / RIGHT'
+                : 'THREE REAL ROADS AHEAD · STEER TO CHOOSE';
         if (s.forkStage === 1 && s.distance < 455)
-            return (s.majorPath ?? 'ROOTWAY').toUpperCase() + ' · SUB-PATH FORK AT 455m';
+            return s.distance >= 411
+                ? 'LIVE FORK ' + Math.max(0, Math.ceil(455 - s.distance)) + 'm · LEFT: LOWER · MIDDLE: JUMP · RIGHT: BURROW'
+                : (s.majorPath ?? 'ROOTWAY').toUpperCase() + ' · LEDGE / LOWER TRAIL / HIDDEN TUNNEL AT 455m';
         if (s.route !== 'main')
             return (s.subPath ?? 'FOREST').toUpperCase().replace(/-/g, ' ') + ' · RARE FRAGMENTS AHEAD';
         return 'THE BURROW TREASURY · 1080m FINISH';
@@ -908,7 +955,25 @@ function overgrownPathOffset(route, d) {
         return 0;
     const major = option.id === 'rootway' || option.id === 'ridge' || option.id === 'deep';
     const start = major ? 140 : 455, end = major ? 450 : 900;
-    return option.side * 8.5 * (0, exports.smooth)((d - start) / 24) * (0, exports.smooth)((end - d) / 24);
+    return option.side * (exports.LANE_WIDTH + (8.5 - exports.LANE_WIDTH) * (0, exports.smooth)((d - start) / 24)) * (0, exports.smooth)((end - d) / 24);
+}
+/** Each fork opens from one entrance lane into a three-lane road. */
+function overgrownPathWidth(route, d) {
+    if (!exports.OVERGROWN_ROUTES.includes(route))
+        return 1;
+    const start = ['rootway', 'ridge', 'deep'].includes(route) ? 140 : 455;
+    return 1 / 3 + 2 / 3 * (0, exports.smooth)((d - start) / 24);
+}
+/** Metres above the base trail. Upper roads have a real .65m entrance lip;
+ * every road eases back to the same elevation before its safe rejoin. */
+function overgrownPathHeight(route, d) {
+    const upper = ['root-arch', 'watchtower', 'crystal-vein'].includes(route);
+    const lower = ['mosswalk', 'causeway', 'mudslide'].includes(route);
+    const tunnel = ['log-crossing', 'gearworks', 'ancient-vault'].includes(route);
+    if (d < 455 || d >= 900 || (!upper && !lower && !tunnel))
+        return 0;
+    const entry = (0, exports.smooth)((d - 455) / 24), exit = (0, exports.smooth)((900 - d) / 28);
+    return (upper ? .65 + 1.25 * entry : lower ? -.85 * entry : -.45 * entry) * exit;
 }
 function freshOvergrownExpedition(seed, id, shards = { snow: 0, gorilla: 0, bot: 0 }, upgrades = { armor: 0, magnet: 0, fortune: 0 }) {
     const s = freshExpedition(seed, id);
@@ -929,6 +994,38 @@ function freshOvergrownExpedition(seed, id, shards = { snow: 0, gorilla: 0, bot:
         s.magnet = 4 + upgrades.magnet * 3;
     return s;
 }
+/** Commit a physically reached fork without pausing or skipping simulation.
+ * Retain the old explicit chooser for recovery from historical mode=fork saves.
+ */
+function commitFork(s, choice, events) {
+    const stage = s.forkStage;
+    const previousHeight = overgrownPathHeight(s.route, s.distance), worldX = s.x + routeOffset(s);
+    if (choice.id === 'ancient-vault')
+        s.keys--;
+    if (stage === 1)
+        s.majorPath = choice.id;
+    else
+        s.subPath = choice.id;
+    if (!s.secrets.includes(choice.id))
+        s.secrets.push(choice.id);
+    s.route = choice.id;
+    s.routeStart = stage === 1 ? 140 : 455;
+    s.routeEnd = stage === 1 ? 450 : 900;
+    s.routeSide = choice.side;
+    const localX = worldX - routeOffset(s), shift = localX - s.x;
+    s.x = (0, exports.clamp)(localX, -exports.LANE_WIDTH, exports.LANE_WIDTH);
+    s.lane = 0;
+    for (const id of companions_1.COMPANION_IDS) {
+        s.companions[id].followX += shift;
+        (0, companions_1.clearCompanionAction)(s.companions[id]);
+    }
+    // Preserve world-space jump height across the raised entrance.
+    s.y = Math.max(0, s.y + previousHeight - overgrownPathHeight(choice.id, s.distance));
+    s.mode = 'running';
+    s.immune = Math.max(s.immune, 1.2);
+    s.lastGood = s.time;
+    event(s, events, 'fork', choice.name.toUpperCase() + ' · ' + choice.reward.toUpperCase());
+}
 function chooseFork(s, chosen, events) {
     if (s.board !== 'overgrown' || s.mode !== 'fork')
         return false;
@@ -939,23 +1036,7 @@ function chooseFork(s, chosen, events) {
         event(s, events, 'hint', 'ANCIENT VAULT · FIND THE DEEP BURROW KEY');
         return false;
     }
-    if (chosen === 'ancient-vault')
-        s.keys--;
-    const stage = s.forkStage;
-    if (stage === 1)
-        s.majorPath = chosen;
-    else
-        s.subPath = chosen;
-    if (!s.secrets.includes(chosen))
-        s.secrets.push(chosen);
-    s.route = chosen;
-    s.routeStart = stage === 1 ? 140 : 455;
-    s.routeEnd = stage === 1 ? 450 : 900;
-    s.routeSide = choice.side;
-    s.mode = 'running';
-    s.immune = Math.max(s.immune, 1.2);
-    s.lastGood = s.time;
-    event(s, events, 'fork', choice.name.toUpperCase() + ' · ' + choice.reward.toUpperCase());
+    commitFork(s, choice, events);
     return true;
 }
 function activateHero(s, id, events) {
@@ -1318,12 +1399,12 @@ const math_1 = require("./math");
 const animation_1 = require("./animation");
 const companions_1 = require("./companions");
 const companion_models_1 = require("./companion-models");
-const C = { fur: (0, gl_1.color)('#24272a', -4), furLight: (0, gl_1.color)('#353237', -4), black: (0, gl_1.color)('#0d1117'), cream: (0, gl_1.color)('#f2d9a2'), pale: (0, gl_1.color)('#fff0c7'), gold: (0, gl_1.color)('#ffcb5a'), goldGlow: (0, gl_1.color)('#ffc765', 1.15), mint: (0, gl_1.color)('#70e4d7', .35), violet: (0, gl_1.color)('#b4a0fa', .45), red: (0, gl_1.color)('#e8795e'), pink: (0, gl_1.color)('#da818b'), stone: (0, gl_1.color)('#758474'), stoneDark: (0, gl_1.color)('#425450'), wood: (0, gl_1.color)('#6c4b35'), woodLight: (0, gl_1.color)('#a47c4b'), leaf: (0, gl_1.color)('#427763'), leafLight: (0, gl_1.color)('#75aa63'), iron: (0, gl_1.color)('#657579'), copper: (0, gl_1.color)('#ad8155'), water: (0, gl_1.color)('#254d56', -2), shadow: (0, gl_1.color)('#000000', -3) };
+const C = { fur: (0, gl_1.color)('#24272a', -4), furLight: (0, gl_1.color)('#353237', -4), black: (0, gl_1.color)('#0d1117'), cream: (0, gl_1.color)('#f2d9a2'), pale: (0, gl_1.color)('#fff0c7'), gold: (0, gl_1.color)('#ffcb5a'), goldGlow: (0, gl_1.color)('#ffc765', 1.15), mint: (0, gl_1.color)('#70e4d7', .35), violet: (0, gl_1.color)('#b4a0fa', .45), red: (0, gl_1.color)('#e8795e'), pink: (0, gl_1.color)('#da818b'), stone: (0, gl_1.color)('#758474', -8), stoneDark: (0, gl_1.color)('#425450', -8), wood: (0, gl_1.color)('#6c4b35', -7), woodLight: (0, gl_1.color)('#a47c4b', -7), leaf: (0, gl_1.color)('#427763'), leafLight: (0, gl_1.color)('#75aa63'), iron: (0, gl_1.color)('#657579'), copper: (0, gl_1.color)('#ad8155'), water: (0, gl_1.color)('#254d56', -2), shadow: (0, gl_1.color)('#000000', -3) };
 const TAU = Math.PI * 2;
 const hash = (n) => { const x = Math.sin(n * 127.13 + 91.7) * 43758.5453; return x - Math.floor(x); };
 exports.CHARACTER_CONTRACT = { fangCount: 0, teeth: 'small-even', clawsPerPaw: 5, fur: 'black', markings: 'cream', eyes: 'amber-gold' };
 const curve = (d) => Math.sin(d / 76) * .8 + Math.sin(d / 185) * 1.1;
-const floorY = (d) => Math.sin(d / 34) * .12;
+const floorY = (d, route = 'main') => Math.sin(d / 34) * .12 + (0, core_1.overgrownPathHeight)(route, d);
 class ExpeditionScene {
     renderer;
     particles = [];
@@ -1336,7 +1417,7 @@ class ExpeditionScene {
     disposed = false;
     particleId = 0;
     constructor(gl) { this.renderer = new gl_1.ExpeditionRenderer(gl); }
-    get stats() { return { ...this.renderer.stats, particles: this.particles.length }; }
+    get stats() { return { ...this.renderer.stats, particles: this.particles.length, nativeWorldReady: this.renderer.worldReady === true }; }
     events(events, s, calm = false) {
         for (const e of events) {
             if (e.kind === 'hit')
@@ -1351,7 +1432,7 @@ class ExpeditionScene {
             const c = e.companion ? (0, gl_1.color)(companions_1.COMPANIONS[e.companion].color, .5) : e.kind === 'hit' ? C.red : e.kind === 'land' || e.kind === 'step' || e.kind === 'slide' ? (0, gl_1.color)('#b3a386') : e.kind === 'splash' ? C.mint : e.kind === 'block' ? C.mint : e.kind === 'gem' ? C.violet : C.goldGlow;
             for (let i = 0; i < amount; i++) {
                 const n = this.particleId++, r = hash(n), a = hash(n + 8) * TAU;
-                this.particles.push({ x: e.targetX !== undefined ? e.targetX + curve(e.targetD ?? s.distance) - curve(s.distance) : s.x + (0, core_1.routeOffset)(s), y: floorY(e.targetD ?? s.distance) + (e.kind === 'step' || e.kind === 'land' || e.kind === 'slide' ? .15 : 1.1) + s.y, d: e.targetD ?? s.distance,
+                this.particles.push({ x: e.targetX !== undefined ? e.targetX + curve(e.targetD ?? s.distance) - curve(s.distance) : s.x + (0, core_1.routeOffset)(s), y: floorY(e.targetD ?? s.distance, s.route) + (e.kind === 'step' || e.kind === 'land' || e.kind === 'slide' ? .15 : 1.1) + s.y, d: e.targetD ?? s.distance,
                     vx: Math.cos(a) * (1 + r * 1.8), vy: (e.kind === 'step' ? .5 : 1.8) + r * 2, vz: Math.sin(a) * 2, born: this.clock, life: e.kind === 'step' ? .32 : .55 + r * .4, c, size: e.kind === 'step' ? .055 : .065 + r * .04 });
             }
         }
@@ -1379,7 +1460,7 @@ class ExpeditionScene {
         const idleYaw = idle ? Math.PI + .12 + Math.sin(time * .5) * .15 : 0;
         const bank = calm ? 0 : (0, core_1.clamp)(-s.vx * .04, -.18, .18);
         const bounce = happy * .06 * Math.sin(age * 10);
-        const root = (0, math_1.transform)(s.x + (0, core_1.routeOffset)(s), floorY(s.distance) + s.y - pose.depth, 0, 1, 1, 1, 0, idleYaw, 0);
+        const root = (0, math_1.transform)(s.x + (0, core_1.routeOffset)(s), floorY(s.distance, s.route) + s.y - pose.depth, 0, 1, 1, 1, 0, idleYaw, 0);
         const body = (0, math_1.multiply)(root, (0, math_1.transform)(0, bob * (1 - crouch) + bounce * (1 - crouch) + pose.bodyY, 0, 1, 1, 1, pose.bodyX + hurt * .17, 0, bank + hurt * .15));
         const fur = hurt > .2 ? (0, gl_1.color)('#705055') : C.fur;
         this.shape('sphere', fur, 0, 1.10, 0, .47, .66, .34, 0, 0, 0, body);
@@ -1431,51 +1512,58 @@ class ExpeditionScene {
             const ear = (0, math_1.multiply)(head, (0, math_1.transform)(side * .54, .40, .05, 1, 1, 1, 0, 0, side * (.19 + Math.sin(time * 2.1 + side) * .025)));
             this.shape('sphere', C.cream, 0, 0, 0, .21, .235, .10, 0, 0, 0, ear);
             this.shape('sphere', C.wood, 0, 0, -.08, .142, .16, .045, 0, 0, 0, ear);
-            this.shape('sphere', C.cream, side * .37, -.06, -.385, .29, .30, .135, 0, side * .22, side * .22, head);
-            this.shape('sphere', C.cream, side * .42, -.24, -.32, .235, .24, .16, 0, 0, side * .35, head);
-            const blinkPhase = (time + side * .027) % 4.3, blink = blinkPhase < .12 ? .1 : blinkPhase < .19 ? (0, core_1.smooth)((blinkPhase - .12) / .07) : 1;
-            const eyeY = .08, eyeScale = Math.max(.07, blink * (1 - hurt * .55));
-            this.shape('sphere', C.black, side * .30, eyeY, -.50, .199, .240, .076, 0, 0, side * .15, head);
-            this.shape('sphere', (0, gl_1.color)('#fff6e4'), side * .30, eyeY, -.551, .159, .195 * eyeScale, .045, 0, 0, side * .15, head);
-            this.shape('sphere', (0, gl_1.color)('#dca334'), side * .29, eyeY - .004, -.590, .115, .149 * eyeScale, .028, 0, 0, 0, head);
-            this.shape('sphere', C.black, side * .29, eyeY - .002, -.614, .067, .108 * eyeScale, .015, 0, 0, 0, head);
-            this.orb(side * .27 - .020, eyeY + .055 * eyeScale, -.632, .023, (0, gl_1.color)('#fffef4', .25), head);
-            this.link([side * .12, .27, -.53], [side * .46, .30 + hurt * .035, -.44], .067, C.fur, head);
-            for (let i = 0; i < 3; i++)
-                this.shape('cone', C.cream, side * (.49 + i * .039), -.23 - i * .042, -.21, .062, .25, .042, 0, 0, side * 1.10, head);
+            if (!this.renderer.portraitReady) {
+                this.shape('sphere', C.cream, side * .37, -.06, -.385, .29, .30, .135, 0, side * .22, side * .22, head);
+                this.shape('sphere', C.cream, side * .42, -.24, -.32, .235, .24, .16, 0, 0, side * .35, head);
+                const blinkPhase = (time + side * .027) % 4.3, blink = blinkPhase < .12 ? .1 : blinkPhase < .19 ? (0, core_1.smooth)((blinkPhase - .12) / .07) : 1;
+                const eyeY = .08, eyeScale = Math.max(.07, blink * (1 - hurt * .55));
+                this.shape('sphere', C.black, side * .30, eyeY, -.50, .199, .240, .076, 0, 0, side * .15, head);
+                this.shape('sphere', (0, gl_1.color)('#fff6e4'), side * .30, eyeY, -.551, .159, .195 * eyeScale, .045, 0, 0, side * .15, head);
+                this.shape('sphere', (0, gl_1.color)('#dca334'), side * .29, eyeY - .004, -.590, .115, .149 * eyeScale, .028, 0, 0, 0, head);
+                this.shape('sphere', C.black, side * .29, eyeY - .002, -.614, .067, .108 * eyeScale, .015, 0, 0, 0, head);
+                this.orb(side * .27 - .020, eyeY + .055 * eyeScale, -.632, .023, (0, gl_1.color)('#fffef4', .25), head);
+                this.link([side * .12, .27, -.53], [side * .46, .30 + hurt * .035, -.44], .067, C.fur, head);
+                for (let i = 0; i < 3; i++)
+                    this.shape('cone', C.cream, side * (.49 + i * .039), -.23 - i * .042, -.21, .062, .25, .042, 0, 0, side * 1.10, head);
+            }
         }
-        this.shape('headStripe', C.cream, 0, 0, 0, 1, 1, 1, 0, 0, 0, head);
-        this.shape('sphere', C.cream, 0, .29, -.461, .14, .24, .062, 0, 0, 0, head);
-        this.shape('cone', C.cream, .027, .078, -.538, .103, .26, .035, Math.PI, 0, -.15, head);
-        // Normal, even teeth remain inside the mouth; no oversized external fang.
-        const mouthOpen = .02 + happy * .07 + hurt * .075;
-        this.shape('sphere', C.black, 0, -.295 - mouthOpen * .3, -.515, .325, .17 + mouthOpen, .099, 0, 0, 0, head);
-        this.shape('sphere', C.cream, 0, -.335 - mouthOpen, -.506, .337, .10, .154, 0, 0, 0, head);
-        if (mouthOpen > .05)
-            this.shape('sphere', C.pink, 0, -.34 - mouthOpen * .7, -.61, .135, .045, .035, 0, 0, 0, head);
-        this.shape('sphere', C.cream, -.16, -.18, -.525, .25, .17, .205, 0, 0, .09, head);
-        this.shape('sphere', C.cream, .16, -.18, -.525, .25, .17, .205, 0, 0, -.09, head);
-        this.shape('sphere', C.black, 0, -.105, -.704, .169, .116, .118, 0, 0, 0, head);
-        this.shape('sphere', (0, gl_1.color)('#869093'), -.034, -.068, -.807, .05, .018, .015, 0, 0, 0, head);
-        if (mouthOpen > .045)
-            for (let i = 0; i < 4; i++)
-                this.shape('box', C.pale, (i - 1.5) * .057, -.303, -.611, .043, .049, .033, 0, 0, 0, head);
-        this.shape('shadow', C.shadow, s.x + (0, core_1.routeOffset)(s), floorY(s.distance) + .018, 0, .76 * (1 - s.y * .10) * (1 - crouch * .45), 1, .62 * (1 - s.y * .10));
+        this.shape('headStripe', this.renderer.portraitReady ? (0, gl_1.color)('#f2d9a2', -11) : C.cream, 0, 0, 0, 1, 1, 1, 0, 0, 0, head);
+        if (this.renderer.portraitReady) {
+            this.renderer.add('face', head, (0, gl_1.color)('#ffffff', -10));
+        }
+        else {
+            this.shape('sphere', C.cream, 0, .29, -.461, .14, .24, .062, 0, 0, 0, head);
+            this.shape('cone', C.cream, .027, .078, -.538, .103, .26, .035, Math.PI, 0, -.15, head);
+            // Normal, even teeth remain inside the mouth; no oversized external fang.
+            const mouthOpen = .02 + happy * .07 + hurt * .075;
+            this.shape('sphere', C.black, 0, -.295 - mouthOpen * .3, -.515, .325, .17 + mouthOpen, .099, 0, 0, 0, head);
+            this.shape('sphere', C.cream, 0, -.335 - mouthOpen, -.506, .337, .10, .154, 0, 0, 0, head);
+            if (mouthOpen > .05)
+                this.shape('sphere', C.pink, 0, -.34 - mouthOpen * .7, -.61, .135, .045, .035, 0, 0, 0, head);
+            this.shape('sphere', C.cream, -.16, -.18, -.525, .25, .17, .205, 0, 0, .09, head);
+            this.shape('sphere', C.cream, .16, -.18, -.525, .25, .17, .205, 0, 0, -.09, head);
+            this.shape('sphere', C.black, 0, -.105, -.704, .169, .116, .118, 0, 0, 0, head);
+            this.shape('sphere', (0, gl_1.color)('#869093'), -.034, -.068, -.807, .05, .018, .015, 0, 0, 0, head);
+            if (mouthOpen > .045)
+                for (let i = 0; i < 4; i++)
+                    this.shape('box', C.pale, (i - 1.5) * .057, -.303, -.611, .043, .049, .033, 0, 0, 0, head);
+        }
+        this.shape('shadow', C.shadow, s.x + (0, core_1.routeOffset)(s), floorY(s.distance, s.route) + .018, 0, .76 * (1 - s.y * .10) * (1 - crouch * .45), 1, .62 * (1 - s.y * .10));
         if (crouch > 0)
             this.burrowTrail(s, crouch, calm);
         if (s.shields > 0) {
-            this.shape('ring', C.mint, s.x + (0, core_1.routeOffset)(s), 1.20 + floorY(s.distance) + s.y, 0, .88, 1, .88, Math.PI / 2, time * .8, 0);
-            this.shape('ring', C.mint, s.x + (0, core_1.routeOffset)(s), 1.20 + floorY(s.distance) + s.y, 0, .88, 1, .88, 0, 0, time * .5);
+            this.shape('ring', C.mint, s.x + (0, core_1.routeOffset)(s), 1.20 + floorY(s.distance, s.route) + s.y, 0, .88, 1, .88, Math.PI / 2, time * .8, 0);
+            this.shape('ring', C.mint, s.x + (0, core_1.routeOffset)(s), 1.20 + floorY(s.distance, s.route) + s.y, 0, .88, 1, .88, 0, 0, time * .5);
         }
         if (s.magnet > 0)
-            this.shape('ring', C.violet, s.x + (0, core_1.routeOffset)(s), floorY(s.distance) + .10, 0, 1.2 + .07 * Math.sin(time * 5), 1, 1.2, 0, time * .4, 0);
+            this.shape('ring', C.violet, s.x + (0, core_1.routeOffset)(s), floorY(s.distance, s.route) + .10, 0, 1.2 + .07 * Math.sin(time * 5), 1, 1.2, 0, time * .4, 0);
         if (s.burst > 0)
             for (let i = 0; i < 7; i++)
                 this.shape('cone', C.goldGlow, s.x + (0, core_1.routeOffset)(s) + (i - 3) * .15, .45 + s.y, i * .18 + .35, .06, .8, .06, -Math.PI / 2, 0, 0);
     }
     /** Surface soil marks the runner's position while the articulated body is underground. */
     burrowTrail(s, weight, calm) {
-        const x = s.x + (0, core_1.routeOffset)(s), y = floorY(s.distance), pulse = calm ? 0 : Math.sin(s.slideAge * 34) * .025;
+        const x = s.x + (0, core_1.routeOffset)(s), y = floorY(s.distance, s.route), pulse = calm ? 0 : Math.sin(s.slideAge * 34) * .025;
         const soil = s.zone === 2 ? (0, gl_1.color)('#75677b') : s.zone === 1 ? (0, gl_1.color)('#85735c') : (0, gl_1.color)('#8b6743');
         this.shape('rock', soil, x, y + .09 * weight, 0, .66 * weight, (.18 + pulse) * weight, .84 * weight, 0, 0, 0);
         for (const side of [-1, 1])
@@ -1651,13 +1739,86 @@ class ExpeditionScene {
      * Each child route gets a separate offset road and themed geometry. Only the
      * chosen road is detailed once the player has committed to a fork.
      */
+    /** Native scanned woodland, rooted in a continuous contoured ground mesh.
+     * Geometry and texture detail survive the lowest GPU budget. Only counts and
+     * draw distance change. Trees are full meshes, never camera-facing sprites. */
+    nativeLandscape(s, time, calm) {
+        const d = s.distance, base = curve(d), budget = this.renderer.sceneryBudget;
+        const cave = ['deep', 'mudslide', 'crystal-vein', 'ancient-vault'].includes(s.route);
+        const ruins = ['ridge', 'causeway', 'watchtower', 'gearworks'].includes(s.route);
+        const white = (0, gl_1.color)('#f2f1dd'), stone = (0, gl_1.color)(cave ? '#a4bbc9' : '#d6d8cc'), ground = (0, gl_1.color)(cave ? '#717a85' : ruins ? '#a7a48a' : '#9eab7b', cave ? -8 : -1);
+        const far = [44, 64, 86][budget];
+        const centre = (wd) => curve(wd) - base + (0, core_1.overgrownPathOffset)(s.route, wd);
+        if (cave)
+            for (const side of [-1, 1])
+                this.shape('box', (0, gl_1.color)('#526576', -8), centre(d + 74) + side * 7.8, 4.2, -74, 4, 9, 80);
+        // Fill from the edge of the playable road out into the forest and hills.
+        // The playable surface itself remains open at every authored gap.
+        for (let wd = Math.floor((d - 18) / 12) * 12; wd < d + 112; wd += 12) {
+            const z = d - wd, x = centre(wd), y = floorY(wd, s.route);
+            for (const side of [-1, 1])
+                this.shape('terrain', ground, x + side * 3.02, y - .10, z, side * 29, 6, 6.7, 0, 0, 0);
+            if (cave) {
+                this.shape('ceiling', (0, gl_1.color)('#607582', -8), x, 10.0, z, 8.8, 4.2, 6.0, 0, 0, 0);
+                for (const side of [-1, 1])
+                    this.shape('cone', (0, gl_1.color)('#70838a', -8), x + side * 4.7, y + 6.8, z, .45, 2.1, .52, Math.PI, 0, 0);
+            }
+        }
+        for (let n = Math.floor(d / 14); n * 14 < d + far; n++) {
+            const wd = n * 14 + 7, ahead = wd - d;
+            if (ahead < 7)
+                continue;
+            const z = -ahead, x = centre(wd), y = floorY(wd, s.route), side = n % 2 ? 1 : -1;
+            const yaw = hash(n * 17) * TAU, h = 9.2 + hash(n * 31) * 2.2;
+            if (!cave) {
+                const bx = x + side * (8.0 + hash(n) * 1.7);
+                for (const part of ['scanTreeTrunk', 'scanTreeCrown', 'scanTreeTwigs'])
+                    this.shape(part, white, bx, y - .12, z, h, h, h, 0, yaw, 0);
+                this.shape('shadow', C.shadow, bx, y + .015, z, 2.1, 1, 1.9);
+                if (budget > 0 && n % 2 === 0)
+                    for (const part of ['scanTreeTrunk', 'scanTreeCrown', 'scanTreeTwigs'])
+                        this.shape(part, (0, gl_1.color)('#c9d8c1'), x - side * 10, y + .25, z - 5, h * .85, h * .85, h * .85, 0, yaw + 1, 0);
+                if (ahead < 32 || budget > 0) {
+                    this.shape('scanFern', (0, gl_1.color)('#b7cc94'), x + side * 4.25, y - .02, z + 2, .90, .90, .90, 0, yaw, 0);
+                    if (ahead < 25)
+                        this.shape('scanFern', (0, gl_1.color)('#b7cc94'), x - side * 3.95, y - .02, z + 4, .65, .65, .65, 0, yaw + 2, 0);
+                    this.shape('scanRoots', white, x + side * 5.7, y - .05, z - 2, 3.1, 1.5, 2.5, 0, yaw, 0);
+                }
+            }
+            else {
+                this.shape('scanCliff', stone, x + side * 7.9, y - .7, z, 7.3, 9.2, 5.8, 0, yaw, 0);
+                this.shape('scanCliff', stone, x - side * 7.9, y - .7, z - 4, 7.3, 9.2, 5.8, 0, yaw + 2, 0);
+                this.crystal(x + side * 4.35, y + .05, z, .72, n);
+            }
+            this.shape('scanRock', stone, x - side * 4.6, y - .10, z - 2, 2.1, 1.9, 1.8, 0, yaw, 0);
+            this.shape('shadow', C.shadow, x - side * 4.6, y + .01, z - 2, 1.2, 1, 1.1);
+            if (n % 3 === 0 && !cave)
+                this.shape('scanLog', white, x - side * 6.0, y + .05, z + 3, 4.2, 5.4, 4.0, 0, yaw * .3, 0);
+            if (ruins && n % 2 === 0) {
+                for (let row = 0; row < 4; row++)
+                    for (let col = 0; col < 2; col++)
+                        this.shape('box', C.stone, x + side * (5.1 + col * .8), y + .36 + row * .73, z, .77, .71, 1.14, 0, .1 * side, 0);
+                this.shape('scanCliff', stone, x + side * 9, y - .3, z - 5, 5.3, 4.2, 4.7, 0, yaw, 0);
+            }
+            // Moving air is subtle. No particle curtain over collision silhouettes.
+            if (!calm && ahead < 35 && n % 2 === 0)
+                this.shape('leaf', C.leaf, x + side * (4.0 + Math.sin(time * .5 + n)), y + 1.5 + Math.sin(time * .7 + n) * .5, z + Math.cos(time * .4 + n), .16, .22, .26, time * .4, n, time * .6);
+        }
+    }
     overgrownScenery(s, time, calm) {
         const d = s.distance, base = curve(d);
+        if (this.renderer.worldReady)
+            this.nativeLandscape(s, time, calm);
+        // Native GL has a measured, hysteretic GPU-drain budget. Preserve every
+        // playable lane and hazard at full fidelity; trim ONLY off-track distance
+        // dressing when a software renderer or older phone is falling behind.
+        const sceneryBudget = this.renderer.sceneryBudget;
+        const sceneryFar = sceneryBudget === 0 ? 42 : sceneryBudget === 1 ? 65 : 95;
         const mainTheme = (route) => ['main', 'rootway', 'mosswalk', 'root-arch', 'log-crossing'].includes(route) ? 'forest' :
             ['ridge', 'causeway', 'watchtower', 'gearworks'].includes(route) ? 'ruins' : 'cavern';
         const approach = { id: 'main', name: 'The Overgrown Burrow', risk: 'LOW', reward: 'Coins', description: 'Forest approach', side: 0, accent: '#B1DC88' };
         const phases = [
-            { start: 0, end: 140, options: [approach] },
+            { start: this.renderer.worldReady ? -24 : 0, end: 140, options: [approach] },
             { start: 140, end: 450, options: core_1.MAJOR_FORKS },
             { start: 445, end: 461, options: [approach] },
             { start: 455, end: 900, options: core_1.SUB_FORKS[(s.majorPath === 'ridge' || s.majorPath === 'deep') ? s.majorPath : 'rootway'] },
@@ -1670,30 +1831,43 @@ class ExpeditionScene {
             const options = allRoutes ? phase.options : phase.options.filter(o => o.id === s.route);
             for (const option of options) {
                 const theme = mainTheme(option.id), highlight = option.accent;
-                const mud = theme === 'cavern' ? (0, gl_1.color)('#5D4E59', -1) : theme === 'ruins' ? (0, gl_1.color)('#716458', -1) : (0, gl_1.color)('#625848', -1);
+                const mud = theme === 'cavern' ? (0, gl_1.color)('#6c7b85', -8) : theme === 'ruins' ? (0, gl_1.color)('#716458', -1) : (0, gl_1.color)('#625848', -1);
                 const edge = theme === 'cavern' ? (0, gl_1.color)('#3A3446', -8) : theme === 'ruins' ? (0, gl_1.color)('#4F504D', -8) : (0, gl_1.color)('#4B4638', -8);
                 const vegetation = theme === 'cavern' ? (0, gl_1.color)('#4B6D69') : theme === 'ruins' ? C.leaf : C.leafLight;
-                const step = 6, first = Math.max(phase.start + 3, Math.floor((d - 9) / step) * step);
-                for (let wd = first; wd < Math.min(phase.end - 2, d + 90); wd += step) {
-                    const z = d - wd, off = (0, core_1.overgrownPathOffset)(option.id, wd), x = off + curve(wd) - base, y = floorY(wd), n = Math.floor(wd / 6);
+                const step = 6, first = this.renderer.worldReady ? Math.max(phase.start, Math.floor((d - 12) / step) * step) : Math.max(phase.start + 3, Math.floor((d - 9) / step) * step);
+                for (let wd = first; wd < Math.min(phase.end + (this.renderer.worldReady ? 3 : -2), d + 90); wd += step) {
+                    const z = d - wd, off = (0, core_1.overgrownPathOffset)(option.id, wd), x = off + curve(wd) - base, y = floorY(wd, option.id), n = Math.floor(wd / 6);
                     const delta = ((0, core_1.overgrownPathOffset)(option.id, wd + 1) + curve(wd + 1) - (0, core_1.overgrownPathOffset)(option.id, wd - 1) - curve(wd - 1)) * .5;
                     const roadYaw = -Math.atan(delta);
                     // Three walkable physical lanes. Their dirt and stone retain the same
                     // independently interpolated fork offset as Madger and collectibles.
                     for (const lane of [-1, 0, 1]) {
-                        const lx = x + lane * core_1.LANE_WIDTH;
-                        this.shape('box', mud, lx, y - .24, z, 2.12, .40, 6.7, 0, roadYaw, 0);
-                        if ((n + lane) % 3 === 0) {
+                        const width = (0, core_1.overgrownPathWidth)(option.id, wd), lx = x + lane * core_1.LANE_WIDTH * width;
+                        if (this.renderer.worldReady) {
+                            for (let j = 0; j < 4; j++) {
+                                const td = wd - 2.25 + j * 1.5;
+                                const gap = this.course.some(o => o.kind === 'gap' && o.route === option.id && o.lane === lane && Math.abs(o.d - td) < 2.0);
+                                if (!gap)
+                                    this.shape('trail', mud, (0, core_1.overgrownPathOffset)(option.id, td) + curve(td) - base + lane * core_1.LANE_WIDTH * (0, core_1.overgrownPathWidth)(option.id, td), floorY(td, option.id), d - td, 2.19 * (0, core_1.overgrownPathWidth)(option.id, td), 1, 1.67, Math.atan((floorY(td + .75, option.id) - floorY(td - .75, option.id)) / 1.5), roadYaw, 0);
+                            }
+                        }
+                        else
+                            this.shape('box', mud, lx, y - .24, z, 2.12 * width, .40, 6.7, 0, roadYaw, 0);
+                        if (!this.renderer.worldReady && (n + lane) % 3 === 0) {
                             this.shape('rock', vegetation, lx + .60, y + .025, z + .5, .42, .026, 1.55, 0, n * .48, 0);
                             this.shape('rock', edge, lx - .67, y + .023, z - .6, .37, .042, .39, 0, n, 0);
                         }
-                        if ((n + lane) % 4 === 0)
+                        if (!this.renderer.worldReady && (n + lane) % 4 === 0)
                             this.shape('rock', (0, gl_1.color)('#454A37', -8), lx - .13, y + .023, z + 1.1, .61, .035, .77, 0, n * .51, 0);
                     }
                     // Opaque trees, foliage and rock faces behind the camera can block
                     // the entire screen as a fork curves. Keep the track under the runner,
                     // but render tall scenery only ahead of the playing/camera corridor.
-                    if (z > -7)
+                    if (this.renderer.worldReady || z > -7 || -z > sceneryFar)
+                        continue;
+                    // Keep detailed close-up vegetation and masonry. Thin only off-track
+                    // props beyond 30 metres; forks, pickups, road and hero are untouched.
+                    if (sceneryBudget < 2 && -z > 30 && n % (sceneryBudget === 0 ? 4 : 2) !== 0)
                         continue;
                     // Wet border rock, ancient edging and root networks never occupy lanes.
                     for (const side of [-1, 1]) {
@@ -1701,12 +1875,14 @@ class ExpeditionScene {
                         this.shape('rock', edge, bx, y + .16, z, 1.08, .42, 2.8, 0, n * .21, 0);
                         if (n % 3 === 0) {
                             if (theme === 'forest') {
-                                // Tapering trunks, forked branches, layered leaf crowns and hanging vines.
-                                this.link([bx, y + .15, z], [bx + side * .14, y + 3.65, z - .18], .30, bark);
-                                this.link([bx + side * .14, y + 2.65, z - .18], [bx - side * .92, y + 4.26, z - .72], .15, bark);
-                                this.link([bx + side * .14, y + 3.05, z - .18], [bx + side * .86, y + 4.72, z + .32], .13, bark);
+                                // Living canopy sways above its fixed rooted base; only foliage and
+                                // branch endpoints animate, never the path or hazard positions.
+                                const wind = calm ? 0 : Math.sin(time * .73 + n * .43 + side) * .095;
+                                this.link([bx, y + .15, z], [bx + side * .14 + wind * .42, y + 3.65, z - .18 + wind * .3], .30, bark);
+                                this.link([bx + side * .14 + wind * .31, y + 2.65, z - .18], [bx - side * .92 + wind, y + 4.26, z - .72 + wind * .4], .15, bark);
+                                this.link([bx + side * .14 + wind * .36, y + 3.05, z - .18], [bx + side * .86 + wind, y + 4.72, z + .32 + wind * .4], .13, bark);
                                 for (let j = 0; j < 5; j++)
-                                    this.shape('rock', j % 2 ? C.leaf : C.leafLight, bx + Math.sin(j * 2.32) * .67, y + 4.6 + Math.cos(j * 3.1) * .37, z - .3 + Math.cos(j * 2.1) * .57, 1.05, .53, .90, 0, j, 0);
+                                    this.shape('rock', j % 2 ? C.leaf : C.leafLight, bx + Math.sin(j * 2.32) * .67 + wind, y + 4.6 + Math.cos(j * 3.1) * .37, z - .3 + Math.cos(j * 2.1) * .57, 1.05, .53, .90, 0, j, 0);
                                 if (!calm)
                                     this.link([bx - side * .5, y + 4.1, z - .5], [bx - side * .48 + Math.sin(time + n) * .05, y + 2.65, z - .45], .020, C.leaf);
                             }
@@ -1734,13 +1910,9 @@ class ExpeditionScene {
                     }
                     // Distant cliff silhouettes and softer outer banks fill the sky without
                     // covering the runner or inventing hazards beyond the selected path.
-                    if (n % 4 === 0) {
-                        for (const side of [-1, 1]) {
-                            const far = x + side * (17 + hash(n * 11 + side) * 4);
-                            this.shape('rock', (0, gl_1.color)(theme === 'cavern' ? '#383949' : theme === 'ruins' ? '#43514F' : '#344F49', -8), far, y + 3.1, z - 9, 5.4, 6.5, 8.0, .1, n * .18, .04);
-                            this.shape('rock', (0, gl_1.color)(theme === 'cavern' ? '#456A67' : '#476354', -8), far - side * 3, y + .7, z - 6, 3.1, 1.6, 5.3, 0, n * .19, 0);
-                        }
-                    }
+                    // Normal-shaded ridgeline strips now replace these old giant
+                    // faceted placeholder rocks. The terrain banks are streamed below from
+                    // stable absolute world distances and never block the three lanes.
                     // Path-specific recognizable landmarks, not interchangeable filler props.
                     if (option.id === 'main' && n % 7 === 0) {
                         for (const side of [-1, 1])
@@ -1767,11 +1939,63 @@ class ExpeditionScene {
                         }
                     }
                 }
+                // Native WebGL counterpart of the richer browser PBR far banks.
+                // One reused indexed/instanced ridge batch; no new per-frame draw calls
+                // per hill, no collisions, no changes to the saved route or checkpoints.
+                const backdropFar = sceneryBudget === 0 ? 88 : sceneryBudget === 1 ? 100 : 112;
+                const backdropTint = (0, gl_1.color)(theme === 'cavern' ? '#4A5661' : theme === 'ruins' ? '#898C83' : '#607F72', -8);
+                const startBand = Math.floor((d - 24) / 24), endBand = Math.ceil((d + backdropFar) / 24);
+                for (let band = startBand; band <= endBand; band++) {
+                    const distance = band * 24, ahead = distance - d;
+                    if (distance < phase.start + 4 || distance > phase.end - 4 || ahead <= 2 || ahead >= backdropFar)
+                        continue;
+                    const fade = (0, core_1.smooth)((ahead - 2) / 16) * (0, core_1.smooth)((backdropFar - ahead) / 20);
+                    if (fade < .035)
+                        continue;
+                    const roadCentre = (0, core_1.overgrownPathOffset)(option.id, distance) + curve(distance) - base;
+                    for (const side of [-1, 1]) {
+                        const noise = hash(band * 71 + side * 17 + (theme === 'ruins' ? 89 : 13));
+                        const bankX = roadCentre + side * (21 + noise * 3.1);
+                        this.shape('ridge', backdropTint, bankX, floorY(distance, option.id) - .43, d - distance, (8.2 + noise * 3) * fade, (7.4 + noise * 3) * fade, (13 + noise * 3.5) * fade, 0, (noise - .5) * .13, 0);
+                    }
+                }
+                // A visible route junction accompanies the actual fixed-step choice:
+                // three approach lanes at 140m, then a low descent, raised jump ledge and
+                // root-clad burrow tunnel at 455m. Only artwork; the fixed-step engine
+                // decides which path was genuinely reached, without scripted teleports.
+                if (allRoutes && phase.start === 455) {
+                    const junction = 455, jz = d - junction, ix = curve(junction) - base + option.side * core_1.LANE_WIDTH, iy = floorY(junction);
+                    if (jz > -60 && jz < 11) {
+                        const metal = theme === 'ruins' ? C.copper : C.stone;
+                        if (option.side === -1) {
+                            // Open lower channel: a clearly down-sloping earth lip and side stones.
+                            this.shape('box', C.stoneDark, ix, iy - .36, jz - .8, 1.77, .25, 3.1, -.17, 0, 0);
+                            for (const side of [-1, 1])
+                                this.shape('rock', C.stone, ix + side * .98, iy - .16, jz - 1.0, .21, .24, .8);
+                        }
+                        else if (option.side === 0) {
+                            // Mid-path is not accessible merely by steering: reach the high lip
+                            // with a correctly timed jump above the untouched .65m physics gate.
+                            this.shape('box', metal, ix, iy + .52, jz - 1.25, 1.86, .26, 2.3);
+                            this.shape('box', C.stoneDark, ix, iy + .32, jz - .8, 1.72, .64, .9);
+                            for (const side of [-1, 1])
+                                this.shape('cylinder', metal, ix + side * .90, iy + .60, jz - 1.4, .11, 1.2, .11);
+                        }
+                        else {
+                            // Crawl under the roots to find the hidden branch. Normal running
+                            // fails the action gate and safely falls back to the lower channel.
+                            for (const side of [-1, 1])
+                                this.shape('rock', C.wood, ix + side * .70, iy + .72, jz - .8, .26, .72, .73);
+                            this.link([ix - .77, iy + 1.26, jz - .8], [ix + .77, iy + 1.26, jz - .8], .19, C.wood);
+                            this.shape('box', C.goldGlow, ix, iy + .22, jz - .71, .68, .08, .20);
+                        }
+                    }
+                }
                 // At an imminent fork every doorway remains visible, even before choosing.
                 if (allRoutes) {
                     const portal = phase.start + 13, z = d - portal;
                     if (z > -95 && z < 14) {
-                        const x = curve(portal) - base + (0, core_1.overgrownPathOffset)(option.id, portal), y = floorY(portal);
+                        const x = curve(portal) - base + (0, core_1.overgrownPathOffset)(option.id, portal), y = floorY(portal, option.id);
                         this.arch(x, y + 1.15, z, 3.1, theme === 'cavern' ? C.stone : theme === 'ruins' ? C.copper : C.wood, .35);
                         this.shape('sphere', (0, gl_1.color)(highlight, .75), x, y + 3.80 + Math.sin(time * 2 + option.side) * .09, z, .21, .33, .21);
                         for (const side of [-1, 1])
@@ -1787,7 +2011,15 @@ class ExpeditionScene {
     setCourse(course) { this.course = course; this.burrows = course.filter(o => o.kind === 'burrow'); this.mainGaps = course.filter(o => o.kind === 'gap' && o.route === 'main'); this.initializedCamera = false; }
     item(item, s, time) {
         const ahead = item.d - s.distance;
-        if (ahead < -6 || ahead > 102 || s.used.includes(item.id))
+        if (ahead < -6 || ahead > 102)
+            return;
+        if (item.kind === 'boulder' && item.route === s.route && ahead < 52) {
+            const side = item.lane || (Math.sin(item.phase) >= 0 ? 1 : -1), bx = side * 6.6 + (0, core_1.routeOffset)(s, item.d) + curve(item.d) - curve(s.distance), by = floorY(item.d, item.route);
+            this.shape(this.renderer.worldReady ? 'scanCliff' : 'rock', C.stone, bx, by - .15, -ahead - 5.76, 2.6, 3.3, 3.2, 0, side * .3, 0);
+            for (let i = 0; i < 3; i++)
+                this.shape('rock', C.stoneDark, bx - side * (.75 + i * .32), by + .15 + i * .24, -ahead - 3.5 + i * .3, .22, .18, .28, 0, i, 0);
+        }
+        if (s.used.includes(item.id))
             return;
         if (s.board === 'overgrown') {
             if (item.route !== s.route && item.route !== 'main')
@@ -1803,7 +2035,7 @@ class ExpeditionScene {
             if (gate)
                 offset = (0, core_1.branchOffset)(item.d, gate.d, gate.d + 90, gate.lane);
         }
-        const pose = (0, core_1.hazardPose)(item, s.time, s.distance), x = pose.x + offset + curve(item.d) - curve(s.distance), z = -ahead, y = floorY(item.d), phase = time + item.phase;
+        const pose = (0, core_1.hazardPose)(item, s.time, s.distance), x = pose.x + offset + curve(pose.d) - curve(s.distance), z = -pose.ahead, y = floorY(pose.d, item.route), phase = time + item.phase;
         const bob = Math.sin(phase * 3) * .09;
         const shadow = (size) => this.shape('shadow', C.shadow, x, y + .020, z, size, 1, size);
         if (['coin', 'gem', 'life', 'key', 'shield', 'magnet', 'snow-sigil', 'guardian-totem', 'tech-cell', 'treasure-cache'].includes(item.kind))
@@ -1919,7 +2151,12 @@ class ExpeditionScene {
                 shadow(.4);
                 break;
             case 'boulder':
-                this.shape('rock', (0, gl_1.color)('#947d66'), x, y + .80 + pose.y, z, .85, .80, .85, phase * 1.5, phase * .5, 0);
+                if (this.renderer.worldReady) {
+                    const roll = (0, math_1.transform)(x, y + .80 + pose.y, z, 1, 1, 1, pose.roll, 0, 0);
+                    this.shape('scanRock', (0, gl_1.color)('#ddd4c5'), 0, -.80, 0, 1.72, 3.05, 1.72, 0, 0, 0, roll);
+                }
+                else
+                    this.shape('rock', (0, gl_1.color)('#947d66'), x, y + .80 + pose.y, z, .85, .80, .85, pose.roll, 0, 0);
                 this.shape('ring', (0, gl_1.color)('#c59164'), x, y + .10, z, .83, 1, .83);
                 shadow(.9);
                 break;
@@ -1976,6 +2213,23 @@ class ExpeditionScene {
                 shadow(.65);
                 break;
             case 'crate':
+                if (this.renderer.worldReady) {
+                    // Separate slats, inset faces and corner hardware retain depth in motion.
+                    for (let j = 0; j < 4; j++) {
+                        this.shape('box', C.woodLight, x, y + .14 + j * .23, z, 1, .20, .98);
+                        for (const side of [-1, 1])
+                            this.shape('box', C.wood, x + side * .51, y + .14 + j * .23, z, .08, .20, 1.0);
+                    }
+                    for (const side of [-1, 1])
+                        for (const end of [-1, 1]) {
+                            this.shape('box', C.copper, x + side * .43, y + .47, z + end * .51, .13, .95, .08);
+                            for (const h of [.10, .82])
+                                this.orb(x + side * .43, y + h, z + end * .56, .033, C.iron);
+                        }
+                    this.shape('box', C.wood, x, y + .47, z + .55, 1.2, .12, .09, 0, 0, .7);
+                    shadow(.7);
+                    break;
+                }
                 this.shape('box', C.woodLight, x, y + .47, z, 1, .95, 1, 0, Math.sin(phase) * .02, 0);
                 for (const side of [-1, 1])
                     this.shape('box', C.wood, x + side * .35, y + .47, z + .51, .10, .94, .05);
@@ -2013,7 +2267,7 @@ class ExpeditionScene {
         const chamber = core_1.CHAMBERS.find(c => c.id === s.chamber);
         if (!chamber)
             return;
-        const x = s.x + (0, core_1.routeOffset)(s), floor = floorY(s.distance), tech = chamber.hero === 'bot', nest = chamber.hero === 'gorilla';
+        const x = s.x + (0, core_1.routeOffset)(s), floor = floorY(s.distance, s.route), tech = chamber.hero === 'bot', nest = chamber.hero === 'gorilla';
         const wall = (0, gl_1.color)(nest ? '#5A6352' : tech ? '#626666' : '#5A596C', -8), wood = (0, gl_1.color)('#695139', -7), accent = (0, gl_1.color)(chamber.accent, .7);
         for (let row = 0; row < 6; row++)
             for (let col = -2; col <= 2; col++) {
@@ -2084,7 +2338,7 @@ class ExpeditionScene {
                 this.item(item, s, visualTime);
         }
         this.madger(s, visualTime, calm);
-        (0, companion_models_1.drawTeam)(this.renderer, s, visualTime, calm, curve, floorY);
+        (0, companion_models_1.drawTeam)(this.renderer, s, visualTime, calm, curve, (d) => floorY(d, s.route));
         this.particles = this.particles.filter(p => visualTime - p.born < p.life);
         if (!calm)
             for (const p of this.particles) {
@@ -2094,16 +2348,27 @@ class ExpeditionScene {
         const lobby = s.mode === 'ready', centre = (0, core_1.routeOffset)(s), targetX = centre + s.x * .72;
         if (!this.initializedCamera) {
             this.cameraX = targetX;
-            this.cameraY = s.y * .18;
+            this.cameraY = floorY(s.distance, s.route) + s.y * .18;
             this.initializedCamera = true;
         }
         this.cameraX += (targetX - this.cameraX) * (1 - Math.exp(-dt * 4));
-        this.cameraY += (s.y * .18 - this.cameraY) * (1 - Math.exp(-dt * 3));
+        this.cameraY += (floorY(s.distance, s.route) + s.y * .18 - this.cameraY) * (1 - Math.exp(-dt * 3));
         const shake = !calm && this.clock - this.reaction.at < .26 && this.reaction.kind === 'hurt' ? Math.sin(this.clock * 73) * .055 * (1 - (this.clock - this.reaction.at) / .26) : 0;
         const chamber = s.mode === 'chamber', cx = s.x + (0, core_1.routeOffset)(s);
         const eye = chamber ? [cx + 1.9, 3.8, 8] : lobby ? [3.8, 3.3, 8.6] : [this.cameraX + shake, 4.4 + this.cameraY, 9.6];
-        const target = chamber ? [cx, 1.3, -5] : lobby ? [0, 1.35, -.6] : [this.cameraX + curve(s.distance + 22) - curve(s.distance), .9, -14];
-        this.renderer.render(eye, target, visualTime, s.zone, s.distance);
+        const target = chamber ? [cx, 1.3, -5] : lobby ? [0, 1.35, -.6] : [this.cameraX + curve(s.distance + 22) - curve(s.distance), .9 + floorY(s.distance + 14, s.route), -14];
+        // Inside a single existing sphere instancing batch: a low-cost moving
+        // atmospheric dome, not a static clear-color sky or an independent shader.
+        // Hidden underground and in secret chambers. Entirely visual: no physics,
+        // route state, checkpoint, rewards or hero transform changes.
+        const cavernRoutes = ['deep', 'mudslide', 'crystal-vein', 'ancient-vault', 'hollow', 'grotto'];
+        if (s.board === 'overgrown' && !chamber && !cavernRoutes.includes(s.route)) {
+            const ruinRoutes = ['ridge', 'causeway', 'watchtower', 'gearworks'];
+            const skyTint = ruinRoutes.includes(s.route) ? '#bdc4b2' : '#b4cfc8';
+            this.shape('sphere', (0, gl_1.color)(skyTint, -9), eye[0], eye[1], eye[2], 138, 138, 138);
+        }
+        const lightZone = (0, core_1.environmentZone)(s);
+        this.renderer.render(eye, target, visualTime, lightZone, s.distance);
     }
     dispose() { this.disposed = true; this.particles = []; this.renderer.dispose(); }
 }
@@ -2111,22 +2376,161 @@ exports.ExpeditionScene = ExpeditionScene;
 };
 factories["legacy-geometry"]=function(require,module,exports){"use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.ExpeditionRenderer = void 0;
+exports.ExpeditionRenderer = exports.NativeSceneTarget = void 0;
+exports.nativeSceneSize = nativeSceneSize;
+exports.adaptNativeSceneryBudget = adaptNativeSceneryBudget;
 exports.color = color;
 exports.geometry = geometry;
 exports.tailGeometry = tailGeometry;
 const math_1 = require("./math");
+/** Bound native fragment work independently of the phone's high-density UI.
+ * A 1440p screen otherwise shades millions of pixels for every overlapping
+ * tree/particle, even after distant geometry has been culled. */
+function nativeSceneSize(width, height, budget) {
+    const scale = Math.min([.55, .75, 1][budget], Math.sqrt(800000 / Math.max(1, width * height)));
+    return { width: Math.max(1, Math.floor(width * scale)), height: Math.max(1, Math.floor(height * scale)) };
+}
+/** Offscreen scene only; React Native text and controls stay at device resolution.
+ * Expo maps bindFramebuffer(null) to its presentation buffer. Its native
+ * getParameter does not implement FRAMEBUFFER_BINDING, unlike browser WebGL. */
+class NativeSceneTarget {
+    gl;
+    framebuffer;
+    texture;
+    depth;
+    program;
+    quad;
+    sampler;
+    width = 0;
+    height = 0;
+    output = null;
+    constructor(gl) {
+        this.gl = gl;
+        const framebuffer = gl.createFramebuffer(), texture = gl.createTexture(), depth = gl.createRenderbuffer(), quad = gl.createBuffer();
+        if (!framebuffer || !texture || !depth || !quad)
+            throw Error('Native scene target allocation failed');
+        this.framebuffer = framebuffer;
+        this.texture = texture;
+        this.depth = depth;
+        this.quad = quad;
+        const shaders = [
+            [gl.VERTEX_SHADER, 'attribute vec2 aPosition;varying vec2 vUV;void main(){vUV=aPosition*.5+.5;gl_Position=vec4(aPosition,0.,1.);}'],
+            [gl.FRAGMENT_SHADER, 'precision mediump float;uniform sampler2D uScene;varying vec2 vUV;void main(){gl_FragColor=texture2D(uScene,vUV);}'],
+        ];
+        const program = gl.createProgram();
+        if (!program)
+            throw Error('Native scene composite allocation failed');
+        this.program = program;
+        for (const [type, source] of shaders) {
+            const shader = gl.createShader(type);
+            if (!shader)
+                throw Error('Native composite shader allocation failed');
+            gl.shaderSource(shader, source);
+            gl.compileShader(shader);
+            if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS))
+                throw Error('Native composite shader: ' + gl.getShaderInfoLog(shader));
+            gl.attachShader(program, shader);
+            gl.deleteShader(shader);
+        }
+        gl.bindAttribLocation(program, 0, 'aPosition');
+        gl.linkProgram(program);
+        if (!gl.getProgramParameter(program, gl.LINK_STATUS))
+            throw Error('Native composite: ' + gl.getProgramInfoLog(program));
+        const sampler = gl.getUniformLocation(program, 'uScene');
+        if (sampler === null)
+            throw Error('Native composite sampler unavailable');
+        this.sampler = sampler;
+        gl.bindBuffer(gl.ARRAY_BUFFER, quad);
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 1, -1, -1, 1, 1, 1]), gl.STATIC_DRAW);
+        gl.bindTexture(gl.TEXTURE_2D, texture);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+        gl.bindTexture(gl.TEXTURE_2D, null);
+    }
+    begin(width, height, budget) {
+        const gl = this.gl, size = nativeSceneSize(width, height, budget);
+        this.output = typeof gl.flushEXP === 'function' ? null : gl.getParameter(gl.FRAMEBUFFER_BINDING);
+        gl.bindFramebuffer(gl.FRAMEBUFFER, this.framebuffer);
+        if (size.width !== this.width || size.height !== this.height) {
+            gl.bindTexture(gl.TEXTURE_2D, this.texture);
+            gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, size.width, size.height, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+            gl.bindRenderbuffer(gl.RENDERBUFFER, this.depth);
+            gl.renderbufferStorage(gl.RENDERBUFFER, gl.DEPTH_COMPONENT16, size.width, size.height);
+            gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, this.texture, 0);
+            gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl.DEPTH_ATTACHMENT, gl.RENDERBUFFER, this.depth);
+            if (gl.checkFramebufferStatus(gl.FRAMEBUFFER) !== gl.FRAMEBUFFER_COMPLETE) {
+                gl.bindFramebuffer(gl.FRAMEBUFFER, this.output);
+                throw Error('Native scene framebuffer is incomplete');
+            }
+            this.width = size.width;
+            this.height = size.height;
+            gl.bindTexture(gl.TEXTURE_2D, null);
+            gl.bindRenderbuffer(gl.RENDERBUFFER, null);
+        }
+        gl.viewport(0, 0, this.width, this.height);
+        return size;
+    }
+    present(width, height) {
+        const gl = this.gl;
+        gl.bindFramebuffer(gl.FRAMEBUFFER, this.output);
+        gl.viewport(0, 0, width, height);
+        gl.disable(gl.DEPTH_TEST);
+        gl.disable(gl.BLEND);
+        gl.depthMask(false);
+        gl.useProgram(this.program);
+        gl.activeTexture(gl.TEXTURE0);
+        gl.bindTexture(gl.TEXTURE_2D, this.texture);
+        gl.uniform1i(this.sampler, 0);
+        gl.bindBuffer(gl.ARRAY_BUFFER, this.quad);
+        gl.enableVertexAttribArray(0);
+        gl.vertexAttribPointer(0, 2, gl.FLOAT, false, 0, 0);
+        for (let i = 1; i <= 7; i++)
+            gl.disableVertexAttribArray(i);
+        gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+        gl.bindTexture(gl.TEXTURE_2D, null);
+        gl.depthMask(true);
+        gl.enable(gl.DEPTH_TEST);
+    }
+    dispose() { const gl = this.gl; gl.deleteFramebuffer(this.framebuffer); gl.deleteRenderbuffer(this.depth); gl.deleteTexture(this.texture); gl.deleteBuffer(this.quad); gl.deleteProgram(this.program); }
+}
+exports.NativeSceneTarget = NativeSceneTarget;
+/** Only noninteractive distant dressing scales down: controls, lanes, traps,
+ * branch gates, rewards and persisted state are never changed by this budget.
+ * The native command queue can drain slowly on software and older mobile GPUs. */
+function adaptNativeSceneryBudget(state, drainMs) {
+    if (!Number.isFinite(drainMs) || drainMs < 0)
+        return state;
+    if (drainMs >= 90)
+        return { level: Math.max(0, state.level - 1), fastFrames: 0, slowFrames: 0 };
+    if (drainMs >= 45) {
+        const slowFrames = state.slowFrames + 1;
+        return slowFrames >= 2 ? { level: Math.max(0, state.level - 1), fastFrames: 0, slowFrames: 0 }
+            : { ...state, fastFrames: 0, slowFrames };
+    }
+    if (drainMs <= 20) {
+        const fastFrames = state.fastFrames + 1;
+        return fastFrames >= 150 ? { level: Math.min(2, state.level + 1), fastFrames: 0, slowFrames: 0 }
+            : { ...state, fastFrames, slowFrames: 0 };
+    }
+    return { ...state, fastFrames: 0, slowFrames: 0 };
+}
 const VERTEX = `
 precision highp float;
 attribute vec3 aPosition;
-attribute vec3 aNormal;
+attribute vec3 aNormal; attribute vec2 aUV;
+uniform float uTime;uniform float uWind;
+varying vec2 vUV;
 attribute vec4 aM0; attribute vec4 aM1; attribute vec4 aM2; attribute vec4 aM3;
 attribute vec4 aColor;
 uniform mat4 uVP;
 varying vec3 vWorld; varying vec3 vNormal; varying vec3 vLocal; varying vec4 vColor;
 void main(){
  mat4 model=mat4(aM0,aM1,aM2,aM3);
- vec4 p=model*vec4(aPosition,1.0);vWorld=p.xyz;vLocal=aPosition;
+ vec3 local=aPosition;
+ local.x+=sin(uTime*.72+aM3.x*.37+aM3.z*.13+local.y*3.0)*.009*local.y*uWind;
+ vec4 p=model*vec4(local,1.0);vWorld=p.xyz;vLocal=aPosition;vUV=aUV;
  vNormal=normalize(aM0.xyz*aNormal.x/max(dot(aM0.xyz,aM0.xyz),0.00001)+aM1.xyz*aNormal.y/max(dot(aM1.xyz,aM1.xyz),0.00001)+aM2.xyz*aNormal.z/max(dot(aM2.xyz,aM2.xyz),0.00001));
  vColor=aColor;gl_Position=uVP*p;
 }`;
@@ -2137,23 +2541,96 @@ precision highp float;
 #else
 precision mediump float;
 #endif
-uniform vec3 uEye;uniform vec3 uFog;uniform vec2 uFogRange;uniform float uTime;uniform float uTravel;
+uniform sampler2D uPortrait;uniform sampler2D uAtlas;uniform sampler2D uGround;uniform sampler2D uBark;uniform sampler2D uStone;
+uniform float uAtlasReady;uniform float uSurface;uniform float uTile;
+varying vec2 vUV;
+uniform vec3 uEye;uniform vec3 uSun;uniform vec3 uFog;uniform vec2 uFogRange;uniform float uTime;uniform float uTravel;uniform float uDetail;
 varying vec3 vWorld;varying vec3 vNormal;varying vec3 vLocal;varying vec4 vColor;
 #ifdef GL_FRAGMENT_PRECISION_HIGH
 float hash(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
 #else
 float hash(vec2 p){p=mod(p,vec2(32.0));return fract(sin(dot(p,vec2(17.13,41.7)))*437.58545);}
 #endif
+vec4 surfaceTex(float tile,vec2 uv){
+ vec2 origin=vec2(mod(tile,4.0),floor(tile/4.0))*.25;
+ // PNG upload is unflipped: both glTF and the atlas use top-left image UVs.
+ return texture2D(uAtlas,origin+vec2(.002)+fract(uv)*.246);
+}
+vec3 surfaceColor(vec3 base,vec3 n){
+ if(uAtlasReady<.5)return base;
+ if(uSurface>.5){vec4 tex=surfaceTex(uTile,vUV);if(tex.a<.40)discard;return tex.rgb*tex.rgb*base;}
+ float tile=-1.0,scale=.30;
+ if(vColor.a < -.5 && vColor.a > -1.5)tile=0.0;
+ if(vColor.a < -6.5 && vColor.a > -7.5){tile=1.0;scale=.45;}
+ if(vColor.a < -7.5 && vColor.a > -8.5){tile=2.0;scale=.32;}
+ if(tile<0.0)return base;
+ // World anchoring prevents the earth texture swimming as the course moves.
+ vec3 p=vec3(vWorld.x,vWorld.y,uTravel-vWorld.z)*scale;
+ vec3 a=abs(n);vec2 uv=a.y>a.x&&a.y>a.z?p.xz:(a.x>a.z?p.zy:p.xy);
+ vec3 tex=tile<.5?texture2D(uGround,uv).rgb:tile<1.5?texture2D(uBark,uv).rgb:texture2D(uStone,uv).rgb;
+ if(tile>1.5){float grey=dot(tex,vec3(.299,.587,.114));tex=mix(tex,vec3(grey)*vec3(.87,.94,1.03),.78);}
+ return tex*tex*mix(vec3(1.12),base*2.0,.20);
+}
 void main(){
+ if(vColor.a < -9.5 && vColor.a > -10.5){
+  vec2 uv=vec2(vLocal.x/1.18+.5,vLocal.y/1.07+.5);
+  float radius=length((uv-vec2(.5))/vec2(.52,.53));
+  float mask=1.0-smoothstep(.83,1.02,radius);if(mask<.02)discard;
+  vec3 portrait=texture2D(uPortrait,vec2(.285,.595)+uv*vec2(.43,.30)).rgb;
+  float light=.84+.16*max(0.0,dot(normalize(vNormal),normalize(vec3(-.4,.8,-.8))));
+  gl_FragColor=vec4(portrait*light,mask);return;
+ }
+ if(vColor.a < -10.5 && vColor.a > -11.5 && vLocal.z < .08)discard;
+ // Outdoor sky is an eye-centred instanced sphere in the existing sphere
+ // batch. World-space angular bands add animated clouds and a real horizon
+ // without a postprocess pass, extra GL program, or additional draw call.
+ if(vColor.a < -8.5 && vColor.a > -9.5){
+  vec3 direction=normalize(vLocal);
+  float height=smoothstep(-.16,.70,direction.y);
+  vec3 horizon=vColor.rgb;
+  vec3 zenith=vec3(.095,.19,.29);
+  vec3 atmosphere=mix(horizon,zenith,height);
+  if(uDetail<.5){gl_FragColor=vec4(sqrt(max(atmosphere,vec3(0.0))),1.0);return;}
+  float azimuth=atan(direction.x,direction.z);
+  float drift=uTime*.023;
+  float cloudWave=sin(azimuth*9.0+sin(azimuth*5.0+direction.y*17.0)+drift)
+   *sin(direction.y*47.0+sin(azimuth*13.0)*.6+drift*.6);
+  float cloudBand=smoothstep(.08,.26,direction.y)
+   *(1.0-smoothstep(.43,.75,direction.y));
+  float cirrus=smoothstep(.37,.76,cloudWave)*cloudBand*.12;
+  atmosphere=mix(atmosphere,vec3(.84,.88,.85),cirrus);
+  gl_FragColor=vec4(pow(max(atmosphere,vec3(0.0)),vec3(.4545)),1.0);
+  return;
+ }
  if(vColor.a < -5.5 && vColor.a > -6.5){float a=max(0.0,1.0-dot(vLocal.xy,vLocal.xy));gl_FragColor=vec4(vColor.rgb*1.8,a*a*.38);return;}
  if(vColor.a < -2.5 && vColor.a > -3.5){float a=max(0.0,1.0-dot(vLocal.xz,vLocal.xz));gl_FragColor=vec4(0.015,0.016,0.018,a*a*.32);return;}
+ // The native fallback keeps the same meshes, markings, portrait, shadows and
+ // gameplay effects. Skip subpixel procedural grain and expensive specular/
+ // lamp calculations only when measured GPU drain has exhausted the budget.
+ // Those details are especially costly on software and older phone GPUs.
+ if(uDetail<.5){
+  vec3 n=normalize(vNormal),base=surfaceColor(vColor.rgb,n);
+  if(vColor.a < -.5 && vColor.a > -1.5){
+   float edge=max(smoothstep(.455,.499,abs(vLocal.x)),smoothstep(.468,.499,abs(vLocal.z)));
+   base*=1.0-edge*.24*(1.0-uAtlasReady);
+  }
+  if(vColor.a < -4.5 && vColor.a > -5.5){
+   float chevron=sin(vLocal.z*18.0+abs(vLocal.x)*7.5);
+   float t=clamp(vLocal.z/1.26,0.0,1.0),centre=.14*sin(t*3.14159265)+.26*t*t;
+   base=mix(base,vec3(.86,.68,.38),smoothstep(.17,.35,chevron)*.91*smoothstep(-.03,.10,vLocal.y-centre));
+  }
+  float sun=max(0.0,dot(n,vec3(-.423,.800,.423)));
+  vec3 lit=base*(vec3(.32,.38,.37)+uSun*sun+vec3(.16,.23,.22)*max(0.0,n.y)+max(0.0,vColor.a)*1.15);
+  lit=mix(lit,uFog,smoothstep(uFogRange.x,uFogRange.y,length(uEye-vWorld)));
+  gl_FragColor=vec4(sqrt(max(lit/(lit+vec3(.65)),vec3(0.0))),1.0);return;
+ }
  vec3 n=normalize(vNormal),view=normalize(uEye-vWorld);
- vec3 base=vColor.rgb;float em=max(0.0,vColor.a);
+ vec3 base=surfaceColor(vColor.rgb,n);float em=max(0.0,vColor.a);
  if(vColor.a < -.5 && vColor.a > -1.5){vec2 surface=vec2(vWorld.x,uTravel-vWorld.z);
  float grain=hash(floor(mod(surface,vec2(32.0))*24.0));
  float mottling=sin(surface.x*2.13+sin(surface.y*.75))*sin(surface.y*1.84);
  float edge=max(smoothstep(.455,.499,abs(vLocal.x)),smoothstep(.468,.499,abs(vLocal.z)));
- base*=.89+grain*.14+mottling*.05;base*=1.0-edge*.24;}
+ base*=.89+grain*.14+mottling*.05;base*=1.0-edge*.24*(1.0-uAtlasReady);}
  if(vColor.a < -1.5 && vColor.a > -2.5){
    float wave=sin(vWorld.x*3.0+uTime*1.4)*sin((uTravel-vWorld.z)*1.7-uTime*.8);
    n=normalize(n+vec3(wave*.10,0.0,sin((uTravel-vWorld.z)*4.0+uTime)*.07));
@@ -2189,7 +2666,7 @@ void main(){
  float sun=max(0.0,dot(n,normalize(vec3(-.45,.85,.45))));
  float rim=pow(1.0-max(0.0,dot(n,view)),3.0);
  float spec=pow(max(0.0,dot(n,normalize(view+normalize(vec3(-.45,.85,.45))))),36.0);
- vec3 light=vec3(.16,.20,.22)+vec3(.82,.65,.41)*sun+vec3(.12,.21,.21)*max(0.0,n.y);
+ vec3 light=vec3(.30,.36,.36)+uSun*sun+vec3(.16,.23,.22)*max(0.0,n.y);
  vec3 lamp=vec3(sign(vWorld.x)*4.0-vWorld.x,2.45-vWorld.y,mod(uTravel-vWorld.z+10.0,20.0)-10.0);
  float falloff=1.0/(1.0+dot(lamp,lamp)*.24);
  light+=vec3(.75,.36,.09)*falloff*(.4+.6*max(0.0,dot(n,normalize(lamp))))*(.98+.02*sin(uTime*6.0));
@@ -2222,6 +2699,72 @@ function geometry(shape) {
             triangle(v, f.p[0], f.p[1], f.p[2], f.n);
             triangle(v, f.p[0], f.p[2], f.p[3], f.n);
         }
+    }
+    else if (shape === 'face') {
+        // Same curved portrait surface and UV crop as the browser's approved rig.
+        const point = (i, j) => {
+            const x = (i / 24 - .5) * 1.18, y = (j / 22 - .5) * 1.07;
+            return [x, y, -.515 * Math.sqrt(Math.max(.015, 1 - (x / .67) ** 2 - (y / .58) ** 2)) - .065];
+        };
+        for (let j = 0; j < 22; j++)
+            for (let i = 0; i < 24; i++) {
+                const a = point(i, j), b = point(i + 1, j), c = point(i, j + 1), d = point(i + 1, j + 1);
+                triangle(v, a, c, b);
+                triangle(v, b, c, d);
+            }
+    }
+    else if (shape === 'trail') {
+        triangle(v, [-.5, 0, -.5], [.5, 0, .5], [.5, 0, -.5], [0, 1, 0]);
+        triangle(v, [-.5, 0, -.5], [-.5, 0, .5], [.5, 0, .5], [0, 1, 0]);
+    }
+    else if (shape === 'ceiling') {
+        // Periodic end rings meet exactly between chunks: a closed arched vault,
+        // with inward normals and no sky cracks when a device lowers draw detail.
+        const nx = 16, nz = 8;
+        const point = (i, j) => {
+            const x = -1 + 2 * i / nx, z = -1 + 2 * j / nz;
+            return [x, -.70 * Math.sqrt(Math.max(0, 1 - x * x)) + .065 * Math.cos(x * 9 + Math.cos(z * Math.PI * 2)) + .035 * Math.cos(x * 19 + Math.cos(z * Math.PI * 4)), z];
+        };
+        for (let j = 0; j < nz; j++)
+            for (let i = 0; i < nx; i++) {
+                const a = point(i, j), b = point(i + 1, j), c = point(i, j + 1), d = point(i + 1, j + 1);
+                triangle(v, a, b, c);
+                triangle(v, b, d, c);
+            }
+    }
+    else if (shape === 'terrain') {
+        // One continuous, noninteractive forest floor under the road. Raised outer
+        // banks add true depth while the inner edge stays below collision height.
+        const nx = 16, nz = 12;
+        const point = (i, j) => {
+            const x = i / nx, z = -1 + 2 * j / nz;
+            return [x, Math.pow(x, 1.25) * (.16 + .10 * Math.sin(x * 13 + Math.cos(z * Math.PI)) + .08 * Math.cos(x * 21 - Math.cos(z * Math.PI * 2))), z];
+        };
+        for (let j = 0; j < nz; j++)
+            for (let i = 0; i < nx; i++) {
+                const a = point(i, j), b = point(i + 1, j), c = point(i, j + 1), d = point(i + 1, j + 1);
+                triangle(v, a, c, b);
+                triangle(v, b, c, d);
+            }
+    }
+    else if (shape === 'ridge') {
+        // Coherent sculpted bank: 192 shaded triangles instead of large faceted
+        // primitive rocks. Instanced as a single low-cost native GL material batch.
+        const nx = 12, nz = 8;
+        const point = (i, j) => {
+            const x = -1 + i * 2 / nx, z = -1 + j * 2 / nz;
+            const shoulder = Math.pow(Math.max(0, 1 - Math.abs(x)), .62);
+            const crown = .46 + .20 * Math.sin(x * 7.7 + z * 1.2) + .11 * Math.sin(x * 16.9 - z * 2.1)
+                + .075 * Math.cos(x * 25.1 + z * 6.1);
+            const grain = .03 * Math.sin(x * 15.4 + z * 12.2) * Math.cos(z * 9.1 - x * 7.7);
+            return [x, Math.max(0, shoulder * (crown + grain)), z];
+        };
+        for (let j = 0; j < nz; j++)
+            for (let i = 0; i < nx; i++) {
+                const a = point(i, j), b = point(i + 1, j), c = point(i, j + 1), d = point(i + 1, j + 1);
+                triangle(v, a, c, b);
+                triangle(v, b, c, d);
+            }
     }
     else if (shape === 'headStripe') {
         const point = (i, side) => { const a = -1.29 + i / 64 * 3.65; const zig = [.00, .04, -.018, .05, -.023][i % 5]; const x = side * (.12 + ((i % 4 === 0) ? .03 : 0)) + zig; const f = Math.sqrt(1 - (x / .676) ** 2); return [x, .616 * Math.cos(a) * f, -.03 + .546 * Math.sin(a) * f]; };
@@ -2341,9 +2884,9 @@ function color(hex, material = 0) {
     colorCache.set(key, c);
     return c;
 }
-function geometryBounds(vertices, bounds = { center: [0, 0, 0], half: [0, 0, 0] }) {
+function geometryBounds(vertices, bounds = { center: [0, 0, 0], half: [0, 0, 0] }, stride = 6) {
     const low = [Infinity, Infinity, Infinity], high = [-Infinity, -Infinity, -Infinity];
-    for (let i = 0; i < vertices.length; i += 6)
+    for (let i = 0; i < vertices.length; i += stride)
         for (let axis = 0; axis < 3; axis++) {
             low[axis] = Math.min(low[axis], vertices[i + axis]);
             high[axis] = Math.max(high[axis], vertices[i + axis]);
@@ -2426,11 +2969,23 @@ class ExpeditionRenderer {
     tailVertices = new Float32Array(TAIL_INDICES.length * 6);
     tailGrid = new Float64Array((TAIL_RINGS + 1) * (TAIL_SIDES + 1) * 6);
     clipPlanes = new Float64Array(24);
+    portrait = null;
+    portraitReady = false;
+    atlas = null;
+    surfaces = [];
+    worldReady = false;
     dead = false;
     nativeFrames = 0;
-    stats = { instances: 0, culledInstances: 0, drawCalls: 0, indexedDrawCalls: 0, triangles: 0, nativeDrainMs: 0 };
+    sceneryState = { level: 2, fastFrames: 0, slowFrames: 0 };
+    sceneTarget = null;
+    sceneryBudget = 2;
+    stats = { instances: 0, culledInstances: 0, drawCalls: 0, indexedDrawCalls: 0, triangles: 0, nativeDrainMs: 0, sceneWidth: 0, sceneHeight: 0, materialDetail: 1 };
     constructor(gl) {
         this.gl = gl;
+        if (typeof this.gl.flushEXP === 'function') {
+            this.sceneryState.level = 1;
+            this.sceneryBudget = 1;
+        }
         const compile = (type, source) => { const s = gl.createShader(type); if (!s)
             throw Error('Could not allocate a GPU shader'); gl.shaderSource(s, source); gl.compileShader(s); if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) {
             const message = gl.getShaderInfoLog(s);
@@ -2442,7 +2997,7 @@ class ExpeditionRenderer {
             throw Error('Could not allocate GPU program');
         gl.attachShader(program, vert);
         gl.attachShader(program, frag);
-        ['aPosition', 'aNormal', 'aM0', 'aM1', 'aM2', 'aM3', 'aColor'].forEach((name, i) => gl.bindAttribLocation(program, i, name));
+        ['aPosition', 'aNormal', 'aM0', 'aM1', 'aM2', 'aM3', 'aColor', 'aUV'].forEach((name, i) => gl.bindAttribLocation(program, i, name));
         gl.linkProgram(program);
         gl.deleteShader(vert);
         gl.deleteShader(frag);
@@ -2454,7 +3009,7 @@ class ExpeditionRenderer {
         this.program = program;
         const uniform = (name) => { const u = gl.getUniformLocation(program, name); if (u === null)
             throw Error('Missing shader uniform ' + name); return u; };
-        this.uniforms = { vp: uniform('uVP'), eye: uniform('uEye'), fog: uniform('uFog'), range: uniform('uFogRange'), time: uniform('uTime'), travel: uniform('uTravel') };
+        this.uniforms = { sun: uniform('uSun'), ground: uniform('uGround'), bark: uniform('uBark'), stone: uniform('uStone'), atlas: uniform('uAtlas'), atlasReady: uniform('uAtlasReady'), surface: uniform('uSurface'), tile: uniform('uTile'), wind: uniform('uWind'), portrait: uniform('uPortrait'), vp: uniform('uVP'), eye: uniform('uEye'), fog: uniform('uFog'), range: uniform('uFogRange'), time: uniform('uTime'), travel: uniform('uTravel'), detail: uniform('uDetail') };
         const g = gl;
         if (typeof g.drawArraysInstanced === 'function') {
             this.drawInstanced = g.drawArraysInstanced.bind(g);
@@ -2471,7 +3026,7 @@ class ExpeditionRenderer {
                     this.drawIndexedInstanced = ext.drawElementsInstancedANGLE.bind(ext);
             }
         }
-        for (const shape of ['box', 'sphere', 'rock', 'cylinder', 'cone', 'ring', 'leaf', 'headStripe', 'tail', 'shadow', 'halo']) {
+        for (const shape of ['box', 'sphere', 'rock', 'ridge', 'terrain', 'trail', 'ceiling', 'cylinder', 'cone', 'ring', 'leaf', 'headStripe', 'tail', 'shadow', 'halo', 'face']) {
             const data = shape === 'tail' ? tailGeometry(0, 0, this.tailVertices, this.tailGrid) : geometry(shape), vertex = gl.createBuffer(), instances = gl.createBuffer();
             if (!vertex || !instances)
                 throw Error('GPU buffer allocation failed');
@@ -2490,11 +3045,93 @@ class ExpeditionRenderer {
         gl.enable(gl.DEPTH_TEST);
         gl.depthFunc(gl.LEQUAL);
         gl.disable(gl.CULL_FACE);
+        if (typeof this.gl.flushEXP === 'function' && gl.getParameter(gl.MAX_TEXTURE_SIZE) > 0)
+            this.sceneTarget = new NativeSceneTarget(gl);
+    }
+    /** Install the project's offline-baked scans once, before enabling Start.
+     * Asset errors fail the loading screen instead of silently shipping flat props. */
+    setWorldAssets(pack, source, surfaces) {
+        if (this.worldReady)
+            throw Error('Native world is already installed');
+        if (pack.version !== 1 || pack.meshes.length !== 8 || surfaces.length !== 3)
+            throw Error('Invalid native world pack');
+        const gl = this.gl, texture = gl.createTexture();
+        if (!texture)
+            throw Error('Forest texture allocation failed');
+        this.atlas = texture;
+        gl.activeTexture(gl.TEXTURE2);
+        gl.bindTexture(gl.TEXTURE_2D, texture);
+        gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, false);
+        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, source);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_LINEAR);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+        gl.generateMipmap(gl.TEXTURE_2D);
+        gl.activeTexture(gl.TEXTURE0);
+        for (let i = 0; i < surfaces.length; i++) {
+            const t = gl.createTexture();
+            if (!t)
+                throw Error('Native ground texture allocation failed');
+            this.surfaces.push(t);
+            gl.activeTexture(gl.TEXTURE0 + 3 + i);
+            gl.bindTexture(gl.TEXTURE_2D, t);
+            gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, surfaces[i]);
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_LINEAR);
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.REPEAT);
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.REPEAT);
+            gl.generateMipmap(gl.TEXTURE_2D);
+        }
+        gl.activeTexture(gl.TEXTURE0);
+        for (const mesh of pack.meshes) {
+            if (!mesh.name.startsWith('scan') || mesh.vertices.length % 8 || mesh.indices.length % 3 || mesh.vertices.length / 8 > 65535 || mesh.indices.some(i => i < 0 || i >= mesh.vertices.length / 8) || mesh.vertices.some(v => !Number.isFinite(v)))
+                throw Error('Invalid native mesh ' + mesh.name);
+            const data = new Float32Array(mesh.vertices), vertex = gl.createBuffer(), instances = gl.createBuffer(), elements = gl.createBuffer();
+            if (!vertex || !instances || !elements)
+                throw Error('Native mesh allocation failed');
+            gl.bindBuffer(gl.ARRAY_BUFFER, vertex);
+            gl.bufferData(gl.ARRAY_BUFFER, data, gl.STATIC_DRAW);
+            gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, elements);
+            gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(mesh.indices), gl.STATIC_DRAW);
+            const bounds = geometryBounds(data, undefined, 8);
+            bounds.half[0] += .02;
+            this.batches.set(mesh.name, { vertex, instances, elements, vertices: mesh.indices.length, data: new Float32Array(20 * 64), visible: new Float32Array(0), bounds, count: 0, stride: 8, tile: mesh.tile, wind: mesh.wind });
+        }
+        this.worldReady = true;
+    }
+    setMadgerPortrait(source) {
+        const gl = this.gl, texture = gl.createTexture();
+        if (!texture)
+            throw Error('Approved portrait texture allocation failed');
+        try {
+            gl.activeTexture(gl.TEXTURE1);
+            gl.bindTexture(gl.TEXTURE_2D, texture);
+            gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
+            gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, source);
+            gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, false);
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+            if (this.portrait)
+                gl.deleteTexture(this.portrait);
+            this.portrait = texture;
+            this.portraitReady = true;
+        }
+        catch (error) {
+            gl.deleteTexture(texture);
+            throw error;
+        }
+        finally {
+            gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, false);
+            gl.activeTexture(gl.TEXTURE0);
+        }
     }
     updateTail(time, bank) { const b = this.batches.get('tail'); const data = tailGeometry(time, bank, this.tailVertices, this.tailGrid); geometryBounds(data, b.bounds); this.gl.bindBuffer(this.gl.ARRAY_BUFFER, b.vertex); this.gl.bufferData(this.gl.ARRAY_BUFFER, data, this.gl.DYNAMIC_DRAW); b.vertices = data.length / 6; }
     reset() { for (const b of this.batches.values())
-        b.count = 0; this.stats = { instances: 0, culledInstances: 0, drawCalls: 0, indexedDrawCalls: 0, triangles: 0, nativeDrainMs: 0 }; }
-    add(shape, matrix, c) { const b = this.batches.get(shape); if (b.count >= 4096)
+        b.count = 0; this.stats = { instances: 0, culledInstances: 0, drawCalls: 0, indexedDrawCalls: 0, triangles: 0, nativeDrainMs: 0, sceneWidth: 0, sceneHeight: 0, materialDetail: 1 }; }
+    add(shape, matrix, c) { const b = this.batches.get(shape); if (!b || b.count >= b.data.length / 20)
         return; const offset = b.count * 20; b.data.set(matrix, offset); b.data.set(c, offset + 16); b.count++; }
     shape(shape, c, x, y, z, sx = 1, sy = 1, sz = 1, rx = 0, ry = 0, rz = 0, parent) { const t = (0, math_1.transform)(x, y, z, sx, sy, sz, rx, ry, rz); this.add(shape, parent ? (0, math_1.multiply)(parent, t) : t, c); }
     render(eye, target, time, zone, travel = 0) {
@@ -2503,20 +3140,49 @@ class ExpeditionRenderer {
         const gl = this.gl, width = gl.drawingBufferWidth, height = gl.drawingBufferHeight;
         if (width < 2 || height < 2)
             return;
-        const fog = zone === 0 ? [.024, .060, .057] : zone === 1 ? [.024, .045, .057] : [.036, .026, .075];
+        const fog = zone === 0 ? (this.worldReady ? [.18, .25, .22] : [.024, .060, .057]) : zone === 1 ? [.024, .045, .057] : (this.worldReady ? [.018, .028, .038] : [.036, .026, .075]);
         const sky = fog.map(x => Math.pow(x / (x + .65), .4545));
-        gl.viewport(0, 0, width, height);
+        const size = this.sceneTarget?.begin(width, height, this.sceneryBudget) ?? { width, height };
+        this.stats.sceneWidth = size.width;
+        this.stats.sceneHeight = size.height;
+        gl.viewport(0, 0, size.width, size.height);
         gl.clearColor(sky[0], sky[1], sky[2], 1);
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
         gl.useProgram(this.program);
         const vp = (0, math_1.multiply)((0, math_1.perspective)(2 * Math.atan(Math.max(Math.tan(33 * Math.PI / 180), Math.tan(17 * Math.PI / 180) / (width / height))), width / height, .1, 180), (0, math_1.lookAt)(eye, target));
         updateClipPlanes(vp, this.clipPlanes);
+        if (this.portrait) {
+            gl.activeTexture(gl.TEXTURE1);
+            gl.bindTexture(gl.TEXTURE_2D, this.portrait);
+            gl.uniform1i(this.uniforms.portrait, 1);
+            gl.activeTexture(gl.TEXTURE0);
+        }
+        gl.uniform1f(this.uniforms.atlasReady, this.worldReady ? 1 : 0);
+        // Assign distinct texture units even before either texture is ready.
+        gl.uniform1i(this.uniforms.portrait, 1);
+        gl.uniform1i(this.uniforms.atlas, 2);
+        gl.uniform1i(this.uniforms.ground, 3);
+        gl.uniform1i(this.uniforms.bark, 4);
+        gl.uniform1i(this.uniforms.stone, 5);
+        if (this.atlas) {
+            gl.activeTexture(gl.TEXTURE2);
+            gl.bindTexture(gl.TEXTURE_2D, this.atlas);
+            gl.activeTexture(gl.TEXTURE0);
+        }
+        for (let i = 0; i < this.surfaces.length; i++) {
+            gl.activeTexture(gl.TEXTURE0 + 3 + i);
+            gl.bindTexture(gl.TEXTURE_2D, this.surfaces[i]);
+        }
+        gl.activeTexture(gl.TEXTURE0);
         gl.uniformMatrix4fv(this.uniforms.vp, false, vp);
         gl.uniform3f(this.uniforms.eye, eye[0], eye[1], eye[2]);
         gl.uniform3f(this.uniforms.fog, fog[0], fog[1], fog[2]);
-        gl.uniform2f(this.uniforms.range, 30, 115);
+        gl.uniform3f(this.uniforms.sun, ...(zone === 2 && this.worldReady ? [.32, .50, .70] : [.95, .83, .62]));
+        gl.uniform2f(this.uniforms.range, this.worldReady ? 48 : 30, 115);
         gl.uniform1f(this.uniforms.time, time);
         gl.uniform1f(this.uniforms.travel, travel);
+        this.stats.materialDetail = typeof this.gl.flushEXP === 'function' && this.sceneryBudget === 0 ? 0 : 1;
+        gl.uniform1f(this.uniforms.detail, this.stats.materialDetail);
         for (const [shape, b] of this.batches) {
             if (!b.count)
                 continue;
@@ -2524,21 +3190,34 @@ class ExpeditionRenderer {
             this.stats.culledInstances += b.count - count;
             if (!count)
                 continue;
-            if (shape === 'shadow' || shape === 'halo') {
+            if (shape === 'shadow' || shape === 'halo' || shape === 'face') {
                 gl.enable(gl.BLEND);
                 gl.blendFunc(gl.SRC_ALPHA, shape === 'halo' ? gl.ONE : gl.ONE_MINUS_SRC_ALPHA);
-                gl.depthMask(false);
+                gl.depthMask(shape === 'face');
             }
             else {
                 gl.disable(gl.BLEND);
                 gl.depthMask(true);
             }
+            gl.uniform1f(this.uniforms.surface, b.stride === 8 ? 1 : 0);
+            gl.uniform1f(this.uniforms.tile, b.tile ?? 0);
+            gl.uniform1f(this.uniforms.wind, b.wind ?? 0);
+            const stride = (b.stride ?? 6) * 4;
             gl.bindBuffer(gl.ARRAY_BUFFER, b.vertex);
             gl.enableVertexAttribArray(0);
             gl.enableVertexAttribArray(1);
-            gl.vertexAttribPointer(0, 3, gl.FLOAT, false, 24, 0);
-            gl.vertexAttribPointer(1, 3, gl.FLOAT, false, 24, 12);
-            if (this.divisor && this.drawInstanced) {
+            gl.vertexAttribPointer(0, 3, gl.FLOAT, false, stride, 0);
+            gl.vertexAttribPointer(1, 3, gl.FLOAT, false, stride, 12);
+            if (b.stride === 8) {
+                gl.enableVertexAttribArray(7);
+                gl.vertexAttribPointer(7, 2, gl.FLOAT, false, stride, 24);
+            }
+            else {
+                gl.disableVertexAttribArray(7);
+                gl.vertexAttrib2f(7, 0, 0);
+            }
+            this.divisor?.(7, 0);
+            if (this.divisor && this.drawInstanced && (b.stride !== 8 || this.drawIndexedInstanced)) {
                 this.divisor(0, 0);
                 this.divisor(1, 0);
                 gl.bindBuffer(gl.ARRAY_BUFFER, b.instances);
@@ -2565,7 +3244,12 @@ class ExpeditionRenderer {
                 for (let j = 0; j < count; j++) {
                     for (let i = 2; i <= 6; i++)
                         gl.vertexAttrib4fv(i, b.visible.subarray(j * 20 + (i - 2) * 4, j * 20 + (i - 1) * 4));
-                    gl.drawArrays(gl.TRIANGLES, 0, b.vertices);
+                    if (b.stride === 8 && b.elements) {
+                        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, b.elements);
+                        gl.drawElements(gl.TRIANGLES, b.vertices, gl.UNSIGNED_SHORT, 0);
+                    }
+                    else
+                        gl.drawArrays(gl.TRIANGLES, 0, b.vertices);
                     this.stats.drawCalls++;
                 }
             }
@@ -2574,6 +3258,10 @@ class ExpeditionRenderer {
         }
         gl.depthMask(true);
         gl.disable(gl.BLEND);
+        if (this.sceneTarget) {
+            this.sceneTarget.present(width, height);
+            this.stats.drawCalls++;
+        }
         gl.flush();
         if (this.gl.endFrameEXP)
             this.gl.endFrameEXP();
@@ -2585,12 +3273,25 @@ class ExpeditionRenderer {
             const started = performance.now();
             this.gl.flushEXP();
             this.stats.nativeDrainMs = performance.now() - started;
+            const previous = this.sceneryBudget;
+            this.sceneryState = adaptNativeSceneryBudget(this.sceneryState, this.stats.nativeDrainMs);
+            this.sceneryBudget = this.sceneryState.level;
+            if (previous !== this.sceneryBudget)
+                console.info('MADGER_NATIVE_SCENERY_BUDGET', JSON.stringify({ level: this.sceneryBudget, drainMs: Math.round(this.stats.nativeDrainMs) }));
             if (++this.nativeFrames === 1 || this.nativeFrames === 30)
-                console.info('MADGER_EXPEDITION_RENDER ' + JSON.stringify({ frame: this.nativeFrames, instanced: !!this.drawInstanced, ...this.stats }));
+                console.info('MADGER_EXPEDITION_RENDER ' + JSON.stringify({ frame: this.nativeFrames, instanced: !!this.drawInstanced, ...this.stats, sceneryBudget: this.sceneryBudget }));
         }
     }
     dispose() { if (this.dead)
         return; this.dead = true; try {
+        this.sceneTarget?.dispose();
+        if (this.portrait)
+            this.gl.deleteTexture(this.portrait);
+        if (this.atlas)
+            this.gl.deleteTexture(this.atlas);
+        for (const t of this.surfaces)
+            this.gl.deleteTexture(t);
+        this.surfaces = [];
         for (const b of this.batches.values()) {
             this.gl.deleteBuffer(b.vertex);
             this.gl.deleteBuffer(b.instances);
@@ -2604,4 +3305,4 @@ class ExpeditionRenderer {
 exports.ExpeditionRenderer = ExpeditionRenderer;
 };
 factories.gl=function(require,module,exports){exports.ExpeditionRenderer=Renderer;exports.color=require("legacy-geometry").color;};
-return {Scene:require("scene").ExpeditionScene,drawCompanion:require("companion-models").drawCompanion,geometry:require("legacy-geometry").geometry,tailGeometry:require("legacy-geometry").tailGeometry,fresh:require("core").freshExpedition};}
+return {Scene:require("scene").ExpeditionScene,drawCompanion:require("companion-models").drawCompanion,geometry:require("legacy-geometry").geometry,tailGeometry:require("legacy-geometry").tailGeometry,fresh:require("core").freshExpedition,pathHeight:require("core").overgrownPathHeight,pathOffset:require("core").overgrownPathOffset};}

@@ -59,3 +59,22 @@ test('native road surfaces meet across both forks and the final rejoin without f
   assert(drawn.some(o=>o.shape==='trail'&&Math.abs(o.z)<=o.sz*.5&&Math.abs(o.x-centre)<o.sx*.5),`continuous safe ground at ${distance}m on ${run.route}`);
  }
 });
+
+test('terrain segment end rings meet instead of exposing sky through cracks',()=>{
+ const v=require(path.join(temp,'gl.js')).geometryForTest('terrain'),ends=[new Map(),new Map()];
+ for(let i=0;i<v.length;i+=6)if(Math.abs(v[i+2])===1)ends[v[i+2]===-1?0:1].set(v[i],v[i+1]);
+ assert.deepEqual([...ends[0]].sort(),[...ends[1]].sort());
+});
+test('browser bridge provenance matches the native gameplay, rig and geometry sources',()=>{
+ const crypto=require('node:crypto'),provenance=JSON.parse(fs.readFileSync(path.join(root,'public/blackroot/CHARACTER_PROVENANCE.json')));
+ for(const [name,hash] of Object.entries(provenance))assert.equal(crypto.createHash('sha256').update(fs.readFileSync(path.join(root,'src/game/expedition',name+'.ts'))).digest('hex'),hash,`regenerate browser bridge after editing ${name}`);
+});
+test('native underground routes select cave lighting instead of forest daylight',()=>{
+ const scene=Object.create(ExpeditionScene.prototype),zones=[];
+ scene.renderer={worldReady:true,sceneryBudget:0,reset:()=>{},shape:()=>{},add:()=>{},render:(eye,target,time,zone)=>zones.push(zone)};
+ for(const name of ['scenery','item','madger','chamberRoom'])scene[name]=()=>{};
+ scene.course=[];scene.particles=[];scene.reaction={at:-10};scene.lastTime=0;scene.clock=0;
+ const s=C.freshOvergrownExpedition(42,'lighting');s.mode='running';s.distance=520;
+ for(const route of ['root-arch','watchtower','crystal-vein']){s.route=route;scene.draw(s,1,true);}
+ assert.deepEqual(zones,[0,1,2]);
+});

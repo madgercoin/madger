@@ -32,7 +32,7 @@ async function reachApproach(page,minimumDistance,chamber){
    '; last observed='+meters+'m; protective resumes='+resumes);
 }
 (async()=>{
- await new Promise(r=>server.listen(0,'127.0.0.1',r));const browser=await chromium.launch({headless:true,executablePath:process.platform==='win32'?'C:/Program Files/Google/Chrome/Application/chrome.exe':undefined}),results=[];
+ await new Promise(r=>server.listen(0,'127.0.0.1',r));const browser=await chromium.launch({headless:true,executablePath:process.env.CHROMIUM_PATH||(process.platform==='win32'?'C:/Program Files/Google/Chrome/Application/chrome.exe':undefined)}),results=[];
  try{
   for(const meta of G.CHAMBERS){
    if(process.env.MADGER_CHAMBER_URL&&results.length)await new Promise(resolve=>setTimeout(resolve,20000));

@@ -1,4 +1,4 @@
-import { branchOffset, clamp, hazardPose, LANE_WIDTH, routeOffset, overgrownPathOffset, MAJOR_FORKS, SUB_FORKS, CHAMBERS, smooth, type ForkOption, type CourseItem, type Expedition, type GameEvent } from './core';
+import { branchOffset, clamp, hazardPose, environmentZone, LANE_WIDTH, routeOffset, overgrownPathOffset, overgrownPathHeight, overgrownPathWidth, MAJOR_FORKS, SUB_FORKS, CHAMBERS, smooth, type ForkOption, type CourseItem, type Expedition, type GameEvent } from './core';
 import { ExpeditionRenderer, color, type Color, type GL, type Shape } from './gl';
 import { multiply, segment, transform, type Mat4, type Vec3 } from './math';
 import { gaitPose, burrowPose, reactionEnvelope } from './animation';
@@ -9,7 +9,7 @@ const TAU=Math.PI*2;
 const hash=(n:number)=>{const x=Math.sin(n*127.13+91.7)*43758.5453;return x-Math.floor(x);};
 export const CHARACTER_CONTRACT={fangCount:0,teeth:'small-even',clawsPerPaw:5,fur:'black',markings:'cream',eyes:'amber-gold'} as const;
 const curve=(d:number)=>Math.sin(d/76)*.8+Math.sin(d/185)*1.1;
-const floorY=(d:number)=>Math.sin(d/34)*.12;
+const floorY=(d:number,route:Expedition['route']='main')=>Math.sin(d/34)*.12+overgrownPathHeight(route,d);
 type Particle={x:number;y:number;d:number;vx:number;vy:number;vz:number;born:number;life:number;c:Color;size:number};
 export class ExpeditionScene {
  renderer:ExpeditionRenderer;private particles:Particle[]=[];private clock=0;private lastTime=0;
@@ -27,7 +27,7 @@ export class ExpeditionScene {
    const c=e.companion?color(COMPANIONS[e.companion].color,.5):e.kind==='hit'?C.red:e.kind==='land'||e.kind==='step'||e.kind==='slide'?color('#b3a386'):e.kind==='splash'?C.mint:e.kind==='block'?C.mint:e.kind==='gem'?C.violet:C.goldGlow;
    for(let i=0;i<amount;i++){
     const n=this.particleId++,r=hash(n),a=hash(n+8)*TAU;
-    this.particles.push({x:e.targetX!==undefined?e.targetX+curve(e.targetD??s.distance)-curve(s.distance):s.x+routeOffset(s),y:floorY(e.targetD??s.distance)+(e.kind==='step'||e.kind==='land'||e.kind==='slide'?.15:1.1)+s.y,d:e.targetD??s.distance,
+    this.particles.push({x:e.targetX!==undefined?e.targetX+curve(e.targetD??s.distance)-curve(s.distance):s.x+routeOffset(s),y:floorY(e.targetD??s.distance,s.route)+(e.kind==='step'||e.kind==='land'||e.kind==='slide'?.15:1.1)+s.y,d:e.targetD??s.distance,
      vx:Math.cos(a)*(1+r*1.8),vy:(e.kind==='step'?.5:1.8)+r*2,vz:Math.sin(a)*2,born:this.clock,life:e.kind==='step'?.32:.55+r*.4,c,size:e.kind==='step'?.055:.065+r*.04});
    }
   }this.particles=this.particles.slice(-100);
@@ -51,7 +51,7 @@ export class ExpeditionScene {
   const idleYaw=idle?Math.PI+.12+Math.sin(time*.5)*.15:0;
   const bank=calm?0:clamp(-s.vx*.04,-.18,.18);
   const bounce=happy*.06*Math.sin(age*10);
-  const root=transform(s.x+routeOffset(s),floorY(s.distance)+s.y-pose.depth,0,1,1,1,0,idleYaw,0);
+  const root=transform(s.x+routeOffset(s),floorY(s.distance,s.route)+s.y-pose.depth,0,1,1,1,0,idleYaw,0);
   const body=multiply(root,transform(0,bob*(1-crouch)+bounce*(1-crouch)+pose.bodyY,0,1,1,1,pose.bodyX+hurt*.17,0,bank+hurt*.15));
   const fur=hurt>.2?color('#705055'):C.fur;
   this.shape('sphere',fur,0,1.10,0,.47,.66,.34,0,0,0,body);
@@ -118,15 +118,15 @@ export class ExpeditionScene {
   this.shape('sphere',color('#869093'),-.034,-.068,-.807,.05,.018,.015,0,0,0,head);
   if(mouthOpen>.045)for(let i=0;i<4;i++)this.shape('box',C.pale,(i-1.5)*.057,-.303,-.611,.043,.049,.033,0,0,0,head);
   }
-  this.shape('shadow',C.shadow,s.x+routeOffset(s),floorY(s.distance)+.018,0,.76*(1-s.y*.10)*(1-crouch*.45),1,.62*(1-s.y*.10));
+  this.shape('shadow',C.shadow,s.x+routeOffset(s),floorY(s.distance,s.route)+.018,0,.76*(1-s.y*.10)*(1-crouch*.45),1,.62*(1-s.y*.10));
   if(crouch>0)this.burrowTrail(s,crouch,calm);
-  if(s.shields>0){this.shape('ring',C.mint,s.x+routeOffset(s),1.20+floorY(s.distance)+s.y,0,.88,1,.88,Math.PI/2,time*.8,0);this.shape('ring',C.mint,s.x+routeOffset(s),1.20+floorY(s.distance)+s.y,0,.88,1,.88,0,0,time*.5);}
-  if(s.magnet>0)this.shape('ring',C.violet,s.x+routeOffset(s),floorY(s.distance)+.10,0,1.2+.07*Math.sin(time*5),1,1.2,0,time*.4,0);
+  if(s.shields>0){this.shape('ring',C.mint,s.x+routeOffset(s),1.20+floorY(s.distance,s.route)+s.y,0,.88,1,.88,Math.PI/2,time*.8,0);this.shape('ring',C.mint,s.x+routeOffset(s),1.20+floorY(s.distance,s.route)+s.y,0,.88,1,.88,0,0,time*.5);}
+  if(s.magnet>0)this.shape('ring',C.violet,s.x+routeOffset(s),floorY(s.distance,s.route)+.10,0,1.2+.07*Math.sin(time*5),1,1.2,0,time*.4,0);
   if(s.burst>0)for(let i=0;i<7;i++)this.shape('cone',C.goldGlow,s.x+routeOffset(s)+(i-3)*.15,.45+s.y,i*.18+.35,.06,.8,.06,-Math.PI/2,0,0);
  }
  /** Surface soil marks the runner's position while the articulated body is underground. */
  private burrowTrail(s:Expedition,weight:number,calm:boolean){
-  const x=s.x+routeOffset(s),y=floorY(s.distance),pulse=calm?0:Math.sin(s.slideAge*34)*.025;
+  const x=s.x+routeOffset(s),y=floorY(s.distance,s.route),pulse=calm?0:Math.sin(s.slideAge*34)*.025;
   const soil=s.zone===2?color('#75677b'):s.zone===1?color('#85735c'):color('#8b6743');
   this.shape('rock',soil,x,y+.09*weight,0,.66*weight,(.18+pulse)*weight,.84*weight,0,0,0);
   for(const side of [-1,1])this.shape('rock',C.woodLight,x+side*.38*weight,y+.055,.10,.27*weight,.105*weight,.52*weight,0,side*.25,0);
@@ -250,8 +250,8 @@ export class ExpeditionScene {
   // Fill from the edge of the playable road out into the forest and hills.
   // The playable surface itself remains open at every authored gap.
   for(let wd=Math.floor((d-18)/12)*12;wd<d+112;wd+=12){
-   const z=d-wd,x=centre(wd),y=floorY(wd);
-   for(const side of [-1,1])this.shape('terrain',ground,x+side*3.14,y-.10,z,side*29,6,6.3,0,0,0);
+   const z=d-wd,x=centre(wd),y=floorY(wd,s.route);
+   for(const side of [-1,1])this.shape('terrain',ground,x+side*3.02,y-.10,z,side*29,6,6.7,0,0,0);
    if(cave){
     this.shape('ceiling',color('#607582',-8),x,10.0,z,8.8,4.2,6.0,0,0,0);
     for(const side of [-1,1])this.shape('cone',color('#70838a',-8),x+side*4.7,y+6.8,z,.45,2.1,.52,Math.PI,0,0);
@@ -259,7 +259,7 @@ export class ExpeditionScene {
   }
   for(let n=Math.floor(d/14);n*14<d+far;n++){
    const wd=n*14+7,ahead=wd-d;if(ahead<7)continue;
-   const z=-ahead,x=centre(wd),y=floorY(wd),side=n%2?1:-1;
+   const z=-ahead,x=centre(wd),y=floorY(wd,s.route),side=n%2?1:-1;
    const yaw=hash(n*17)*TAU,h=9.2+hash(n*31)*2.2;
    if(!cave){
     const bx=x+side*(8.0+hash(n)*1.7);
@@ -318,20 +318,20 @@ export class ExpeditionScene {
     const vegetation=theme==='cavern'?color('#4B6D69'):theme==='ruins'?C.leaf:C.leafLight;
     const step=6,first=this.renderer.worldReady?Math.max(phase.start,Math.floor((d-12)/step)*step):Math.max(phase.start+3,Math.floor((d-9)/step)*step);
     for(let wd=first;wd<Math.min(phase.end+(this.renderer.worldReady?3:-2),d+90);wd+=step){
-     const z=d-wd,off=overgrownPathOffset(option.id,wd),x=off+curve(wd)-base,y=floorY(wd),n=Math.floor(wd/6);
+     const z=d-wd,off=overgrownPathOffset(option.id,wd),x=off+curve(wd)-base,y=floorY(wd,option.id),n=Math.floor(wd/6);
      const delta=(overgrownPathOffset(option.id,wd+1)+curve(wd+1)-overgrownPathOffset(option.id,wd-1)-curve(wd-1))*.5;
      const roadYaw=-Math.atan(delta);
      // Three walkable physical lanes. Their dirt and stone retain the same
      // independently interpolated fork offset as Madger and collectibles.
      for(const lane of [-1,0,1]){
-      const lx=x+lane*LANE_WIDTH;
+      const width=overgrownPathWidth(option.id,wd),lx=x+lane*LANE_WIDTH*width;
       if(this.renderer.worldReady){
        for(let j=0;j<4;j++){
         const td=wd-2.25+j*1.5;
         const gap=this.course.some(o=>o.kind==='gap'&&o.route===option.id&&o.lane===lane&&Math.abs(o.d-td)<2.0);
-        if(!gap)this.shape('trail',mud,overgrownPathOffset(option.id,td)+curve(td)-base+lane*LANE_WIDTH,floorY(td),d-td,2.19,1,1.67,Math.atan((floorY(td+.75)-floorY(td-.75))/1.5),roadYaw,0);
+        if(!gap)this.shape('trail',mud,overgrownPathOffset(option.id,td)+curve(td)-base+lane*LANE_WIDTH*overgrownPathWidth(option.id,td),floorY(td,option.id),d-td,2.19*overgrownPathWidth(option.id,td),1,1.67,Math.atan((floorY(td+.75,option.id)-floorY(td-.75,option.id))/1.5),roadYaw,0);
        }
-      }else this.shape('box',mud,lx,y-.24,z,2.12,.40,6.7,0,roadYaw,0);
+      }else this.shape('box',mud,lx,y-.24,z,2.12*width,.40,6.7,0,roadYaw,0);
       if(!this.renderer.worldReady&&(n+lane)%3===0){
        this.shape('rock',vegetation,lx+.60,y+.025,z+.5,.42,.026,1.55,0,n*.48,0);
        this.shape('rock',edge,lx-.67,y+.023,z-.6,.37,.042,.39,0,n,0);
@@ -398,7 +398,7 @@ export class ExpeditionScene {
     // Native WebGL counterpart of the richer browser PBR far banks.
     // One reused indexed/instanced ridge batch; no new per-frame draw calls
     // per hill, no collisions, no changes to the saved route or checkpoints.
-    const backdropFar=sceneryBudget===0?46:sceneryBudget===1?72:103;
+    const backdropFar=sceneryBudget===0?88:sceneryBudget===1?100:112;
     const backdropTint=color(theme==='cavern'?'#4A5661':theme==='ruins'?'#898C83':'#607F72',-8);
     const startBand=Math.floor((d-24)/24),endBand=Math.ceil((d+backdropFar)/24);
     for(let band=startBand;band<=endBand;band++){
@@ -410,16 +410,43 @@ export class ExpeditionScene {
      for(const side of [-1,1]){
       const noise=hash(band*71+side*17+(theme==='ruins'?89:13));
       const bankX=roadCentre+side*(21+noise*3.1);
-      this.shape('ridge',backdropTint,bankX,floorY(distance)-.43,d-distance,
+      this.shape('ridge',backdropTint,bankX,floorY(distance,option.id)-.43,d-distance,
        (8.2+noise*3)*fade,(7.4+noise*3)*fade,(13+noise*3.5)*fade,
        0,(noise-.5)*.13,0);
+     }
+    }
+    // A visible route junction accompanies the actual fixed-step choice:
+    // three approach lanes at 140m, then a low descent, raised jump ledge and
+    // root-clad burrow tunnel at 455m. Only artwork; the fixed-step engine
+    // decides which path was genuinely reached, without scripted teleports.
+    if(allRoutes&&phase.start===455){
+     const junction=455,jz=d-junction,ix=curve(junction)-base+option.side*LANE_WIDTH,iy=floorY(junction);
+     if(jz>-60&&jz<11){
+      const metal=theme==='ruins'?C.copper:C.stone;
+      if(option.side===-1){
+       // Open lower channel: a clearly down-sloping earth lip and side stones.
+       this.shape('box',C.stoneDark,ix,iy-.36,jz-.8,1.77,.25,3.1,-.17,0,0);
+       for(const side of [-1,1])this.shape('rock',C.stone,ix+side*.98,iy-.16,jz-1.0,.21,.24,.8);
+      }else if(option.side===0){
+       // Mid-path is not accessible merely by steering: reach the high lip
+       // with a correctly timed jump above the untouched .65m physics gate.
+       this.shape('box',metal,ix,iy+.52,jz-1.25,1.86,.26,2.3);
+       this.shape('box',C.stoneDark,ix,iy+.32,jz-.8,1.72,.64,.9);
+       for(const side of [-1,1])this.shape('cylinder',metal,ix+side*.90,iy+.60,jz-1.4,.11,1.2,.11);
+      }else{
+       // Crawl under the roots to find the hidden branch. Normal running
+       // fails the action gate and safely falls back to the lower channel.
+       for(const side of [-1,1])this.shape('rock',C.wood,ix+side*.70,iy+.72,jz-.8,.26,.72,.73);
+       this.link([ix-.77,iy+1.26,jz-.8],[ix+.77,iy+1.26,jz-.8],.19,C.wood);
+       this.shape('box',C.goldGlow,ix,iy+.22,jz-.71,.68,.08,.20);
+      }
      }
     }
     // At an imminent fork every doorway remains visible, even before choosing.
     if(allRoutes){
      const portal=phase.start+13,z=d-portal;
      if(z>-95&&z<14){
-      const x=curve(portal)-base+overgrownPathOffset(option.id,portal),y=floorY(portal);
+      const x=curve(portal)-base+overgrownPathOffset(option.id,portal),y=floorY(portal,option.id);
       this.arch(x,y+1.15,z,3.1,theme==='cavern'?C.stone:theme==='ruins'?C.copper:C.wood,.35);
       this.shape('sphere',color(highlight,.75),x,y+3.80+Math.sin(time*2+option.side)*.09,z,.21,.33,.21);
       for(const side of [-1,1])this.shape('rock',edge,x+side*3.1,y+.30,z,.81,.75,.88);
@@ -431,13 +458,19 @@ export class ExpeditionScene {
  private course:CourseItem[]=[];private burrows:CourseItem[]=[];private mainGaps:CourseItem[]=[];
  setCourse(course:CourseItem[]){this.course=course;this.burrows=course.filter(o=>o.kind==='burrow');this.mainGaps=course.filter(o=>o.kind==='gap'&&o.route==='main');this.initializedCamera=false;}
  private item(item:CourseItem,s:Expedition,time:number){
-  const ahead=item.d-s.distance;if(ahead < -6||ahead>102||s.used.includes(item.id))return;
+  const ahead=item.d-s.distance;if(ahead < -6||ahead>102)return;
+  if(item.kind==='boulder'&&item.route===s.route&&ahead<52){
+   const side=item.lane||(Math.sin(item.phase)>=0?1:-1),bx=side*6.6+routeOffset(s,item.d)+curve(item.d)-curve(s.distance),by=floorY(item.d,item.route);
+   this.shape(this.renderer.worldReady?'scanCliff':'rock',C.stone,bx,by-.15,-ahead-5.76,2.6,3.3,3.2,0,side*.3,0);
+   for(let i=0;i<3;i++)this.shape('rock',C.stoneDark,bx-side*(.75+i*.32),by+.15+i*.24,-ahead-3.5+i*.3,.22,.18,.28,0,i,0);
+  }
+  if(s.used.includes(item.id))return;
   if(s.board==='overgrown'){if(item.route!==s.route&&item.route!=='main')return;}
   else if(item.route!==s.route&&item.route!=='main'&&s.route!=='main')return;
   let offset=0;
   if(s.board==='overgrown')offset=overgrownPathOffset(item.route,item.d);
   else if(item.route!=='main'){const gate=this.burrows.find(g=>(item.route==='hollow'&&g.d<500)||(item.route==='grotto'&&g.d>500));if(gate)offset=branchOffset(item.d,gate.d,gate.d+90,gate.lane);}
-  const pose=hazardPose(item,s.time,s.distance),x=pose.x+offset+curve(item.d)-curve(s.distance),z=-ahead,y=floorY(item.d),phase=time+item.phase;
+  const pose=hazardPose(item,s.time,s.distance),x=pose.x+offset+curve(pose.d)-curve(s.distance),z=-pose.ahead,y=floorY(pose.d,item.route),phase=time+item.phase;
   const bob=Math.sin(phase*3)*.09;
   const shadow=(size:number)=>this.shape('shadow',C.shadow,x,y+.020,z,size,1,size);
   if(['coin','gem','life','key','shield','magnet','snow-sigil','guardian-totem','tech-cell','treasure-cache'].includes(item.kind))this.shape('halo',color(item.kind==='gem'?'#b6a4ff':item.kind==='shield'?'#69efcf':'#ffc363',-6),x,y+1+bob,z,.68,.68,.68);
@@ -508,9 +541,9 @@ export class ExpeditionScene {
     this.shape('ring',C.goldGlow,x,y+1.27+bob,z,.22,.7,.22,Math.PI/2,0,0);this.shape('box',C.gold,x,y+.91+bob,z,.08,.54,.09);this.shape('box',C.gold,x+.10,y+.72+bob,z,.25,.09,.09);shadow(.4);break;
    case 'boulder':
     if(this.renderer.worldReady){
-     const roll=transform(x,y+.80+pose.y,z,1,1,1,phase*1.5,phase*.5,0);
+     const roll=transform(x,y+.80+pose.y,z,1,1,1,pose.roll,0,0);
      this.shape('scanRock',color('#ddd4c5'),0,-.80,0,1.72,3.05,1.72,0,0,0,roll);
-    }else this.shape('rock',color('#947d66'),x,y+.80+pose.y,z,.85,.80,.85,phase*1.5,phase*.5,0);this.shape('ring',color('#c59164'),x,y+.10,z,.83,1,.83);shadow(.9);break;
+    }else this.shape('rock',color('#947d66'),x,y+.80+pose.y,z,.85,.80,.85,pose.roll,0,0);this.shape('ring',color('#c59164'),x,y+.10,z,.83,1,.83);shadow(.9);break;
    case 'saw':
     this.shape('box',C.wood,x,y+.16,z,1.3,.3,.9);
     this.shape('cylinder',C.iron,x,y+.53,z,.52,.12,.52,Math.PI/2,0,0);
@@ -568,7 +601,7 @@ export class ExpeditionScene {
  }
  private chamberRoom(s:Expedition,time:number){
   const chamber=CHAMBERS.find(c=>c.id===s.chamber);if(!chamber)return;
-  const x=s.x+routeOffset(s),floor=floorY(s.distance),tech=chamber.hero==='bot',nest=chamber.hero==='gorilla';
+  const x=s.x+routeOffset(s),floor=floorY(s.distance,s.route),tech=chamber.hero==='bot',nest=chamber.hero==='gorilla';
   const wall=color(nest?'#5A6352':tech?'#626666':'#5A596C',-8),wood=color('#695139',-7),accent=color(chamber.accent,.7);
   for(let row=0;row<6;row++)for(let col=-2;col<=2;col++){
    this.shape('box',wall,x+col*1.6,floor-.18,-row*1.8,1.57,.35,1.76,0,0,0);
@@ -606,17 +639,17 @@ export class ExpeditionScene {
    this.scenery(s,visualTime,calm);for(const item of this.course)this.item(item,s,visualTime);
   }
   this.madger(s,visualTime,calm);
-  drawTeam(this.renderer,s,visualTime,calm,curve,floorY);
+  drawTeam(this.renderer,s,visualTime,calm,curve,(d)=>floorY(d,s.route));
   this.particles=this.particles.filter(p=>visualTime-p.born<p.life);
   if(!calm)for(const p of this.particles){const age=visualTime-p.born,fade=1-age/p.life;this.orb(p.x+p.vx*age,p.y+p.vy*age-4.3*age*age,s.distance-p.d+p.vz*age,Math.max(.008,p.size*fade),p.c);}
   const lobby=s.mode==='ready',centre=routeOffset(s),targetX=centre+s.x*.72;
-  if(!this.initializedCamera){this.cameraX=targetX;this.cameraY=s.y*.18;this.initializedCamera=true;}
+  if(!this.initializedCamera){this.cameraX=targetX;this.cameraY=floorY(s.distance,s.route)+s.y*.18;this.initializedCamera=true;}
   this.cameraX+=(targetX-this.cameraX)*(1-Math.exp(-dt*4));
-  this.cameraY+=(s.y*.18-this.cameraY)*(1-Math.exp(-dt*3));
+  this.cameraY+=(floorY(s.distance,s.route)+s.y*.18-this.cameraY)*(1-Math.exp(-dt*3));
   const shake=!calm&&this.clock-this.reaction.at<.26&&this.reaction.kind==='hurt'?Math.sin(this.clock*73)*.055*(1-(this.clock-this.reaction.at)/.26):0;
   const chamber=s.mode==='chamber',cx=s.x+routeOffset(s);
   const eye:Vec3=chamber?[cx+1.9,3.8,8]:lobby?[3.8,3.3,8.6]:[this.cameraX+shake,4.4+this.cameraY,9.6];
-  const target:Vec3=chamber?[cx,1.3,-5]:lobby?[0,1.35,-.6]:[this.cameraX+curve(s.distance+22)-curve(s.distance),.9,-14];
+  const target:Vec3=chamber?[cx,1.3,-5]:lobby?[0,1.35,-.6]:[this.cameraX+curve(s.distance+22)-curve(s.distance),.9+floorY(s.distance+14,s.route),-14];
   // Inside a single existing sphere instancing batch: a low-cost moving
   // atmospheric dome, not a static clear-color sky or an independent shader.
   // Hidden underground and in secret chambers. Entirely visual: no physics,
@@ -627,7 +660,8 @@ export class ExpeditionScene {
    const skyTint=ruinRoutes.includes(s.route)?'#bdc4b2':'#b4cfc8';
    this.shape('sphere',color(skyTint,-9),eye[0],eye[1],eye[2],138,138,138);
   }
-  this.renderer.render(eye,target,visualTime,s.zone,s.distance);
+  const lightZone=environmentZone(s);
+  this.renderer.render(eye,target,visualTime,lightZone,s.distance);
  }
  dispose(){this.disposed=true;this.particles=[];this.renderer.dispose();}
 }

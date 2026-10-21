@@ -438,12 +438,14 @@ class Smoke:
         self.report["burst_scope"] = "Control and charge label checked; burst activation is not exercised by this short route."
         self.mark("Left, right, jump, and burrow respond through the visible HUD", burst_control=charge)
 
-        # Test the actual first choice deliberately, before lifecycle checks.
-        # Otherwise its 140m boundary can correctly stop gameplay in the middle
-        # of the later restored-run motion window, depending on driver speed.
-        self.tap("Choose Mossbound Rootway, low risk, Guardian Totems", timeout=30)
-        self.wait_hud(lambda state: state['route'] == 'rootway', 'selected Rootway branch')
-        self.mark("First route decision selects the visible low-risk Rootway")
+        # Select through real steering while forward simulation continues.
+        # No modal chooser, saved-state injection, or relaxed lifecycle gate.
+        self.tap("LEFT")
+        approach = self.wait_hud(lambda state: state["lane"] == -1, "live left approach")
+        selected = self.wait_hud(lambda state: state['route'] == 'rootway', 'live Rootway branch', timeout=30)
+        if selected["distance_m"] <= approach["distance_m"]:
+            raise AssertionError("Live route selection did not preserve forward progress")
+        self.mark("Live steering selects Rootway without a blocking fork menu")
         self.tap("Pause expedition")
         paused = self.paused_state("05-manual-pause")
         self.mark("Manual pause freezes distance, score, lane, and action")

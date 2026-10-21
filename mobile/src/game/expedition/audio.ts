@@ -87,7 +87,7 @@ export function createExpeditionAudio(){
   }
   return {
     settings:(sound:boolean,music:boolean)=>{if(disposed)return;const changed=enabled!==sound||musicEnabled!==music;enabled=sound;musicEnabled=music;if(changed){if(!sound)stop();else beds();if(!music)safePause('music');}},
-    active:(next:boolean)=>{if(disposed||next===active)return;active=next;if(next)beds();else stop();},
+    active:(next:boolean,zone=currentZone)=>{if(disposed)return;const changed=currentZone!==zone;currentZone=zone;if(next===active){if(changed&&active)beds();return;}active=next;if(next)beds();else stop();},
     events:(events:GameEvent[],zone:number)=>{
       if(!enabled||!active||disposed)return;
       if(currentZone!==zone){currentZone=zone;beds();}
@@ -107,7 +107,7 @@ export function createExpeditionAudio(){
         if(e.kind==='companion-boost')allyCue('bot',e.at);
         if(e.kind==='step'&&e.at-lastStep>=.24){
           lastStep=e.at;const order=[1,3,2,4,2,1,4,3],index=stepIndex++;
-          const key=((zone===1?'metal':'step')+order[index%order.length]) as Cue;
+          const key=((zone!==0?'metal':'step')+order[index%order.length]) as Cue;
           cue(key,e.at,.12+(index%3)*.013,.20,.96+(index%5)*.02);
         }
         if(e.kind==='coin'&&e.at-lastPickup>=.38){
@@ -130,7 +130,7 @@ export function createExpeditionAudio(){
         if(e.kind==='lose')voice('hurt',e.at);
       }
     },
-    reset:()=>{lastVoice=-100;lastHurt=-100;lastAlly=-100;lastStep=-100;lastPickup=-100;priorityUntil=-100;stepIndex=0;coinIndex=0;lastPlayed.clear();stop();if(active)beds();},
+    reset:()=>{lastVoice=-100;lastHurt=-100;lastAlly=-100;lastStep=-100;lastPickup=-100;priorityUntil=-100;stepIndex=0;coinIndex=0;currentZone=0;lastPlayed.clear();stop();if(active)beds();},
     stop,
     dispose:()=>{disposed=true;active=false;stop();for(const p of players.values()){try{p.remove();}catch{}}players.clear();},
   };

@@ -280,7 +280,7 @@ function geometry(shape:Shape) {
   // banks add true depth while the inner edge stays below collision height.
   const nx=16,nz=12;
   const point=(i:number,j:number):Vec3=>{const x=i/nx,z=-1+2*j/nz;
-   return [x,Math.pow(x,1.25)*(.16+.10*Math.sin(x*13+z*2)+.08*Math.cos(x*21-z*5)),z];};
+   return [x,Math.pow(x,1.25)*(.16+.10*Math.sin(x*13+Math.cos(z*Math.PI))+.08*Math.cos(x*21-Math.cos(z*Math.PI*2))),z];};
   for(let j=0;j<nz;j++)for(let i=0;i<nx;i++){
    const a=point(i,j),b=point(i+1,j),c=point(i,j+1),d=point(i+1,j+1);
    triangle(v,a,c,b);triangle(v,b,c,d);

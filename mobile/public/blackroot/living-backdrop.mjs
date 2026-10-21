@@ -31,7 +31,9 @@ export function canopyWind(time,distance,phase=0) {
 // A single UV'd sloped terrain shell: no blocky stack silhouettes, collision
 // surfaces or physics proxies. Artfully irregular, deterministic and bounded.
 function hillGeometry() {
-  const g=new T.PlaneGeometry(2,2,20,14);
+  // More sampled crest and erosion normals retain a readable near/mid/far silhouette.
+  // Still a single bounded instanced PBR draw and outside all gameplay lanes.
+  const g=new T.PlaneGeometry(2,2,30,18);
   g.rotateX(-Math.PI/2);
   const p=g.attributes.position,uv=g.attributes.uv;
   for(let i=0;i<p.count;i++){

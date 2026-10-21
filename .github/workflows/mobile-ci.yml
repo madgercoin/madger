@@ -120,6 +120,12 @@ jobs:
         run: npx playwright install --with-deps chromium
       - name: Render all nine branches and three playable chamber interiors
         run: node scripts/render-overgrown-routes.cjs
+      - name: Inspect native renderer geometry, junctions and cave lighting through real WebGL
+        run: node scripts/expedition-render-check.cjs
+        env:
+          MADGER_NATIVE_GL: '1'
+          MADGER_WORLD_ASSETS: '1'
+          MADGER_RENDER_OUT: expedition-evidence/native-realism
       - name: Play the normal opening, earned-only workshop, first fork and BURROW controls
         run: node scripts/overgrown-browser-smoke.cjs
       - name: Exercise each hidden chamber through real input and checkpoint reloads
@@ -130,6 +136,7 @@ jobs:
         with:
           name: madger-overgrown-scene-qa
           path: |
+            mobile/expedition-evidence/native-realism/
             mobile/expedition-evidence/overgrown-routes/
             mobile/expedition-evidence/overgrown-board/
             mobile/expedition-evidence/secret-chambers/

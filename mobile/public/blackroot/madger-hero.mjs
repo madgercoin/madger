@@ -147,7 +147,8 @@ function officialFaceSurface(reference) {
 }
 
 export class MadgerHero {
-  constructor(scene,pathX,approvedFaceTexture=null) {
+  constructor(scene,pathX,approvedFaceTexture=null,pathHeight=()=>0) {
+    this.pathHeight=pathHeight;
     this.scene=scene;this.pathX=pathX;
     this.mats={};
     this.mats.fur=new T.MeshStandardMaterial({
@@ -318,7 +319,7 @@ export class MadgerHero {
     const distance=Number.isFinite(run.distance)?run.distance:0;
     const laneX=Number.isFinite(run.x)?run.x:0;
     const bx=laneX+this.pathX(run,distance);
-    const floor=Math.sin(distance/34)*.12;
+    const floor=Math.sin(distance/34)*.12+this.pathHeight(run,distance);
     const y=Math.max(0,Number.isFinite(run.y)?run.y:0);
     const digging=clamp((run.slide||0)/.83),burrow=smooth(digging);
     const walking=run.mode==='running'&&distance>0;

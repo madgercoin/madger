@@ -230,3 +230,11 @@ test('prepared contact variants have separate signals, soft edges and bounded pe
  }
  assert.equal(hashes.size,4);
 });
+
+test('cold resume in a cave never starts outdoor birds and uses stone footsteps',async()=>{
+ const h=harness();h.audio.active(false);h.audio.active(true,2);
+ assert.equal(h.player('forest-air.mp3').volume,0);
+ h.audio.events([{kind:'step',at:2}],2);await h.completeAll();
+ assert(h.requests.some(x=>x.name.startsWith('stone-')));
+ h.audio.active(true,0);assert(h.player('forest-air.mp3').volume>0);
+});

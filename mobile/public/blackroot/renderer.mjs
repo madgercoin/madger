@@ -37,6 +37,7 @@ const hash = n => { const x = Math.sin(n * 127.13 + 91.7) * 43758.5453; return x
 const curve = d => Math.sin(d / 76) * .8 + Math.sin(d / 185) * 1.1;
 const smooth = v => { const x = Math.max(0, Math.min(1, v)); return x*x*(3-2*x); };
 function road(s, d) {
+  if(s.board==='overgrown')return bridge.pathOffset(s.route,d);
   if(s.route==='main') return 0;
   return (s.routeSide || 0)*8.5*smooth((d-s.routeStart)/24)*smooth((s.routeEnd-d)/24);
 }
@@ -64,7 +65,9 @@ class ForestRenderer {
   constructor(gl) {
     this.gl=gl; this.scene=new T.Scene(); this.scene.background=new T.Color('#7b9387');
     this.scene.fog=new T.FogExp2('#7b9387',.017);
-    this.camera=new T.PerspectiveCamera(60,1,.1,145);
+    // Keep distant landmark crests in the camera frustum; atmospheric fog
+    // still separates depth layers without a hard 145m landscape cut-off.
+    this.camera=new T.PerspectiveCamera(60,1,.1,176);
     this.gpu=new T.WebGLRenderer({canvas:gl.canvas,context:gl,antialias:false,alpha:false});
     this.gpu.setPixelRatio(1); this.gpu.toneMapping=T.ACESFilmicToneMapping;
     this.gpu.toneMappingExposure=1.22; this.gpu.outputColorSpace=T.SRGBColorSpace;
@@ -108,7 +111,7 @@ class ForestRenderer {
     const materialSet=async (folder,name,scale)=> {
       const files=['diff','nor_gl','rough'];
       const textures=await Promise.all(files.map(key=>loader.loadAsync(ASSETS+folder+'/'+name+'_'+key+'_1k.jpg')));
-      textures.forEach((t,i)=>{t.wrapS=t.wrapT=T.RepeatWrapping;t.anisotropy=Math.min(4,this.gpu.capabilities.getMaxAnisotropy());if(i===0)t.colorSpace=T.SRGBColorSpace;this.textures.push(t);});
+      textures.forEach((t,i)=>{t.wrapS=t.wrapT=T.RepeatWrapping;t.anisotropy=Math.min(this.mobileViewport?6:8,this.gpu.capabilities.getMaxAnisotropy());if(i===0)t.colorSpace=T.SRGBColorSpace;this.textures.push(t);});
       return {map:textures[0],normalMap:textures[1],roughnessMap:textures[2],normalScale:new T.Vector2(scale,scale)};
     };
     [this.ground,this.stone,this.bark]=await Promise.all([
@@ -323,7 +326,7 @@ class ForestRenderer {
     const biome=terrainBiome(this.worldPresets,s.route),profile=terrainProfile(this.worldPresets,s.route);
     const scenery=sceneryProfile(this.worldPresets,s.route);
     let anchored=0;
-    const surface=(x,d)=>{anchored++;return terrainSurfaceHeight(profile,x,d,road(s,d)+curve(d)-curve(travel));};
+    const surface=(x,d)=>{anchored++;return terrainSurfaceHeight(profile,x,d,road(s,d)+curve(d)-curve(travel))+bridge.pathHeight(s.route,d);};
     const underground=biome==='cavern',ruins=biome==='ruins';
     const breezeTime=Number.isFinite(s.time)?s.time:0;
     this.stats.biome=biome;this.stats.route=s.route;
@@ -446,7 +449,7 @@ class ForestRenderer {
       // Authored profiles shape each route while preserving the three flat
       // gameplay lanes and original collision gap depth.
       const landform=terrainSurfaceHeight(profile,x,d,centre,Boolean(inGap));
-      vertices.setY(i,landform);
+      vertices.setY(i,landform+bridge.pathHeight(s.route,d));
       uv.setXY(i,x*.18,d*.18);
       this.soilTint.copy(this.trailTint).lerp(this.mossTint,smooth((lateral-2.9)/4.6));
       this.soilTint.multiplyScalar(.87+.11*Math.sin(d*.63+x*.55)+.07*Math.cos(x*.36-d*.29));
@@ -541,7 +544,7 @@ window.madgerOvergrownScene=async gl=> {
   // The original renderer had only primitive spheres for the playable badger.
   // Replace ONLY the visible Overgrown hero, not deterministic movement,
   // companion logic, saved records, UI controls or legacy fallback gameplay.
-  const hero=new MadgerHero(scene.renderer.scene,road,scene.renderer.approvedFace);
+  const hero=new MadgerHero(scene.renderer.scene,road,scene.renderer.approvedFace,(s,d)=>bridge.pathHeight(s.route,d));
   const previousMadger=scene.madger.bind(scene);
   scene.madger=(s,time,calm)=>{
     if(s?.board!=='overgrown')return previousMadger(s,time,calm);
@@ -549,9 +552,9 @@ window.madgerOvergrownScene=async gl=> {
     if(s.slide>0&&typeof scene.burrowTrail==='function')
       scene.burrowTrail(s,Math.min(1,(s.slide||0)/.83),calm);
     if(s.shields>0)scene.shape('ring',[.26,.83,.75,.35],s.x+road(s,s.distance),
-      Math.sin(s.distance/34)*.12+s.y+1.18,0,.90,1,.90,Math.PI/2,time*.8,0);
+      Math.sin(s.distance/34)*.12+bridge.pathHeight(s.route,s.distance)+s.y+1.18,0,.90,1,.90,Math.PI/2,time*.8,0);
     if(s.magnet>0)scene.shape('ring',[.55,.42,.91,.28],s.x+road(s,s.distance),
-      Math.sin(s.distance/34)*.12+.11,0,1.15,1,1.15,0,time*.35,0);
+      Math.sin(s.distance/34)*.12+bridge.pathHeight(s.route,s.distance)+.11,0,1.15,1,1.15,0,time*.35,0);
     scene.renderer.stats.madgerRig='authored-3d';
     scene.renderer.stats.madgerMeshCount=hero.meshCount;
     scene.renderer.stats.madgerTriangles=Math.round(hero.triangles);

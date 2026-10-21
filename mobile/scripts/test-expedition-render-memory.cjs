@@ -94,7 +94,7 @@ test('restoring a paused secret route reinitializes the camera after the lobby',
  scene.setCourse(course);scene.draw(saved,0);
  const expected=current.Core.routeOffset(saved)+saved.x*.72;
  assert(Math.abs(gl.eye[0]-expected)<1e-12);
- assert(Math.abs(gl.eye[1]-(4.4+saved.y*.18))<1e-12);
+ assert(Math.abs(gl.eye[1]-(4.4+Math.sin(saved.distance/34)*.12+saved.y*.18))<1e-12);
  scene.dispose();
 });
 
