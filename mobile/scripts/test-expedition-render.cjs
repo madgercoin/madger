@@ -8,7 +8,7 @@ const ts = require('typescript');
 
 const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'madger-render-test-'));
 test.after(() => fs.rmSync(dir, { recursive: true, force: true }));
-for (const name of ['math', 'gl']) {
+for (const name of ['math', 'gl', 'native-asset']) {
   const source = fs.readFileSync(path.join(__dirname, '../src/game/expedition', name + '.ts'), 'utf8');
   fs.writeFileSync(path.join(dir, name + '.js'), ts.transpileModule(source, {
     compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022 },
@@ -252,4 +252,21 @@ test('measured native fallback reduces shading without changing submitted gamepl
     assert.equal(renderer.stats.instances, instances);
     assert.equal(renderer.stats.triangles, triangles);
   }
+});
+
+const { nativeTextureSource } = require(path.join(dir, 'native-asset.js'));
+test('Android drawable resources are copied to real files before GL decoding', async () => {
+  for (const uri of ['assets_images_madgermascotnative', 'file:///android_res/drawable/madger.png', null]) {
+    let copied = 0;
+    const asset = {localUri:uri, downloaded:true, async downloadAsync() {
+      if (!this.downloaded) {copied++;this.localUri='file:///data/user/0/test/cache/portrait.png';this.downloaded=true;}
+    }};
+    assert.deepEqual(await nativeTextureSource(asset), {localUri:'file:///data/user/0/test/cache/portrait.png'});
+    assert.equal(copied,1);
+    await nativeTextureSource(asset);assert.equal(copied,1,'reuse the valid cached file');
+  }
+});
+test('failed native portrait extraction fails closed rather than marking a black texture ready', async () => {
+  const asset={localUri:'drawable_name',downloaded:true,async downloadAsync(){}};
+  await assert.rejects(nativeTextureSource(asset), /readable local file/);
 });
