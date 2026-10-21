@@ -13,7 +13,8 @@ export function nativeSceneSize(width:number,height:number,budget:SceneryBudget)
  return {width:Math.max(1,Math.floor(width*scale)),height:Math.max(1,Math.floor(height*scale))};
 }
 /** Offscreen scene only; React Native text and controls stay at device resolution.
- * Expo owns the presentation framebuffer, which is not necessarily WebGL null. */
+ * Expo maps bindFramebuffer(null) to its presentation buffer. Its native
+ * getParameter does not implement FRAMEBUFFER_BINDING, unlike browser WebGL. */
 export class NativeSceneTarget {
  private framebuffer:WebGLFramebuffer;private texture:WebGLTexture;private depth:WebGLRenderbuffer;
  private program:WebGLProgram;private quad:WebGLBuffer;private sampler:WebGLUniformLocation;
@@ -37,7 +38,8 @@ export class NativeSceneTarget {
  }
  begin(width:number,height:number,budget:SceneryBudget){
   const gl=this.gl,size=nativeSceneSize(width,height,budget);
-  this.output=gl.getParameter(gl.FRAMEBUFFER_BINDING);gl.bindFramebuffer(gl.FRAMEBUFFER,this.framebuffer);
+  this.output=typeof (gl as NativeGL).flushEXP==='function'?null:gl.getParameter(gl.FRAMEBUFFER_BINDING);
+  gl.bindFramebuffer(gl.FRAMEBUFFER,this.framebuffer);
   if(size.width!==this.width||size.height!==this.height){
    gl.bindTexture(gl.TEXTURE_2D,this.texture);gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA,size.width,size.height,0,gl.RGBA,gl.UNSIGNED_BYTE,null);
    gl.bindRenderbuffer(gl.RENDERBUFFER,this.depth);gl.renderbufferStorage(gl.RENDERBUFFER,gl.DEPTH_COMPONENT16,size.width,size.height);

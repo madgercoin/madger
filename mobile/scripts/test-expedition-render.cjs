@@ -185,9 +185,10 @@ test('native scene pixel budget preserves aspect and bounds high-density fill co
   }
 });
 
-test('native scene composites into the Expo-owned framebuffer and releases GPU resources', () => {
+test('browser fixture composites into its existing framebuffer and releases GPU resources', () => {
   const {NativeSceneTarget}=require(path.join(dir,'gl.js'));
   const {gl}=context();const output={expoPresentation:true};let bound=output;
+  gl.flushEXP=undefined;
   const allocations=[],deletions=[],viewports=[],draws=[];
   gl.createFramebuffer=()=>({kind:'framebuffer'});gl.createTexture=()=>({kind:'texture'});
   gl.createRenderbuffer=()=>({kind:'depth'});
@@ -210,14 +211,29 @@ test('native scene composites into the Expo-owned framebuffer and releases GPU r
   target.dispose();assert.equal(deletions.length,5);
 });
 
-test('an incomplete native framebuffer restores the presentation target and fails closed',()=>{
+test('an incomplete framebuffer restores the presentation target and fails closed',()=>{
  const {NativeSceneTarget}=require(path.join(dir,'gl.js'));
  const {gl}=context();const output={expo:true};let bound=output;
+ gl.flushEXP=undefined;
  gl.createFramebuffer=()=>({});gl.createTexture=()=>({});gl.createRenderbuffer=()=>({});
  gl.getParameter=()=>bound;gl.bindFramebuffer=(_,value)=>{bound=value;};
  gl.checkFramebufferStatus=()=>-1;
  const target=new NativeSceneTarget(gl);
  assert.throws(()=>target.begin(480,960,1),/incomplete/);
  assert.equal(bound,output);
+ target.dispose();
+});
+
+test('Expo presentation uses its null binding without unsupported framebuffer queries',()=>{
+ const {NativeSceneTarget}=require(path.join(dir,'gl.js'));
+ const {gl}=context();let bound;
+ gl.flushEXP=()=>{};
+ gl.createFramebuffer=()=>({});gl.createTexture=()=>({});gl.createRenderbuffer=()=>({});
+ gl.getParameter=()=>{throw Error('EXGL: FRAMEBUFFER_BINDING is unsupported');};
+ gl.bindFramebuffer=(_,value)=>{bound=value;};
+ gl.checkFramebufferStatus=()=>gl.FRAMEBUFFER_COMPLETE;
+ const target=new NativeSceneTarget(gl);
+ target.begin(480,960,1);assert.notEqual(bound,null);
+ target.present(480,960);assert.equal(bound,null);
  target.dispose();
 });
