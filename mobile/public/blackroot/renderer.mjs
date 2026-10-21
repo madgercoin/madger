@@ -64,7 +64,9 @@ class ForestRenderer {
   constructor(gl) {
     this.gl=gl; this.scene=new T.Scene(); this.scene.background=new T.Color('#7b9387');
     this.scene.fog=new T.FogExp2('#7b9387',.017);
-    this.camera=new T.PerspectiveCamera(60,1,.1,145);
+    // Keep distant landmark crests in the camera frustum; atmospheric fog
+    // still separates depth layers without a hard 145m landscape cut-off.
+    this.camera=new T.PerspectiveCamera(60,1,.1,176);
     this.gpu=new T.WebGLRenderer({canvas:gl.canvas,context:gl,antialias:false,alpha:false});
     this.gpu.setPixelRatio(1); this.gpu.toneMapping=T.ACESFilmicToneMapping;
     this.gpu.toneMappingExposure=1.22; this.gpu.outputColorSpace=T.SRGBColorSpace;
@@ -108,7 +110,7 @@ class ForestRenderer {
     const materialSet=async (folder,name,scale)=> {
       const files=['diff','nor_gl','rough'];
       const textures=await Promise.all(files.map(key=>loader.loadAsync(ASSETS+folder+'/'+name+'_'+key+'_1k.jpg')));
-      textures.forEach((t,i)=>{t.wrapS=t.wrapT=T.RepeatWrapping;t.anisotropy=Math.min(4,this.gpu.capabilities.getMaxAnisotropy());if(i===0)t.colorSpace=T.SRGBColorSpace;this.textures.push(t);});
+      textures.forEach((t,i)=>{t.wrapS=t.wrapT=T.RepeatWrapping;t.anisotropy=Math.min(this.mobileViewport?6:8,this.gpu.capabilities.getMaxAnisotropy());if(i===0)t.colorSpace=T.SRGBColorSpace;this.textures.push(t);});
       return {map:textures[0],normalMap:textures[1],roughnessMap:textures[2],normalScale:new T.Vector2(scale,scale)};
     };
     [this.ground,this.stone,this.bark]=await Promise.all([

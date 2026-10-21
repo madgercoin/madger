@@ -283,9 +283,31 @@ export function fixedStep(s: Expedition, course: CourseItem[], events: GameEvent
   s.distance=Math.min(TRACK_LENGTH,s.distance+s.speed*STEP);
   const zone=s.board==='overgrown'?0:zoneAt(s.distance);if(zone!==s.zone){s.zone=zone;event(s,events,'zone',ZONES[zone].name);}
   if(s.route!=='main' && s.distance>=s.routeEnd){s.route='main';s.immune=Math.max(s.immune,2);event(s,events,'hint',s.board==='overgrown'?'PATHS REJOIN · PICK YOUR NEXT CHALLENGE':'SHORTCUT COMPLETE · SAFE REJOIN');}
-  if(s.board==='overgrown'&&((s.forkStage===0&&s.distance>=140)||(s.forkStage===1&&s.distance>=455))){
-    s.forkStage=(s.forkStage??0)+1;s.mode='fork';s.immune=Math.max(s.immune,1.1);
-    event(s,events,'fork',s.forkStage===1?'THREE WAYS INTO THE WILD · CHOOSE YOUR PATH':'DEEPER STILL · CHOOSE YOUR SUB-PATH');return;
+  // Real-time three-way junctions: steering determines the road while the
+  // game keeps moving. The second junction has a low trail, a jump-only
+  // elevated ledge and a properly timed burrow tunnel. Saved v1 modal fork
+  // checkpoints remain supported by chooseFork below.
+  // Use the damped actual player x at a fork, not the requested lane, so
+  // last-millisecond steering cannot teleport Madger onto an unreachable road.
+  const physicalLane:Lane=s.x<-LANE_WIDTH*.56?-1:s.x>LANE_WIDTH*.56?1:0;
+  if(s.board==='overgrown'&&s.forkStage===0&&s.distance>=140){
+    s.forkStage=1;
+    commitFork(s,MAJOR_FORKS[physicalLane+1],events);
+  }else if(s.board==='overgrown'&&s.forkStage===1&&s.distance>=455){
+    s.forkStage=2;
+    const family=(s.majorPath==='ridge'||s.majorPath==='deep')?s.majorPath:'rootway';
+    const options=SUB_FORKS[family],desired=options[physicalLane+1];
+    const clearedLedge=physicalLane===0&&s.y>.65;
+    const foundTunnel=physicalLane===1&&s.slide>0&&s.y<.25;
+    // Not reaching an elevated platform or tunnel entrance is a fall to the
+    // visible lower road, NOT an arbitrary damage event or a paused menu.
+    const accessible=(physicalLane===-1||clearedLedge||foundTunnel)&&
+      (desired.id!=='ancient-vault'||s.keys>0);
+    const chosen=accessible?desired:options[0];
+    if(!accessible)event(s,events,'hint',desired.id==='ancient-vault'&&s.keys<1&&foundTunnel
+      ?'VAULT LOCKED · DESCEND TO THE LOWER CHANNEL'
+      :physicalLane===0?'MISSED THE UPPER LEDGE · LOWER PATH':'MISSED THE LOW TUNNEL · LOWER PATH');
+    commitFork(s,chosen,events);
   }
   const used=new Set(s.used);
   stepCompanions(s,course,used,events);
@@ -349,8 +371,12 @@ export function nearbyHint(s: Expedition, course: CourseItem[]) {
   if(s.board==='overgrown'){
     const chamber=CHAMBERS.find(c=>c.route===s.route&&c.d>s.distance-1&&c.d<s.distance+65);
     if(chamber)return `${chamber.clue.toUpperCase()} · ${['LEFT','CENTRE','RIGHT'][chamber.lane+1]} · ${chamber.action==='burrow'?'BURROW':'JUMP'} AT ${chamber.d}m`;
-    if(s.forkStage===0)return 'FIRST FORK AT 140m · CHOOSE YOUR DESTINY';
-    if(s.forkStage===1&&s.distance<455)return (s.majorPath??'ROOTWAY').toUpperCase()+' · SUB-PATH FORK AT 455m';
+    if(s.forkStage===0)return s.distance>=98
+      ?'LIVE FORK '+Math.max(0,Math.ceil(140-s.distance))+'m · STEER LEFT / MIDDLE / RIGHT'
+      :'THREE REAL ROADS AHEAD · STEER TO CHOOSE';
+    if(s.forkStage===1&&s.distance<455)return s.distance>=411
+      ?'LIVE FORK '+Math.max(0,Math.ceil(455-s.distance))+'m · LEFT: LOWER · MIDDLE: JUMP · RIGHT: BURROW'
+      :(s.majorPath??'ROOTWAY').toUpperCase()+' · LEDGE / LOWER TRAIL / HIDDEN TUNNEL AT 455m';
     if(s.route!=='main')return (s.subPath??'FOREST').toUpperCase().replace(/-/g,' ')+' · RARE FRAGMENTS AHEAD';
     return 'THE BURROW TREASURY · 1080m FINISH';
   }
@@ -439,20 +465,24 @@ export function freshOvergrownExpedition(seed:number,id:string,shards:Record<Com
  if(upgrades.magnet>0)s.magnet=4+upgrades.magnet*3;
  return s;
 }
+/** Commit a physically reached fork without pausing or skipping simulation.
+ * Retain the old explicit chooser for recovery from historical mode=fork saves.
+ */
+function commitFork(s:Expedition,choice:ForkOption,events:GameEvent[]){
+ const stage=s.forkStage;
+ if(choice.id==='ancient-vault')s.keys--;
+ if(stage===1)s.majorPath=choice.id;else s.subPath=choice.id;
+ if(!s.secrets.includes(choice.id))s.secrets.push(choice.id);
+ s.route=choice.id;s.routeStart=stage===1?140:455;s.routeEnd=stage===1?450:900;s.routeSide=choice.side;
+ s.mode='running';s.immune=Math.max(s.immune,1.2);s.lastGood=s.time;
+ event(s,events,'fork',choice.name.toUpperCase()+' · '+choice.reward.toUpperCase());
+}
 export function chooseFork(s:Expedition,chosen:Route,events:GameEvent[]){
  if(s.board!=='overgrown'||s.mode!=='fork')return false;
  const choice=availableForks(s).find(o=>o.id===chosen);
  if(!choice)return false;
  if(chosen==='ancient-vault'&&s.keys<1){event(s,events,'hint','ANCIENT VAULT · FIND THE DEEP BURROW KEY');return false;}
- if(chosen==='ancient-vault')s.keys--;
- const stage=s.forkStage;
- if(stage===1)s.majorPath=chosen;else s.subPath=chosen;
- if(!s.secrets.includes(chosen))s.secrets.push(chosen);
- s.route=chosen;s.routeStart=stage===1?140:455;s.routeEnd=stage===1?450:900;s.routeSide=choice.side;
- s.mode='running';s.immune=Math.max(s.immune,1.2);
- s.lastGood=s.time;
- event(s,events,'fork',choice.name.toUpperCase()+' · '+choice.reward.toUpperCase());
- return true;
+ commitFork(s,choice,events);return true;
 }
 export function activateHero(s:Expedition,id:CompanionId,events:GameEvent[]){
  if(s.board!=='overgrown'||s.mode!=='running'||s.heroUnlocked?.[id]!==true||(s.heroCharge??0)<100||COMPANION_IDS.some(hero=>s.companions[hero].timeLeft>0))return false;
