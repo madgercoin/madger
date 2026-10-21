@@ -48,6 +48,7 @@ jobs:
           run-id: ${{ steps.selected.outputs.github_run_id }}
           github-token: ${{ github.token }}
           path: ${{ env.MADGER_SOURCE_ARTIFACT_DIR }}
+          merge-multiple: true
 
       - name: Set up Java 17
         uses: actions/setup-java@v4
