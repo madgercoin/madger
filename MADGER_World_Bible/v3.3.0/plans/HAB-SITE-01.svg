@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="840" height="880" viewBox="0 0 840 880">
+<rect width="840" height="880" fill="#f8f5e9"/>
+<style>text{font-family:DejaVu Sans,sans-serif;fill:#163e40} .tiny{font-size:10px} .small{font-size:12px} .title{font-size:26px;font-weight:bold}</style>
+<text x="40" y="40" class="small">MADGER WORLD BIBLE 3.3 / HABITAT BLUEPRINT / SITE-01</text>
+<text x="40" y="78" class="title">Floodglass Ford</text>
+<text x="40" y="105" class="small">120 x 80 m | local metres, north up | regional [18, -26] km</text>
+<rect x="101.25" y="127.5" width="637.5" height="425.0" fill="#ece9d8" stroke="#163e40"/>
+<path d="M101.25 552.5 L101.25 127.5" stroke="#d4d5c7" stroke-width="0.5"/>
+<path d="M154.375 552.5 L154.375 127.5" stroke="#d4d5c7" stroke-width="0.5"/>
+<path d="M207.5 552.5 L207.5 127.5" stroke="#d4d5c7" stroke-width="0.5"/>
+<path d="M260.625 552.5 L260.625 127.5" stroke="#d4d5c7" stroke-width="0.5"/>
+<path d="M313.75 552.5 L313.75 127.5" stroke="#d4d5c7" stroke-width="0.5"/>
+<path d="M366.875 552.5 L366.875 127.5" stroke="#d4d5c7" stroke-width="0.5"/>
+<path d="M420.0 552.5 L420.0 127.5" stroke="#d4d5c7" stroke-width="0.5"/>
+<path d="M473.125 552.5 L473.125 127.5" stroke="#d4d5c7" stroke-width="0.5"/>
+<path d="M526.25 552.5 L526.25 127.5" stroke="#d4d5c7" stroke-width="0.5"/>
+<path d="M579.375 552.5 L579.375 127.5" stroke="#d4d5c7" stroke-width="0.5"/>
+<path d="M632.5 552.5 L632.5 127.5" stroke="#d4d5c7" stroke-width="0.5"/>
+<path d="M685.625 552.5 L685.625 127.5" stroke="#d4d5c7" stroke-width="0.5"/>
+<path d="M738.75 552.5 L738.75 127.5" stroke="#d4d5c7" stroke-width="0.5"/>
+<path d="M101.25 552.5 L738.75 552.5" stroke="#d4d5c7" stroke-width="0.5"/>
+<path d="M101.25 499.375 L738.75 499.375" stroke="#d4d5c7" stroke-width="0.5"/>
+<path d="M101.25 446.25 L738.75 446.25" stroke="#d4d5c7" stroke-width="0.5"/>
+<path d="M101.25 393.125 L738.75 393.125" stroke="#d4d5c7" stroke-width="0.5"/>
+<path d="M101.25 340.0 L738.75 340.0" stroke="#d4d5c7" stroke-width="0.5"/>
+<path d="M101.25 286.875 L738.75 286.875" stroke="#d4d5c7" stroke-width="0.5"/>
+<path d="M101.25 233.75 L738.75 233.75" stroke="#d4d5c7" stroke-width="0.5"/>
+<path d="M101.25 180.625 L738.75 180.625" stroke="#d4d5c7" stroke-width="0.5"/>
+<path d="M101.25 127.5 L738.75 127.5" stroke="#d4d5c7" stroke-width="0.5"/>
+<rect x="335.0" y="276.25" width="170.0" height="276.25" fill="#95c7d9" fill-opacity="0.8" stroke="#526867" stroke-width="1"/>
+<text x="420.0" y="417.375" text-anchor="middle" class="tiny">F01</text>
+<rect x="505.0" y="276.25" width="233.75" height="106.25" fill="#95c7d9" fill-opacity="0.8" stroke="#526867" stroke-width="1"/>
+<text x="621.875" y="332.375" text-anchor="middle" class="tiny">F02</text>
+<rect x="356.25" y="286.875" width="106.25" height="53.125" fill="#bdc889" fill-opacity="0.8" stroke="#526867" stroke-width="1"/>
+<text x="409.375" y="316.4375" text-anchor="middle" class="tiny">F03</text>
+<rect x="170.3125" y="154.0625" width="63.75" height="116.875" fill="#bdc889" fill-opacity="0.8" stroke="#526867" stroke-width="1"/>
+<text x="202.1875" y="215.5" text-anchor="middle" class="tiny">F04</text>
+<rect x="127.8125" y="350.625" width="85.0" height="53.125" fill="#d4dac4" fill-opacity="0.8" stroke="#526867" stroke-width="1"/>
+<text x="170.3125" y="380.1875" text-anchor="middle" class="tiny">F05</text>
+<rect x="611.25" y="467.5" width="85.0" height="53.125" fill="#d4dac4" fill-opacity="0.8" stroke="#526867" stroke-width="1"/>
+<text x="653.75" y="497.0625" text-anchor="middle" class="tiny">F06</text>
+<rect x="356.25" y="246.5" width="127.5" height="19.125" fill="#d4dac4" fill-opacity="0.8" stroke="#526867" stroke-width="1"/>
+<text x="420.0" y="259.0625" text-anchor="middle" class="tiny">F07</text>
+<rect x="366.875" y="161.5" width="106.25" height="85.0" fill="#f4e2b6" stroke="#163e40" stroke-width="2"/>
+<text x="420.0" y="207.0" text-anchor="middle" class="tiny">REFUGE</text>
+<polyline points="101.25,340.0 271.25,340.0 271.25,446.25 568.75,446.25 738.75,446.25" fill="none" stroke="#b3483e" stroke-width="2.4" stroke-dasharray="6 3"/>
+<text x="107.25" y="333.0" class="small">R1</text>
+<polyline points="271.25,340.0 271.25,204.0 366.875,204.0" fill="none" stroke="#b3483e" stroke-width="2.4" stroke-dasharray="6 3"/>
+<text x="277.25" y="333.0" class="small">R2</text>
+<path d="M101.25 568.5 L738.75 568.5" stroke="#163e40"/><text x="420" y="584.5" text-anchor="middle" class="small">120 m</text>
+<text x="788" y="145" class="small">N ↑</text>
+<text x="40" y="602" class="small">10 m grid. Red dashed = route centreline. IDs key to the geometry register.</text>
+<text x="40" y="630" class="tiny">F01 South river reach | 32 x 52 m | z -1.2</text>
+<text x="430" y="630" class="tiny">F02 East river outlet | 44 x 20 m | z -1.2</text>
+<text x="40" y="651" class="tiny">F03 Spawning reeds | 20 x 10 m | z -2</text>
+<text x="430" y="651" class="tiny">F04 Old dry channel | 12 x 22 m | z -1</text>
+<text x="40" y="672" class="tiny">F05 West waiting court | 16 x 10 m | z 0</text>
+<text x="430" y="672" class="tiny">F06 East waiting court | 16 x 10 m | z 0</text>
+<text x="40" y="693" class="tiny">F07 High bank landing | 24 x 3.6 m | z 0</text>
+<text x="40" y="726" class="tiny">R1 Low-water ford | 3 m wide | foot / wagon | z 0 banks / -1.5 ford bed</text>
+<text x="40" y="746" class="tiny">R2 North-bank refuge access | 2 m wide | foot | z 0</text>
+<text x="40" y="845" class="tiny">Fictional production geometry. Read elevation, condition and access notes in the companion volume.</text></svg>

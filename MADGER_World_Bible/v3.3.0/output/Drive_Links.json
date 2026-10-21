@@ -1,0 +1,158 @@
+{
+  "edition": "3.3.0",
+  "folder": "https://drive.google.com/drive/folders/1uPFDIIWmIopoeEJU3siFfrqIVQHUo26Z",
+  "pdfs": [
+    {
+      "name": "MADGER_The_Wilds_Between.pdf",
+      "id": "1n7CY_KpE8rhDqdXcsdeTLjgNY2_l-50F",
+      "url": "https://drive.google.com/file/d/1n7CY_KpE8rhDqdXcsdeTLjgNY2_l-50F/view?usp=drivesdk"
+    },
+    {
+      "name": "MADGER_Habitat_Blueprints.pdf",
+      "id": "1FEb-nKUStSj_suJlHOpunt4Q8Nq7W3yM",
+      "url": "https://drive.google.com/file/d/1FEb-nKUStSj_suJlHOpunt4Q8Nq7W3yM/view?usp=drivesdk"
+    }
+  ],
+  "sources": [
+    {
+      "path": "README.md",
+      "id": "1VK96o_edqu-odkLDcl2YwwDR9p6iHZS2",
+      "url": "https://drive.google.com/file/d/1VK96o_edqu-odkLDcl2YwwDR9p6iHZS2/view?usp=drivesdk"
+    },
+    {
+      "path": "author_wilds.py",
+      "id": "1SUGoYoWxCYRoZiIXfI2H0clR9dZY3QUP",
+      "url": "https://drive.google.com/file/d/1SUGoYoWxCYRoZiIXfI2H0clR9dZY3QUP/view?usp=drivesdk"
+    },
+    {
+      "path": "build_habitats.py",
+      "id": "1JvB2I678Vdc8GSynkRP7scGLY0g-jElV",
+      "url": "https://drive.google.com/file/d/1JvB2I678Vdc8GSynkRP7scGLY0g-jElV/view?usp=drivesdk"
+    },
+    {
+      "path": "author_stories.py",
+      "id": "1hlEGwxqFUIV6L9ujfmJb7F-rpCgWhph4",
+      "url": "https://drive.google.com/file/d/1hlEGwxqFUIV6L9ujfmJb7F-rpCgWhph4/view?usp=drivesdk"
+    },
+    {
+      "path": "render_wilds.py",
+      "id": "1D_4t-3udr73YK5mXMMvpgBXpro5iqZkv",
+      "url": "https://drive.google.com/file/d/1D_4t-3udr73YK5mXMMvpgBXpro5iqZkv/view?usp=drivesdk"
+    },
+    {
+      "path": "validate_release.py",
+      "id": "1evOdMk9FNZ0748ebzIZFYP5ojr3zvLqZ",
+      "url": "https://drive.google.com/file/d/1evOdMk9FNZ0748ebzIZFYP5ojr3zvLqZ/view?usp=drivesdk"
+    },
+    {
+      "path": "output/Art_Manifest.json",
+      "id": "1LrV1sdd6Asx7_M1Jbw5KkTMOwE1YfgzP",
+      "url": "https://drive.google.com/file/d/1LrV1sdd6Asx7_M1Jbw5KkTMOwE1YfgzP/view?usp=drivesdk"
+    },
+    {
+      "path": "output/Companion_Stories.json",
+      "id": "10HIyQDtCSfH2g4sVZktT1sIo0SZ7SF-u",
+      "url": "https://drive.google.com/file/d/10HIyQDtCSfH2g4sVZktT1sIo0SZ7SF-u/view?usp=drivesdk"
+    },
+    {
+      "path": "output/Habitat_Plans.json",
+      "id": "1deYYsV6D6-6aQJRqKMma1rosPmNQZFM0",
+      "url": "https://drive.google.com/file/d/1deYYsV6D6-6aQJRqKMma1rosPmNQZFM0/view?usp=drivesdk"
+    },
+    {
+      "path": "output/Navigation_Index.json",
+      "id": "1n-qyhHNbGL3kRNqnqhkPpzeg0aUbX1pZ",
+      "url": "https://drive.google.com/file/d/1n-qyhHNbGL3kRNqnqhkPpzeg0aUbX1pZ/view?usp=drivesdk"
+    },
+    {
+      "path": "output/VALIDATION.json",
+      "id": "1HbtByPGPAwFu66LMWFQKbZBgzrjfrTdH",
+      "url": "https://drive.google.com/file/d/1HbtByPGPAwFu66LMWFQKbZBgzrjfrTdH/view?usp=drivesdk"
+    },
+    {
+      "path": "output/Wilds_Bible.json",
+      "id": "1MGraMBDs42Ryt-Ya6DUl3OoVlxa0YzbM",
+      "url": "https://drive.google.com/file/d/1MGraMBDs42Ryt-Ya6DUl3OoVlxa0YzbM/view?usp=drivesdk"
+    },
+    {
+      "path": "output/cards/CR-01.json",
+      "id": "1nVU6PPMG7HE_HkALgEN38KZyH2vhQPZ9",
+      "url": "https://drive.google.com/file/d/1nVU6PPMG7HE_HkALgEN38KZyH2vhQPZ9/view?usp=drivesdk"
+    },
+    {
+      "path": "output/cards/CR-02.json",
+      "id": "1g5d_5h15XGCV296UpnbEefkLbD6litN3",
+      "url": "https://drive.google.com/file/d/1g5d_5h15XGCV296UpnbEefkLbD6litN3/view?usp=drivesdk"
+    },
+    {
+      "path": "output/cards/CR-03.json",
+      "id": "1B-k8m03nWcKliqLX3Kx69bvDh3Q2s5g2",
+      "url": "https://drive.google.com/file/d/1B-k8m03nWcKliqLX3Kx69bvDh3Q2s5g2/view?usp=drivesdk"
+    },
+    {
+      "path": "output/cards/CR-04.json",
+      "id": "1gIAROKZ0VYbNv-Q4cHCYHonNJn4IXOKE",
+      "url": "https://drive.google.com/file/d/1gIAROKZ0VYbNv-Q4cHCYHonNJn4IXOKE/view?usp=drivesdk"
+    },
+    {
+      "path": "output/cards/CR-05.json",
+      "id": "1JA9YBnKbbvWT3ksrUwkbb5e6GGkhnafW",
+      "url": "https://drive.google.com/file/d/1JA9YBnKbbvWT3ksrUwkbb5e6GGkhnafW/view?usp=drivesdk"
+    },
+    {
+      "path": "output/cards/CR-06.json",
+      "id": "1R8mM0Q740x8W5PB8MKe65MFELzRp5l6Z",
+      "url": "https://drive.google.com/file/d/1R8mM0Q740x8W5PB8MKe65MFELzRp5l6Z/view?usp=drivesdk"
+    },
+    {
+      "path": "output/cards/CR-07.json",
+      "id": "1DLKrZ1DETEG5OIozGI0bPkCqWLdsh4xZ",
+      "url": "https://drive.google.com/file/d/1DLKrZ1DETEG5OIozGI0bPkCqWLdsh4xZ/view?usp=drivesdk"
+    },
+    {
+      "path": "output/cards/CR-08.json",
+      "id": "1-e14gGQjqVWdigPMOZGH0dZt5fZarC0T",
+      "url": "https://drive.google.com/file/d/1-e14gGQjqVWdigPMOZGH0dZt5fZarC0T/view?usp=drivesdk"
+    },
+    {
+      "path": "output/cards/CR-09.json",
+      "id": "18Dia_aXrME-ySMzAvlcQVklOa2bivfbG",
+      "url": "https://drive.google.com/file/d/18Dia_aXrME-ySMzAvlcQVklOa2bivfbG/view?usp=drivesdk"
+    },
+    {
+      "path": "output/cards/CR-10.json",
+      "id": "1PPlHh4mcxm9TlQ-XxEKxjWMwbJuOqkz6",
+      "url": "https://drive.google.com/file/d/1PPlHh4mcxm9TlQ-XxEKxjWMwbJuOqkz6/view?usp=drivesdk"
+    },
+    {
+      "path": "output/cards/CR-11.json",
+      "id": "1oEl6g6nxUoX7Rpl6pYSmo_yGW1PkT1er",
+      "url": "https://drive.google.com/file/d/1oEl6g6nxUoX7Rpl6pYSmo_yGW1PkT1er/view?usp=drivesdk"
+    },
+    {
+      "path": "output/cards/CR-12.json",
+      "id": "1NGh0lJ4sVcN5iLxijH2EfJyBwJP4j3Nd",
+      "url": "https://drive.google.com/file/d/1NGh0lJ4sVcN5iLxijH2EfJyBwJP4j3Nd/view?usp=drivesdk"
+    },
+    {
+      "path": "plans/HAB-SITE-01.svg",
+      "id": "13GXQeRDAg8ztHP4Qw_-eKDN_ZqmqDnEZ",
+      "url": "https://drive.google.com/file/d/13GXQeRDAg8ztHP4Qw_-eKDN_ZqmqDnEZ/view?usp=drivesdk"
+    },
+    {
+      "path": "plans/HAB-SITE-02.svg",
+      "id": "1Zw2rpCjrohqzOG7LiRAY4-CW7E1u3gQz",
+      "url": "https://drive.google.com/file/d/1Zw2rpCjrohqzOG7LiRAY4-CW7E1u3gQz/view?usp=drivesdk"
+    },
+    {
+      "path": "plans/HAB-SITE-03.svg",
+      "id": "1iXBx772HAFKf-wUXhsR3naDy_PViS03X",
+      "url": "https://drive.google.com/file/d/1iXBx772HAFKf-wUXhsR3naDy_PViS03X/view?usp=drivesdk"
+    },
+    {
+      "path": "plans/HAB-SITE-08.svg",
+      "id": "1lpO4PlF-mLHRBw1CsHXbt860EgYSJGP0",
+      "url": "https://drive.google.com/file/d/1lpO4PlF-mLHRBw1CsHXbt860EgYSJGP0/view?usp=drivesdk"
+    }
+  ]
+}

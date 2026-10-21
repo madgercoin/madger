@@ -1,0 +1,43 @@
+{
+  "id": "CR-05",
+  "name": "Storm manta",
+  "baseline": {
+    "id": "CR-05",
+    "name": "Storm manta",
+    "region": "REG-05",
+    "look": "Wide amber-gray glider with fin ribbons and luminous throat spots.",
+    "ecology": "Feeds on airborne spores and follows predictable pressure fronts.",
+    "limit": "Wing turbulence threatens light craft; it cannot summon a storm.",
+    "encounter": "Sail crews read ribbon position and give the feeding column space.",
+    "envelope_m": {
+      "length": 12,
+      "width_or_span": 22,
+      "height": 2
+    },
+    "scale_note": "Adult representative staging envelope; individuals vary by up to 10%. Not shown at common scale on the art plate."
+  },
+  "daily": "A manta glides along pressure fronts through airborne spore columns. Its fin ribbons stream differently before a turn. Luminous throat spots remain anatomical features rather than warning lights for travelers.",
+  "cycle": "Seasonal spore blooms draw loose feeding groups. Weather moves the column; the creatures follow it. They cannot create a storm to arrive on cue.",
+  "signs": "Ribbons draw inward before a banking turn; pale spore haze becomes visible against darker clouds. Clear blue sky does not guarantee an empty flight lane.",
+  "escalation": "Glide -> bank -> feed through column -> turbulence wake. Collision is the danger. A crew cannot negotiate with the animal or count on it avoiding a sail.",
+  "community": "Aurel Quay dispatchers publish observed feeding lanes alongside weather and loading limits. Delay means feeding passengers and paying stranded crews, not simply declaring safety virtuous.",
+  "scene": "Eri rejects a clear-looking launch lane. A rival claims she is protecting her own business; she shares observations and opens the record to another crew’s correction.",
+  "motion": "A broad rigid wing root supports flexible tips. Animate one banking action with a coherent body axis; ribbons lag the turn. No constant full-body wobble.",
+  "sounds": "Wind shear and sail buffeting; throat resonance is animal sound, never a storm-summoning song.",
+  "palette": [
+    "#9C9C8A",
+    "#D3A857",
+    "#F1D98C"
+  ],
+  "rule": "22 m span, 12 m length. Weather-bound glider, not a magic flying vehicle.",
+  "art": {
+    "file": "ART-03_Bestiary.png",
+    "column": 0,
+    "row": 1,
+    "grid": [
+      4,
+      3
+    ]
+  },
+  "canon_status": "Additive ecology and production guidance; proposed scene remains unadopted."
+}

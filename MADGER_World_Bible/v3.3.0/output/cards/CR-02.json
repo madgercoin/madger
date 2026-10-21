@@ -1,0 +1,43 @@
+{
+  "id": "CR-02",
+  "name": "Mawroot",
+  "baseline": {
+    "id": "CR-02",
+    "name": "Mawroot",
+    "region": "REG-02",
+    "look": "Root colony with amber cup flowers and fibrous folding leaves.",
+    "ecology": "Captures small animals with warm sheltered hollows during cold rain.",
+    "limit": "Warmth lure has a short range; cut fibers cannot rapidly regrow.",
+    "encounter": "Guides recognize sweet resin without leaf mold; stepping back breaks the trap before it closes.",
+    "envelope_m": {
+      "length": 3,
+      "width_or_span": 3,
+      "height": 1.8
+    },
+    "scale_note": "Adult representative staging envelope; individuals vary by up to 10%. Not shown at common scale on the art plate."
+  },
+  "daily": "The rooted colony feeds slowly. Sun and decomposing leaf litter sustain much of its growth; small captured animals provide scarce nutrients. Warm cavities become most tempting during cold wet weather.",
+  "cycle": "Flowers open in pulses after sustained rain. Seeds establish in undisturbed litter. A severed feeding leaf stays damaged through the scene and cannot regrow during a chase.",
+  "signs": "Amber cups face the sheltered opening. Sweet resin without the usual leaf-mold smell is the guide warning. The warmth is local, not a valley-wide spell or emotional enchantment.",
+  "escalation": "Open hollow -> leaf edges draw inward -> fibers brace -> slow closure. The rooted plant cannot chase someone who steps back; a trapped limb still requires help.",
+  "community": "Canopy guides mark living colonies and teach children to identify them. Ripping out every colony damages banks and feeds a false belief that a cleared path stays safe forever.",
+  "scene": "During rain, Neri notices that a supposedly helpful shelter has no old footprints or leaf litter. She lets a pupil name the inconsistency instead of turning it into her own lesson.",
+  "motion": "Keep the root mass registered to the background. Use three designed leaf poses and slow overlap; flowers do not become eyes or a talking mouth.",
+  "sounds": "Wet fiber tension and leaf rub. No voice, telepathy or deliberate impersonation of a person.",
+  "palette": [
+    "#546D3F",
+    "#BA813B",
+    "#D3A454"
+  ],
+  "rule": "Plant anatomy only: fibrous folding leaves and amber cup flowers. A hollow may look mouthlike, but has no jaw or teeth.",
+  "art": {
+    "file": "ART-03_Bestiary.png",
+    "column": 1,
+    "row": 0,
+    "grid": [
+      4,
+      3
+    ]
+  },
+  "canon_status": "Additive ecology and production guidance; proposed scene remains unadopted."
+}

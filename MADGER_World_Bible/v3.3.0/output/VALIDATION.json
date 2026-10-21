@@ -1,0 +1,30 @@
+{
+  "edition": "3.3.0",
+  "creature_baselines_unchanged": 12,
+  "site_bounds_and_refuges_unchanged": 4,
+  "stair_arithmetic": "passed",
+  "pilot_exterior_scenes": 0,
+  "stories": "two complete authored options; not adopted",
+  "pdfs": [
+    {
+      "file": "MADGER_Habitat_Blueprints.pdf",
+      "pages": 13,
+      "out_of_page_text": [],
+      "sha256": "55bfefe1a290c3516e08b2bd6e220d91d5d5349f0b29f99a507cacdf449db19d"
+    },
+    {
+      "file": "MADGER_The_Wilds_Between.pdf",
+      "pages": 31,
+      "out_of_page_text": [],
+      "sha256": "d84873ea3e16ab688f6e8d31bc55eae0cd456c5393fe4732458ea358638171cf"
+    }
+  ],
+  "visual_review": "All 44 pages reviewed. Final ford/boarding clarifications and updated plan legends re-rendered and inspected. No clipping or overlapping text observed.",
+  "remote_baseline_check": "Git atlas full JSON equality and inherited encounter plan equality passed.",
+  "circulation_review": [
+    "SITE-01 ford bed and water surface differentiated; dry bank junction and slope endpoints explicit.",
+    "SITE-02 fixed ridge reaches hut; south span connects both shelves; lower shelf assisted access only.",
+    "SITE-03 top approach skirts stair cut; bottom service corridor passes beneath first flight with clearance; all stairs join chamber.",
+    "SITE-08 channel spur and checked boarding gangway reach dock; connector meets four-flight ascent and high arch; nominal arch clearance stated."
+  ]
+}

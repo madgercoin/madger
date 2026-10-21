@@ -1,0 +1,43 @@
+{
+  "id": "CR-07",
+  "name": "Ashmaw",
+  "baseline": {
+    "id": "CR-07",
+    "name": "Ashmaw",
+    "region": "REG-07",
+    "look": "Low armored burrower with charcoal plates and a glowing orange mouth lining.",
+    "ecology": "Tracks heat in mineral soils and scavenges kiln waste.",
+    "limit": "Follows thermal gradients, cannot swim through liquid lava or survive any heat.",
+    "encounter": "Divert cooled waste carefully and keep travelers away from fresh vents.",
+    "envelope_m": {
+      "length": 3.4,
+      "width_or_span": 2.1,
+      "height": 1.4
+    },
+    "scale_note": "Adult representative staging envelope; individuals vary by up to 10%. Not shown at common scale on the art plate."
+  },
+  "daily": "An ashmaw follows thermal gradients through loose mineral soil. It scavenges organic kiln waste and catches small ground animals; the old industrial waste stream made settlement edges reliable feeding places.",
+  "cycle": "Young occupy sheltered warm soil, away from fresh vents. Changing a waste route can redirect adults toward a neighboring terrace. Nest movement is not a harmless off-screen cleanup.",
+  "signs": "Fresh shallow ridges converge toward a heat source. Charcoal plates may be visible before the orange mouth lining appears. Glowing lining does not mean its body is molten.",
+  "escalation": "Forage -> stop and taste air -> armor hunch -> brief charge or dig. Cool stable rock interrupts digging; liquid lava and extreme heat can kill it.",
+  "community": "Kettle Crown crews cool and contain waste before transfer. Cinder residents insist that a city’s cleanup cannot simply export animal hazards to their homes.",
+  "scene": "Kesh discovers that the cheapest new disposal route would protect a wealthy kiln district by endangering a worker terrace. The correction costs money and public pride.",
+  "motion": "Use a heavy low center of mass, short digging strokes and rigid overlapping armor groups. Do not dissolve the creature into stone or flames.",
+  "sounds": "Plate rasp, gravel churn and close breath. Mouth glow remains subtle, no flame attack.",
+  "palette": [
+    "#343936",
+    "#705D43",
+    "#D58B37"
+  ],
+  "rule": "Armored burrower and scavenging predator; no lava swimming or unlimited heat resistance.",
+  "art": {
+    "file": "ART-03_Bestiary.png",
+    "column": 2,
+    "row": 1,
+    "grid": [
+      4,
+      3
+    ]
+  },
+  "canon_status": "Additive ecology and production guidance; proposed scene remains unadopted."
+}

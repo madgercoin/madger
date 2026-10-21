@@ -1,0 +1,43 @@
+{
+  "id": "CR-03",
+  "name": "Glassback drake",
+  "baseline": {
+    "id": "CR-03",
+    "name": "Glassback drake",
+    "region": "REG-03",
+    "look": "Low six-limbed lizard with overlapping translucent back plates.",
+    "ecology": "Nests beneath stable glass crust and eats salt beetles.",
+    "limit": "Senses ground vibration; dazzling plates reflect light but do not fire beams.",
+    "encounter": "Move on bedrock, avoid nest bowls and wait out a threat display.",
+    "envelope_m": {
+      "length": 3.8,
+      "width_or_span": 1.6,
+      "height": 1.2
+    },
+    "scale_note": "Adult representative staging envelope; individuals vary by up to 10%. Not shown at common scale on the art plate."
+  },
+  "daily": "At cool dawn a drake noses salt beetles from cracks. It warms against stable glass crust, then rests under the rim. Its plates change apparent color with the light rather than changing physical shape.",
+  "cycle": "Nests occupy bowls beneath old fused crust. Hatchlings use shallow cracks and depend on the same beetle habitat. New windblown glass can hide a nest without moving it.",
+  "signs": "Parallel six-foot tracks terminate at crust edges. A raised plate fan and a still body warn more clearly than a spectacular reflected flash.",
+  "escalation": "Freeze -> plate fan -> sideways blocking step -> short bite or shove if crowded. A quiet withdrawal gives it space; vibration tricks are unreliable and may draw it closer.",
+  "community": "Ossara caravan crews retain bedrock approaches even when a dune shortcut looks faster. Nest closures protect animals and prevent expensive broken loads.",
+  "scene": "A reflected flash seems to place a suspect at an observatory. Maela finds that a drake plate redirected the light: an image proves light arrived, not how the whole event occurred.",
+  "motion": "Six limbs stay in three consistent pairs. Lock the plate count and major overlaps for a shot; animate a fan as hinged groups, not melting shards.",
+  "sounds": "Claws on glass, dry plate clicks and a short hiss. No beams or magical signal reception.",
+  "palette": [
+    "#B0A68C",
+    "#B7D6D9",
+    "#D9BD75"
+  ],
+  "rule": "Low six-limbed lizard, translucent overlapping plates; no wings, fire breath or projected energy.",
+  "art": {
+    "file": "ART-03_Bestiary.png",
+    "column": 2,
+    "row": 0,
+    "grid": [
+      4,
+      3
+    ]
+  },
+  "canon_status": "Additive ecology and production guidance; proposed scene remains unadopted."
+}

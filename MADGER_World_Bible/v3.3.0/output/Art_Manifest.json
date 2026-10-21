@@ -1,0 +1,96 @@
+{
+  "mode": "Built-in image generation",
+  "prompts": [
+    "Use case: illustration-story. Create a premium Japanese anime background art sheet for the MADGER fantasy world: two equal wide landscape panels stacked vertically, narrow ivory gutter, no lettering. Use the attached creature art only as appearance reference, do not copy its page layout. TOP: Floodglass Ford, a broad shallow river crossing between left and right reed banks, fixed modest timber-and-stone high-water refuge on a raised north bank, mossy approach stones, abandoned reed-filled channel, a single slate Flood-wyrm subtly half submerged with reedlike whiskers and four small paddle limbs. Sunlit spring morning, inviting blue-green countryside, a dangerous animal quietly belonging here. No bridges across river. BOTTOM: Walking Root Crossing, three distinct living root spans over a deep forest ravine, anchored ridge hut at far upper left on fixed rock, dense migrating canopy opposite, two visible anchor posts, lower rescue shelf. One small mawroot colony off the marked route with amber cup flowers and fibrous leaves around a warm hollow, no monstrous toothy mouth. Lush wet forest with light shafts, dry old ridge stone. Exquisitely composed hand-painted environment design, nuanced watercolor backgrounds and clean drawn structures, cinematic depth, coherent solid geometry, not 3D, no characters, no weapons, no letters, no technical dimensions. Each panel must stand alone. Match creature shapes and natural materials from reference while simplifying linework for anime.",
+    "Use case: illustration-story. Create a premium Japanese anime background art sheet for MADGER: two equal wide landscape panels stacked vertically with a narrow ivory gutter, no text. Attached bestiary is creature appearance reference only. TOP: The Buried Lens outside Ossara, sandstone circular storm court in glass dunes, four small vertical light wells, one excavated descending stone stair and a separate broad maintenance ramp leading to a sunken optical chamber. Warm dawn, turquoise weathered shutters on a small refuge hut behind court, scattered translucent glass crust, a single low SIX-LEGGED glassback drake with overlapping translucent plates at distant nest bowl away from paths, no lasers. BOTTOM: Bellwater Narrows near Lumen Tide, vast underground limestone ocean, two projecting rock piers bracketing an open horizontal tidal channel, a sheltered high refuge on the north ledge, a continuous curved eastern dry-rock margin leading from southern approach to north refuge, fungal shore growth, mineral windows, dark teal waters. A slender translucent bell-eel with mineral-rimmed glowing chambers is seen BELOW water near a quiet protected pocket, far from a small empty moored boat. No surface daylight, no ocean skylight, believable enormous cave vault and bioluminescence. Refined hand-painted Japanese animated film backgrounds, solid architectural forms, cinematic composition, no people, no lettering, no blueprint lines. Panels independent, equally sized."
+  ],
+  "files": [
+    {
+      "file": "WILDS-01.png",
+      "accepted_input": "file_uri",
+      "success": true,
+      "id": "1fdf5Q3Uj46o5j6QsEH3TPexa59EV4EE3",
+      "title": "WILDS-01.png",
+      "file_name": "WILDS-01.png",
+      "mime_type": "image/png",
+      "url": "https://drive.google.com/file/d/1fdf5Q3Uj46o5j6QsEH3TPexa59EV4EE3/view?usp=drivesdk",
+      "parent_id": "1uPFDIIWmIopoeEJU3siFfrqIVQHUo26Z",
+      "structuredContent": {
+        "accepted_input": "file_uri",
+        "success": true,
+        "id": "1fdf5Q3Uj46o5j6QsEH3TPexa59EV4EE3",
+        "title": "WILDS-01.png",
+        "file_name": "WILDS-01.png",
+        "mime_type": "image/png",
+        "url": "https://drive.google.com/file/d/1fdf5Q3Uj46o5j6QsEH3TPexa59EV4EE3/view?usp=drivesdk",
+        "parent_id": "1uPFDIIWmIopoeEJU3siFfrqIVQHUo26Z"
+      },
+      "panel_crops_px": [
+        [
+          0,
+          0,
+          1536,
+          462
+        ],
+        [
+          0,
+          480,
+          1536,
+          1024
+        ]
+      ]
+    },
+    {
+      "file": "WILDS-02.png",
+      "accepted_input": "file_uri",
+      "success": true,
+      "id": "1vOV9gHj_lMMJ0lHrdfdmaP9OFo4vj2zA",
+      "title": "WILDS-02.png",
+      "file_name": "WILDS-02.png",
+      "mime_type": "image/png",
+      "url": "https://drive.google.com/file/d/1vOV9gHj_lMMJ0lHrdfdmaP9OFo4vj2zA/view?usp=drivesdk",
+      "parent_id": "1uPFDIIWmIopoeEJU3siFfrqIVQHUo26Z",
+      "structuredContent": {
+        "accepted_input": "file_uri",
+        "success": true,
+        "id": "1vOV9gHj_lMMJ0lHrdfdmaP9OFo4vj2zA",
+        "title": "WILDS-02.png",
+        "file_name": "WILDS-02.png",
+        "mime_type": "image/png",
+        "url": "https://drive.google.com/file/d/1vOV9gHj_lMMJ0lHrdfdmaP9OFo4vj2zA/view?usp=drivesdk",
+        "parent_id": "1uPFDIIWmIopoeEJU3siFfrqIVQHUo26Z"
+      },
+      "panel_crops_px": [
+        [
+          0,
+          0,
+          1536,
+          462
+        ],
+        [
+          0,
+          480,
+          1536,
+          1024
+        ]
+      ]
+    }
+  ],
+  "source_bestiary_drive_id": "1V12D9RUAzhVMJIgDe_t4nl56bCJZ3FIo",
+  "status": "Original bytes retained; final 3.3 PDF panel layout visually checked.",
+  "geometry_precedence": "Original prompt includes a ramp at SITE-03; released measured service stair supersedes that concept. Atmospheric artwork is not a geometry blueprint.",
+  "bestiary_crop_rows_px": [
+    [
+      0,
+      328
+    ],
+    [
+      330,
+      664
+    ],
+    [
+      666,
+      1024
+    ]
+  ]
+}

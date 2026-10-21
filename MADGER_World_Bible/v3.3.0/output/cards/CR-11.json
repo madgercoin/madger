@@ -1,0 +1,43 @@
+{
+  "id": "CR-11",
+  "name": "Deep sail snail",
+  "baseline": {
+    "id": "CR-11",
+    "name": "Deep sail snail",
+    "region": "REG-08",
+    "look": "Large pale marine snail with a ridged buoyant shell and trailing sensory fronds.",
+    "ecology": "Grazes floating fungal mats; empty shells become instruments.",
+    "limit": "Living shells are fragile; removing them kills the animal.",
+    "encounter": "Harvest only shed mineral fragments and naturally empty shells.",
+    "envelope_m": {
+      "length": 2.4,
+      "width_or_span": 1.6,
+      "height": 1.8
+    },
+    "scale_note": "Adult representative staging envelope; individuals vary by up to 10%. Not shown at common scale on the art plate."
+  },
+  "daily": "A deep sail snail grazes floating fungal mats with slow rhythmic mouth movements. Buoyancy comes from its ridged shell; sensory fronds track nearby water and surfaces.",
+  "cycle": "Small juveniles shelter beneath healthy mats. Live shell damage reduces buoyancy and exposes tissue. Empty shells enter the material economy only after natural death.",
+  "signs": "Fresh curved grazing edges show an occupied mat. A drifting shell is not necessarily empty: tenders check for retracted tissue without tearing it free.",
+  "escalation": "Graze -> retract fronds -> withdraw -> drift with current. It does not consent to being handled simply because it cannot flee quickly.",
+  "community": "Lumen Tide craftspeople mark the provenance of naturally empty shells and gather shed mineral fragments. Fast tourist demand can make a truthful supply chain valuable.",
+  "scene": "A beautiful instrument comes with an impossible harvest date. Namu must question a respected maker without condemning the whole craft tradition.",
+  "motion": "Shell remains rigid; foot and fronds move slowly beneath it. Do not turn a living shell into a detachable hat.",
+  "sounds": "Soft grazing rasp and tiny shell contacts. Instrument tones belong to empty shells used by makers, not animal speech.",
+  "palette": [
+    "#D0D9D1",
+    "#9FBDBD",
+    "#D6BD8A"
+  ],
+  "rule": "Living shells cannot be removed without killing the animal. No instant regrowth or endless shell farming.",
+  "art": {
+    "file": "ART-03_Bestiary.png",
+    "column": 2,
+    "row": 2,
+    "grid": [
+      4,
+      3
+    ]
+  },
+  "canon_status": "Additive ecology and production guidance; proposed scene remains unadopted."
+}

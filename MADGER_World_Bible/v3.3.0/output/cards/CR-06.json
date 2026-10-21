@@ -1,0 +1,43 @@
+{
+  "id": "CR-06",
+  "name": "Choirwraith",
+  "baseline": {
+    "id": "CR-06",
+    "name": "Choirwraith",
+    "region": "REG-06",
+    "look": "Pale translucent mothlike cave predator with resonant throat membranes.",
+    "ecology": "Mimics recently heard sounds to draw prey toward sheltered ice pockets.",
+    "limit": "Copies fragments, not a dead person’s mind; warmth weakens the membranes.",
+    "encounter": "Verify a voice with an agreed visual signal and retreat to warm refuge.",
+    "envelope_m": {
+      "length": 2.6,
+      "width_or_span": 5,
+      "height": 2.5
+    },
+    "scale_note": "Adult representative staging envelope; individuals vary by up to 10%. Not shown at common scale on the art plate."
+  },
+  "daily": "In cold ice pockets this mothlike predator waits with folded wings. Resonant throat membranes reproduce fragments it recently heard. The lure is behavior, not knowledge of a listener’s grief.",
+  "cycle": "Young shelter in cold crevices. Adults range farther when natural prey becomes scarce. Warm civic caverns limit their activity; they do not comfortably stalk the town indoors.",
+  "signs": "A repeated syllable has the same damaged edge each time. Powder disturbed by wing wash and a pale membrane flicker can confirm an animal; an echo alone cannot.",
+  "escalation": "Folded wait -> fragment repetition -> short glide toward prey -> retreat from warmth. It may repeat a voice outside the context in which it heard it.",
+  "community": "Hushvale travelers agree a visible check signal before separating. Archive interpreters distinguish animal mimicry from echo-ice playback and from living witnesses.",
+  "scene": "Ysolde hears a familiar phrase and identifies the mechanism correctly. The emotional challenge remains: admitting what she wanted the voice to mean.",
+  "motion": "Design folded and open wing silhouettes with the same landmarks. Throat pulses accompany copied fragments. No ghostly face morph or floating humanoid apparition.",
+  "sounds": "Only fragments acquired in the current encounter or documented recent exposure. Never reveal secrets the creature could not have heard.",
+  "palette": [
+    "#DCE5E5",
+    "#98ACBE",
+    "#C1AEBB"
+  ],
+  "rule": "Predatory animal, not a spirit or resurrected person. Five-metre wing span; heat weakens the membranes.",
+  "art": {
+    "file": "ART-03_Bestiary.png",
+    "column": 1,
+    "row": 1,
+    "grid": [
+      4,
+      3
+    ]
+  },
+  "canon_status": "Additive ecology and production guidance; proposed scene remains unadopted."
+}

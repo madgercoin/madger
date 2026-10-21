@@ -1,0 +1,43 @@
+{
+  "id": "CR-12",
+  "name": "Ridge ram",
+  "baseline": {
+    "id": "CR-12",
+    "name": "Ridge ram",
+    "region": "REG-06",
+    "look": "Shaggy blue-gray mountain herbivore with broad spiral horns.",
+    "ecology": "Moves along stable ridge shelves and shelters near warm stone.",
+    "limit": "Defends a narrow path when calves are nearby; not innately hostile.",
+    "encounter": "Wait at marked widening points and let the herd pass.",
+    "envelope_m": {
+      "length": 2.1,
+      "width_or_span": 0.8,
+      "height": 1.5
+    },
+    "scale_note": "Adult representative staging envelope; individuals vary by up to 10%. Not shown at common scale on the art plate."
+  },
+  "daily": "A ridge ram browses shelf vegetation and rests beside warm stone. Herd movement follows stable ledges rather than the shortest line across a mountain drawing.",
+  "cycle": "Calves slow the group and make narrow passing places sensitive. Winter snow can cover yesterday’s widening point, requiring a fresh route inspection.",
+  "signs": "Split hoof tracks converge at a ledge; torn grass and fresh droppings show recent use. A squared stance with calves behind is a boundary warning.",
+  "escalation": "Watch -> block -> stamp -> short charge if trapped. Leaving an open retreat is more useful than proving dominance.",
+  "community": "Frostspine guides maintain marked widening points. Travelers build time for a herd crossing into the journey rather than treating every delay as an antagonist.",
+  "scene": "An urgent messenger must wait while a calf finds its footing. The cost of delay is real, but pushing past would turn one crisis into two.",
+  "motion": "Broad spiral horns keep orientation; weight transfers through four legs. Use planted poses and one decisive stamp, not constant jittering fur.",
+  "sounds": "Hooves, breath and ordinary herd calls. No prophetic animal voice.",
+  "palette": [
+    "#758996",
+    "#B1BCC0",
+    "#A88F68"
+  ],
+  "rule": "Mountain herbivore, not innately hostile. Calves, terrain and fatigue govern behavior; horns never become magical weapons.",
+  "art": {
+    "file": "ART-03_Bestiary.png",
+    "column": 3,
+    "row": 2,
+    "grid": [
+      4,
+      3
+    ]
+  },
+  "canon_status": "Additive ecology and production guidance; proposed scene remains unadopted."
+}

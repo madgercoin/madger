@@ -1,0 +1,43 @@
+{
+  "id": "CR-01",
+  "name": "Flood-wyrm",
+  "baseline": {
+    "id": "CR-01",
+    "name": "Flood-wyrm",
+    "region": "REG-01",
+    "look": "Long slate river animal with reedlike whiskers and four small paddle limbs.",
+    "ecology": "Spawns in shallow reed beds; feeds on river mollusks.",
+    "limit": "Responds to disturbance, not evil intent; upstream silt curls and stripped reeds warn of presence.",
+    "encounter": "Give spawning grounds room and use high crossings; cannot burrow through stone.",
+    "envelope_m": {
+      "length": 8,
+      "width_or_span": 1.7,
+      "height": 1.3
+    },
+    "scale_note": "Adult representative staging envelope; individuals vary by up to 10%. Not shown at common scale on the art plate."
+  },
+  "daily": "At first light an adult rakes mollusks out of river gravel with its whiskers. Its feeding grooves run with the current; a wagon dragged across the bed leaves a different mark. Adults withdraw into deeper bends when traffic grows.",
+  "cycle": "Eggs adhere to submerged reed roots during the spring rise. Juveniles remain among stems while adults feed nearby. A spawning closure ends after local watchers record dispersal, never because a calendar page turns.",
+  "signs": "A low silt curl travels upstream before the back breaks the surface. Newly stripped reeds and empty mollusk shells establish presence; ripples alone do not identify a wyrm.",
+  "escalation": "Feeding -> head lift -> lateral body turn across a disturbed patch -> short defensive rush. Once intruders retreat, it protects the patch instead of pursuing them across dry country.",
+  "community": "Reedbank watchers compare bank marks with boat crews. Closures hurt ferry income, so the kitchen buys from delayed fishers and the cooperative posts the next inspection time.",
+  "scene": "A vanished wagon seems to have been taken by a wyrm. Hollis distinguishes feeding grooves from a mechanically pulled tow scar: the animal is real, but the accusation is wrong.",
+  "motion": "Hold the long body silhouette; animate the whisker fan, gill beat and one continuous tail wave. A rush needs a planned path and splash hold, not a sequence of redesigned bodies.",
+  "sounds": "Low water displacement, reed scrape, breathy surface exhalation. No speech, roar dialogue or mind link.",
+  "palette": [
+    "#516B76",
+    "#879D9B",
+    "#D0C8A4"
+  ],
+  "rule": "Four small paddle limbs, long slate body, reedlike whiskers. Do not add horns, legs for running or stone-boring powers.",
+  "art": {
+    "file": "ART-03_Bestiary.png",
+    "column": 0,
+    "row": 0,
+    "grid": [
+      4,
+      3
+    ]
+  },
+  "canon_status": "Additive ecology and production guidance; proposed scene remains unadopted."
+}

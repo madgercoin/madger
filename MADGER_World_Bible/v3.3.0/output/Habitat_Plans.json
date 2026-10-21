@@ -1,0 +1,1421 @@
+{
+  "edition": "3.3.0",
+  "units": "metres",
+  "sites": [
+    {
+      "id": "SITE-01",
+      "name": "Floodglass Ford",
+      "region": "REG-01",
+      "regional_position_km": [
+        18,
+        -26
+      ],
+      "baseline": {
+        "id": "SITE-01",
+        "name": "Floodglass Ford",
+        "width_m": 120,
+        "depth_m": 80,
+        "zones": [
+          {
+            "name": "West approach",
+            "box": [
+              -60.0,
+              -40.0,
+              26.4,
+              80
+            ]
+          },
+          {
+            "name": "Encounter field",
+            "box": [
+              -33.6,
+              -40.0,
+              67.2,
+              80
+            ]
+          },
+          {
+            "name": "East approach",
+            "box": [
+              33.6,
+              -40.0,
+              26.4,
+              80
+            ]
+          }
+        ],
+        "refuge": {
+          "module": "MOD-12",
+          "center_m": [
+            0,
+            25.6,
+            0
+          ],
+          "width_m": 20,
+          "depth_m": 16
+        },
+        "route_points_m": [
+          [
+            -60.0,
+            0,
+            0
+          ],
+          [
+            -33.6,
+            0,
+            0
+          ],
+          [
+            0,
+            -20.0,
+            0
+          ],
+          [
+            33.6,
+            0,
+            0
+          ],
+          [
+            60.0,
+            0,
+            0
+          ]
+        ],
+        "notes": "Two visible shore approaches; high refuge on north bank; no hidden tunnel.",
+        "hazard": "Flood-wyrm spawning and sudden flow changes."
+      },
+      "features": [
+        {
+          "id": "F01",
+          "name": "South river reach",
+          "box_m": [
+            -16,
+            -40,
+            32,
+            52
+          ],
+          "kind": "water",
+          "z_m": -1.2
+        },
+        {
+          "id": "F02",
+          "name": "East river outlet",
+          "box_m": [
+            16,
+            -8,
+            44,
+            20
+          ],
+          "kind": "water",
+          "z_m": -1.2
+        },
+        {
+          "id": "F03",
+          "name": "Spawning reeds",
+          "box_m": [
+            -12,
+            0,
+            20,
+            10
+          ],
+          "kind": "habitat",
+          "z_m": -2
+        },
+        {
+          "id": "F04",
+          "name": "Old dry channel",
+          "box_m": [
+            -47,
+            13,
+            12,
+            22
+          ],
+          "kind": "habitat",
+          "z_m": -1
+        },
+        {
+          "id": "F05",
+          "name": "West waiting court",
+          "box_m": [
+            -55,
+            -12,
+            16,
+            10
+          ],
+          "kind": "land",
+          "z_m": 0
+        },
+        {
+          "id": "F06",
+          "name": "East waiting court",
+          "box_m": [
+            36,
+            -34,
+            16,
+            10
+          ],
+          "kind": "land",
+          "z_m": 0
+        },
+        {
+          "id": "F07",
+          "name": "High bank landing",
+          "box_m": [
+            -12,
+            14,
+            24,
+            3.6
+          ],
+          "kind": "land",
+          "z_m": 0
+        }
+      ],
+      "routes": [
+        {
+          "id": "R1",
+          "name": "Low-water ford",
+          "points_m": [
+            [
+              -60,
+              0
+            ],
+            [
+              -28,
+              0
+            ],
+            [
+              -28,
+              -20
+            ],
+            [
+              28,
+              -20
+            ],
+            [
+              60,
+              -20
+            ]
+          ],
+          "width_m": 3,
+          "mode": "foot / wagon",
+          "z_m": "0 banks / -1.5 ford bed",
+          "status": "NORMAL only",
+          "profile_xyz": [
+            [
+              -60,
+              0,
+              0
+            ],
+            [
+              -28,
+              0,
+              0
+            ],
+            [
+              -28,
+              -20,
+              0
+            ],
+            [
+              -16,
+              -20,
+              -1.5
+            ],
+            [
+              16,
+              -20,
+              -1.5
+            ],
+            [
+              28,
+              -20,
+              0
+            ],
+            [
+              60,
+              -20,
+              0
+            ]
+          ]
+        },
+        {
+          "id": "R2",
+          "name": "North-bank refuge access",
+          "points_m": [
+            [
+              -28,
+              0
+            ],
+            [
+              -28,
+              25.6
+            ],
+            [
+              -10,
+              25.6
+            ]
+          ],
+          "width_m": 2,
+          "mode": "foot",
+          "z_m": 0,
+          "status": "NORMAL / RESTRICTED"
+        }
+      ],
+      "notes": [
+        "Ford crosses the south reach only; the river turns east below the refuge. Water depth and flow are checked before opening. The route line is not a bridge.",
+        "Refuge footprint is 20 x 16 m at (0,25.6). Raised bank and floor stay above the normal shallow-channel surface. Actual flood crest is scene-specific; do not declare the hut invulnerable.",
+        "Spawning habitat stays north of the crossing. The abandoned channel is visible surface terrain, never a hidden passage.",
+        "Reference normal water surface is z=-1.2 m; ford bed z=-1.5 m gives 0.3 m depth. West and east bank approaches slope 1.5 m over 12 m between x=-28/-16 and x=16/28 at y=-20. R1 and R2 join on the dry bank at (-28,0,0). These staging levels do not authorize crossing in changed flow."
+      ],
+      "conditions": {
+        "NORMAL": "Inspected low water; crossing available with observers.",
+        "RESTRICTED": "Spawning disturbance: close the ford, retain west-bank refuge access.",
+        "CLOSED": "Rising flow or unstable bank: no ford; refuge access also closes if its approach is threatened.",
+        "EMERGENCY": "Account for people on each bank; await local boat crews. No improvised charge through current."
+      },
+      "art": {
+        "file": "WILDS-01.png",
+        "row": 0
+      },
+      "authority": "Exact site bounds, regional anchor and refuge footprint inherited unchanged. New detail refines the generic 3.0 staging polyline; it does not treat that polyline as an engineered path. Local z=0 is the inherited refuge floor datum, not sea level.",
+      "details": [],
+      "geometry_status": "Resolved fictional production layout; not certified construction."
+    },
+    {
+      "id": "SITE-02",
+      "name": "Walking Root Crossing",
+      "region": "REG-02",
+      "regional_position_km": [
+        82,
+        105
+      ],
+      "baseline": {
+        "id": "SITE-02",
+        "name": "Walking Root Crossing",
+        "width_m": 160,
+        "depth_m": 120,
+        "zones": [
+          {
+            "name": "West approach",
+            "box": [
+              -80.0,
+              -60.0,
+              35.2,
+              120
+            ]
+          },
+          {
+            "name": "Encounter field",
+            "box": [
+              -44.800000000000004,
+              -60.0,
+              89.60000000000001,
+              120
+            ]
+          },
+          {
+            "name": "East approach",
+            "box": [
+              44.800000000000004,
+              -60.0,
+              35.2,
+              120
+            ]
+          }
+        ],
+        "refuge": {
+          "module": "MOD-12",
+          "center_m": [
+            0,
+            38.4,
+            0
+          ],
+          "width_m": 20,
+          "depth_m": 16
+        },
+        "route_points_m": [
+          [
+            -80.0,
+            0,
+            0
+          ],
+          [
+            -44.800000000000004,
+            0,
+            0
+          ],
+          [
+            0,
+            -30.0,
+            0
+          ],
+          [
+            44.800000000000004,
+            0,
+            0
+          ],
+          [
+            80.0,
+            0,
+            0
+          ]
+        ],
+        "notes": "Ridge west, crown east; two fall-arrest anchor stations and a lower rescue shelf.",
+        "hazard": "Crown migration stretches lashings; mawroot plants imitate sheltered warmth off the marked path."
+      },
+      "features": [
+        {
+          "id": "F01",
+          "name": "West ridge",
+          "box_m": [
+            -80,
+            -60,
+            90,
+            120
+          ],
+          "kind": "rock",
+          "z_m": 0
+        },
+        {
+          "id": "F02",
+          "name": "North ridge extension",
+          "box_m": [
+            10,
+            30,
+            10,
+            30
+          ],
+          "kind": "rock",
+          "z_m": 0
+        },
+        {
+          "id": "F03",
+          "name": "East crown shelf",
+          "box_m": [
+            45,
+            -60,
+            35,
+            120
+          ],
+          "kind": "rock",
+          "z_m": 0
+        },
+        {
+          "id": "F04",
+          "name": "Root span south",
+          "box_m": [
+            10,
+            -32,
+            35,
+            4
+          ],
+          "kind": "span",
+          "z_m": 0
+        },
+        {
+          "id": "F05",
+          "name": "Root span middle",
+          "box_m": [
+            10,
+            -12,
+            35,
+            4
+          ],
+          "kind": "span",
+          "z_m": 0
+        },
+        {
+          "id": "F06",
+          "name": "Root span north",
+          "box_m": [
+            10,
+            8,
+            35,
+            4
+          ],
+          "kind": "span",
+          "z_m": 0
+        },
+        {
+          "id": "F07",
+          "name": "Lower rescue shelf",
+          "box_m": [
+            15,
+            -52,
+            26,
+            10
+          ],
+          "kind": "rock",
+          "z_m": -8
+        },
+        {
+          "id": "F08",
+          "name": "Mawroot colony",
+          "box_m": [
+            -57,
+            17,
+            3,
+            3
+          ],
+          "kind": "habitat",
+          "z_m": 0
+        },
+        {
+          "id": "F09",
+          "name": "West anchor",
+          "box_m": [
+            6,
+            -34,
+            3,
+            3
+          ],
+          "kind": "anchor",
+          "z_m": 0
+        },
+        {
+          "id": "F10",
+          "name": "East anchor",
+          "box_m": [
+            47,
+            -34,
+            3,
+            3
+          ],
+          "kind": "anchor",
+          "z_m": 0
+        }
+      ],
+      "routes": [
+        {
+          "id": "R1",
+          "name": "Inspected south span",
+          "points_m": [
+            [
+              -80,
+              0
+            ],
+            [
+              -20,
+              0
+            ],
+            [
+              -20,
+              -30
+            ],
+            [
+              10,
+              -30
+            ],
+            [
+              45,
+              -30
+            ],
+            [
+              80,
+              0
+            ]
+          ],
+          "width_m": 2,
+          "mode": "foot / light handcart",
+          "z_m": 0,
+          "status": "NORMAL only"
+        },
+        {
+          "id": "R2",
+          "name": "Ridge hut access",
+          "points_m": [
+            [
+              -20,
+              0
+            ],
+            [
+              -20,
+              38.4
+            ],
+            [
+              -10,
+              38.4
+            ]
+          ],
+          "width_m": 2,
+          "mode": "foot",
+          "z_m": 0,
+          "status": "NORMAL / RESTRICTED"
+        }
+      ],
+      "notes": [
+        "The northward fixed ridge reaches the inherited hut at (0,38.4); it is on the west side of the ravine. No refuge is placed on a floating tree.",
+        "Three root spans are 35 m long and 4 m wide at this spring reference state. Ravine floor is staged at z=-18 m and lower rescue shelf at z=-8 m. These are production set datums, not surveys of a real site.",
+        "Only the inspected south span is a normal route here. The other two have no implied traffic clearance. Anchors identify rescue staging, not an engineering load rating. Migration invalidates the spring alignment until a dated scene plan updates it.",
+        "Mawroot remains off the marked ridge route. The lower shelf has no ordinary walking connection; reaching it requires a planned assisted descent."
+      ],
+      "conditions": {
+        "NORMAL": "Current lashing inspection and spring alignment confirmed.",
+        "RESTRICTED": "Rain or visible crown drift: stop carts and inspect all intended foot crossings.",
+        "CLOSED": "Span separation or failed anchors: no ravine crossing.",
+        "EMERGENCY": "Retreat to fixed ridge; plan assisted recovery from lower shelf without treating it as a shortcut."
+      },
+      "art": {
+        "file": "WILDS-01.png",
+        "row": 1
+      },
+      "authority": "Exact site bounds, regional anchor and refuge footprint inherited unchanged. New detail refines the generic 3.0 staging polyline; it does not treat that polyline as an engineered path. Local z=0 is the inherited refuge floor datum, not sea level.",
+      "details": [],
+      "geometry_status": "Resolved fictional production layout; not certified construction."
+    },
+    {
+      "id": "SITE-03",
+      "name": "The Buried Lens",
+      "region": "REG-03",
+      "regional_position_km": [
+        212,
+        40
+      ],
+      "baseline": {
+        "id": "SITE-03",
+        "name": "The Buried Lens",
+        "width_m": 100,
+        "depth_m": 100,
+        "zones": [
+          {
+            "name": "West approach",
+            "box": [
+              -50.0,
+              -50.0,
+              22.0,
+              100
+            ]
+          },
+          {
+            "name": "Encounter field",
+            "box": [
+              -28.000000000000004,
+              -50.0,
+              56.00000000000001,
+              100
+            ]
+          },
+          {
+            "name": "East approach",
+            "box": [
+              28.000000000000004,
+              -50.0,
+              22.0,
+              100
+            ]
+          }
+        ],
+        "refuge": {
+          "module": "MOD-12",
+          "center_m": [
+            0,
+            32.0,
+            0
+          ],
+          "width_m": 20,
+          "depth_m": 16
+        },
+        "route_points_m": [
+          [
+            -50.0,
+            0,
+            0
+          ],
+          [
+            -28.000000000000004,
+            0,
+            0
+          ],
+          [
+            0,
+            -25.0,
+            0
+          ],
+          [
+            28.000000000000004,
+            0,
+            0
+          ],
+          [
+            50.0,
+            0,
+            0
+          ]
+        ],
+        "notes": "One excavated stair and a separate maintenance ramp; shafts are light wells, not walkable escape holes.",
+        "hazard": "Glass storm, reflected false bearings, glassback drake nests."
+      },
+      "features": [
+        {
+          "id": "F01",
+          "name": "Storm court",
+          "box_m": [
+            -23,
+            -33,
+            46,
+            46
+          ],
+          "kind": "court",
+          "z_m": 0
+        },
+        {
+          "id": "F02",
+          "name": "Optical chamber below",
+          "box_m": [
+            -12,
+            -20,
+            24,
+            18
+          ],
+          "kind": "subfloor",
+          "z_m": -6
+        },
+        {
+          "id": "F03",
+          "name": "Excavated stair",
+          "box_m": [
+            -6,
+            -2,
+            4,
+            15
+          ],
+          "kind": "stair",
+          "z_m": 0
+        },
+        {
+          "id": "F04",
+          "name": "Service stair cut (not a ramp)",
+          "box_m": [
+            12,
+            -20,
+            12,
+            6
+          ],
+          "kind": "stair",
+          "z_m": -6
+        },
+        {
+          "id": "F05",
+          "name": "Light well NW",
+          "box_m": [
+            -18,
+            4,
+            3,
+            3
+          ],
+          "kind": "shaft",
+          "z_m": 0
+        },
+        {
+          "id": "F06",
+          "name": "Light well NE",
+          "box_m": [
+            15,
+            4,
+            3,
+            3
+          ],
+          "kind": "shaft",
+          "z_m": 0
+        },
+        {
+          "id": "F07",
+          "name": "Light well SW",
+          "box_m": [
+            -18,
+            -29,
+            3,
+            3
+          ],
+          "kind": "shaft",
+          "z_m": 0
+        },
+        {
+          "id": "F08",
+          "name": "Light well SE",
+          "box_m": [
+            15,
+            -29,
+            3,
+            3
+          ],
+          "kind": "shaft",
+          "z_m": 0
+        },
+        {
+          "id": "F09",
+          "name": "Drake nesting bowl",
+          "box_m": [
+            31,
+            11,
+            14,
+            15
+          ],
+          "kind": "habitat",
+          "z_m": 0
+        },
+        {
+          "id": "F10",
+          "name": "Packbeast rest bay",
+          "box_m": [
+            -44,
+            -34,
+            16,
+            10
+          ],
+          "kind": "land",
+          "z_m": 0
+        }
+      ],
+      "routes": [
+        {
+          "id": "R1",
+          "name": "Marked court approach",
+          "points_m": [
+            [
+              -50,
+              0
+            ],
+            [
+              -27,
+              0
+            ],
+            [
+              -27,
+              17
+            ],
+            [
+              0,
+              17
+            ]
+          ],
+          "width_m": 2,
+          "mode": "foot",
+          "z_m": 0,
+          "status": "NORMAL"
+        },
+        {
+          "id": "R2",
+          "name": "Refuge path",
+          "points_m": [
+            [
+              0,
+              17
+            ],
+            [
+              0,
+              24
+            ]
+          ],
+          "width_m": 2,
+          "mode": "foot",
+          "z_m": 0,
+          "status": "NORMAL"
+        },
+        {
+          "id": "R3",
+          "name": "Stair entry",
+          "points_m": [
+            [
+              -4,
+              17
+            ],
+            [
+              -4,
+              13
+            ],
+            [
+              -4,
+              2.5
+            ],
+            [
+              -4,
+              -2
+            ]
+          ],
+          "width_m": 2,
+          "mode": "foot",
+          "z_m": "0 to -6",
+          "status": "NORMAL"
+        },
+        {
+          "id": "R4",
+          "name": "Service stair approach",
+          "points_m": [
+            [
+              50,
+              -30
+            ],
+            [
+              27,
+              -30
+            ],
+            [
+              27,
+              -21
+            ],
+            [
+              12,
+              -21
+            ],
+            [
+              12,
+              -19.4
+            ]
+          ],
+          "width_m": 2,
+          "mode": "maintenance",
+          "z_m": 0,
+          "status": "NORMAL"
+        }
+      ],
+      "notes": [
+        "Court is a 46 x 46 m square excavation envelope around a circular 44 m storm court. Chamber is 24 x 18 m at z=-6 m; a 4 m wide stair descends from y=13 to y=-2. Light wells are guarded 3 x 3 m openings, never exits.",
+        "The former ramp reservation is resolved as a service stair inside the unchanged 12 x 6 m entry cut. Three parallel flights descend 2 m each; bottom corridor enters the chamber through its east wall. It is foot/service access only: no wheeled ramp is implied.",
+        "Refuge remains 20 x 16 m at (0,32). Nesting bowl is northeast, outside the marked approach. Packbeasts wait in the southwest rest bay, not on light wells.",
+        "No chase may leap through a light well. Reflected bearings are checked against marked bedrock and local guides."
+      ],
+      "conditions": {
+        "NORMAL": "Stable crust inspected, safe light and no storm warning.",
+        "RESTRICTED": "Active nesting: exclude northeast bowl, keep bedrock approaches.",
+        "CLOSED": "Glass storm or unstable excavation rim: shelter; no entry.",
+        "EMERGENCY": "Retreat by the same verified exterior approach; do not invent a shaft escape."
+      },
+      "art": {
+        "file": "WILDS-02.png",
+        "row": 0
+      },
+      "authority": "Exact site bounds, regional anchor and refuge footprint inherited unchanged. New detail refines the generic 3.0 staging polyline; it does not treat that polyline as an engineered path. Local z=0 is the inherited refuge floor datum, not sea level.",
+      "details": [
+        {
+          "id": "D03-A",
+          "name": "Public excavated stair",
+          "width_m": 2,
+          "risers": 36,
+          "riser_m": 0.16666666666666666,
+          "treads": 35,
+          "tread_m": 0.3,
+          "rise_m": 6,
+          "run_m": 10.5,
+          "top_xyz": [
+            -4,
+            13,
+            0
+          ],
+          "bottom_xyz": [
+            -4,
+            2.5,
+            -6
+          ],
+          "exit_xyz": [
+            -4,
+            -2,
+            -6
+          ],
+          "note": "Straight south flight; bottom landing continues south 4.5 m into the chamber. Clear headroom 2.4 m measured above pitch line. Open stair cut is guarded at surface."
+        },
+        {
+          "id": "D03-B",
+          "name": "Three-flight service stair",
+          "width_m": 1.2,
+          "flights": 3,
+          "risers_per_flight": 12,
+          "riser_m": 0.16666666666666666,
+          "treads_per_flight": 11,
+          "tread_m": 0.3,
+          "rise_per_flight_m": 2,
+          "run_per_flight_m": 3.3,
+          "flight_endpoints_xyz": [
+            [
+              [
+                14,
+                -19.4,
+                0
+              ],
+              [
+                17.3,
+                -19.4,
+                -2
+              ]
+            ],
+            [
+              [
+                17.3,
+                -17.4,
+                -2
+              ],
+              [
+                14,
+                -17.4,
+                -4
+              ]
+            ],
+            [
+              [
+                14,
+                -15.4,
+                -4
+              ],
+              [
+                17.3,
+                -15.4,
+                -6
+              ]
+            ]
+          ],
+          "landing_boxes_xy": [
+            [
+              17.3,
+              -20,
+              2,
+              3.2
+            ],
+            [
+              12,
+              -18,
+              2,
+              3.2
+            ]
+          ],
+          "bottom_route_xyz": [
+            [
+              17.3,
+              -15.4,
+              -6
+            ],
+            [
+              21,
+              -15.4,
+              -6
+            ],
+            [
+              21,
+              -19.4,
+              -6
+            ],
+            [
+              12,
+              -19.4,
+              -6
+            ]
+          ],
+          "note": "Upper approach reaches x=12 then crosses the 2 m top landing to x=14. Return landings join adjacent flights at z=-2 and -4. Bottom corridor 1.2 m clear, beside flights, not through them. Bottom chamber doorway 1.2 x 2.4 m. Guard open edges to 1.1 m; maintain 2.4 m headroom. No ramp or cart passage."
+        }
+      ],
+      "geometry_status": "Resolved fictional production layout; not certified construction."
+    },
+    {
+      "id": "SITE-08",
+      "name": "Bellwater Narrows",
+      "region": "REG-08",
+      "regional_position_km": [
+        -43,
+        65
+      ],
+      "baseline": {
+        "id": "SITE-08",
+        "name": "Bellwater Narrows",
+        "width_m": 200,
+        "depth_m": 120,
+        "zones": [
+          {
+            "name": "West approach",
+            "box": [
+              -100.0,
+              -60.0,
+              44.0,
+              120
+            ]
+          },
+          {
+            "name": "Encounter field",
+            "box": [
+              -56.00000000000001,
+              -60.0,
+              112.00000000000001,
+              120
+            ]
+          },
+          {
+            "name": "East approach",
+            "box": [
+              56.00000000000001,
+              -60.0,
+              44.0,
+              120
+            ]
+          }
+        ],
+        "refuge": {
+          "module": "MOD-12",
+          "center_m": [
+            0,
+            38.4,
+            0
+          ],
+          "width_m": 20,
+          "depth_m": 16
+        },
+        "route_points_m": [
+          [
+            -100.0,
+            0,
+            0
+          ],
+          [
+            -56.00000000000001,
+            0,
+            0
+          ],
+          [
+            0,
+            -30.0,
+            0
+          ],
+          [
+            56.00000000000001,
+            0,
+            0
+          ],
+          [
+            100.0,
+            0,
+            0
+          ]
+        ],
+        "notes": "Sea approaches east and west, foot access south to the refuge, no route to the Burrow.",
+        "hazard": "Bell-eels hunt vibration; pressure change can close the water route."
+      },
+      "features": [
+        {
+          "id": "F01",
+          "name": "Navigable tidal channel",
+          "box_m": [
+            -100,
+            -10,
+            200,
+            20
+          ],
+          "kind": "water",
+          "z_m": -8
+        },
+        {
+          "id": "F02",
+          "name": "Southwest rock pier",
+          "box_m": [
+            -45,
+            -38,
+            15,
+            28
+          ],
+          "kind": "rock",
+          "z_m": -6
+        },
+        {
+          "id": "F03",
+          "name": "Northeast rock pier",
+          "box_m": [
+            30,
+            10,
+            15,
+            28
+          ],
+          "kind": "rock",
+          "z_m": -6
+        },
+        {
+          "id": "F04",
+          "name": "High east rock arch",
+          "box_m": [
+            70,
+            -60,
+            16,
+            110
+          ],
+          "kind": "overhead",
+          "z_m": 0
+        },
+        {
+          "id": "F05",
+          "name": "North dry ledge",
+          "box_m": [
+            -30,
+            27,
+            116,
+            25
+          ],
+          "kind": "rock",
+          "z_m": 0
+        },
+        {
+          "id": "F06",
+          "name": "Quiet nesting pocket",
+          "box_m": [
+            -78,
+            22,
+            30,
+            23
+          ],
+          "kind": "habitat",
+          "z_m": -8
+        },
+        {
+          "id": "F07",
+          "name": "Snail grazing mat",
+          "box_m": [
+            -23,
+            -48,
+            25,
+            15
+          ],
+          "kind": "habitat",
+          "z_m": -8
+        },
+        {
+          "id": "F08",
+          "name": "South boat landing",
+          "box_m": [
+            4,
+            -26,
+            15,
+            10
+          ],
+          "kind": "dock",
+          "z_m": -6
+        },
+        {
+          "id": "F09",
+          "name": "Measured straight ascent",
+          "box_m": [
+            20,
+            -40,
+            50,
+            12
+          ],
+          "kind": "stair",
+          "z_m": "-6 to 0"
+        },
+        {
+          "id": "F10",
+          "name": "Landing connector",
+          "box_m": [
+            19,
+            -35,
+            7,
+            15
+          ],
+          "kind": "land",
+          "z_m": -6
+        },
+        {
+          "id": "F11",
+          "name": "Landing water approach",
+          "box_m": [
+            4,
+            -16,
+            15,
+            6
+          ],
+          "kind": "water",
+          "z_m": -8
+        }
+      ],
+      "routes": [
+        {
+          "id": "R1",
+          "name": "Quiet water passage",
+          "points_m": [
+            [
+              -100,
+              0
+            ],
+            [
+              -55,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              55,
+              0
+            ],
+            [
+              100,
+              0
+            ]
+          ],
+          "width_m": 8,
+          "mode": "boat",
+          "z_m": -8,
+          "status": "NORMAL only"
+        },
+        {
+          "id": "R2",
+          "name": "Dry refuge approach",
+          "points_m": [
+            [
+              78,
+              -60
+            ],
+            [
+              78,
+              42
+            ],
+            [
+              10,
+              42
+            ]
+          ],
+          "width_m": 2,
+          "mode": "foot",
+          "z_m": 0,
+          "status": "NORMAL / RESTRICTED"
+        },
+        {
+          "id": "R3",
+          "name": "Landing to high arch",
+          "points_m": [
+            [
+              11.5,
+              -21
+            ],
+            [
+              25,
+              -21
+            ],
+            [
+              25,
+              -34
+            ],
+            [
+              46.6,
+              -34
+            ],
+            [
+              78,
+              -34
+            ]
+          ],
+          "width_m": 1.8,
+          "mode": "foot via stairs",
+          "z_m": "-6 to 0",
+          "status": "NORMAL / EMERGENCY if inspected"
+        }
+      ],
+      "notes": [
+        "Two rock piers bracket the open channel. The inherited refuge stays 20 x 16 m at (0,38.4), floor z=0. Typical low-water surface is staged at z=-8 m; water level can rise and navigation can close.",
+        "South foot access follows a natural high rock arch along the east side, then the north ledge. Water passes beneath the arch; the plan must be read by elevation. This is not an at-grade dam across the sea route.",
+        "The dock connects to the high path through F10 and the measured F09 stair. Boarding at reference water z=-8 uses a 10-riser stair from z=-7.5 to dock z=-6; 0.5 m is the assumed vessel deck freeboard. Changed tide or vessel freeboard requires a separately checked boarding arrangement. Stair ascent gains 6 m; no boat reaches refuge floor directly.",
+        "Protected pocket and grazing mat lie away from the through channel. This author sheet is not an in-world public chart. No connection to the Burrow exists.",
+        "F11 connects the channel south edge at y=-10 to the dock north face y=-16. A 1.8 m wide boarding gangway at z=-7.5 links that face to the stair foot (11.5,-18.3,-7.5), a 2.3 m horizontal reach inside the dock cut. It is deployed only after vessel freeboard and the gap are checked; no jump or submerged walk is implied."
+      ],
+      "conditions": {
+        "NORMAL": "Local navigator confirms water, pressure, air and vessel clearance.",
+        "RESTRICTED": "Nesting: quiet through passage only if locally permitted; pocket closed.",
+        "CLOSED": "Water rise, pressure or air warning: no boat departure, reassess foot route separately.",
+        "EMERGENCY": "Use inspected refuge only while its access and air remain safe; request local rescue rather than striking the hull for a distraction."
+      },
+      "art": {
+        "file": "WILDS-02.png",
+        "row": 1
+      },
+      "authority": "Exact site bounds, regional anchor and refuge footprint inherited unchanged. New detail refines the generic 3.0 staging polyline; it does not treat that polyline as an engineered path. Local z=0 is the inherited refuge floor datum, not sea level.",
+      "details": [
+        {
+          "id": "D08-A",
+          "name": "Dock boarding stair",
+          "width_m": 1.8,
+          "risers": 10,
+          "riser_m": 0.15,
+          "treads": 9,
+          "tread_m": 0.3,
+          "rise_m": 1.5,
+          "run_m": 2.7,
+          "top_xyz": [
+            11.5,
+            -21,
+            -6
+          ],
+          "bottom_xyz": [
+            11.5,
+            -18.3,
+            -7.5
+          ],
+          "note": "Stair descends north within landing footprint. Vessel secures at the north edge; boarding gap verified by crew. No all-tide accessibility claim."
+        },
+        {
+          "id": "D08-B",
+          "name": "High path ascent",
+          "width_m": 1.8,
+          "flights": 4,
+          "risers_per_flight": 10,
+          "riser_m": 0.15,
+          "treads_per_flight": 9,
+          "tread_m": 0.45,
+          "rise_per_flight_m": 1.5,
+          "run_per_flight_m": 4.05,
+          "landing_length_m": 1.8,
+          "flight_endpoints_xyz": [
+            [
+              [
+                25,
+                -34,
+                -6
+              ],
+              [
+                29.05,
+                -34,
+                -4.5
+              ]
+            ],
+            [
+              [
+                30.85,
+                -34,
+                -4.5
+              ],
+              [
+                34.9,
+                -34,
+                -3
+              ]
+            ],
+            [
+              [
+                36.7,
+                -34,
+                -3
+              ],
+              [
+                40.75,
+                -34,
+                -1.5
+              ]
+            ],
+            [
+              [
+                42.55,
+                -34,
+                -1.5
+              ],
+              [
+                46.6,
+                -34,
+                0
+              ]
+            ]
+          ],
+          "top_exit_xyz": [
+            78,
+            -34,
+            0
+          ],
+          "note": "Four straight eastbound flights, three 1.8 m landings; total rise 6 m, stair-and-landing run 21.6 m. F10 connects dock to the west bottom landing. Top walkway continues east at z=0 within F09 to the arch, whose southwest approach joins R2. All walking edges guarded to 1.1 m. Arch underside z=-3 over channel: nominal water clearance 5 m at z=-8, rechecked for actual vessel and tide. No unmeasured ledge leap."
+        }
+      ],
+      "geometry_status": "Resolved fictional production layout; not certified construction."
+    }
+  ]
+}
