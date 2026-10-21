@@ -1,7 +1,7 @@
 const test=require('node:test'),assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path'),os=require('node:os'),ts=require('typescript');
 const root=path.resolve(__dirname,'..'),pack=JSON.parse(fs.readFileSync(path.join(root,'assets/expedition-world/meshes.json')));
 const temp=fs.mkdtempSync(path.join(os.tmpdir(),'madger-native-world-'));test.after(()=>fs.rmSync(temp,{recursive:true,force:true}));
-for(const name of ['math','gl','scene','core','animation','companions','companion-models'])fs.writeFileSync(path.join(temp,name+'.js'),ts.transpileModule(fs.readFileSync(path.join(root,'src/game/expedition',name+'.ts'),'utf8'),{compilerOptions:{module:ts.ModuleKind.CommonJS,target:ts.ScriptTarget.ES2022}}).outputText);
+for(const name of ['math','gl','scene','core','animation','companions','companion-models'])fs.writeFileSync(path.join(temp,name+'.js'),ts.transpileModule(fs.readFileSync(path.join(root,'src/game/expedition',name+'.ts'),'utf8')+(name==='gl'?'\nexport const geometryForTest=geometry;':''),{compilerOptions:{module:ts.ModuleKind.CommonJS,target:ts.ScriptTarget.ES2022}}).outputText);
 const {ExpeditionRenderer}=require(path.join(temp,'gl.js')),{ExpeditionScene}=require(path.join(temp,'scene.js')),C=require(path.join(temp,'core.js'));
 
 test('native scans are finite indexed 3D meshes with UVs and a bounded triangle budget',()=>{
@@ -40,4 +40,11 @@ test('native terrain leaves the playable lane open over an authored gap',()=>{
  assert(drawn.some(o=>o.shape==='trail'&&Math.abs(o.x)>1.5&&Math.abs(o.z)<1.5),'neighboring lanes remain visibly safe');
  assert(drawn.some(o=>o.shape==='terrain'),'connected off-track terrain stays visible');
  assert(drawn.some(o=>o.shape==='scanTreeTrunk'),'low budget retains actual 3D trees');
+});
+
+test('cave ceiling has matching end rings, inward normals and safe headroom',()=>{
+ const v=require(path.join(temp,'gl.js')).geometryForTest('ceiling');const rings=[new Map(),new Map()];
+ let lowest=Infinity;
+ for(let i=0;i<v.length;i+=6){lowest=Math.min(lowest,v[i+1]);assert(v[i+4]<0,'ceiling normals face into the cave');if(Math.abs(v[i+2])===1)rings[v[i+2]===-1?0:1].set(v[i],v[i+1]);}
+ assert.deepEqual([...rings[0]].sort(),[...rings[1]].sort());assert(10+lowest*4.2>6.5,'roof stays well above jumping characters');
 });

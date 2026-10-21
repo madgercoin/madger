@@ -1,5 +1,5 @@
 import { multiply, perspective, lookAt, transform, type Mat4, type Vec3 } from './math';
-export type Shape='box'|'sphere'|'rock'|'cylinder'|'cone'|'ring'|'leaf'|'shadow'|'headStripe'|'tail'|'halo'|'ridge'|'face'|'terrain'|'trail'|ScanShape;
+export type Shape='box'|'sphere'|'rock'|'cylinder'|'cone'|'ring'|'leaf'|'shadow'|'headStripe'|'tail'|'halo'|'ridge'|'face'|'terrain'|'trail'|'ceiling'|ScanShape;
 export type ScanShape='scanTreeTrunk'|'scanTreeCrown'|'scanTreeTwigs'|'scanRock'|'scanFern'|'scanLog'|'scanRoots'|'scanCliff';
 export type NativeWorldPack={version:number;meshes:{name:string;tile:number;wind:number;vertices:number[];indices:number[]}[]};
 export type Color=[number,number,number,number];
@@ -107,7 +107,7 @@ precision mediump float;
 uniform sampler2D uPortrait;uniform sampler2D uAtlas;uniform sampler2D uGround;uniform sampler2D uBark;uniform sampler2D uStone;
 uniform float uAtlasReady;uniform float uSurface;uniform float uTile;
 varying vec2 vUV;
-uniform vec3 uEye;uniform vec3 uFog;uniform vec2 uFogRange;uniform float uTime;uniform float uTravel;uniform float uDetail;
+uniform vec3 uEye;uniform vec3 uSun;uniform vec3 uFog;uniform vec2 uFogRange;uniform float uTime;uniform float uTravel;uniform float uDetail;
 varying vec3 vWorld;varying vec3 vNormal;varying vec3 vLocal;varying vec4 vColor;
 #ifdef GL_FRAGMENT_PRECISION_HIGH
 float hash(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
@@ -131,6 +131,7 @@ vec3 surfaceColor(vec3 base,vec3 n){
  vec3 p=vec3(vWorld.x,vWorld.y,uTravel-vWorld.z)*scale;
  vec3 a=abs(n);vec2 uv=a.y>a.x&&a.y>a.z?p.xz:(a.x>a.z?p.zy:p.xy);
  vec3 tex=tile<.5?texture2D(uGround,uv).rgb:tile<1.5?texture2D(uBark,uv).rgb:texture2D(uStone,uv).rgb;
+ if(tile>1.5){float grey=dot(tex,vec3(.299,.587,.114));tex=mix(tex,vec3(grey)*vec3(.87,.94,1.03),.78);}
  return tex*tex*mix(vec3(1.12),base*2.0,.20);
 }
 void main(){
@@ -182,7 +183,7 @@ void main(){
    base=mix(base,vec3(.86,.68,.38),smoothstep(.17,.35,chevron)*.91*smoothstep(-.03,.10,vLocal.y-centre));
   }
   float sun=max(0.0,dot(n,vec3(-.423,.800,.423)));
-  vec3 lit=base*(vec3(.32,.38,.37)+vec3(.95,.83,.62)*sun+vec3(.16,.23,.22)*max(0.0,n.y)+max(0.0,vColor.a)*1.15);
+  vec3 lit=base*(vec3(.32,.38,.37)+uSun*sun+vec3(.16,.23,.22)*max(0.0,n.y)+max(0.0,vColor.a)*1.15);
   lit=mix(lit,uFog,smoothstep(uFogRange.x,uFogRange.y,length(uEye-vWorld)));
   gl_FragColor=vec4(sqrt(max(lit/(lit+vec3(.65)),vec3(0.0))),1.0);return;
  }
@@ -228,7 +229,7 @@ void main(){
  float sun=max(0.0,dot(n,normalize(vec3(-.45,.85,.45))));
  float rim=pow(1.0-max(0.0,dot(n,view)),3.0);
  float spec=pow(max(0.0,dot(n,normalize(view+normalize(vec3(-.45,.85,.45))))),36.0);
- vec3 light=vec3(.30,.36,.36)+vec3(.95,.83,.62)*sun+vec3(.16,.23,.22)*max(0.0,n.y);
+ vec3 light=vec3(.30,.36,.36)+uSun*sun+vec3(.16,.23,.22)*max(0.0,n.y);
  vec3 lamp=vec3(sign(vWorld.x)*4.0-vWorld.x,2.45-vWorld.y,mod(uTravel-vWorld.z+10.0,20.0)-10.0);
  float falloff=1.0/(1.0+dot(lamp,lamp)*.24);
  light+=vec3(.75,.36,.09)*falloff*(.4+.6*max(0.0,dot(n,normalize(lamp))))*(.98+.02*sin(uTime*6.0));
@@ -264,6 +265,16 @@ function geometry(shape:Shape) {
   }
  }else if(shape==='trail'){
   triangle(v,[-.5,0,-.5],[.5,0,.5],[.5,0,-.5],[0,1,0]);triangle(v,[-.5,0,-.5],[-.5,0,.5],[.5,0,.5],[0,1,0]);
+ }else if(shape==='ceiling'){
+  // Periodic end rings meet exactly between chunks: a closed arched vault,
+  // with inward normals and no sky cracks when a device lowers draw detail.
+  const nx=16,nz=8;
+  const point=(i:number,j:number):Vec3=>{const x=-1+2*i/nx,z=-1+2*j/nz;
+   return [x,-.70*Math.sqrt(Math.max(0,1-x*x))+.065*Math.cos(x*9+Math.cos(z*Math.PI*2))+.035*Math.cos(x*19+Math.cos(z*Math.PI*4)),z];};
+  for(let j=0;j<nz;j++)for(let i=0;i<nx;i++){
+   const a=point(i,j),b=point(i+1,j),c=point(i,j+1),d=point(i+1,j+1);
+   triangle(v,a,b,c);triangle(v,b,d,c);
+  }
  }else if(shape==='terrain'){
   // One continuous, noninteractive forest floor under the road. Raised outer
   // banks add true depth while the inner edge stays below collision height.
@@ -406,7 +417,7 @@ function cullBatch(batch:Batch,planes:Float64Array){
 }
 export class ExpeditionRenderer {
  private gl:NativeGL;private program:WebGLProgram;private batches=new Map<Shape,Batch>();
- private uniforms:{ground:WebGLUniformLocation;bark:WebGLUniformLocation;stone:WebGLUniformLocation;atlas:WebGLUniformLocation;atlasReady:WebGLUniformLocation;surface:WebGLUniformLocation;tile:WebGLUniformLocation;wind:WebGLUniformLocation;portrait:WebGLUniformLocation;vp:WebGLUniformLocation;eye:WebGLUniformLocation;fog:WebGLUniformLocation;range:WebGLUniformLocation;time:WebGLUniformLocation;travel:WebGLUniformLocation;detail:WebGLUniformLocation};
+ private uniforms:{sun:WebGLUniformLocation;ground:WebGLUniformLocation;bark:WebGLUniformLocation;stone:WebGLUniformLocation;atlas:WebGLUniformLocation;atlasReady:WebGLUniformLocation;surface:WebGLUniformLocation;tile:WebGLUniformLocation;wind:WebGLUniformLocation;portrait:WebGLUniformLocation;vp:WebGLUniformLocation;eye:WebGLUniformLocation;fog:WebGLUniformLocation;range:WebGLUniformLocation;time:WebGLUniformLocation;travel:WebGLUniformLocation;detail:WebGLUniformLocation};
  private divisor:((i:number,v:number)=>void)|null=null;private drawInstanced:((mode:number,first:number,count:number,instances:number)=>void)|null=null;
  private drawIndexedInstanced:((mode:number,count:number,type:number,offset:number,instances:number)=>void)|null=null;
  private tailVertices=new Float32Array(TAIL_INDICES.length*6);private tailGrid=new Float64Array((TAIL_RINGS+1)*(TAIL_SIDES+1)*6);
@@ -425,7 +436,7 @@ export class ExpeditionRenderer {
   gl.attachShader(program,vert);gl.attachShader(program,frag);['aPosition','aNormal','aM0','aM1','aM2','aM3','aColor','aUV'].forEach((name,i)=>gl.bindAttribLocation(program,i,name));gl.linkProgram(program);gl.deleteShader(vert);gl.deleteShader(frag);
   if(!gl.getProgramParameter(program,gl.LINK_STATUS)){const message=gl.getProgramInfoLog(program);gl.deleteProgram(program);throw Error('3D program: '+message);}this.program=program;
   const uniform=(name:string)=>{const u=gl.getUniformLocation(program,name);if(u===null)throw Error('Missing shader uniform '+name);return u;};
-  this.uniforms={ground:uniform('uGround'),bark:uniform('uBark'),stone:uniform('uStone'),atlas:uniform('uAtlas'),atlasReady:uniform('uAtlasReady'),surface:uniform('uSurface'),tile:uniform('uTile'),wind:uniform('uWind'),portrait:uniform('uPortrait'),vp:uniform('uVP'),eye:uniform('uEye'),fog:uniform('uFog'),range:uniform('uFogRange'),time:uniform('uTime'),travel:uniform('uTravel'),detail:uniform('uDetail')};
+  this.uniforms={sun:uniform('uSun'),ground:uniform('uGround'),bark:uniform('uBark'),stone:uniform('uStone'),atlas:uniform('uAtlas'),atlasReady:uniform('uAtlasReady'),surface:uniform('uSurface'),tile:uniform('uTile'),wind:uniform('uWind'),portrait:uniform('uPortrait'),vp:uniform('uVP'),eye:uniform('uEye'),fog:uniform('uFog'),range:uniform('uFogRange'),time:uniform('uTime'),travel:uniform('uTravel'),detail:uniform('uDetail')};
   const g=gl as WebGL2RenderingContext;
   if(typeof g.drawArraysInstanced==='function'){
    this.drawInstanced=g.drawArraysInstanced.bind(g);this.divisor=g.vertexAttribDivisor.bind(g);
@@ -433,7 +444,7 @@ export class ExpeditionRenderer {
   }else{
    const ext=gl.getExtension('ANGLE_instanced_arrays');if(ext){this.drawInstanced=ext.drawArraysInstancedANGLE.bind(ext);this.divisor=ext.vertexAttribDivisorANGLE.bind(ext);if('drawElementsInstancedANGLE' in ext&&typeof ext.drawElementsInstancedANGLE==='function')this.drawIndexedInstanced=ext.drawElementsInstancedANGLE.bind(ext);}
   }
-  for(const shape of ['box','sphere','rock','ridge','terrain','trail','cylinder','cone','ring','leaf','headStripe','tail','shadow','halo','face'] as Shape[]){
+  for(const shape of ['box','sphere','rock','ridge','terrain','trail','ceiling','cylinder','cone','ring','leaf','headStripe','tail','shadow','halo','face'] as Shape[]){
    const data=shape==='tail'?tailGeometry(0,0,this.tailVertices,this.tailGrid):geometry(shape),vertex=gl.createBuffer(),instances=gl.createBuffer();if(!vertex||!instances)throw Error('GPU buffer allocation failed');
    gl.bindBuffer(gl.ARRAY_BUFFER,vertex);gl.bufferData(gl.ARRAY_BUFFER,data,gl.STATIC_DRAW);
    let elements:WebGLBuffer|null=null;
@@ -490,7 +501,7 @@ export class ExpeditionRenderer {
  shape(shape:Shape,c:Color,x:number,y:number,z:number,sx=1,sy=1,sz=1,rx=0,ry=0,rz=0,parent?:Mat4){const t=transform(x,y,z,sx,sy,sz,rx,ry,rz);this.add(shape,parent?multiply(parent,t):t,c);}
  render(eye:Vec3,target:Vec3,time:number,zone:number,travel=0){
   if(this.dead)return;const gl=this.gl,width=gl.drawingBufferWidth,height=gl.drawingBufferHeight;if(width<2||height<2)return;
-  const fog:Vec3=zone===0?(this.worldReady?[.18,.25,.22]:[.024,.060,.057]):zone===1?[.024,.045,.057]:[.036,.026,.075];
+  const fog:Vec3=zone===0?(this.worldReady?[.18,.25,.22]:[.024,.060,.057]):zone===1?[.024,.045,.057]:(this.worldReady?[.018,.028,.038]:[.036,.026,.075]);
   const sky=fog.map(x=>Math.pow(x/(x+.65),.4545));
   const size=this.sceneTarget?.begin(width,height,this.sceneryBudget)??{width,height};
   this.stats.sceneWidth=size.width;this.stats.sceneHeight=size.height;
@@ -503,7 +514,7 @@ export class ExpeditionRenderer {
   gl.uniform1i(this.uniforms.portrait,1);gl.uniform1i(this.uniforms.atlas,2);gl.uniform1i(this.uniforms.ground,3);gl.uniform1i(this.uniforms.bark,4);gl.uniform1i(this.uniforms.stone,5);
   if(this.atlas){gl.activeTexture(gl.TEXTURE2);gl.bindTexture(gl.TEXTURE_2D,this.atlas);gl.activeTexture(gl.TEXTURE0);}
   for(let i=0;i<this.surfaces.length;i++){gl.activeTexture(gl.TEXTURE0+3+i);gl.bindTexture(gl.TEXTURE_2D,this.surfaces[i]);}gl.activeTexture(gl.TEXTURE0);
-  gl.uniformMatrix4fv(this.uniforms.vp,false,vp);gl.uniform3f(this.uniforms.eye,eye[0],eye[1],eye[2]);gl.uniform3f(this.uniforms.fog,fog[0],fog[1],fog[2]);gl.uniform2f(this.uniforms.range,this.worldReady?48:30,115);gl.uniform1f(this.uniforms.time,time);gl.uniform1f(this.uniforms.travel,travel);
+  gl.uniformMatrix4fv(this.uniforms.vp,false,vp);gl.uniform3f(this.uniforms.eye,eye[0],eye[1],eye[2]);gl.uniform3f(this.uniforms.fog,fog[0],fog[1],fog[2]);gl.uniform3f(this.uniforms.sun,...(zone===2&&this.worldReady?[.32,.50,.70]:[.95,.83,.62]) as [number,number,number]);gl.uniform2f(this.uniforms.range,this.worldReady?48:30,115);gl.uniform1f(this.uniforms.time,time);gl.uniform1f(this.uniforms.travel,travel);
   this.stats.materialDetail=typeof this.gl.flushEXP==='function'&&this.sceneryBudget===0?0:1;
   gl.uniform1f(this.uniforms.detail,this.stats.materialDetail);
   for(const [shape,b] of this.batches){if(!b.count)continue;

@@ -246,13 +246,14 @@ export class ExpeditionScene {
   const white=color('#f2f1dd'),stone=color(cave?'#a4bbc9':'#d6d8cc'),ground=color(cave?'#717a85':ruins?'#a7a48a':'#9eab7b',cave?-8:-1);
   const far=[44,64,86][budget];
   const centre=(wd:number)=>curve(wd)-base+overgrownPathOffset(s.route,wd);
+  if(cave)for(const side of [-1,1])this.shape('box',color('#526576',-8),centre(d+74)+side*7.8,4.2,-74,4,9,80);
   // Fill from the edge of the playable road out into the forest and hills.
   // The playable surface itself remains open at every authored gap.
   for(let wd=Math.floor((d-18)/12)*12;wd<d+112;wd+=12){
    const z=d-wd,x=centre(wd),y=floorY(wd);
    for(const side of [-1,1])this.shape('terrain',ground,x+side*3.14,y-.10,z,side*29,6,6.3,0,0,0);
    if(cave){
-    this.shape('ridge',color('#607582',-8),x,y+9.3,z,8.8,-4.2,6.3,0,0,0);
+    this.shape('ceiling',color('#607582',-8),x,10.0,z,8.8,4.2,6.0,0,0,0);
     for(const side of [-1,1])this.shape('cone',color('#70838a',-8),x+side*4.7,y+6.8,z,.45,2.1,.52,Math.PI,0,0);
    }
   }
