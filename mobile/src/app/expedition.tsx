@@ -7,6 +7,7 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import * as Haptics from 'expo-haptics';
+import { Asset } from 'expo-asset';
 import { activateHero, advance, availableForks, begin, buildCourse, buildOvergrownCourse, burst, chooseFork, chooseUpgrade, resolveChamber, CHAMBERS, createClock, MAJOR_FORKS, SUB_FORKS, freshOvergrownExpedition, HERO_SHARD_TARGET, jump, nearbyHint, pause, resume, burrow, steer, TRACK_LENGTH, ZONES, type Expedition, type GameEvent, type Route, type Upgrade } from '@/game/expedition/core';
 import { createExpeditionStore, upgradeCost, type ExpeditionProfile, type MetaUpgrade } from '@/game/expedition/profile';
 import { ExpeditionScene } from '@/game/expedition/scene';
@@ -142,7 +143,7 @@ export default function ExpeditionScreen(){
  },[checkpoint,onEvents,publish,stopAndSave,store]);
  const contextLost=useCallback(()=>{stopAndSave();setReady3d(false);setRenderError('The graphics context was interrupted. Your run is paused.');},[stopAndSave]);
  const context=useCallback(async (gl:ExpoWebGLRenderingContext)=>{
-  if(!mounted.current)return;try{if(raf.current!==null)cancelAnimationFrame(raf.current);sceneRef.current?.dispose();const scene=Platform.OS==='web'?await createWebExpeditionScene(gl as unknown as GL):new ExpeditionScene(gl as unknown as GL);if(!mounted.current){scene.dispose();return;}scene.setCourse(courseRef.current);sceneRef.current=scene;scene.draw(runRef.current,visualTime.current,preferences.current.calm);setRenderError(null);setReady3d(true);lastFrame.current=null;raf.current=requestAnimationFrame(frame);}catch(error){console.error('MADGER_RENDER_START_ERROR',error);setRenderError(error instanceof Error?error.message:'3D graphics could not start.');setReady3d(false);}
+  if(!mounted.current)return;try{if(raf.current!==null)cancelAnimationFrame(raf.current);sceneRef.current?.dispose();const scene=Platform.OS==='web'?await createWebExpeditionScene(gl as unknown as GL):new ExpeditionScene(gl as unknown as GL);if(Platform.OS!=='web'){const portrait=await Asset.fromModule(require('../../assets/images/madger-mascot.webp')).downloadAsync();if(!portrait.localUri)throw Error('Approved Madger portrait did not load');scene.renderer.setMadgerPortrait({localUri:portrait.localUri});}if(!mounted.current){scene.dispose();return;}scene.setCourse(courseRef.current);sceneRef.current=scene;scene.draw(runRef.current,visualTime.current,preferences.current.calm);setRenderError(null);setReady3d(true);lastFrame.current=null;raf.current=requestAnimationFrame(frame);}catch(error){console.error('MADGER_RENDER_START_ERROR',error);setRenderError(error instanceof Error?error.message:'3D graphics could not start.');setReady3d(false);}
  },[frame]);
  useEffect(()=>{if(ready3d||renderError)return;const timer=setTimeout(()=>{if(mounted.current&&!sceneRef.current)setRenderError('The 3D graphics context did not become available.');},45000);return()=>clearTimeout(timer);},[ready3d,renderError,contextKey]);
  const start=()=>{

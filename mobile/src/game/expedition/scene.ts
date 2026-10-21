@@ -89,6 +89,7 @@ export class ExpeditionScene {
   for(const side of [-1,1]){
    const ear=multiply(head,transform(side*.54,.40,.05,1,1,1,0,0,side*(.19+Math.sin(time*2.1+side)*.025)));
    this.shape('sphere',C.cream,0,0,0,.21,.235,.10,0,0,0,ear);this.shape('sphere',C.wood,0,0,-.08,.142,.16,.045,0,0,0,ear);
+   if(!this.renderer.portraitReady){
    this.shape('sphere',C.cream,side*.37,-.06,-.385,.29,.30,.135,0,side*.22,side*.22,head);
    this.shape('sphere',C.cream,side*.42,-.24,-.32,.235,.24,.16,0,0,side*.35,head);
    const blinkPhase=(time+side*.027)%4.3,blink=blinkPhase<.12?.1:blinkPhase<.19?smooth((blinkPhase-.12)/.07):1;
@@ -100,8 +101,10 @@ export class ExpeditionScene {
    this.orb(side*.27-.020,eyeY+.055*eyeScale,-.632,.023,color('#fffef4',.25),head);
    this.link([side*.12,.27,-.53],[side*.46,.30+hurt*.035,-.44],.067,C.fur,head);
    for(let i=0;i<3;i++)this.shape('cone',C.cream,side*(.49+i*.039),-.23-i*.042,-.21,.062,.25,.042,0,0,side*1.10,head);
+   }
   }
-  this.shape('headStripe',C.cream,0,0,0,1,1,1,0,0,0,head);
+  this.shape('headStripe',this.renderer.portraitReady?color('#f2d9a2',-11):C.cream,0,0,0,1,1,1,0,0,0,head);
+  if(this.renderer.portraitReady){this.renderer.add('face',head,color('#ffffff',-10));}else{
   this.shape('sphere',C.cream,0,.29,-.461,.14,.24,.062,0,0,0,head);
   this.shape('cone',C.cream,.027,.078,-.538,.103,.26,.035,Math.PI,0,-.15,head);
   // Normal, even teeth remain inside the mouth; no oversized external fang.
@@ -114,6 +117,7 @@ export class ExpeditionScene {
   this.shape('sphere',C.black,0,-.105,-.704,.169,.116,.118,0,0,0,head);
   this.shape('sphere',color('#869093'),-.034,-.068,-.807,.05,.018,.015,0,0,0,head);
   if(mouthOpen>.045)for(let i=0;i<4;i++)this.shape('box',C.pale,(i-1.5)*.057,-.303,-.611,.043,.049,.033,0,0,0,head);
+  }
   this.shape('shadow',C.shadow,s.x+routeOffset(s),floorY(s.distance)+.018,0,.76*(1-s.y*.10)*(1-crouch*.45),1,.62*(1-s.y*.10));
   if(crouch>0)this.burrowTrail(s,crouch,calm);
   if(s.shields>0){this.shape('ring',C.mint,s.x+routeOffset(s),1.20+floorY(s.distance)+s.y,0,.88,1,.88,Math.PI/2,time*.8,0);this.shape('ring',C.mint,s.x+routeOffset(s),1.20+floorY(s.distance)+s.y,0,.88,1,.88,0,0,time*.5);}
