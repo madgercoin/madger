@@ -1,4 +1,4 @@
-import { branchOffset, clamp, hazardPose, environmentZone, LANE_WIDTH, routeOffset, overgrownPathOffset, overgrownPathHeight, overgrownPathWidth, MAJOR_FORKS, SUB_FORKS, CHAMBERS, smooth, type ForkOption, type CourseItem, type Expedition, type GameEvent } from './core';
+import { branchOffset, clamp, BONUS_LEDGE_LENGTH, hazardPose, environmentZone, LANE_WIDTH, routeOffset, overgrownPathOffset, overgrownPathHeight, overgrownPathWidth, MAJOR_FORKS, SUB_FORKS, CHAMBERS, smooth, type ForkOption, type CourseItem, type Expedition, type GameEvent } from './core';
 import { ExpeditionRenderer, color, type Color, type GL, type Shape } from './gl';
 import { multiply, segment, transform, type Mat4, type Vec3 } from './math';
 import { gaitPose, burrowPose, reactionEnvelope } from './animation';
@@ -44,10 +44,11 @@ export class ExpeditionScene {
   const hurt=this.reaction.kind==='hurt'?smooth(age/.045)*Math.max(0,1-age/.65):0;
   const happy=this.reaction.kind!=='hurt'?reactionEnvelope(age):0;
   const turnBack=running&&this.reaction.kind==='discovery'?Math.sin(clamp(age/1.15,0,1)*Math.PI)*1.15:0;
-  const stride=s.distance/3.8*TAU,grounded=s.y<.02&&s.slide<=0;
+  const heightAboveFloor=Math.max(0,s.y-(s.groundHeight??0));
+  const stride=s.distance/3.8*TAU,grounded=heightAboveFloor<.02&&s.slide<=0;
   const bob=running&&grounded?Math.abs(Math.sin(stride))*.07:Math.sin(time*2.6)*.018;
   const finishAge=s.mode==='won'||s.mode==='lost'?age:undefined;
-  const pose=burrowPose(s.slide,s.slideAge,running,s.y,finishAge),crouch=pose.weight,air=smooth(s.y/.38);
+  const pose=burrowPose(s.slide,s.slideAge,running,heightAboveFloor,finishAge),crouch=pose.weight,air=smooth(heightAboveFloor/.38);
   const idleYaw=idle?Math.PI+.12+Math.sin(time*.5)*.15:0;
   const bank=calm?0:clamp(-s.vx*.04,-.18,.18);
   const bounce=happy*.06*Math.sin(age*10);
@@ -62,7 +63,7 @@ export class ExpeditionScene {
   this.link([0,.94,-.326],[.20,1.29,-.33],.038,C.cream,body);
   // Stance and swing share travelled distance with footsteps and ground motion.
   for(const side of [-1,1]){
-   const gait=gaitPose(s.distance,side,s.y,crouch,running),footZ=gait.z,footY=gait.y;
+   const gait=gaitPose(s.distance,side,heightAboveFloor,crouch,running),footZ=gait.z,footY=gait.y;
    const hip:Vec3=[side*.26,.88+bob-crouch*.40,0],foot:Vec3=[side*(.27+crouch*.08),footY,footZ];
    const dy=foot[1]-hip[1],dz=foot[2]-hip[2],length=Math.min(.95,Math.max(.01,Math.hypot(dy,dz))),bend=Math.sqrt(Math.max(.015,.49*.49-(length*.5)**2));
    const knee:Vec3=[side*.28,(hip[1]+foot[1])*.5+dz/length*bend,(hip[2]+foot[2])*.5+dy/length*bend];
@@ -118,7 +119,7 @@ export class ExpeditionScene {
   this.shape('sphere',color('#869093'),-.034,-.068,-.807,.05,.018,.015,0,0,0,head);
   if(mouthOpen>.045)for(let i=0;i<4;i++)this.shape('box',C.pale,(i-1.5)*.057,-.303,-.611,.043,.049,.033,0,0,0,head);
   }
-  this.shape('shadow',C.shadow,s.x+routeOffset(s),floorY(s.distance,s.route)+.018,0,.76*(1-s.y*.10)*(1-crouch*.45),1,.62*(1-s.y*.10));
+  this.shape('shadow',C.shadow,s.x+routeOffset(s),floorY(s.distance,s.route)+(s.groundHeight??0)+.018,0,.76*(1-heightAboveFloor*.10)*(1-crouch*.45),1,.62*(1-s.y*.10));
   if(crouch>0)this.burrowTrail(s,crouch,calm);
   if(s.shields>0){this.shape('ring',C.mint,s.x+routeOffset(s),1.20+floorY(s.distance,s.route)+s.y,0,.88,1,.88,Math.PI/2,time*.8,0);this.shape('ring',C.mint,s.x+routeOffset(s),1.20+floorY(s.distance,s.route)+s.y,0,.88,1,.88,0,0,time*.5);}
   if(s.magnet>0)this.shape('ring',C.violet,s.x+routeOffset(s),floorY(s.distance,s.route)+.10,0,1.2+.07*Math.sin(time*5),1,1.2,0,time*.4,0);
@@ -280,6 +281,20 @@ export class ExpeditionScene {
      this.shape('scanFern',color('#b7cc94'),x+side*4.25,y-.02,z+2,.90,.90,.90,0,yaw,0);
      if(ahead<25)this.shape('scanFern',color('#b7cc94'),x-side*3.95,y-.02,z+4,.65,.65,.65,0,yaw+2,0);
      this.shape('scanRoots',white,x+side*5.7,y-.05,z-2,3.1,1.5,2.5,0,yaw,0);
+    }
+    // Highest detail: actual scanned near-ground meshes form a varied
+    // understory rather than adding fog/cards. Every position is seeded by
+    // absolute travel distance, so streaming and cold resume never swim.
+    // Keep all new stones/ferns beyond the widest playable catch road.
+    if(budget===2&&ahead<58)for(const flank of [-1,1]){
+     const seed=n*23+flank*5,offset=flank*(7.6+hash(seed)*1.6);
+     const planted=wd+(flank===side?3.8:-2.4);
+     const fx=centre(planted)+offset,fy=floorY(planted,s.route),fz=d-planted;
+     if(!ruins){
+      const scale=.54+hash(seed+7)*.43;
+      this.shape('scanFern',color('#c2d5ac'),fx,fy-.09,fz,scale,scale,scale,0,yaw+flank*.7,0);
+     }else this.shape('scanRock',stone,fx,fy-.12,fz,1.35,.65,1.08,0,yaw+flank*.31,0);
+     if(n%2===0)this.shape('scanRoots',white,fx+flank*.32,fy-.07,fz-1.35,1.8,.70,1.75,0,yaw+flank,0);
     }
    }else{
     this.shape('scanCliff',stone,x+side*7.9,y-.7,z,7.3,9.2,5.8,0,yaw,0);
@@ -466,7 +481,7 @@ export class ExpeditionScene {
  private course:CourseItem[]=[];private burrows:CourseItem[]=[];private mainGaps:CourseItem[]=[];
  setCourse(course:CourseItem[]){this.course=course;this.burrows=course.filter(o=>o.kind==='burrow');this.mainGaps=course.filter(o=>o.kind==='gap'&&o.route==='main');this.initializedCamera=false;}
  private item(item:CourseItem,s:Expedition,time:number){
-  const ahead=item.d-s.distance;if(ahead < -6||ahead>102)return;
+  const ahead=item.d-s.distance;if(ahead < (item.kind==='bonus-ledge'?-BONUS_LEDGE_LENGTH-3:-6)||ahead>102)return;
   if(item.kind==='boulder'&&item.route===s.route&&ahead<52){
    const side=item.lane||(Math.sin(item.phase)>=0?1:-1),bx=side*6.6+routeOffset(s,item.d)+curve(item.d)-curve(s.distance),by=floorY(item.d,item.route);
    this.shape(this.renderer.worldReady?'scanCliff':'rock',C.stone,bx,by-.15,-ahead-5.76,2.6,3.3,3.2,0,side*.3,0);
@@ -478,7 +493,7 @@ export class ExpeditionScene {
   let offset=0;
   if(s.board==='overgrown')offset=overgrownPathOffset(item.route,item.d);
   else if(item.route!=='main'){const gate=this.burrows.find(g=>(item.route==='hollow'&&g.d<500)||(item.route==='grotto'&&g.d>500));if(gate)offset=branchOffset(item.d,gate.d,gate.d+90,gate.lane);}
-  const pose=hazardPose(item,s.time,s.distance),x=pose.x+offset+curve(pose.d)-curve(s.distance),z=-pose.ahead,y=floorY(pose.d,item.route),phase=time+item.phase;
+  const pose=hazardPose(item,s.time,s.distance),x=pose.x+offset+curve(pose.d)-curve(s.distance),z=-pose.ahead,y=floorY(pose.d,item.route)+(item.elevation??0),phase=time+item.phase;
   const bob=Math.sin(phase*3)*.09;
   const shadow=(size:number)=>this.shape('shadow',C.shadow,x,y+.020,z,size,1,size);
   if(['coin','gem','life','key','shield','magnet','snow-sigil','guardian-totem','tech-cell','treasure-cache'].includes(item.kind))this.shape('halo',color(item.kind==='gem'?'#b6a4ff':item.kind==='shield'?'#69efcf':'#ffc363',-6),x,y+1+bob,z,.68,.68,.68);
@@ -548,10 +563,15 @@ export class ExpeditionScene {
    case 'key':
     this.shape('ring',C.goldGlow,x,y+1.27+bob,z,.22,.7,.22,Math.PI/2,0,0);this.shape('box',C.gold,x,y+.91+bob,z,.08,.54,.09);this.shape('box',C.gold,x+.10,y+.72+bob,z,.25,.09,.09);shadow(.4);break;
    case 'boulder':
-    if(this.renderer.worldReady){
-     const roll=transform(x,y+.80+pose.y,z,1,1,1,pose.roll,0,0);
-     this.shape('scanRock',color('#ddd4c5'),0,-.80,0,1.72,3.05,1.72,0,0,0,roll);
-    }else this.shape('rock',color('#947d66'),x,y+.80+pose.y,z,.85,.80,.85,pose.roll,0,0);this.shape('ring',color('#c59164'),x,y+.10,z,.83,1,.83);shadow(.9);break;
+    this.shape('geologyRock',color('#aaa18e',-8),x,y+.84+pose.y,z,1,1,1,pose.roll,0,0);
+    this.shape('ring',color('#c59164'),x,y+.10,z,.83,1,.83);shadow(.9);break;
+   case 'bonus-ledge':{
+    const stone=color(environmentZone(s)===2?'#6b777e':environmentZone(s)===1?'#99917e':'#7e8971',-8);
+    this.shape(item.lane<0?'terraceMirror':'terrace',stone,x,y,z,1,1,.70);
+    // Small grounded approach stones give a readable jump cue without hiding hazards.
+    for(let j=0;j<3;j++)this.shape('geologyRock',stone,x+(j-1)*.48,y-.06,z+2.2+j*.2,.24,.13,.23,0,j*.7,0);
+    break;
+   }
    case 'saw':
     this.shape('box',C.wood,x,y+.16,z,1.3,.3,.9);
     this.shape('cylinder',C.iron,x,y+.53,z,.52,.12,.52,Math.PI/2,0,0);

@@ -176,7 +176,7 @@ function chamberApproach(meta){
 test('secret entrances require their own route, lane and movement action',()=>{
  const course=G.buildOvergrownCourse(23);
  assert.equal(course.filter(i=>i.kind==='chamber-door').length,3);
- assert(Math.max(...course.filter(i=>i.kind!=='chamber-door').map(i=>i.id))<Math.min(...course.filter(i=>i.kind==='chamber-door').map(i=>i.id)),'new object IDs are appended');
+ assert(Math.max(...course.filter(i=>i.kind!=='chamber-door'&&i.kind!=='bonus-ledge'&&i.elevation===undefined).map(i=>i.id))<Math.min(...course.filter(i=>i.kind==='chamber-door').map(i=>i.id)),'new object IDs are appended');
  for(const meta of G.CHAMBERS){
   const miss=chamberApproach(meta);for(let i=0;i<20;i++)step(miss,course,[]);assert.equal(miss.mode,'running');
   const s=chamberApproach(meta);if(meta.action==='burrow')G.burrow(s,[]);else{s.y=1;s.vy=0;}
@@ -251,4 +251,55 @@ test('a missed right tunnel falls onto the lower catch road without a horizontal
  const restored=P.sanitizeExpedition(JSON.parse(JSON.stringify(s)));assert(restored);assert.equal(restored.x,s.x,'cold recovery preserves the catch-road position');
  const oldX=s.x;step(s,[],[]);assert(Math.abs(s.x-oldX)<.04,'next fixed step cannot clamp the runner across lanes');
  const half=3.225*G.overgrownPathWidth(s.route,s.distance);assert(Math.abs(s.x)<half,'the visible lower road must support this landing');
+});
+
+
+test('terraces reserve a real hazard-free lower lane and preserve every old ID across 200 seeds',()=>{
+ for(let seed=0;seed<200;seed++){
+  const c=G.buildOvergrownCourse(seed),decks=c.filter(i=>i.kind==='bonus-ledge');
+  assert.equal(decks.length,12);
+  for(const d of decks){
+   assert([-1,1].includes(d.lane));
+   assert(!c.some(i=>i.route===d.route&&(G.HAZARDS.has(i.kind)||i.kind==='chamber-door')
+    &&(i.lane===0||i.lane===d.lane)&&i.d>d.d-5&&i.d<d.d+18));
+   const gold=c.filter(i=>i.route===d.route&&i.elevation!==undefined);
+   assert.equal(gold.length,4);assert(gold.every(i=>i.d>d.d+1&&i.d<d.d+13));
+   assert(d.id>Math.max(...c.filter(i=>i.kind==='chamber-door').map(i=>i.id)));
+  }
+ }
+});
+function terraceRun(){
+ const c=G.buildOvergrownCourse(23),deck=c.find(i=>i.kind==='bonus-ledge'&&i.route==='rootway');
+ const s=run(23);Object.assign(s,{route:'rootway',majorPath:'rootway',forkStage:1,
+  routeSide:-1,routeStart:140,routeEnd:450,distance:deck.d-3,x:deck.lane*G.LANE_WIDTH,lane:deck.lane});
+ return {s,deck,c:c.filter(i=>i.id===deck.id||i.route===deck.route&&i.elevation!==undefined)};
+}
+test('ordinary jump lands on solid terrace, runs with contact sounds, earns gold and safely rejoins',()=>{
+ const {s,c,deck}=terraceRun(),e=[];G.jump(s,e);let stood=false,recovered=false;
+ for(let i=0;i<250;i++){
+  step(s,c,e);
+  if(s.groundHeight===G.BONUS_LEDGE_HEIGHT){
+   stood=true;
+   if(!recovered){const saved=P.sanitizeExpedition(JSON.parse(JSON.stringify(s)));assert(saved);assert.equal(saved.groundHeight,.9);recovered=true;}
+  }
+ }
+ assert(stood,'real jump must land');assert.equal(s.coins,3);assert.equal(s.gems,1);assert.equal(s.hp,3);
+ assert.equal(s.y,0);assert.equal(s.route,'rootway');assert(s.distance>deck.d+14);
+ assert(e.filter(x=>x.kind==='step').length>5,'contact audio continues on the terrace');
+});
+test('missed jump follows adjacent lower road without damage, teleport, or magnet theft',()=>{
+ const {s,c,deck}=terraceRun();s.magnet=10;let previous=s.x,maxDelta=0;
+ for(let i=0;i<250;i++){
+  step(s,c);maxDelta=Math.max(maxDelta,Math.abs(s.x-previous));previous=s.x;
+  if(s.distance>deck.d+1.05&&s.distance<deck.d+13)assert(Math.abs(s.x)<.65,'lower body must clear solid terrace');
+ }
+ assert(maxDelta<.13,'no instantaneous horizontal teleport');assert.equal(s.hp,3);
+ assert.equal(s.coins+s.gems,0,'magnet cannot collect elevated gold from below');
+ assert.equal(s.route,'rootway');assert.equal(s.y,0);
+});
+test('Down on a terrace steers toward the lower road instead of passing through solid stone',()=>{
+ const {s,c,deck}=terraceRun();Object.assign(s,{distance:deck.d+6,y:.9,vy:0,groundHeight:.9});
+ G.burrow(s,[]);assert.equal(s.y,.9);assert.equal(s.lane,0);
+ for(let i=0;i<60;i++)step(s,c);
+ assert.equal(s.y,0);assert(Math.abs(s.x)<.2);assert.equal(s.hp,3);
 });

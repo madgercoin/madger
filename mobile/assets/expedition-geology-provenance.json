@@ -1,0 +1,12 @@
+{
+  "sourceLibraryFile": "libfile_7c97257b587c8191974f340bc552c6a8",
+  "sourcePackSha256": "7de8986cd90a351ea3eedd9276b5a78a9f62ffca5ad2af3845b0803a25c2977e",
+  "license": "MADGER original procedural geometry",
+  "tier": "LOD2",
+  "meshes": [
+    "geologyForest",
+    "geologyRockfall"
+  ],
+  "textureReuse": "Existing stone surface; source atlases are not duplicated",
+  "caution": "Original authored geometry, not photogrammetry or hardware performance evidence"
+}

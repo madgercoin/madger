@@ -1,4 +1,4 @@
-import { buildCourse, buildOvergrownCourse, overgrownPathWidth, clamp, freshExpedition, freshOvergrownExpedition, OVERGROWN_ROUTES, MAJOR_FORKS, SUB_FORKS, CHAMBERS, type Expedition, type Mode, type Upgrade } from './core';
+import { buildCourse, buildOvergrownCourse, bonusDeckAt, BONUS_LEDGE_HEIGHT, overgrownPathWidth, clamp, freshExpedition, freshOvergrownExpedition, OVERGROWN_ROUTES, MAJOR_FORKS, SUB_FORKS, CHAMBERS, type Expedition, type Mode, type Upgrade } from './core';
 import { sanitizeCompanions, type CompanionId } from './companions';
 export const EXPEDITION_KEY = 'madger-expedition-3d-v1';
 export type ExpeditionResult = {id:string; score:number; coins:number; gems:number; secrets:string[]; distance:number; won:boolean; hits:number; date:string};
@@ -66,6 +66,7 @@ export function sanitizeExpedition(input:unknown):Expedition|null {
       s.chamber=chamber.id;s.mode='chamber';
     }
   }
+  s.groundHeight=bonusDeckAt(s,course)&&Math.abs(s.y-BONUS_LEDGE_HEIGHT)<.01&&s.vy<=0?BONUS_LEDGE_HEIGHT:0;
   return s;
 }
 export function normalizeProfile(input:unknown):ExpeditionProfile {

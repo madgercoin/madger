@@ -177,12 +177,48 @@ test('native scene pixel budget preserves aspect and bounds high-density fill co
     let previous=0;
     for(const budget of [0,1,2]) {
       const size=nativeSceneSize(w,h,budget);
-      assert(size.width*size.height<=800000);
+      assert(size.width*size.height<=[800000,800000,1400000][budget], 'native tier exceeds its bounded shading budget');
       assert(size.width*size.height>=previous);
       assert(Math.abs(size.width/size.height-w/h)<.01);
       previous=size.width*size.height;
     }
   }
+});
+
+test('maximum clarity is an adaptive privilege, never a permanent native GPU penalty', () => {
+  const {nativeSceneSize}=require(path.join(dir,'gl.js'));
+  const mid=nativeSceneSize(1440,3120,1),high=nativeSceneSize(1440,3120,2);
+  assert(mid.width*mid.height<=800000);
+  assert(high.width*high.height>mid.width*mid.height*1.5,'high-detail image should be visibly sharper');
+  assert(high.width*high.height<=1400000,'high-detail framebuffer must remain bounded');
+  let state={level:1,fastFrames:0,slowFrames:0};
+  for(let i=0;i<149;i++)state=adaptNativeSceneryBudget(state,12);
+  assert.equal(state.level,1,'no premature high-detail switch');
+  state=adaptNativeSceneryBudget(state,12);
+  assert.equal(state.level,2,'sustained fast frame drains may unlock sharp rendering');
+  state=adaptNativeSceneryBudget(state,100);
+  assert.equal(state.level,1,'one slow drain must immediately revoke extra resolution');
+});
+
+test('native scanned-texture anisotropy is optional and capped by the device', () => {
+  const {gl}=context({native:false});
+  const applied=[];
+  gl.createTexture=()=>({});
+  gl.getExtension=name=>name==='EXT_texture_filter_anisotropic'?
+    {MAX_TEXTURE_MAX_ANISOTROPY_EXT:34047,TEXTURE_MAX_ANISOTROPY_EXT:34046}:null;
+  gl.getParameter=()=>2; // Device supports only 2x, not the requested 4x.
+  gl.texParameterf=(_target,pname,value)=>applied.push([pname,value]);
+  const shapes=['scanTreeTrunk','scanTreeCrown','scanTreeTwigs','scanRock',
+    'scanFern','scanLog','scanRoots','scanCliff'];
+  const triangle=[0,0,0,0,1,0,0,0,1,0,0,0,1,0,1,0,0,1,0,0,1,1,1,1];
+  const renderer=new ExpeditionRenderer(gl);
+  try{
+    renderer.setWorldAssets({version:1,meshes:shapes.map(name=>({
+      name,tile:0,wind:0,vertices:triangle,indices:[0,1,2]}))},
+    {},[{},{},{}]);
+    assert.equal(renderer.worldReady,true);
+    assert.deepEqual(applied,[[34046,2],[34046,2],[34046,2]]);
+  }finally{renderer.dispose();}
 });
 
 test('browser fixture composites into its existing framebuffer and releases GPU resources', () => {

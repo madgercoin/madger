@@ -5,14 +5,17 @@ import { COMPANION_IDS, COMPANIONS, companionId, freshCompanions, clearCompanion
 export const STEP = 1 / 120;
 export const TRACK_LENGTH = 1080;
 export const LANE_WIDTH = 2.15;
+/** Raised terraces retain the parent route and have a safe adjacent lower lane. */
+export const BONUS_LEDGE_HEIGHT = .9;
+export const BONUS_LEDGE_LENGTH = 14;
 export const MAX_HP = 3;
 export const ENGINE_VERSION = 1;
 export type Lane = -1 | 0 | 1;
 export type Mode = 'ready' | 'countdown' | 'running' | 'paused' | 'fork' | 'chamber' | 'upgrade' | 'won' | 'lost';
-export type Kind = 'coin' | 'gem' | 'heart' | 'shield' | 'magnet' | 'life' | 'key' | 'vault' | 'workshop' | 'burrow' | 'boulder' | 'saw' | 'roots' | 'steam' | 'gap' | 'mud' | 'drone' | 'crate' | 'snow-white' | 'gorilla-white' | 'madger-bot' | 'snow-sigil' | 'guardian-totem' | 'tech-cell' | 'treasure-cache' | 'chamber-door';
+export type Kind = 'coin' | 'gem' | 'heart' | 'shield' | 'magnet' | 'life' | 'key' | 'vault' | 'workshop' | 'burrow' | 'boulder' | 'saw' | 'roots' | 'steam' | 'gap' | 'mud' | 'drone' | 'crate' | 'snow-white' | 'gorilla-white' | 'madger-bot' | 'snow-sigil' | 'guardian-totem' | 'tech-cell' | 'treasure-cache' | 'chamber-door' | 'bonus-ledge';
 export type Upgrade = 'magnet' | 'armor' | 'fortune';
 export type Route = 'main' | 'hollow' | 'grotto' | 'rootway' | 'ridge' | 'deep' | 'mosswalk' | 'root-arch' | 'log-crossing' | 'causeway' | 'watchtower' | 'gearworks' | 'mudslide' | 'crystal-vein' | 'ancient-vault';
-export type CourseItem = { id: number; d: number; lane: Lane; kind: Kind; phase: number; route: Route };
+export type CourseItem = { id: number; d: number; lane: Lane; kind: Kind; phase: number; route: Route; elevation?: number };
 export type EventKind = 'coin' | 'gem' | 'hit' | 'block' | 'jump' | 'land' | 'slide' | 'burst' | 'power' | 'secret' | 'revive' | 'upgrade' | 'near' | 'zone' | 'win' | 'lose' | 'step' | 'splash' | 'hint' | 'companion-join' | 'companion-attack' | 'companion-guard' | 'companion-boost' | 'companion-leave' | 'hero-shard' | 'fork';
 export type GameEvent = { id: number; kind: EventKind; at: number; x: number; text: string; value: number; companion?: CompanionId; targetD?: number; targetX?: number };
 export type Expedition = {
@@ -29,9 +32,9 @@ export type Expedition = {
   board?: 'overgrown'; forkStage?: number; majorPath?: Route; subPath?: Route;
   heroShards?: Record<CompanionId,number>; baseShards?: Record<CompanionId,number>;
   heroUnlocked?: Record<CompanionId,boolean>; heroCharge?: number; metaFortune?: number;
-  chamber?: ChamberId;
+  chamber?: ChamberId; groundHeight?: number;
 };
-export const KINDS: Kind[] = ['coin','gem','heart','shield','magnet','life','key','vault','workshop','burrow','boulder','saw','roots','steam','gap','mud','drone','crate','snow-white','gorilla-white','madger-bot','snow-sigil','guardian-totem','tech-cell','treasure-cache','chamber-door'];
+export const KINDS: Kind[] = ['coin','gem','heart','shield','magnet','life','key','vault','workshop','burrow','boulder','saw','roots','steam','gap','mud','drone','crate','snow-white','gorilla-white','madger-bot','snow-sigil','guardian-totem','tech-cell','treasure-cache','chamber-door','bonus-ledge'];
 export const HAZARDS = new Set<Kind>(['boulder','saw','roots','steam','gap','mud','drone','crate']);
 export const clamp = (v: number, lo: number, hi: number) => Math.max(lo, Math.min(hi, v));
 export const smooth = (v: number) => { const x = clamp(v, 0, 1); return x*x*(3-2*x); };
@@ -148,7 +151,7 @@ export function steer(s: Expedition, direction: -1|1) {
 }
 export function jump(s: Expedition, events: GameEvent[]) {
   if(s.mode!=='running') return;
-  if(s.y <= .025 && s.slide <= .01) { s.vy=8.7; s.y=.025; s.jumpBuffer=0; event(s,events,'jump'); }
+  if(s.y-(s.groundHeight??0) <= .025 && s.slide <= .01) { s.vy=8.7; s.y=(s.groundHeight??0)+.025; s.groundHeight=0; s.jumpBuffer=0; event(s,events,'jump'); }
   else if(s.y > .025) s.jumpBuffer=.12;
 }
 /** Down digs beneath overhead obstacles; airborne Down makes a controlled descent.
@@ -156,6 +159,7 @@ export function jump(s: Expedition, events: GameEvent[]) {
  */
 export function burrow(s: Expedition, events: GameEvent[]) {
   if(s.mode!=='running' || s.slideCooldown>0) return;
+  if((s.groundHeight??0)>.1){steer(s,s.x>0?-1:1);return;}
   if(s.y>.18) { s.vy=Math.min(s.vy,-11); return; }
   s.slide=.83; s.slideAge=0; s.slideCooldown=1.02; event(s,events,'slide');
 }
@@ -191,7 +195,11 @@ function stepCompanions(s: Expedition, course: CourseItem[], used: Set<number>, 
   for(const id of COMPANION_IDS){
     const c=s.companions[id],meta=COMPANIONS[id];if(c.timeLeft<=0)continue;
     c.timeLeft=Math.max(0,c.timeLeft-STEP);c.cooldown=Math.max(0,c.cooldown-STEP);
-    c.followVx+=(64*(clamp(s.x+meta.offset,-2.8,2.8)-c.followX)-16*c.followVx)*STEP;c.followX+=c.followVx*STEP;
+    // Grounded allies flank the terrace on its clear lower road instead of
+    // clipping through its solid bank. Electronic support remains airborne.
+    const terrace=course.find(i=>i.kind==='bonus-ledge'&&i.route===s.route&&s.distance>i.d-10&&s.distance<i.d+18);
+    const followTarget=terrace&&id!=='bot'?-.35*terrace.lane:clamp(s.x+meta.offset,-2.8,2.8);
+    c.followVx+=(64*(followTarget-c.followX)-16*c.followVx)*STEP;c.followX+=c.followVx*STEP;
     if(c.timeLeft===0){clearCompanionAction(c);c.charges=0;allyEvent(s,events,'companion-leave',id,meta.name.toUpperCase()+' · SEE YOU AHEAD');continue;}
     if(id==='bot')s.energy=clamp(s.energy+2.5*STEP,0,100);
     if(c.actionRemaining>0){
@@ -281,6 +289,11 @@ function hurt(s: Expedition, item: CourseItem, events: GameEvent[]) {
     else {s.mode='lost';s.finished=true;event(s,events,'lose','DUST OFF. DIG AGAIN.');}
   }
 }
+/** Shared solid terrace support, also used by checkpoint recovery and animation. */
+export function bonusDeckAt(s:Pick<Expedition,'route'|'distance'|'x'>, course:CourseItem[]){
+ return course.find(i=>i.kind==='bonus-ledge'&&i.route===s.route
+  &&s.distance>=i.d+1.05&&s.distance<=i.d+13.1&&Math.abs(s.x-i.lane*LANE_WIDTH)<.74);
+}
 /** Mutates only this run. fixedStep is called at 120 Hz; rendering is independent. */
 export function fixedStep(s: Expedition, course: CourseItem[], events: GameEvent[]) {
   if(s.mode!=='countdown' && s.mode!=='running') return;
@@ -288,7 +301,14 @@ export function fixedStep(s: Expedition, course: CourseItem[], events: GameEvent
   // Collision uses the damped physical x, never an instantly changed lane index.
   const pathWidth=s.board==='overgrown'?overgrownPathWidth(s.route,s.distance):1;
   const limit=LANE_WIDTH+.04+Math.max(0,pathWidth-1)*LANE_WIDTH*2;
-  const target=s.lane*LANE_WIDTH*Math.min(1,pathWidth), acceleration=95*(target-s.x)-19*s.vx;
+  // The rounded bank guides a missed jump beside the solid terrace. It does
+  // not teleport the player, remove grit, or change route identity. Both lanes
+  // are reserved free of hazards across the entrance and rejoin.
+  const bank=course.find(i=>i.kind==='bonus-ledge'&&i.route===s.route
+    &&s.distance>=i.d-1.8&&s.distance<i.d+13.8&&s.y<BONUS_LEDGE_HEIGHT-.12
+    &&Math.sign(s.x)===i.lane&&Math.abs(s.x)>.32);
+  if(bank)s.lane=0;
+  const target=s.lane*LANE_WIDTH*Math.min(1,pathWidth), acceleration=bank?240*(target-s.x)-30*s.vx:95*(target-s.x)-19*s.vx;
   s.vx+=acceleration*STEP; s.x=clamp(s.x+s.vx*STEP,-limit,limit);
   if(s.mode==='countdown') {s.countdown=Math.max(0,s.countdown-STEP);if(s.countdown<=1e-6){s.mode='running';event(s,events,'hint','GO! FOLLOW THE GOLD');}return;}
   s.time+=STEP;
@@ -296,7 +316,19 @@ export function fixedStep(s: Expedition, course: CourseItem[], events: GameEvent
   const oldDistance=s.distance, oldY=s.y;
   for(const key of ['slide','slideCooldown','magnet','burst','immune','mud','shieldTime','jumpBuffer'] as const)s[key]=Math.max(0,s[key]-STEP);
   if(s.shieldTime===0)s.shields=0;
-  if(s.y>0 || s.vy>0) {s.vy-=24*STEP;s.y=Math.max(0,s.y+s.vy*STEP);if(s.y===0){s.vy=0;if(oldY>0)event(s,events,'land');if(s.jumpBuffer>0)jump(s,events);}}
+  const deck=bonusDeckAt(s,course);
+  s.groundHeight=deck&&s.y>=BONUS_LEDGE_HEIGHT-.001?BONUS_LEDGE_HEIGHT:0;
+  if(s.y>0||s.vy>0){
+    s.vy-=24*STEP;const nextY=s.y+s.vy*STEP;
+    if(deck&&s.vy<=0&&s.y>=BONUS_LEDGE_HEIGHT-.001&&nextY<=BONUS_LEDGE_HEIGHT){
+      s.y=BONUS_LEDGE_HEIGHT;s.vy=0;s.groundHeight=BONUS_LEDGE_HEIGHT;
+      if(oldY>BONUS_LEDGE_HEIGHT+.01)event(s,events,'land');
+      if(s.jumpBuffer>0)jump(s,events);
+    }else{
+      s.groundHeight=0;s.y=Math.max(0,nextY);
+      if(s.y===0){s.vy=0;if(oldY>0)event(s,events,'land');if(s.jumpBuffer>0)jump(s,events);}
+    }
+  }
   const base=9.8+Math.min(3.5,s.distance/300);
   const targetSpeed=base*(s.mud>0?.65:1)*(s.burst>0?1.10:1);
   s.speed+=(targetSpeed-s.speed)*Math.min(1,STEP*5);
@@ -333,6 +365,7 @@ export function fixedStep(s: Expedition, course: CourseItem[], events: GameEvent
   stepCompanions(s,course,used,events);
   for(const item of course) {
     if(item.d > s.distance+5)break;
+    if(item.kind==='bonus-ledge')continue;
     if(item.d < oldDistance-4 || used.has(item.id) || item.route!==s.route)continue;
     const pose=hazardPose(item,s.time,s.distance), halfLength=item.kind==='gap'?1.55:item.kind==='chamber-door'?1.35:item.kind==='mud'?1.25:.62;
     const previousPose=hazardPose(item,s.time-STEP,oldDistance);
@@ -346,6 +379,7 @@ export function fixedStep(s: Expedition, course: CourseItem[], events: GameEvent
     const radius=isHazard?(item.kind==='drone'?.72:.82):.83;
     const attracted=(item.kind==='coin'||item.kind==='gem')&&(s.magnet>0||s.companions.bot.timeLeft>0);
     if(dx>radius&&!attracted)continue;
+    if(item.elevation!==undefined&&Math.abs(s.y-item.elevation)>.26)continue;
     if(item.kind==='chamber-door') {
       const chamber=CHAMBERS.find(c=>c.route===item.route&&c.d===item.d);
       if(!chamber||s.secrets.includes(chamber.id))continue;
@@ -377,7 +411,7 @@ export function fixedStep(s: Expedition, course: CourseItem[], events: GameEvent
   }
   s.used=[...used];
   const foot=Math.floor(s.distance/1.9);
-  if(foot!==s.lastFoot && s.y<.02 && s.slide<=0){s.lastFoot=foot;event(s,events,'step');}
+  if(foot!==s.lastFoot && s.y-(s.groundHeight??0)<.02 && s.slide<=0){s.lastFoot=foot;event(s,events,'step');}
   if(s.mode==='running' && s.distance>=TRACK_LENGTH){s.mode='won';s.finished=true;s.score+=2500;event(s,events,'win','EXPEDITION COMPLETE +2500',2500);}
 }
 export function createClock() {return {accumulator:0};}
@@ -390,6 +424,8 @@ export function advance(s: Expedition, course: CourseItem[], seconds: number, cl
 }
 export function nearbyHint(s: Expedition, course: CourseItem[]) {
   if(s.board==='overgrown'){
+    const bonus=course.find(i=>i.kind==='bonus-ledge'&&i.route===s.route&&i.d-s.distance>0&&i.d-s.distance<22);
+    if(bonus)return 'RAISED TREASURE '+Math.ceil(bonus.d-s.distance)+'m · '+(bonus.lane<0?'LEFT':'RIGHT')+' + JUMP · CENTRE ROAD IS SAFE';
     const chamber=CHAMBERS.find(c=>c.route===s.route&&c.d>s.distance-1&&c.d<s.distance+65);
     if(chamber)return `${chamber.clue.toUpperCase()} · ${['LEFT','CENTRE','RIGHT'][chamber.lane+1]} · ${chamber.action==='burrow'?'BURROW':'JUMP'} AT ${chamber.d}m`;
     if(s.forkStage===0)return s.distance>=98
@@ -586,5 +622,23 @@ export function buildOvergrownCourse(seed:number):CourseItem[]{
  add(991,-1,'boulder');add(1008,1,'roots');add(1053,0,'vault');
  // Append new IDs after the existing course: earlier recovery points keep item identity.
  for(const chamber of CHAMBERS)add(chamber.d,chamber.lane,'chamber-door',chamber.route);
+ // Append after all historical IDs. Find a real clear corridor for both the
+ // terrace and adjacent lower lane; no existing hazard/reward is rewritten.
+ for(const choice of [...MAJOR_FORKS,...Object.values(SUB_FORKS).flat()]){
+  const major=MAJOR_FORKS.some(m=>m.id===choice.id),ideal=major?282:604;
+  let placed=false;
+  const shifts=Array.from({length:401},(_,i)=>i===0?0:Math.ceil(i/2)*(i%2?.5:-.5));
+  for(const shift of shifts){
+   const d=ideal+shift;if(d<(major?180:500)||d>(major?389:813))continue;
+   const lane=([-1,1] as Lane[]).find(candidate=>!items.some(item=>item.route===choice.id
+    &&(HAZARDS.has(item.kind)||item.kind==='chamber-door')&&(item.lane===candidate||item.lane===0)
+    &&item.d>d-5&&item.d<d+BONUS_LEDGE_LENGTH+4));
+   if(lane===undefined)continue;
+   add(d,lane,'bonus-ledge',choice.id);
+   for(const at of [3,5.5,8,11]){add(d+at,lane,at===8?'gem':'coin',choice.id);items[items.length-1].elevation=BONUS_LEDGE_HEIGHT;}
+   placed=true;break;
+  }
+  if(!placed)throw Error('No safe terrace corridor: '+choice.id);
+ }
  return items.sort((a,b)=>a.d-b.d||a.id-b.id);
 }

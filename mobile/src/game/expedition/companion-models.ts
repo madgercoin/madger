@@ -144,7 +144,7 @@ export function drawTeam(r:ExpeditionRenderer,s:Expedition,time:number,calm:bool
   if(id==='bot')y+=away*2.0;
   const running=['running','paused','upgrade'].includes(s.mode)&&s.distance>0;
   drawCompanion(r,id,{x,y,z,yaw:clamp(-c.followVx*.035,-.25,.25),scale:id==='gorilla'?.84:id==='bot'?.79:.91,time,distance:s.distance,running,action:a,air,calm});
-  if(id==='gorilla'&&c.actionRemaining>0){const radius=.7+.45*Math.sin(Math.PI*a);shape('ring',color('#E0F0EC',.5),offset+s.x,1.05+s.y,-.60,radius,1,radius,Math.PI/2,0,a);}
+  if(id==='gorilla'&&c.actionRemaining>0){const radius=.7+.45*Math.sin(Math.PI*a);shape('ring',color('#E0F0EC',.5),offset+s.x,floor(s.distance)+1.05+s.y,-.60,radius,1,radius,Math.PI/2,0,a);}
   if(id==='bot'){
    if(!calm)shape('ring',color('#73DFEE',.20),offset+s.x,floor(s.distance)+.08,0,1.15+.06*Math.sin(time*3),1,1.15,0,time*.4,0);
    if(c.actionRemaining>0&&c.targetRoute===s.route&&a<.75){

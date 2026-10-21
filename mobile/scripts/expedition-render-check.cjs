@@ -17,4 +17,19 @@ const html=`<!doctype html><meta charset="utf-8"><meta name="viewport" content="
   if(result.glError!==0)throw Error(name+' WebGL error '+result.glError);
   await page.screenshot({path:path.join(out,name+'.png')});
  }
+ for(const route of ['rootway','ridge','deep'])for(const position of ['approach','upper','lower']){
+  const result=await page.evaluate(({route,position})=>{
+   const s=qa.core.freshOvergrownExpedition(4242,'terrace-visual'),course=qa.core.buildOvergrownCourse(4242);
+   const deck=course.find(i=>i.kind==='bonus-ledge'&&i.route===route);
+   Object.assign(s,{route,majorPath:route,forkStage:1,routeStart:140,routeEnd:450,routeSide:route==='rootway'?-1:route==='deep'?1:0,
+    mode:'running',distance:deck.d+(position==='approach'?-6:6),time:30,
+    x:position==='lower'?0:deck.lane*qa.core.LANE_WIDTH,lane:position==='lower'?0:deck.lane,
+    y:position==='upper'?.9:0,groundHeight:position==='upper'?.9:0});
+   qa.set(s);qa.scene.setCourse(course);qa.scene.renderer.sceneryBudget=1;
+   for(let i=0;i<40;i++)qa.draw(30+i/60);
+   return qa.draw(31);
+  },{route,position});
+  if(result.glError!==0)throw Error('Terrace WebGL error '+result.glError);
+  await page.screenshot({path:path.join(out,'terrace-'+route+'-'+position+'.png')});
+ }
 }fs.writeFileSync(path.join(out,'render-smoke.json'),JSON.stringify({errors,stats,date:new Date().toISOString(),browser:await browser.version()},null,2));console.log('RENDER_PASS',JSON.stringify(stats));await browser.close();})().catch(e=>{console.error(e);process.exitCode=1});
