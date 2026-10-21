@@ -26,7 +26,7 @@ function context({ native = true, instanced = true, webShim = false } = {}) {
     createShader: () => ({}), createProgram: () => ({}), createBuffer: () => ({}),
     getShaderParameter: () => true, getProgramParameter: () => true,
     getUniformLocation: (_, name) => ({ name }), getExtension: () => null,
-    uniform1f: (location, value) => { if (location.name === 'uTravel') state.travel = value; },
+    uniform1f: (location, value) => { if (location.name === 'uTravel') state.travel = value; if (location.name === 'uDetail') state.detail = value; },
     flush: () => { state.flushes++; },
     drawArrays: () => { state.draws++; },
     drawArraysInstanced: instanced ? () => { state.instancedDraws++; } : undefined,
@@ -236,4 +236,20 @@ test('Expo presentation uses its null binding without unsupported framebuffer qu
  target.begin(480,960,1);assert.notEqual(bound,null);
  target.present(480,960);assert.equal(bound,null);
  target.dispose();
+});
+
+
+test('measured native fallback reduces shading without changing submitted gameplay geometry', t => {
+  t.mock.method(console, 'info', () => {});
+  for (const native of [true, false]) {
+    const { gl, state } = context({native});
+    const renderer = new ExpeditionRenderer(gl);
+    renderer.sceneryBudget = 1; frame(renderer, 1);
+    const instances = renderer.stats.instances, triangles = renderer.stats.triangles;
+    assert.equal(state.detail, 1);
+    renderer.sceneryBudget = 0; frame(renderer, 2);
+    assert.equal(state.detail, native ? 0 : 1);
+    assert.equal(renderer.stats.instances, instances);
+    assert.equal(renderer.stats.triangles, triangles);
+  }
 });

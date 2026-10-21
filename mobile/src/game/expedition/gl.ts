@@ -99,7 +99,7 @@ precision highp float;
 precision mediump float;
 #endif
 uniform sampler2D uPortrait;
-uniform vec3 uEye;uniform vec3 uFog;uniform vec2 uFogRange;uniform float uTime;uniform float uTravel;
+uniform vec3 uEye;uniform vec3 uFog;uniform vec2 uFogRange;uniform float uTime;uniform float uTravel;uniform float uDetail;
 varying vec3 vWorld;varying vec3 vNormal;varying vec3 vLocal;varying vec4 vColor;
 #ifdef GL_FRAGMENT_PRECISION_HIGH
 float hash(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
@@ -125,6 +125,7 @@ void main(){
   vec3 horizon=vColor.rgb;
   vec3 zenith=vec3(.095,.19,.29);
   vec3 atmosphere=mix(horizon,zenith,height);
+  if(uDetail<.5){gl_FragColor=vec4(sqrt(max(atmosphere,vec3(0.0))),1.0);return;}
   float azimuth=atan(direction.x,direction.z);
   float drift=uTime*.023;
   float cloudWave=sin(azimuth*9.0+direction.y*17.0+drift)
@@ -138,6 +139,26 @@ void main(){
  }
  if(vColor.a < -5.5 && vColor.a > -6.5){float a=max(0.0,1.0-dot(vLocal.xy,vLocal.xy));gl_FragColor=vec4(vColor.rgb*1.8,a*a*.38);return;}
  if(vColor.a < -2.5 && vColor.a > -3.5){float a=max(0.0,1.0-dot(vLocal.xz,vLocal.xz));gl_FragColor=vec4(0.015,0.016,0.018,a*a*.32);return;}
+ // The native fallback keeps the same meshes, markings, portrait, shadows and
+ // gameplay effects. Skip subpixel procedural grain and expensive specular/
+ // lamp calculations only when measured GPU drain has exhausted the budget.
+ // Those details are especially costly on software and older phone GPUs.
+ if(uDetail<.5){
+  vec3 base=vColor.rgb,n=normalize(vNormal);
+  if(vColor.a < -.5 && vColor.a > -1.5){
+   float edge=max(smoothstep(.455,.499,abs(vLocal.x)),smoothstep(.468,.499,abs(vLocal.z)));
+   base*=1.0-edge*.24;
+  }
+  if(vColor.a < -4.5 && vColor.a > -5.5){
+   float chevron=sin(vLocal.z*18.0+abs(vLocal.x)*7.5);
+   float t=clamp(vLocal.z/1.26,0.0,1.0),centre=.14*sin(t*3.14159265)+.26*t*t;
+   base=mix(base,vec3(.86,.68,.38),smoothstep(.17,.35,chevron)*.91*smoothstep(-.03,.10,vLocal.y-centre));
+  }
+  float sun=max(0.0,dot(n,vec3(-.423,.800,.423)));
+  vec3 lit=base*(vec3(.18,.23,.24)+vec3(.82,.65,.41)*sun+vec3(.12,.21,.21)*max(0.0,n.y)+max(0.0,vColor.a)*1.15);
+  lit=mix(lit,uFog,smoothstep(uFogRange.x,uFogRange.y,length(uEye-vWorld)));
+  gl_FragColor=vec4(sqrt(max(lit/(lit+vec3(.65)),vec3(0.0))),1.0);return;
+ }
  vec3 n=normalize(vNormal),view=normalize(uEye-vWorld);
  vec3 base=vColor.rgb;float em=max(0.0,vColor.a);
  if(vColor.a < -.5 && vColor.a > -1.5){vec2 surface=vec2(vWorld.x,uTravel-vWorld.z);
@@ -346,7 +367,7 @@ function cullBatch(batch:Batch,planes:Float64Array){
 }
 export class ExpeditionRenderer {
  private gl:NativeGL;private program:WebGLProgram;private batches=new Map<Shape,Batch>();
- private uniforms:{portrait:WebGLUniformLocation;vp:WebGLUniformLocation;eye:WebGLUniformLocation;fog:WebGLUniformLocation;range:WebGLUniformLocation;time:WebGLUniformLocation;travel:WebGLUniformLocation};
+ private uniforms:{portrait:WebGLUniformLocation;vp:WebGLUniformLocation;eye:WebGLUniformLocation;fog:WebGLUniformLocation;range:WebGLUniformLocation;time:WebGLUniformLocation;travel:WebGLUniformLocation;detail:WebGLUniformLocation};
  private divisor:((i:number,v:number)=>void)|null=null;private drawInstanced:((mode:number,first:number,count:number,instances:number)=>void)|null=null;
  private drawIndexedInstanced:((mode:number,count:number,type:number,offset:number,instances:number)=>void)|null=null;
  private tailVertices=new Float32Array(TAIL_INDICES.length*6);private tailGrid=new Float64Array((TAIL_RINGS+1)*(TAIL_SIDES+1)*6);
@@ -355,7 +376,7 @@ export class ExpeditionRenderer {
  private dead=false;private nativeFrames=0;private sceneryState:SceneryBudgetState={level:2,fastFrames:0,slowFrames:0};
  private sceneTarget:NativeSceneTarget|null=null;
  public sceneryBudget:SceneryBudget=2;
- public stats={instances:0,culledInstances:0,drawCalls:0,indexedDrawCalls:0,triangles:0,nativeDrainMs:0,sceneWidth:0,sceneHeight:0};
+ public stats={instances:0,culledInstances:0,drawCalls:0,indexedDrawCalls:0,triangles:0,nativeDrainMs:0,sceneWidth:0,sceneHeight:0,materialDetail:1};
  constructor(gl:GL){
   this.gl=gl as NativeGL;
   if(typeof this.gl.flushEXP==='function'){this.sceneryState.level=1;this.sceneryBudget=1;}
@@ -364,7 +385,7 @@ export class ExpeditionRenderer {
   gl.attachShader(program,vert);gl.attachShader(program,frag);['aPosition','aNormal','aM0','aM1','aM2','aM3','aColor'].forEach((name,i)=>gl.bindAttribLocation(program,i,name));gl.linkProgram(program);gl.deleteShader(vert);gl.deleteShader(frag);
   if(!gl.getProgramParameter(program,gl.LINK_STATUS)){const message=gl.getProgramInfoLog(program);gl.deleteProgram(program);throw Error('3D program: '+message);}this.program=program;
   const uniform=(name:string)=>{const u=gl.getUniformLocation(program,name);if(u===null)throw Error('Missing shader uniform '+name);return u;};
-  this.uniforms={portrait:uniform('uPortrait'),vp:uniform('uVP'),eye:uniform('uEye'),fog:uniform('uFog'),range:uniform('uFogRange'),time:uniform('uTime'),travel:uniform('uTravel')};
+  this.uniforms={portrait:uniform('uPortrait'),vp:uniform('uVP'),eye:uniform('uEye'),fog:uniform('uFog'),range:uniform('uFogRange'),time:uniform('uTime'),travel:uniform('uTravel'),detail:uniform('uDetail')};
   const g=gl as WebGL2RenderingContext;
   if(typeof g.drawArraysInstanced==='function'){
    this.drawInstanced=g.drawArraysInstanced.bind(g);this.divisor=g.vertexAttribDivisor.bind(g);
@@ -394,7 +415,7 @@ export class ExpeditionRenderer {
   }catch(error){gl.deleteTexture(texture);throw error;}finally{gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL,false);gl.activeTexture(gl.TEXTURE0);}
  }
  updateTail(time:number,bank:number){const b=this.batches.get('tail')!;const data=tailGeometry(time,bank,this.tailVertices,this.tailGrid);geometryBounds(data,b.bounds);this.gl.bindBuffer(this.gl.ARRAY_BUFFER,b.vertex);this.gl.bufferData(this.gl.ARRAY_BUFFER,data,this.gl.DYNAMIC_DRAW);b.vertices=data.length/6;}
- reset(){for(const b of this.batches.values())b.count=0;this.stats={instances:0,culledInstances:0,drawCalls:0,indexedDrawCalls:0,triangles:0,nativeDrainMs:0,sceneWidth:0,sceneHeight:0};}
+ reset(){for(const b of this.batches.values())b.count=0;this.stats={instances:0,culledInstances:0,drawCalls:0,indexedDrawCalls:0,triangles:0,nativeDrainMs:0,sceneWidth:0,sceneHeight:0,materialDetail:1};}
  add(shape:Shape,matrix:Mat4,c:Color){const b=this.batches.get(shape)!;if(b.count>=4096)return;const offset=b.count*20;b.data.set(matrix,offset);b.data.set(c,offset+16);b.count++;}
  shape(shape:Shape,c:Color,x:number,y:number,z:number,sx=1,sy=1,sz=1,rx=0,ry=0,rz=0,parent?:Mat4){const t=transform(x,y,z,sx,sy,sz,rx,ry,rz);this.add(shape,parent?multiply(parent,t):t,c);}
  render(eye:Vec3,target:Vec3,time:number,zone:number,travel=0){
@@ -408,6 +429,8 @@ export class ExpeditionRenderer {
   updateClipPlanes(vp,this.clipPlanes);
   if(this.portrait){gl.activeTexture(gl.TEXTURE1);gl.bindTexture(gl.TEXTURE_2D,this.portrait);gl.uniform1i(this.uniforms.portrait,1);gl.activeTexture(gl.TEXTURE0);}
   gl.uniformMatrix4fv(this.uniforms.vp,false,vp);gl.uniform3f(this.uniforms.eye,eye[0],eye[1],eye[2]);gl.uniform3f(this.uniforms.fog,fog[0],fog[1],fog[2]);gl.uniform2f(this.uniforms.range,30,115);gl.uniform1f(this.uniforms.time,time);gl.uniform1f(this.uniforms.travel,travel);
+  this.stats.materialDetail=typeof this.gl.flushEXP==='function'&&this.sceneryBudget===0?0:1;
+  gl.uniform1f(this.uniforms.detail,this.stats.materialDetail);
   for(const [shape,b] of this.batches){if(!b.count)continue;
    const count=cullBatch(b,this.clipPlanes);this.stats.culledInstances+=b.count-count;if(!count)continue;
    if(shape==='shadow'||shape==='halo'||shape==='face'){gl.enable(gl.BLEND);gl.blendFunc(gl.SRC_ALPHA,shape==='halo'?gl.ONE:gl.ONE_MINUS_SRC_ALPHA);gl.depthMask(shape==='face');}else{gl.disable(gl.BLEND);gl.depthMask(true);}

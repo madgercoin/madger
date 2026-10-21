@@ -94,7 +94,9 @@ class Smoke:
     def tree(self):
         # Long scans may add load; RPC duration alone does not prove a frame stall.
         # Required accessible labels and bounds are still checked by every caller.
-        xml = self.timed("hierarchy", lambda: self.device.dump_hierarchy(compressed=True))
+        # Keep Android's normal tree: flattening accessibility descendants adds
+        # synchronous work while the 3D view is rendering on software GPUs.
+        xml = self.timed("hierarchy", lambda: self.device.dump_hierarchy(compressed=False))
         nodes = list(ET.fromstring(xml).iter("node"))
         labels = [node.get(key, "") for node in nodes for key in ("text", "content-desc")]
         self.last_observation = self.observation(nodes, labels)
