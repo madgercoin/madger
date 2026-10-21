@@ -78,3 +78,20 @@ test('native underground routes select cave lighting instead of forest daylight'
  for(const route of ['root-arch','watchtower','crystal-vein']){s.route=route;scene.draw(s,1,true);}
  assert.deepEqual(zones,[0,1,2]);
 });
+
+
+test('the actual rolling stone mesh fits below successful jump clearance throughout contact',()=>{
+ const geometry=require(path.join(temp,'gl.js')).geometryForTest('geologyRock');
+ let radius=0;for(let i=0;i<geometry.length;i+=6)radius=Math.max(radius,Math.hypot(...geometry.slice(i,i+3)));
+ const scene=Object.create(ExpeditionScene.prototype),drawn=[];
+ scene.renderer={worldReady:true,shape:(shape,c,x,y,z,sx,sy,sz)=>drawn.push({shape,x,y,z,sx,sy,sz}),add:()=>{}};
+ const s=C.freshOvergrownExpedition(4242,'stone');s.route='ridge';s.mode='running';
+ const rock={id:999,kind:'boulder',route:'ridge',lane:0,d:220,phase:0};scene.setCourse([rock]);
+ for(let distance=219.5;distance<=220.5;distance+=.1){
+  drawn.length=0;s.distance=distance;scene.item(rock,s,20);
+  const stone=drawn.find(d=>d.shape==='geologyRock');assert(stone);
+  const floor=Math.sin(C.hazardPose(rock,s.time,distance).d/34)*.12;
+  assert(stone.y+radius*stone.sy-floor<1.08,'an engine-cleared jump must visibly clear every rotated mesh vertex');
+  assert(radius*stone.sx+.32<=.821,'visual radius plus player body matches physical contact radius');
+ }
+});

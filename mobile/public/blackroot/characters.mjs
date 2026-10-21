@@ -2259,7 +2259,9 @@ class ExpeditionScene {
                 shadow(.4);
                 break;
             case 'boulder':
-                this.shape('geologyRock', (0, gl_1.color)('#aaa18e', -8), x, y + .84 + pose.y, z, 1, 1, 1, pose.roll, 0, 0);
+                // The reviewed mesh radius is .881404m. Uniform scale keeps every
+                // rotated point within .50m, matching the .82m body-inclusive collider.
+                this.shape('geologyRock', (0, gl_1.color)('#aaa18e', -8), x, y + .51 + pose.y, z, .5672767, .5672767, .5672767, pose.roll, 0, 0);
                 this.shape('ring', (0, gl_1.color)('#c59164'), x, y + .10, z, .83, 1, .83);
                 shadow(.9);
                 break;

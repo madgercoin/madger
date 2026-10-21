@@ -563,7 +563,9 @@ export class ExpeditionScene {
    case 'key':
     this.shape('ring',C.goldGlow,x,y+1.27+bob,z,.22,.7,.22,Math.PI/2,0,0);this.shape('box',C.gold,x,y+.91+bob,z,.08,.54,.09);this.shape('box',C.gold,x+.10,y+.72+bob,z,.25,.09,.09);shadow(.4);break;
    case 'boulder':
-    this.shape('geologyRock',color('#aaa18e',-8),x,y+.84+pose.y,z,1,1,1,pose.roll,0,0);
+    // The reviewed mesh radius is .881404m. Uniform scale keeps every
+    // rotated point within .50m, matching the .82m body-inclusive collider.
+    this.shape('geologyRock',color('#aaa18e',-8),x,y+.51+pose.y,z,.5672767,.5672767,.5672767,pose.roll,0,0);
     this.shape('ring',color('#c59164'),x,y+.10,z,.83,1,.83);shadow(.9);break;
    case 'bonus-ledge':{
     const stone=color(environmentZone(s)===2?'#6b777e':environmentZone(s)===1?'#99917e':'#7e8971',-8);
