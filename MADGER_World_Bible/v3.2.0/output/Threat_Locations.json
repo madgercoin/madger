@@ -1,0 +1,3488 @@
+{
+  "edition": "3.2.0",
+  "locations": [
+    {
+      "id": "EXT-01-B03",
+      "name": "Kest Depot",
+      "type": "building",
+      "level": 0,
+      "focus_room": "West racks",
+      "ownership": "Privately operated by Gilt Ledger; Reedbank remains independent.",
+      "history": "The building began as a raised freight store serving ferry traffic. Veyra’s business made its reliable handling a public reputation and its selective access a source of power. Flood marks on the outer steps record maintenance, not supernatural immunity. The refuge and public charter records elsewhere in Reedbank are not owned by the depot.",
+      "daily_life": "Bale compares a physical count to the day’s dispatch instructions. Legitimate customers collect orders while disputed allocations wait in a marked side bay. Workers use both large wagon doors; no stack occupies the six-metre freight aisle. Veyra meets difficult visitors on the floor when she wants the available stock to speak for her.",
+      "dramatic_use": "A withheld crate can sit in full view. Suspense comes from knowing it could leave, not from finding a secret chamber. The marked hold bay changes only through a documented order, making a worker’s refusal or release visible to witnesses.",
+      "base_instance": {
+        "id": "EXT-01-B03",
+        "name": "Kest Depot",
+        "settlement": "EXT-01",
+        "module": "MOD-11",
+        "center_m": [
+          120,
+          0,
+          2.4
+        ],
+        "rotation_deg": 0,
+        "width_m": 36,
+        "depth_m": 24,
+        "levels": 1,
+        "roof": "ochre tile",
+        "materials": "raised timber / limestone",
+        "motif": "flood stair and boat rail",
+        "role": "Kest Depot",
+        "state": "normal",
+        "rooms": [
+          {
+            "name": "West racks",
+            "x": 0,
+            "y": 0,
+            "w": 15,
+            "d": 24
+          },
+          {
+            "name": "Freight aisle",
+            "x": 15,
+            "y": 0,
+            "w": 6,
+            "d": 24
+          },
+          {
+            "name": "East racks",
+            "x": 21,
+            "y": 0,
+            "w": 15,
+            "d": 24
+          }
+        ],
+        "entry": {
+          "side": "S",
+          "offset_m": 0,
+          "width_m": 4.8
+        },
+        "secondary_exit": {
+          "side": "N",
+          "offset_m": 0,
+          "width_m": 4.8
+        },
+        "wall_m": 0.25,
+        "floor_height_m": 3.2,
+        "notes": "Six-metre center aisle; 4.8 m wagon doors at north and south. Goods do not block exits. Roof eaves 6 m.",
+        "special": "Use the room allocations shown; movable furnishings may vary without shifting walls, doors or stairs.",
+        "floors": [
+          {
+            "level": 0,
+            "z_m": 0.0,
+            "rooms": [
+              {
+                "name": "West racks",
+                "x": 0,
+                "y": 0,
+                "w": 15,
+                "d": 24
+              },
+              {
+                "name": "Freight aisle",
+                "x": 15,
+                "y": 0,
+                "w": 6,
+                "d": 24
+              },
+              {
+                "name": "East racks",
+                "x": 21,
+                "y": 0,
+                "w": 15,
+                "d": 24
+              }
+            ],
+            "internal_doors": [
+              {
+                "rooms": [
+                  "Freight aisle",
+                  "West racks"
+                ],
+                "orientation": "V",
+                "center_m": [
+                  15,
+                  12.0
+                ],
+                "width_m": 1.2
+              },
+              {
+                "rooms": [
+                  "East racks",
+                  "Freight aisle"
+                ],
+                "orientation": "V",
+                "center_m": [
+                  21,
+                  12.0
+                ],
+                "width_m": 1.2
+              }
+            ],
+            "circulation_connected": true
+          }
+        ],
+        "front_elevation": {
+          "wall_height_m": 6,
+          "ridge_height_m": 14.393537846789975,
+          "window_bays": 7,
+          "entry_width_m": 4.8
+        }
+      },
+      "geometry": {
+        "id": "EXT-01-B03",
+        "name": "Kest Depot",
+        "settlement": "EXT-01",
+        "module": "MOD-11",
+        "center_m": [
+          120,
+          0,
+          2.4
+        ],
+        "rotation_deg": 0,
+        "width_m": 36,
+        "depth_m": 24,
+        "levels": 1,
+        "roof": "ochre tile",
+        "materials": "raised timber / limestone",
+        "motif": "flood stair and boat rail",
+        "role": "Kest Depot",
+        "state": "normal",
+        "rooms": [
+          {
+            "name": "West racks",
+            "x": 0,
+            "y": 0,
+            "w": 15,
+            "d": 24
+          },
+          {
+            "name": "Freight aisle",
+            "x": 15,
+            "y": 0,
+            "w": 6,
+            "d": 24
+          },
+          {
+            "name": "East racks",
+            "x": 21,
+            "y": 0,
+            "w": 15,
+            "d": 24
+          }
+        ],
+        "entry": {
+          "side": "S",
+          "offset_m": 0,
+          "width_m": 4.8
+        },
+        "secondary_exit": {
+          "side": "N",
+          "offset_m": 0,
+          "width_m": 4.8
+        },
+        "wall_m": 0.25,
+        "floor_height_m": 3.2,
+        "notes": "Six-metre center aisle; 4.8 m wagon doors at north and south. Goods do not block exits. Roof eaves 6 m.",
+        "special": "Use the room allocations shown; movable furnishings may vary without shifting walls, doors or stairs.",
+        "floors": [
+          {
+            "level": 0,
+            "z_m": 0.0,
+            "rooms": [
+              {
+                "name": "West racks",
+                "x": 0,
+                "y": 0,
+                "w": 15,
+                "d": 24
+              },
+              {
+                "name": "Freight aisle",
+                "x": 15,
+                "y": 0,
+                "w": 6,
+                "d": 24
+              },
+              {
+                "name": "East racks",
+                "x": 21,
+                "y": 0,
+                "w": 15,
+                "d": 24
+              }
+            ],
+            "internal_doors": [
+              {
+                "rooms": [
+                  "Freight aisle",
+                  "West racks"
+                ],
+                "orientation": "V",
+                "center_m": [
+                  15,
+                  12.0
+                ],
+                "width_m": 1.2
+              },
+              {
+                "rooms": [
+                  "East racks",
+                  "Freight aisle"
+                ],
+                "orientation": "V",
+                "center_m": [
+                  21,
+                  12.0
+                ],
+                "width_m": 1.2
+              }
+            ],
+            "circulation_connected": true
+          }
+        ],
+        "front_elevation": {
+          "wall_height_m": 6,
+          "ridge_height_m": 14.393537846789975,
+          "window_bays": 7,
+          "entry_width_m": 4.8
+        }
+      },
+      "floor": {
+        "level": 0,
+        "z_m": 0.0,
+        "rooms": [
+          {
+            "name": "West racks",
+            "x": 0,
+            "y": 0,
+            "w": 15,
+            "d": 24
+          },
+          {
+            "name": "Freight aisle",
+            "x": 15,
+            "y": 0,
+            "w": 6,
+            "d": 24
+          },
+          {
+            "name": "East racks",
+            "x": 21,
+            "y": 0,
+            "w": 15,
+            "d": 24
+          }
+        ],
+        "internal_doors": [
+          {
+            "rooms": [
+              "Freight aisle",
+              "West racks"
+            ],
+            "orientation": "V",
+            "center_m": [
+              15,
+              12.0
+            ],
+            "width_m": 1.2
+          },
+          {
+            "rooms": [
+              "East racks",
+              "Freight aisle"
+            ],
+            "orientation": "V",
+            "center_m": [
+              21,
+              12.0
+            ],
+            "width_m": 1.2
+          }
+        ],
+        "circulation_connected": true
+      },
+      "features": [
+        {
+          "id": "F01",
+          "name": "Dispatch comparison table",
+          "room": "West racks",
+          "box": [
+            0.6,
+            0.6,
+            2.8,
+            0.9
+          ],
+          "height_m": 0.8,
+          "placement": "portable furniture; fixed room geometry unchanged"
+        },
+        {
+          "id": "F02",
+          "name": "Marked hold-bay rack",
+          "room": "West racks",
+          "box": [
+            0.6,
+            22.5,
+            2.8,
+            0.9
+          ],
+          "height_m": 1.6,
+          "placement": "portable furniture; fixed room geometry unchanged"
+        },
+        {
+          "id": "F03",
+          "name": "Wagon inspection bench",
+          "room": "West racks",
+          "box": [
+            11.600000000000001,
+            0.6,
+            2.8,
+            0.9
+          ],
+          "height_m": 0.8,
+          "placement": "portable furniture; fixed room geometry unchanged"
+        },
+        {
+          "id": "F04",
+          "name": "Recipient request case",
+          "room": "West racks",
+          "box": [
+            11.600000000000001,
+            22.5,
+            2.8,
+            0.9
+          ],
+          "height_m": 1.6,
+          "placement": "portable furniture; fixed room geometry unchanged"
+        },
+        {
+          "id": "F05",
+          "name": "Ready-order racks",
+          "room": "East racks",
+          "box": [
+            21.6,
+            0.6,
+            2.8,
+            0.9
+          ],
+          "height_m": 1.6,
+          "placement": "portable furniture; fixed room geometry unchanged"
+        },
+        {
+          "id": "F06",
+          "name": "Packing bench",
+          "room": "East racks",
+          "box": [
+            21.6,
+            22.5,
+            2.8,
+            0.9
+          ],
+          "height_m": 0.8,
+          "placement": "portable furniture; fixed room geometry unchanged"
+        },
+        {
+          "id": "F07",
+          "name": "Return-goods rack",
+          "room": "East racks",
+          "box": [
+            32.6,
+            0.6,
+            2.8,
+            0.9
+          ],
+          "height_m": 1.6,
+          "placement": "portable furniture; fixed room geometry unchanged"
+        },
+        {
+          "id": "F08",
+          "name": "Allocation board",
+          "room": "East racks",
+          "box": [
+            32.6,
+            22.5,
+            2.8,
+            0.9
+          ],
+          "height_m": 1.6,
+          "placement": "portable furniture; fixed room geometry unchanged"
+        }
+      ],
+      "art": {
+        "file": "THREATS-01.png",
+        "grid": [
+          2,
+          2
+        ],
+        "column": 0,
+        "row": 0
+      },
+      "origin": "Southwest building corner; metres. Existing building center is settlement-local.",
+      "detail_authority": "Normal-state furniture is new. Inherited building placement, footprint, rooms, doors and levels are unchanged."
+    },
+    {
+      "id": "EXT-03-U04",
+      "name": "Slate Arcade Rooms",
+      "type": "building",
+      "level": 1,
+      "focus_room": "Guest E",
+      "ownership": "Ordinary lodging business; a temporary Glass Thread lease does not implicate the landlord or other guests.",
+      "history": "This is a new name for the existing EXT-03-U04 lodging building, fifty metres east and one hundred north of Latchford’s civic origin. Its trade is rooms for crews in transit. Glass Thread uses one upper guest room during a later story, then moves on. The public North Relay Rooms remain a separate legitimate institution.",
+      "daily_life": "Guests share the ordinary stair passage and washing facilities. In Guest E, a folding cot, document table and portable repair bench make a rented room serve two purposes. Travel bags can be packed quickly because this is a temporary stay, not an underground headquarters. Quiet maintenance is possible; industrial work and permanent aerials are not added.",
+      "dramatic_use": "A lease date and a witness can establish presence without proving every act of the tenant. An unrelated guest’s complaint about noise matters more than a theatrical hidden emblem. The crew’s departure changes occupancy and prop state, not the town plan.",
+      "base_instance": {
+        "id": "EXT-03-U04",
+        "name": "Travelers inn",
+        "settlement": "EXT-03",
+        "module": "MOD-06",
+        "center_m": [
+          50,
+          100,
+          0
+        ],
+        "rotation_deg": 0,
+        "width_m": 24,
+        "depth_m": 20,
+        "levels": 2,
+        "roof": "slate blue",
+        "materials": "plaster / timber",
+        "motif": "deep public arcade",
+        "state": "normal"
+      },
+      "geometry": {
+        "id": "EXT-03-U04",
+        "name": "Travelers inn",
+        "width_m": 24,
+        "depth_m": 20,
+        "levels": 2,
+        "floor_height_m": 3.2,
+        "wall_m": 0.25,
+        "resident_capacity": 0,
+        "rooms": [
+          {
+            "name": "Common room",
+            "x": 0,
+            "y": 0,
+            "w": 10,
+            "d": 8
+          },
+          {
+            "name": "Kitchen",
+            "x": 14,
+            "y": 0,
+            "w": 10,
+            "d": 8
+          },
+          {
+            "name": "Passage/stairs",
+            "x": 10,
+            "y": 0,
+            "w": 4,
+            "d": 20
+          },
+          {
+            "name": "Guest A",
+            "x": 0,
+            "y": 8,
+            "w": 10,
+            "d": 6
+          },
+          {
+            "name": "Guest B",
+            "x": 14,
+            "y": 8,
+            "w": 10,
+            "d": 6
+          },
+          {
+            "name": "Guest C",
+            "x": 0,
+            "y": 14,
+            "w": 10,
+            "d": 6
+          },
+          {
+            "name": "Wash/store",
+            "x": 14,
+            "y": 14,
+            "w": 10,
+            "d": 6
+          }
+        ],
+        "entry": {
+          "side": "S",
+          "offset_m": 0,
+          "width_m": 2.4
+        },
+        "secondary_exit": {
+          "side": "N",
+          "offset_m": 0,
+          "width_m": 1.8
+        },
+        "notes": "Upper floor repeats four guest bays and a lounge, with paired stairs at passage ends. Capacity 24 overnight guests, separate from permanent population.",
+        "roof": "slate blue",
+        "dimension_basis": "Nominal wall-center allocation dimensions; partitions are 0.25 m. Clear usable area is smaller. Fictional production layout, not construction certification.",
+        "floors": [
+          {
+            "level": 0,
+            "z_m": 0.0,
+            "rooms": [
+              {
+                "name": "Common room",
+                "x": 0,
+                "y": 0,
+                "w": 10,
+                "d": 8
+              },
+              {
+                "name": "Kitchen",
+                "x": 14,
+                "y": 0,
+                "w": 10,
+                "d": 8
+              },
+              {
+                "name": "Passage/stairs",
+                "x": 10,
+                "y": 0,
+                "w": 4,
+                "d": 20
+              },
+              {
+                "name": "Guest A",
+                "x": 0,
+                "y": 8,
+                "w": 10,
+                "d": 6
+              },
+              {
+                "name": "Guest B",
+                "x": 14,
+                "y": 8,
+                "w": 10,
+                "d": 6
+              },
+              {
+                "name": "Guest C",
+                "x": 0,
+                "y": 14,
+                "w": 10,
+                "d": 6
+              },
+              {
+                "name": "Wash/store",
+                "x": 14,
+                "y": 14,
+                "w": 10,
+                "d": 6
+              }
+            ],
+            "internal_doors": [
+              {
+                "rooms": [
+                  "Passage/stairs",
+                  "Common room"
+                ],
+                "orientation": "V",
+                "center_m": [
+                  10,
+                  4.0
+                ],
+                "width_m": 1.2
+              },
+              {
+                "rooms": [
+                  "Passage/stairs",
+                  "Kitchen"
+                ],
+                "orientation": "V",
+                "center_m": [
+                  14,
+                  4.0
+                ],
+                "width_m": 1.2
+              },
+              {
+                "rooms": [
+                  "Guest A",
+                  "Passage/stairs"
+                ],
+                "orientation": "V",
+                "center_m": [
+                  10,
+                  11.0
+                ],
+                "width_m": 1.2
+              },
+              {
+                "rooms": [
+                  "Guest B",
+                  "Passage/stairs"
+                ],
+                "orientation": "V",
+                "center_m": [
+                  14,
+                  11.0
+                ],
+                "width_m": 1.2
+              },
+              {
+                "rooms": [
+                  "Guest C",
+                  "Passage/stairs"
+                ],
+                "orientation": "V",
+                "center_m": [
+                  10,
+                  17.0
+                ],
+                "width_m": 1.2
+              },
+              {
+                "rooms": [
+                  "Wash/store",
+                  "Passage/stairs"
+                ],
+                "orientation": "V",
+                "center_m": [
+                  14,
+                  17.0
+                ],
+                "width_m": 1.2
+              }
+            ],
+            "circulation_connected": true
+          },
+          {
+            "level": 1,
+            "z_m": 3.2,
+            "rooms": [
+              {
+                "name": "Guest D",
+                "x": 0,
+                "y": 0,
+                "w": 10,
+                "d": 8
+              },
+              {
+                "name": "Guest E",
+                "x": 14,
+                "y": 0,
+                "w": 10,
+                "d": 8
+              },
+              {
+                "name": "Passage/stairs",
+                "x": 10,
+                "y": 0,
+                "w": 4,
+                "d": 20
+              },
+              {
+                "name": "Guest F",
+                "x": 0,
+                "y": 8,
+                "w": 10,
+                "d": 6
+              },
+              {
+                "name": "Guest G",
+                "x": 14,
+                "y": 8,
+                "w": 10,
+                "d": 6
+              },
+              {
+                "name": "Guest C",
+                "x": 0,
+                "y": 14,
+                "w": 10,
+                "d": 6
+              },
+              {
+                "name": "Wash/store",
+                "x": 14,
+                "y": 14,
+                "w": 10,
+                "d": 6
+              }
+            ],
+            "internal_doors": [
+              {
+                "rooms": [
+                  "Passage/stairs",
+                  "Guest D"
+                ],
+                "orientation": "V",
+                "center_m": [
+                  10,
+                  4.0
+                ],
+                "width_m": 1.2
+              },
+              {
+                "rooms": [
+                  "Passage/stairs",
+                  "Guest E"
+                ],
+                "orientation": "V",
+                "center_m": [
+                  14,
+                  4.0
+                ],
+                "width_m": 1.2
+              },
+              {
+                "rooms": [
+                  "Guest F",
+                  "Passage/stairs"
+                ],
+                "orientation": "V",
+                "center_m": [
+                  10,
+                  11.0
+                ],
+                "width_m": 1.2
+              },
+              {
+                "rooms": [
+                  "Guest G",
+                  "Passage/stairs"
+                ],
+                "orientation": "V",
+                "center_m": [
+                  14,
+                  11.0
+                ],
+                "width_m": 1.2
+              },
+              {
+                "rooms": [
+                  "Guest C",
+                  "Passage/stairs"
+                ],
+                "orientation": "V",
+                "center_m": [
+                  10,
+                  17.0
+                ],
+                "width_m": 1.2
+              },
+              {
+                "rooms": [
+                  "Wash/store",
+                  "Passage/stairs"
+                ],
+                "orientation": "V",
+                "center_m": [
+                  14,
+                  17.0
+                ],
+                "width_m": 1.2
+              }
+            ],
+            "circulation_connected": true
+          }
+        ],
+        "front_elevation": {
+          "wall_height_m": 6.4,
+          "ridge_height_m": 11.995691897859984,
+          "window_bays": 4,
+          "entry_width_m": 2.4
+        },
+        "settlement": "EXT-03",
+        "module": "MOD-06",
+        "center_m": [
+          50,
+          100,
+          0
+        ],
+        "rotation_deg": 0,
+        "materials": "plaster / timber",
+        "motif": "deep public arcade",
+        "state": "normal"
+      },
+      "floor": {
+        "level": 1,
+        "z_m": 3.2,
+        "rooms": [
+          {
+            "name": "Guest D",
+            "x": 0,
+            "y": 0,
+            "w": 10,
+            "d": 8
+          },
+          {
+            "name": "Guest E",
+            "x": 14,
+            "y": 0,
+            "w": 10,
+            "d": 8
+          },
+          {
+            "name": "Passage/stairs",
+            "x": 10,
+            "y": 0,
+            "w": 4,
+            "d": 20
+          },
+          {
+            "name": "Guest F",
+            "x": 0,
+            "y": 8,
+            "w": 10,
+            "d": 6
+          },
+          {
+            "name": "Guest G",
+            "x": 14,
+            "y": 8,
+            "w": 10,
+            "d": 6
+          },
+          {
+            "name": "Guest C",
+            "x": 0,
+            "y": 14,
+            "w": 10,
+            "d": 6
+          },
+          {
+            "name": "Wash/store",
+            "x": 14,
+            "y": 14,
+            "w": 10,
+            "d": 6
+          }
+        ],
+        "internal_doors": [
+          {
+            "rooms": [
+              "Passage/stairs",
+              "Guest D"
+            ],
+            "orientation": "V",
+            "center_m": [
+              10,
+              4.0
+            ],
+            "width_m": 1.2
+          },
+          {
+            "rooms": [
+              "Passage/stairs",
+              "Guest E"
+            ],
+            "orientation": "V",
+            "center_m": [
+              14,
+              4.0
+            ],
+            "width_m": 1.2
+          },
+          {
+            "rooms": [
+              "Guest F",
+              "Passage/stairs"
+            ],
+            "orientation": "V",
+            "center_m": [
+              10,
+              11.0
+            ],
+            "width_m": 1.2
+          },
+          {
+            "rooms": [
+              "Guest G",
+              "Passage/stairs"
+            ],
+            "orientation": "V",
+            "center_m": [
+              14,
+              11.0
+            ],
+            "width_m": 1.2
+          },
+          {
+            "rooms": [
+              "Guest C",
+              "Passage/stairs"
+            ],
+            "orientation": "V",
+            "center_m": [
+              10,
+              17.0
+            ],
+            "width_m": 1.2
+          },
+          {
+            "rooms": [
+              "Wash/store",
+              "Passage/stairs"
+            ],
+            "orientation": "V",
+            "center_m": [
+              14,
+              17.0
+            ],
+            "width_m": 1.2
+          }
+        ],
+        "circulation_connected": true
+      },
+      "features": [
+        {
+          "id": "F01",
+          "name": "Document table and chair",
+          "room": "Guest E",
+          "box": [
+            14.6,
+            0.6,
+            2.8,
+            0.9
+          ],
+          "height_m": 0.8,
+          "placement": "portable furniture; fixed room geometry unchanged"
+        },
+        {
+          "id": "F02",
+          "name": "Portable relay repair bench",
+          "room": "Guest E",
+          "box": [
+            14.6,
+            6.5,
+            2.8,
+            0.9
+          ],
+          "height_m": 0.8,
+          "placement": "portable furniture; fixed room geometry unchanged"
+        },
+        {
+          "id": "F03",
+          "name": "Folded guest cot",
+          "room": "Guest E",
+          "box": [
+            20.6,
+            0.6,
+            2.8,
+            0.9
+          ],
+          "height_m": 0.8,
+          "placement": "portable furniture; fixed room geometry unchanged"
+        },
+        {
+          "id": "F04",
+          "name": "Three travel-bag rack",
+          "room": "Guest E",
+          "box": [
+            20.6,
+            6.5,
+            2.8,
+            0.9
+          ],
+          "height_m": 1.6,
+          "placement": "portable furniture; fixed room geometry unchanged"
+        },
+        {
+          "id": "F05",
+          "name": "Sleeping cot",
+          "room": "Guest D",
+          "box": [
+            0.6,
+            0.6,
+            2.8,
+            0.9
+          ],
+          "height_m": 0.8,
+          "placement": "portable furniture; fixed room geometry unchanged"
+        },
+        {
+          "id": "F06",
+          "name": "Guest storage chest",
+          "room": "Guest D",
+          "box": [
+            0.6,
+            6.5,
+            2.8,
+            0.9
+          ],
+          "height_m": 1.6,
+          "placement": "portable furniture; fixed room geometry unchanged"
+        },
+        {
+          "id": "F07",
+          "name": "Sleeping cot",
+          "room": "Guest F",
+          "box": [
+            0.6,
+            8.6,
+            2.8,
+            0.9
+          ],
+          "height_m": 0.8,
+          "placement": "portable furniture; fixed room geometry unchanged"
+        },
+        {
+          "id": "F08",
+          "name": "Guest storage chest",
+          "room": "Guest F",
+          "box": [
+            0.6,
+            12.5,
+            2.8,
+            0.9
+          ],
+          "height_m": 1.6,
+          "placement": "portable furniture; fixed room geometry unchanged"
+        },
+        {
+          "id": "F09",
+          "name": "Sleeping cot",
+          "room": "Guest G",
+          "box": [
+            14.6,
+            8.6,
+            2.8,
+            0.9
+          ],
+          "height_m": 0.8,
+          "placement": "portable furniture; fixed room geometry unchanged"
+        },
+        {
+          "id": "F10",
+          "name": "Guest storage chest",
+          "room": "Guest G",
+          "box": [
+            14.6,
+            12.5,
+            2.8,
+            0.9
+          ],
+          "height_m": 1.6,
+          "placement": "portable furniture; fixed room geometry unchanged"
+        },
+        {
+          "id": "F11",
+          "name": "Sleeping cot",
+          "room": "Guest C",
+          "box": [
+            0.6,
+            14.6,
+            2.8,
+            0.9
+          ],
+          "height_m": 0.8,
+          "placement": "portable furniture; fixed room geometry unchanged"
+        },
+        {
+          "id": "F12",
+          "name": "Guest storage chest",
+          "room": "Guest C",
+          "box": [
+            0.6,
+            18.5,
+            2.8,
+            0.9
+          ],
+          "height_m": 1.6,
+          "placement": "portable furniture; fixed room geometry unchanged"
+        },
+        {
+          "id": "F13",
+          "name": "Wash cabinet",
+          "room": "Wash/store",
+          "box": [
+            14.6,
+            14.6,
+            2.8,
+            0.9
+          ],
+          "height_m": 1.6,
+          "placement": "portable furniture; fixed room geometry unchanged"
+        },
+        {
+          "id": "F14",
+          "name": "Clean linen rack",
+          "room": "Wash/store",
+          "box": [
+            14.6,
+            18.5,
+            2.8,
+            0.9
+          ],
+          "height_m": 1.6,
+          "placement": "portable furniture; fixed room geometry unchanged"
+        }
+      ],
+      "art": {
+        "file": "THREATS-01.png",
+        "grid": [
+          2,
+          2
+        ],
+        "column": 1,
+        "row": 0
+      },
+      "origin": "Southwest building corner; metres. Existing building center is settlement-local.",
+      "detail_authority": "Normal-state furniture is new. Inherited building placement, footprint, rooms, doors and levels are unchanged."
+    },
+    {
+      "id": "EXT-08-B03",
+      "name": "Salt Crown Counting House",
+      "type": "building",
+      "level": 0,
+      "focus_room": "Public reading",
+      "ownership": "Kavar’s accounts business; not owner of every public well.",
+      "history": "The counting house gained standing by making water claims easier to compare. Public counters and carefully maintained measures still perform useful work. Kavar exploited that trust by treating his certificate as the necessary condition of access and concealing the decision to keep a competing pump closed.",
+      "daily_life": "Claimants wait in the public reading room. Dispatch staff compare deliveries with accounts. Original files and private customer information remain in distinct archive rooms; a claim of wrongdoing does not turn every personal record into a public exhibit. No machinery here can switch off the desert’s wells.",
+      "dramatic_use": "A polished measure can be honest while the account beside it is false. The scene turns when a service witness describes a repair that the dated record says never happened. Even after that proof, Maela must explain a genuine limit on extraction.",
+      "base_instance": {
+        "id": "EXT-08-B03",
+        "name": "Salt Crown Counting House",
+        "settlement": "EXT-08",
+        "module": "MOD-10",
+        "center_m": [
+          120,
+          0,
+          0
+        ],
+        "rotation_deg": 0,
+        "width_m": 24,
+        "depth_m": 18,
+        "levels": 2,
+        "roof": "pale sandstone",
+        "materials": "sandstone / turquoise shutters",
+        "motif": "wind tower and shaded court",
+        "role": "Salt Crown Counting House",
+        "state": "normal",
+        "rooms": [
+          {
+            "name": "Public reading",
+            "x": 0,
+            "y": 0,
+            "w": 10,
+            "d": 8
+          },
+          {
+            "name": "Dispatch",
+            "x": 14,
+            "y": 0,
+            "w": 10,
+            "d": 8
+          },
+          {
+            "name": "Passage/stairs",
+            "x": 10,
+            "y": 0,
+            "w": 4,
+            "d": 18
+          },
+          {
+            "name": "Archive A",
+            "x": 0,
+            "y": 8,
+            "w": 10,
+            "d": 10
+          },
+          {
+            "name": "Archive B",
+            "x": 14,
+            "y": 8,
+            "w": 10,
+            "d": 10
+          }
+        ],
+        "entry": {
+          "side": "S",
+          "offset_m": 0,
+          "width_m": 2.4
+        },
+        "secondary_exit": {
+          "side": "N",
+          "offset_m": 0,
+          "width_m": 1.8
+        },
+        "wall_m": 0.25,
+        "floor_height_m": 3.2,
+        "notes": "Upper floor repeats controlled archive rooms. Public records and private records have distinct permissions.",
+        "special": "Use the room allocations shown; movable furnishings may vary without shifting walls, doors or stairs.",
+        "floors": [
+          {
+            "level": 0,
+            "z_m": 0.0,
+            "rooms": [
+              {
+                "name": "Public reading",
+                "x": 0,
+                "y": 0,
+                "w": 10,
+                "d": 8
+              },
+              {
+                "name": "Dispatch",
+                "x": 14,
+                "y": 0,
+                "w": 10,
+                "d": 8
+              },
+              {
+                "name": "Passage/stairs",
+                "x": 10,
+                "y": 0,
+                "w": 4,
+                "d": 18
+              },
+              {
+                "name": "Archive A",
+                "x": 0,
+                "y": 8,
+                "w": 10,
+                "d": 10
+              },
+              {
+                "name": "Archive B",
+                "x": 14,
+                "y": 8,
+                "w": 10,
+                "d": 10
+              }
+            ],
+            "internal_doors": [
+              {
+                "rooms": [
+                  "Passage/stairs",
+                  "Public reading"
+                ],
+                "orientation": "V",
+                "center_m": [
+                  10,
+                  4.0
+                ],
+                "width_m": 1.2
+              },
+              {
+                "rooms": [
+                  "Passage/stairs",
+                  "Dispatch"
+                ],
+                "orientation": "V",
+                "center_m": [
+                  14,
+                  4.0
+                ],
+                "width_m": 1.2
+              },
+              {
+                "rooms": [
+                  "Archive A",
+                  "Passage/stairs"
+                ],
+                "orientation": "V",
+                "center_m": [
+                  10,
+                  13.0
+                ],
+                "width_m": 1.2
+              },
+              {
+                "rooms": [
+                  "Archive B",
+                  "Passage/stairs"
+                ],
+                "orientation": "V",
+                "center_m": [
+                  14,
+                  13.0
+                ],
+                "width_m": 1.2
+              }
+            ],
+            "circulation_connected": true
+          },
+          {
+            "level": 1,
+            "z_m": 3.2,
+            "rooms": [
+              {
+                "name": "Catalog A",
+                "x": 0,
+                "y": 0,
+                "w": 10,
+                "d": 8
+              },
+              {
+                "name": "Catalog B",
+                "x": 14,
+                "y": 0,
+                "w": 10,
+                "d": 8
+              },
+              {
+                "name": "Passage/stairs",
+                "x": 10,
+                "y": 0,
+                "w": 4,
+                "d": 18
+              },
+              {
+                "name": "Archive A",
+                "x": 0,
+                "y": 8,
+                "w": 10,
+                "d": 10
+              },
+              {
+                "name": "Archive B",
+                "x": 14,
+                "y": 8,
+                "w": 10,
+                "d": 10
+              }
+            ],
+            "internal_doors": [
+              {
+                "rooms": [
+                  "Passage/stairs",
+                  "Catalog A"
+                ],
+                "orientation": "V",
+                "center_m": [
+                  10,
+                  4.0
+                ],
+                "width_m": 1.2
+              },
+              {
+                "rooms": [
+                  "Passage/stairs",
+                  "Catalog B"
+                ],
+                "orientation": "V",
+                "center_m": [
+                  14,
+                  4.0
+                ],
+                "width_m": 1.2
+              },
+              {
+                "rooms": [
+                  "Archive A",
+                  "Passage/stairs"
+                ],
+                "orientation": "V",
+                "center_m": [
+                  10,
+                  13.0
+                ],
+                "width_m": 1.2
+              },
+              {
+                "rooms": [
+                  "Archive B",
+                  "Passage/stairs"
+                ],
+                "orientation": "V",
+                "center_m": [
+                  14,
+                  13.0
+                ],
+                "width_m": 1.2
+              }
+            ],
+            "circulation_connected": true
+          }
+        ],
+        "front_elevation": {
+          "wall_height_m": 6.4,
+          "ridge_height_m": 11.995691897859984,
+          "window_bays": 4,
+          "entry_width_m": 2.4
+        }
+      },
+      "geometry": {
+        "id": "EXT-08-B03",
+        "name": "Salt Crown Counting House",
+        "settlement": "EXT-08",
+        "module": "MOD-10",
+        "center_m": [
+          120,
+          0,
+          0
+        ],
+        "rotation_deg": 0,
+        "width_m": 24,
+        "depth_m": 18,
+        "levels": 2,
+        "roof": "pale sandstone",
+        "materials": "sandstone / turquoise shutters",
+        "motif": "wind tower and shaded court",
+        "role": "Salt Crown Counting House",
+        "state": "normal",
+        "rooms": [
+          {
+            "name": "Public reading",
+            "x": 0,
+            "y": 0,
+            "w": 10,
+            "d": 8
+          },
+          {
+            "name": "Dispatch",
+            "x": 14,
+            "y": 0,
+            "w": 10,
+            "d": 8
+          },
+          {
+            "name": "Passage/stairs",
+            "x": 10,
+            "y": 0,
+            "w": 4,
+            "d": 18
+          },
+          {
+            "name": "Archive A",
+            "x": 0,
+            "y": 8,
+            "w": 10,
+            "d": 10
+          },
+          {
+            "name": "Archive B",
+            "x": 14,
+            "y": 8,
+            "w": 10,
+            "d": 10
+          }
+        ],
+        "entry": {
+          "side": "S",
+          "offset_m": 0,
+          "width_m": 2.4
+        },
+        "secondary_exit": {
+          "side": "N",
+          "offset_m": 0,
+          "width_m": 1.8
+        },
+        "wall_m": 0.25,
+        "floor_height_m": 3.2,
+        "notes": "Upper floor repeats controlled archive rooms. Public records and private records have distinct permissions.",
+        "special": "Use the room allocations shown; movable furnishings may vary without shifting walls, doors or stairs.",
+        "floors": [
+          {
+            "level": 0,
+            "z_m": 0.0,
+            "rooms": [
+              {
+                "name": "Public reading",
+                "x": 0,
+                "y": 0,
+                "w": 10,
+                "d": 8
+              },
+              {
+                "name": "Dispatch",
+                "x": 14,
+                "y": 0,
+                "w": 10,
+                "d": 8
+              },
+              {
+                "name": "Passage/stairs",
+                "x": 10,
+                "y": 0,
+                "w": 4,
+                "d": 18
+              },
+              {
+                "name": "Archive A",
+                "x": 0,
+                "y": 8,
+                "w": 10,
+                "d": 10
+              },
+              {
+                "name": "Archive B",
+                "x": 14,
+                "y": 8,
+                "w": 10,
+                "d": 10
+              }
+            ],
+            "internal_doors": [
+              {
+                "rooms": [
+                  "Passage/stairs",
+                  "Public reading"
+                ],
+                "orientation": "V",
+                "center_m": [
+                  10,
+                  4.0
+                ],
+                "width_m": 1.2
+              },
+              {
+                "rooms": [
+                  "Passage/stairs",
+                  "Dispatch"
+                ],
+                "orientation": "V",
+                "center_m": [
+                  14,
+                  4.0
+                ],
+                "width_m": 1.2
+              },
+              {
+                "rooms": [
+                  "Archive A",
+                  "Passage/stairs"
+                ],
+                "orientation": "V",
+                "center_m": [
+                  10,
+                  13.0
+                ],
+                "width_m": 1.2
+              },
+              {
+                "rooms": [
+                  "Archive B",
+                  "Passage/stairs"
+                ],
+                "orientation": "V",
+                "center_m": [
+                  14,
+                  13.0
+                ],
+                "width_m": 1.2
+              }
+            ],
+            "circulation_connected": true
+          },
+          {
+            "level": 1,
+            "z_m": 3.2,
+            "rooms": [
+              {
+                "name": "Catalog A",
+                "x": 0,
+                "y": 0,
+                "w": 10,
+                "d": 8
+              },
+              {
+                "name": "Catalog B",
+                "x": 14,
+                "y": 0,
+                "w": 10,
+                "d": 8
+              },
+              {
+                "name": "Passage/stairs",
+                "x": 10,
+                "y": 0,
+                "w": 4,
+                "d": 18
+              },
+              {
+                "name": "Archive A",
+                "x": 0,
+                "y": 8,
+                "w": 10,
+                "d": 10
+              },
+              {
+                "name": "Archive B",
+                "x": 14,
+                "y": 8,
+                "w": 10,
+                "d": 10
+              }
+            ],
+            "internal_doors": [
+              {
+                "rooms": [
+                  "Passage/stairs",
+                  "Catalog A"
+                ],
+                "orientation": "V",
+                "center_m": [
+                  10,
+                  4.0
+                ],
+                "width_m": 1.2
+              },
+              {
+                "rooms": [
+                  "Passage/stairs",
+                  "Catalog B"
+                ],
+                "orientation": "V",
+                "center_m": [
+                  14,
+                  4.0
+                ],
+                "width_m": 1.2
+              },
+              {
+                "rooms": [
+                  "Archive A",
+                  "Passage/stairs"
+                ],
+                "orientation": "V",
+                "center_m": [
+                  10,
+                  13.0
+                ],
+                "width_m": 1.2
+              },
+              {
+                "rooms": [
+                  "Archive B",
+                  "Passage/stairs"
+                ],
+                "orientation": "V",
+                "center_m": [
+                  14,
+                  13.0
+                ],
+                "width_m": 1.2
+              }
+            ],
+            "circulation_connected": true
+          }
+        ],
+        "front_elevation": {
+          "wall_height_m": 6.4,
+          "ridge_height_m": 11.995691897859984,
+          "window_bays": 4,
+          "entry_width_m": 2.4
+        }
+      },
+      "floor": {
+        "level": 0,
+        "z_m": 0.0,
+        "rooms": [
+          {
+            "name": "Public reading",
+            "x": 0,
+            "y": 0,
+            "w": 10,
+            "d": 8
+          },
+          {
+            "name": "Dispatch",
+            "x": 14,
+            "y": 0,
+            "w": 10,
+            "d": 8
+          },
+          {
+            "name": "Passage/stairs",
+            "x": 10,
+            "y": 0,
+            "w": 4,
+            "d": 18
+          },
+          {
+            "name": "Archive A",
+            "x": 0,
+            "y": 8,
+            "w": 10,
+            "d": 10
+          },
+          {
+            "name": "Archive B",
+            "x": 14,
+            "y": 8,
+            "w": 10,
+            "d": 10
+          }
+        ],
+        "internal_doors": [
+          {
+            "rooms": [
+              "Passage/stairs",
+              "Public reading"
+            ],
+            "orientation": "V",
+            "center_m": [
+              10,
+              4.0
+            ],
+            "width_m": 1.2
+          },
+          {
+            "rooms": [
+              "Passage/stairs",
+              "Dispatch"
+            ],
+            "orientation": "V",
+            "center_m": [
+              14,
+              4.0
+            ],
+            "width_m": 1.2
+          },
+          {
+            "rooms": [
+              "Archive A",
+              "Passage/stairs"
+            ],
+            "orientation": "V",
+            "center_m": [
+              10,
+              13.0
+            ],
+            "width_m": 1.2
+          },
+          {
+            "rooms": [
+              "Archive B",
+              "Passage/stairs"
+            ],
+            "orientation": "V",
+            "center_m": [
+              14,
+              13.0
+            ],
+            "width_m": 1.2
+          }
+        ],
+        "circulation_connected": true
+      },
+      "features": [
+        {
+          "id": "F01",
+          "name": "Certificate comparison desk",
+          "room": "Public reading",
+          "box": [
+            0.6,
+            0.6,
+            2.8,
+            0.9
+          ],
+          "height_m": 0.8,
+          "placement": "portable furniture; fixed room geometry unchanged"
+        },
+        {
+          "id": "F02",
+          "name": "Public measure display",
+          "room": "Public reading",
+          "box": [
+            0.6,
+            6.5,
+            2.8,
+            0.9
+          ],
+          "height_m": 1.6,
+          "placement": "portable furniture; fixed room geometry unchanged"
+        },
+        {
+          "id": "F03",
+          "name": "Waiting seats",
+          "room": "Public reading",
+          "box": [
+            6.6000000000000005,
+            0.6,
+            2.8,
+            0.9
+          ],
+          "height_m": 0.8,
+          "placement": "portable furniture; fixed room geometry unchanged"
+        },
+        {
+          "id": "F04",
+          "name": "Posted allocation board",
+          "room": "Public reading",
+          "box": [
+            6.6000000000000005,
+            6.5,
+            2.8,
+            0.9
+          ],
+          "height_m": 1.6,
+          "placement": "portable furniture; fixed room geometry unchanged"
+        },
+        {
+          "id": "F05",
+          "name": "Delivery desk",
+          "room": "Dispatch",
+          "box": [
+            14.6,
+            0.6,
+            2.8,
+            0.9
+          ],
+          "height_m": 0.8,
+          "placement": "portable furniture; fixed room geometry unchanged"
+        },
+        {
+          "id": "F06",
+          "name": "Container tally rack",
+          "room": "Dispatch",
+          "box": [
+            14.6,
+            6.5,
+            2.8,
+            0.9
+          ],
+          "height_m": 1.6,
+          "placement": "portable furniture; fixed room geometry unchanged"
+        },
+        {
+          "id": "F07",
+          "name": "Service record cabinet",
+          "room": "Archive A",
+          "box": [
+            0.6,
+            8.6,
+            2.8,
+            0.9
+          ],
+          "height_m": 1.6,
+          "placement": "portable furniture; fixed room geometry unchanged"
+        },
+        {
+          "id": "F08",
+          "name": "Inspection comparison table",
+          "room": "Archive A",
+          "box": [
+            0.6,
+            16.5,
+            2.8,
+            0.9
+          ],
+          "height_m": 0.8,
+          "placement": "portable furniture; fixed room geometry unchanged"
+        },
+        {
+          "id": "F09",
+          "name": "Private account cabinet",
+          "room": "Archive B",
+          "box": [
+            14.6,
+            8.6,
+            2.8,
+            0.9
+          ],
+          "height_m": 1.6,
+          "placement": "portable furniture; fixed room geometry unchanged"
+        },
+        {
+          "id": "F10",
+          "name": "Supervised reading desk",
+          "room": "Archive B",
+          "box": [
+            14.6,
+            16.5,
+            2.8,
+            0.9
+          ],
+          "height_m": 0.8,
+          "placement": "portable furniture; fixed room geometry unchanged"
+        }
+      ],
+      "art": {
+        "file": "THREATS-01.png",
+        "grid": [
+          2,
+          2
+        ],
+        "column": 0,
+        "row": 1
+      },
+      "origin": "Southwest building corner; metres. Existing building center is settlement-local.",
+      "detail_authority": "Normal-state furniture is new. Inherited building placement, footprint, rooms, doors and levels are unchanged."
+    },
+    {
+      "id": "EXT-11-B02",
+      "name": "Echo Archive Council Room",
+      "type": "building",
+      "level": 1,
+      "focus_room": "Catalog A",
+      "ownership": "Still Bell institution; divided between disclosure and concentrated authority.",
+      "history": "The council uses upper Catalog A for small hearings around movable furniture. This does not create a new wing or change the public ground floor developed in Living Places. The room holds records made by several generations, including people whose knowledge was careful and whose decisions were still self-serving.",
+      "daily_life": "Archivists bring only the required copies to a hearing. Insulated sample cases remain closed except during supervised examination. Most disagreement is about evidence and authority, not a contest of magical powers. A modern alteration can sit beside a reliable old observation without contaminating the entire collection.",
+      "dramatic_use": "Ysolde places the two versions side by side and discloses her own family’s benefit from closure. Ossa’s strongest response is a correct account of the actual danger. The room must accommodate both admissions at once.",
+      "base_instance": {
+        "id": "EXT-11-B02",
+        "name": "Echo Archive",
+        "settlement": "EXT-11",
+        "module": "MOD-10",
+        "center_m": [
+          0,
+          0,
+          0
+        ],
+        "rotation_deg": 0,
+        "width_m": 24,
+        "depth_m": 18,
+        "levels": 2,
+        "roof": "copper insulated",
+        "materials": "stone / insulated timber",
+        "motif": "steam porch and ice light baffle",
+        "role": "Echo Archive",
+        "state": "normal",
+        "rooms": [
+          {
+            "name": "Public reading",
+            "x": 0,
+            "y": 0,
+            "w": 10,
+            "d": 8
+          },
+          {
+            "name": "Dispatch",
+            "x": 14,
+            "y": 0,
+            "w": 10,
+            "d": 8
+          },
+          {
+            "name": "Passage/stairs",
+            "x": 10,
+            "y": 0,
+            "w": 4,
+            "d": 18
+          },
+          {
+            "name": "Archive A",
+            "x": 0,
+            "y": 8,
+            "w": 10,
+            "d": 10
+          },
+          {
+            "name": "Archive B",
+            "x": 14,
+            "y": 8,
+            "w": 10,
+            "d": 10
+          }
+        ],
+        "entry": {
+          "side": "S",
+          "offset_m": 0,
+          "width_m": 2.4
+        },
+        "secondary_exit": {
+          "side": "N",
+          "offset_m": 0,
+          "width_m": 1.8
+        },
+        "wall_m": 0.25,
+        "floor_height_m": 3.2,
+        "notes": "Upper floor repeats controlled archive rooms. Public records and private records have distinct permissions.",
+        "special": "Use the room allocations shown; movable furnishings may vary without shifting walls, doors or stairs.",
+        "floors": [
+          {
+            "level": 0,
+            "z_m": 0.0,
+            "rooms": [
+              {
+                "name": "Public reading",
+                "x": 0,
+                "y": 0,
+                "w": 10,
+                "d": 8
+              },
+              {
+                "name": "Dispatch",
+                "x": 14,
+                "y": 0,
+                "w": 10,
+                "d": 8
+              },
+              {
+                "name": "Passage/stairs",
+                "x": 10,
+                "y": 0,
+                "w": 4,
+                "d": 18
+              },
+              {
+                "name": "Archive A",
+                "x": 0,
+                "y": 8,
+                "w": 10,
+                "d": 10
+              },
+              {
+                "name": "Archive B",
+                "x": 14,
+                "y": 8,
+                "w": 10,
+                "d": 10
+              }
+            ],
+            "internal_doors": [
+              {
+                "rooms": [
+                  "Passage/stairs",
+                  "Public reading"
+                ],
+                "orientation": "V",
+                "center_m": [
+                  10,
+                  4.0
+                ],
+                "width_m": 1.2
+              },
+              {
+                "rooms": [
+                  "Passage/stairs",
+                  "Dispatch"
+                ],
+                "orientation": "V",
+                "center_m": [
+                  14,
+                  4.0
+                ],
+                "width_m": 1.2
+              },
+              {
+                "rooms": [
+                  "Archive A",
+                  "Passage/stairs"
+                ],
+                "orientation": "V",
+                "center_m": [
+                  10,
+                  13.0
+                ],
+                "width_m": 1.2
+              },
+              {
+                "rooms": [
+                  "Archive B",
+                  "Passage/stairs"
+                ],
+                "orientation": "V",
+                "center_m": [
+                  14,
+                  13.0
+                ],
+                "width_m": 1.2
+              }
+            ],
+            "circulation_connected": true
+          },
+          {
+            "level": 1,
+            "z_m": 3.2,
+            "rooms": [
+              {
+                "name": "Catalog A",
+                "x": 0,
+                "y": 0,
+                "w": 10,
+                "d": 8
+              },
+              {
+                "name": "Catalog B",
+                "x": 14,
+                "y": 0,
+                "w": 10,
+                "d": 8
+              },
+              {
+                "name": "Passage/stairs",
+                "x": 10,
+                "y": 0,
+                "w": 4,
+                "d": 18
+              },
+              {
+                "name": "Archive A",
+                "x": 0,
+                "y": 8,
+                "w": 10,
+                "d": 10
+              },
+              {
+                "name": "Archive B",
+                "x": 14,
+                "y": 8,
+                "w": 10,
+                "d": 10
+              }
+            ],
+            "internal_doors": [
+              {
+                "rooms": [
+                  "Passage/stairs",
+                  "Catalog A"
+                ],
+                "orientation": "V",
+                "center_m": [
+                  10,
+                  4.0
+                ],
+                "width_m": 1.2
+              },
+              {
+                "rooms": [
+                  "Passage/stairs",
+                  "Catalog B"
+                ],
+                "orientation": "V",
+                "center_m": [
+                  14,
+                  4.0
+                ],
+                "width_m": 1.2
+              },
+              {
+                "rooms": [
+                  "Archive A",
+                  "Passage/stairs"
+                ],
+                "orientation": "V",
+                "center_m": [
+                  10,
+                  13.0
+                ],
+                "width_m": 1.2
+              },
+              {
+                "rooms": [
+                  "Archive B",
+                  "Passage/stairs"
+                ],
+                "orientation": "V",
+                "center_m": [
+                  14,
+                  13.0
+                ],
+                "width_m": 1.2
+              }
+            ],
+            "circulation_connected": true
+          }
+        ],
+        "front_elevation": {
+          "wall_height_m": 6.4,
+          "ridge_height_m": 11.995691897859984,
+          "window_bays": 4,
+          "entry_width_m": 2.4
+        }
+      },
+      "geometry": {
+        "id": "EXT-11-B02",
+        "name": "Echo Archive",
+        "settlement": "EXT-11",
+        "module": "MOD-10",
+        "center_m": [
+          0,
+          0,
+          0
+        ],
+        "rotation_deg": 0,
+        "width_m": 24,
+        "depth_m": 18,
+        "levels": 2,
+        "roof": "copper insulated",
+        "materials": "stone / insulated timber",
+        "motif": "steam porch and ice light baffle",
+        "role": "Echo Archive",
+        "state": "normal",
+        "rooms": [
+          {
+            "name": "Public reading",
+            "x": 0,
+            "y": 0,
+            "w": 10,
+            "d": 8
+          },
+          {
+            "name": "Dispatch",
+            "x": 14,
+            "y": 0,
+            "w": 10,
+            "d": 8
+          },
+          {
+            "name": "Passage/stairs",
+            "x": 10,
+            "y": 0,
+            "w": 4,
+            "d": 18
+          },
+          {
+            "name": "Archive A",
+            "x": 0,
+            "y": 8,
+            "w": 10,
+            "d": 10
+          },
+          {
+            "name": "Archive B",
+            "x": 14,
+            "y": 8,
+            "w": 10,
+            "d": 10
+          }
+        ],
+        "entry": {
+          "side": "S",
+          "offset_m": 0,
+          "width_m": 2.4
+        },
+        "secondary_exit": {
+          "side": "N",
+          "offset_m": 0,
+          "width_m": 1.8
+        },
+        "wall_m": 0.25,
+        "floor_height_m": 3.2,
+        "notes": "Upper floor repeats controlled archive rooms. Public records and private records have distinct permissions.",
+        "special": "Use the room allocations shown; movable furnishings may vary without shifting walls, doors or stairs.",
+        "floors": [
+          {
+            "level": 0,
+            "z_m": 0.0,
+            "rooms": [
+              {
+                "name": "Public reading",
+                "x": 0,
+                "y": 0,
+                "w": 10,
+                "d": 8
+              },
+              {
+                "name": "Dispatch",
+                "x": 14,
+                "y": 0,
+                "w": 10,
+                "d": 8
+              },
+              {
+                "name": "Passage/stairs",
+                "x": 10,
+                "y": 0,
+                "w": 4,
+                "d": 18
+              },
+              {
+                "name": "Archive A",
+                "x": 0,
+                "y": 8,
+                "w": 10,
+                "d": 10
+              },
+              {
+                "name": "Archive B",
+                "x": 14,
+                "y": 8,
+                "w": 10,
+                "d": 10
+              }
+            ],
+            "internal_doors": [
+              {
+                "rooms": [
+                  "Passage/stairs",
+                  "Public reading"
+                ],
+                "orientation": "V",
+                "center_m": [
+                  10,
+                  4.0
+                ],
+                "width_m": 1.2
+              },
+              {
+                "rooms": [
+                  "Passage/stairs",
+                  "Dispatch"
+                ],
+                "orientation": "V",
+                "center_m": [
+                  14,
+                  4.0
+                ],
+                "width_m": 1.2
+              },
+              {
+                "rooms": [
+                  "Archive A",
+                  "Passage/stairs"
+                ],
+                "orientation": "V",
+                "center_m": [
+                  10,
+                  13.0
+                ],
+                "width_m": 1.2
+              },
+              {
+                "rooms": [
+                  "Archive B",
+                  "Passage/stairs"
+                ],
+                "orientation": "V",
+                "center_m": [
+                  14,
+                  13.0
+                ],
+                "width_m": 1.2
+              }
+            ],
+            "circulation_connected": true
+          },
+          {
+            "level": 1,
+            "z_m": 3.2,
+            "rooms": [
+              {
+                "name": "Catalog A",
+                "x": 0,
+                "y": 0,
+                "w": 10,
+                "d": 8
+              },
+              {
+                "name": "Catalog B",
+                "x": 14,
+                "y": 0,
+                "w": 10,
+                "d": 8
+              },
+              {
+                "name": "Passage/stairs",
+                "x": 10,
+                "y": 0,
+                "w": 4,
+                "d": 18
+              },
+              {
+                "name": "Archive A",
+                "x": 0,
+                "y": 8,
+                "w": 10,
+                "d": 10
+              },
+              {
+                "name": "Archive B",
+                "x": 14,
+                "y": 8,
+                "w": 10,
+                "d": 10
+              }
+            ],
+            "internal_doors": [
+              {
+                "rooms": [
+                  "Passage/stairs",
+                  "Catalog A"
+                ],
+                "orientation": "V",
+                "center_m": [
+                  10,
+                  4.0
+                ],
+                "width_m": 1.2
+              },
+              {
+                "rooms": [
+                  "Passage/stairs",
+                  "Catalog B"
+                ],
+                "orientation": "V",
+                "center_m": [
+                  14,
+                  4.0
+                ],
+                "width_m": 1.2
+              },
+              {
+                "rooms": [
+                  "Archive A",
+                  "Passage/stairs"
+                ],
+                "orientation": "V",
+                "center_m": [
+                  10,
+                  13.0
+                ],
+                "width_m": 1.2
+              },
+              {
+                "rooms": [
+                  "Archive B",
+                  "Passage/stairs"
+                ],
+                "orientation": "V",
+                "center_m": [
+                  14,
+                  13.0
+                ],
+                "width_m": 1.2
+              }
+            ],
+            "circulation_connected": true
+          }
+        ],
+        "front_elevation": {
+          "wall_height_m": 6.4,
+          "ridge_height_m": 11.995691897859984,
+          "window_bays": 4,
+          "entry_width_m": 2.4
+        }
+      },
+      "floor": {
+        "level": 1,
+        "z_m": 3.2,
+        "rooms": [
+          {
+            "name": "Catalog A",
+            "x": 0,
+            "y": 0,
+            "w": 10,
+            "d": 8
+          },
+          {
+            "name": "Catalog B",
+            "x": 14,
+            "y": 0,
+            "w": 10,
+            "d": 8
+          },
+          {
+            "name": "Passage/stairs",
+            "x": 10,
+            "y": 0,
+            "w": 4,
+            "d": 18
+          },
+          {
+            "name": "Archive A",
+            "x": 0,
+            "y": 8,
+            "w": 10,
+            "d": 10
+          },
+          {
+            "name": "Archive B",
+            "x": 14,
+            "y": 8,
+            "w": 10,
+            "d": 10
+          }
+        ],
+        "internal_doors": [
+          {
+            "rooms": [
+              "Passage/stairs",
+              "Catalog A"
+            ],
+            "orientation": "V",
+            "center_m": [
+              10,
+              4.0
+            ],
+            "width_m": 1.2
+          },
+          {
+            "rooms": [
+              "Passage/stairs",
+              "Catalog B"
+            ],
+            "orientation": "V",
+            "center_m": [
+              14,
+              4.0
+            ],
+            "width_m": 1.2
+          },
+          {
+            "rooms": [
+              "Archive A",
+              "Passage/stairs"
+            ],
+            "orientation": "V",
+            "center_m": [
+              10,
+              13.0
+            ],
+            "width_m": 1.2
+          },
+          {
+            "rooms": [
+              "Archive B",
+              "Passage/stairs"
+            ],
+            "orientation": "V",
+            "center_m": [
+              14,
+              13.0
+            ],
+            "width_m": 1.2
+          }
+        ],
+        "circulation_connected": true
+      },
+      "features": [
+        {
+          "id": "F01",
+          "name": "Council comparison table",
+          "room": "Catalog A",
+          "box": [
+            0.6,
+            0.6,
+            2.8,
+            0.9
+          ],
+          "height_m": 0.8,
+          "placement": "portable furniture; fixed room geometry unchanged"
+        },
+        {
+          "id": "F02",
+          "name": "Original-order case",
+          "room": "Catalog A",
+          "box": [
+            0.6,
+            6.5,
+            2.8,
+            0.9
+          ],
+          "height_m": 1.6,
+          "placement": "portable furniture; fixed room geometry unchanged"
+        },
+        {
+          "id": "F03",
+          "name": "Insulated sample cabinet",
+          "room": "Catalog A",
+          "box": [
+            6.6000000000000005,
+            0.6,
+            2.8,
+            0.9
+          ],
+          "height_m": 1.6,
+          "placement": "portable furniture; fixed room geometry unchanged"
+        },
+        {
+          "id": "F04",
+          "name": "Independent report stand",
+          "room": "Catalog A",
+          "box": [
+            6.6000000000000005,
+            6.5,
+            2.8,
+            0.9
+          ],
+          "height_m": 1.6,
+          "placement": "portable furniture; fixed room geometry unchanged"
+        },
+        {
+          "id": "F05",
+          "name": "Copy desk",
+          "room": "Catalog B",
+          "box": [
+            14.6,
+            0.6,
+            2.8,
+            0.9
+          ],
+          "height_m": 0.8,
+          "placement": "portable furniture; fixed room geometry unchanged"
+        },
+        {
+          "id": "F06",
+          "name": "Catalog cabinet",
+          "room": "Catalog B",
+          "box": [
+            14.6,
+            6.5,
+            2.8,
+            0.9
+          ],
+          "height_m": 1.6,
+          "placement": "portable furniture; fixed room geometry unchanged"
+        },
+        {
+          "id": "F07",
+          "name": "Restricted record cabinet",
+          "room": "Archive A",
+          "box": [
+            0.6,
+            8.6,
+            2.8,
+            0.9
+          ],
+          "height_m": 1.6,
+          "placement": "portable furniture; fixed room geometry unchanged"
+        },
+        {
+          "id": "F08",
+          "name": "Returns cart",
+          "room": "Archive A",
+          "box": [
+            0.6,
+            16.5,
+            2.8,
+            0.9
+          ],
+          "height_m": 0.8,
+          "placement": "portable furniture; fixed room geometry unchanged"
+        },
+        {
+          "id": "F09",
+          "name": "Family record cabinet",
+          "room": "Archive B",
+          "box": [
+            14.6,
+            8.6,
+            2.8,
+            0.9
+          ],
+          "height_m": 1.6,
+          "placement": "portable furniture; fixed room geometry unchanged"
+        },
+        {
+          "id": "F10",
+          "name": "Supervised reading desk",
+          "room": "Archive B",
+          "box": [
+            14.6,
+            16.5,
+            2.8,
+            0.9
+          ],
+          "height_m": 0.8,
+          "placement": "portable furniture; fixed room geometry unchanged"
+        }
+      ],
+      "art": {
+        "file": "THREATS-01.png",
+        "grid": [
+          2,
+          2
+        ],
+        "column": 1,
+        "row": 1
+      },
+      "origin": "Southwest building corner; metres. Existing building center is settlement-local.",
+      "detail_authority": "Normal-state furniture is new. Inherited building placement, footprint, rooms, doors and levels are unchanged."
+    },
+    {
+      "id": "SITE-07",
+      "name": "Ashmouth Freight Yard",
+      "type": "site",
+      "ownership": "Riven Claw occupies a disused freight site; civilian Cinder Cuts is elsewhere.",
+      "history": "After freight was diverted, this loading terrace lost its regular traffic. It retains a refuge lodge and service approaches because those were useful before Brakka arrived. The band’s occupation turns a workplace into a coercive store without making its original builders or the neighboring population complicit.",
+      "daily_life": "Dreg keeps crates sorted by use and remembers which harness needs repair. The west approach admits wagons; the east route is a narrow foot path. A fenced gas trough stays outside the working court. Ashmaws follow heat plumes in the wider terrain; neither Brakka nor Dreg commands them.",
+      "dramatic_use": "The loading platform makes a public order visible. When Brakka demands spectacle and Dreg protects usable supplies, everyone on the floor sees the split. Escape follows the registered approaches; the shelter offers cover and rest, not a hidden passage to town.",
+      "geometry": {
+        "id": "SITE-07",
+        "name": "Ashmouth Freight Yard",
+        "width_m": 180,
+        "depth_m": 120,
+        "zones": [
+          {
+            "name": "West approach",
+            "box": [
+              -90.0,
+              -60.0,
+              39.6,
+              120
+            ]
+          },
+          {
+            "name": "Encounter field",
+            "box": [
+              -50.400000000000006,
+              -60.0,
+              100.80000000000001,
+              120
+            ]
+          },
+          {
+            "name": "East approach",
+            "box": [
+              50.400000000000006,
+              -60.0,
+              39.6,
+              120
+            ]
+          }
+        ],
+        "refuge": {
+          "module": "MOD-12",
+          "center_m": [
+            0,
+            38.4,
+            0
+          ],
+          "width_m": 20,
+          "depth_m": 16
+        },
+        "route_points_m": [
+          [
+            -90.0,
+            0,
+            0
+          ],
+          [
+            -50.400000000000006,
+            0,
+            0
+          ],
+          [
+            0,
+            -30.0,
+            0
+          ],
+          [
+            50.400000000000006,
+            0,
+            0
+          ],
+          [
+            90.0,
+            0,
+            0
+          ]
+        ],
+        "notes": "One wagon approach, one narrow foot path, fenced gas trough; both routes are mapped.",
+        "hazard": "Ashmaws follow heat plumes; gang patrols guard movable stolen freight."
+      },
+      "base_site": {
+        "id": "SITE-07",
+        "name": "Ashmouth Freight Yard",
+        "region": "REG-07",
+        "x": -142,
+        "y": -43,
+        "width_m": 180,
+        "height_m": 120,
+        "approach": "Cinder Cuts eastern spur",
+        "appearance": "Raider-controlled storage and a former loading platform; occupied civilian terraces are elsewhere.",
+        "hazard": "Ashmaws follow heat plumes; gang patrols guard movable stolen freight.",
+        "story": "Dreg refuses an order to burn supplies and splits the crew.",
+        "layout": "One wagon approach, one narrow foot path, fenced gas trough; both routes are mapped."
+      },
+      "features": [
+        {
+          "id": "T01",
+          "name": "Refuge lodge",
+          "box": [
+            -10,
+            30.4,
+            20,
+            16
+          ],
+          "kind": "refuge"
+        },
+        {
+          "id": "T02",
+          "name": "West covered freight",
+          "box": [
+            -40,
+            4,
+            18,
+            12
+          ],
+          "kind": "storage"
+        },
+        {
+          "id": "T03",
+          "name": "East covered freight",
+          "box": [
+            22,
+            4,
+            18,
+            12
+          ],
+          "kind": "storage"
+        },
+        {
+          "id": "T04",
+          "name": "Loading platform",
+          "box": [
+            -20,
+            -45,
+            40,
+            10
+          ],
+          "kind": "deck"
+        },
+        {
+          "id": "T05",
+          "name": "Fenced gas trough",
+          "box": [
+            30,
+            28,
+            32,
+            12
+          ],
+          "kind": "hazard"
+        },
+        {
+          "id": "T06",
+          "name": "Share-count table",
+          "box": [
+            -28,
+            20,
+            5,
+            3
+          ],
+          "kind": "prop"
+        },
+        {
+          "id": "T07",
+          "name": "Harness repair station",
+          "box": [
+            23,
+            20,
+            5,
+            3
+          ],
+          "kind": "prop"
+        }
+      ],
+      "routes": [
+        {
+          "name": "Wagon approach / 6 m",
+          "width_m": 6,
+          "points": [
+            [
+              -90,
+              0
+            ],
+            [
+              -50.4,
+              0
+            ],
+            [
+              0,
+              -30
+            ]
+          ],
+          "mode": "wagon"
+        },
+        {
+          "name": "Foot approach / 1.5 m",
+          "width_m": 1.5,
+          "points": [
+            [
+              90,
+              0
+            ],
+            [
+              50.4,
+              0
+            ],
+            [
+              0,
+              -30
+            ]
+          ],
+          "mode": "foot"
+        },
+        {
+          "name": "Shelter connection / 3 m",
+          "width_m": 3,
+          "points": [
+            [
+              0,
+              -30
+            ],
+            [
+              0,
+              30.4
+            ]
+          ],
+          "mode": "foot"
+        }
+      ],
+      "art": {
+        "file": "THREATS-02.png",
+        "grid": [
+          1,
+          2
+        ],
+        "column": 0,
+        "row": 0,
+        "crop_px": [
+          0,
+          45,
+          1536,
+          452
+        ]
+      },
+      "origin": "Site center (0,0); metres, x east, y north. Elevation is relative to the occupied deck or terrace, not sea level.",
+      "detail_authority": "Fixed 3.0 site bounds, regional coordinates and refuge footprints retained. New measured feature and route layers refine the generic encounter field."
+    },
+    {
+      "id": "SITE-05",
+      "name": "Blackwake Mooring",
+      "type": "site",
+      "ownership": "Abandoned mooring occupied by Serik’s three-craft crew.",
+      "history": "The platform was built for regulated cargo transfer within a local liftstone field. Its counterweights and load rules are older than Serik’s claim to the place. His occupation gives him a berth and a stage; it does not give him ownership of the air routes or control over the field.",
+      "daily_life": "One main winch deck feeds three docking arms. The rear refuge lodge uses the existing two shelter bays as separate refuge cells. A short connector links it to the deck. Each craft has a finite load envelope and must be counted in the scene state: berthed, arriving or away. Three small craft cannot become an unseen reserve fleet.",
+      "dramatic_use": "Eri recognizes a routine loading limit that Serik is trying to conceal. The heroes free people by making a viable departure possible, not by cutting every support and hoping the platform floats anyway. Captives and cargo compete for capacity; useful evidence may have to be left behind.",
+      "geometry": {
+        "id": "SITE-05",
+        "name": "Blackwake Mooring",
+        "width_m": 160,
+        "depth_m": 100,
+        "zones": [
+          {
+            "name": "West approach",
+            "box": [
+              -80.0,
+              -50.0,
+              35.2,
+              100
+            ]
+          },
+          {
+            "name": "Encounter field",
+            "box": [
+              -44.800000000000004,
+              -50.0,
+              89.60000000000001,
+              100
+            ]
+          },
+          {
+            "name": "East approach",
+            "box": [
+              44.800000000000004,
+              -50.0,
+              35.2,
+              100
+            ]
+          }
+        ],
+        "refuge": {
+          "module": "MOD-12",
+          "center_m": [
+            0,
+            32.0,
+            0
+          ],
+          "width_m": 20,
+          "depth_m": 16
+        },
+        "route_points_m": [
+          [
+            -80.0,
+            0,
+            0
+          ],
+          [
+            -44.800000000000004,
+            0,
+            0
+          ],
+          [
+            0,
+            -25.0,
+            0
+          ],
+          [
+            44.800000000000004,
+            0,
+            0
+          ],
+          [
+            80.0,
+            0,
+            0
+          ]
+        ],
+        "notes": "Three docking arms, two refuge cells, exposed winch deck; no infinite aircraft hangar.",
+        "hazard": "Wind shear, overloaded spans and hostage coercion."
+      },
+      "base_site": {
+        "id": "SITE-05",
+        "name": "Blackwake Mooring",
+        "region": "REG-05",
+        "x": 250,
+        "y": 145,
+        "width_m": 160,
+        "height_m": 100,
+        "approach": "Aurel Quay eastern flight lane",
+        "appearance": "An abandoned counterweight platform with three small pirate craft and a repair gantry.",
+        "hazard": "Wind shear, overloaded spans and hostage coercion.",
+        "story": "Eri must use a former rescue captain’s own loading rules against his ransom scheme.",
+        "layout": "Three docking arms, two refuge cells, exposed winch deck; no infinite aircraft hangar."
+      },
+      "features": [
+        {
+          "id": "T01",
+          "name": "Refuge lodge / two cells",
+          "box": [
+            -10,
+            24,
+            20,
+            16
+          ],
+          "kind": "refuge"
+        },
+        {
+          "id": "T02",
+          "name": "Main winch deck",
+          "box": [
+            -32,
+            -18,
+            64,
+            38
+          ],
+          "kind": "deck"
+        },
+        {
+          "id": "T03",
+          "name": "West docking arm",
+          "box": [
+            -67,
+            -12,
+            35,
+            8
+          ],
+          "kind": "deck"
+        },
+        {
+          "id": "T04",
+          "name": "East docking arm",
+          "box": [
+            32,
+            -12,
+            35,
+            8
+          ],
+          "kind": "deck"
+        },
+        {
+          "id": "T05",
+          "name": "South docking arm",
+          "box": [
+            -4,
+            -45,
+            8,
+            27
+          ],
+          "kind": "deck"
+        },
+        {
+          "id": "T06",
+          "name": "Refuge connector",
+          "box": [
+            -3,
+            20,
+            6,
+            4
+          ],
+          "kind": "deck"
+        },
+        {
+          "id": "T07",
+          "name": "Winch working envelope",
+          "box": [
+            -8,
+            -4,
+            16,
+            12
+          ],
+          "kind": "prop"
+        },
+        {
+          "id": "T08",
+          "name": "West craft berth envelope",
+          "box": [
+            -77,
+            0,
+            20,
+            9
+          ],
+          "kind": "berth"
+        },
+        {
+          "id": "T09",
+          "name": "East craft berth envelope",
+          "box": [
+            57,
+            0,
+            20,
+            9
+          ],
+          "kind": "berth"
+        },
+        {
+          "id": "T10",
+          "name": "South craft berth envelope",
+          "box": [
+            -10,
+            -49,
+            20,
+            8
+          ],
+          "kind": "berth"
+        },
+        {
+          "id": "T11",
+          "name": "West boarding plank",
+          "box": [
+            -61.5,
+            -4,
+            3,
+            4
+          ],
+          "kind": "deck"
+        },
+        {
+          "id": "T12",
+          "name": "East boarding plank",
+          "box": [
+            58.5,
+            -4,
+            3,
+            4
+          ],
+          "kind": "deck"
+        }
+      ],
+      "routes": [
+        {
+          "name": "Deck circulation",
+          "width_m": 2,
+          "points": [
+            [
+              -60,
+              0
+            ],
+            [
+              -60,
+              -8
+            ],
+            [
+              -20,
+              -8
+            ],
+            [
+              -20,
+              14
+            ],
+            [
+              0,
+              14
+            ],
+            [
+              0,
+              24
+            ]
+          ],
+          "mode": "deck"
+        },
+        {
+          "name": "East approach on arm",
+          "width_m": 2,
+          "points": [
+            [
+              60,
+              0
+            ],
+            [
+              60,
+              -8
+            ],
+            [
+              20,
+              -8
+            ],
+            [
+              20,
+              14
+            ],
+            [
+              0,
+              14
+            ]
+          ],
+          "mode": "deck"
+        },
+        {
+          "name": "South approach on arm",
+          "width_m": 2,
+          "points": [
+            [
+              0,
+              -40
+            ],
+            [
+              0,
+              -14
+            ],
+            [
+              -20,
+              -14
+            ],
+            [
+              -20,
+              14
+            ]
+          ],
+          "mode": "deck"
+        }
+      ],
+      "art": {
+        "file": "THREATS-02.png",
+        "grid": [
+          1,
+          2
+        ],
+        "column": 0,
+        "row": 1,
+        "crop_px": [
+          0,
+          500,
+          1536,
+          1024
+        ]
+      },
+      "origin": "Site center (0,0); metres, x east, y north. Elevation is relative to the occupied deck or terrace, not sea level.",
+      "detail_authority": "Fixed 3.0 site bounds, regional coordinates and refuge footprints retained. New measured feature and route layers refine the generic encounter field."
+    },
+    {
+      "id": "SITE-06",
+      "name": "The Cut Span",
+      "type": "site",
+      "ownership": "A genuinely closed crossing inspected by Still Bell and independent reviewers.",
+      "history": "The deliberate severing belongs to the historical response to the Severance. Ossa’s later forged prohibition is a separate act. The north and south inspection places allow evidence to be gathered without reopening the gap. The longer foot detour still takes two days and leaves this sheet.",
+      "daily_life": "Inspectors approach their own abutment, compare marks and stop at the guarded edge. Detached couplings are examined behind the north rail. The north refuge remains at its inherited position; a measured south inspection lodge completes the two-house description already established in the atlas.",
+      "dramatic_use": "Expose a false order beside a dangerous structure that deserves a truthful warning. A refusal to reconnect can be the responsible outcome even when the official who demanded it has lied. No visual hint should turn the gap into an easy leap for the heroes.",
+      "geometry": {
+        "id": "SITE-06",
+        "name": "The Cut Span",
+        "width_m": 180,
+        "depth_m": 100,
+        "zones": [
+          {
+            "name": "West approach",
+            "box": [
+              -90.0,
+              -50.0,
+              39.6,
+              100
+            ]
+          },
+          {
+            "name": "Encounter field",
+            "box": [
+              -50.400000000000006,
+              -50.0,
+              100.80000000000001,
+              100
+            ]
+          },
+          {
+            "name": "East approach",
+            "box": [
+              50.400000000000006,
+              -50.0,
+              39.6,
+              100
+            ]
+          }
+        ],
+        "refuge": {
+          "module": "MOD-12",
+          "center_m": [
+            0,
+            32.0,
+            0
+          ],
+          "width_m": 20,
+          "depth_m": 16
+        },
+        "route_points_m": [
+          [
+            -90.0,
+            0,
+            0
+          ],
+          [
+            -50.400000000000006,
+            0,
+            0
+          ],
+          [
+            0,
+            -25.0,
+            0
+          ],
+          [
+            50.400000000000006,
+            0,
+            0
+          ],
+          [
+            90.0,
+            0,
+            0
+          ]
+        ],
+        "notes": "North and south abutments are separate; a safe foot detour takes two days and does not reconnect the span.",
+        "hazard": "Real coupled resonance hazard and choirwraith territory beyond the marked ridge."
+      },
+      "base_site": {
+        "id": "SITE-06",
+        "name": "The Cut Span",
+        "region": "REG-06",
+        "x": -70,
+        "y": 242,
+        "width_m": 180,
+        "height_m": 100,
+        "approach": "Hushvale southern ridge",
+        "appearance": "A deliberately severed resonance bridge with two inspection houses and a visible gap.",
+        "hazard": "Real coupled resonance hazard and choirwraith territory beyond the marked ridge.",
+        "story": "A forged closure is exposed beside a genuine closure that must stay in force.",
+        "layout": "North and south abutments are separate; a safe foot detour takes two days and does not reconnect the span."
+      },
+      "features": [
+        {
+          "id": "T01",
+          "name": "North inspection refuge",
+          "box": [
+            -10,
+            24,
+            20,
+            16
+          ],
+          "kind": "refuge"
+        },
+        {
+          "id": "T02",
+          "name": "South inspection lodge",
+          "box": [
+            -10,
+            -42,
+            20,
+            16
+          ],
+          "kind": "refuge"
+        },
+        {
+          "id": "T03",
+          "name": "North abutment",
+          "box": [
+            -18,
+            10,
+            36,
+            14
+          ],
+          "kind": "deck"
+        },
+        {
+          "id": "T04",
+          "name": "South abutment",
+          "box": [
+            -18,
+            -24,
+            36,
+            14
+          ],
+          "kind": "deck"
+        },
+        {
+          "id": "T05",
+          "name": "Blocked span gap",
+          "box": [
+            -90,
+            -10,
+            180,
+            20
+          ],
+          "kind": "hazard"
+        },
+        {
+          "id": "T06",
+          "name": "Detached coupling display",
+          "box": [
+            -30,
+            18,
+            7,
+            4
+          ],
+          "kind": "prop"
+        }
+      ],
+      "routes": [
+        {
+          "name": "North safe approach / 2 m",
+          "width_m": 2,
+          "points": [
+            [
+              25,
+              50
+            ],
+            [
+              25,
+              26
+            ],
+            [
+              14,
+              26
+            ],
+            [
+              14,
+              16
+            ],
+            [
+              0,
+              16
+            ]
+          ],
+          "mode": "foot"
+        },
+        {
+          "name": "South safe approach / 2 m",
+          "width_m": 2,
+          "points": [
+            [
+              25,
+              -50
+            ],
+            [
+              25,
+              -26
+            ],
+            [
+              14,
+              -26
+            ],
+            [
+              14,
+              -16
+            ],
+            [
+              0,
+              -16
+            ]
+          ],
+          "mode": "foot"
+        }
+      ],
+      "art": {
+        "file": "THREATS-03.png",
+        "grid": [
+          1,
+          1
+        ],
+        "column": 0,
+        "row": 0
+      },
+      "origin": "Site center (0,0); metres, x east, y north. Elevation is relative to the occupied deck or terrace, not sea level.",
+      "detail_authority": "Fixed 3.0 site bounds, regional coordinates and refuge footprints retained. New measured feature and route layers refine the generic encounter field."
+    }
+  ]
+}

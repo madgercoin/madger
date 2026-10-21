@@ -1,0 +1,29 @@
+{
+  "edition": "3.2.0",
+  "conflict_pages": 36,
+  "blueprint_pages": 7,
+  "sections": {
+    "Cover": 1,
+    "Guide": 2,
+    "PC-01": 3,
+    "PC-02": 4,
+    "PC-03": 5,
+    "PC-04": 6,
+    "PC-05": 7,
+    "PC-06": 8,
+    "EXT-01-B03": 9,
+    "EXT-03-U04": 10,
+    "EXT-08-B03": 11,
+    "EXT-11-B02": 12,
+    "SITE-07": 13,
+    "SITE-05": 14,
+    "SITE-06": 15,
+    "Characters": 16,
+    "Relationships": 23,
+    "Defenders": 24,
+    "Evidence": 25,
+    "Season one": 27,
+    "Pilot": 29
+  },
+  "story_start_page": 30
+}

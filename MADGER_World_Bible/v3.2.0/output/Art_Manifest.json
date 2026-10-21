@@ -1,0 +1,32 @@
+[
+  {
+    "file": "THREATS-01.png",
+    "prompt": "Use case: stylized-concept. Create an original MADGER fantasy anime world production artboard containing FOUR equally sized panels in a clean 2 by 2 grid, each a highly detailed hand-painted Japanese theatrical-animation background. No characters, no readable small documents, no logos. Each panel has one discreet cream label strip with the exact location name.\nTOP LEFT \"KEST DEPOT\": the raised timber and limestone interior of a prosperous river-town freight depot, a straight wide wagon aisle in the center with large open south and north doorways, storage bays entirely to the sides, ochre ceramic cargo seals, careful brass inventory tags, an unused dispatch wagon beside the aisle, warm late afternoon light. Practical single-level warehouse, roof eaves about six metres, not a palace; no actual river inside.\nTOP RIGHT \"SLATE ARCADE ROOMS\": a modest upstairs rented lodging room in an inland road-junction town; plaster, dark timber, blue slate-roofed neighboring courtyards visible through one normal window. A compact legal-looking repair bench, three travel bags, a document table, a folded cot, portable brass-and-enamel relay equipment with simple knobs, no modern code screens. Room is ordinary and temporary, no sinister laboratory or giant antenna. Late dusk, one warm desk lamp.\nBOTTOM LEFT \"SALT CROWN COUNTING HOUSE\": a dry desert public records room with pale sandstone, turquoise shutters, patterned shade and a polished desk where paper water certificates are compared; ceramic water measure display, locked account case to one side, comfortable waiting stools. Formal, attractive and morally uneasy rather than evil-looking. No giant magical well controls, no water inside.\nBOTTOM RIGHT \"ECHO ARCHIVE COUNCIL\": a restrained upper-floor archive room in a cold mountain city; insulated timber lining within stone, copper archival seal boxes, a low council table, document comparison board, a small boxed mineral ice sample in a controlled insulated case, blue reflected snow light and modest amber lamps. Three-point-two metre occupied floor height, not cathedral scale. Give every room strong material identity, restrained cel outlines, painterly depth, beautifully designed lighting and believable working detail. Images are atmosphere references, not technical diagrams.",
+    "grid": [
+      2,
+      2
+    ],
+    "authority": "Appearance reference; measured plan controls size, connections, doors and heights.",
+    "sha256": "d230ef81b0e4afb6c5792e2684efb72debf01908252ef67d87b165922b509bc4"
+  },
+  {
+    "file": "THREATS-02.png",
+    "prompt": "Use case: stylized-concept. Original MADGER world environment artboard with TWO wide landscape panels stacked vertically and thin cream title strips. High quality detailed hand-painted Japanese fantasy anime film background art, crisp visual storytelling and clear physical spaces, no characters or written notices.\nTOP panel exact label \"ASHMOUTH FREIGHT YARD\": a disused loading yard on cooled volcanic freight terraces, dusty charcoal basalt and rust iron, finite stacks of stolen provision crates under patched timber covers to left and right, a clear broad wagon entrance at the far left and a narrow foot path leading out at right, a low loading platform in front, a small intact refuge lodge at the rear, a fenced pale gas vent trough well separated to the back right. The civilian settlement is far away and not depicted as a bandit town. No lava river, no fortress, no gratuitous flames. Sunset catches copper dust; the dangerous landscape remains beautiful and legible.\nBOTTOM panel exact label \"BLACKWAKE MOORING\": an abandoned counterweight mooring on a floating basalt outcrop within a local liftstone field. A central weathered winch deck with exactly THREE projecting docking arms, one left, one right, one toward the foreground; exactly THREE small cargo sailing craft with practical cloth lift sails and modest wooden hulls, each associated with one arm. One compact two-room refuge lodge at rear linked by a short deck path, exposed repair gantry, counterweight blocks. Immense airy distance, saffron sunset clouds, distant floating rock islands. No airport, no huge battleships, no endless fleet, no modern engines. Keep deck and load apparatus visible and plausible. Concept painting, not a measured blueprint.",
+    "grid": [
+      1,
+      2
+    ],
+    "authority": "Appearance reference; measured plan controls size, connections, doors and heights.",
+    "sha256": "6d12685fe13a6c912eec44724b2f46cc5bed94b9d4d35154132c5fa8cb519de2"
+  },
+  {
+    "file": "THREATS-03.png",
+    "prompt": "Use case: stylized-concept. A single wide establishing environment painting for MADGER fantasy anime, exact small cream lower border label \"THE CUT SPAN\". Exceptional detailed hand-painted Japanese theatrical animation background, clear cold mountain daylight, blue white rock and weathered copper. Camera from a high diagonal position looks across a deliberately severed ancient resonance bridge. TWO blunt opposing abutments face each other across a clearly unbridgeable visible chasm; a clean empty gap approximately twenty metres wide with absolutely no continuous bridge surface, cable footbridge, stepping stones or hidden crossing. A modest inspection lodge stands safely back on EACH side, two lodges total, with warning rails and detached copper coupling pieces behind the north rail. One side's safe trail bends out of frame; the long two-day walking detour is NOT visible as a short nearby shortcut. Snow and warm steam from the distant mountain settlement, dark ravine below, no people, no monsters, no readable documents, no cathedral, no magical laser. The image must make both the genuine hazard and the deliberate old engineering decision understandable without explanatory text. Rich yet restrained color, precise silhouettes, atmospheric depth, cinematic layout.",
+    "grid": [
+      1,
+      1
+    ],
+    "authority": "Appearance reference; measured plan controls size, connections, doors and heights.",
+    "sha256": "a1fed970f38603dd76b26b1df27a83189c908ba01a0b26cc902abfa3c2d5fc6f"
+  }
+]

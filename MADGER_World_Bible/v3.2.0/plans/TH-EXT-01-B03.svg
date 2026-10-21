@@ -1,0 +1,74 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="840" viewBox="0 0 1200 840">
+<rect width="1200" height="840" fill="#faf6ed"/>
+<text x="45.00" y="40.00" font-family="DejaVu Sans,sans-serif" font-size="14" fill="#173d3b" text-anchor="start" font-weight="bold">MADGER / CONFLICT LOCATIONS</text>
+<text x="45.00" y="80.00" font-family="DejaVu Sans,sans-serif" font-size="30" fill="#173d3b" text-anchor="start" font-weight="bold">Kest Depot</text>
+<text x="45.00" y="109.00" font-family="DejaVu Sans,sans-serif" font-size="13" fill="#173d3b" text-anchor="start" font-weight="normal">EXT-01-B03 / Level 0 / inherited room plan</text>
+<text x="1155.00" y="40.00" font-family="DejaVu Sans,sans-serif" font-size="13" fill="#173d3b" text-anchor="end" font-weight="normal">3.2.0</text>
+<line x1="45.00" y1="125.00" x2="1155.00" y2="125.00" stroke="#b8a47e" stroke-width="1"/>
+<rect x="58.00" y="175.67" width="700.00" height="466.67" fill="#eeeae0" stroke="#385955" stroke-width="1.5"/>
+<rect x="58.00" y="175.67" width="291.67" height="466.67" fill="#fffcf5" stroke="#385955" stroke-width="1.5"/>
+<text x="203.83" y="404.00" font-family="DejaVu Sans,sans-serif" font-size="11" fill="#173d3b" text-anchor="middle" font-weight="normal">West racks</text>
+<text x="203.83" y="420.00" font-family="DejaVu Sans,sans-serif" font-size="10" fill="#173d3b" text-anchor="middle" font-weight="normal">15 x 24 m</text>
+<rect x="349.67" y="175.67" width="116.67" height="466.67" fill="#e0eee8" stroke="#385955" stroke-width="1.5"/>
+<text x="408.00" y="404.00" font-family="DejaVu Sans,sans-serif" font-size="11" fill="#173d3b" text-anchor="middle" font-weight="normal">Freight aisle</text>
+<text x="408.00" y="420.00" font-family="DejaVu Sans,sans-serif" font-size="10" fill="#173d3b" text-anchor="middle" font-weight="normal">6 x 24 m</text>
+<rect x="466.33" y="175.67" width="291.67" height="466.67" fill="#fffcf5" stroke="#385955" stroke-width="1.5"/>
+<text x="612.17" y="404.00" font-family="DejaVu Sans,sans-serif" font-size="11" fill="#173d3b" text-anchor="middle" font-weight="normal">East racks</text>
+<text x="612.17" y="420.00" font-family="DejaVu Sans,sans-serif" font-size="10" fill="#173d3b" text-anchor="middle" font-weight="normal">15 x 24 m</text>
+<line x1="349.67" y1="420.67" x2="349.67" y2="397.33" stroke="#fffcf5" stroke-width="6"/>
+<line x1="349.67" y1="420.67" x2="349.67" y2="397.33" stroke="#4e91ac" stroke-width="2"/>
+<line x1="466.33" y1="420.67" x2="466.33" y2="397.33" stroke="#fffcf5" stroke-width="6"/>
+<line x1="466.33" y1="420.67" x2="466.33" y2="397.33" stroke="#4e91ac" stroke-width="2"/>
+<line x1="361.33" y1="642.33" x2="454.67" y2="642.33" stroke="#faf6ed" stroke-width="7"/>
+<line x1="361.33" y1="642.33" x2="454.67" y2="642.33" stroke="#4e91ac" stroke-width="2"/>
+<text x="408.00" y="660.33" font-family="DejaVu Sans,sans-serif" font-size="10" fill="#173d3b" text-anchor="middle" font-weight="normal">Entry 4.8 m</text>
+<line x1="361.33" y1="175.67" x2="454.67" y2="175.67" stroke="#faf6ed" stroke-width="7"/>
+<line x1="361.33" y1="175.67" x2="454.67" y2="175.67" stroke="#4e91ac" stroke-width="2"/>
+<text x="408.00" y="191.67" font-family="DejaVu Sans,sans-serif" font-size="10" fill="#173d3b" text-anchor="middle" font-weight="normal">Exit 4.8 m</text>
+<rect x="69.67" y="613.17" width="54.44" height="17.50" fill="#d6bd8c" stroke="#8d7954" stroke-width="1"/>
+<rect x="69.67" y="187.33" width="54.44" height="17.50" fill="#d6bd8c" stroke="#8d7954" stroke-width="1"/>
+<rect x="283.56" y="613.17" width="54.44" height="17.50" fill="#d6bd8c" stroke="#8d7954" stroke-width="1"/>
+<rect x="283.56" y="187.33" width="54.44" height="17.50" fill="#d6bd8c" stroke="#8d7954" stroke-width="1"/>
+<rect x="478.00" y="613.17" width="54.44" height="17.50" fill="#d6bd8c" stroke="#8d7954" stroke-width="1"/>
+<rect x="478.00" y="187.33" width="54.44" height="17.50" fill="#d6bd8c" stroke="#8d7954" stroke-width="1"/>
+<rect x="691.89" y="613.17" width="54.44" height="17.50" fill="#d6bd8c" stroke="#8d7954" stroke-width="1"/>
+<rect x="691.89" y="187.33" width="54.44" height="17.50" fill="#d6bd8c" stroke="#8d7954" stroke-width="1"/>
+<text x="96.89" y="625.92" font-family="DejaVu Sans,sans-serif" font-size="10" fill="#173d3b" text-anchor="middle" font-weight="bold">F01</text>
+<text x="96.89" y="200.08" font-family="DejaVu Sans,sans-serif" font-size="10" fill="#173d3b" text-anchor="middle" font-weight="bold">F02</text>
+<text x="310.78" y="625.92" font-family="DejaVu Sans,sans-serif" font-size="10" fill="#173d3b" text-anchor="middle" font-weight="bold">F03</text>
+<text x="310.78" y="200.08" font-family="DejaVu Sans,sans-serif" font-size="10" fill="#173d3b" text-anchor="middle" font-weight="bold">F04</text>
+<text x="505.22" y="625.92" font-family="DejaVu Sans,sans-serif" font-size="10" fill="#173d3b" text-anchor="middle" font-weight="bold">F05</text>
+<text x="505.22" y="200.08" font-family="DejaVu Sans,sans-serif" font-size="10" fill="#173d3b" text-anchor="middle" font-weight="bold">F06</text>
+<text x="719.11" y="625.92" font-family="DejaVu Sans,sans-serif" font-size="10" fill="#173d3b" text-anchor="middle" font-weight="bold">F07</text>
+<text x="719.11" y="200.08" font-family="DejaVu Sans,sans-serif" font-size="10" fill="#173d3b" text-anchor="middle" font-weight="bold">F08</text>
+<text x="28.00" y="170.00" font-family="DejaVu Sans,sans-serif" font-size="13" fill="#173d3b" text-anchor="start" font-weight="bold">N</text>
+<line x1="32.00" y1="205.00" x2="32.00" y2="180.00" stroke="#245653" stroke-width="2"/>
+<line x1="32.00" y1="180.00" x2="27.00" y2="189.00" stroke="#245653" stroke-width="2"/>
+<line x1="32.00" y1="180.00" x2="37.00" y2="189.00" stroke="#245653" stroke-width="2"/>
+<line x1="60.00" y1="692.00" x2="157.22" y2="692.00" stroke="#173d3b" stroke-width="3"/>
+<text x="60.00" y="710.00" font-family="DejaVu Sans,sans-serif" font-size="10" fill="#173d3b" text-anchor="start" font-weight="normal">0</text>
+<text x="157.22" y="710.00" font-family="DejaVu Sans,sans-serif" font-size="10" fill="#173d3b" text-anchor="end" font-weight="normal">5 m</text>
+<text x="810.00" y="156.00" font-family="DejaVu Sans,sans-serif" font-size="15" fill="#173d3b" text-anchor="start" font-weight="bold">REGISTER</text>
+<text x="810.00" y="181.00" font-family="DejaVu Sans,sans-serif" font-size="11" fill="#173d3b" text-anchor="start" font-weight="normal">F01  Dispatch comparison table</text>
+<text x="825.00" y="197.00" font-family="DejaVu Sans,sans-serif" font-size="9" fill="#6f7266" text-anchor="start" font-weight="normal"> x,y,w,d = 0.6, 0.6, 2.8, 0.9 m</text>
+<text x="810.00" y="213.00" font-family="DejaVu Sans,sans-serif" font-size="11" fill="#173d3b" text-anchor="start" font-weight="normal">F02  Marked hold-bay rack</text>
+<text x="825.00" y="229.00" font-family="DejaVu Sans,sans-serif" font-size="9" fill="#6f7266" text-anchor="start" font-weight="normal"> x,y,w,d = 0.6, 22.5, 2.8, 0.9 m</text>
+<text x="810.00" y="245.00" font-family="DejaVu Sans,sans-serif" font-size="11" fill="#173d3b" text-anchor="start" font-weight="normal">F03  Wagon inspection bench</text>
+<text x="825.00" y="261.00" font-family="DejaVu Sans,sans-serif" font-size="9" fill="#6f7266" text-anchor="start" font-weight="normal"> x,y,w,d = 11.6, 0.6, 2.8, 0.9 m</text>
+<text x="810.00" y="277.00" font-family="DejaVu Sans,sans-serif" font-size="11" fill="#173d3b" text-anchor="start" font-weight="normal">F04  Recipient request case</text>
+<text x="825.00" y="293.00" font-family="DejaVu Sans,sans-serif" font-size="9" fill="#6f7266" text-anchor="start" font-weight="normal"> x,y,w,d = 11.6, 22.5, 2.8, 0.9 m</text>
+<text x="810.00" y="309.00" font-family="DejaVu Sans,sans-serif" font-size="11" fill="#173d3b" text-anchor="start" font-weight="normal">F05  Ready-order racks</text>
+<text x="825.00" y="325.00" font-family="DejaVu Sans,sans-serif" font-size="9" fill="#6f7266" text-anchor="start" font-weight="normal"> x,y,w,d = 21.6, 0.6, 2.8, 0.9 m</text>
+<text x="810.00" y="341.00" font-family="DejaVu Sans,sans-serif" font-size="11" fill="#173d3b" text-anchor="start" font-weight="normal">F06  Packing bench</text>
+<text x="825.00" y="357.00" font-family="DejaVu Sans,sans-serif" font-size="9" fill="#6f7266" text-anchor="start" font-weight="normal"> x,y,w,d = 21.6, 22.5, 2.8, 0.9 m</text>
+<text x="810.00" y="373.00" font-family="DejaVu Sans,sans-serif" font-size="11" fill="#173d3b" text-anchor="start" font-weight="normal">F07  Return-goods rack</text>
+<text x="825.00" y="389.00" font-family="DejaVu Sans,sans-serif" font-size="9" fill="#6f7266" text-anchor="start" font-weight="normal"> x,y,w,d = 32.6, 0.6, 2.8, 0.9 m</text>
+<text x="810.00" y="405.00" font-family="DejaVu Sans,sans-serif" font-size="11" fill="#173d3b" text-anchor="start" font-weight="normal">F08  Allocation board</text>
+<text x="825.00" y="421.00" font-family="DejaVu Sans,sans-serif" font-size="9" fill="#6f7266" text-anchor="start" font-weight="normal"> x,y,w,d = 32.6, 22.5, 2.8, 0.9 m</text>
+<text x="810.00" y="449.00" font-family="DejaVu Sans,sans-serif" font-size="10" fill="#173d3b" text-anchor="start" font-weight="bold">FURNITURE = PORTABLE NORMAL STATE</text>
+<text x="810.00" y="468.00" font-family="DejaVu Sans,sans-serif" font-size="10" fill="#173d3b" text-anchor="start" font-weight="normal">Central passages and door approaches stay clear.</text>
+<text x="45.00" y="744.00" font-family="DejaVu Sans,sans-serif" font-size="12" fill="#173d3b" text-anchor="start" font-weight="bold">Bounds 36 x 24 m. Local origin at southwest building corner.</text>
+<text x="45.00" y="766.00" font-family="DejaVu Sans,sans-serif" font-size="11" fill="#173d3b" text-anchor="start" font-weight="normal">Roof eaves 6 m per MOD-11 notes; one occupied level. Building center [120, 0, 2.4] m.</text>
+<text x="45.00" y="788.00" font-family="DejaVu Sans,sans-serif" font-size="11" fill="#173d3b" text-anchor="start" font-weight="normal">Detailed geometry and scene states: Threat_Locations.json.</text>
+<text x="45.00" y="811.00" font-family="DejaVu Sans,sans-serif" font-size="10" fill="#173d3b" text-anchor="start" font-weight="normal">Fictional production / game blockout. Original appearance references do not override these dimensions.</text>
+</svg>

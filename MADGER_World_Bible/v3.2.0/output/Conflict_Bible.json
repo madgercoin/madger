@@ -1,0 +1,4802 @@
+{
+  "edition": "3.2.0",
+  "title": "MADGER - The Cost of Control",
+  "date": "2026-10-21",
+  "base_commit": "a31a6f32286a198f4da0d95b4a1b7f0282c830fc",
+  "scope": "Six sources of pressure within the existing factions; thirteen character addenda; seven reusable locations; a season-one evidence and escalation ledger; two complete antagonist stories.",
+  "status_rule": "Operating histories, location aliases and fixed normal-state details are additive writer canon. Character choices, scene seeds and complete stories are authored options until adopted by a dated episode ledger. No pilot villain reveal is added.",
+  "moral": "A good act does not buy ownership of another person. Protection earns trust when people can question it, refuse it and help shape it.",
+  "base_factions": [
+    {
+      "id": "FAC-01",
+      "name": "Burrow Commons",
+      "alignment": "Good / civic",
+      "home": "The Burrow",
+      "members": [
+        "MADGER",
+        "GORILLA_WHITE",
+        "MADGER_BOT",
+        "RES-01",
+        "RES-02",
+        "RES-03",
+        "RES-04",
+        "RES-05",
+        "RES-06",
+        "RES-07",
+        "RES-08"
+      ],
+      "purpose": "Keep a welcoming town livable, fair and defensible. This names the civic cooperation already present in the Bible; it does not replace ward decisions with a new ruler.",
+      "leadership": "Ward delegates, open meetings and rotating work coordinators. Madger convenes and serves; his founder status gives him no permanent veto. Snow is a protected companion, not an office-holder.",
+      "methods": "Shared stores, maintenance rosters, public explanations, rescue practice and accountable protective closures. Disputes concern priorities and evidence, not whether ordinary residents deserve safety.",
+      "tension": "Welcome versus capacity. Pell wants understandable procedures; Iona wants verified limits; Madger sometimes promises both before consulting either.",
+      "ties": "Commonworks supplies expertise; the Wayfarer Accord brings visitors and goods. The Commons opposes coercion by the Gilt Ledger, intrusion by Glass Thread and predation by Riven Claw."
+    },
+    {
+      "id": "FAC-02",
+      "name": "Commonworks Fellowship",
+      "alignment": "Good / mutual aid",
+      "home": "Stonewake and a regional workshop network",
+      "members": [
+        "ALLY-02",
+        "RES-03",
+        "RES-02",
+        "GORILLA_WHITE",
+        "NEW-06",
+        "NEW-11",
+        "NEW-13"
+      ],
+      "purpose": "Make essential knowledge teachable so no settlement depends on one indispensable specialist.",
+      "leadership": "Oren Vale coordinates exchanges. Iona is the Burrow contact; Tavi is an apprentice participant, never an unsupervised emergency specialist.",
+      "methods": "Travelling repair crews, apprenticeships, shared specifications and tool loans. Each town keeps local authority over its own machinery.",
+      "tension": "Their careful standards can postpone urgent improvisation. Oren must learn when a temporary repair is responsible, while Madger must accept when it is unsafe.",
+      "ties": "Works with the Commons and Wayfarers. Refuses exclusive maintenance deals from the Gilt Ledger. Glass Thread can steal records, but cannot acquire practical mastery by downloading them."
+    },
+    {
+      "id": "FAC-03",
+      "name": "Wayfarer Accord",
+      "alignment": "Good / travel and refuge",
+      "home": "Latchford; independent crews across the road network",
+      "members": [
+        "ALLY-01",
+        "ALLY-03",
+        "NEW-12"
+      ],
+      "purpose": "Keep travel, rescue and honest exchange possible for people without powerful sponsors.",
+      "leadership": "Sela Venn coordinates convoy safety. Lark Quill carries dispatches and keeps route accounts. Crews can decline a route they cannot safely serve.",
+      "methods": "Guides, escorted caravans, weather reports and voluntary rescue agreements. Their wagons are finite; an invitation does not create transport capacity.",
+      "tension": "Keeping a promised timetable may conflict with stopping for strangers. Sela supports Madger but will not endorse a comforting promise she cannot fulfill.",
+      "ties": "Supplies the Burrow and transports Commonworks crews. Pays legitimate tolls, contests Gilt Ledger coercion, and resists Riven Claw raids. Lark occasionally buys information from Pip Skein."
+    },
+    {
+      "id": "FAC-04",
+      "name": "Gilt Ledger",
+      "alignment": "Hostile / coercive commerce",
+      "home": "Privately controlled warehouses and offices in Reedbank",
+      "members": [
+        "VIL-01",
+        "VIL-02",
+        "VIL-03",
+        "NEW-08"
+      ],
+      "purpose": "Make independent settlements reliant on its depots, credit and permission to trade. Its public promise is dependable supply; its private objective is lasting leverage.",
+      "leadership": "Director Veyra Kest sets policy. Corvin Silt brokers contracts and influence. Bale Nacre controls stock, transport allocations and collections.",
+      "methods": "Exclusive supply terms, selective shortages, pressure on indebted operators and purchased information. It owns particular businesses, not Reedbank or every merchant.",
+      "tension": "Veyra calls dependence stability. Corvin profits from ambiguity; Bale knows that a frightened workforce eventually stops cooperating.",
+      "ties": "Buys limited information jobs from Glass Thread through Corvin. It has no command over the hacker crew. It sometimes buys stolen goods through intermediaries but regards Riven Claw as an expensive disruption."
+    },
+    {
+      "id": "FAC-05",
+      "name": "Glass Thread",
+      "alignment": "Hostile / information crime",
+      "home": "Changing rented workrooms around Latchford",
+      "members": [
+        "VIL-04",
+        "VIL-05",
+        "VIL-06"
+      ],
+      "purpose": "Sell privileged information and turn uncertain records into influence. Members claim that exposing weak systems excuses exploiting the people who rely on them.",
+      "leadership": "Nix Vey chooses targets and negotiates jobs. Tessera Keen handles social access and forged identities. Patch Serein maintains stolen equipment and relays.",
+      "methods": "Fictional record tampering, impersonation and constrained system intrusions. Access requires a particular opportunity; local controls, human checks and physical barriers still matter.",
+      "tension": "Nix wants recognition; Tessera wants profitable anonymity; Patch wants an exit before someone is physically harmed. Remorse does not erase responsibility.",
+      "ties": "Accepts selected Gilt Ledger contracts and keeps its own secrets. Distrusts Riven Claw, whose violence destroys useful contacts. Writer-only v1.1 answer: Tessera’s limited relay probe causes D17. Madger does not know Glass Thread’s membership at the pilot; Snow’s scent is unrelated."
+    },
+    {
+      "id": "FAC-06",
+      "name": "Riven Claw",
+      "alignment": "Hostile / raiding band",
+      "home": "Disused freight terraces in the Cinder Cuts",
+      "members": [
+        "VIL-07",
+        "VIL-08",
+        "VIL-09"
+      ],
+      "purpose": "Extract supplies and obedience from travellers and weaker outposts. Its leader treats possession as something proved through force.",
+      "leadership": "Brakka Mourn commands raids. Dreg Husk controls hauling and shares. Vessa Rake scouts routes and bargains for intelligence.",
+      "methods": "Ambush, intimidation and theft of movable supplies. They need food, rest, transport and local knowledge; they cannot appear anywhere without a route.",
+      "tension": "Brakka prizes spectacle, Dreg wants sustainable provisions, and Vessa resents being treated as expendable. Their cooperation depends on rewards and fear.",
+      "ties": "Sells through fences including Pip, who can refuse a deal. It has occasional transactions with Gilt Ledger intermediaries, no standing alliance. No species is inherently loyal to this band."
+    },
+    {
+      "id": "FAC-07",
+      "name": "Free Harbors Compact",
+      "alignment": "Allied / independent communities",
+      "home": "A treaty among Crownrest, Ossara public wells, Nacre Quay, Aurel Quay and Lumen Tide; no capital",
+      "members": [
+        "NEW-01",
+        "NEW-02",
+        "NEW-03",
+        "NEW-04",
+        "NEW-07"
+      ],
+      "purpose": "Protect passage, rescue rights and local ownership of knowledge without turning mutual aid into annexation.",
+      "leadership": "Rotating local delegates; any new obligation requires the affected community’s consent.",
+      "methods": "Reciprocal refuge, shared weather observations and narrowly scoped archive exchanges.",
+      "tension": "Secrecy protects some communities but can endanger visiting travelers. Wealthier ports try to dominate timetables.",
+      "ties": "Works with Wayfarers and Commonworks. Opposes water coercion, sky ransom and extraction without agreement."
+    },
+    {
+      "id": "FAC-08",
+      "name": "Blackwake Sails",
+      "alignment": "Hostile / sky extortion",
+      "home": "A mobile fleet using an abandoned mooring outside Aurel Quay",
+      "members": [
+        "NEW-09"
+      ],
+      "purpose": "Turn emergency passage into permanent tribute.",
+      "leadership": "Serik commands three small cargo craft; captains bargain over shares and can desert.",
+      "methods": "False promises, seized cargo and ransom; real rescue skill makes the deception credible.",
+      "tension": "Crew members want profit and survival, not Serik’s theater of heroism.",
+      "ties": "Occasional trade with Riven Claw; no global villain command structure. Eri knows their procedures."
+    },
+    {
+      "id": "FAC-09",
+      "name": "Still Bell Archive",
+      "alignment": "Divided institution / protective and authoritarian wings",
+      "home": "Hushvale Echo Archive",
+      "members": [
+        "NEW-05",
+        "NEW-10"
+      ],
+      "purpose": "Preserve Severance evidence and assess dangerous resonant crossings.",
+      "leadership": "Ossa controls the senior council; Ysolde leads a disclosure faction.",
+      "methods": "Technical records, measured closure orders and field inspections. Ossa additionally forged a modern prohibition.",
+      "tension": "Real expertise can become a monopoly on judgment. Most archivists are neither villains nor infallible sages.",
+      "ties": "Needs independent Hollow Sea records; disputed by Free Harbors; Commonworks can test physical claims."
+    }
+  ],
+  "pressure_centers": [
+    {
+      "id": "PC-01",
+      "title": "Gilt Ledger: the price of certainty",
+      "faction_id": "FAC-04",
+      "members": [
+        "VIL-01",
+        "VIL-02",
+        "VIL-03"
+      ],
+      "member_names": [
+        "Veyra Kest",
+        "Corvin Silt",
+        "Bale Nacre"
+      ],
+      "place_id": "EXT-01-B03",
+      "promise": "You will never have to wonder whether the next wagon is coming.",
+      "history": "Veyra built her influence by solving real supply problems. During the flood seven years before the pilot, she paid for the second rescue convoy without a public bargain. That choice saved people. In the years afterward, she acquired depot contracts and began treating successful provision as evidence that communities should surrender future choice. Her later coercion does not retroactively make the rescue a staged crime.",
+      "routine": "Bale opens with a physical stock count. Corvin arrives later with amendments that turn ordinary purchases into longer obligations. Workers load legitimate orders beside selectively withheld freight. Some admire Veyra because she pays consistently; others have families waiting outside her terms. The depot should feel attractive and competent before the cost of that competence becomes visible.",
+      "internal_conflict": "Veyra wants a defensible system. Corvin needs private exceptions that make him indispensable. Bale needs a workable loading floor. A side commission can enrich Corvin while making both the policy and the stock count harder to defend. They cooperate because each supplies something the others lack, not because they share one conscience.",
+      "limits": "The Ledger owns particular stock and businesses. It does not own Reedbank, the public kitchen, the Burrow gates, every road or every merchant. Glass Thread can refuse its jobs. Riven Claw can raid its freight. A supply promise remains limited by wagons, labor and weather.",
+      "story_turn": "When the rescue invoice becomes public, the apparent twist is that Veyra truly helped. The deeper conflict is whether gratitude can be converted into consent. Let her make one costly good choice in the present while retaining an unacceptable demand elsewhere.",
+      "hero_test": "Madger must acknowledge the rescue honestly and still let residents reject the monopoly. Pell makes the terms understandable; Iona tests whether the promised supply can actually be delivered."
+    },
+    {
+      "id": "PC-02",
+      "title": "Glass Thread: the right fact in the wrong hands",
+      "faction_id": "FAC-05",
+      "members": [
+        "VIL-04",
+        "VIL-05",
+        "VIL-06"
+      ],
+      "member_names": [
+        "Nix Vey",
+        "Tessera Keen",
+        "Patch Serein"
+      ],
+      "place_id": "EXT-03-U04",
+      "promise": "If they will not record us, we will make their records impossible to ignore.",
+      "history": "Nix returned from teenage work seasons with Madger to a Millmere restoration process that overlooked some households. Their grievance is genuine. Later paid access work gave them equipment, contacts and a dangerous audience. Tessera joined for profitable anonymity, and Patch followed maintenance pay. Their shared origin story is convenient: each remembers a different moment when the work stopped being defensible.",
+      "routine": "They lease rooms briefly, pay for ordinary meals, mend equipment and argue over what a client actually purchased. Tessera separates identities; Nix keeps recognizable scraps of old route language; Patch labels components because a wrong part still breaks a machine. The crew has no universal view of the world. An unattended message is as likely to remain unread as anyone else’s.",
+      "internal_conflict": "Nix wants the public to know who forced the truth into view. Tessera wants nobody to connect a useful identity to a crime. Patch wants a future workshop whose tools are not evidence. Each can expose the other two, but doing so would also expose their own choices.",
+      "limits": "D17 is a bounded receipt replay through a compromised trade relay. No code, credentials or real intrusion procedure is specified. Corrupted messages do not open a physical latch. Glass Thread needs a particular access opportunity and can lose it through ordinary witnesses and source comparison.",
+      "story_turn": "A surviving document proves that an omitted community really existed, while a different document proves that Nix endangered travelers. Both stay true. The heroes cannot dismiss the grievance because its messenger committed a crime, or excuse the crime because the grievance is true.",
+      "hero_test": "Bot must admit what a record cannot establish. Madger must rescue strangers before pursuing an old friend. Snow follows ordinary scent and behavior; she cannot identify a hacker or detect guilt."
+    },
+    {
+      "id": "PC-03",
+      "title": "Riven Claw: the cost of spectacle",
+      "faction_id": "FAC-06",
+      "members": [
+        "VIL-07",
+        "VIL-08",
+        "VIL-09"
+      ],
+      "member_names": [
+        "Brakka Mourn",
+        "Dreg Husk",
+        "Vessa Rake"
+      ],
+      "place_id": "SITE-07",
+      "promise": "Nobody will leave us hungry or treat us as disposable again.",
+      "history": "The Cinder freight diversion eighteen years before the pilot caused real hardship. Brakka, once a convoy guard, founded her band seven years ago. Those dates are distinct: she did not invent the decline and has no mandate from the people harmed by it. The occupied civilian terraces remain a community of workers and families, most of whom want the raiders gone.",
+      "routine": "Dreg sorts freight, checks harnesses and apportions meals. Vessa reports routes she has actually observed. Brakka stages arrivals and punishments as theater. A ledger of shares keeps the band together as much as fear does. Rest, damaged wheels and insufficient water can postpone a raid; animals and workers cannot march indefinitely for a dramatic cut.",
+      "internal_conflict": "Brakka wants obedience visible from a distance. Dreg wants usable provisions. Vessa wants her knowledge respected and an escape from expendability. Burning supplies can therefore satisfy the leader while destroying the bargain that keeps her specialists working.",
+      "limits": "The band travels by known routes. Vessa’s flight has weather and load limits. It cannot appear inside the Burrow or bypass inner defensive closure. Ashmouth is separate from civilian Cinder Cuts. Trade with Serik or a Ledger intermediary creates a transaction, not a chain of command.",
+      "story_turn": "Dreg’s record of victims first looks like conscience. It began as insurance for himself. What changes him is not discovering a hidden tender nature, but choosing to use a useful bargaining asset for restitution and accepting what that costs.",
+      "hero_test": "Gorilla must protect a retreat instead of accepting a public challenge. Madger must work within the town’s assigned roles. Edda treats injured people without confusing treatment with exemption from responsibility."
+    },
+    {
+      "id": "PC-04",
+      "title": "Salt Crown: scarcity made proprietary",
+      "faction_id": "FAC-04",
+      "members": [
+        "NEW-08"
+      ],
+      "member_names": [
+        "Kavar Dune"
+      ],
+      "place_id": "EXT-08-B03",
+      "promise": "One coordinated water account is fairer than a thousand arguments at the wells.",
+      "history": "Kavar acquired pump interests through successive dry seasons. His certificates began as convenient records of delivered water and became instruments of dependence. He is a commercial counterpart within the Ledger network, not a new global faction or Veyra’s puppet. Ossara’s three public wells predate his business by centuries.",
+      "routine": "Public-facing clerks weigh claims, inspect containers and explain legitimate maintenance costs. Kavar surrounds the process with handsome objects and precise language. The lie sits in a specific maintenance account and a competing pump kept closed, not in the existence of arithmetic or every clerk’s intentions.",
+      "internal_conflict": "Local staff need their wages and reliable water for their own homes. Some believe closure protects an exhausted aquifer. Kavar benefits from their caution while withholding the evidence that would let them distinguish a real limit from a manufactured one.",
+      "limits": "Exposing a false debt does not refill the aquifer. Pumps still need parts, trained maintainers and water-budget decisions. The counting house has records and instruments, not a hidden control that governs every well in the desert.",
+      "story_turn": "The first exposed invoice is genuinely wrong, but a second shortage is real. A cheap victory would accuse every warning of being a lie. A strong episode makes Maela defend a measured restriction moments after helping expose Kavar’s fabricated one.",
+      "hero_test": "The heroes must accept local expertise. Madger cannot promise limitless water; Commonworks can help restore equipment only under a community-agreed allocation."
+    },
+    {
+      "id": "PC-05",
+      "title": "Blackwake Sails: rescue with a ransom attached",
+      "faction_id": "FAC-08",
+      "members": [
+        "NEW-09"
+      ],
+      "member_names": [
+        "Serik Vane"
+      ],
+      "place_id": "SITE-05",
+      "promise": "When everyone else turns back, we are the ones who come for you.",
+      "history": "Serik was a capable rescue captain before he began turning emergency passage into ransom. Expulsion did not erase his skill. He now commands three small cargo craft and uses an abandoned mooring outside Aurel Quay. Former clients remember real rescues, making testimony against him emotionally difficult without making it unreliable.",
+      "routine": "Crews mend sails, calculate loads and argue about shares. Serik rehearses the arrival he wants survivors to remember. His people know that a generous-looking rescue can become a debt at the next berth. Some remain for money, others because leaving requires a safe port and a captain willing to hire them.",
+      "internal_conflict": "Serik needs admiration; captains need craft that can return. A spectacular pursuit can cost a vessel and turn supporters into witnesses. Eri’s knowledge of ordinary load rules is more useful than discovering a mystical weakness.",
+      "limits": "Three craft remain three craft. He cannot make storms, control the liftstone field or command every sky crew. Heavy cargo, wind and counterweights constrain him. The mooring has three docking arms and two refuge cells, not an unbounded fleet base.",
+      "story_turn": "He saves a crew member during the escape because he has real rescue instincts. The same survivor can later testify that he held others for ransom. A good act complicates the portrait; it does not cancel the charge.",
+      "hero_test": "Local navigators lead. Gorilla protects loading space, Bot checks stated load data and Madger helps free people without promising an impossible airlift."
+    },
+    {
+      "id": "PC-06",
+      "title": "Still Bell: authority after the emergency",
+      "faction_id": "FAC-09",
+      "members": [
+        "NEW-10",
+        "NEW-05"
+      ],
+      "member_names": [
+        "Ossa Quill",
+        "Ysolde Rime"
+      ],
+      "place_id": "SITE-06",
+      "promise": "We remember what happens when a confident person reconnects the wrong thing.",
+      "history": "The Severance occurred ninety-two years before the pilot. Ossa did not cause it. She inherited accounts of a real protective sacrifice and later forged one modern prohibition to retain control over decisions. Most archivists preserve useful knowledge; the institution contains both protective work and authoritarian choices.",
+      "routine": "Archive staff compare copies, inspect material and send field teams when weather allows. Genuine hazard reports share shelves with Ossa’s altered order. Ysolde’s disclosure work requires painstaking comparison, not an eloquent accusation followed by instant certainty.",
+      "internal_conflict": "Ossa fears that admitting one forgery will make people ignore every warning. Ysolde fears that secrecy will eventually make every warning unbelievable. Ysolde must publish her own family’s benefit from prolonged closure rather than placing herself outside the history she reveals.",
+      "limits": "The Cut Span retains a real gap and resonance hazard. The forged modern order and the justified old closure are separate claims. Exposing the first does not make the second safe. Echo ice stores fragments, not omniscient testimony or resurrected witnesses.",
+      "story_turn": "The dramatic victory is a shared process that can test both claims, preserving one closure while withdrawing another. Ossa loses exclusive judgment, not the usefulness of everything she learned.",
+      "hero_test": "Bot keeps uncertainty visible; Commonworks tests physical claims. Madger learns to live with a partial reopening that serves people without pretending the whole ancient network is safe."
+    }
+  ],
+  "character_addenda": [
+    {
+      "id": "VIL-01",
+      "name": "Veyra Kest",
+      "baseline": {
+        "id": "VIL-01",
+        "name": "Veyra Kest",
+        "group": "Antagonist",
+        "identity": "Adult female sable",
+        "origin": "Reedbank",
+        "affiliation": "FAC-04 leader",
+        "seed": "Ledger director and hidden funder of the second flood convoy. Demands dependency in return for security; runs with Corvin and Bale.",
+        "status": "Developed baseline 3.0",
+        "age": 45,
+        "height_m": 1.36,
+        "design": "Female sable, deep chocolate fur, ivory chin, ink-blue tailored long coat, one warm brass clasp, composed posture.",
+        "history": "Reedbank depot worker who rose through crisis logistics. At thirty-eight she diverted reserves to fund a rescue convoy; later consolidation convinced her that only centralized control prevents chaos.",
+        "desire": "To make the Burrow sign a permanent exclusive supply agreement and prove that her form of order is indispensable.",
+        "contradiction": "Her generosity becomes a claim of ownership. She remembers every life she helped but discounts lives injured by her conditions.",
+        "relationships": "Corvin negotiates; Bale controls stock; Sela knows the rescue truth; Kavar is an occasional commercial counterpart.",
+        "arc": "Season one: her offer fails despite a genuine good deed. Later: she must choose between saving her ledger and releasing stock without a binding promise. An act of repair can cost her power without erasing accountability.",
+        "story_engine": "A negotiation where her diagnosis is partly right; a crisis in her own depot that exposes how little her workers trust her.",
+        "writer_truth": "She did not cause the flood, invent Nix’s grievance or command Brakka’s raid. Her culpability is her present coercion.",
+        "voice": "No voice assigned; do not substitute an existing hero voice.",
+        "skills_and_limits": "Species anatomy, training, tools, fatigue and local knowledge constrain action. No unlisted magic or universal hacking.",
+        "art_status": "New design developed for this edition; exact colors and silhouette set by card and cast plate.",
+        "art": {
+          "file": "CAST-03.png",
+          "column": 1,
+          "row": 0,
+          "grid": [
+            3,
+            2
+          ]
+        },
+        "performance": {
+          "silhouette": "Female sable, deep chocolate fur, ivory chin, ink-blue tailored long coat, one warm brass clasp, composed posture.",
+          "expression_set": [
+            "neutral listening",
+            "pleased",
+            "concerned",
+            "frustrated",
+            "focused"
+          ],
+          "motion_rule": "Use a held body pose for dialogue with separate mouth shapes, blinks and intentional expression changes. Preserve facial landmarks.",
+          "limits": "Species anatomy, training, tools, fatigue and local knowledge constrain action. No unlisted magic or universal hacking."
+        }
+      },
+      "private_history": "As a young depot worker, Veyra once stayed after closing to match an unclaimed parcel to the family whose name had been copied incorrectly. She remembers the correction as proof that a reliable system needs someone willing to take charge.",
+      "ordinary_habit": "Straightens the unused chair before a negotiation, even when she expects the other person to refuse it.",
+      "pressure_point": "A public subscription solves a supply problem she sincerely believed required her contract.",
+      "irreversible_choice": "Releases a finite emergency allotment before anyone signs her preferred agreement.",
+      "cost_of_change": "She loses a real bargaining advantage. Workers and residents may acknowledge the release while still opposing the monopoly.",
+      "scene_seed": "Madger thanks her in public. She waits for the second sentence that will turn thanks into consent. It does not come.",
+      "status": "Past detail and habitual behavior are additive writer canon. The choice and scene are proposed dramatic development, not a completed dated event."
+    },
+    {
+      "id": "VIL-02",
+      "name": "Corvin Silt",
+      "baseline": {
+        "id": "VIL-02",
+        "name": "Corvin Silt",
+        "group": "Antagonist",
+        "identity": "Adult male stoat",
+        "origin": "Latchford",
+        "affiliation": "FAC-04 broker",
+        "seed": "Charm, contracts and selective truth. Buys Glass Thread services through Nix; fears losing access more than losing face.",
+        "status": "Developed baseline 3.0",
+        "age": 38,
+        "height_m": 1.13,
+        "design": "Male stoat, winter-cream throat, charcoal fitted coat, lilac cuffs, narrow document case.",
+        "history": "Latchford inn clerk who discovered that introducing two powerful people paid better than serving them. Became Veyra’s broker eleven years ago.",
+        "desire": "To be required at every important table, with enough private leverage never to be dismissed.",
+        "contradiction": "Mistakes being tolerated for being trusted.",
+        "relationships": "Buys jobs from Nix, bargains with Pip and flatters Veyra while hiding small side fees.",
+        "arc": "Loses control when two clients compare accounts. Can confess a real crime to protect a subordinate or sacrifice them and become more isolated.",
+        "story_engine": "A perfect contract depends on one deliberately misunderstood word; a public feast seats him beside someone he exploited.",
+        "writer_truth": "He has no secret authority over Glass Thread; Tessera keeps evidence of his extra payments.",
+        "voice": "No voice assigned; do not substitute an existing hero voice.",
+        "skills_and_limits": "Species anatomy, training, tools, fatigue and local knowledge constrain action. No unlisted magic or universal hacking.",
+        "art_status": "New design developed for this edition; exact colors and silhouette set by card and cast plate.",
+        "art": {
+          "file": "CAST-03.png",
+          "column": 2,
+          "row": 0,
+          "grid": [
+            3,
+            2
+          ]
+        },
+        "performance": {
+          "silhouette": "Male stoat, winter-cream throat, charcoal fitted coat, lilac cuffs, narrow document case.",
+          "expression_set": [
+            "neutral listening",
+            "pleased",
+            "concerned",
+            "frustrated",
+            "focused"
+          ],
+          "motion_rule": "Use a held body pose for dialogue with separate mouth shapes, blinks and intentional expression changes. Preserve facial landmarks.",
+          "limits": "Species anatomy, training, tools, fatigue and local knowledge constrain action. No unlisted magic or universal hacking."
+        }
+      },
+      "private_history": "Corvin’s first profitable introduction united two traders who later stopped inviting him once they knew each other. He has spent years designing relationships that seem unable to continue without him.",
+      "ordinary_habit": "Remembers a clerk’s favorite tea and forgets the clerk’s complaint about unpaid hours.",
+      "pressure_point": "Two clients compare the same amendment without his explanation in the room.",
+      "irreversible_choice": "Signs an account naming his own side fee instead of blaming a junior clerk.",
+      "cost_of_change": "He loses access to a useful table; telling one truth does not make his other contracts honest.",
+      "scene_seed": "He arrives early to a feast and discovers his reserved seat has been given to someone who performed the work.",
+      "status": "Past detail and habitual behavior are additive writer canon. The choice and scene are proposed dramatic development, not a completed dated event."
+    },
+    {
+      "id": "VIL-03",
+      "name": "Bale Nacre",
+      "baseline": {
+        "id": "VIL-03",
+        "name": "Bale Nacre",
+        "group": "Antagonist",
+        "identity": "Adult male badger",
+        "origin": "Stonewake",
+        "affiliation": "FAC-04 quartermaster",
+        "seed": "Controls warehouse allotments and collections. Loyal to orderly provision; excuses harm as a stock-management problem.",
+        "status": "Developed baseline 3.0",
+        "age": 49,
+        "height_m": 1.43,
+        "design": "Male badger, broad gray muzzle, maroon warehouse coat, square brass inventory tags; no resemblance to Madger beyond species.",
+        "history": "Stonewake stores worker who survived winter shortages and joined a depot chain seeking regular provision.",
+        "desire": "To prevent chaotic scarcity by controlling who receives what.",
+        "contradiction": "Turns a person waiting for medicine into a tolerable inventory discrepancy.",
+        "relationships": "Veyra values his reliability; Dreg secretly sells him selected freight through a fence; Edda forces him to face recipients.",
+        "arc": "Falsely calls a deliberate withheld shipment a delay. Later chooses to release it and testify, sacrificing status rather than receiving instant absolution.",
+        "story_engine": "A depot count with a hidden human cost; an old neighbor recognizes him behind a shuttered counter.",
+        "writer_truth": "He knows a specific allotment policy causes harm; ignorance is not his defense.",
+        "voice": "No voice assigned; do not substitute an existing hero voice.",
+        "skills_and_limits": "Species anatomy, training, tools, fatigue and local knowledge constrain action. No unlisted magic or universal hacking.",
+        "art_status": "New design developed for this edition; exact colors and silhouette set by card and cast plate.",
+        "art": {
+          "file": "CAST-03.png",
+          "column": 0,
+          "row": 1,
+          "grid": [
+            3,
+            2
+          ]
+        },
+        "performance": {
+          "silhouette": "Male badger, broad gray muzzle, maroon warehouse coat, square brass inventory tags; no resemblance to Madger beyond species.",
+          "expression_set": [
+            "neutral listening",
+            "pleased",
+            "concerned",
+            "frustrated",
+            "focused"
+          ],
+          "motion_rule": "Use a held body pose for dialogue with separate mouth shapes, blinks and intentional expression changes. Preserve facial landmarks.",
+          "limits": "Species anatomy, training, tools, fatigue and local knowledge constrain action. No unlisted magic or universal hacking."
+        }
+      },
+      "private_history": "Bale learned during winter shortages that a count can be numerically correct while a household is missing from it. He later chose to prize balanced shelves over inconvenient recipients.",
+      "ordinary_habit": "Carries a plain pencil worn almost too short to hold; he dislikes wasting useful material.",
+      "pressure_point": "Edda asks him to say the names attached to a shipment he has called merely delayed.",
+      "irreversible_choice": "Releases the withheld allotment and preserves the signed instruction that implicated him.",
+      "cost_of_change": "Dismissal, testimony and restitution follow; stock movement alone does not repair the harm.",
+      "scene_seed": "A former neighbor recognizes his handwriting on both the old request and the new refusal.",
+      "status": "Past detail and habitual behavior are additive writer canon. The choice and scene are proposed dramatic development, not a completed dated event."
+    },
+    {
+      "id": "VIL-04",
+      "name": "Nix Vey",
+      "baseline": {
+        "id": "VIL-04",
+        "name": "Nix Vey",
+        "group": "Antagonist",
+        "identity": "Adult nonbinary pine marten",
+        "origin": "Millmere",
+        "affiliation": "FAC-05 leader",
+        "seed": "Madger’s estranged teenage friend, now Glass Thread leader. Wants recognition and erased communities acknowledged; endangers travelers to gain leverage. Runs with Tessera and Patch.",
+        "status": "Developed baseline 3.0",
+        "age": 24,
+        "height_m": 1.21,
+        "design": "Nonbinary pine marten, dark brown fur, cream throat bib, asymmetrical teal scarf, weathered plum coat, copper clamp toolkit.",
+        "history": "Born in Millmere, spent teenage work seasons in Reedbank repair yards with Madger. After the flood they returned to unequal restoration and grew bitter. Their correspondence faded. Later formed Glass Thread around paid access jobs and a campaign to expose erased communities.",
+        "desire": "To force powerful people to acknowledge the communities omitted from official routes, and to be recognized as the one who forced the truth into daylight.",
+        "contradiction": "A true grievance becomes permission to make strangers into instruments. They crave Madger’s respect while trying to prove his welcome is naive.",
+        "relationships": "Tessera wants anonymity; Patch wants out; Corvin pays; Madger remembers an inventive friend, not a monster.",
+        "arc": "Season one: accepts a consequence long enough to prevent one death, then flees. Later must return stolen evidence, testify and accept restrictions before friendship can become possible.",
+        "story_engine": "An old childhood joke during a hostile meeting; a rescue where telling the truth destroys their bargaining advantage.",
+        "writer_truth": "They did not intend the root bridge crossing but knowingly created unreliable guidance. Intention does not cancel foreseeable harm.",
+        "voice": "No voice assigned; do not substitute an existing hero voice.",
+        "skills_and_limits": "Species anatomy, training, tools, fatigue and local knowledge constrain action. No unlisted magic or universal hacking.",
+        "art_status": "New design developed for this edition; exact colors and silhouette set by card and cast plate.",
+        "art": {
+          "file": "CAST-03.png",
+          "column": 1,
+          "row": 1,
+          "grid": [
+            3,
+            2
+          ]
+        },
+        "performance": {
+          "silhouette": "Nonbinary pine marten, dark brown fur, cream throat bib, asymmetrical teal scarf, weathered plum coat, copper clamp toolkit.",
+          "expression_set": [
+            "neutral listening",
+            "pleased",
+            "concerned",
+            "frustrated",
+            "focused"
+          ],
+          "motion_rule": "Use a held body pose for dialogue with separate mouth shapes, blinks and intentional expression changes. Preserve facial landmarks.",
+          "limits": "Species anatomy, training, tools, fatigue and local knowledge constrain action. No unlisted magic or universal hacking."
+        }
+      },
+      "private_history": "Nix kept an unanswered copy of a restoration appeal beside an early joking letter from Madger. The documents record two different losses: public exclusion and a friendship allowed to fade. Neither proves that Madger deliberately abandoned them.",
+      "ordinary_habit": "Repairs loose handles in rooms they are about to leave, then insists they do not care what happens there.",
+      "pressure_point": "An authentic omitted-household list is found beside a knowingly false travel instruction.",
+      "irreversible_choice": "Returns a piece of leverage that could have bought escape, allowing a specific endangered traveler to be found.",
+      "cost_of_change": "The immediate act of help cannot restore friendship. Later testimony and restrictions remain necessary.",
+      "scene_seed": "Madger remembers the joke at the top of the old letter. Nix wants that recognition to settle an argument it cannot settle.",
+      "status": "Past detail and habitual behavior are additive writer canon. The choice and scene are proposed dramatic development, not a completed dated event."
+    },
+    {
+      "id": "VIL-05",
+      "name": "Tessera Keen",
+      "baseline": {
+        "id": "VIL-05",
+        "name": "Tessera Keen",
+        "group": "Antagonist",
+        "identity": "Adult female jackdaw",
+        "origin": "Latchford",
+        "affiliation": "FAC-05 access broker",
+        "seed": "Studies routines, impersonates trusted contacts and keeps leverage on clients. Wants anonymity, not Nix’s public recognition.",
+        "status": "Developed baseline 3.0",
+        "age": 32,
+        "height_m": 1.05,
+        "design": "Female jackdaw, charcoal feathers, pale gray eyes, dull olive traveling coat with reversible ochre lining, plain ring.",
+        "history": "Latchford dispatch assistant who learned whose manners made staff stop checking. Built a career in impersonation and access brokerage.",
+        "desire": "To remain impossible to pin to one identity while owning everyone else’s secrets.",
+        "contradiction": "Needs enough recognition from expert peers to risk showing her signature.",
+        "relationships": "Nix provides public noise; Patch keeps equipment running; Corvin is useful and contemptible.",
+        "arc": "Her planted D17 test becomes traceable through ordinary human evidence. She sacrifices a profitable identity to escape, leaving a narrower network.",
+        "story_engine": "Two people claim the same appointment; a witness remembers an act of kindness she thought nobody saw.",
+        "writer_truth": "D17 is her limited receipt replay via a compromised trade relay, not remote control over the Burrow’s physical gates.",
+        "voice": "No voice assigned; do not substitute an existing hero voice.",
+        "skills_and_limits": "Species anatomy, training, tools, fatigue and local knowledge constrain action. No unlisted magic or universal hacking.",
+        "art_status": "New design developed for this edition; exact colors and silhouette set by card and cast plate.",
+        "art": {
+          "file": "CAST-03.png",
+          "column": 2,
+          "row": 1,
+          "grid": [
+            3,
+            2
+          ]
+        },
+        "performance": {
+          "silhouette": "Female jackdaw, charcoal feathers, pale gray eyes, dull olive traveling coat with reversible ochre lining, plain ring.",
+          "expression_set": [
+            "neutral listening",
+            "pleased",
+            "concerned",
+            "frustrated",
+            "focused"
+          ],
+          "motion_rule": "Use a held body pose for dialogue with separate mouth shapes, blinks and intentional expression changes. Preserve facial landmarks.",
+          "limits": "Species anatomy, training, tools, fatigue and local knowledge constrain action. No unlisted magic or universal hacking."
+        }
+      },
+      "private_history": "Tessera learned as a dispatch assistant that polished manners made some visitors more believable than tired workers with accurate information. She chose to profit from that prejudice.",
+      "ordinary_habit": "Leaves a borrowed room cleaner than she found it; an ordinary kindness becomes a witness’s memorable detail.",
+      "pressure_point": "A witness identifies a repeated behavior that does not depend on her chosen name.",
+      "irreversible_choice": "Burns a profitable identity to escape a narrowing inquiry rather than forcing Patch to take the whole blame.",
+      "cost_of_change": "She loses access she cannot instantly replace. The gesture is self-preservation mixed with attachment, not a completed redemption.",
+      "scene_seed": "A witness remembers her repairing a loose parcel strap. The fact identifies a moment of presence, not every crime she committed.",
+      "status": "Past detail and habitual behavior are additive writer canon. The choice and scene are proposed dramatic development, not a completed dated event."
+    },
+    {
+      "id": "VIL-06",
+      "name": "Patch Serein",
+      "baseline": {
+        "id": "VIL-06",
+        "name": "Patch Serein",
+        "group": "Antagonist",
+        "identity": "Adult male gecko",
+        "origin": "Reedbank",
+        "affiliation": "FAC-05 equipment specialist",
+        "seed": "Keeps the crew’s devices and relays working. Claims he only maintains equipment; must confront the harm he enables.",
+        "status": "Developed baseline 3.0",
+        "age": 27,
+        "height_m": 0.92,
+        "design": "Male gecko, sage skin with ochre speckles, rust utility vest, amber magnifier and repaired bag.",
+        "history": "Reedbank electronics apprentice who followed better pay into gray-market maintenance. Nix first hired him to repair a legal relay.",
+        "desire": "To leave with enough money to run a legitimate workshop.",
+        "contradiction": "Insists equipment has no morality while selecting jobs that enable harm.",
+        "relationships": "Bot shows a life he thinks he missed; Tessera keeps incriminating receipts; Nix alternates warmth and pressure.",
+        "arc": "Stops maintaining a dangerous relay, preserves evidence and accepts the consequences of his prior work.",
+        "story_engine": "A broken device is also the only evidence against him; a child admires him for the wrong accomplishment.",
+        "writer_truth": "He has helped harmful operations knowingly. Defection requires repair and truthful testimony, not a new nickname.",
+        "voice": "No voice assigned; do not substitute an existing hero voice.",
+        "skills_and_limits": "Species anatomy, training, tools, fatigue and local knowledge constrain action. No unlisted magic or universal hacking.",
+        "art_status": "New design developed for this edition; exact colors and silhouette set by card and cast plate.",
+        "art": {
+          "file": "CAST-04.png",
+          "column": 0,
+          "row": 0,
+          "grid": [
+            3,
+            2
+          ]
+        },
+        "performance": {
+          "silhouette": "Male gecko, sage skin with ochre speckles, rust utility vest, amber magnifier and repaired bag.",
+          "expression_set": [
+            "neutral listening",
+            "pleased",
+            "concerned",
+            "frustrated",
+            "focused"
+          ],
+          "motion_rule": "Use a held body pose for dialogue with separate mouth shapes, blinks and intentional expression changes. Preserve facial landmarks.",
+          "limits": "Species anatomy, training, tools, fatigue and local knowledge constrain action. No unlisted magic or universal hacking."
+        }
+      },
+      "private_history": "Patch’s first repair for Nix was lawful. He kept the payment note as the imagined first entry in his future workshop ledger, then continued accepting jobs after the purpose changed.",
+      "ordinary_habit": "Labels broken parts with the actual fault rather than the owner’s preferred excuse.",
+      "pressure_point": "The component he could destroy is both incriminating evidence and the only way to reconstruct an injury-causing message.",
+      "irreversible_choice": "Stops the harmful maintenance job and preserves the component and its context for investigators.",
+      "cost_of_change": "He loses income, risks prosecution and must identify earlier work. Bot offers a fair hearing, not secret immunity.",
+      "scene_seed": "A child admires the neatness of his repair. Patch has to decide what accomplishment he is willing to explain.",
+      "status": "Past detail and habitual behavior are additive writer canon. The choice and scene are proposed dramatic development, not a completed dated event."
+    },
+    {
+      "id": "VIL-07",
+      "name": "Brakka Mourn",
+      "baseline": {
+        "id": "VIL-07",
+        "name": "Brakka Mourn",
+        "group": "Antagonist",
+        "identity": "Adult female wolverine",
+        "origin": "Cinder Cuts",
+        "affiliation": "FAC-06 leader",
+        "seed": "Raiding captain who equates fear with respect. Runs with Dreg and Vessa; spends resources on demonstrations of strength.",
+        "status": "Developed baseline 3.0",
+        "age": 41,
+        "height_m": 1.48,
+        "design": "Female wolverine, dark umber coat, pale forehead streak, battered red shoulder wrap and functional hooked staff.",
+        "history": "Born in Cinder Cuts before freight decline. Began as a convoy guard, learned that fear brought faster payment, and built a raiding crew seven years ago.",
+        "desire": "To make every neighboring route pay tribute and never again be dismissed as expendable labor.",
+        "contradiction": "Calls fear respect and wastes the food she claims to protect on displays of dominance.",
+        "relationships": "Dreg supplies; Vessa scouts; Serik is an unreliable distant buyer; workers in her home district mostly want her gone.",
+        "arc": "Loses a raid because her crew protects supplies rather than her spectacle. Later doubles down or faces a humiliating survival that requires accepting mercy.",
+        "story_engine": "A feast funded by theft; a subordinate discovers that her invulnerable legend began as a frightened accident.",
+        "writer_truth": "No one secretly appointed her guardian of the Cinder Cuts. Her hardship explains her anger, not her entitlement.",
+        "voice": "No voice assigned; do not substitute an existing hero voice.",
+        "skills_and_limits": "Species anatomy, training, tools, fatigue and local knowledge constrain action. No unlisted magic or universal hacking.",
+        "art_status": "New design developed for this edition; exact colors and silhouette set by card and cast plate.",
+        "art": {
+          "file": "CAST-04.png",
+          "column": 1,
+          "row": 0,
+          "grid": [
+            3,
+            2
+          ]
+        },
+        "performance": {
+          "silhouette": "Female wolverine, dark umber coat, pale forehead streak, battered red shoulder wrap and functional hooked staff.",
+          "expression_set": [
+            "neutral listening",
+            "pleased",
+            "concerned",
+            "frustrated",
+            "focused"
+          ],
+          "motion_rule": "Use a held body pose for dialogue with separate mouth shapes, blinks and intentional expression changes. Preserve facial landmarks.",
+          "limits": "Species anatomy, training, tools, fatigue and local knowledge constrain action. No unlisted magic or universal hacking."
+        }
+      },
+      "private_history": "Brakka’s famous first victory began with a frightened decision to hold a narrow loading space until help arrived. She later retold it as proof that she had never been afraid.",
+      "ordinary_habit": "Checks everyone else’s portions while leaving her own plate untouched until she has an audience.",
+      "pressure_point": "Her crew saves useful cargo instead of obeying an order meant only to humiliate opponents.",
+      "irreversible_choice": "Orders a destructive display even after Dreg refuses, choosing a damaged legend over the provisions that sustain the crew.",
+      "cost_of_change": "Dreg’s refusal becomes a real split and Vessa’s loyalty narrows. Brakka loses people she cannot replace with one louder speech; later survival still leaves room for a different choice.",
+      "scene_seed": "A witness describes the first victory truthfully and with respect. Brakka hears the admission of fear as an insult.",
+      "status": "Past detail and habitual behavior are additive writer canon. The choice and scene are proposed dramatic development, not a completed dated event."
+    },
+    {
+      "id": "VIL-08",
+      "name": "Dreg Husk",
+      "baseline": {
+        "id": "VIL-08",
+        "name": "Dreg Husk",
+        "group": "Antagonist",
+        "identity": "Adult male boar",
+        "origin": "Millmere",
+        "affiliation": "FAC-06 supply chief",
+        "seed": "Organizes stolen freight and distributes shares. Wants predictable returns; resents Brakka wasting food on prestige.",
+        "status": "Developed baseline 3.0",
+        "age": 44,
+        "height_m": 1.52,
+        "design": "Male boar, bristled charcoal head, short natural tusks, ochre freight vest, heavy blue belt pouches.",
+        "history": "Millmere hauler who followed freight work west and then joined Brakka for reliable shares.",
+        "desire": "To feed his crew and support relatives in the legitimate Cinder Cuts neighborhood.",
+        "contradiction": "Treats organized theft as honest work because it has schedules.",
+        "relationships": "Brakka frustrates him; Bale buys indirectly; Vessa knows his family route.",
+        "arc": "Refuses to burn captured supplies for intimidation, triggering a split. Restitution to victims is the test of change.",
+        "story_engine": "A stolen crate contains something useless to raiders but vital to a village; his family refuses money they know came from theft.",
+        "writer_truth": "He has quietly kept records of victims, initially as a bargaining asset rather than conscience.",
+        "voice": "No voice assigned; do not substitute an existing hero voice.",
+        "skills_and_limits": "Species anatomy, training, tools, fatigue and local knowledge constrain action. No unlisted magic or universal hacking.",
+        "art_status": "New design developed for this edition; exact colors and silhouette set by card and cast plate.",
+        "art": {
+          "file": "CAST-04.png",
+          "column": 2,
+          "row": 0,
+          "grid": [
+            3,
+            2
+          ]
+        },
+        "performance": {
+          "silhouette": "Male boar, bristled charcoal head, short natural tusks, ochre freight vest, heavy blue belt pouches.",
+          "expression_set": [
+            "neutral listening",
+            "pleased",
+            "concerned",
+            "frustrated",
+            "focused"
+          ],
+          "motion_rule": "Use a held body pose for dialogue with separate mouth shapes, blinks and intentional expression changes. Preserve facial landmarks.",
+          "limits": "Species anatomy, training, tools, fatigue and local knowledge constrain action. No unlisted magic or universal hacking."
+        }
+      },
+      "private_history": "Dreg began recording victims to protect himself in a future dispute over shares. Over time, individual names made it harder to call the stolen freight ownerless.",
+      "ordinary_habit": "Repairs a frayed harness before counting the goods carried by it.",
+      "pressure_point": "His relatives reject food they know was taken from another household.",
+      "irreversible_choice": "Uses his private victim record to return property even when the record also exposes his own share.",
+      "cost_of_change": "His family can remain angry. His crew can refuse him. Restitution is a continuing obligation.",
+      "scene_seed": "A crate contains the replacement part for a village pump; selling it by weight would make the ledger profitable and the village poorer.",
+      "status": "Past detail and habitual behavior are additive writer canon. The choice and scene are proposed dramatic development, not a completed dated event."
+    },
+    {
+      "id": "VIL-09",
+      "name": "Vessa Rake",
+      "baseline": {
+        "id": "VIL-09",
+        "name": "Vessa Rake",
+        "group": "Antagonist",
+        "identity": "Adult female eagle",
+        "origin": "Cinder Cuts",
+        "affiliation": "FAC-06 scout",
+        "seed": "Finds routes and sells observations. Wants autonomy; flight does not bypass sealed entrances or carry unlimited weight.",
+        "status": "Developed baseline 3.0",
+        "age": 30,
+        "height_m": 1.42,
+        "design": "Female eagle, tawny feathers, cream head markings, slate flight harness and coral map ribbon; wings stay anatomically consistent.",
+        "history": "Cinder Cuts ridge guide who sold observations to whoever paid and joined Brakka for protection.",
+        "desire": "To own her route knowledge and never be treated as expendable.",
+        "contradiction": "Confuses refusing loyalty with refusing responsibility.",
+        "relationships": "Brakka commands her; Pip buys sightings; Eri offers legitimate guiding work but requires disclosure.",
+        "arc": "Warns one convoy because a promised raid crosses her line, then must reveal previous sold routes to earn employment.",
+        "story_engine": "A dangerous wind makes her walk among people who fear her; two employers purchase the same promise.",
+        "writer_truth": "Flight has weather, payload and fatigue limits; she cannot enter sealed rooms or carry a whole rescue party.",
+        "voice": "No voice assigned; do not substitute an existing hero voice.",
+        "skills_and_limits": "Species anatomy, training, tools, fatigue and local knowledge constrain action. No unlisted magic or universal hacking.",
+        "art_status": "New design developed for this edition; exact colors and silhouette set by card and cast plate.",
+        "art": {
+          "file": "CAST-04.png",
+          "column": 0,
+          "row": 1,
+          "grid": [
+            3,
+            2
+          ]
+        },
+        "performance": {
+          "silhouette": "Female eagle, tawny feathers, cream head markings, slate flight harness and coral map ribbon; wings stay anatomically consistent.",
+          "expression_set": [
+            "neutral listening",
+            "pleased",
+            "concerned",
+            "frustrated",
+            "focused"
+          ],
+          "motion_rule": "Use a held body pose for dialogue with separate mouth shapes, blinks and intentional expression changes. Preserve facial landmarks.",
+          "limits": "Species anatomy, training, tools, fatigue and local knowledge constrain action. No unlisted magic or universal hacking."
+        }
+      },
+      "private_history": "Vessa once sold the same safe-weather estimate to two crews that could not both occupy the ridge shelter. She told herself she had sold information, not made a promise.",
+      "ordinary_habit": "Tests a knot by touch while talking, often noticing its weakness before she admits the weakness of an agreement.",
+      "pressure_point": "Bad wind forces her to walk beside travelers who know her scouting work endangered them.",
+      "irreversible_choice": "Discloses previously sold routes before accepting Eri’s offer of legitimate guiding work.",
+      "cost_of_change": "An employer may still decline her. Flight and a warning do not earn a blank reputation.",
+      "scene_seed": "Two honest clients ask which one she will guide when the weather leaves room for only one journey.",
+      "status": "Past detail and habitual behavior are additive writer canon. The choice and scene are proposed dramatic development, not a completed dated event."
+    },
+    {
+      "id": "NEW-08",
+      "name": "Kavar Dune",
+      "baseline": {
+        "id": "NEW-08",
+        "name": "Kavar Dune",
+        "group": "Regional cast",
+        "identity": "Adult male fennec fox",
+        "origin": "Ossara",
+        "affiliation": "FAC-04",
+        "seed": "To make every caravan purchase his water certificates.",
+        "status": "Developed baseline 3.0",
+        "age": 47,
+        "height_m": 1.16,
+        "design": "Fennec, pale fur, huge ears, cream robe with narrow gold edging and dark teal gloves.",
+        "history": "An Ossara pump trader who acquired wells during successive dry seasons.",
+        "desire": "To make every caravan purchase his water certificates.",
+        "contradiction": "Frames dependence as efficient planning and cannot tolerate a public supply that he does not control.",
+        "relationships": "Veyra trades with him; Maela challenges him; Corvin offers outside contracts.",
+        "arc": "His fabricated debt is exposed, but removing him does not refill the aquifer. He may surrender equipment or destroy his standing further.",
+        "story_engine": "A generous water donation hides a binding claim; a desert storm strands him with people denied his service.",
+        "writer_truth": "He ordered a viable competing pump kept closed and falsified the maintenance account.",
+        "voice": "No voice assigned; do not substitute an existing hero voice.",
+        "skills_and_limits": "Species anatomy, training, tools, fatigue and local knowledge constrain action. No unlisted magic or universal hacking.",
+        "art_status": "New design developed for this edition; exact colors and silhouette set by card and cast plate.",
+        "art": {
+          "file": "CAST-06.png",
+          "column": 0,
+          "row": 0,
+          "grid": [
+            3,
+            2
+          ]
+        },
+        "performance": {
+          "silhouette": "Fennec, pale fur, huge ears, cream robe with narrow gold edging and dark teal gloves.",
+          "expression_set": [
+            "neutral listening",
+            "pleased",
+            "concerned",
+            "frustrated",
+            "focused"
+          ],
+          "motion_rule": "Use a held body pose for dialogue with separate mouth shapes, blinks and intentional expression changes. Preserve facial landmarks.",
+          "limits": "Species anatomy, training, tools, fatigue and local knowledge constrain action. No unlisted magic or universal hacking."
+        }
+      },
+      "private_history": "Kavar once improved a leaking pump cheaply and earned real gratitude. He now retells the repair as evidence that public access exists only because he permits it.",
+      "ordinary_habit": "Polishes the display measure while allowing an inconvenient maintenance report to remain unread.",
+      "pressure_point": "A repaired public pump reduces the need for his certificates, but the aquifer still requires limits.",
+      "irreversible_choice": "Surrenders withheld equipment with its accurate service history.",
+      "cost_of_change": "He loses an exclusive advantage and must face the falsified debt separately.",
+      "scene_seed": "Maela defends a genuine water restriction on the same afternoon she proves his account was false.",
+      "status": "Past detail and habitual behavior are additive writer canon. The choice and scene are proposed dramatic development, not a completed dated event."
+    },
+    {
+      "id": "NEW-09",
+      "name": "Serik Vane",
+      "baseline": {
+        "id": "NEW-09",
+        "name": "Serik Vane",
+        "group": "Regional cast",
+        "identity": "Adult male bat",
+        "origin": "Aurel Quay",
+        "affiliation": "FAC-08",
+        "seed": "To control the passages between the floating islands and sell protection from his own crews.",
+        "status": "Developed baseline 3.0",
+        "age": 39,
+        "height_m": 1.32,
+        "design": "Slate-gray bat, burgundy wing membranes, long black flight coat, amber scarf and hook-ended cargo pole.",
+        "history": "Former rescue captain expelled after turning a weather emergency into a ransom negotiation.",
+        "desire": "To control the passages between the floating islands and sell protection from his own crews.",
+        "contradiction": "Needs to be admired as a rescuer while arranging circumstances that require rescue.",
+        "relationships": "Eri refuses him; Vessa sells occasional observations; Brakka is a distant transactional contact, never a subordinate.",
+        "arc": "Loses the flattering story when freed captives testify. His tactical skill remains real and makes pursuit difficult.",
+        "story_engine": "A rescue beacon is genuine but its owner dangerous; his lieutenant must choose between saved passengers and the captain’s share.",
+        "writer_truth": "He cannot create storms, control liftstone fields or command every sky pirate.",
+        "voice": "No voice assigned; do not substitute an existing hero voice.",
+        "skills_and_limits": "Species anatomy, training, tools, fatigue and local knowledge constrain action. No unlisted magic or universal hacking.",
+        "art_status": "New design developed for this edition; exact colors and silhouette set by card and cast plate.",
+        "art": {
+          "file": "CAST-06.png",
+          "column": 1,
+          "row": 0,
+          "grid": [
+            3,
+            2
+          ]
+        },
+        "performance": {
+          "silhouette": "Slate-gray bat, burgundy wing membranes, long black flight coat, amber scarf and hook-ended cargo pole.",
+          "expression_set": [
+            "neutral listening",
+            "pleased",
+            "concerned",
+            "frustrated",
+            "focused"
+          ],
+          "motion_rule": "Use a held body pose for dialogue with separate mouth shapes, blinks and intentional expression changes. Preserve facial landmarks.",
+          "limits": "Species anatomy, training, tools, fatigue and local knowledge constrain action. No unlisted magic or universal hacking."
+        }
+      },
+      "private_history": "Serik kept the names of people from his early rescues. He later began counting captives in the same private book, preserving the flattering heading.",
+      "ordinary_habit": "Inspects a stranger’s poorly tied cargo knot before delivering an elegant threat.",
+      "pressure_point": "A crew member repeats his own rescue rule while refusing a profitable overloaded departure.",
+      "irreversible_choice": "Abandons ransom cargo to save a crew member, then faces testimony from the people he would have sold.",
+      "cost_of_change": "A lost craft or contract narrows his reach; skill remains dangerous without giving him supernatural recovery.",
+      "scene_seed": "A survivor thanks him for one rescue and names him for another extortion in the same hearing.",
+      "status": "Past detail and habitual behavior are additive writer canon. The choice and scene are proposed dramatic development, not a completed dated event."
+    },
+    {
+      "id": "NEW-10",
+      "name": "Ossa Quill",
+      "baseline": {
+        "id": "NEW-10",
+        "name": "Ossa Quill",
+        "group": "Regional cast",
+        "identity": "Older female snowy owl",
+        "origin": "Hushvale",
+        "affiliation": "FAC-09",
+        "seed": "To prevent another route catastrophe by keeping the right to decide who may reconnect anything.",
+        "status": "Developed baseline 3.0",
+        "age": 73,
+        "height_m": 1.54,
+        "design": "Snowy owl, pale barred feathers, midnight-blue mantle, copper archival seals and one frost-darkened wing tip.",
+        "history": "An archivist raised by a parent born just after the Severance. Inherited the stories of genuine protective closures and later extended authority through altered records.",
+        "desire": "To prevent another route catastrophe by keeping the right to decide who may reconnect anything.",
+        "contradiction": "A necessary historical sacrifice becomes justification for permanent control.",
+        "relationships": "Ysolde is her student; Namu has independent records; Veyra sometimes benefits from closed routes but did not create the order.",
+        "arc": "Evidence forces her to distinguish a real dangerous coupling from a fabricated prohibition. She must surrender exclusive judgment or become the danger she fears.",
+        "story_engine": "A villain tells the truth about a hazard; the heroes need a technical procedure from someone they must also hold accountable.",
+        "writer_truth": "She forged one modern closure order; she did not cause the original Severance 92 years ago.",
+        "voice": "No voice assigned; do not substitute an existing hero voice.",
+        "skills_and_limits": "Species anatomy, training, tools, fatigue and local knowledge constrain action. No unlisted magic or universal hacking.",
+        "art_status": "New design developed for this edition; exact colors and silhouette set by card and cast plate.",
+        "art": {
+          "file": "CAST-06.png",
+          "column": 2,
+          "row": 0,
+          "grid": [
+            3,
+            2
+          ]
+        },
+        "performance": {
+          "silhouette": "Snowy owl, pale barred feathers, midnight-blue mantle, copper archival seals and one frost-darkened wing tip.",
+          "expression_set": [
+            "neutral listening",
+            "pleased",
+            "concerned",
+            "frustrated",
+            "focused"
+          ],
+          "motion_rule": "Use a held body pose for dialogue with separate mouth shapes, blinks and intentional expression changes. Preserve facial landmarks.",
+          "limits": "Species anatomy, training, tools, fatigue and local knowledge constrain action. No unlisted magic or universal hacking."
+        }
+      },
+      "private_history": "Ossa’s parent was born after the Severance and inherited the accounts rather than witnessing the cuts. Ossa’s certainty is therefore an institutional inheritance, not a personal memory of ninety-two years ago.",
+      "ordinary_habit": "Touches the edge of a copied seal before reading the words, as though familiarity could establish authenticity.",
+      "pressure_point": "A young archivist asks why one genuine hazardous closure needs a forged companion order.",
+      "irreversible_choice": "Releases the altered order and accepts independent review while continuing to defend the measured real hazard.",
+      "cost_of_change": "Her judgment can still be useful without remaining final. She may lose office and the deference attached to it.",
+      "scene_seed": "During a safe inspection, she correctly stops a careless action. The person who obeys her still asks to see the measurements afterward.",
+      "status": "Past detail and habitual behavior are additive writer canon. The choice and scene are proposed dramatic development, not a completed dated event."
+    },
+    {
+      "id": "IND-01",
+      "name": "Pip Skein",
+      "baseline": {
+        "id": "IND-01",
+        "name": "Pip Skein",
+        "group": "Independent",
+        "identity": "Adult raccoon; they/them",
+        "origin": "Latchford",
+        "affiliation": "Unaffiliated broker and fence",
+        "seed": "Trades with Lark, Corvin and Vessa separately. Buys some stolen goods while pretending to be neutral; can earn trust only through restitution.",
+        "status": "Developed baseline 3.0",
+        "age": 35,
+        "height_m": 1.12,
+        "design": "Raccoon, soft gray fur, black eye mask, russet layered waistcoat, turquoise bead and many small labeled pockets.",
+        "history": "Latchford market child who learned to mediate trades and gradually crossed into fencing stolen freight.",
+        "desire": "To be welcome in every market without answering for where goods came from.",
+        "contradiction": "Neutrality is a story they tell when choosing the profitable side.",
+        "relationships": "Lark buys information; Corvin pays commissions; Vessa brings sightings; Pell remembers their honest first stall.",
+        "arc": "Returns a valuable stolen item and names its source, losing criminal customers before rebuilding lawful trade.",
+        "story_engine": "An object has two convincing owners; a bargain turns out to be a family memory somebody should never have sold.",
+        "writer_truth": "They know some goods are stolen. Cheerfulness is not innocence.",
+        "voice": "No voice assigned; do not substitute an existing hero voice.",
+        "skills_and_limits": "Species anatomy, training, tools, fatigue and local knowledge constrain action. No unlisted magic or universal hacking.",
+        "art_status": "New design developed for this edition; exact colors and silhouette set by card and cast plate.",
+        "art": {
+          "file": "CAST-04.png",
+          "column": 1,
+          "row": 1,
+          "grid": [
+            3,
+            2
+          ]
+        },
+        "performance": {
+          "silhouette": "Raccoon, soft gray fur, black eye mask, russet layered waistcoat, turquoise bead and many small labeled pockets.",
+          "expression_set": [
+            "neutral listening",
+            "pleased",
+            "concerned",
+            "frustrated",
+            "focused"
+          ],
+          "motion_rule": "Use a held body pose for dialogue with separate mouth shapes, blinks and intentional expression changes. Preserve facial landmarks.",
+          "limits": "Species anatomy, training, tools, fatigue and local knowledge constrain action. No unlisted magic or universal hacking."
+        }
+      },
+      "private_history": "Pip’s first stall sold repaired household goods with owners’ names still attached. Removing inconvenient names gradually became part of the service they offered.",
+      "ordinary_habit": "Rewraps a fragile object beautifully, sometimes while avoiding the question of how it arrived.",
+      "pressure_point": "Two plausible owners tell incompatible stories; a purchase receipt proves a sale but not rightful possession.",
+      "irreversible_choice": "Returns a valuable item and names the supplier without buying a promise of forgiveness.",
+      "cost_of_change": "Criminal customers leave before lawful customers trust them. Cheerfulness does not shorten that interval.",
+      "scene_seed": "Pell recognizes a label from Pip’s first honest stall on the back of an object that should never have been sold.",
+      "status": "Past detail and habitual behavior are additive writer canon. The choice and scene are proposed dramatic development, not a completed dated event."
+    }
+  ],
+  "locations": [
+    {
+      "id": "EXT-01-B03",
+      "name": "Kest Depot",
+      "type": "building",
+      "level": 0,
+      "focus_room": "West racks",
+      "ownership": "Privately operated by Gilt Ledger; Reedbank remains independent.",
+      "history": "The building began as a raised freight store serving ferry traffic. Veyra’s business made its reliable handling a public reputation and its selective access a source of power. Flood marks on the outer steps record maintenance, not supernatural immunity. The refuge and public charter records elsewhere in Reedbank are not owned by the depot.",
+      "daily_life": "Bale compares a physical count to the day’s dispatch instructions. Legitimate customers collect orders while disputed allocations wait in a marked side bay. Workers use both large wagon doors; no stack occupies the six-metre freight aisle. Veyra meets difficult visitors on the floor when she wants the available stock to speak for her.",
+      "dramatic_use": "A withheld crate can sit in full view. Suspense comes from knowing it could leave, not from finding a secret chamber. The marked hold bay changes only through a documented order, making a worker’s refusal or release visible to witnesses.",
+      "base_instance": {
+        "id": "EXT-01-B03",
+        "name": "Kest Depot",
+        "settlement": "EXT-01",
+        "module": "MOD-11",
+        "center_m": [
+          120,
+          0,
+          2.4
+        ],
+        "rotation_deg": 0,
+        "width_m": 36,
+        "depth_m": 24,
+        "levels": 1,
+        "roof": "ochre tile",
+        "materials": "raised timber / limestone",
+        "motif": "flood stair and boat rail",
+        "role": "Kest Depot",
+        "state": "normal",
+        "rooms": [
+          {
+            "name": "West racks",
+            "x": 0,
+            "y": 0,
+            "w": 15,
+            "d": 24
+          },
+          {
+            "name": "Freight aisle",
+            "x": 15,
+            "y": 0,
+            "w": 6,
+            "d": 24
+          },
+          {
+            "name": "East racks",
+            "x": 21,
+            "y": 0,
+            "w": 15,
+            "d": 24
+          }
+        ],
+        "entry": {
+          "side": "S",
+          "offset_m": 0,
+          "width_m": 4.8
+        },
+        "secondary_exit": {
+          "side": "N",
+          "offset_m": 0,
+          "width_m": 4.8
+        },
+        "wall_m": 0.25,
+        "floor_height_m": 3.2,
+        "notes": "Six-metre center aisle; 4.8 m wagon doors at north and south. Goods do not block exits. Roof eaves 6 m.",
+        "special": "Use the room allocations shown; movable furnishings may vary without shifting walls, doors or stairs.",
+        "floors": [
+          {
+            "level": 0,
+            "z_m": 0.0,
+            "rooms": [
+              {
+                "name": "West racks",
+                "x": 0,
+                "y": 0,
+                "w": 15,
+                "d": 24
+              },
+              {
+                "name": "Freight aisle",
+                "x": 15,
+                "y": 0,
+                "w": 6,
+                "d": 24
+              },
+              {
+                "name": "East racks",
+                "x": 21,
+                "y": 0,
+                "w": 15,
+                "d": 24
+              }
+            ],
+            "internal_doors": [
+              {
+                "rooms": [
+                  "Freight aisle",
+                  "West racks"
+                ],
+                "orientation": "V",
+                "center_m": [
+                  15,
+                  12.0
+                ],
+                "width_m": 1.2
+              },
+              {
+                "rooms": [
+                  "East racks",
+                  "Freight aisle"
+                ],
+                "orientation": "V",
+                "center_m": [
+                  21,
+                  12.0
+                ],
+                "width_m": 1.2
+              }
+            ],
+            "circulation_connected": true
+          }
+        ],
+        "front_elevation": {
+          "wall_height_m": 6,
+          "ridge_height_m": 14.393537846789975,
+          "window_bays": 7,
+          "entry_width_m": 4.8
+        }
+      },
+      "geometry": {
+        "id": "EXT-01-B03",
+        "name": "Kest Depot",
+        "settlement": "EXT-01",
+        "module": "MOD-11",
+        "center_m": [
+          120,
+          0,
+          2.4
+        ],
+        "rotation_deg": 0,
+        "width_m": 36,
+        "depth_m": 24,
+        "levels": 1,
+        "roof": "ochre tile",
+        "materials": "raised timber / limestone",
+        "motif": "flood stair and boat rail",
+        "role": "Kest Depot",
+        "state": "normal",
+        "rooms": [
+          {
+            "name": "West racks",
+            "x": 0,
+            "y": 0,
+            "w": 15,
+            "d": 24
+          },
+          {
+            "name": "Freight aisle",
+            "x": 15,
+            "y": 0,
+            "w": 6,
+            "d": 24
+          },
+          {
+            "name": "East racks",
+            "x": 21,
+            "y": 0,
+            "w": 15,
+            "d": 24
+          }
+        ],
+        "entry": {
+          "side": "S",
+          "offset_m": 0,
+          "width_m": 4.8
+        },
+        "secondary_exit": {
+          "side": "N",
+          "offset_m": 0,
+          "width_m": 4.8
+        },
+        "wall_m": 0.25,
+        "floor_height_m": 3.2,
+        "notes": "Six-metre center aisle; 4.8 m wagon doors at north and south. Goods do not block exits. Roof eaves 6 m.",
+        "special": "Use the room allocations shown; movable furnishings may vary without shifting walls, doors or stairs.",
+        "floors": [
+          {
+            "level": 0,
+            "z_m": 0.0,
+            "rooms": [
+              {
+                "name": "West racks",
+                "x": 0,
+                "y": 0,
+                "w": 15,
+                "d": 24
+              },
+              {
+                "name": "Freight aisle",
+                "x": 15,
+                "y": 0,
+                "w": 6,
+                "d": 24
+              },
+              {
+                "name": "East racks",
+                "x": 21,
+                "y": 0,
+                "w": 15,
+                "d": 24
+              }
+            ],
+            "internal_doors": [
+              {
+                "rooms": [
+                  "Freight aisle",
+                  "West racks"
+                ],
+                "orientation": "V",
+                "center_m": [
+                  15,
+                  12.0
+                ],
+                "width_m": 1.2
+              },
+              {
+                "rooms": [
+                  "East racks",
+                  "Freight aisle"
+                ],
+                "orientation": "V",
+                "center_m": [
+                  21,
+                  12.0
+                ],
+                "width_m": 1.2
+              }
+            ],
+            "circulation_connected": true
+          }
+        ],
+        "front_elevation": {
+          "wall_height_m": 6,
+          "ridge_height_m": 14.393537846789975,
+          "window_bays": 7,
+          "entry_width_m": 4.8
+        }
+      },
+      "floor": {
+        "level": 0,
+        "z_m": 0.0,
+        "rooms": [
+          {
+            "name": "West racks",
+            "x": 0,
+            "y": 0,
+            "w": 15,
+            "d": 24
+          },
+          {
+            "name": "Freight aisle",
+            "x": 15,
+            "y": 0,
+            "w": 6,
+            "d": 24
+          },
+          {
+            "name": "East racks",
+            "x": 21,
+            "y": 0,
+            "w": 15,
+            "d": 24
+          }
+        ],
+        "internal_doors": [
+          {
+            "rooms": [
+              "Freight aisle",
+              "West racks"
+            ],
+            "orientation": "V",
+            "center_m": [
+              15,
+              12.0
+            ],
+            "width_m": 1.2
+          },
+          {
+            "rooms": [
+              "East racks",
+              "Freight aisle"
+            ],
+            "orientation": "V",
+            "center_m": [
+              21,
+              12.0
+            ],
+            "width_m": 1.2
+          }
+        ],
+        "circulation_connected": true
+      },
+      "features": [
+        {
+          "id": "F01",
+          "name": "Dispatch comparison table",
+          "room": "West racks",
+          "box": [
+            0.6,
+            0.6,
+            2.8,
+            0.9
+          ],
+          "height_m": 0.8,
+          "placement": "portable furniture; fixed room geometry unchanged"
+        },
+        {
+          "id": "F02",
+          "name": "Marked hold-bay rack",
+          "room": "West racks",
+          "box": [
+            0.6,
+            22.5,
+            2.8,
+            0.9
+          ],
+          "height_m": 1.6,
+          "placement": "portable furniture; fixed room geometry unchanged"
+        },
+        {
+          "id": "F03",
+          "name": "Wagon inspection bench",
+          "room": "West racks",
+          "box": [
+            11.600000000000001,
+            0.6,
+            2.8,
+            0.9
+          ],
+          "height_m": 0.8,
+          "placement": "portable furniture; fixed room geometry unchanged"
+        },
+        {
+          "id": "F04",
+          "name": "Recipient request case",
+          "room": "West racks",
+          "box": [
+            11.600000000000001,
+            22.5,
+            2.8,
+            0.9
+          ],
+          "height_m": 1.6,
+          "placement": "portable furniture; fixed room geometry unchanged"
+        },
+        {
+          "id": "F05",
+          "name": "Ready-order racks",
+          "room": "East racks",
+          "box": [
+            21.6,
+            0.6,
+            2.8,
+            0.9
+          ],
+          "height_m": 1.6,
+          "placement": "portable furniture; fixed room geometry unchanged"
+        },
+        {
+          "id": "F06",
+          "name": "Packing bench",
+          "room": "East racks",
+          "box": [
+            21.6,
+            22.5,
+            2.8,
+            0.9
+          ],
+          "height_m": 0.8,
+          "placement": "portable furniture; fixed room geometry unchanged"
+        },
+        {
+          "id": "F07",
+          "name": "Return-goods rack",
+          "room": "East racks",
+          "box": [
+            32.6,
+            0.6,
+            2.8,
+            0.9
+          ],
+          "height_m": 1.6,
+          "placement": "portable furniture; fixed room geometry unchanged"
+        },
+        {
+          "id": "F08",
+          "name": "Allocation board",
+          "room": "East racks",
+          "box": [
+            32.6,
+            22.5,
+            2.8,
+            0.9
+          ],
+          "height_m": 1.6,
+          "placement": "portable furniture; fixed room geometry unchanged"
+        }
+      ],
+      "art": {
+        "file": "THREATS-01.png",
+        "grid": [
+          2,
+          2
+        ],
+        "column": 0,
+        "row": 0
+      },
+      "origin": "Southwest building corner; metres. Existing building center is settlement-local.",
+      "detail_authority": "Normal-state furniture is new. Inherited building placement, footprint, rooms, doors and levels are unchanged."
+    },
+    {
+      "id": "EXT-03-U04",
+      "name": "Slate Arcade Rooms",
+      "type": "building",
+      "level": 1,
+      "focus_room": "Guest E",
+      "ownership": "Ordinary lodging business; a temporary Glass Thread lease does not implicate the landlord or other guests.",
+      "history": "This is a new name for the existing EXT-03-U04 lodging building, fifty metres east and one hundred north of Latchford’s civic origin. Its trade is rooms for crews in transit. Glass Thread uses one upper guest room during a later story, then moves on. The public North Relay Rooms remain a separate legitimate institution.",
+      "daily_life": "Guests share the ordinary stair passage and washing facilities. In Guest E, a folding cot, document table and portable repair bench make a rented room serve two purposes. Travel bags can be packed quickly because this is a temporary stay, not an underground headquarters. Quiet maintenance is possible; industrial work and permanent aerials are not added.",
+      "dramatic_use": "A lease date and a witness can establish presence without proving every act of the tenant. An unrelated guest’s complaint about noise matters more than a theatrical hidden emblem. The crew’s departure changes occupancy and prop state, not the town plan.",
+      "base_instance": {
+        "id": "EXT-03-U04",
+        "name": "Travelers inn",
+        "settlement": "EXT-03",
+        "module": "MOD-06",
+        "center_m": [
+          50,
+          100,
+          0
+        ],
+        "rotation_deg": 0,
+        "width_m": 24,
+        "depth_m": 20,
+        "levels": 2,
+        "roof": "slate blue",
+        "materials": "plaster / timber",
+        "motif": "deep public arcade",
+        "state": "normal"
+      },
+      "geometry": {
+        "id": "EXT-03-U04",
+        "name": "Travelers inn",
+        "width_m": 24,
+        "depth_m": 20,
+        "levels": 2,
+        "floor_height_m": 3.2,
+        "wall_m": 0.25,
+        "resident_capacity": 0,
+        "rooms": [
+          {
+            "name": "Common room",
+            "x": 0,
+            "y": 0,
+            "w": 10,
+            "d": 8
+          },
+          {
+            "name": "Kitchen",
+            "x": 14,
+            "y": 0,
+            "w": 10,
+            "d": 8
+          },
+          {
+            "name": "Passage/stairs",
+            "x": 10,
+            "y": 0,
+            "w": 4,
+            "d": 20
+          },
+          {
+            "name": "Guest A",
+            "x": 0,
+            "y": 8,
+            "w": 10,
+            "d": 6
+          },
+          {
+            "name": "Guest B",
+            "x": 14,
+            "y": 8,
+            "w": 10,
+            "d": 6
+          },
+          {
+            "name": "Guest C",
+            "x": 0,
+            "y": 14,
+            "w": 10,
+            "d": 6
+          },
+          {
+            "name": "Wash/store",
+            "x": 14,
+            "y": 14,
+            "w": 10,
+            "d": 6
+          }
+        ],
+        "entry": {
+          "side": "S",
+          "offset_m": 0,
+          "width_m": 2.4
+        },
+        "secondary_exit": {
+          "side": "N",
+          "offset_m": 0,
+          "width_m": 1.8
+        },
+        "notes": "Upper floor repeats four guest bays and a lounge, with paired stairs at passage ends. Capacity 24 overnight guests, separate from permanent population.",
+        "roof": "slate blue",
+        "dimension_basis": "Nominal wall-center allocation dimensions; partitions are 0.25 m. Clear usable area is smaller. Fictional production layout, not construction certification.",
+        "floors": [
+          {
+            "level": 0,
+            "z_m": 0.0,
+            "rooms": [
+              {
+                "name": "Common room",
+                "x": 0,
+                "y": 0,
+                "w": 10,
+                "d": 8
+              },
+              {
+                "name": "Kitchen",
+                "x": 14,
+                "y": 0,
+                "w": 10,
+                "d": 8
+              },
+              {
+                "name": "Passage/stairs",
+                "x": 10,
+                "y": 0,
+                "w": 4,
+                "d": 20
+              },
+              {
+                "name": "Guest A",
+                "x": 0,
+                "y": 8,
+                "w": 10,
+                "d": 6
+              },
+              {
+                "name": "Guest B",
+                "x": 14,
+                "y": 8,
+                "w": 10,
+                "d": 6
+              },
+              {
+                "name": "Guest C",
+                "x": 0,
+                "y": 14,
+                "w": 10,
+                "d": 6
+              },
+              {
+                "name": "Wash/store",
+                "x": 14,
+                "y": 14,
+                "w": 10,
+                "d": 6
+              }
+            ],
+            "internal_doors": [
+              {
+                "rooms": [
+                  "Passage/stairs",
+                  "Common room"
+                ],
+                "orientation": "V",
+                "center_m": [
+                  10,
+                  4.0
+                ],
+                "width_m": 1.2
+              },
+              {
+                "rooms": [
+                  "Passage/stairs",
+                  "Kitchen"
+                ],
+                "orientation": "V",
+                "center_m": [
+                  14,
+                  4.0
+                ],
+                "width_m": 1.2
+              },
+              {
+                "rooms": [
+                  "Guest A",
+                  "Passage/stairs"
+                ],
+                "orientation": "V",
+                "center_m": [
+                  10,
+                  11.0
+                ],
+                "width_m": 1.2
+              },
+              {
+                "rooms": [
+                  "Guest B",
+                  "Passage/stairs"
+                ],
+                "orientation": "V",
+                "center_m": [
+                  14,
+                  11.0
+                ],
+                "width_m": 1.2
+              },
+              {
+                "rooms": [
+                  "Guest C",
+                  "Passage/stairs"
+                ],
+                "orientation": "V",
+                "center_m": [
+                  10,
+                  17.0
+                ],
+                "width_m": 1.2
+              },
+              {
+                "rooms": [
+                  "Wash/store",
+                  "Passage/stairs"
+                ],
+                "orientation": "V",
+                "center_m": [
+                  14,
+                  17.0
+                ],
+                "width_m": 1.2
+              }
+            ],
+            "circulation_connected": true
+          },
+          {
+            "level": 1,
+            "z_m": 3.2,
+            "rooms": [
+              {
+                "name": "Guest D",
+                "x": 0,
+                "y": 0,
+                "w": 10,
+                "d": 8
+              },
+              {
+                "name": "Guest E",
+                "x": 14,
+                "y": 0,
+                "w": 10,
+                "d": 8
+              },
+              {
+                "name": "Passage/stairs",
+                "x": 10,
+                "y": 0,
+                "w": 4,
+                "d": 20
+              },
+              {
+                "name": "Guest F",
+                "x": 0,
+                "y": 8,
+                "w": 10,
+                "d": 6
+              },
+              {
+                "name": "Guest G",
+                "x": 14,
+                "y": 8,
+                "w": 10,
+                "d": 6
+              },
+              {
+                "name": "Guest C",
+                "x": 0,
+                "y": 14,
+                "w": 10,
+                "d": 6
+              },
+              {
+                "name": "Wash/store",
+                "x": 14,
+                "y": 14,
+                "w": 10,
+                "d": 6
+              }
+            ],
+            "internal_doors": [
+              {
+                "rooms": [
+                  "Passage/stairs",
+                  "Guest D"
+                ],
+                "orientation": "V",
+                "center_m": [
+                  10,
+                  4.0
+                ],
+                "width_m": 1.2
+              },
+              {
+                "rooms": [
+                  "Passage/stairs",
+                  "Guest E"
+                ],
+                "orientation": "V",
+                "center_m": [
+                  14,
+                  4.0
+                ],
+                "width_m": 1.2
+              },
+              {
+                "rooms": [
+                  "Guest F",
+                  "Passage/stairs"
+                ],
+                "orientation": "V",
+                "center_m": [
+                  10,
+                  11.0
+                ],
+                "width_m": 1.2
+              },
+              {
+                "rooms": [
+                  "Guest G",
+                  "Passage/stairs"
+                ],
+                "orientation": "V",
+                "center_m": [
+                  14,
+                  11.0
+                ],
+                "width_m": 1.2
+              },
+              {
+                "rooms": [
+                  "Guest C",
+                  "Passage/stairs"
+                ],
+                "orientation": "V",
+                "center_m": [
+                  10,
+                  17.0
+                ],
+                "width_m": 1.2
+              },
+              {
+                "rooms": [
+                  "Wash/store",
+                  "Passage/stairs"
+                ],
+                "orientation": "V",
+                "center_m": [
+                  14,
+                  17.0
+                ],
+                "width_m": 1.2
+              }
+            ],
+            "circulation_connected": true
+          }
+        ],
+        "front_elevation": {
+          "wall_height_m": 6.4,
+          "ridge_height_m": 11.995691897859984,
+          "window_bays": 4,
+          "entry_width_m": 2.4
+        },
+        "settlement": "EXT-03",
+        "module": "MOD-06",
+        "center_m": [
+          50,
+          100,
+          0
+        ],
+        "rotation_deg": 0,
+        "materials": "plaster / timber",
+        "motif": "deep public arcade",
+        "state": "normal"
+      },
+      "floor": {
+        "level": 1,
+        "z_m": 3.2,
+        "rooms": [
+          {
+            "name": "Guest D",
+            "x": 0,
+            "y": 0,
+            "w": 10,
+            "d": 8
+          },
+          {
+            "name": "Guest E",
+            "x": 14,
+            "y": 0,
+            "w": 10,
+            "d": 8
+          },
+          {
+            "name": "Passage/stairs",
+            "x": 10,
+            "y": 0,
+            "w": 4,
+            "d": 20
+          },
+          {
+            "name": "Guest F",
+            "x": 0,
+            "y": 8,
+            "w": 10,
+            "d": 6
+          },
+          {
+            "name": "Guest G",
+            "x": 14,
+            "y": 8,
+            "w": 10,
+            "d": 6
+          },
+          {
+            "name": "Guest C",
+            "x": 0,
+            "y": 14,
+            "w": 10,
+            "d": 6
+          },
+          {
+            "name": "Wash/store",
+            "x": 14,
+            "y": 14,
+            "w": 10,
+            "d": 6
+          }
+        ],
+        "internal_doors": [
+          {
+            "rooms": [
+              "Passage/stairs",
+              "Guest D"
+            ],
+            "orientation": "V",
+            "center_m": [
+              10,
+              4.0
+            ],
+            "width_m": 1.2
+          },
+          {
+            "rooms": [
+              "Passage/stairs",
+              "Guest E"
+            ],
+            "orientation": "V",
+            "center_m": [
+              14,
+              4.0
+            ],
+            "width_m": 1.2
+          },
+          {
+            "rooms": [
+              "Guest F",
+              "Passage/stairs"
+            ],
+            "orientation": "V",
+            "center_m": [
+              10,
+              11.0
+            ],
+            "width_m": 1.2
+          },
+          {
+            "rooms": [
+              "Guest G",
+              "Passage/stairs"
+            ],
+            "orientation": "V",
+            "center_m": [
+              14,
+              11.0
+            ],
+            "width_m": 1.2
+          },
+          {
+            "rooms": [
+              "Guest C",
+              "Passage/stairs"
+            ],
+            "orientation": "V",
+            "center_m": [
+              10,
+              17.0
+            ],
+            "width_m": 1.2
+          },
+          {
+            "rooms": [
+              "Wash/store",
+              "Passage/stairs"
+            ],
+            "orientation": "V",
+            "center_m": [
+              14,
+              17.0
+            ],
+            "width_m": 1.2
+          }
+        ],
+        "circulation_connected": true
+      },
+      "features": [
+        {
+          "id": "F01",
+          "name": "Document table and chair",
+          "room": "Guest E",
+          "box": [
+            14.6,
+            0.6,
+            2.8,
+            0.9
+          ],
+          "height_m": 0.8,
+          "placement": "portable furniture; fixed room geometry unchanged"
+        },
+        {
+          "id": "F02",
+          "name": "Portable relay repair bench",
+          "room": "Guest E",
+          "box": [
+            14.6,
+            6.5,
+            2.8,
+            0.9
+          ],
+          "height_m": 0.8,
+          "placement": "portable furniture; fixed room geometry unchanged"
+        },
+        {
+          "id": "F03",
+          "name": "Folded guest cot",
+          "room": "Guest E",
+          "box": [
+            20.6,
+            0.6,
+            2.8,
+            0.9
+          ],
+          "height_m": 0.8,
+          "placement": "portable furniture; fixed room geometry unchanged"
+        },
+        {
+          "id": "F04",
+          "name": "Three travel-bag rack",
+          "room": "Guest E",
+          "box": [
+            20.6,
+            6.5,
+            2.8,
+            0.9
+          ],
+          "height_m": 1.6,
+          "placement": "portable furniture; fixed room geometry unchanged"
+        },
+        {
+          "id": "F05",
+          "name": "Sleeping cot",
+          "room": "Guest D",
+          "box": [
+            0.6,
+            0.6,
+            2.8,
+            0.9
+          ],
+          "height_m": 0.8,
+          "placement": "portable furniture; fixed room geometry unchanged"
+        },
+        {
+          "id": "F06",
+          "name": "Guest storage chest",
+          "room": "Guest D",
+          "box": [
+            0.6,
+            6.5,
+            2.8,
+            0.9
+          ],
+          "height_m": 1.6,
+          "placement": "portable furniture; fixed room geometry unchanged"
+        },
+        {
+          "id": "F07",
+          "name": "Sleeping cot",
+          "room": "Guest F",
+          "box": [
+            0.6,
+            8.6,
+            2.8,
+            0.9
+          ],
+          "height_m": 0.8,
+          "placement": "portable furniture; fixed room geometry unchanged"
+        },
+        {
+          "id": "F08",
+          "name": "Guest storage chest",
+          "room": "Guest F",
+          "box": [
+            0.6,
+            12.5,
+            2.8,
+            0.9
+          ],
+          "height_m": 1.6,
+          "placement": "portable furniture; fixed room geometry unchanged"
+        },
+        {
+          "id": "F09",
+          "name": "Sleeping cot",
+          "room": "Guest G",
+          "box": [
+            14.6,
+            8.6,
+            2.8,
+            0.9
+          ],
+          "height_m": 0.8,
+          "placement": "portable furniture; fixed room geometry unchanged"
+        },
+        {
+          "id": "F10",
+          "name": "Guest storage chest",
+          "room": "Guest G",
+          "box": [
+            14.6,
+            12.5,
+            2.8,
+            0.9
+          ],
+          "height_m": 1.6,
+          "placement": "portable furniture; fixed room geometry unchanged"
+        },
+        {
+          "id": "F11",
+          "name": "Sleeping cot",
+          "room": "Guest C",
+          "box": [
+            0.6,
+            14.6,
+            2.8,
+            0.9
+          ],
+          "height_m": 0.8,
+          "placement": "portable furniture; fixed room geometry unchanged"
+        },
+        {
+          "id": "F12",
+          "name": "Guest storage chest",
+          "room": "Guest C",
+          "box": [
+            0.6,
+            18.5,
+            2.8,
+            0.9
+          ],
+          "height_m": 1.6,
+          "placement": "portable furniture; fixed room geometry unchanged"
+        },
+        {
+          "id": "F13",
+          "name": "Wash cabinet",
+          "room": "Wash/store",
+          "box": [
+            14.6,
+            14.6,
+            2.8,
+            0.9
+          ],
+          "height_m": 1.6,
+          "placement": "portable furniture; fixed room geometry unchanged"
+        },
+        {
+          "id": "F14",
+          "name": "Clean linen rack",
+          "room": "Wash/store",
+          "box": [
+            14.6,
+            18.5,
+            2.8,
+            0.9
+          ],
+          "height_m": 1.6,
+          "placement": "portable furniture; fixed room geometry unchanged"
+        }
+      ],
+      "art": {
+        "file": "THREATS-01.png",
+        "grid": [
+          2,
+          2
+        ],
+        "column": 1,
+        "row": 0
+      },
+      "origin": "Southwest building corner; metres. Existing building center is settlement-local.",
+      "detail_authority": "Normal-state furniture is new. Inherited building placement, footprint, rooms, doors and levels are unchanged."
+    },
+    {
+      "id": "EXT-08-B03",
+      "name": "Salt Crown Counting House",
+      "type": "building",
+      "level": 0,
+      "focus_room": "Public reading",
+      "ownership": "Kavar’s accounts business; not owner of every public well.",
+      "history": "The counting house gained standing by making water claims easier to compare. Public counters and carefully maintained measures still perform useful work. Kavar exploited that trust by treating his certificate as the necessary condition of access and concealing the decision to keep a competing pump closed.",
+      "daily_life": "Claimants wait in the public reading room. Dispatch staff compare deliveries with accounts. Original files and private customer information remain in distinct archive rooms; a claim of wrongdoing does not turn every personal record into a public exhibit. No machinery here can switch off the desert’s wells.",
+      "dramatic_use": "A polished measure can be honest while the account beside it is false. The scene turns when a service witness describes a repair that the dated record says never happened. Even after that proof, Maela must explain a genuine limit on extraction.",
+      "base_instance": {
+        "id": "EXT-08-B03",
+        "name": "Salt Crown Counting House",
+        "settlement": "EXT-08",
+        "module": "MOD-10",
+        "center_m": [
+          120,
+          0,
+          0
+        ],
+        "rotation_deg": 0,
+        "width_m": 24,
+        "depth_m": 18,
+        "levels": 2,
+        "roof": "pale sandstone",
+        "materials": "sandstone / turquoise shutters",
+        "motif": "wind tower and shaded court",
+        "role": "Salt Crown Counting House",
+        "state": "normal",
+        "rooms": [
+          {
+            "name": "Public reading",
+            "x": 0,
+            "y": 0,
+            "w": 10,
+            "d": 8
+          },
+          {
+            "name": "Dispatch",
+            "x": 14,
+            "y": 0,
+            "w": 10,
+            "d": 8
+          },
+          {
+            "name": "Passage/stairs",
+            "x": 10,
+            "y": 0,
+            "w": 4,
+            "d": 18
+          },
+          {
+            "name": "Archive A",
+            "x": 0,
+            "y": 8,
+            "w": 10,
+            "d": 10
+          },
+          {
+            "name": "Archive B",
+            "x": 14,
+            "y": 8,
+            "w": 10,
+            "d": 10
+          }
+        ],
+        "entry": {
+          "side": "S",
+          "offset_m": 0,
+          "width_m": 2.4
+        },
+        "secondary_exit": {
+          "side": "N",
+          "offset_m": 0,
+          "width_m": 1.8
+        },
+        "wall_m": 0.25,
+        "floor_height_m": 3.2,
+        "notes": "Upper floor repeats controlled archive rooms. Public records and private records have distinct permissions.",
+        "special": "Use the room allocations shown; movable furnishings may vary without shifting walls, doors or stairs.",
+        "floors": [
+          {
+            "level": 0,
+            "z_m": 0.0,
+            "rooms": [
+              {
+                "name": "Public reading",
+                "x": 0,
+                "y": 0,
+                "w": 10,
+                "d": 8
+              },
+              {
+                "name": "Dispatch",
+                "x": 14,
+                "y": 0,
+                "w": 10,
+                "d": 8
+              },
+              {
+                "name": "Passage/stairs",
+                "x": 10,
+                "y": 0,
+                "w": 4,
+                "d": 18
+              },
+              {
+                "name": "Archive A",
+                "x": 0,
+                "y": 8,
+                "w": 10,
+                "d": 10
+              },
+              {
+                "name": "Archive B",
+                "x": 14,
+                "y": 8,
+                "w": 10,
+                "d": 10
+              }
+            ],
+            "internal_doors": [
+              {
+                "rooms": [
+                  "Passage/stairs",
+                  "Public reading"
+                ],
+                "orientation": "V",
+                "center_m": [
+                  10,
+                  4.0
+                ],
+                "width_m": 1.2
+              },
+              {
+                "rooms": [
+                  "Passage/stairs",
+                  "Dispatch"
+                ],
+                "orientation": "V",
+                "center_m": [
+                  14,
+                  4.0
+                ],
+                "width_m": 1.2
+              },
+              {
+                "rooms": [
+                  "Archive A",
+                  "Passage/stairs"
+                ],
+                "orientation": "V",
+                "center_m": [
+                  10,
+                  13.0
+                ],
+                "width_m": 1.2
+              },
+              {
+                "rooms": [
+                  "Archive B",
+                  "Passage/stairs"
+                ],
+                "orientation": "V",
+                "center_m": [
+                  14,
+                  13.0
+                ],
+                "width_m": 1.2
+              }
+            ],
+            "circulation_connected": true
+          },
+          {
+            "level": 1,
+            "z_m": 3.2,
+            "rooms": [
+              {
+                "name": "Catalog A",
+                "x": 0,
+                "y": 0,
+                "w": 10,
+                "d": 8
+              },
+              {
+                "name": "Catalog B",
+                "x": 14,
+                "y": 0,
+                "w": 10,
+                "d": 8
+              },
+              {
+                "name": "Passage/stairs",
+                "x": 10,
+                "y": 0,
+                "w": 4,
+                "d": 18
+              },
+              {
+                "name": "Archive A",
+                "x": 0,
+                "y": 8,
+                "w": 10,
+                "d": 10
+              },
+              {
+                "name": "Archive B",
+                "x": 14,
+                "y": 8,
+                "w": 10,
+                "d": 10
+              }
+            ],
+            "internal_doors": [
+              {
+                "rooms": [
+                  "Passage/stairs",
+                  "Catalog A"
+                ],
+                "orientation": "V",
+                "center_m": [
+                  10,
+                  4.0
+                ],
+                "width_m": 1.2
+              },
+              {
+                "rooms": [
+                  "Passage/stairs",
+                  "Catalog B"
+                ],
+                "orientation": "V",
+                "center_m": [
+                  14,
+                  4.0
+                ],
+                "width_m": 1.2
+              },
+              {
+                "rooms": [
+                  "Archive A",
+                  "Passage/stairs"
+                ],
+                "orientation": "V",
+                "center_m": [
+                  10,
+                  13.0
+                ],
+                "width_m": 1.2
+              },
+              {
+                "rooms": [
+                  "Archive B",
+                  "Passage/stairs"
+                ],
+                "orientation": "V",
+                "center_m": [
+                  14,
+                  13.0
+                ],
+                "width_m": 1.2
+              }
+            ],
+            "circulation_connected": true
+          }
+        ],
+        "front_elevation": {
+          "wall_height_m": 6.4,
+          "ridge_height_m": 11.995691897859984,
+          "window_bays": 4,
+          "entry_width_m": 2.4
+        }
+      },
+      "geometry": {
+        "id": "EXT-08-B03",
+        "name": "Salt Crown Counting House",
+        "settlement": "EXT-08",
+        "module": "MOD-10",
+        "center_m": [
+          120,
+          0,
+          0
+        ],
+        "rotation_deg": 0,
+        "width_m": 24,
+        "depth_m": 18,
+        "levels": 2,
+        "roof": "pale sandstone",
+        "materials": "sandstone / turquoise shutters",
+        "motif": "wind tower and shaded court",
+        "role": "Salt Crown Counting House",
+        "state": "normal",
+        "rooms": [
+          {
+            "name": "Public reading",
+            "x": 0,
+            "y": 0,
+            "w": 10,
+            "d": 8
+          },
+          {
+            "name": "Dispatch",
+            "x": 14,
+            "y": 0,
+            "w": 10,
+            "d": 8
+          },
+          {
+            "name": "Passage/stairs",
+            "x": 10,
+            "y": 0,
+            "w": 4,
+            "d": 18
+          },
+          {
+            "name": "Archive A",
+            "x": 0,
+            "y": 8,
+            "w": 10,
+            "d": 10
+          },
+          {
+            "name": "Archive B",
+            "x": 14,
+            "y": 8,
+            "w": 10,
+            "d": 10
+          }
+        ],
+        "entry": {
+          "side": "S",
+          "offset_m": 0,
+          "width_m": 2.4
+        },
+        "secondary_exit": {
+          "side": "N",
+          "offset_m": 0,
+          "width_m": 1.8
+        },
+        "wall_m": 0.25,
+        "floor_height_m": 3.2,
+        "notes": "Upper floor repeats controlled archive rooms. Public records and private records have distinct permissions.",
+        "special": "Use the room allocations shown; movable furnishings may vary without shifting walls, doors or stairs.",
+        "floors": [
+          {
+            "level": 0,
+            "z_m": 0.0,
+            "rooms": [
+              {
+                "name": "Public reading",
+                "x": 0,
+                "y": 0,
+                "w": 10,
+                "d": 8
+              },
+              {
+                "name": "Dispatch",
+                "x": 14,
+                "y": 0,
+                "w": 10,
+                "d": 8
+              },
+              {
+                "name": "Passage/stairs",
+                "x": 10,
+                "y": 0,
+                "w": 4,
+                "d": 18
+              },
+              {
+                "name": "Archive A",
+                "x": 0,
+                "y": 8,
+                "w": 10,
+                "d": 10
+              },
+              {
+                "name": "Archive B",
+                "x": 14,
+                "y": 8,
+                "w": 10,
+                "d": 10
+              }
+            ],
+            "internal_doors": [
+              {
+                "rooms": [
+                  "Passage/stairs",
+                  "Public reading"
+                ],
+                "orientation": "V",
+                "center_m": [
+                  10,
+                  4.0
+                ],
+                "width_m": 1.2
+              },
+              {
+                "rooms": [
+                  "Passage/stairs",
+                  "Dispatch"
+                ],
+                "orientation": "V",
+                "center_m": [
+                  14,
+                  4.0
+                ],
+                "width_m": 1.2
+              },
+              {
+                "rooms": [
+                  "Archive A",
+                  "Passage/stairs"
+                ],
+                "orientation": "V",
+                "center_m": [
+                  10,
+                  13.0
+                ],
+                "width_m": 1.2
+              },
+              {
+                "rooms": [
+                  "Archive B",
+                  "Passage/stairs"
+                ],
+                "orientation": "V",
+                "center_m": [
+                  14,
+                  13.0
+                ],
+                "width_m": 1.2
+              }
+            ],
+            "circulation_connected": true
+          },
+          {
+            "level": 1,
+            "z_m": 3.2,
+            "rooms": [
+              {
+                "name": "Catalog A",
+                "x": 0,
+                "y": 0,
+                "w": 10,
+                "d": 8
+              },
+              {
+                "name": "Catalog B",
+                "x": 14,
+                "y": 0,
+                "w": 10,
+                "d": 8
+              },
+              {
+                "name": "Passage/stairs",
+                "x": 10,
+                "y": 0,
+                "w": 4,
+                "d": 18
+              },
+              {
+                "name": "Archive A",
+                "x": 0,
+                "y": 8,
+                "w": 10,
+                "d": 10
+              },
+              {
+                "name": "Archive B",
+                "x": 14,
+                "y": 8,
+                "w": 10,
+                "d": 10
+              }
+            ],
+            "internal_doors": [
+              {
+                "rooms": [
+                  "Passage/stairs",
+                  "Catalog A"
+                ],
+                "orientation": "V",
+                "center_m": [
+                  10,
+                  4.0
+                ],
+                "width_m": 1.2
+              },
+              {
+                "rooms": [
+                  "Passage/stairs",
+                  "Catalog B"
+                ],
+                "orientation": "V",
+                "center_m": [
+                  14,
+                  4.0
+                ],
+                "width_m": 1.2
+              },
+              {
+                "rooms": [
+                  "Archive A",
+                  "Passage/stairs"
+                ],
+                "orientation": "V",
+                "center_m": [
+                  10,
+                  13.0
+                ],
+                "width_m": 1.2
+              },
+              {
+                "rooms": [
+                  "Archive B",
+                  "Passage/stairs"
+                ],
+                "orientation": "V",
+                "center_m": [
+                  14,
+                  13.0
+                ],
+                "width_m": 1.2
+              }
+            ],
+            "circulation_connected": true
+          }
+        ],
+        "front_elevation": {
+          "wall_height_m": 6.4,
+          "ridge_height_m": 11.995691897859984,
+          "window_bays": 4,
+          "entry_width_m": 2.4
+        }
+      },
+      "floor": {
+        "level": 0,
+        "z_m": 0.0,
+        "rooms": [
+          {
+            "name": "Public reading",
+            "x": 0,
+            "y": 0,
+            "w": 10,
+            "d": 8
+          },
+          {
+            "name": "Dispatch",
+            "x": 14,
+            "y": 0,
+            "w": 10,
+            "d": 8
+          },
+          {
+            "name": "Passage/stairs",
+            "x": 10,
+            "y": 0,
+            "w": 4,
+            "d": 18
+          },
+          {
+            "name": "Archive A",
+            "x": 0,
+            "y": 8,
+            "w": 10,
+            "d": 10
+          },
+          {
+            "name": "Archive B",
+            "x": 14,
+            "y": 8,
+            "w": 10,
+            "d": 10
+          }
+        ],
+        "internal_doors": [
+          {
+            "rooms": [
+              "Passage/stairs",
+              "Public reading"
+            ],
+            "orientation": "V",
+            "center_m": [
+              10,
+              4.0
+            ],
+            "width_m": 1.2
+          },
+          {
+            "rooms": [
+              "Passage/stairs",
+              "Dispatch"
+            ],
+            "orientation": "V",
+            "center_m": [
+              14,
+              4.0
+            ],
+            "width_m": 1.2
+          },
+          {
+            "rooms": [
+              "Archive A",
+              "Passage/stairs"
+            ],
+            "orientation": "V",
+            "center_m": [
+              10,
+              13.0
+            ],
+            "width_m": 1.2
+          },
+          {
+            "rooms": [
+              "Archive B",
+              "Passage/stairs"
+            ],
+            "orientation": "V",
+            "center_m": [
+              14,
+              13.0
+            ],
+            "width_m": 1.2
+          }
+        ],
+        "circulation_connected": true
+      },
+      "features": [
+        {
+          "id": "F01",
+          "name": "Certificate comparison desk",
+          "room": "Public reading",
+          "box": [
+            0.6,
+            0.6,
+            2.8,
+            0.9
+          ],
+          "height_m": 0.8,
+          "placement": "portable furniture; fixed room geometry unchanged"
+        },
+        {
+          "id": "F02",
+          "name": "Public measure display",
+          "room": "Public reading",
+          "box": [
+            0.6,
+            6.5,
+            2.8,
+            0.9
+          ],
+          "height_m": 1.6,
+          "placement": "portable furniture; fixed room geometry unchanged"
+        },
+        {
+          "id": "F03",
+          "name": "Waiting seats",
+          "room": "Public reading",
+          "box": [
+            6.6000000000000005,
+            0.6,
+            2.8,
+            0.9
+          ],
+          "height_m": 0.8,
+          "placement": "portable furniture; fixed room geometry unchanged"
+        },
+        {
+          "id": "F04",
+          "name": "Posted allocation board",
+          "room": "Public reading",
+          "box": [
+            6.6000000000000005,
+            6.5,
+            2.8,
+            0.9
+          ],
+          "height_m": 1.6,
+          "placement": "portable furniture; fixed room geometry unchanged"
+        },
+        {
+          "id": "F05",
+          "name": "Delivery desk",
+          "room": "Dispatch",
+          "box": [
+            14.6,
+            0.6,
+            2.8,
+            0.9
+          ],
+          "height_m": 0.8,
+          "placement": "portable furniture; fixed room geometry unchanged"
+        },
+        {
+          "id": "F06",
+          "name": "Container tally rack",
+          "room": "Dispatch",
+          "box": [
+            14.6,
+            6.5,
+            2.8,
+            0.9
+          ],
+          "height_m": 1.6,
+          "placement": "portable furniture; fixed room geometry unchanged"
+        },
+        {
+          "id": "F07",
+          "name": "Service record cabinet",
+          "room": "Archive A",
+          "box": [
+            0.6,
+            8.6,
+            2.8,
+            0.9
+          ],
+          "height_m": 1.6,
+          "placement": "portable furniture; fixed room geometry unchanged"
+        },
+        {
+          "id": "F08",
+          "name": "Inspection comparison table",
+          "room": "Archive A",
+          "box": [
+            0.6,
+            16.5,
+            2.8,
+            0.9
+          ],
+          "height_m": 0.8,
+          "placement": "portable furniture; fixed room geometry unchanged"
+        },
+        {
+          "id": "F09",
+          "name": "Private account cabinet",
+          "room": "Archive B",
+          "box": [
+            14.6,
+            8.6,
+            2.8,
+            0.9
+          ],
+          "height_m": 1.6,
+          "placement": "portable furniture; fixed room geometry unchanged"
+        },
+        {
+          "id": "F10",
+          "name": "Supervised reading desk",
+          "room": "Archive B",
+          "box": [
+            14.6,
+            16.5,
+            2.8,
+            0.9
+          ],
+          "height_m": 0.8,
+          "placement": "portable furniture; fixed room geometry unchanged"
+        }
+      ],
+      "art": {
+        "file": "THREATS-01.png",
+        "grid": [
+          2,
+          2
+        ],
+        "column": 0,
+        "row": 1
+      },
+      "origin": "Southwest building corner; metres. Existing building center is settlement-local.",
+      "detail_authority": "Normal-state furniture is new. Inherited building placement, footprint, rooms, doors and levels are unchanged."
+    },
+    {
+      "id": "EXT-11-B02",
+      "name": "Echo Archive Council Room",
+      "type": "building",
+      "level": 1,
+      "focus_room": "Catalog A",
+      "ownership": "Still Bell institution; divided between disclosure and concentrated authority.",
+      "history": "The council uses upper Catalog A for small hearings around movable furniture. This does not create a new wing or change the public ground floor developed in Living Places. The room holds records made by several generations, including people whose knowledge was careful and whose decisions were still self-serving.",
+      "daily_life": "Archivists bring only the required copies to a hearing. Insulated sample cases remain closed except during supervised examination. Most disagreement is about evidence and authority, not a contest of magical powers. A modern alteration can sit beside a reliable old observation without contaminating the entire collection.",
+      "dramatic_use": "Ysolde places the two versions side by side and discloses her own family’s benefit from closure. Ossa’s strongest response is a correct account of the actual danger. The room must accommodate both admissions at once.",
+      "base_instance": {
+        "id": "EXT-11-B02",
+        "name": "Echo Archive",
+        "settlement": "EXT-11",
+        "module": "MOD-10",
+        "center_m": [
+          0,
+          0,
+          0
+        ],
+        "rotation_deg": 0,
+        "width_m": 24,
+        "depth_m": 18,
+        "levels": 2,
+        "roof": "copper insulated",
+        "materials": "stone / insulated timber",
+        "motif": "steam porch and ice light baffle",
+        "role": "Echo Archive",
+        "state": "normal",
+        "rooms": [
+          {
+            "name": "Public reading",
+            "x": 0,
+            "y": 0,
+            "w": 10,
+            "d": 8
+          },
+          {
+            "name": "Dispatch",
+            "x": 14,
+            "y": 0,
+            "w": 10,
+            "d": 8
+          },
+          {
+            "name": "Passage/stairs",
+            "x": 10,
+            "y": 0,
+            "w": 4,
+            "d": 18
+          },
+          {
+            "name": "Archive A",
+            "x": 0,
+            "y": 8,
+            "w": 10,
+            "d": 10
+          },
+          {
+            "name": "Archive B",
+            "x": 14,
+            "y": 8,
+            "w": 10,
+            "d": 10
+          }
+        ],
+        "entry": {
+          "side": "S",
+          "offset_m": 0,
+          "width_m": 2.4
+        },
+        "secondary_exit": {
+          "side": "N",
+          "offset_m": 0,
+          "width_m": 1.8
+        },
+        "wall_m": 0.25,
+        "floor_height_m": 3.2,
+        "notes": "Upper floor repeats controlled archive rooms. Public records and private records have distinct permissions.",
+        "special": "Use the room allocations shown; movable furnishings may vary without shifting walls, doors or stairs.",
+        "floors": [
+          {
+            "level": 0,
+            "z_m": 0.0,
+            "rooms": [
+              {
+                "name": "Public reading",
+                "x": 0,
+                "y": 0,
+                "w": 10,
+                "d": 8
+              },
+              {
+                "name": "Dispatch",
+                "x": 14,
+                "y": 0,
+                "w": 10,
+                "d": 8
+              },
+              {
+                "name": "Passage/stairs",
+                "x": 10,
+                "y": 0,
+                "w": 4,
+                "d": 18
+              },
+              {
+                "name": "Archive A",
+                "x": 0,
+                "y": 8,
+                "w": 10,
+                "d": 10
+              },
+              {
+                "name": "Archive B",
+                "x": 14,
+                "y": 8,
+                "w": 10,
+                "d": 10
+              }
+            ],
+            "internal_doors": [
+              {
+                "rooms": [
+                  "Passage/stairs",
+                  "Public reading"
+                ],
+                "orientation": "V",
+                "center_m": [
+                  10,
+                  4.0
+                ],
+                "width_m": 1.2
+              },
+              {
+                "rooms": [
+                  "Passage/stairs",
+                  "Dispatch"
+                ],
+                "orientation": "V",
+                "center_m": [
+                  14,
+                  4.0
+                ],
+                "width_m": 1.2
+              },
+              {
+                "rooms": [
+                  "Archive A",
+                  "Passage/stairs"
+                ],
+                "orientation": "V",
+                "center_m": [
+                  10,
+                  13.0
+                ],
+                "width_m": 1.2
+              },
+              {
+                "rooms": [
+                  "Archive B",
+                  "Passage/stairs"
+                ],
+                "orientation": "V",
+                "center_m": [
+                  14,
+                  13.0
+                ],
+                "width_m": 1.2
+              }
+            ],
+            "circulation_connected": true
+          },
+          {
+            "level": 1,
+            "z_m": 3.2,
+            "rooms": [
+              {
+                "name": "Catalog A",
+                "x": 0,
+                "y": 0,
+                "w": 10,
+                "d": 8
+              },
+              {
+                "name": "Catalog B",
+                "x": 14,
+                "y": 0,
+                "w": 10,
+                "d": 8
+              },
+              {
+                "name": "Passage/stairs",
+                "x": 10,
+                "y": 0,
+                "w": 4,
+                "d": 18
+              },
+              {
+                "name": "Archive A",
+                "x": 0,
+                "y": 8,
+                "w": 10,
+                "d": 10
+              },
+              {
+                "name": "Archive B",
+                "x": 14,
+                "y": 8,
+                "w": 10,
+                "d": 10
+              }
+            ],
+            "internal_doors": [
+              {
+                "rooms": [
+                  "Passage/stairs",
+                  "Catalog A"
+                ],
+                "orientation": "V",
+                "center_m": [
+                  10,
+                  4.0
+                ],
+                "width_m": 1.2
+              },
+              {
+                "rooms": [
+                  "Passage/stairs",
+                  "Catalog B"
+                ],
+                "orientation": "V",
+                "center_m": [
+                  14,
+                  4.0
+                ],
+                "width_m": 1.2
+              },
+              {
+                "rooms": [
+                  "Archive A",
+                  "Passage/stairs"
+                ],
+                "orientation": "V",
+                "center_m": [
+                  10,
+                  13.0
+                ],
+                "width_m": 1.2
+              },
+              {
+                "rooms": [
+                  "Archive B",
+                  "Passage/stairs"
+                ],
+                "orientation": "V",
+                "center_m": [
+                  14,
+                  13.0
+                ],
+                "width_m": 1.2
+              }
+            ],
+            "circulation_connected": true
+          }
+        ],
+        "front_elevation": {
+          "wall_height_m": 6.4,
+          "ridge_height_m": 11.995691897859984,
+          "window_bays": 4,
+          "entry_width_m": 2.4
+        }
+      },
+      "geometry": {
+        "id": "EXT-11-B02",
+        "name": "Echo Archive",
+        "settlement": "EXT-11",
+        "module": "MOD-10",
+        "center_m": [
+          0,
+          0,
+          0
+        ],
+        "rotation_deg": 0,
+        "width_m": 24,
+        "depth_m": 18,
+        "levels": 2,
+        "roof": "copper insulated",
+        "materials": "stone / insulated timber",
+        "motif": "steam porch and ice light baffle",
+        "role": "Echo Archive",
+        "state": "normal",
+        "rooms": [
+          {
+            "name": "Public reading",
+            "x": 0,
+            "y": 0,
+            "w": 10,
+            "d": 8
+          },
+          {
+            "name": "Dispatch",
+            "x": 14,
+            "y": 0,
+            "w": 10,
+            "d": 8
+          },
+          {
+            "name": "Passage/stairs",
+            "x": 10,
+            "y": 0,
+            "w": 4,
+            "d": 18
+          },
+          {
+            "name": "Archive A",
+            "x": 0,
+            "y": 8,
+            "w": 10,
+            "d": 10
+          },
+          {
+            "name": "Archive B",
+            "x": 14,
+            "y": 8,
+            "w": 10,
+            "d": 10
+          }
+        ],
+        "entry": {
+          "side": "S",
+          "offset_m": 0,
+          "width_m": 2.4
+        },
+        "secondary_exit": {
+          "side": "N",
+          "offset_m": 0,
+          "width_m": 1.8
+        },
+        "wall_m": 0.25,
+        "floor_height_m": 3.2,
+        "notes": "Upper floor repeats controlled archive rooms. Public records and private records have distinct permissions.",
+        "special": "Use the room allocations shown; movable furnishings may vary without shifting walls, doors or stairs.",
+        "floors": [
+          {
+            "level": 0,
+            "z_m": 0.0,
+            "rooms": [
+              {
+                "name": "Public reading",
+                "x": 0,
+                "y": 0,
+                "w": 10,
+                "d": 8
+              },
+              {
+                "name": "Dispatch",
+                "x": 14,
+                "y": 0,
+                "w": 10,
+                "d": 8
+              },
+              {
+                "name": "Passage/stairs",
+                "x": 10,
+                "y": 0,
+                "w": 4,
+                "d": 18
+              },
+              {
+                "name": "Archive A",
+                "x": 0,
+                "y": 8,
+                "w": 10,
+                "d": 10
+              },
+              {
+                "name": "Archive B",
+                "x": 14,
+                "y": 8,
+                "w": 10,
+                "d": 10
+              }
+            ],
+            "internal_doors": [
+              {
+                "rooms": [
+                  "Passage/stairs",
+                  "Public reading"
+                ],
+                "orientation": "V",
+                "center_m": [
+                  10,
+                  4.0
+                ],
+                "width_m": 1.2
+              },
+              {
+                "rooms": [
+                  "Passage/stairs",
+                  "Dispatch"
+                ],
+                "orientation": "V",
+                "center_m": [
+                  14,
+                  4.0
+                ],
+                "width_m": 1.2
+              },
+              {
+                "rooms": [
+                  "Archive A",
+                  "Passage/stairs"
+                ],
+                "orientation": "V",
+                "center_m": [
+                  10,
+                  13.0
+                ],
+                "width_m": 1.2
+              },
+              {
+                "rooms": [
+                  "Archive B",
+                  "Passage/stairs"
+                ],
+                "orientation": "V",
+                "center_m": [
+                  14,
+                  13.0
+                ],
+                "width_m": 1.2
+              }
+            ],
+            "circulation_connected": true
+          },
+          {
+            "level": 1,
+            "z_m": 3.2,
+            "rooms": [
+              {
+                "name": "Catalog A",
+                "x": 0,
+                "y": 0,
+                "w": 10,
+                "d": 8
+              },
+              {
+                "name": "Catalog B",
+                "x": 14,
+                "y": 0,
+                "w": 10,
+                "d": 8
+              },
+              {
+                "name": "Passage/stairs",
+                "x": 10,
+                "y": 0,
+                "w": 4,
+                "d": 18
+              },
+              {
+                "name": "Archive A",
+                "x": 0,
+                "y": 8,
+                "w": 10,
+                "d": 10
+              },
+              {
+                "name": "Archive B",
+                "x": 14,
+                "y": 8,
+                "w": 10,
+                "d": 10
+              }
+            ],
+            "internal_doors": [
+              {
+                "rooms": [
+                  "Passage/stairs",
+                  "Catalog A"
+                ],
+                "orientation": "V",
+                "center_m": [
+                  10,
+                  4.0
+                ],
+                "width_m": 1.2
+              },
+              {
+                "rooms": [
+                  "Passage/stairs",
+                  "Catalog B"
+                ],
+                "orientation": "V",
+                "center_m": [
+                  14,
+                  4.0
+                ],
+                "width_m": 1.2
+              },
+              {
+                "rooms": [
+                  "Archive A",
+                  "Passage/stairs"
+                ],
+                "orientation": "V",
+                "center_m": [
+                  10,
+                  13.0
+                ],
+                "width_m": 1.2
+              },
+              {
+                "rooms": [
+                  "Archive B",
+                  "Passage/stairs"
+                ],
+                "orientation": "V",
+                "center_m": [
+                  14,
+                  13.0
+                ],
+                "width_m": 1.2
+              }
+            ],
+            "circulation_connected": true
+          }
+        ],
+        "front_elevation": {
+          "wall_height_m": 6.4,
+          "ridge_height_m": 11.995691897859984,
+          "window_bays": 4,
+          "entry_width_m": 2.4
+        }
+      },
+      "floor": {
+        "level": 1,
+        "z_m": 3.2,
+        "rooms": [
+          {
+            "name": "Catalog A",
+            "x": 0,
+            "y": 0,
+            "w": 10,
+            "d": 8
+          },
+          {
+            "name": "Catalog B",
+            "x": 14,
+            "y": 0,
+            "w": 10,
+            "d": 8
+          },
+          {
+            "name": "Passage/stairs",
+            "x": 10,
+            "y": 0,
+            "w": 4,
+            "d": 18
+          },
+          {
+            "name": "Archive A",
+            "x": 0,
+            "y": 8,
+            "w": 10,
+            "d": 10
+          },
+          {
+            "name": "Archive B",
+            "x": 14,
+            "y": 8,
+            "w": 10,
+            "d": 10
+          }
+        ],
+        "internal_doors": [
+          {
+            "rooms": [
+              "Passage/stairs",
+              "Catalog A"
+            ],
+            "orientation": "V",
+            "center_m": [
+              10,
+              4.0
+            ],
+            "width_m": 1.2
+          },
+          {
+            "rooms": [
+              "Passage/stairs",
+              "Catalog B"
+            ],
+            "orientation": "V",
+            "center_m": [
+              14,
+              4.0
+            ],
+            "width_m": 1.2
+          },
+          {
+            "rooms": [
+              "Archive A",
+              "Passage/stairs"
+            ],
+            "orientation": "V",
+            "center_m": [
+              10,
+              13.0
+            ],
+            "width_m": 1.2
+          },
+          {
+            "rooms": [
+              "Archive B",
+              "Passage/stairs"
+            ],
+            "orientation": "V",
+            "center_m": [
+              14,
+              13.0
+            ],
+            "width_m": 1.2
+          }
+        ],
+        "circulation_connected": true
+      },
+      "features": [
+        {
+          "id": "F01",
+          "name": "Council comparison table",
+          "room": "Catalog A",
+          "box": [
+            0.6,
+            0.6,
+            2.8,
+            0.9
+          ],
+          "height_m": 0.8,
+          "placement": "portable furniture; fixed room geometry unchanged"
+        },
+        {
+          "id": "F02",
+          "name": "Original-order case",
+          "room": "Catalog A",
+          "box": [
+            0.6,
+            6.5,
+            2.8,
+            0.9
+          ],
+          "height_m": 1.6,
+          "placement": "portable furniture; fixed room geometry unchanged"
+        },
+        {
+          "id": "F03",
+          "name": "Insulated sample cabinet",
+          "room": "Catalog A",
+          "box": [
+            6.6000000000000005,
+            0.6,
+            2.8,
+            0.9
+          ],
+          "height_m": 1.6,
+          "placement": "portable furniture; fixed room geometry unchanged"
+        },
+        {
+          "id": "F04",
+          "name": "Independent report stand",
+          "room": "Catalog A",
+          "box": [
+            6.6000000000000005,
+            6.5,
+            2.8,
+            0.9
+          ],
+          "height_m": 1.6,
+          "placement": "portable furniture; fixed room geometry unchanged"
+        },
+        {
+          "id": "F05",
+          "name": "Copy desk",
+          "room": "Catalog B",
+          "box": [
+            14.6,
+            0.6,
+            2.8,
+            0.9
+          ],
+          "height_m": 0.8,
+          "placement": "portable furniture; fixed room geometry unchanged"
+        },
+        {
+          "id": "F06",
+          "name": "Catalog cabinet",
+          "room": "Catalog B",
+          "box": [
+            14.6,
+            6.5,
+            2.8,
+            0.9
+          ],
+          "height_m": 1.6,
+          "placement": "portable furniture; fixed room geometry unchanged"
+        },
+        {
+          "id": "F07",
+          "name": "Restricted record cabinet",
+          "room": "Archive A",
+          "box": [
+            0.6,
+            8.6,
+            2.8,
+            0.9
+          ],
+          "height_m": 1.6,
+          "placement": "portable furniture; fixed room geometry unchanged"
+        },
+        {
+          "id": "F08",
+          "name": "Returns cart",
+          "room": "Archive A",
+          "box": [
+            0.6,
+            16.5,
+            2.8,
+            0.9
+          ],
+          "height_m": 0.8,
+          "placement": "portable furniture; fixed room geometry unchanged"
+        },
+        {
+          "id": "F09",
+          "name": "Family record cabinet",
+          "room": "Archive B",
+          "box": [
+            14.6,
+            8.6,
+            2.8,
+            0.9
+          ],
+          "height_m": 1.6,
+          "placement": "portable furniture; fixed room geometry unchanged"
+        },
+        {
+          "id": "F10",
+          "name": "Supervised reading desk",
+          "room": "Archive B",
+          "box": [
+            14.6,
+            16.5,
+            2.8,
+            0.9
+          ],
+          "height_m": 0.8,
+          "placement": "portable furniture; fixed room geometry unchanged"
+        }
+      ],
+      "art": {
+        "file": "THREATS-01.png",
+        "grid": [
+          2,
+          2
+        ],
+        "column": 1,
+        "row": 1
+      },
+      "origin": "Southwest building corner; metres. Existing building center is settlement-local.",
+      "detail_authority": "Normal-state furniture is new. Inherited building placement, footprint, rooms, doors and levels are unchanged."
+    },
+    {
+      "id": "SITE-07",
+      "name": "Ashmouth Freight Yard",
+      "type": "site",
+      "ownership": "Riven Claw occupies a disused freight site; civilian Cinder Cuts is elsewhere.",
+      "history": "After freight was diverted, this loading terrace lost its regular traffic. It retains a refuge lodge and service approaches because those were useful before Brakka arrived. The band’s occupation turns a workplace into a coercive store without making its original builders or the neighboring population complicit.",
+      "daily_life": "Dreg keeps crates sorted by use and remembers which harness needs repair. The west approach admits wagons; the east route is a narrow foot path. A fenced gas trough stays outside the working court. Ashmaws follow heat plumes in the wider terrain; neither Brakka nor Dreg commands them.",
+      "dramatic_use": "The loading platform makes a public order visible. When Brakka demands spectacle and Dreg protects usable supplies, everyone on the floor sees the split. Escape follows the registered approaches; the shelter offers cover and rest, not a hidden passage to town.",
+      "geometry": {
+        "id": "SITE-07",
+        "name": "Ashmouth Freight Yard",
+        "width_m": 180,
+        "depth_m": 120,
+        "zones": [
+          {
+            "name": "West approach",
+            "box": [
+              -90.0,
+              -60.0,
+              39.6,
+              120
+            ]
+          },
+          {
+            "name": "Encounter field",
+            "box": [
+              -50.400000000000006,
+              -60.0,
+              100.80000000000001,
+              120
+            ]
+          },
+          {
+            "name": "East approach",
+            "box": [
+              50.400000000000006,
+              -60.0,
+              39.6,
+              120
+            ]
+          }
+        ],
+        "refuge": {
+          "module": "MOD-12",
+          "center_m": [
+            0,
+            38.4,
+            0
+          ],
+          "width_m": 20,
+          "depth_m": 16
+        },
+        "route_points_m": [
+          [
+            -90.0,
+            0,
+            0
+          ],
+          [
+            -50.400000000000006,
+            0,
+            0
+          ],
+          [
+            0,
+            -30.0,
+            0
+          ],
+          [
+            50.400000000000006,
+            0,
+            0
+          ],
+          [
+            90.0,
+            0,
+            0
+          ]
+        ],
+        "notes": "One wagon approach, one narrow foot path, fenced gas trough; both routes are mapped.",
+        "hazard": "Ashmaws follow heat plumes; gang patrols guard movable stolen freight."
+      },
+      "base_site": {
+        "id": "SITE-07",
+        "name": "Ashmouth Freight Yard",
+        "region": "REG-07",
+        "x": -142,
+        "y": -43,
+        "width_m": 180,
+        "height_m": 120,
+        "approach": "Cinder Cuts eastern spur",
+        "appearance": "Raider-controlled storage and a former loading platform; occupied civilian terraces are elsewhere.",
+        "hazard": "Ashmaws follow heat plumes; gang patrols guard movable stolen freight.",
+        "story": "Dreg refuses an order to burn supplies and splits the crew.",
+        "layout": "One wagon approach, one narrow foot path, fenced gas trough; both routes are mapped."
+      },
+      "features": [
+        {
+          "id": "T01",
+          "name": "Refuge lodge",
+          "box": [
+            -10,
+            30.4,
+            20,
+            16
+          ],
+          "kind": "refuge"
+        },
+        {
+          "id": "T02",
+          "name": "West covered freight",
+          "box": [
+            -40,
+            4,
+            18,
+            12
+          ],
+          "kind": "storage"
+        },
+        {
+          "id": "T03",
+          "name": "East covered freight",
+          "box": [
+            22,
+            4,
+            18,
+            12
+          ],
+          "kind": "storage"
+        },
+        {
+          "id": "T04",
+          "name": "Loading platform",
+          "box": [
+            -20,
+            -45,
+            40,
+            10
+          ],
+          "kind": "deck"
+        },
+        {
+          "id": "T05",
+          "name": "Fenced gas trough",
+          "box": [
+            30,
+            28,
+            32,
+            12
+          ],
+          "kind": "hazard"
+        },
+        {
+          "id": "T06",
+          "name": "Share-count table",
+          "box": [
+            -28,
+            20,
+            5,
+            3
+          ],
+          "kind": "prop"
+        },
+        {
+          "id": "T07",
+          "name": "Harness repair station",
+          "box": [
+            23,
+            20,
+            5,
+            3
+          ],
+          "kind": "prop"
+        }
+      ],
+      "routes": [
+        {
+          "name": "Wagon approach / 6 m",
+          "width_m": 6,
+          "points": [
+            [
+              -90,
+              0
+            ],
+            [
+              -50.4,
+              0
+            ],
+            [
+              0,
+              -30
+            ]
+          ],
+          "mode": "wagon"
+        },
+        {
+          "name": "Foot approach / 1.5 m",
+          "width_m": 1.5,
+          "points": [
+            [
+              90,
+              0
+            ],
+            [
+              50.4,
+              0
+            ],
+            [
+              0,
+              -30
+            ]
+          ],
+          "mode": "foot"
+        },
+        {
+          "name": "Shelter connection / 3 m",
+          "width_m": 3,
+          "points": [
+            [
+              0,
+              -30
+            ],
+            [
+              0,
+              30.4
+            ]
+          ],
+          "mode": "foot"
+        }
+      ],
+      "art": {
+        "file": "THREATS-02.png",
+        "grid": [
+          1,
+          2
+        ],
+        "column": 0,
+        "row": 0,
+        "crop_px": [
+          0,
+          45,
+          1536,
+          452
+        ]
+      },
+      "origin": "Site center (0,0); metres, x east, y north. Elevation is relative to the occupied deck or terrace, not sea level.",
+      "detail_authority": "Fixed 3.0 site bounds, regional coordinates and refuge footprints retained. New measured feature and route layers refine the generic encounter field."
+    },
+    {
+      "id": "SITE-05",
+      "name": "Blackwake Mooring",
+      "type": "site",
+      "ownership": "Abandoned mooring occupied by Serik’s three-craft crew.",
+      "history": "The platform was built for regulated cargo transfer within a local liftstone field. Its counterweights and load rules are older than Serik’s claim to the place. His occupation gives him a berth and a stage; it does not give him ownership of the air routes or control over the field.",
+      "daily_life": "One main winch deck feeds three docking arms. The rear refuge lodge uses the existing two shelter bays as separate refuge cells. A short connector links it to the deck. Each craft has a finite load envelope and must be counted in the scene state: berthed, arriving or away. Three small craft cannot become an unseen reserve fleet.",
+      "dramatic_use": "Eri recognizes a routine loading limit that Serik is trying to conceal. The heroes free people by making a viable departure possible, not by cutting every support and hoping the platform floats anyway. Captives and cargo compete for capacity; useful evidence may have to be left behind.",
+      "geometry": {
+        "id": "SITE-05",
+        "name": "Blackwake Mooring",
+        "width_m": 160,
+        "depth_m": 100,
+        "zones": [
+          {
+            "name": "West approach",
+            "box": [
+              -80.0,
+              -50.0,
+              35.2,
+              100
+            ]
+          },
+          {
+            "name": "Encounter field",
+            "box": [
+              -44.800000000000004,
+              -50.0,
+              89.60000000000001,
+              100
+            ]
+          },
+          {
+            "name": "East approach",
+            "box": [
+              44.800000000000004,
+              -50.0,
+              35.2,
+              100
+            ]
+          }
+        ],
+        "refuge": {
+          "module": "MOD-12",
+          "center_m": [
+            0,
+            32.0,
+            0
+          ],
+          "width_m": 20,
+          "depth_m": 16
+        },
+        "route_points_m": [
+          [
+            -80.0,
+            0,
+            0
+          ],
+          [
+            -44.800000000000004,
+            0,
+            0
+          ],
+          [
+            0,
+            -25.0,
+            0
+          ],
+          [
+            44.800000000000004,
+            0,
+            0
+          ],
+          [
+            80.0,
+            0,
+            0
+          ]
+        ],
+        "notes": "Three docking arms, two refuge cells, exposed winch deck; no infinite aircraft hangar.",
+        "hazard": "Wind shear, overloaded spans and hostage coercion."
+      },
+      "base_site": {
+        "id": "SITE-05",
+        "name": "Blackwake Mooring",
+        "region": "REG-05",
+        "x": 250,
+        "y": 145,
+        "width_m": 160,
+        "height_m": 100,
+        "approach": "Aurel Quay eastern flight lane",
+        "appearance": "An abandoned counterweight platform with three small pirate craft and a repair gantry.",
+        "hazard": "Wind shear, overloaded spans and hostage coercion.",
+        "story": "Eri must use a former rescue captain’s own loading rules against his ransom scheme.",
+        "layout": "Three docking arms, two refuge cells, exposed winch deck; no infinite aircraft hangar."
+      },
+      "features": [
+        {
+          "id": "T01",
+          "name": "Refuge lodge / two cells",
+          "box": [
+            -10,
+            24,
+            20,
+            16
+          ],
+          "kind": "refuge"
+        },
+        {
+          "id": "T02",
+          "name": "Main winch deck",
+          "box": [
+            -32,
+            -18,
+            64,
+            38
+          ],
+          "kind": "deck"
+        },
+        {
+          "id": "T03",
+          "name": "West docking arm",
+          "box": [
+            -67,
+            -12,
+            35,
+            8
+          ],
+          "kind": "deck"
+        },
+        {
+          "id": "T04",
+          "name": "East docking arm",
+          "box": [
+            32,
+            -12,
+            35,
+            8
+          ],
+          "kind": "deck"
+        },
+        {
+          "id": "T05",
+          "name": "South docking arm",
+          "box": [
+            -4,
+            -45,
+            8,
+            27
+          ],
+          "kind": "deck"
+        },
+        {
+          "id": "T06",
+          "name": "Refuge connector",
+          "box": [
+            -3,
+            20,
+            6,
+            4
+          ],
+          "kind": "deck"
+        },
+        {
+          "id": "T07",
+          "name": "Winch working envelope",
+          "box": [
+            -8,
+            -4,
+            16,
+            12
+          ],
+          "kind": "prop"
+        },
+        {
+          "id": "T08",
+          "name": "West craft berth envelope",
+          "box": [
+            -77,
+            0,
+            20,
+            9
+          ],
+          "kind": "berth"
+        },
+        {
+          "id": "T09",
+          "name": "East craft berth envelope",
+          "box": [
+            57,
+            0,
+            20,
+            9
+          ],
+          "kind": "berth"
+        },
+        {
+          "id": "T10",
+          "name": "South craft berth envelope",
+          "box": [
+            -10,
+            -49,
+            20,
+            8
+          ],
+          "kind": "berth"
+        },
+        {
+          "id": "T11",
+          "name": "West boarding plank",
+          "box": [
+            -61.5,
+            -4,
+            3,
+            4
+          ],
+          "kind": "deck"
+        },
+        {
+          "id": "T12",
+          "name": "East boarding plank",
+          "box": [
+            58.5,
+            -4,
+            3,
+            4
+          ],
+          "kind": "deck"
+        }
+      ],
+      "routes": [
+        {
+          "name": "Deck circulation",
+          "width_m": 2,
+          "points": [
+            [
+              -60,
+              0
+            ],
+            [
+              -60,
+              -8
+            ],
+            [
+              -20,
+              -8
+            ],
+            [
+              -20,
+              14
+            ],
+            [
+              0,
+              14
+            ],
+            [
+              0,
+              24
+            ]
+          ],
+          "mode": "deck"
+        },
+        {
+          "name": "East approach on arm",
+          "width_m": 2,
+          "points": [
+            [
+              60,
+              0
+            ],
+            [
+              60,
+              -8
+            ],
+            [
+              20,
+              -8
+            ],
+            [
+              20,
+              14
+            ],
+            [
+              0,
+              14
+            ]
+          ],
+          "mode": "deck"
+        },
+        {
+          "name": "South approach on arm",
+          "width_m": 2,
+          "points": [
+            [
+              0,
+              -40
+            ],
+            [
+              0,
+              -14
+            ],
+            [
+              -20,
+              -14
+            ],
+            [
+              -20,
+              14
+            ]
+          ],
+          "mode": "deck"
+        }
+      ],
+      "art": {
+        "file": "THREATS-02.png",
+        "grid": [
+          1,
+          2
+        ],
+        "column": 0,
+        "row": 1,
+        "crop_px": [
+          0,
+          500,
+          1536,
+          1024
+        ]
+      },
+      "origin": "Site center (0,0); metres, x east, y north. Elevation is relative to the occupied deck or terrace, not sea level.",
+      "detail_authority": "Fixed 3.0 site bounds, regional coordinates and refuge footprints retained. New measured feature and route layers refine the generic encounter field."
+    },
+    {
+      "id": "SITE-06",
+      "name": "The Cut Span",
+      "type": "site",
+      "ownership": "A genuinely closed crossing inspected by Still Bell and independent reviewers.",
+      "history": "The deliberate severing belongs to the historical response to the Severance. Ossa’s later forged prohibition is a separate act. The north and south inspection places allow evidence to be gathered without reopening the gap. The longer foot detour still takes two days and leaves this sheet.",
+      "daily_life": "Inspectors approach their own abutment, compare marks and stop at the guarded edge. Detached couplings are examined behind the north rail. The north refuge remains at its inherited position; a measured south inspection lodge completes the two-house description already established in the atlas.",
+      "dramatic_use": "Expose a false order beside a dangerous structure that deserves a truthful warning. A refusal to reconnect can be the responsible outcome even when the official who demanded it has lied. No visual hint should turn the gap into an easy leap for the heroes.",
+      "geometry": {
+        "id": "SITE-06",
+        "name": "The Cut Span",
+        "width_m": 180,
+        "depth_m": 100,
+        "zones": [
+          {
+            "name": "West approach",
+            "box": [
+              -90.0,
+              -50.0,
+              39.6,
+              100
+            ]
+          },
+          {
+            "name": "Encounter field",
+            "box": [
+              -50.400000000000006,
+              -50.0,
+              100.80000000000001,
+              100
+            ]
+          },
+          {
+            "name": "East approach",
+            "box": [
+              50.400000000000006,
+              -50.0,
+              39.6,
+              100
+            ]
+          }
+        ],
+        "refuge": {
+          "module": "MOD-12",
+          "center_m": [
+            0,
+            32.0,
+            0
+          ],
+          "width_m": 20,
+          "depth_m": 16
+        },
+        "route_points_m": [
+          [
+            -90.0,
+            0,
+            0
+          ],
+          [
+            -50.400000000000006,
+            0,
+            0
+          ],
+          [
+            0,
+            -25.0,
+            0
+          ],
+          [
+            50.400000000000006,
+            0,
+            0
+          ],
+          [
+            90.0,
+            0,
+            0
+          ]
+        ],
+        "notes": "North and south abutments are separate; a safe foot detour takes two days and does not reconnect the span.",
+        "hazard": "Real coupled resonance hazard and choirwraith territory beyond the marked ridge."
+      },
+      "base_site": {
+        "id": "SITE-06",
+        "name": "The Cut Span",
+        "region": "REG-06",
+        "x": -70,
+        "y": 242,
+        "width_m": 180,
+        "height_m": 100,
+        "approach": "Hushvale southern ridge",
+        "appearance": "A deliberately severed resonance bridge with two inspection houses and a visible gap.",
+        "hazard": "Real coupled resonance hazard and choirwraith territory beyond the marked ridge.",
+        "story": "A forged closure is exposed beside a genuine closure that must stay in force.",
+        "layout": "North and south abutments are separate; a safe foot detour takes two days and does not reconnect the span."
+      },
+      "features": [
+        {
+          "id": "T01",
+          "name": "North inspection refuge",
+          "box": [
+            -10,
+            24,
+            20,
+            16
+          ],
+          "kind": "refuge"
+        },
+        {
+          "id": "T02",
+          "name": "South inspection lodge",
+          "box": [
+            -10,
+            -42,
+            20,
+            16
+          ],
+          "kind": "refuge"
+        },
+        {
+          "id": "T03",
+          "name": "North abutment",
+          "box": [
+            -18,
+            10,
+            36,
+            14
+          ],
+          "kind": "deck"
+        },
+        {
+          "id": "T04",
+          "name": "South abutment",
+          "box": [
+            -18,
+            -24,
+            36,
+            14
+          ],
+          "kind": "deck"
+        },
+        {
+          "id": "T05",
+          "name": "Blocked span gap",
+          "box": [
+            -90,
+            -10,
+            180,
+            20
+          ],
+          "kind": "hazard"
+        },
+        {
+          "id": "T06",
+          "name": "Detached coupling display",
+          "box": [
+            -30,
+            18,
+            7,
+            4
+          ],
+          "kind": "prop"
+        }
+      ],
+      "routes": [
+        {
+          "name": "North safe approach / 2 m",
+          "width_m": 2,
+          "points": [
+            [
+              25,
+              50
+            ],
+            [
+              25,
+              26
+            ],
+            [
+              14,
+              26
+            ],
+            [
+              14,
+              16
+            ],
+            [
+              0,
+              16
+            ]
+          ],
+          "mode": "foot"
+        },
+        {
+          "name": "South safe approach / 2 m",
+          "width_m": 2,
+          "points": [
+            [
+              25,
+              -50
+            ],
+            [
+              25,
+              -26
+            ],
+            [
+              14,
+              -26
+            ],
+            [
+              14,
+              -16
+            ],
+            [
+              0,
+              -16
+            ]
+          ],
+          "mode": "foot"
+        }
+      ],
+      "art": {
+        "file": "THREATS-03.png",
+        "grid": [
+          1,
+          1
+        ],
+        "column": 0,
+        "row": 0
+      },
+      "origin": "Site center (0,0); metres, x east, y north. Elevation is relative to the occupied deck or terrace, not sea level.",
+      "detail_authority": "Fixed 3.0 site bounds, regional coordinates and refuge footprints retained. New measured feature and route layers refine the generic encounter field."
+    }
+  ],
+  "relationships": [
+    [
+      "FAC-04",
+      "FAC-05",
+      "Limited paid information jobs",
+      "Corvin buys from Nix; Glass Thread can refuse. No command relationship."
+    ],
+    [
+      "FAC-04",
+      "FAC-06",
+      "Occasional fenced freight",
+      "Bale buys selected goods indirectly; Veyra does not command Brakka’s raid."
+    ],
+    [
+      "FAC-06",
+      "FAC-08",
+      "Intermittent cargo trade",
+      "Brakka and Serik bargain over particular shipments. Distance and transport matter."
+    ],
+    [
+      "IND-01",
+      "FAC-04",
+      "Commissions and fencing",
+      "Pip chooses profitable deals and is responsible for knowingly handling stolen goods."
+    ],
+    [
+      "IND-01",
+      "FAC-06",
+      "Goods and sightings",
+      "Vessa sells observations; Pip can refuse. The relationship is not loyal service."
+    ],
+    [
+      "FAC-03",
+      "IND-01",
+      "Occasional information purchase",
+      "Lark’s transaction does not make the Wayfarers a criminal ally. Provenance still matters."
+    ],
+    [
+      "FAC-09",
+      "FAC-07",
+      "Disputed closure authority",
+      "Free Harbors challenges monopoly over judgment while retaining valid safety evidence."
+    ],
+    [
+      "FAC-02",
+      "FAC-09",
+      "Independent physical testing",
+      "Commonworks can test a claim without owning local decisions."
+    ]
+  ],
+  "defenders": [
+    {
+      "faction": "FAC-01",
+      "work": "Keep home functioning while a limited team investigates. Pell explains choices; Iona and Bot compare records to equipment; Mara, Jun, Sori and Edda sustain ordinary life.",
+      "temptation": "Treat every visitor as a potential threat, sacrificing the welcome being defended.",
+      "correction": "Use specific evidence and proportionate access states. The public entrance and inner protective closure remain distinct."
+    },
+    {
+      "faction": "FAC-02",
+      "work": "Teach maintenance, provide independent inspection and make repairs reproducible. Gorilla works with Oren and local crews.",
+      "temptation": "Let one indispensable expert become a veto on every temporary repair.",
+      "correction": "State limits, transfer skills and allow carefully bounded local decisions."
+    },
+    {
+      "faction": "FAC-03",
+      "work": "Compare route reports, escort finite convoys and rescue people without powerful sponsors.",
+      "temptation": "Keep a secret to preserve confidence, or promise a schedule that cannot survive a rescue stop.",
+      "correction": "Sela discloses uncertainty and her own role in the flood-funding agreement. Capacity stays visible."
+    },
+    {
+      "faction": "FAC-07",
+      "work": "Protect refuge rights and local knowledge across independent communities.",
+      "temptation": "Treat outsiders as automatically untrustworthy or let a wealthy port dominate the timetable.",
+      "correction": "Share enough for a specific cooperative task while leaving ownership and review with affected communities."
+    }
+  ],
+  "evidence_ledger": [
+    {
+      "id": "EV-01",
+      "claim": "D17 is duplicated",
+      "first_audience": "S1E01",
+      "observable": "Bot sees a bounded receipt discrepancy and preserves both copies.",
+      "innocent_possibility": "An ordinary resend or clerical error remains possible.",
+      "proof": "Later source comparison plus a physical access witness establishes the limited replay.",
+      "proves_not": "It does not prove gate control, the intruder’s identity or an approaching raid.",
+      "reveal": "Tessera attribution later in season one, after the audience has met the crew."
+    },
+    {
+      "id": "EV-02",
+      "claim": "Snow notices unfamiliar canopy resin",
+      "first_audience": "S1E01",
+      "observable": "She pauses at ordinary residue on a legitimate visitor’s gear and looks back.",
+      "innocent_possibility": "The visitor has traveled through the canopy for legitimate work.",
+      "proof": "Later identification of the resin explains the behavior.",
+      "proves_not": "The scent is not linked to D17, guilt, hacking or prophecy.",
+      "reveal": "A small later clarification, not a villain reveal."
+    },
+    {
+      "id": "EV-03",
+      "claim": "Some households were omitted from restoration routes",
+      "first_audience": "S1E03-04",
+      "observable": "A community’s account differs from an official listing.",
+      "innocent_possibility": "Some gaps may be clerical or obsolete boundaries; motive is not established by absence alone.",
+      "proof": "Independent household testimony and surviving route accounts establish the actual omission.",
+      "proves_not": "The real grievance does not authorize Nix’s forged guidance.",
+      "reveal": "Keep the historical omission true after exposing Glass Thread."
+    },
+    {
+      "id": "EV-04",
+      "claim": "Nix leads Glass Thread",
+      "first_audience": "S1E03 familiar language; S1E05 link",
+      "observable": "An old joke precedes recognition; distinctive equipment later connects Nix to the crew.",
+      "innocent_possibility": "A familiar knot or a shared tool alone is not unique identification.",
+      "proof": "Direct encounter plus corroborated relay evidence.",
+      "proves_not": "Nix did not design every delay or specifically intend the root-bridge crossing.",
+      "reveal": "Season-one midpoint. Madger chooses the rescue over pursuit."
+    },
+    {
+      "id": "EV-05",
+      "claim": "Veyra paid for the second flood convoy",
+      "first_audience": "S1E06",
+      "observable": "A charter account contains the payment; Sela’s omission becomes visible.",
+      "innocent_possibility": "A depot mark alone could denote handling rather than funding.",
+      "proof": "Independent charter account and surviving boat operator testimony agree.",
+      "proves_not": "Veyra did not cause the flood; rescue funding creates no right to own the Burrow.",
+      "reveal": "Resolve the fact in episode six. The political offer follows in episode seven."
+    },
+    {
+      "id": "EV-06",
+      "claim": "Brakka’s raid is independent",
+      "first_audience": "S1E07-09",
+      "observable": "Strained outside routes concentrate supplies; raiders choose the opportunity.",
+      "innocent_possibility": "A traded crate or paid message does not prove one faction commands another.",
+      "proof": "Separate objectives, route observations and accounts establish the band’s decision.",
+      "proves_not": "No all-controlling villain alliance is revealed.",
+      "reveal": "The season-one raid fails without resolving every wider antagonist."
+    },
+    {
+      "id": "EV-07",
+      "claim": "Kavar’s maintenance account is false",
+      "first_audience": "Ossara story, later season",
+      "observable": "The dated account conflicts with the condition and known work on a competing pump.",
+      "innocent_possibility": "A changed part or incomplete copy could explain one discrepancy.",
+      "proof": "Service witness, physical inspection and original records establish the deliberate closure.",
+      "proves_not": "Actual drought and aquifer limits remain real.",
+      "reveal": "Exposure leads to supervised repair and fair allocation, not endless water."
+    },
+    {
+      "id": "EV-08",
+      "claim": "Ossa forged one modern prohibition",
+      "first_audience": "Season three",
+      "observable": "Material and dating conflict in an otherwise credible record.",
+      "innocent_possibility": "A later authorized copy may use newer material.",
+      "proof": "Original archive version, witness and field comparison establish the alteration.",
+      "proves_not": "The Severance did happen, and the Cut Span is still dangerous.",
+      "reveal": "Separate the false order from the genuine closure in the same story."
+    }
+  ],
+  "season_one_ledger": [
+    {
+      "episode": "01",
+      "title": "A Day Worth Keeping",
+      "baseline_plot": "Warmth, play and competence; D17 duplicate receipt and Snow’s unrelated scent create two small pauses.",
+      "character_turn": "Madger accepts help with an ordinary task. No attack or named villain reveal.",
+      "pressure": "Ordinary life functions. Only two small pauses.",
+      "allowed_audience_knowledge": "No villain names, exterior cutaways, attack, sinister voiceover or proof of a conspiracy."
+    },
+    {
+      "episode": "02",
+      "title": "The Wagon That Did Not Arrive",
+      "baseline_plot": "A missed arrival has real people attached to it. Two independent reports disagree; a legitimate delay becomes a rescue inquiry.",
+      "character_turn": "Madger states what he knows and leaves a functioning team at home.",
+      "pressure": "Conflicting reports create a practical rescue inquiry.",
+      "allowed_audience_knowledge": "There are missing people and uncertain information; no automatic criminal attribution."
+    },
+    {
+      "episode": "03",
+      "title": "Where the Road Walks",
+      "baseline_plot": "A local guide leads the group onto moving crowns. A familiar joke announces Nix’s return before the criminal connection is known.",
+      "character_turn": "His longing for the old friendship weakens his judgment.",
+      "pressure": "Local knowledge complicates the old friendship.",
+      "allowed_audience_knowledge": "Nix is an old friend; leadership of Glass Thread remains unproved."
+    },
+    {
+      "episode": "04",
+      "title": "The Wrong Way Home",
+      "baseline_plot": "A forged route instruction draws travelers toward a closing bridge. Bot compares the instruction with physical travel conditions; Snow locates a real trail.",
+      "character_turn": "Madger corrects a confident error publicly and accepts the guide’s route.",
+      "pressure": "A message conflicts with the physical world.",
+      "allowed_audience_knowledge": "Someone issued harmful guidance; exact culpability still needs corroboration."
+    },
+    {
+      "episode": "05",
+      "title": "Someone Below",
+      "baseline_plot": "Nix’s distinctive improvised equipment exposes the link to Glass Thread. Madger can pursue the fleeing friend or secure the travelers below.",
+      "character_turn": "He chooses the rescue and loses the best portable evidence; the choice changes the investigation.",
+      "pressure": "Recognition and rescue collide.",
+      "allowed_audience_knowledge": "Nix’s connection becomes clear; the best portable evidence is lost during rescue."
+    },
+    {
+      "episode": "06",
+      "title": "The Price of Rescue",
+      "baseline_plot": "A charter record and the surviving boat operator independently establish Veyra’s flood funding. Sela admits her deliberate omission.",
+      "character_turn": "Madger can acknowledge an enemy’s good act without accepting her control.",
+      "pressure": "A true past rescue becomes a present moral argument.",
+      "allowed_audience_knowledge": "Veyra’s funding is established; Sela admits omission."
+    },
+    {
+      "episode": "07",
+      "title": "An Offer at the Gate",
+      "baseline_plot": "Veyra offers dependable supply in return for exclusive control. Brakka learns that strained outside routes have concentrated stores in the Burrow.",
+      "character_turn": "Madger gives residents the complete information before they decide.",
+      "pressure": "An exclusive supply offer and an independent raider opportunity develop.",
+      "allowed_audience_knowledge": "Residents decide with the relevant facts. Brakka is not Veyra’s subordinate."
+    },
+    {
+      "episode": "08",
+      "title": "Above and Below",
+      "baseline_plot": "Brakka’s independent raid begins. Public spaces evacuate; physical inner defenses hold while contradictory outside messages complicate the response.",
+      "character_turn": "Madger follows a role assigned by the defense plan rather than inventing a private rescue mission.",
+      "pressure": "The outer public district evacuates; inner physical protection holds.",
+      "allowed_audience_knowledge": "A raid and confused outside messages are separate problems. No remote gate opening."
+    },
+    {
+      "episode": "09",
+      "title": "Hold the Way",
+      "baseline_plot": "Gorilla protects a retreat, Bot verifies local signals, Snow finds stranded travelers and Madger secures the final crossing. Nix helps stop one consequence of the intrusion but escapes accountability for the rest.",
+      "character_turn": "The missing group arrives through teamwork and local expertise; Brakka’s immediate raid fails.",
+      "pressure": "Four complementary hero roles and residents’ expertise complete the retreat.",
+      "allowed_audience_knowledge": "Nix makes one limited repair and escapes fuller accountability."
+    },
+    {
+      "episode": "10",
+      "title": "A Place to Return To",
+      "baseline_plot": "Recovery, disagreement, thanks and a shared meal. Evidence points toward other erased refuge routes; residents choose a limited outward rescue partnership.",
+      "character_turn": "Resolve the missing caravan and local attack. End with a new voyage chosen freely, not a withheld rescue ending.",
+      "pressure": "Recovery addresses missing travelers and the local raid; outward work is chosen.",
+      "allowed_audience_knowledge": "Immediate rescue and raid are resolved. Broader mysteries invite a freely chosen next journey."
+    }
+  ],
+  "pilot_reveal_lock": {
+    "duration_seconds": 300,
+    "setting": "Inside the Burrow only",
+    "beats": [
+      {
+        "start": 0,
+        "end": 75,
+        "purpose": "Joy and competence",
+        "content": "Breakfast preparation, greeting neighbors, playful canine movement and ordinary work establish a home worth defending."
+      },
+      {
+        "start": 75,
+        "end": 165,
+        "purpose": "Four heroes belong here",
+        "content": "Madger accepts help, Gorilla shares a task, Bot participates without dominating, and Snow responds to familiar cues. Residents have their own work."
+      },
+      {
+        "start": 165,
+        "end": 225,
+        "purpose": "One bounded record question",
+        "content": "D17 interrupts an otherwise successful delivery check. Bot preserves it without announcing a culprit or danger."
+      },
+      {
+        "start": 225,
+        "end": 265,
+        "purpose": "A separate sensory pause",
+        "content": "Snow notices ordinary canopy resin on legitimate gear. The shot neither links it to D17 nor makes the traveler threatening."
+      },
+      {
+        "start": 265,
+        "end": 300,
+        "purpose": "Warmth remains; one question stays open",
+        "content": "The community finishes an ordinary shared moment. A later glance at the saved duplicate leaves a question, without an exterior villain reveal."
+      }
+    ],
+    "status": "Timing envelope for a future screenplay and edit, not a claim that a five-minute video exists."
+  },
+  "canon_clarifications": [
+    {
+      "topic": "Slate Arcade Rooms",
+      "rule": "New business alias for the already registered lodging building EXT-03-U04. Glass Thread temporarily leases upper Guest E during a later unnumbered scene. The landlord, other guests and the North Relay Rooms are not made criminal collaborators. No permanent headquarters or new population is added."
+    },
+    {
+      "topic": "Kest Depot height",
+      "rule": "MOD-11 notes specify roof eaves at 6 m; generic floor_height_m 3.2 is a story-level datum, not a warehouse roof height. The new sheet labels this distinction without changing the inherited footprint."
+    },
+    {
+      "topic": "The Cut Span route",
+      "rule": "The generic v3.0 encounter polyline is a staging guide, not permission to walk across the severed span. This edition resolves safe north and south approach paths separately and retains the 20 m blocked gap. The two-day detour leaves the sheet; no short bypass is added."
+    },
+    {
+      "topic": "Site detail precedence",
+      "rule": "Existing site footprints, regional coordinates and refuge footprints remain fixed. New features fill previously schematic encounter fields. The 3.2 detailed collision and approach layers control local staging within those fixed bounds."
+    },
+    {
+      "topic": "Monster behavior",
+      "rule": "Ashmaws respond to heat plumes and choirwraiths occupy the dangerous ridge beyond inspection limits. They are environmental beings with established behavior, not faction-controlled weapons or a reason to label a whole species evil."
+    },
+    {
+      "topic": "Burrow continuity",
+      "rule": "Public welcome and inner protective closure remain distinct. No secret bypass, magical master machine or unregistered tunnel is introduced. Snow remains quadrupedal and non-speaking; approved hero likenesses and voices continue to control production."
+    }
+  ]
+}

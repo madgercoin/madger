@@ -1,0 +1,86 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="840" viewBox="0 0 1200 840">
+<rect width="1200" height="840" fill="#faf6ed"/>
+<text x="45.00" y="40.00" font-family="DejaVu Sans,sans-serif" font-size="14" fill="#173d3b" text-anchor="start" font-weight="bold">MADGER / CONFLICT LOCATIONS</text>
+<text x="45.00" y="80.00" font-family="DejaVu Sans,sans-serif" font-size="30" fill="#173d3b" text-anchor="start" font-weight="bold">Blackwake Mooring</text>
+<text x="45.00" y="109.00" font-family="DejaVu Sans,sans-serif" font-size="13" fill="#173d3b" text-anchor="start" font-weight="normal">SITE-05 / Detailed encounter plan / fixed site bounds</text>
+<text x="1155.00" y="40.00" font-family="DejaVu Sans,sans-serif" font-size="13" fill="#173d3b" text-anchor="end" font-weight="normal">3.2.0</text>
+<line x1="45.00" y1="125.00" x2="1155.00" y2="125.00" stroke="#b8a47e" stroke-width="1"/>
+<rect x="58.00" y="190.25" width="700.00" height="437.50" fill="#eeeae0" stroke="#385955" stroke-width="1.5"/>
+<rect x="58.00" y="190.25" width="700.00" height="437.50" fill="#dce8e9" stroke="#8caaa8" stroke-width="1"/>
+<rect x="364.25" y="234.00" width="87.50" height="70.00" fill="#ebd2a2" stroke="#385955" stroke-width="1.5"/>
+<rect x="268.00" y="321.50" width="280.00" height="166.25" fill="#dfddd0" stroke="#385955" stroke-width="1.5"/>
+<rect x="114.88" y="426.50" width="153.12" height="35.00" fill="#dfddd0" stroke="#385955" stroke-width="1.5"/>
+<rect x="548.00" y="426.50" width="153.12" height="35.00" fill="#dfddd0" stroke="#385955" stroke-width="1.5"/>
+<rect x="390.50" y="487.75" width="35.00" height="118.12" fill="#dfddd0" stroke="#385955" stroke-width="1.5"/>
+<rect x="394.88" y="304.00" width="26.25" height="17.50" fill="#dfddd0" stroke="#385955" stroke-width="1.5"/>
+<rect x="373.00" y="374.00" width="70.00" height="52.50" fill="#bfa474" stroke="#385955" stroke-width="1.5"/>
+<rect x="71.12" y="369.62" width="87.50" height="39.38" fill="#dae5ef" stroke="#385955" stroke-width="1.5"/>
+<rect x="657.38" y="369.62" width="87.50" height="39.38" fill="#dae5ef" stroke="#385955" stroke-width="1.5"/>
+<rect x="364.25" y="588.38" width="87.50" height="35.00" fill="#dae5ef" stroke="#385955" stroke-width="1.5"/>
+<rect x="138.94" y="409.00" width="13.12" height="17.50" fill="#dfddd0" stroke="#385955" stroke-width="1.5"/>
+<rect x="663.94" y="409.00" width="13.12" height="17.50" fill="#dfddd0" stroke="#385955" stroke-width="1.5"/>
+<line x1="145.50" y1="409.00" x2="145.50" y2="444.00" stroke="#246e8c" stroke-width="8.75" stroke-dasharray="6 4"/>
+<line x1="145.50" y1="444.00" x2="320.50" y2="444.00" stroke="#246e8c" stroke-width="8.75" stroke-dasharray="6 4"/>
+<line x1="320.50" y1="444.00" x2="320.50" y2="347.75" stroke="#246e8c" stroke-width="8.75" stroke-dasharray="6 4"/>
+<line x1="320.50" y1="347.75" x2="408.00" y2="347.75" stroke="#246e8c" stroke-width="8.75" stroke-dasharray="6 4"/>
+<line x1="408.00" y1="347.75" x2="408.00" y2="304.00" stroke="#246e8c" stroke-width="8.75" stroke-dasharray="6 4"/>
+<line x1="670.50" y1="409.00" x2="670.50" y2="444.00" stroke="#246e8c" stroke-width="8.75" stroke-dasharray="6 4"/>
+<line x1="670.50" y1="444.00" x2="495.50" y2="444.00" stroke="#246e8c" stroke-width="8.75" stroke-dasharray="6 4"/>
+<line x1="495.50" y1="444.00" x2="495.50" y2="347.75" stroke="#246e8c" stroke-width="8.75" stroke-dasharray="6 4"/>
+<line x1="495.50" y1="347.75" x2="408.00" y2="347.75" stroke="#246e8c" stroke-width="8.75" stroke-dasharray="6 4"/>
+<line x1="408.00" y1="584.00" x2="408.00" y2="470.25" stroke="#246e8c" stroke-width="8.75" stroke-dasharray="6 4"/>
+<line x1="408.00" y1="470.25" x2="320.50" y2="470.25" stroke="#246e8c" stroke-width="8.75" stroke-dasharray="6 4"/>
+<line x1="320.50" y1="470.25" x2="320.50" y2="347.75" stroke="#246e8c" stroke-width="8.75" stroke-dasharray="6 4"/>
+<text x="408.00" y="273.00" font-family="DejaVu Sans,sans-serif" font-size="10" fill="#173d3b" text-anchor="middle" font-weight="bold">T01</text>
+<text x="517.38" y="404.25" font-family="DejaVu Sans,sans-serif" font-size="10" fill="#173d3b" text-anchor="middle" font-weight="bold">T02</text>
+<text x="191.44" y="448.00" font-family="DejaVu Sans,sans-serif" font-size="10" fill="#173d3b" text-anchor="middle" font-weight="bold">T03</text>
+<text x="624.56" y="448.00" font-family="DejaVu Sans,sans-serif" font-size="10" fill="#173d3b" text-anchor="middle" font-weight="bold">T04</text>
+<text x="408.00" y="550.81" font-family="DejaVu Sans,sans-serif" font-size="10" fill="#173d3b" text-anchor="middle" font-weight="bold">T05</text>
+<text x="408.00" y="316.75" font-family="DejaVu Sans,sans-serif" font-size="10" fill="#173d3b" text-anchor="middle" font-weight="bold">T06</text>
+<text x="408.00" y="404.25" font-family="DejaVu Sans,sans-serif" font-size="10" fill="#173d3b" text-anchor="middle" font-weight="bold">T07</text>
+<text x="114.88" y="393.31" font-family="DejaVu Sans,sans-serif" font-size="10" fill="#173d3b" text-anchor="middle" font-weight="bold">T08</text>
+<text x="701.12" y="393.31" font-family="DejaVu Sans,sans-serif" font-size="10" fill="#173d3b" text-anchor="middle" font-weight="bold">T09</text>
+<text x="408.00" y="609.88" font-family="DejaVu Sans,sans-serif" font-size="10" fill="#173d3b" text-anchor="middle" font-weight="bold">T10</text>
+<text x="145.50" y="421.75" font-family="DejaVu Sans,sans-serif" font-size="10" fill="#173d3b" text-anchor="middle" font-weight="bold">T11</text>
+<text x="670.50" y="421.75" font-family="DejaVu Sans,sans-serif" font-size="10" fill="#173d3b" text-anchor="middle" font-weight="bold">T12</text>
+<text x="28.00" y="170.00" font-family="DejaVu Sans,sans-serif" font-size="13" fill="#173d3b" text-anchor="start" font-weight="bold">N</text>
+<line x1="32.00" y1="205.00" x2="32.00" y2="180.00" stroke="#245653" stroke-width="2"/>
+<line x1="32.00" y1="180.00" x2="27.00" y2="189.00" stroke="#245653" stroke-width="2"/>
+<line x1="32.00" y1="180.00" x2="37.00" y2="189.00" stroke="#245653" stroke-width="2"/>
+<line x1="60.00" y1="692.00" x2="147.50" y2="692.00" stroke="#173d3b" stroke-width="3"/>
+<text x="60.00" y="710.00" font-family="DejaVu Sans,sans-serif" font-size="10" fill="#173d3b" text-anchor="start" font-weight="normal">0</text>
+<text x="147.50" y="710.00" font-family="DejaVu Sans,sans-serif" font-size="10" fill="#173d3b" text-anchor="end" font-weight="normal">20 m</text>
+<text x="810.00" y="156.00" font-family="DejaVu Sans,sans-serif" font-size="15" fill="#173d3b" text-anchor="start" font-weight="bold">REGISTER</text>
+<text x="810.00" y="181.00" font-family="DejaVu Sans,sans-serif" font-size="11" fill="#173d3b" text-anchor="start" font-weight="normal">T01  Refuge lodge / two cells</text>
+<text x="825.00" y="197.00" font-family="DejaVu Sans,sans-serif" font-size="9" fill="#6f7266" text-anchor="start" font-weight="normal"> x,y,w,d = -10, 24, 20, 16 m</text>
+<text x="810.00" y="213.00" font-family="DejaVu Sans,sans-serif" font-size="11" fill="#173d3b" text-anchor="start" font-weight="normal">T02  Main winch deck</text>
+<text x="825.00" y="229.00" font-family="DejaVu Sans,sans-serif" font-size="9" fill="#6f7266" text-anchor="start" font-weight="normal"> x,y,w,d = -32, -18, 64, 38 m</text>
+<text x="810.00" y="245.00" font-family="DejaVu Sans,sans-serif" font-size="11" fill="#173d3b" text-anchor="start" font-weight="normal">T03  West docking arm</text>
+<text x="825.00" y="261.00" font-family="DejaVu Sans,sans-serif" font-size="9" fill="#6f7266" text-anchor="start" font-weight="normal"> x,y,w,d = -67, -12, 35, 8 m</text>
+<text x="810.00" y="277.00" font-family="DejaVu Sans,sans-serif" font-size="11" fill="#173d3b" text-anchor="start" font-weight="normal">T04  East docking arm</text>
+<text x="825.00" y="293.00" font-family="DejaVu Sans,sans-serif" font-size="9" fill="#6f7266" text-anchor="start" font-weight="normal"> x,y,w,d = 32, -12, 35, 8 m</text>
+<text x="810.00" y="309.00" font-family="DejaVu Sans,sans-serif" font-size="11" fill="#173d3b" text-anchor="start" font-weight="normal">T05  South docking arm</text>
+<text x="825.00" y="325.00" font-family="DejaVu Sans,sans-serif" font-size="9" fill="#6f7266" text-anchor="start" font-weight="normal"> x,y,w,d = -4, -45, 8, 27 m</text>
+<text x="810.00" y="341.00" font-family="DejaVu Sans,sans-serif" font-size="11" fill="#173d3b" text-anchor="start" font-weight="normal">T06  Refuge connector</text>
+<text x="825.00" y="357.00" font-family="DejaVu Sans,sans-serif" font-size="9" fill="#6f7266" text-anchor="start" font-weight="normal"> x,y,w,d = -3, 20, 6, 4 m</text>
+<text x="810.00" y="373.00" font-family="DejaVu Sans,sans-serif" font-size="11" fill="#173d3b" text-anchor="start" font-weight="normal">T07  Winch working envelope</text>
+<text x="825.00" y="389.00" font-family="DejaVu Sans,sans-serif" font-size="9" fill="#6f7266" text-anchor="start" font-weight="normal"> x,y,w,d = -8, -4, 16, 12 m</text>
+<text x="810.00" y="405.00" font-family="DejaVu Sans,sans-serif" font-size="11" fill="#173d3b" text-anchor="start" font-weight="normal">T08  West craft berth envelope</text>
+<text x="825.00" y="421.00" font-family="DejaVu Sans,sans-serif" font-size="9" fill="#6f7266" text-anchor="start" font-weight="normal"> x,y,w,d = -77, 0, 20, 9 m</text>
+<text x="810.00" y="437.00" font-family="DejaVu Sans,sans-serif" font-size="11" fill="#173d3b" text-anchor="start" font-weight="normal">T09  East craft berth envelope</text>
+<text x="825.00" y="453.00" font-family="DejaVu Sans,sans-serif" font-size="9" fill="#6f7266" text-anchor="start" font-weight="normal"> x,y,w,d = 57, 0, 20, 9 m</text>
+<text x="810.00" y="469.00" font-family="DejaVu Sans,sans-serif" font-size="11" fill="#173d3b" text-anchor="start" font-weight="normal">T10  South craft berth envelope</text>
+<text x="825.00" y="485.00" font-family="DejaVu Sans,sans-serif" font-size="9" fill="#6f7266" text-anchor="start" font-weight="normal"> x,y,w,d = -10, -49, 20, 8 m</text>
+<text x="810.00" y="501.00" font-family="DejaVu Sans,sans-serif" font-size="11" fill="#173d3b" text-anchor="start" font-weight="normal">T11  West boarding plank</text>
+<text x="825.00" y="517.00" font-family="DejaVu Sans,sans-serif" font-size="9" fill="#6f7266" text-anchor="start" font-weight="normal"> x,y,w,d = -61.5, -4, 3, 4 m</text>
+<text x="810.00" y="533.00" font-family="DejaVu Sans,sans-serif" font-size="11" fill="#173d3b" text-anchor="start" font-weight="normal">T12  East boarding plank</text>
+<text x="825.00" y="549.00" font-family="DejaVu Sans,sans-serif" font-size="9" fill="#6f7266" text-anchor="start" font-weight="normal"> x,y,w,d = 58.5, -4, 3, 4 m</text>
+<text x="810.00" y="573.00" font-family="DejaVu Sans,sans-serif" font-size="10" fill="#173d3b" text-anchor="start" font-weight="bold">BLUE = APPROACH / CIRCULATION</text>
+<text x="810.00" y="593.00" font-family="DejaVu Sans,sans-serif" font-size="10" fill="#173d3b" text-anchor="start" font-weight="normal">Deck circulation</text>
+<text x="810.00" y="608.00" font-family="DejaVu Sans,sans-serif" font-size="10" fill="#173d3b" text-anchor="start" font-weight="normal">East approach on arm</text>
+<text x="810.00" y="623.00" font-family="DejaVu Sans,sans-serif" font-size="10" fill="#173d3b" text-anchor="start" font-weight="normal">South approach on arm</text>
+<text x="45.00" y="744.00" font-family="DejaVu Sans,sans-serif" font-size="12" fill="#173d3b" text-anchor="start" font-weight="bold">Bounds 160 x 100 m. Local origin at site center. Red = excluded hazard.</text>
+<text x="45.00" y="766.00" font-family="DejaVu Sans,sans-serif" font-size="11" fill="#173d3b" text-anchor="start" font-weight="normal">Inherited regional position [250, 145] km; refuge footprint unchanged.</text>
+<text x="45.00" y="788.00" font-family="DejaVu Sans,sans-serif" font-size="11" fill="#173d3b" text-anchor="start" font-weight="normal">Exactly three craft. Berths are parking envelopes, not extra walkable decks. Surrounding blue is open air.</text>
+<text x="45.00" y="811.00" font-family="DejaVu Sans,sans-serif" font-size="10" fill="#173d3b" text-anchor="start" font-weight="normal">Fictional production / game blockout. Original appearance references do not override these dimensions.</text>
+</svg>

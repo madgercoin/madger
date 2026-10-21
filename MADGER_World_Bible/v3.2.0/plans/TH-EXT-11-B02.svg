@@ -1,0 +1,87 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="840" viewBox="0 0 1200 840">
+<rect width="1200" height="840" fill="#faf6ed"/>
+<text x="45.00" y="40.00" font-family="DejaVu Sans,sans-serif" font-size="14" fill="#173d3b" text-anchor="start" font-weight="bold">MADGER / CONFLICT LOCATIONS</text>
+<text x="45.00" y="80.00" font-family="DejaVu Sans,sans-serif" font-size="30" fill="#173d3b" text-anchor="start" font-weight="bold">Echo Archive Council Room</text>
+<text x="45.00" y="109.00" font-family="DejaVu Sans,sans-serif" font-size="13" fill="#173d3b" text-anchor="start" font-weight="normal">EXT-11-B02 / Level 1 / inherited room plan</text>
+<text x="1155.00" y="40.00" font-family="DejaVu Sans,sans-serif" font-size="13" fill="#173d3b" text-anchor="end" font-weight="normal">3.2.0</text>
+<line x1="45.00" y1="125.00" x2="1155.00" y2="125.00" stroke="#b8a47e" stroke-width="1"/>
+<rect x="68.00" y="154.00" width="680.00" height="510.00" fill="#eeeae0" stroke="#385955" stroke-width="1.5"/>
+<rect x="68.00" y="437.33" width="283.33" height="226.67" fill="#fffcf5" stroke="#385955" stroke-width="1.5"/>
+<text x="209.67" y="545.67" font-family="DejaVu Sans,sans-serif" font-size="11" fill="#173d3b" text-anchor="middle" font-weight="normal">Catalog A</text>
+<text x="209.67" y="561.67" font-family="DejaVu Sans,sans-serif" font-size="10" fill="#173d3b" text-anchor="middle" font-weight="normal">10 x 8 m</text>
+<rect x="464.67" y="437.33" width="283.33" height="226.67" fill="#fffcf5" stroke="#385955" stroke-width="1.5"/>
+<text x="606.33" y="545.67" font-family="DejaVu Sans,sans-serif" font-size="11" fill="#173d3b" text-anchor="middle" font-weight="normal">Catalog B</text>
+<text x="606.33" y="561.67" font-family="DejaVu Sans,sans-serif" font-size="10" fill="#173d3b" text-anchor="middle" font-weight="normal">10 x 8 m</text>
+<rect x="351.33" y="154.00" width="113.33" height="510.00" fill="#e0eee8" stroke="#385955" stroke-width="1.5"/>
+<text x="408.00" y="404.00" font-family="DejaVu Sans,sans-serif" font-size="11" fill="#173d3b" text-anchor="middle" font-weight="normal">Passage/stairs</text>
+<text x="408.00" y="420.00" font-family="DejaVu Sans,sans-serif" font-size="10" fill="#173d3b" text-anchor="middle" font-weight="normal">4 x 18 m</text>
+<rect x="68.00" y="154.00" width="283.33" height="283.33" fill="#fffcf5" stroke="#385955" stroke-width="1.5"/>
+<text x="209.67" y="290.67" font-family="DejaVu Sans,sans-serif" font-size="11" fill="#173d3b" text-anchor="middle" font-weight="normal">Archive A</text>
+<text x="209.67" y="306.67" font-family="DejaVu Sans,sans-serif" font-size="10" fill="#173d3b" text-anchor="middle" font-weight="normal">10 x 10 m</text>
+<rect x="464.67" y="154.00" width="283.33" height="283.33" fill="#fffcf5" stroke="#385955" stroke-width="1.5"/>
+<text x="606.33" y="290.67" font-family="DejaVu Sans,sans-serif" font-size="11" fill="#173d3b" text-anchor="middle" font-weight="normal">Archive B</text>
+<text x="606.33" y="306.67" font-family="DejaVu Sans,sans-serif" font-size="10" fill="#173d3b" text-anchor="middle" font-weight="normal">10 x 10 m</text>
+<line x1="351.33" y1="567.67" x2="351.33" y2="533.67" stroke="#fffcf5" stroke-width="6"/>
+<line x1="351.33" y1="567.67" x2="351.33" y2="533.67" stroke="#4e91ac" stroke-width="2"/>
+<line x1="464.67" y1="567.67" x2="464.67" y2="533.67" stroke="#fffcf5" stroke-width="6"/>
+<line x1="464.67" y1="567.67" x2="464.67" y2="533.67" stroke="#4e91ac" stroke-width="2"/>
+<line x1="351.33" y1="312.67" x2="351.33" y2="278.67" stroke="#fffcf5" stroke-width="6"/>
+<line x1="351.33" y1="312.67" x2="351.33" y2="278.67" stroke="#4e91ac" stroke-width="2"/>
+<line x1="464.67" y1="312.67" x2="464.67" y2="278.67" stroke="#fffcf5" stroke-width="6"/>
+<line x1="464.67" y1="312.67" x2="464.67" y2="278.67" stroke="#4e91ac" stroke-width="2"/>
+<text x="408.00" y="182.33" font-family="DejaVu Sans,sans-serif" font-size="10" fill="#173d3b" text-anchor="middle" font-weight="normal">Internal stairs</text>
+<rect x="85.00" y="621.50" width="79.33" height="25.50" fill="#d6bd8c" stroke="#8d7954" stroke-width="1"/>
+<rect x="85.00" y="454.33" width="79.33" height="25.50" fill="#d6bd8c" stroke="#8d7954" stroke-width="1"/>
+<rect x="255.00" y="621.50" width="79.33" height="25.50" fill="#d6bd8c" stroke="#8d7954" stroke-width="1"/>
+<rect x="255.00" y="454.33" width="79.33" height="25.50" fill="#d6bd8c" stroke="#8d7954" stroke-width="1"/>
+<rect x="481.67" y="621.50" width="79.33" height="25.50" fill="#d6bd8c" stroke="#8d7954" stroke-width="1"/>
+<rect x="481.67" y="454.33" width="79.33" height="25.50" fill="#d6bd8c" stroke="#8d7954" stroke-width="1"/>
+<rect x="85.00" y="394.83" width="79.33" height="25.50" fill="#d6bd8c" stroke="#8d7954" stroke-width="1"/>
+<rect x="85.00" y="171.00" width="79.33" height="25.50" fill="#d6bd8c" stroke="#8d7954" stroke-width="1"/>
+<rect x="481.67" y="394.83" width="79.33" height="25.50" fill="#d6bd8c" stroke="#8d7954" stroke-width="1"/>
+<rect x="481.67" y="171.00" width="79.33" height="25.50" fill="#d6bd8c" stroke="#8d7954" stroke-width="1"/>
+<text x="124.67" y="638.25" font-family="DejaVu Sans,sans-serif" font-size="10" fill="#173d3b" text-anchor="middle" font-weight="bold">F01</text>
+<text x="124.67" y="471.08" font-family="DejaVu Sans,sans-serif" font-size="10" fill="#173d3b" text-anchor="middle" font-weight="bold">F02</text>
+<text x="294.67" y="638.25" font-family="DejaVu Sans,sans-serif" font-size="10" fill="#173d3b" text-anchor="middle" font-weight="bold">F03</text>
+<text x="294.67" y="471.08" font-family="DejaVu Sans,sans-serif" font-size="10" fill="#173d3b" text-anchor="middle" font-weight="bold">F04</text>
+<text x="521.33" y="638.25" font-family="DejaVu Sans,sans-serif" font-size="10" fill="#173d3b" text-anchor="middle" font-weight="bold">F05</text>
+<text x="521.33" y="471.08" font-family="DejaVu Sans,sans-serif" font-size="10" fill="#173d3b" text-anchor="middle" font-weight="bold">F06</text>
+<text x="124.67" y="411.58" font-family="DejaVu Sans,sans-serif" font-size="10" fill="#173d3b" text-anchor="middle" font-weight="bold">F07</text>
+<text x="124.67" y="187.75" font-family="DejaVu Sans,sans-serif" font-size="10" fill="#173d3b" text-anchor="middle" font-weight="bold">F08</text>
+<text x="521.33" y="411.58" font-family="DejaVu Sans,sans-serif" font-size="10" fill="#173d3b" text-anchor="middle" font-weight="bold">F09</text>
+<text x="521.33" y="187.75" font-family="DejaVu Sans,sans-serif" font-size="10" fill="#173d3b" text-anchor="middle" font-weight="bold">F10</text>
+<text x="28.00" y="170.00" font-family="DejaVu Sans,sans-serif" font-size="13" fill="#173d3b" text-anchor="start" font-weight="bold">N</text>
+<line x1="32.00" y1="205.00" x2="32.00" y2="180.00" stroke="#245653" stroke-width="2"/>
+<line x1="32.00" y1="180.00" x2="27.00" y2="189.00" stroke="#245653" stroke-width="2"/>
+<line x1="32.00" y1="180.00" x2="37.00" y2="189.00" stroke="#245653" stroke-width="2"/>
+<line x1="60.00" y1="692.00" x2="201.67" y2="692.00" stroke="#173d3b" stroke-width="3"/>
+<text x="60.00" y="710.00" font-family="DejaVu Sans,sans-serif" font-size="10" fill="#173d3b" text-anchor="start" font-weight="normal">0</text>
+<text x="201.67" y="710.00" font-family="DejaVu Sans,sans-serif" font-size="10" fill="#173d3b" text-anchor="end" font-weight="normal">5 m</text>
+<text x="810.00" y="156.00" font-family="DejaVu Sans,sans-serif" font-size="15" fill="#173d3b" text-anchor="start" font-weight="bold">REGISTER</text>
+<text x="810.00" y="181.00" font-family="DejaVu Sans,sans-serif" font-size="11" fill="#173d3b" text-anchor="start" font-weight="normal">F01  Council comparison table</text>
+<text x="825.00" y="197.00" font-family="DejaVu Sans,sans-serif" font-size="9" fill="#6f7266" text-anchor="start" font-weight="normal"> x,y,w,d = 0.6, 0.6, 2.8, 0.9 m</text>
+<text x="810.00" y="213.00" font-family="DejaVu Sans,sans-serif" font-size="11" fill="#173d3b" text-anchor="start" font-weight="normal">F02  Original-order case</text>
+<text x="825.00" y="229.00" font-family="DejaVu Sans,sans-serif" font-size="9" fill="#6f7266" text-anchor="start" font-weight="normal"> x,y,w,d = 0.6, 6.5, 2.8, 0.9 m</text>
+<text x="810.00" y="245.00" font-family="DejaVu Sans,sans-serif" font-size="11" fill="#173d3b" text-anchor="start" font-weight="normal">F03  Insulated sample cabinet</text>
+<text x="825.00" y="261.00" font-family="DejaVu Sans,sans-serif" font-size="9" fill="#6f7266" text-anchor="start" font-weight="normal"> x,y,w,d = 6.6, 0.6, 2.8, 0.9 m</text>
+<text x="810.00" y="277.00" font-family="DejaVu Sans,sans-serif" font-size="11" fill="#173d3b" text-anchor="start" font-weight="normal">F04  Independent report stand</text>
+<text x="825.00" y="293.00" font-family="DejaVu Sans,sans-serif" font-size="9" fill="#6f7266" text-anchor="start" font-weight="normal"> x,y,w,d = 6.6, 6.5, 2.8, 0.9 m</text>
+<text x="810.00" y="309.00" font-family="DejaVu Sans,sans-serif" font-size="11" fill="#173d3b" text-anchor="start" font-weight="normal">F05  Copy desk</text>
+<text x="825.00" y="325.00" font-family="DejaVu Sans,sans-serif" font-size="9" fill="#6f7266" text-anchor="start" font-weight="normal"> x,y,w,d = 14.6, 0.6, 2.8, 0.9 m</text>
+<text x="810.00" y="341.00" font-family="DejaVu Sans,sans-serif" font-size="11" fill="#173d3b" text-anchor="start" font-weight="normal">F06  Catalog cabinet</text>
+<text x="825.00" y="357.00" font-family="DejaVu Sans,sans-serif" font-size="9" fill="#6f7266" text-anchor="start" font-weight="normal"> x,y,w,d = 14.6, 6.5, 2.8, 0.9 m</text>
+<text x="810.00" y="373.00" font-family="DejaVu Sans,sans-serif" font-size="11" fill="#173d3b" text-anchor="start" font-weight="normal">F07  Restricted record cabinet</text>
+<text x="825.00" y="389.00" font-family="DejaVu Sans,sans-serif" font-size="9" fill="#6f7266" text-anchor="start" font-weight="normal"> x,y,w,d = 0.6, 8.6, 2.8, 0.9 m</text>
+<text x="810.00" y="405.00" font-family="DejaVu Sans,sans-serif" font-size="11" fill="#173d3b" text-anchor="start" font-weight="normal">F08  Returns cart</text>
+<text x="825.00" y="421.00" font-family="DejaVu Sans,sans-serif" font-size="9" fill="#6f7266" text-anchor="start" font-weight="normal"> x,y,w,d = 0.6, 16.5, 2.8, 0.9 m</text>
+<text x="810.00" y="437.00" font-family="DejaVu Sans,sans-serif" font-size="11" fill="#173d3b" text-anchor="start" font-weight="normal">F09  Family record cabinet</text>
+<text x="825.00" y="453.00" font-family="DejaVu Sans,sans-serif" font-size="9" fill="#6f7266" text-anchor="start" font-weight="normal"> x,y,w,d = 14.6, 8.6, 2.8, 0.9 m</text>
+<text x="810.00" y="469.00" font-family="DejaVu Sans,sans-serif" font-size="11" fill="#173d3b" text-anchor="start" font-weight="normal">F10  Supervised reading desk</text>
+<text x="825.00" y="485.00" font-family="DejaVu Sans,sans-serif" font-size="9" fill="#6f7266" text-anchor="start" font-weight="normal"> x,y,w,d = 14.6, 16.5, 2.8, 0.9 m</text>
+<text x="810.00" y="513.00" font-family="DejaVu Sans,sans-serif" font-size="10" fill="#173d3b" text-anchor="start" font-weight="bold">FURNITURE = PORTABLE NORMAL STATE</text>
+<text x="810.00" y="532.00" font-family="DejaVu Sans,sans-serif" font-size="10" fill="#173d3b" text-anchor="start" font-weight="normal">Central passages and door approaches stay clear.</text>
+<text x="45.00" y="744.00" font-family="DejaVu Sans,sans-serif" font-size="12" fill="#173d3b" text-anchor="start" font-weight="bold">Bounds 24 x 18 m. Local origin at southwest building corner.</text>
+<text x="45.00" y="766.00" font-family="DejaVu Sans,sans-serif" font-size="11" fill="#173d3b" text-anchor="start" font-weight="normal">Level datum +3.2 m; occupied floor height 3.2 m. Building center [0, 0, 0] m.</text>
+<text x="45.00" y="788.00" font-family="DejaVu Sans,sans-serif" font-size="11" fill="#173d3b" text-anchor="start" font-weight="normal">Upper access is by existing stairs; no new outside door.</text>
+<text x="45.00" y="811.00" font-family="DejaVu Sans,sans-serif" font-size="10" fill="#173d3b" text-anchor="start" font-weight="normal">Fictional production / game blockout. Original appearance references do not override these dimensions.</text>
+</svg>

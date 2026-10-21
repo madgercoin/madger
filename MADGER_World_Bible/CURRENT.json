@@ -1,14 +1,14 @@
 {
   "world_id": "MADGER-BRW-HOME",
-  "canon_version": "3.1.0",
-  "volume": "The Open Ways foundation + Living Places interior expansion",
-  "bible": "v3.1.0/README.md",
+  "canon_version": "3.2.0",
+  "volume": "The Open Ways foundation + Living Places + The Cost of Control",
+  "bible": "v3.2.0/README.md",
   "data": "v3.0.0/World_Atlas.json",
   "underground_blueprints": "v2.0.0/MADGER_Underground_Blueprints.pdf",
   "map": "v2.0.0/previews/UG-A2.png",
   "surface_blueprints": "blueprints/v1.0.0/MADGER_Burrow_Blueprints.pdf",
   "historical_foundation": "v1.0.0/MADGER_World_Bible.pdf",
-  "precedence": "v3.0 resolves exterior geography, companion origins and wider biographies reserved in earlier editions. Burrow v2.1 geometry, public access, population and approved hero voice references remain controlling and unchanged. Historical files are preserved. v3.1 adds local histories and normal-day furnishing placements for thirteen existing exterior landmarks. Original geometry remains controlling. Companion stories and scene seeds are authored options pending placement in the dated episode ledger.",
+  "precedence": "v3.0 resolves exterior geography, companion origins and wider biographies reserved in earlier editions. Burrow v2.1 geometry, public access, population and approved hero voice references remain controlling and unchanged. Historical files are preserved. v3.1 adds local histories and normal-day furnishing placements for thirteen existing exterior landmarks. Original geometry remains controlling. Companion stories and scene seeds are authored options pending placement in the dated episode ledger. v3.2 adds faction operating histories, character addenda and seven conflict locations. Detailed 3.2 site feature/approach layers refine generic 3.0 encounter guides within unchanged bounds; the Cut Span remains severed. Proposed choices and stories still require episode-ledger adoption.",
   "source": "v3.0.0/source/",
   "living_world_text": "v2.1.0/LIVING_WORLD.md",
   "sub_locations": "v2.1.0/Sub_Locations.json",
@@ -85,5 +85,16 @@
     "verified_files": "v3.1.0/output/Drive_Links.json",
     "google_drive": "https://drive.google.com/drive/folders/11Txgava0ACtEftOU2rVZ34Le1W2n9XVC",
     "base_commit": "0299a6f408ac43bf98789a1cb5b3c70af2249450"
+  },
+  "conflict_world": {
+    "edition": "3.2.0",
+    "index": "v3.2.0/README.md",
+    "data": "v3.2.0/output/Conflict_Bible.json",
+    "locations": "v3.2.0/output/Threat_Locations.json",
+    "stories": "v3.2.0/output/Companion_Stories.json",
+    "plans": "v3.2.0/plans/",
+    "verified_files": "v3.2.0/output/Drive_Links.json",
+    "google_drive": "https://drive.google.com/drive/folders/1g4l9ZiGzNFbD4G2EMZDVr0gJ3aJgbVzz",
+    "base_commit": "a31a6f32286a198f4da0d95b4a1b7f0282c830fc"
   }
 }

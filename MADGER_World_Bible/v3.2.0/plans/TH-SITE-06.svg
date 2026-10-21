@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="840" viewBox="0 0 1200 840">
+<rect width="1200" height="840" fill="#faf6ed"/>
+<text x="45.00" y="40.00" font-family="DejaVu Sans,sans-serif" font-size="14" fill="#173d3b" text-anchor="start" font-weight="bold">MADGER / CONFLICT LOCATIONS</text>
+<text x="45.00" y="80.00" font-family="DejaVu Sans,sans-serif" font-size="30" fill="#173d3b" text-anchor="start" font-weight="bold">The Cut Span</text>
+<text x="45.00" y="109.00" font-family="DejaVu Sans,sans-serif" font-size="13" fill="#173d3b" text-anchor="start" font-weight="normal">SITE-06 / Detailed encounter plan / fixed site bounds</text>
+<text x="1155.00" y="40.00" font-family="DejaVu Sans,sans-serif" font-size="13" fill="#173d3b" text-anchor="end" font-weight="normal">3.2.0</text>
+<line x1="45.00" y1="125.00" x2="1155.00" y2="125.00" stroke="#b8a47e" stroke-width="1"/>
+<rect x="58.00" y="214.56" width="700.00" height="388.89" fill="#eeeae0" stroke="#385955" stroke-width="1.5"/>
+<rect x="369.11" y="253.44" width="77.78" height="62.22" fill="#ebd2a2" stroke="#385955" stroke-width="1.5"/>
+<rect x="369.11" y="510.11" width="77.78" height="62.22" fill="#ebd2a2" stroke="#385955" stroke-width="1.5"/>
+<rect x="338.00" y="315.67" width="140.00" height="54.44" fill="#dfddd0" stroke="#385955" stroke-width="1.5"/>
+<rect x="338.00" y="447.89" width="140.00" height="54.44" fill="#dfddd0" stroke="#385955" stroke-width="1.5"/>
+<rect x="58.00" y="370.11" width="700.00" height="77.78" fill="#d7a29b" stroke="#7d5b54" stroke-width="1.5"/>
+<rect x="291.33" y="323.44" width="27.22" height="15.56" fill="#bfa474" stroke="#385955" stroke-width="1.5"/>
+<line x1="505.22" y1="214.56" x2="505.22" y2="307.89" stroke="#246e8c" stroke-width="7.777777777777778" stroke-dasharray="6 4"/>
+<line x1="505.22" y1="307.89" x2="462.44" y2="307.89" stroke="#246e8c" stroke-width="7.777777777777778" stroke-dasharray="6 4"/>
+<line x1="462.44" y1="307.89" x2="462.44" y2="346.78" stroke="#246e8c" stroke-width="7.777777777777778" stroke-dasharray="6 4"/>
+<line x1="462.44" y1="346.78" x2="408.00" y2="346.78" stroke="#246e8c" stroke-width="7.777777777777778" stroke-dasharray="6 4"/>
+<line x1="505.22" y1="603.44" x2="505.22" y2="510.11" stroke="#246e8c" stroke-width="7.777777777777778" stroke-dasharray="6 4"/>
+<line x1="505.22" y1="510.11" x2="462.44" y2="510.11" stroke="#246e8c" stroke-width="7.777777777777778" stroke-dasharray="6 4"/>
+<line x1="462.44" y1="510.11" x2="462.44" y2="471.22" stroke="#246e8c" stroke-width="7.777777777777778" stroke-dasharray="6 4"/>
+<line x1="462.44" y1="471.22" x2="408.00" y2="471.22" stroke="#246e8c" stroke-width="7.777777777777778" stroke-dasharray="6 4"/>
+<text x="408.00" y="288.56" font-family="DejaVu Sans,sans-serif" font-size="10" fill="#173d3b" text-anchor="middle" font-weight="bold">T01</text>
+<text x="408.00" y="545.22" font-family="DejaVu Sans,sans-serif" font-size="10" fill="#173d3b" text-anchor="middle" font-weight="bold">T02</text>
+<text x="408.00" y="335.22" font-family="DejaVu Sans,sans-serif" font-size="10" fill="#173d3b" text-anchor="middle" font-weight="bold">T03</text>
+<text x="408.00" y="490.78" font-family="DejaVu Sans,sans-serif" font-size="10" fill="#173d3b" text-anchor="middle" font-weight="bold">T04</text>
+<text x="408.00" y="413.00" font-family="DejaVu Sans,sans-serif" font-size="10" fill="#173d3b" text-anchor="middle" font-weight="bold">T05</text>
+<text x="304.94" y="335.22" font-family="DejaVu Sans,sans-serif" font-size="10" fill="#173d3b" text-anchor="middle" font-weight="bold">T06</text>
+<text x="28.00" y="170.00" font-family="DejaVu Sans,sans-serif" font-size="13" fill="#173d3b" text-anchor="start" font-weight="bold">N</text>
+<line x1="32.00" y1="205.00" x2="32.00" y2="180.00" stroke="#245653" stroke-width="2"/>
+<line x1="32.00" y1="180.00" x2="27.00" y2="189.00" stroke="#245653" stroke-width="2"/>
+<line x1="32.00" y1="180.00" x2="37.00" y2="189.00" stroke="#245653" stroke-width="2"/>
+<line x1="60.00" y1="692.00" x2="137.78" y2="692.00" stroke="#173d3b" stroke-width="3"/>
+<text x="60.00" y="710.00" font-family="DejaVu Sans,sans-serif" font-size="10" fill="#173d3b" text-anchor="start" font-weight="normal">0</text>
+<text x="137.78" y="710.00" font-family="DejaVu Sans,sans-serif" font-size="10" fill="#173d3b" text-anchor="end" font-weight="normal">20 m</text>
+<text x="810.00" y="156.00" font-family="DejaVu Sans,sans-serif" font-size="15" fill="#173d3b" text-anchor="start" font-weight="bold">REGISTER</text>
+<text x="810.00" y="181.00" font-family="DejaVu Sans,sans-serif" font-size="11" fill="#173d3b" text-anchor="start" font-weight="normal">T01  North inspection refuge</text>
+<text x="825.00" y="197.00" font-family="DejaVu Sans,sans-serif" font-size="9" fill="#6f7266" text-anchor="start" font-weight="normal"> x,y,w,d = -10, 24, 20, 16 m</text>
+<text x="810.00" y="213.00" font-family="DejaVu Sans,sans-serif" font-size="11" fill="#173d3b" text-anchor="start" font-weight="normal">T02  South inspection lodge</text>
+<text x="825.00" y="229.00" font-family="DejaVu Sans,sans-serif" font-size="9" fill="#6f7266" text-anchor="start" font-weight="normal"> x,y,w,d = -10, -42, 20, 16 m</text>
+<text x="810.00" y="245.00" font-family="DejaVu Sans,sans-serif" font-size="11" fill="#173d3b" text-anchor="start" font-weight="normal">T03  North abutment</text>
+<text x="825.00" y="261.00" font-family="DejaVu Sans,sans-serif" font-size="9" fill="#6f7266" text-anchor="start" font-weight="normal"> x,y,w,d = -18, 10, 36, 14 m</text>
+<text x="810.00" y="277.00" font-family="DejaVu Sans,sans-serif" font-size="11" fill="#173d3b" text-anchor="start" font-weight="normal">T04  South abutment</text>
+<text x="825.00" y="293.00" font-family="DejaVu Sans,sans-serif" font-size="9" fill="#6f7266" text-anchor="start" font-weight="normal"> x,y,w,d = -18, -24, 36, 14 m</text>
+<text x="810.00" y="309.00" font-family="DejaVu Sans,sans-serif" font-size="11" fill="#173d3b" text-anchor="start" font-weight="normal">T05  Blocked span gap</text>
+<text x="825.00" y="325.00" font-family="DejaVu Sans,sans-serif" font-size="9" fill="#6f7266" text-anchor="start" font-weight="normal"> x,y,w,d = -90, -10, 180, 20 m</text>
+<text x="810.00" y="341.00" font-family="DejaVu Sans,sans-serif" font-size="11" fill="#173d3b" text-anchor="start" font-weight="normal">T06  Detached coupling display</text>
+<text x="825.00" y="357.00" font-family="DejaVu Sans,sans-serif" font-size="9" fill="#6f7266" text-anchor="start" font-weight="normal"> x,y,w,d = -30, 18, 7, 4 m</text>
+<text x="810.00" y="381.00" font-family="DejaVu Sans,sans-serif" font-size="10" fill="#173d3b" text-anchor="start" font-weight="bold">BLUE = APPROACH / CIRCULATION</text>
+<text x="810.00" y="401.00" font-family="DejaVu Sans,sans-serif" font-size="10" fill="#173d3b" text-anchor="start" font-weight="normal">North safe approach / 2 m</text>
+<text x="810.00" y="416.00" font-family="DejaVu Sans,sans-serif" font-size="10" fill="#173d3b" text-anchor="start" font-weight="normal">South safe approach / 2 m</text>
+<text x="45.00" y="744.00" font-family="DejaVu Sans,sans-serif" font-size="12" fill="#173d3b" text-anchor="start" font-weight="bold">Bounds 180 x 100 m. Local origin at site center. Red = excluded hazard.</text>
+<text x="45.00" y="766.00" font-family="DejaVu Sans,sans-serif" font-size="11" fill="#173d3b" text-anchor="start" font-weight="normal">Inherited regional position [-70, 242] km; refuge footprint unchanged.</text>
+<text x="45.00" y="788.00" font-family="DejaVu Sans,sans-serif" font-size="11" fill="#173d3b" text-anchor="start" font-weight="normal">20 m gap stays blocked. North and south paths never connect here. Two-day detour is off-sheet.</text>
+<text x="45.00" y="811.00" font-family="DejaVu Sans,sans-serif" font-size="10" fill="#173d3b" text-anchor="start" font-weight="normal">Fictional production / game blockout. Original appearance references do not override these dimensions.</text>
+</svg>

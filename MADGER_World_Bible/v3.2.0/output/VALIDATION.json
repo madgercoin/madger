@@ -1,0 +1,74 @@
+{
+  "edition": "3.2.0",
+  "checks": [
+    {
+      "id": "EXT-01-B03",
+      "inherited_geometry_preserved": true,
+      "features_within_bounds": true,
+      "circulation_checks": true
+    },
+    {
+      "id": "EXT-03-U04",
+      "inherited_geometry_preserved": true,
+      "features_within_bounds": true,
+      "circulation_checks": true
+    },
+    {
+      "id": "EXT-08-B03",
+      "inherited_geometry_preserved": true,
+      "features_within_bounds": true,
+      "circulation_checks": true
+    },
+    {
+      "id": "EXT-11-B02",
+      "inherited_geometry_preserved": true,
+      "features_within_bounds": true,
+      "circulation_checks": true
+    },
+    {
+      "id": "SITE-07",
+      "inherited_geometry_preserved": true,
+      "features_within_bounds": true,
+      "circulation_checks": true
+    },
+    {
+      "id": "SITE-05",
+      "inherited_geometry_preserved": true,
+      "features_within_bounds": true,
+      "circulation_checks": true
+    },
+    {
+      "id": "SITE-06",
+      "inherited_geometry_preserved": true,
+      "features_within_bounds": true,
+      "circulation_checks": true
+    }
+  ],
+  "locations": 7,
+  "building_furniture": 42,
+  "site_features": 25,
+  "pilot_seconds": 300,
+  "cast_refs_valid": true,
+  "no_cut_span_crossing": true,
+  "base_footprints_unchanged": true,
+  "pdf_review": {
+    "MADGER_Conflict_Bible.pdf": {
+      "pages": 36,
+      "out_of_bounds_text": 0,
+      "rendered": true,
+      "sha256": "b7a620f00f37bf282d0e853279952d2d485206215ddcd8a7eca383f510bfb3d6"
+    },
+    "MADGER_Threat_Location_Blueprints.pdf": {
+      "pages": 7,
+      "out_of_bounds_text": 0,
+      "rendered": true,
+      "sha256": "affbc41844be8e05f2c9a59bc8f29368bc7bdd54666b17259b1c7f0c0be03e98"
+    }
+  },
+  "specific_corrections": [
+    "Ashmouth artwork panel isolated from adjacent panel label.",
+    "Blackwake label positions separated and two boarding planks added; all route samples remain on deck.",
+    "Cut Span has separate north/south routes and a blocked 20 m gap."
+  ],
+  "visual_review": "All pages reviewed as contact sheets; dense evidence, character and plan pages inspected individually."
+}
