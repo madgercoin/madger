@@ -39,7 +39,7 @@ APK = Path(os.environ.get("MADGER_ANDROID_APK", str(ROOT / "madger-expedition-pr
 STAMP = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
 OUT = Path(os.environ.get("MADGER_ANDROID_EVIDENCE_DIR", str(ROOT / "expedition-evidence" / "android-smoke" / STAMP)))
 ENTRY = "Play the 3D Expedition"
-HUD = re.compile(r"Expedition distance (\d+) meters; lane (-?\d); (jumping|burrowing|running); route (main|hollow|grotto)")
+HUD = re.compile(r"Expedition distance (\d+) meters; lane (-?\d); (jumping|burrowing|running); route (main|hollow|grotto|rootway|ridge|deep|mosswalk|root-arch|log-crossing|causeway|watchtower|gearworks|mudslide|crystal-vein|ancient-vault)$")
 SCORE = re.compile(r"Current expedition score (\d+)")
 ERROR_LABELS = (
     "The 3D view did not start.", "The 3D view needs a restart.",
@@ -337,6 +337,26 @@ class Smoke:
         self.capture(name)
         return after
 
+    def manual_pause(self):
+        # The real course reaches its first decision at 140m. UI automation
+        # can cross that boundary between locating Pause and tapping it.
+        # Choose the visible low-risk route, then exercise Pause again.
+        clicked = False
+        for _ in range(4):
+            _, nodes, labels = self.tree()
+            if "Your run is safe." in labels:
+                if not clicked:
+                    raise AssertionError("Run paused before the manual pause input")
+                return
+            route = "Choose Mossbound Rootway, low risk, Guardian Totems"
+            if self.label_node(nodes, route, clickable=True):
+                self.tap(route)
+                self.wait_hud(lambda s: s['route'] == 'rootway', 'selected Rootway branch')
+                self.mark("Selected the visible Rootway branch before testing pause")
+            self.tap("Pause expedition")
+            clicked = True
+        raise AssertionError("Manual pause did not reach the paused screen")
+
     def run(self):
         import uiautomator2 as u2
         from PIL import ImageChops, ImageStat
@@ -438,7 +458,7 @@ class Smoke:
         self.report["burst_scope"] = "Control and charge label checked; burst activation is not exercised by this short route."
         self.mark("Left, right, jump, and burrow respond through the visible HUD", burst_control=charge)
 
-        self.tap("Pause expedition")
+        self.manual_pause()
         paused = self.paused_state("05-manual-pause")
         self.mark("Manual pause freezes distance, score, lane, and action")
         self.tap("Resume expedition")
@@ -468,7 +488,7 @@ class Smoke:
         self.wait_hud(lambda state: state["distance_m"] > restored["distance_m"], "progress after cold restore")
         image = self.capture("08-restored-running", require_running=True)
         self.rendered("08-restored-running", image)
-        self.tap("Pause expedition")
+        self.manual_pause()
         self.paused_state("09-final-paused")
         self.mark("Restored run resumes with a nonblank 3D view; left safely paused")
 

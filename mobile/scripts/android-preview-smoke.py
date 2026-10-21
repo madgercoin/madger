@@ -135,6 +135,14 @@ def kill_observed_foreground_run():
         for node in reference_controls:
             assert_visible(node)
         observation['paused_reference'] = [node.attrib for node in timers + reference_controls]
+        def node_depth(node, target, depth=0):
+            if node is target:
+                return depth
+            return max((node_depth(child, target, depth + 1) for child in node), default=-1)
+        # Only descend far enough to include the already-identified HUD and
+        # controls. Animated scenery below them is not part of this observation.
+        hud_depth = max(node_depth(last_root, node) for node in timers + reference_controls)
+        observation['hierarchy_max_depth'] = hud_depth
         # Read back the zero-idle/selector waits set at connection time. The
         # driver must not wait for this continuously animated game to go idle.
         configuration = {'name': 'driver-config', 'started': time.monotonic()}
@@ -165,7 +173,7 @@ def kill_observed_foreground_run():
             # Keep the same hierarchy mode used by the preceding observations.
             # Toggling accessibility compression here refreshes Android's service
             # and traverses animated nonessential nodes inside the strict deadline.
-            current = ET.fromstring(device.dump_hierarchy(compressed=False))
+            current = ET.fromstring(device.dump_hierarchy(compressed=False, max_depth=hud_depth))
             nodes = [n for n in current.iter('node') if n.get('package') == PACKAGE]
             timers = [n for n in nodes if n.get('class') == 'android.widget.TextView'
                       and re.fullmatch(r'\d+s', n.get('text', ''))]
