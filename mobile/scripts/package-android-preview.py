@@ -41,7 +41,9 @@ def main():
         assert 'AndroidManifest.xml' in entries and 'classes.dex' in entries
         assert any(name.startswith('lib/arm64-v8a/') for name in entries), 'No ARM64 phone libraries'
         bundle = archive.read('assets/index.android.bundle')
-        assert revision.encode() in bundle, 'Embedded source revision does not match the requested commit'
+        embedded = json.loads(archive.read('assets/app.config'))
+        assert embedded.get('extra', {}).get('buildRevision') == revision, 'Embedded source revision does not match the requested commit'
+        assert embedded.get('android', {}).get('package') == package, 'Embedded app config package differs from APK'
         assert b'MADGER_NATIVE_SCENERY_BUDGET' in bundle, 'Expedition renderer is missing'
     digest = hashlib.sha256(apk.read_bytes()).hexdigest()
     out = root / 'android-delivery'
