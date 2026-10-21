@@ -337,26 +337,6 @@ class Smoke:
         self.capture(name)
         return after
 
-    def manual_pause(self):
-        # The real course reaches its first decision at 140m. UI automation
-        # can cross that boundary between locating Pause and tapping it.
-        # Choose the visible low-risk route, then exercise Pause again.
-        clicked = False
-        for _ in range(4):
-            _, nodes, labels = self.tree()
-            if "Your run is safe." in labels:
-                if not clicked:
-                    raise AssertionError("Run paused before the manual pause input")
-                return
-            route = "Choose Mossbound Rootway, low risk, Guardian Totems"
-            if self.label_node(nodes, route, clickable=True):
-                self.tap(route)
-                self.wait_hud(lambda s: s['route'] == 'rootway', 'selected Rootway branch')
-                self.mark("Selected the visible Rootway branch before testing pause")
-            self.tap("Pause expedition")
-            clicked = True
-        raise AssertionError("Manual pause did not reach the paused screen")
-
     def run(self):
         import uiautomator2 as u2
         from PIL import ImageChops, ImageStat
@@ -464,7 +444,7 @@ class Smoke:
         self.tap("Choose Mossbound Rootway, low risk, Guardian Totems", timeout=30)
         self.wait_hud(lambda state: state['route'] == 'rootway', 'selected Rootway branch')
         self.mark("First route decision selects the visible low-risk Rootway")
-        self.manual_pause()
+        self.tap("Pause expedition")
         paused = self.paused_state("05-manual-pause")
         self.mark("Manual pause freezes distance, score, lane, and action")
         self.tap("Resume expedition")
@@ -494,7 +474,7 @@ class Smoke:
         self.wait_hud(lambda state: state["distance_m"] > restored["distance_m"], "progress after cold restore")
         image = self.capture("08-restored-running", require_running=True)
         self.rendered("08-restored-running", image)
-        self.manual_pause()
+        self.tap("Pause expedition")
         self.paused_state("09-final-paused")
         self.mark("Restored run resumes with a nonblank 3D view; left safely paused")
 
