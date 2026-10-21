@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Download, authenticate and inspect the exact EAS APK selected for native QA."""
+"""Authenticate and inspect the exact Expo or GitHub-built APK selected for QA."""
 
 from __future__ import annotations
 
@@ -8,14 +8,17 @@ import json
 import os
 from pathlib import Path
 import re
+import shutil
 import subprocess
 import sys
+import zipfile
 from urllib.parse import urlsplit
 from uuid import UUID
 
 
 ROOT = Path(__file__).resolve().parents[1]
 KEYS = {"apkUrl", "sha256", "package", "version", "buildNumber", "easBuildId"}
+GITHUB_KEYS = {"githubRunId", "githubArtifactId", "sha256", "package", "version", "buildNumber", "sourceRevision", "sourceHeadRevision"}
 FORBIDDEN = {
     "android.permission.RECORD_AUDIO", "android.permission.READ_EXTERNAL_STORAGE",
     "android.permission.WRITE_EXTERNAL_STORAGE", "android.permission.SYSTEM_ALERT_WINDOW",
@@ -23,8 +26,16 @@ FORBIDDEN = {
 
 
 def validate_manifest(value):
+    if isinstance(value, dict) and set(value) == GITHUB_KEYS:
+        for key in ("githubRunId", "githubArtifactId"):
+            if type(value[key]) is not int or value[key] <= 0:
+                raise ValueError(key + " must be a positive integer")
+        for key in ("sourceRevision", "sourceHeadRevision"):
+            if not isinstance(value[key], str) or not re.fullmatch(r"[0-9a-f]{40}", value[key]):
+                raise ValueError(key + " must be a complete lowercase commit SHA")
+        return validate_identity(value)
     if not isinstance(value, dict) or set(value) != KEYS:
-        raise ValueError("Build manifest must contain exactly the six documented fields")
+        raise ValueError("Build manifest must contain exactly one documented source schema")
     if not isinstance(value["apkUrl"], str):
         raise ValueError("apkUrl must be a string")
     url = urlsplit(value["apkUrl"])
@@ -35,6 +46,12 @@ def validate_manifest(value):
     # urlsplit can strip leading controls; insist that the original URL is canonical.
     if value["apkUrl"] != "https://expo.dev" + url.path:
         raise ValueError("apkUrl must not contain whitespace, controls or URL rewriting")
+    if not isinstance(value["easBuildId"], str) or str(UUID(value["easBuildId"])) != value["easBuildId"]:
+        raise ValueError("easBuildId must be a canonical UUID")
+    return validate_identity(value)
+
+
+def validate_identity(value):
     if not isinstance(value["sha256"], str) or not re.fullmatch(r"[0-9a-fA-F]{64}", value["sha256"]):
         raise ValueError("sha256 must contain exactly 64 hexadecimal characters")
     if not isinstance(value["package"], str) or not re.fullmatch(r"[A-Za-z_][A-Za-z0-9_]*(?:\.[A-Za-z_][A-Za-z0-9_]*)+", value["package"]):
@@ -44,9 +61,18 @@ def validate_manifest(value):
     number = value["buildNumber"]
     if isinstance(number, bool) or not isinstance(number, (int, str)) or not re.fullmatch(r"[1-9][0-9]*", str(number)) or int(number) > 2100000000:
         raise ValueError("buildNumber must be a positive Android versionCode")
-    if not isinstance(value["easBuildId"], str) or str(UUID(value["easBuildId"])) != value["easBuildId"]:
-        raise ValueError("easBuildId must be a canonical UUID")
     return {**value, "sha256": value["sha256"].lower(), "buildNumber": int(number)}
+
+
+def verify_embedded_source(apk, manifest):
+    with zipfile.ZipFile(apk) as archive:
+        if archive.testzip() is not None:
+            raise ValueError("APK archive integrity failed")
+        config = json.loads(archive.read("assets/app.config"))
+        if config.get("extra", {}).get("buildRevision") != manifest["sourceRevision"]:
+            raise ValueError("Embedded source revision differs from the selected build")
+        if config.get("android", {}).get("package") != manifest["package"]:
+            raise ValueError("Embedded package differs from the selected build")
 
 
 def inspect_apk(apk, build_tools, evidence, expected):
@@ -83,19 +109,28 @@ def main():
         (evidence / "build-manifest.json").write_text(json.dumps(manifest, indent=2) + "\n", encoding="utf-8")
         apk = Path(os.environ["MADGER_ANDROID_APK"]).resolve()
         apk.parent.mkdir(parents=True, exist_ok=True)
-        # Expo may redirect the validated artifact URL to its HTTPS artifact CDN.
-        # curl's protocol restriction applies to every redirect and TLS verification stays enabled.
-        subprocess.run([
-            "curl", "--disable", "--fail", "--silent", "--show-error", "--location",
-            "--proto", "=https", "--proto-redir", "=https", "--max-redirs", "5",
-            "--connect-timeout", "20", "--max-time", "300", "--retry", "3",
-            "--max-filesize", "536870912", "--output", str(apk), manifest["apkUrl"],
-        ], check=True, timeout=1250)
+        if "githubRunId" in manifest:
+            source = Path(os.environ["MADGER_SOURCE_ARTIFACT_DIR"]) / "android/app/build/outputs/apk/release/app-release.apk"
+            shutil.copyfile(source, apk)
+            # QA scripts and this selection manifest are not packaged game inputs.
+            subprocess.run(["git", "fetch", "--no-tags", "origin", manifest["sourceHeadRevision"]], cwd=ROOT.parent, check=True, timeout=90)
+            subprocess.run(["git", "diff", "--exit-code", manifest["sourceHeadRevision"], "--", "mobile", ":(exclude)mobile/scripts", ":(exclude)mobile/expedition-preview-build.json"], cwd=ROOT.parent, check=True, timeout=30)
+            verify_embedded_source(apk, manifest)
+            report.update({key: manifest[key] for key in ("githubRunId", "githubArtifactId", "sourceRevision", "sourceHeadRevision")})
+        else:
+            # Expo redirects stay HTTPS and TLS verification remains enabled.
+            subprocess.run([
+                "curl", "--disable", "--fail", "--silent", "--show-error", "--location",
+                "--proto", "=https", "--proto-redir", "=https", "--max-redirs", "5",
+                "--connect-timeout", "20", "--max-time", "300", "--retry", "3",
+                "--max-filesize", "536870912", "--output", str(apk), manifest["apkUrl"],
+            ], check=True, timeout=1250)
+            report["easBuildId"] = manifest["easBuildId"]
         checksum = hashlib.sha256()
         with apk.open("rb") as stream:
             for chunk in iter(lambda: stream.read(1024 * 1024), b""):
                 checksum.update(chunk)
-        report.update({"sha256": checksum.hexdigest(), "easBuildId": manifest["easBuildId"], "apkBytes": apk.stat().st_size})
+        report.update({"sha256": checksum.hexdigest(), "apkBytes": apk.stat().st_size})
         if checksum.hexdigest() != manifest["sha256"]:
             raise ValueError("Downloaded APK SHA-256 does not match the build manifest")
         sdk = os.environ.get("ANDROID_SDK_ROOT") or os.environ["ANDROID_HOME"]
@@ -114,4 +149,9 @@ def main():
 
 
 if __name__ == "__main__":
+    if sys.argv[1:] == ["--workflow-outputs"]:
+        selected = validate_manifest(json.loads((ROOT / "expedition-preview-build.json").read_text(encoding="utf-8")))
+        with Path(os.environ["GITHUB_OUTPUT"]).open("a", encoding="utf-8") as output:
+            output.write(f"github_run_id={selected.get('githubRunId', '')}\ngithub_artifact_id={selected.get('githubArtifactId', '')}\n")
+        raise SystemExit(0)
     raise SystemExit(main())

@@ -13,16 +13,18 @@ on:
 
 permissions:
   contents: read
+  actions: read
 
 jobs:
   exact-apk-smoke:
-    name: Verify and exercise the EAS preview APK
+    name: Verify and exercise the selected preview APK
     runs-on: ubuntu-latest
     timeout-minutes: 35
     env:
       MADGER_ANDROID_APK: ${{ github.workspace }}/.qa-artifacts/madger-expedition-preview.apk
       MADGER_ANDROID_EVIDENCE_DIR: ${{ github.workspace }}/mobile/expedition-evidence/android-preview
       MADGER_ANDROID_RESET: '1'
+      MADGER_SOURCE_ARTIFACT_DIR: ${{ github.workspace }}/.qa-artifacts/source
     steps:
       - name: Check out the requested revision
         uses: actions/checkout@v4
@@ -30,7 +32,22 @@ jobs:
           persist-credentials: false
 
       - name: Check isolated native harness guard
-        run: python3 mobile/scripts/test-android-quickstep-dialog.py -v
+        run: |
+          python3 mobile/scripts/test-android-quickstep-dialog.py -v
+          python3 mobile/scripts/test-apk-source-manifest.py -v
+
+      - name: Validate the selected build source
+        id: selected
+        run: python3 mobile/scripts/verify-expedition-apk.py --workflow-outputs
+
+      - name: Download the exact GitHub build artifact
+        if: steps.selected.outputs.github_run_id != ''
+        uses: actions/download-artifact@v4
+        with:
+          artifact-ids: ${{ steps.selected.outputs.github_artifact_id }}
+          run-id: ${{ steps.selected.outputs.github_run_id }}
+          github-token: ${{ github.token }}
+          path: ${{ env.MADGER_SOURCE_ARTIFACT_DIR }}
 
       - name: Set up Java 17
         uses: actions/setup-java@v4
