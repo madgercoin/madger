@@ -1,0 +1,44 @@
+{
+  "id": "RES-08",
+  "name": "Sori Wren",
+  "group": "Resident",
+  "identity": "Adult fox",
+  "origin": "Willowmere",
+  "affiliation": "FAC-01",
+  "seed": "Grower and produce coordinator. Disagrees with Iona about allocations without becoming an enemy. Home: Hearth Terraces.",
+  "status": "Developed baseline 3.0",
+  "age": 36,
+  "height_m": 1.3,
+  "design": "Copper fox with pale throat, olive overalls, violet seed pouch, pruning shears.",
+  "history": "Grew up in Willowmere cooperatives and moved to Hearth Terraces for new growing terraces five years ago.",
+  "desire": "To keep enough diversity in the gardens that one bad season cannot ruin everyone.",
+  "contradiction": "Defends favorite experiments past the point where evidence supports them.",
+  "relationships": "Iona argues about resources; Neri brings learners; Kesh offers heat-grown varieties.",
+  "arc": "Sacrifices a prized crop trial to protect shared supply, then runs a smaller honest trial next season.",
+  "story_engine": "A rare fruit tastes awful; an unexpected volunteer plant survives what carefully planted rows cannot.",
+  "writer_truth": "One successful variety came from an accidental seed mix, not his deliberate breeding plan.",
+  "voice": "No voice assigned; do not substitute an existing hero voice.",
+  "skills_and_limits": "Species anatomy, training, tools, fatigue and local knowledge constrain action. No unlisted magic or universal hacking.",
+  "art_status": "New design developed for this edition; exact colors and silhouette set by card and cast plate.",
+  "art": {
+    "file": "CAST-02.png",
+    "column": 1,
+    "row": 0,
+    "grid": [
+      3,
+      2
+    ]
+  },
+  "performance": {
+    "silhouette": "Copper fox with pale throat, olive overalls, violet seed pouch, pruning shears.",
+    "expression_set": [
+      "neutral listening",
+      "pleased",
+      "concerned",
+      "frustrated",
+      "focused"
+    ],
+    "motion_rule": "Use a held body pose for dialogue with separate mouth shapes, blinks and intentional expression changes. Preserve facial landmarks.",
+    "limits": "Species anatomy, training, tools, fatigue and local knowledge constrain action. No unlisted magic or universal hacking."
+  }
+}

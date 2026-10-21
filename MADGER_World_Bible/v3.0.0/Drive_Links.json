@@ -1,0 +1,1321 @@
+{
+  "edition": "3.0.0",
+  "folder_url": "https://drive.google.com/drive/folders/1tTbzQwHeJqpzJfIrdjAXkteilfKnbgWv",
+  "index_url": "https://docs.google.com/document/d/1mVmWBzLV7j1UFi5k8HSUqEnDxckAFl5X-jNZuhegg0M/edit",
+  "files": [
+    {
+      "category": "volumes",
+      "id": "1EwnZ0qDp9rPZ0_rM3vOm1IbPFztPsU2v",
+      "url": "https://drive.google.com/file/d/1EwnZ0qDp9rPZ0_rM3vOm1IbPFztPsU2v/view?usp=drivesdk",
+      "file_name": "MADGER_World_Atlas.pdf",
+      "parent_id": "1tTbzQwHeJqpzJfIrdjAXkteilfKnbgWv",
+      "relative_path": "output/MADGER_World_Atlas.pdf",
+      "sha256": "c755370d58709c21f6ea6dc905f384380dda269d3c174b7a743416885f9de862"
+    },
+    {
+      "category": "volumes",
+      "parent_id": "1tTbzQwHeJqpzJfIrdjAXkteilfKnbgWv",
+      "id": "1k0UWRpJcyIlfmkJJpYlnMhrJ1TibZim4",
+      "url": "https://drive.google.com/file/d/1k0UWRpJcyIlfmkJJpYlnMhrJ1TibZim4/view?usp=drivesdk",
+      "file_name": "MADGER_Character_Bible.pdf",
+      "relative_path": "output/MADGER_Character_Bible.pdf",
+      "sha256": "7e2d7db843a3a75946c59bcf32b940b1b8ce81eba9724c37aad71825763627c4"
+    },
+    {
+      "category": "volumes",
+      "parent_id": "1tTbzQwHeJqpzJfIrdjAXkteilfKnbgWv",
+      "id": "1CF2c3W4InEetoNYmAn-s_MiYZGeES4Yf",
+      "url": "https://drive.google.com/file/d/1CF2c3W4InEetoNYmAn-s_MiYZGeES4Yf/view?usp=drivesdk",
+      "file_name": "MADGER_Blueprint_Atlas.pdf",
+      "relative_path": "output/MADGER_Blueprint_Atlas.pdf",
+      "sha256": "d1c8f50532702876cc09a0d64bb910381a9d0a325871482a3f3d0b5396ea3ad8"
+    },
+    {
+      "category": "volumes",
+      "parent_id": "1tTbzQwHeJqpzJfIrdjAXkteilfKnbgWv",
+      "id": "1Y1totGC1wNnnTc7IacqEwgpYLSOKr3pW",
+      "url": "https://drive.google.com/file/d/1Y1totGC1wNnnTc7IacqEwgpYLSOKr3pW/view?usp=drivesdk",
+      "file_name": "MADGER_Stories_and_Factions.pdf",
+      "relative_path": "output/MADGER_Stories_and_Factions.pdf",
+      "sha256": "df7d6f1b931b361bcab5ffb5f04e51521ae5cd4d2512c42348c1f7f841c3f47f"
+    },
+    {
+      "category": "volumes",
+      "parent_id": "1tTbzQwHeJqpzJfIrdjAXkteilfKnbgWv",
+      "id": "1xhURkOzapAOlCRg8H9S6BuFrZY5RU8LZ",
+      "url": "https://drive.google.com/file/d/1xhURkOzapAOlCRg8H9S6BuFrZY5RU8LZ/view?usp=drivesdk",
+      "file_name": "MADGER_Blueprint_Gallery.html",
+      "relative_path": "output/MADGER_Blueprint_Gallery.html",
+      "sha256": "73401b5900b046317b7368c8fae3bf04aa5581881428ef56e9aaf30feeefb916"
+    },
+    {
+      "category": "cards",
+      "parent_id": "1MMXs4Qlk8aZjAamEl0zobkXHTi6lutnB",
+      "id": "1eqgNnF4zSaVeRJxgtc1UzgMNX4agd8lm",
+      "url": "https://drive.google.com/file/d/1eqgNnF4zSaVeRJxgtc1UzgMNX4agd8lm/view?usp=drivesdk",
+      "file_name": "001_MADGER.pdf",
+      "relative_path": "output/cards/001_MADGER.pdf",
+      "sha256": "53ce1cfeacdb85800899e94f6722a42f3f40a7ee0d0cc5a556862a7b49a011ab"
+    },
+    {
+      "category": "cards",
+      "parent_id": "1MMXs4Qlk8aZjAamEl0zobkXHTi6lutnB",
+      "id": "15iRuVaUg4EA2fB_tkpt7qsu9D0GkMkU2",
+      "url": "https://drive.google.com/file/d/15iRuVaUg4EA2fB_tkpt7qsu9D0GkMkU2/view?usp=drivesdk",
+      "file_name": "002_GORILLA_WHITE.pdf",
+      "relative_path": "output/cards/002_GORILLA_WHITE.pdf",
+      "sha256": "115f287ccc6a22b5e3ea9cbb962a9305d13721edf72c22a31c45667125c0f084"
+    },
+    {
+      "category": "cards",
+      "parent_id": "1MMXs4Qlk8aZjAamEl0zobkXHTi6lutnB",
+      "id": "1lUw0qWqKF_UlsxOD1C53HmpKamwfg85h",
+      "url": "https://drive.google.com/file/d/1lUw0qWqKF_UlsxOD1C53HmpKamwfg85h/view?usp=drivesdk",
+      "file_name": "003_MADGER_BOT.pdf",
+      "relative_path": "output/cards/003_MADGER_BOT.pdf",
+      "sha256": "1304efad36cc68ba7c7670d3bea527981dd2c8c19feac645c2dbfdf54c8f2da6"
+    },
+    {
+      "category": "cards",
+      "parent_id": "1MMXs4Qlk8aZjAamEl0zobkXHTi6lutnB",
+      "id": "1bzrDJfxwZbNobEEajMhPgaNZqgKpJQdq",
+      "url": "https://drive.google.com/file/d/1bzrDJfxwZbNobEEajMhPgaNZqgKpJQdq/view?usp=drivesdk",
+      "file_name": "004_SNOW_WHITE.pdf",
+      "relative_path": "output/cards/004_SNOW_WHITE.pdf",
+      "sha256": "36a14d2017d778475739ef3506b1b9692e952399f9a088ea9d57bed39838978d"
+    },
+    {
+      "category": "cards",
+      "parent_id": "1MMXs4Qlk8aZjAamEl0zobkXHTi6lutnB",
+      "id": "1VR6xC9VecCVsE3ksYF31XZYvZeM2ubVm",
+      "url": "https://drive.google.com/file/d/1VR6xC9VecCVsE3ksYF31XZYvZeM2ubVm/view?usp=drivesdk",
+      "file_name": "005_RES-01.pdf",
+      "relative_path": "output/cards/005_RES-01.pdf",
+      "sha256": "b359f13e1cfff3fef1fcbf0b966bd19b4088d5b80ad2f4ed7ad98077940eb51c"
+    },
+    {
+      "category": "cards",
+      "parent_id": "1MMXs4Qlk8aZjAamEl0zobkXHTi6lutnB",
+      "id": "1ogVvYZ2aavFl2KmN0xqQK5hzfgi3f0-S",
+      "url": "https://drive.google.com/file/d/1ogVvYZ2aavFl2KmN0xqQK5hzfgi3f0-S/view?usp=drivesdk",
+      "file_name": "006_RES-02.pdf",
+      "relative_path": "output/cards/006_RES-02.pdf",
+      "sha256": "184a7cbf6d24f194c2c7606c598333590295364917a6fcc46356c5c151837a27"
+    },
+    {
+      "category": "cards",
+      "parent_id": "1MMXs4Qlk8aZjAamEl0zobkXHTi6lutnB",
+      "id": "14VQjihn6EWmmhjMvHEW1LtH83ypyCYZx",
+      "url": "https://drive.google.com/file/d/14VQjihn6EWmmhjMvHEW1LtH83ypyCYZx/view?usp=drivesdk",
+      "file_name": "007_RES-03.pdf",
+      "relative_path": "output/cards/007_RES-03.pdf",
+      "sha256": "6f455adf019b0bb31961ea9701ed9459392eb1b679fa7bed49d753042414c9c0"
+    },
+    {
+      "category": "cards",
+      "parent_id": "1MMXs4Qlk8aZjAamEl0zobkXHTi6lutnB",
+      "id": "1Tr1u26frg8_SDU86qtHtJcZG5HMDIv5T",
+      "url": "https://drive.google.com/file/d/1Tr1u26frg8_SDU86qtHtJcZG5HMDIv5T/view?usp=drivesdk",
+      "file_name": "008_RES-04.pdf",
+      "relative_path": "output/cards/008_RES-04.pdf",
+      "sha256": "a4f9eec441ed2810b6c202d1f933e98693894074252018795467498306a40918"
+    },
+    {
+      "category": "cards",
+      "parent_id": "1MMXs4Qlk8aZjAamEl0zobkXHTi6lutnB",
+      "id": "1_xOcFsG-SLGZKGhCMl1D5B9O1l6dby1M",
+      "url": "https://drive.google.com/file/d/1_xOcFsG-SLGZKGhCMl1D5B9O1l6dby1M/view?usp=drivesdk",
+      "file_name": "009_RES-05.pdf",
+      "relative_path": "output/cards/009_RES-05.pdf",
+      "sha256": "bb424b058f4b551a0f53c87218b05447230ba770db8c25d744c707a16c736d9f"
+    },
+    {
+      "category": "cards",
+      "parent_id": "1MMXs4Qlk8aZjAamEl0zobkXHTi6lutnB",
+      "id": "1pSheIlhgNgV2rVZNuu3cXFBuU5Z505KR",
+      "url": "https://drive.google.com/file/d/1pSheIlhgNgV2rVZNuu3cXFBuU5Z505KR/view?usp=drivesdk",
+      "file_name": "010_RES-06.pdf",
+      "relative_path": "output/cards/010_RES-06.pdf",
+      "sha256": "ae365c55a1bda0a14485fd2692af9433cfb9625d74504bf88548cf47df596ca6"
+    },
+    {
+      "category": "cards",
+      "parent_id": "1MMXs4Qlk8aZjAamEl0zobkXHTi6lutnB",
+      "id": "17epPxFL8G5lgKCLXwdTJggoH-quJdNFc",
+      "url": "https://drive.google.com/file/d/17epPxFL8G5lgKCLXwdTJggoH-quJdNFc/view?usp=drivesdk",
+      "file_name": "011_RES-07.pdf",
+      "relative_path": "output/cards/011_RES-07.pdf",
+      "sha256": "815f3c3f1d88e8c2211506c05ccecbd64345555a3388af6b519cfd283d13772d"
+    },
+    {
+      "category": "cards",
+      "parent_id": "1MMXs4Qlk8aZjAamEl0zobkXHTi6lutnB",
+      "id": "1OQU8Wad0PBAPt0-y5imhVyKEOGAG1GCN",
+      "url": "https://drive.google.com/file/d/1OQU8Wad0PBAPt0-y5imhVyKEOGAG1GCN/view?usp=drivesdk",
+      "file_name": "012_RES-08.pdf",
+      "relative_path": "output/cards/012_RES-08.pdf",
+      "sha256": "175659fcf8eae3e8e95e5f2758ccffb82ce1ed4b23b04efc28ee60298cc5054a"
+    },
+    {
+      "category": "cards",
+      "parent_id": "1MMXs4Qlk8aZjAamEl0zobkXHTi6lutnB",
+      "id": "1aTb3PFt1pyGtNI-LPG7euwYQqNJNziER",
+      "url": "https://drive.google.com/file/d/1aTb3PFt1pyGtNI-LPG7euwYQqNJNziER/view?usp=drivesdk",
+      "file_name": "013_ALLY-01.pdf",
+      "relative_path": "output/cards/013_ALLY-01.pdf",
+      "sha256": "ede202ac5c400d17e2f3a612dfb8071de5426b52d77b380049852857203d0264"
+    },
+    {
+      "category": "cards",
+      "parent_id": "1MMXs4Qlk8aZjAamEl0zobkXHTi6lutnB",
+      "id": "1C2I7_BvMZnhSKSM9zfzGHNhrQTejPZKf",
+      "url": "https://drive.google.com/file/d/1C2I7_BvMZnhSKSM9zfzGHNhrQTejPZKf/view?usp=drivesdk",
+      "file_name": "014_ALLY-02.pdf",
+      "relative_path": "output/cards/014_ALLY-02.pdf",
+      "sha256": "5d0535e42b0490a07d09c542df2a1c3a0d0e085dd370f6bd9e66b57de8f5bd3e"
+    },
+    {
+      "category": "cards",
+      "parent_id": "1MMXs4Qlk8aZjAamEl0zobkXHTi6lutnB",
+      "id": "1H8ZHLfJ-KIvTPSDQKtmP_safqswbIPpt",
+      "url": "https://drive.google.com/file/d/1H8ZHLfJ-KIvTPSDQKtmP_safqswbIPpt/view?usp=drivesdk",
+      "file_name": "015_ALLY-03.pdf",
+      "relative_path": "output/cards/015_ALLY-03.pdf",
+      "sha256": "a89575ccabfe9e542b63acdf7c53e3b058e8962c21bf2fbc7b1468fcb3808278"
+    },
+    {
+      "category": "cards",
+      "parent_id": "1MMXs4Qlk8aZjAamEl0zobkXHTi6lutnB",
+      "id": "1OXHEkO4qhuU1DZT_bvGtOQbQbBbWw6Xm",
+      "url": "https://drive.google.com/file/d/1OXHEkO4qhuU1DZT_bvGtOQbQbBbWw6Xm/view?usp=drivesdk",
+      "file_name": "016_KIN-01.pdf",
+      "relative_path": "output/cards/016_KIN-01.pdf",
+      "sha256": "386919ab456ae60eaacd1947f404cb819e8c5aac0411845a7b9ea317c91177c5"
+    },
+    {
+      "category": "cards",
+      "parent_id": "1MMXs4Qlk8aZjAamEl0zobkXHTi6lutnB",
+      "id": "1y2YfS8VODe16hwZuGni954WZ0dWggq3N",
+      "url": "https://drive.google.com/file/d/1y2YfS8VODe16hwZuGni954WZ0dWggq3N/view?usp=drivesdk",
+      "file_name": "017_KIN-02.pdf",
+      "relative_path": "output/cards/017_KIN-02.pdf",
+      "sha256": "195c8c4877ea14176453f743c069229251cdf4419794c352716f1d1b4119dedc"
+    },
+    {
+      "category": "cards",
+      "parent_id": "1MMXs4Qlk8aZjAamEl0zobkXHTi6lutnB",
+      "id": "1Cr_caX6sXKG2319r1_Uxag0lzwVT38gw",
+      "url": "https://drive.google.com/file/d/1Cr_caX6sXKG2319r1_Uxag0lzwVT38gw/view?usp=drivesdk",
+      "file_name": "018_VIL-01.pdf",
+      "relative_path": "output/cards/018_VIL-01.pdf",
+      "sha256": "2e44f2a0c530a8fc1886e778779e92ec65b014f740de12ace077ec0fe6fe7fdf"
+    },
+    {
+      "category": "cards",
+      "parent_id": "1MMXs4Qlk8aZjAamEl0zobkXHTi6lutnB",
+      "id": "1yp_mj5718CVsbRkGGKDJIvmeXz-4S4uA",
+      "url": "https://drive.google.com/file/d/1yp_mj5718CVsbRkGGKDJIvmeXz-4S4uA/view?usp=drivesdk",
+      "file_name": "019_VIL-02.pdf",
+      "relative_path": "output/cards/019_VIL-02.pdf",
+      "sha256": "d1e64b44893954b16ac7a0a84a5e4312e38deba5c839d215f22adac1b133023c"
+    },
+    {
+      "category": "cards",
+      "parent_id": "1MMXs4Qlk8aZjAamEl0zobkXHTi6lutnB",
+      "id": "1xOX--xn91_hBNeL0jw6MJfUjG-g_CSUV",
+      "url": "https://drive.google.com/file/d/1xOX--xn91_hBNeL0jw6MJfUjG-g_CSUV/view?usp=drivesdk",
+      "file_name": "020_VIL-03.pdf",
+      "relative_path": "output/cards/020_VIL-03.pdf",
+      "sha256": "0120a7c34b9d8f1b582ffe6fa49e514fdb32df649ebb2b876ec5610984a64912"
+    },
+    {
+      "category": "cards",
+      "parent_id": "1MMXs4Qlk8aZjAamEl0zobkXHTi6lutnB",
+      "id": "1VFgjgXbV9E7n0a395_klABO5bF2S0T5X",
+      "url": "https://drive.google.com/file/d/1VFgjgXbV9E7n0a395_klABO5bF2S0T5X/view?usp=drivesdk",
+      "file_name": "021_VIL-04.pdf",
+      "relative_path": "output/cards/021_VIL-04.pdf",
+      "sha256": "dd7f2404c94703dec2e3c3128998908c915cdc50cd6c52b17235047967a81527"
+    },
+    {
+      "category": "cards",
+      "parent_id": "1MMXs4Qlk8aZjAamEl0zobkXHTi6lutnB",
+      "id": "1_hBkjrpEDY4B5P2sJ4uU6hwWUhJ_fAvT",
+      "url": "https://drive.google.com/file/d/1_hBkjrpEDY4B5P2sJ4uU6hwWUhJ_fAvT/view?usp=drivesdk",
+      "file_name": "022_VIL-05.pdf",
+      "relative_path": "output/cards/022_VIL-05.pdf",
+      "sha256": "59d3cf4f611e18b0808cf8987ccf00ce9e96c4b67964b634063afe5ed9d09582"
+    },
+    {
+      "category": "cards",
+      "parent_id": "1MMXs4Qlk8aZjAamEl0zobkXHTi6lutnB",
+      "id": "1ezcJDGJ1LpbJ3JgJKjS3fgOLQw63IiBr",
+      "url": "https://drive.google.com/file/d/1ezcJDGJ1LpbJ3JgJKjS3fgOLQw63IiBr/view?usp=drivesdk",
+      "file_name": "023_VIL-06.pdf",
+      "relative_path": "output/cards/023_VIL-06.pdf",
+      "sha256": "9a7debcf5fdf8a763018b705ec7fc2c62761353971a3994f8bb531f3b4c7f298"
+    },
+    {
+      "category": "cards",
+      "parent_id": "1MMXs4Qlk8aZjAamEl0zobkXHTi6lutnB",
+      "id": "1BeMhx95NyVA8H23v7X4v_Wz0xigOzgvV",
+      "url": "https://drive.google.com/file/d/1BeMhx95NyVA8H23v7X4v_Wz0xigOzgvV/view?usp=drivesdk",
+      "file_name": "024_VIL-07.pdf",
+      "relative_path": "output/cards/024_VIL-07.pdf",
+      "sha256": "9de8dcedeaa37b212528c7daf8bb2787dcd99dc7b528611a13fd76f372176b69"
+    },
+    {
+      "category": "cards",
+      "parent_id": "1MMXs4Qlk8aZjAamEl0zobkXHTi6lutnB",
+      "id": "1y0Hgw78RmBrO2qrjy52oB0_81EqY6fc1",
+      "url": "https://drive.google.com/file/d/1y0Hgw78RmBrO2qrjy52oB0_81EqY6fc1/view?usp=drivesdk",
+      "file_name": "025_VIL-08.pdf",
+      "relative_path": "output/cards/025_VIL-08.pdf",
+      "sha256": "44ac5f16a01795262de48c8c529d52c45b32e9ed14025684e0eac028bc903fb4"
+    },
+    {
+      "category": "cards",
+      "parent_id": "1MMXs4Qlk8aZjAamEl0zobkXHTi6lutnB",
+      "id": "1qMcafEuL-Y9bEgE7Mdymqe1kr9ZnKDRO",
+      "url": "https://drive.google.com/file/d/1qMcafEuL-Y9bEgE7Mdymqe1kr9ZnKDRO/view?usp=drivesdk",
+      "file_name": "026_VIL-09.pdf",
+      "relative_path": "output/cards/026_VIL-09.pdf",
+      "sha256": "e1eed3ccb94d1212b099203571d92cbea951fa42040314d54e7164a81bd19f74"
+    },
+    {
+      "category": "cards",
+      "parent_id": "1MMXs4Qlk8aZjAamEl0zobkXHTi6lutnB",
+      "id": "1q-sVMyJ4vBtQg0nU9OsW4S6GSDhJPckO",
+      "url": "https://drive.google.com/file/d/1q-sVMyJ4vBtQg0nU9OsW4S6GSDhJPckO/view?usp=drivesdk",
+      "file_name": "027_IND-01.pdf",
+      "relative_path": "output/cards/027_IND-01.pdf",
+      "sha256": "597778a022c3dc155ba70d525a68b8b048e6825719e67c7a2a37f8e29a1cd885"
+    },
+    {
+      "category": "cards",
+      "parent_id": "1MMXs4Qlk8aZjAamEl0zobkXHTi6lutnB",
+      "id": "1J5KnByhwH2Jd8U4iYsBwq4jctsecbDIa",
+      "url": "https://drive.google.com/file/d/1J5KnByhwH2Jd8U4iYsBwq4jctsecbDIa/view?usp=drivesdk",
+      "file_name": "028_NEW-01.pdf",
+      "relative_path": "output/cards/028_NEW-01.pdf",
+      "sha256": "d1562bf0cd1948de528c37ea7b880f1c2b32db3cd1b7fd4f1e13b61613e9e88b"
+    },
+    {
+      "category": "cards",
+      "parent_id": "1MMXs4Qlk8aZjAamEl0zobkXHTi6lutnB",
+      "id": "1NoADY5cA9Ve6cDUVduWNJ6NG6QPNiXTx",
+      "url": "https://drive.google.com/file/d/1NoADY5cA9Ve6cDUVduWNJ6NG6QPNiXTx/view?usp=drivesdk",
+      "file_name": "029_NEW-02.pdf",
+      "relative_path": "output/cards/029_NEW-02.pdf",
+      "sha256": "4c5b9e2ec5650b05cf05d643857b8f650aae5b806727d17b30977cb4fe7cbdf7"
+    },
+    {
+      "category": "cards",
+      "parent_id": "1MMXs4Qlk8aZjAamEl0zobkXHTi6lutnB",
+      "id": "1QDC3fF6WYiqGAM66GKqOzex0cwSg1Ffy",
+      "url": "https://drive.google.com/file/d/1QDC3fF6WYiqGAM66GKqOzex0cwSg1Ffy/view?usp=drivesdk",
+      "file_name": "030_NEW-03.pdf",
+      "relative_path": "output/cards/030_NEW-03.pdf",
+      "sha256": "f0bcb9312e296aa828fe12e01a298e62d3de4650dcaef58485467b8ce39768f9"
+    },
+    {
+      "category": "cards",
+      "parent_id": "1MMXs4Qlk8aZjAamEl0zobkXHTi6lutnB",
+      "id": "1-2HzpaFs0SP4nwKYKlbeFPQuj1yqv53M",
+      "url": "https://drive.google.com/file/d/1-2HzpaFs0SP4nwKYKlbeFPQuj1yqv53M/view?usp=drivesdk",
+      "file_name": "031_NEW-04.pdf",
+      "relative_path": "output/cards/031_NEW-04.pdf",
+      "sha256": "42c2991964f847d26ee0a6dba4f29ae1b0004f5fe2c73e54998ed36ab3a8353e"
+    },
+    {
+      "category": "cards",
+      "parent_id": "1MMXs4Qlk8aZjAamEl0zobkXHTi6lutnB",
+      "id": "1Mp5NwS1n_JHEIGnqoHIqvc8RyT9Xdc1t",
+      "url": "https://drive.google.com/file/d/1Mp5NwS1n_JHEIGnqoHIqvc8RyT9Xdc1t/view?usp=drivesdk",
+      "file_name": "032_NEW-05.pdf",
+      "relative_path": "output/cards/032_NEW-05.pdf",
+      "sha256": "2c4499f02eb6fdf5ad73167d2baa9a21391ebe871745a67a9e9aef8f722143cb"
+    },
+    {
+      "category": "cards",
+      "parent_id": "1MMXs4Qlk8aZjAamEl0zobkXHTi6lutnB",
+      "id": "1mqUflAvfamWC8LkIYhaPdP0gjcN2EtPx",
+      "url": "https://drive.google.com/file/d/1mqUflAvfamWC8LkIYhaPdP0gjcN2EtPx/view?usp=drivesdk",
+      "file_name": "033_NEW-06.pdf",
+      "relative_path": "output/cards/033_NEW-06.pdf",
+      "sha256": "aeb0d3d71737c293c68e3d56601b716d9451531ad9774f6a9bcf7880cf275dbd"
+    },
+    {
+      "category": "cards",
+      "parent_id": "1MMXs4Qlk8aZjAamEl0zobkXHTi6lutnB",
+      "id": "144HsAMUFAwg5F2iMF1foVwRdFudHwI9w",
+      "url": "https://drive.google.com/file/d/144HsAMUFAwg5F2iMF1foVwRdFudHwI9w/view?usp=drivesdk",
+      "file_name": "034_NEW-07.pdf",
+      "relative_path": "output/cards/034_NEW-07.pdf",
+      "sha256": "e73ce25c494547bd730f0e08a61b0af308efeeb8a6c98b022d713e927b3445a8"
+    },
+    {
+      "category": "cards",
+      "parent_id": "1MMXs4Qlk8aZjAamEl0zobkXHTi6lutnB",
+      "id": "1UkJ-ffSGBqSTqcndo2UD3LiI1-q6bgRX",
+      "url": "https://drive.google.com/file/d/1UkJ-ffSGBqSTqcndo2UD3LiI1-q6bgRX/view?usp=drivesdk",
+      "file_name": "035_NEW-08.pdf",
+      "relative_path": "output/cards/035_NEW-08.pdf",
+      "sha256": "d53a9cf66bfdc44f35f8dcc75d74bcc90eb7e879f485678c26fa80ad66fa4e98"
+    },
+    {
+      "category": "cards",
+      "parent_id": "1MMXs4Qlk8aZjAamEl0zobkXHTi6lutnB",
+      "id": "1NztXNEMgwMXA0YGcJCEsYh5KEo5Mi8n3",
+      "url": "https://drive.google.com/file/d/1NztXNEMgwMXA0YGcJCEsYh5KEo5Mi8n3/view?usp=drivesdk",
+      "file_name": "036_NEW-09.pdf",
+      "relative_path": "output/cards/036_NEW-09.pdf",
+      "sha256": "1dff619120ea6fdb1370b9dbb63ccc4b89935a13ab500efbeb4df3aa9371c7aa"
+    },
+    {
+      "category": "cards",
+      "parent_id": "1MMXs4Qlk8aZjAamEl0zobkXHTi6lutnB",
+      "id": "1hSZpyef0TPnXllZlzbAoFsngCGhH1-XE",
+      "url": "https://drive.google.com/file/d/1hSZpyef0TPnXllZlzbAoFsngCGhH1-XE/view?usp=drivesdk",
+      "file_name": "037_NEW-10.pdf",
+      "relative_path": "output/cards/037_NEW-10.pdf",
+      "sha256": "fed0d02e04e83ad6f7eaba735fba22d35a5678e8bf1746d249b05333220c2281"
+    },
+    {
+      "category": "cards",
+      "parent_id": "1MMXs4Qlk8aZjAamEl0zobkXHTi6lutnB",
+      "id": "12dFHpPsWCEpyBTkgGSwcxfOwblk3ooHW",
+      "url": "https://drive.google.com/file/d/12dFHpPsWCEpyBTkgGSwcxfOwblk3ooHW/view?usp=drivesdk",
+      "file_name": "038_NEW-11.pdf",
+      "relative_path": "output/cards/038_NEW-11.pdf",
+      "sha256": "14331289fef67fc99eb0ee1254e419935e8132659eb5ca165664b4a544937a25"
+    },
+    {
+      "category": "cards",
+      "parent_id": "1MMXs4Qlk8aZjAamEl0zobkXHTi6lutnB",
+      "id": "1Zq2fixgVTqUR-WnVez2G-H-KZbpukkQB",
+      "url": "https://drive.google.com/file/d/1Zq2fixgVTqUR-WnVez2G-H-KZbpukkQB/view?usp=drivesdk",
+      "file_name": "039_NEW-12.pdf",
+      "relative_path": "output/cards/039_NEW-12.pdf",
+      "sha256": "b233b9dc23879290627d03d831a8cf91750ac94e0970f44fb642afbf7fc45e01"
+    },
+    {
+      "category": "cards",
+      "parent_id": "1MMXs4Qlk8aZjAamEl0zobkXHTi6lutnB",
+      "id": "1c_OquAV-lD07ZTxZ0hJqqgDlfX3X8zYB",
+      "url": "https://drive.google.com/file/d/1c_OquAV-lD07ZTxZ0hJqqgDlfX3X8zYB/view?usp=drivesdk",
+      "file_name": "040_NEW-13.pdf",
+      "relative_path": "output/cards/040_NEW-13.pdf",
+      "sha256": "2aab3642555bdf6046523414cbc9fbcfcf6e620124907362d186582d5717dbd6"
+    },
+    {
+      "category": "art",
+      "parent_id": "1JldFc53xFo9lE42gaMM9KPNKdiiQNnPa",
+      "id": "1uG18RtUrZ98fKo1Bee6WOkrQwssUhkE1",
+      "url": "https://drive.google.com/file/d/1uG18RtUrZ98fKo1Bee6WOkrQwssUhkE1/view?usp=drivesdk",
+      "file_name": "ART-01_Regions.png",
+      "relative_path": "art/ART-01_Regions.png",
+      "sha256": "64ba4dd332b8d5c94356f6969e9575ed29b19320b9c39598e1d779d85c75b5ec"
+    },
+    {
+      "category": "art",
+      "parent_id": "1JldFc53xFo9lE42gaMM9KPNKdiiQNnPa",
+      "id": "1MCWdgSf5xXHTW_cK8sqK5O0Qn40isuNE",
+      "url": "https://drive.google.com/file/d/1MCWdgSf5xXHTW_cK8sqK5O0Qn40isuNE/view?usp=drivesdk",
+      "file_name": "ART-02_Towns.png",
+      "relative_path": "art/ART-02_Towns.png",
+      "sha256": "f56366d3d724c6900d350b620b25d9ad87cbe5bfab2e28718a1fac7ffedf01cd"
+    },
+    {
+      "category": "art",
+      "parent_id": "1JldFc53xFo9lE42gaMM9KPNKdiiQNnPa",
+      "id": "1V12D9RUAzhVMJIgDe_t4nl56bCJZ3FIo",
+      "url": "https://drive.google.com/file/d/1V12D9RUAzhVMJIgDe_t4nl56bCJZ3FIo/view?usp=drivesdk",
+      "file_name": "ART-03_Bestiary.png",
+      "relative_path": "art/ART-03_Bestiary.png",
+      "sha256": "f58ccb45ee8180cf6dd10e2324f262f229e4775514b531a89aeac3c5f872cf01"
+    },
+    {
+      "category": "art",
+      "parent_id": "1JldFc53xFo9lE42gaMM9KPNKdiiQNnPa",
+      "id": "114oTvkpelba6eShBBVt3R3A264xWxVf7",
+      "url": "https://drive.google.com/file/d/114oTvkpelba6eShBBVt3R3A264xWxVf7/view?usp=drivesdk",
+      "file_name": "ART-04_Architecture.png",
+      "relative_path": "art/ART-04_Architecture.png",
+      "sha256": "32c939028cd2f3a4936bcbc2c4e1eab8eec2587f6f98f729554caa1b397e838b"
+    },
+    {
+      "category": "art",
+      "parent_id": "1JldFc53xFo9lE42gaMM9KPNKdiiQNnPa",
+      "id": "1CvsBV8trVZ2XTf9mLb7VOVJJnHE0lKXc",
+      "url": "https://drive.google.com/file/d/1CvsBV8trVZ2XTf9mLb7VOVJJnHE0lKXc/view?usp=drivesdk",
+      "file_name": "CAST-01.png",
+      "relative_path": "art/CAST-01.png",
+      "sha256": "e3bc047ec16cdba205f5e30ebdbdef39721a55970c52524cef1fd35eb724d48f"
+    },
+    {
+      "category": "art",
+      "parent_id": "1JldFc53xFo9lE42gaMM9KPNKdiiQNnPa",
+      "id": "1IAqx2fbY2-M60kGBjNsu3OyAeeufawbk",
+      "url": "https://drive.google.com/file/d/1IAqx2fbY2-M60kGBjNsu3OyAeeufawbk/view?usp=drivesdk",
+      "file_name": "CAST-02.png",
+      "relative_path": "art/CAST-02.png",
+      "sha256": "baf7427ca04eda573b3540c628a3a71fd0fa51f275c11e39b480a1f151618b8b"
+    },
+    {
+      "category": "art",
+      "parent_id": "1JldFc53xFo9lE42gaMM9KPNKdiiQNnPa",
+      "id": "1QLudTzHnxJX7MQDXceiW4RPaT9SGjgCR",
+      "url": "https://drive.google.com/file/d/1QLudTzHnxJX7MQDXceiW4RPaT9SGjgCR/view?usp=drivesdk",
+      "file_name": "CAST-03.png",
+      "relative_path": "art/CAST-03.png",
+      "sha256": "afb5a16c68590813f9554fac0a2b2d1e17b118103a7e48bc21a8aa1f2ca59036"
+    },
+    {
+      "category": "art",
+      "parent_id": "1JldFc53xFo9lE42gaMM9KPNKdiiQNnPa",
+      "id": "134aL3HJg0S93DVm4vHyweuRKbnvxvVig",
+      "url": "https://drive.google.com/file/d/134aL3HJg0S93DVm4vHyweuRKbnvxvVig/view?usp=drivesdk",
+      "file_name": "CAST-04.png",
+      "relative_path": "art/CAST-04.png",
+      "sha256": "4cdb48a028a47e99fe2d543e6c90053f45c38dac30c293c8e09663ac64e40d24"
+    },
+    {
+      "category": "art",
+      "parent_id": "1JldFc53xFo9lE42gaMM9KPNKdiiQNnPa",
+      "id": "1nJBgAjB_qRu9lysqZBZ0b_lh4_skUQGd",
+      "url": "https://drive.google.com/file/d/1nJBgAjB_qRu9lysqZBZ0b_lh4_skUQGd/view?usp=drivesdk",
+      "file_name": "CAST-05.png",
+      "relative_path": "art/CAST-05.png",
+      "sha256": "34b22a7eb8b36ea67c6655c2858b423a910a1300e7bdc61b2cb5c027fb796430"
+    },
+    {
+      "category": "art",
+      "parent_id": "1JldFc53xFo9lE42gaMM9KPNKdiiQNnPa",
+      "id": "1Wfg7TqsurgbCIXuFgveix248-WKNVciD",
+      "url": "https://drive.google.com/file/d/1Wfg7TqsurgbCIXuFgveix248-WKNVciD/view?usp=drivesdk",
+      "file_name": "CAST-06.png",
+      "relative_path": "art/CAST-06.png",
+      "sha256": "14a4eff26a0c431f87706779e62ce340bbf79073d076b6e0ed85f5c14292d2ac"
+    },
+    {
+      "category": "art",
+      "parent_id": "1JldFc53xFo9lE42gaMM9KPNKdiiQNnPa",
+      "id": "1fAvwb-cJU5fUW_wz7CuU_qntARFyEiFY",
+      "url": "https://drive.google.com/file/d/1fAvwb-cJU5fUW_wz7CuU_qntARFyEiFY/view?usp=drivesdk",
+      "file_name": "HEROES-01.png",
+      "relative_path": "art/HEROES-01.png",
+      "sha256": "c4dafc5ddebc55dd73fc6e65f49b1e94632de54fdf43fa65b603c4b9c654307e"
+    },
+    {
+      "category": "plans",
+      "parent_id": "1cRQRQspEuS8avE_Pyl3Wu6I5Zu9f3eV-",
+      "id": "1RZm7Og2ZJwa2Q6YPQzvSjfFdzqfkXy34",
+      "url": "https://drive.google.com/file/d/1RZm7Og2ZJwa2Q6YPQzvSjfFdzqfkXy34/view?usp=drivesdk",
+      "file_name": "BRW-MASTER.svg",
+      "relative_path": "plans/BRW-MASTER.svg",
+      "sha256": "0ceb8f0a36d6c6429de22f93b0c05abfba67c3bcb315d178a2b699bff2185df9"
+    },
+    {
+      "category": "plans",
+      "parent_id": "1cRQRQspEuS8avE_Pyl3Wu6I5Zu9f3eV-",
+      "id": "1nVV2Heuy8kEt6ebFhDhLrZUbL3XbIbuL",
+      "url": "https://drive.google.com/file/d/1nVV2Heuy8kEt6ebFhDhLrZUbL3XbIbuL/view?usp=drivesdk",
+      "file_name": "BRW-Z12.svg",
+      "relative_path": "plans/BRW-Z12.svg",
+      "sha256": "13db6e7d4a5086622a6bcb153fdfab21ca079274f6eb4ee79f12a256fe7f1609"
+    },
+    {
+      "category": "plans",
+      "parent_id": "1cRQRQspEuS8avE_Pyl3Wu6I5Zu9f3eV-",
+      "id": "1oK_zk5kVs37UnE1shIS6CbWIHgkplWRN",
+      "url": "https://drive.google.com/file/d/1oK_zk5kVs37UnE1shIS6CbWIHgkplWRN/view?usp=drivesdk",
+      "file_name": "BRW-Z24.svg",
+      "relative_path": "plans/BRW-Z24.svg",
+      "sha256": "b84ac79ddd9d81693865e8ebd6664630089b98b97096594b5c83e9d83d44c37a"
+    },
+    {
+      "category": "plans",
+      "parent_id": "1cRQRQspEuS8avE_Pyl3Wu6I5Zu9f3eV-",
+      "id": "1TcT9g96EfvhuZdGU7cWbo1OuxRD8Q5oj",
+      "url": "https://drive.google.com/file/d/1TcT9g96EfvhuZdGU7cWbo1OuxRD8Q5oj/view?usp=drivesdk",
+      "file_name": "BRW-Z36.svg",
+      "relative_path": "plans/BRW-Z36.svg",
+      "sha256": "5899eb0ae62ccc8fa9421d9fb00e7e0e0675c4dd76b64af309d57fdce0c135fc"
+    },
+    {
+      "category": "plans",
+      "parent_id": "1cRQRQspEuS8avE_Pyl3Wu6I5Zu9f3eV-",
+      "id": "1_3cvtw7JpEz89naGlVyGKnHxhwDjvniW",
+      "url": "https://drive.google.com/file/d/1_3cvtw7JpEz89naGlVyGKnHxhwDjvniW/view?usp=drivesdk",
+      "file_name": "EXT-01-B01.svg",
+      "relative_path": "plans/EXT-01-B01.svg",
+      "sha256": "64721f34b063104b0b6d69b1f6397385aa6022091a999b6c394d0cf5aff8cb77"
+    },
+    {
+      "category": "plans",
+      "parent_id": "1cRQRQspEuS8avE_Pyl3Wu6I5Zu9f3eV-",
+      "id": "1ZEfGo5w8rNeOHivav4td-Vil-oVHUur6",
+      "url": "https://drive.google.com/file/d/1ZEfGo5w8rNeOHivav4td-Vil-oVHUur6/view?usp=drivesdk",
+      "file_name": "EXT-01-B02.svg",
+      "relative_path": "plans/EXT-01-B02.svg",
+      "sha256": "bdd647626c6ac1de7cd01d7d878aa3f9ee93cfa48e26f85024961e4af600a8df"
+    },
+    {
+      "category": "plans",
+      "parent_id": "1cRQRQspEuS8avE_Pyl3Wu6I5Zu9f3eV-",
+      "id": "1599j_48q-sVemizKfK_GM2skOt6-wCqy",
+      "url": "https://drive.google.com/file/d/1599j_48q-sVemizKfK_GM2skOt6-wCqy/view?usp=drivesdk",
+      "file_name": "EXT-01-B03.svg",
+      "relative_path": "plans/EXT-01-B03.svg",
+      "sha256": "4e419ae58ba465417f98eb17e30622df1dd0093ca5ab8393a79248b66df4581f"
+    },
+    {
+      "category": "plans",
+      "parent_id": "1cRQRQspEuS8avE_Pyl3Wu6I5Zu9f3eV-",
+      "id": "1zT3hwP5sC5kZiDnxC1qbdvc0wxLkrRH0",
+      "url": "https://drive.google.com/file/d/1zT3hwP5sC5kZiDnxC1qbdvc0wxLkrRH0/view?usp=drivesdk",
+      "file_name": "EXT-01.svg",
+      "relative_path": "plans/EXT-01.svg",
+      "sha256": "852f17adfa7284d56babfc0edffce956849f606e5647014ae46f5f767bd8f57d"
+    },
+    {
+      "category": "plans",
+      "parent_id": "1cRQRQspEuS8avE_Pyl3Wu6I5Zu9f3eV-",
+      "id": "19mvVbNbKvrBdqPb1Gi-PZ6CNyARG8lsn",
+      "url": "https://drive.google.com/file/d/19mvVbNbKvrBdqPb1Gi-PZ6CNyARG8lsn/view?usp=drivesdk",
+      "file_name": "EXT-02-B01.svg",
+      "relative_path": "plans/EXT-02-B01.svg",
+      "sha256": "6f96c9b024c1feb74e06b0410f32c4ab1b3609dff7ecf0e9246cbe9ad2d38ada"
+    },
+    {
+      "category": "plans",
+      "parent_id": "1cRQRQspEuS8avE_Pyl3Wu6I5Zu9f3eV-",
+      "id": "19_aKQ6uzxC6pN0ABSe0NsIVfgPoh7L9o",
+      "url": "https://drive.google.com/file/d/19_aKQ6uzxC6pN0ABSe0NsIVfgPoh7L9o/view?usp=drivesdk",
+      "file_name": "EXT-02-B02.svg",
+      "relative_path": "plans/EXT-02-B02.svg",
+      "sha256": "e664b3ae4b217ab6af1d3d96f7faa04ed414a251ee71b03227b176b135b56828"
+    },
+    {
+      "category": "plans",
+      "parent_id": "1cRQRQspEuS8avE_Pyl3Wu6I5Zu9f3eV-",
+      "id": "1LQVtvZRsMtPu2dHAKZLsZlQJYWaLK6uE",
+      "url": "https://drive.google.com/file/d/1LQVtvZRsMtPu2dHAKZLsZlQJYWaLK6uE/view?usp=drivesdk",
+      "file_name": "EXT-02-B03.svg",
+      "relative_path": "plans/EXT-02-B03.svg",
+      "sha256": "750d372483e28d78c76dd518524997577fdbd6fca13666463a069ec5602e0e3d"
+    },
+    {
+      "category": "plans",
+      "parent_id": "1cRQRQspEuS8avE_Pyl3Wu6I5Zu9f3eV-",
+      "id": "10SwUzvOVBfPKHOrzdYHgDdhDwDBZWiwr",
+      "url": "https://drive.google.com/file/d/10SwUzvOVBfPKHOrzdYHgDdhDwDBZWiwr/view?usp=drivesdk",
+      "file_name": "EXT-02.svg",
+      "relative_path": "plans/EXT-02.svg",
+      "sha256": "9ec231c69ee79d55613ac84da6bddcbcfc66b89a091c438abf717881b54fbfd7"
+    },
+    {
+      "category": "plans",
+      "parent_id": "1cRQRQspEuS8avE_Pyl3Wu6I5Zu9f3eV-",
+      "id": "1LT0WqPDvF0A6aHq2HQZNSa9q1OuwYS1p",
+      "url": "https://drive.google.com/file/d/1LT0WqPDvF0A6aHq2HQZNSa9q1OuwYS1p/view?usp=drivesdk",
+      "file_name": "EXT-03-B01.svg",
+      "relative_path": "plans/EXT-03-B01.svg",
+      "sha256": "24e48b5da198658dd1196d75bc0664d51aa9e12a45a5a9b8a2eea7b05cf121fa"
+    },
+    {
+      "category": "plans",
+      "parent_id": "1cRQRQspEuS8avE_Pyl3Wu6I5Zu9f3eV-",
+      "id": "161tn1Gfudb0ymjHqTUlRb6Ez2Lo85rXd",
+      "url": "https://drive.google.com/file/d/161tn1Gfudb0ymjHqTUlRb6Ez2Lo85rXd/view?usp=drivesdk",
+      "file_name": "EXT-03-B02.svg",
+      "relative_path": "plans/EXT-03-B02.svg",
+      "sha256": "de1391cbce2b62bc6797162400855cd9836050af3d35eb0b323eb981cc7b085c"
+    },
+    {
+      "category": "plans",
+      "parent_id": "1cRQRQspEuS8avE_Pyl3Wu6I5Zu9f3eV-",
+      "id": "1WzPO_5ni3OvD1uzOSY29amrVcz_kqgo9",
+      "url": "https://drive.google.com/file/d/1WzPO_5ni3OvD1uzOSY29amrVcz_kqgo9/view?usp=drivesdk",
+      "file_name": "EXT-03-B03.svg",
+      "relative_path": "plans/EXT-03-B03.svg",
+      "sha256": "3eba72ac49a1508fc5e432cdb5a835125cb5f870e41287daadbc1d0e19b5fb17"
+    },
+    {
+      "category": "plans",
+      "parent_id": "1cRQRQspEuS8avE_Pyl3Wu6I5Zu9f3eV-",
+      "id": "1WysGu6YkWz5yP0z1l8lX43TMinCPD1mK",
+      "url": "https://drive.google.com/file/d/1WysGu6YkWz5yP0z1l8lX43TMinCPD1mK/view?usp=drivesdk",
+      "file_name": "EXT-03.svg",
+      "relative_path": "plans/EXT-03.svg",
+      "sha256": "b1cfa6c30bfa7c3aaf21eb88bfd2e3b0f4bdb05f651aa547988b7bf82944aba8"
+    },
+    {
+      "category": "plans",
+      "parent_id": "1cRQRQspEuS8avE_Pyl3Wu6I5Zu9f3eV-",
+      "id": "165aqjXmWoV0LzbijriNrlkUS_BeJpJAR",
+      "url": "https://drive.google.com/file/d/165aqjXmWoV0LzbijriNrlkUS_BeJpJAR/view?usp=drivesdk",
+      "file_name": "EXT-04-B01.svg",
+      "relative_path": "plans/EXT-04-B01.svg",
+      "sha256": "17925ab038943b83ed78924e206b8a04cfd3af19b1397cd210bfee1ced1ca291"
+    },
+    {
+      "category": "plans",
+      "parent_id": "1cRQRQspEuS8avE_Pyl3Wu6I5Zu9f3eV-",
+      "id": "1KyRX6lSs2GdfBxQI0GdViy3J5_IthDTD",
+      "url": "https://drive.google.com/file/d/1KyRX6lSs2GdfBxQI0GdViy3J5_IthDTD/view?usp=drivesdk",
+      "file_name": "EXT-04-B02.svg",
+      "relative_path": "plans/EXT-04-B02.svg",
+      "sha256": "09dfce08be9f860f68421ae739db3b8d5703339b2400d70d285bb6c61473b4f2"
+    },
+    {
+      "category": "plans",
+      "parent_id": "1cRQRQspEuS8avE_Pyl3Wu6I5Zu9f3eV-",
+      "id": "14AdRdQukOG9f9nX1mZbBSgX4DeFV6kaD",
+      "url": "https://drive.google.com/file/d/14AdRdQukOG9f9nX1mZbBSgX4DeFV6kaD/view?usp=drivesdk",
+      "file_name": "EXT-04-B03.svg",
+      "relative_path": "plans/EXT-04-B03.svg",
+      "sha256": "46c78abe17259e5783d4cf3c971533f29d51592445a84db1771bd6f036dc2c06"
+    },
+    {
+      "category": "plans",
+      "parent_id": "1cRQRQspEuS8avE_Pyl3Wu6I5Zu9f3eV-",
+      "id": "1HipOONuRmQn5GyRuqjGtpneUQ7fxbaFd",
+      "url": "https://drive.google.com/file/d/1HipOONuRmQn5GyRuqjGtpneUQ7fxbaFd/view?usp=drivesdk",
+      "file_name": "EXT-04.svg",
+      "relative_path": "plans/EXT-04.svg",
+      "sha256": "836f6a5e93ccc3fa26b3b7d858e7448d76fa6bcfe1b10d3c9ff6b94a6d5f55dc"
+    },
+    {
+      "category": "plans",
+      "parent_id": "1cRQRQspEuS8avE_Pyl3Wu6I5Zu9f3eV-",
+      "id": "1NN-nIQQcVA2jN5wJkFGof7zVmlSY8UZU",
+      "url": "https://drive.google.com/file/d/1NN-nIQQcVA2jN5wJkFGof7zVmlSY8UZU/view?usp=drivesdk",
+      "file_name": "EXT-05-B01.svg",
+      "relative_path": "plans/EXT-05-B01.svg",
+      "sha256": "10ac6c2dc6322d66a82e97a02b0f0db68dc91a127293ef624e9b7ddb3f4067af"
+    },
+    {
+      "category": "plans",
+      "parent_id": "1cRQRQspEuS8avE_Pyl3Wu6I5Zu9f3eV-",
+      "id": "1uF9JTAcUwOYuNVhnIqb8LzklFqGsGmvL",
+      "url": "https://drive.google.com/file/d/1uF9JTAcUwOYuNVhnIqb8LzklFqGsGmvL/view?usp=drivesdk",
+      "file_name": "EXT-05-B02.svg",
+      "relative_path": "plans/EXT-05-B02.svg",
+      "sha256": "cd2992c1f1756c506b9ba4b3b6f2f3253c404ecba3fe98d261ccf6a0d456b9b8"
+    },
+    {
+      "category": "plans",
+      "parent_id": "1cRQRQspEuS8avE_Pyl3Wu6I5Zu9f3eV-",
+      "id": "1pD-Ee9yqMh0UqYnhE0PPy8DZCEVIPd4o",
+      "url": "https://drive.google.com/file/d/1pD-Ee9yqMh0UqYnhE0PPy8DZCEVIPd4o/view?usp=drivesdk",
+      "file_name": "EXT-05-B03.svg",
+      "relative_path": "plans/EXT-05-B03.svg",
+      "sha256": "b6897cdcd117600bbab970a154099fb8f926365837985e9d56f37b0b3e746863"
+    },
+    {
+      "category": "plans",
+      "parent_id": "1cRQRQspEuS8avE_Pyl3Wu6I5Zu9f3eV-",
+      "id": "1FyHxxhnynGc4LSC3rHmNL85aJINZshH4",
+      "url": "https://drive.google.com/file/d/1FyHxxhnynGc4LSC3rHmNL85aJINZshH4/view?usp=drivesdk",
+      "file_name": "EXT-05.svg",
+      "relative_path": "plans/EXT-05.svg",
+      "sha256": "5cd9ac0bfa31d27c0a3601e470251ddb8e355883e9b95f91e78b75cab5a71fbb"
+    },
+    {
+      "category": "plans",
+      "parent_id": "1cRQRQspEuS8avE_Pyl3Wu6I5Zu9f3eV-",
+      "id": "1DzJQkxO8Ld_enajTW0wLkdLju_J94cWg",
+      "url": "https://drive.google.com/file/d/1DzJQkxO8Ld_enajTW0wLkdLju_J94cWg/view?usp=drivesdk",
+      "file_name": "EXT-06-B01.svg",
+      "relative_path": "plans/EXT-06-B01.svg",
+      "sha256": "cf53bf2d494c7cac6167c036db6a3cc0b2616062ceda2d21c0a5c5c97b1d1161"
+    },
+    {
+      "category": "plans",
+      "parent_id": "1cRQRQspEuS8avE_Pyl3Wu6I5Zu9f3eV-",
+      "id": "1cgsisbFO49Rh9ZqlVEOfAcZrhyFOGKKf",
+      "url": "https://drive.google.com/file/d/1cgsisbFO49Rh9ZqlVEOfAcZrhyFOGKKf/view?usp=drivesdk",
+      "file_name": "EXT-06-B02.svg",
+      "relative_path": "plans/EXT-06-B02.svg",
+      "sha256": "78774f9d6a0eb187f0b126f96128ea881f6e4e418874b217d77b57b78ffc35a5"
+    },
+    {
+      "category": "plans",
+      "parent_id": "1cRQRQspEuS8avE_Pyl3Wu6I5Zu9f3eV-",
+      "id": "17lyVVAizMjqO3tQbI_D5OIy6joOSQfbj",
+      "url": "https://drive.google.com/file/d/17lyVVAizMjqO3tQbI_D5OIy6joOSQfbj/view?usp=drivesdk",
+      "file_name": "EXT-06.svg",
+      "relative_path": "plans/EXT-06.svg",
+      "sha256": "6e4a916cd33ff5c3b1d32d9a0e37d5f97fde0c1ec36903e6250fcc32af30ef15"
+    },
+    {
+      "category": "plans",
+      "parent_id": "1cRQRQspEuS8avE_Pyl3Wu6I5Zu9f3eV-",
+      "id": "1lg9GpN9vIRiI8csdS4xPx2OzmUHI88so",
+      "url": "https://drive.google.com/file/d/1lg9GpN9vIRiI8csdS4xPx2OzmUHI88so/view?usp=drivesdk",
+      "file_name": "EXT-07-B01.svg",
+      "relative_path": "plans/EXT-07-B01.svg",
+      "sha256": "78b27a51b6094de05e15738755ef1942cb55b5303b6fdbf8c9e563f1a573b779"
+    },
+    {
+      "category": "plans",
+      "parent_id": "1cRQRQspEuS8avE_Pyl3Wu6I5Zu9f3eV-",
+      "id": "15lsw2LOAO9EfHkrCJu0TEVsjEPNYo1gV",
+      "url": "https://drive.google.com/file/d/15lsw2LOAO9EfHkrCJu0TEVsjEPNYo1gV/view?usp=drivesdk",
+      "file_name": "EXT-07-B02.svg",
+      "relative_path": "plans/EXT-07-B02.svg",
+      "sha256": "8bb7f66aae10b07fb9c80750b1ff2c523a0276d6fffa12561ba874cfb6ff23c1"
+    },
+    {
+      "category": "plans",
+      "parent_id": "1cRQRQspEuS8avE_Pyl3Wu6I5Zu9f3eV-",
+      "id": "1vq3lWMeXKJb48fGw2wzCJWfRdwF4sbh_",
+      "url": "https://drive.google.com/file/d/1vq3lWMeXKJb48fGw2wzCJWfRdwF4sbh_/view?usp=drivesdk",
+      "file_name": "EXT-07-B03.svg",
+      "relative_path": "plans/EXT-07-B03.svg",
+      "sha256": "dc0b458c5395b1398648a9087cde9621485a1f49654967b0cb01bd8cd0da4e0d"
+    },
+    {
+      "category": "plans",
+      "parent_id": "1cRQRQspEuS8avE_Pyl3Wu6I5Zu9f3eV-",
+      "id": "1Ar8bDUsqcmIoVqD4t8d3ocPEu82xgDnR",
+      "url": "https://drive.google.com/file/d/1Ar8bDUsqcmIoVqD4t8d3ocPEu82xgDnR/view?usp=drivesdk",
+      "file_name": "EXT-07.svg",
+      "relative_path": "plans/EXT-07.svg",
+      "sha256": "c5f5e81654707cd4c6d07f90cd9d7246f52b8366a6a8105fb84edf8af3f3a187"
+    },
+    {
+      "category": "plans",
+      "parent_id": "1cRQRQspEuS8avE_Pyl3Wu6I5Zu9f3eV-",
+      "id": "1XajB8GseLohMgcJk2cFeQyKXfzjN-a5_",
+      "url": "https://drive.google.com/file/d/1XajB8GseLohMgcJk2cFeQyKXfzjN-a5_/view?usp=drivesdk",
+      "file_name": "EXT-08-B01.svg",
+      "relative_path": "plans/EXT-08-B01.svg",
+      "sha256": "ae32e3b76d0ac49f55360d4614d8b5a0d93842b707ce63b0eb0320998bd01fb0"
+    },
+    {
+      "category": "plans",
+      "parent_id": "1cRQRQspEuS8avE_Pyl3Wu6I5Zu9f3eV-",
+      "id": "1G1g8gpPqmk1YAY9OExN5BJtKhf9_vkMq",
+      "url": "https://drive.google.com/file/d/1G1g8gpPqmk1YAY9OExN5BJtKhf9_vkMq/view?usp=drivesdk",
+      "file_name": "EXT-08-B02.svg",
+      "relative_path": "plans/EXT-08-B02.svg",
+      "sha256": "139b82e02d1bc17ffa21cb4d0a8b2c55f7a3345c553cadc5970e724c36b89eaf"
+    },
+    {
+      "category": "plans",
+      "parent_id": "1cRQRQspEuS8avE_Pyl3Wu6I5Zu9f3eV-",
+      "id": "1aZxfw7kw7RHgoXeZTHtyOumXemA1mco1",
+      "url": "https://drive.google.com/file/d/1aZxfw7kw7RHgoXeZTHtyOumXemA1mco1/view?usp=drivesdk",
+      "file_name": "EXT-08-B03.svg",
+      "relative_path": "plans/EXT-08-B03.svg",
+      "sha256": "4703bda283bfe19772bbaf8f066d219667f0360b07c9edf8b662f011ce2eb372"
+    },
+    {
+      "category": "plans",
+      "parent_id": "1cRQRQspEuS8avE_Pyl3Wu6I5Zu9f3eV-",
+      "id": "1O73wtyBCjtiuSABGwvPCqNJx1U54sZul",
+      "url": "https://drive.google.com/file/d/1O73wtyBCjtiuSABGwvPCqNJx1U54sZul/view?usp=drivesdk",
+      "file_name": "EXT-08.svg",
+      "relative_path": "plans/EXT-08.svg",
+      "sha256": "54613327dc9601914c0761314de38e00feb0bd0a49b06c4b6e4a4cdee34015e0"
+    },
+    {
+      "category": "plans",
+      "parent_id": "1cRQRQspEuS8avE_Pyl3Wu6I5Zu9f3eV-",
+      "id": "19Nb8w5Qv6QemenRQohYrwN__WX202WVO",
+      "url": "https://drive.google.com/file/d/19Nb8w5Qv6QemenRQohYrwN__WX202WVO/view?usp=drivesdk",
+      "file_name": "EXT-09-B01.svg",
+      "relative_path": "plans/EXT-09-B01.svg",
+      "sha256": "53e740a27f5197d6f39e393f973e7d378f3e39fdacff42a5db2f8a763a5b97a4"
+    },
+    {
+      "category": "plans",
+      "parent_id": "1cRQRQspEuS8avE_Pyl3Wu6I5Zu9f3eV-",
+      "id": "1x4kpzlvsJhu1o4OurKoUqfwskpAKg9yk",
+      "url": "https://drive.google.com/file/d/1x4kpzlvsJhu1o4OurKoUqfwskpAKg9yk/view?usp=drivesdk",
+      "file_name": "EXT-09-B02.svg",
+      "relative_path": "plans/EXT-09-B02.svg",
+      "sha256": "94b2c8f99b15b20a29cf6fb2038086024d1242441cb4ddf9d56932f4fe10bd57"
+    },
+    {
+      "category": "plans",
+      "parent_id": "1cRQRQspEuS8avE_Pyl3Wu6I5Zu9f3eV-",
+      "id": "1KSarExoeMLcPIId4OQmFwuw8992kcQIF",
+      "url": "https://drive.google.com/file/d/1KSarExoeMLcPIId4OQmFwuw8992kcQIF/view?usp=drivesdk",
+      "file_name": "EXT-09.svg",
+      "relative_path": "plans/EXT-09.svg",
+      "sha256": "7e52d78e463ccf0f1f0cb657103a0908f94607355d54c7e1c195089a3be41d16"
+    },
+    {
+      "category": "plans",
+      "parent_id": "1cRQRQspEuS8avE_Pyl3Wu6I5Zu9f3eV-",
+      "id": "1hztCfkfgNOu4I8RXUOfIYwQQhELN3O0K",
+      "url": "https://drive.google.com/file/d/1hztCfkfgNOu4I8RXUOfIYwQQhELN3O0K/view?usp=drivesdk",
+      "file_name": "EXT-10-B01.svg",
+      "relative_path": "plans/EXT-10-B01.svg",
+      "sha256": "86969d310952be61503103d1ab13a8b07436e5a05501ecb8afc4086e4c4be706"
+    },
+    {
+      "category": "plans",
+      "parent_id": "1cRQRQspEuS8avE_Pyl3Wu6I5Zu9f3eV-",
+      "id": "1y3T7KFmgcuwS-VsHcNZ5ClL4RChyIXRl",
+      "url": "https://drive.google.com/file/d/1y3T7KFmgcuwS-VsHcNZ5ClL4RChyIXRl/view?usp=drivesdk",
+      "file_name": "EXT-10-B02.svg",
+      "relative_path": "plans/EXT-10-B02.svg",
+      "sha256": "0c74ffede804654fcb81ba5f72b360a2e97c1134cc3fb7d478f29f72b5d18996"
+    },
+    {
+      "category": "plans",
+      "parent_id": "1cRQRQspEuS8avE_Pyl3Wu6I5Zu9f3eV-",
+      "id": "1ECEmzdLCnrozn29rBzEmBUTte2x6QH76",
+      "url": "https://drive.google.com/file/d/1ECEmzdLCnrozn29rBzEmBUTte2x6QH76/view?usp=drivesdk",
+      "file_name": "EXT-10-B03.svg",
+      "relative_path": "plans/EXT-10-B03.svg",
+      "sha256": "013b888bad0f37d72da0a6f44cc940fd50b5a29e8f7c523be2b705779d7d01da"
+    },
+    {
+      "category": "plans",
+      "parent_id": "1cRQRQspEuS8avE_Pyl3Wu6I5Zu9f3eV-",
+      "id": "1EKKWyVYRJwyjB4kfMEppONFgPQSA5uIB",
+      "url": "https://drive.google.com/file/d/1EKKWyVYRJwyjB4kfMEppONFgPQSA5uIB/view?usp=drivesdk",
+      "file_name": "EXT-10.svg",
+      "relative_path": "plans/EXT-10.svg",
+      "sha256": "c5be3bdace3b54a4319f566b9c43300893669fdbe8f69ff8b1846520f4b3ec5c"
+    },
+    {
+      "category": "plans",
+      "parent_id": "1cRQRQspEuS8avE_Pyl3Wu6I5Zu9f3eV-",
+      "id": "10JMRWYMuHuIEP7f8pjXndy4gv85oXOdY",
+      "url": "https://drive.google.com/file/d/10JMRWYMuHuIEP7f8pjXndy4gv85oXOdY/view?usp=drivesdk",
+      "file_name": "EXT-11-B01.svg",
+      "relative_path": "plans/EXT-11-B01.svg",
+      "sha256": "d970c293d29dac9e12614495e1e82846c9f7df7c036956b2019f4880a638d79f"
+    },
+    {
+      "category": "plans",
+      "parent_id": "1cRQRQspEuS8avE_Pyl3Wu6I5Zu9f3eV-",
+      "id": "1w0e_AEGeVqyEBlqCTozxVf1v4pzmWtA6",
+      "url": "https://drive.google.com/file/d/1w0e_AEGeVqyEBlqCTozxVf1v4pzmWtA6/view?usp=drivesdk",
+      "file_name": "EXT-11-B02.svg",
+      "relative_path": "plans/EXT-11-B02.svg",
+      "sha256": "5b4d37dd1e764bca139ee5ab3aa12ee97933fe1e8992c1f5251674eba843a4b7"
+    },
+    {
+      "category": "plans",
+      "parent_id": "1cRQRQspEuS8avE_Pyl3Wu6I5Zu9f3eV-",
+      "id": "1vBqfEYNoY2RlzqYKsViW4Xqff6cbFV4D",
+      "url": "https://drive.google.com/file/d/1vBqfEYNoY2RlzqYKsViW4Xqff6cbFV4D/view?usp=drivesdk",
+      "file_name": "EXT-11-B03.svg",
+      "relative_path": "plans/EXT-11-B03.svg",
+      "sha256": "4e97361e66dc19b57ecc339b8f14fa346c7e7356f01abf4d47b070f651ab1a53"
+    },
+    {
+      "category": "plans",
+      "parent_id": "1cRQRQspEuS8avE_Pyl3Wu6I5Zu9f3eV-",
+      "id": "1C6_p6PD3Y2ocgJyqd-cf0CflRgvLBhvh",
+      "url": "https://drive.google.com/file/d/1C6_p6PD3Y2ocgJyqd-cf0CflRgvLBhvh/view?usp=drivesdk",
+      "file_name": "EXT-11.svg",
+      "relative_path": "plans/EXT-11.svg",
+      "sha256": "17c394ed2afd5da3798907afa5cca5b5a58f433ef2921a37956fb4289aad3957"
+    },
+    {
+      "category": "plans",
+      "parent_id": "1cRQRQspEuS8avE_Pyl3Wu6I5Zu9f3eV-",
+      "id": "1VGAT_ZsdnGhCgKDhZuAtRAD3LxA79GPb",
+      "url": "https://drive.google.com/file/d/1VGAT_ZsdnGhCgKDhZuAtRAD3LxA79GPb/view?usp=drivesdk",
+      "file_name": "EXT-12-B01.svg",
+      "relative_path": "plans/EXT-12-B01.svg",
+      "sha256": "cfa7a5c9243d7d91ac64dd23bbd6d9c4926678de593c47bc09b69d23f0b150ec"
+    },
+    {
+      "category": "plans",
+      "parent_id": "1cRQRQspEuS8avE_Pyl3Wu6I5Zu9f3eV-",
+      "id": "1bsg8kj_jU9MZNsb7WwXt8GXGJxHa0jg-",
+      "url": "https://drive.google.com/file/d/1bsg8kj_jU9MZNsb7WwXt8GXGJxHa0jg-/view?usp=drivesdk",
+      "file_name": "EXT-12-B02.svg",
+      "relative_path": "plans/EXT-12-B02.svg",
+      "sha256": "d93c9974435546a540c6a675653e8195368e1d818172a3d3e4c59ce50fc3cf06"
+    },
+    {
+      "category": "plans",
+      "parent_id": "1cRQRQspEuS8avE_Pyl3Wu6I5Zu9f3eV-",
+      "id": "1QKnFOOnZRLwHpzR6bIzH7kDUz0-X1VcL",
+      "url": "https://drive.google.com/file/d/1QKnFOOnZRLwHpzR6bIzH7kDUz0-X1VcL/view?usp=drivesdk",
+      "file_name": "EXT-12-B03.svg",
+      "relative_path": "plans/EXT-12-B03.svg",
+      "sha256": "2cf6427966ca3068de26d478c55dfa28c098e54e898fa145f4776e1916c42d0b"
+    },
+    {
+      "category": "plans",
+      "parent_id": "1cRQRQspEuS8avE_Pyl3Wu6I5Zu9f3eV-",
+      "id": "1uzcdDNxnVStO1f8ZFn8dKubq_nX6ty7X",
+      "url": "https://drive.google.com/file/d/1uzcdDNxnVStO1f8ZFn8dKubq_nX6ty7X/view?usp=drivesdk",
+      "file_name": "EXT-12.svg",
+      "relative_path": "plans/EXT-12.svg",
+      "sha256": "57eb407e6a1fe803d1be4afd906bcf1abb4c579e797ed00bd7fdd21610c76dc3"
+    },
+    {
+      "category": "plans",
+      "parent_id": "1cRQRQspEuS8avE_Pyl3Wu6I5Zu9f3eV-",
+      "id": "1dFgryeMq9sa5_7hHfRqDkeKiew451HHE",
+      "url": "https://drive.google.com/file/d/1dFgryeMq9sa5_7hHfRqDkeKiew451HHE/view?usp=drivesdk",
+      "file_name": "EXT-13-B01.svg",
+      "relative_path": "plans/EXT-13-B01.svg",
+      "sha256": "8e4431ffaba4c4a55b8f546090b30019a24c09c2909f69e28395c61c0cccff07"
+    },
+    {
+      "category": "plans",
+      "parent_id": "1cRQRQspEuS8avE_Pyl3Wu6I5Zu9f3eV-",
+      "id": "1yZrFqeQNVuF7QIYxm8hvSy1c576RmrgP",
+      "url": "https://drive.google.com/file/d/1yZrFqeQNVuF7QIYxm8hvSy1c576RmrgP/view?usp=drivesdk",
+      "file_name": "EXT-13-B02.svg",
+      "relative_path": "plans/EXT-13-B02.svg",
+      "sha256": "328bfecd933e6076cffa90d94f631eb8207e178adcd00232e91e8d3a9c3c79d2"
+    },
+    {
+      "category": "plans",
+      "parent_id": "1cRQRQspEuS8avE_Pyl3Wu6I5Zu9f3eV-",
+      "id": "1YsVlpKR2ydtGHWWyNlh0uPtYhHME1Vtw",
+      "url": "https://drive.google.com/file/d/1YsVlpKR2ydtGHWWyNlh0uPtYhHME1Vtw/view?usp=drivesdk",
+      "file_name": "EXT-13-B03.svg",
+      "relative_path": "plans/EXT-13-B03.svg",
+      "sha256": "d599d6d8f59e6f0c60b313c824aabf4932d9f61253f139913be88d7f2033241d"
+    },
+    {
+      "category": "plans",
+      "parent_id": "1cRQRQspEuS8avE_Pyl3Wu6I5Zu9f3eV-",
+      "id": "1hH_q6mN2nbazPenJovuKeuUOVUIjt6ae",
+      "url": "https://drive.google.com/file/d/1hH_q6mN2nbazPenJovuKeuUOVUIjt6ae/view?usp=drivesdk",
+      "file_name": "EXT-13.svg",
+      "relative_path": "plans/EXT-13.svg",
+      "sha256": "4fd65734ed67ddf12eb7ffce90e2a44c3f8414b12cb44536f878ce3c86a52c90"
+    },
+    {
+      "category": "plans",
+      "parent_id": "1cRQRQspEuS8avE_Pyl3Wu6I5Zu9f3eV-",
+      "id": "1eVaEkyuORkO7xrt50XRBRNxBwfEQp7W7",
+      "url": "https://drive.google.com/file/d/1eVaEkyuORkO7xrt50XRBRNxBwfEQp7W7/view?usp=drivesdk",
+      "file_name": "MAP-00.svg",
+      "relative_path": "plans/MAP-00.svg",
+      "sha256": "5a2cde71745e7f27aefc76a734618a99a77edaef5760d68ae9d95a204441dfa3"
+    },
+    {
+      "category": "plans",
+      "parent_id": "1cRQRQspEuS8avE_Pyl3Wu6I5Zu9f3eV-",
+      "id": "1UGZ9z8HgOUzR8HJWF4M2D2HEynWClWRB",
+      "url": "https://drive.google.com/file/d/1UGZ9z8HgOUzR8HJWF4M2D2HEynWClWRB/view?usp=drivesdk",
+      "file_name": "MOD-01.svg",
+      "relative_path": "plans/MOD-01.svg",
+      "sha256": "cebfa27e006420ca19fe9a6fa8aea5ded602a10a5e71ce334f33fc9b3466e2ee"
+    },
+    {
+      "category": "plans",
+      "parent_id": "1cRQRQspEuS8avE_Pyl3Wu6I5Zu9f3eV-",
+      "id": "1ZaSeub93EWAChbrumJLTxE2zEEZ-gW3c",
+      "url": "https://drive.google.com/file/d/1ZaSeub93EWAChbrumJLTxE2zEEZ-gW3c/view?usp=drivesdk",
+      "file_name": "MOD-02.svg",
+      "relative_path": "plans/MOD-02.svg",
+      "sha256": "a255190b886ee2d8b73810ea53adb5e1630b2494efc2a6f5487e64983cc1e073"
+    },
+    {
+      "category": "plans",
+      "parent_id": "1cRQRQspEuS8avE_Pyl3Wu6I5Zu9f3eV-",
+      "id": "1iMGre7EMTNEzmXwBTdarCIi--fhr-K8H",
+      "url": "https://drive.google.com/file/d/1iMGre7EMTNEzmXwBTdarCIi--fhr-K8H/view?usp=drivesdk",
+      "file_name": "MOD-03-L1.svg",
+      "relative_path": "plans/MOD-03-L1.svg",
+      "sha256": "9672344a48eef7fcb0c2d587ddf2f5528de886f42fa33e002c3896ce13f31e79"
+    },
+    {
+      "category": "plans",
+      "parent_id": "1cRQRQspEuS8avE_Pyl3Wu6I5Zu9f3eV-",
+      "id": "1gDjKa8Iv6a5dAPx9GECQP6Ju_Stckhvs",
+      "url": "https://drive.google.com/file/d/1gDjKa8Iv6a5dAPx9GECQP6Ju_Stckhvs/view?usp=drivesdk",
+      "file_name": "MOD-03.svg",
+      "relative_path": "plans/MOD-03.svg",
+      "sha256": "2a95d456248afe46c0e0ef16a3ed377559dfa6b9f6e16bdfc4e545845f6b0cc4"
+    },
+    {
+      "category": "plans",
+      "parent_id": "1cRQRQspEuS8avE_Pyl3Wu6I5Zu9f3eV-",
+      "id": "12fs-f1Spv8S_S3KSVYZze4-3Euon-sgA",
+      "url": "https://drive.google.com/file/d/12fs-f1Spv8S_S3KSVYZze4-3Euon-sgA/view?usp=drivesdk",
+      "file_name": "MOD-04.svg",
+      "relative_path": "plans/MOD-04.svg",
+      "sha256": "78dd58cb303b17c087a22f9b64f7437d7a960a4239c19725be5132c2bdac4c28"
+    },
+    {
+      "category": "plans",
+      "parent_id": "1cRQRQspEuS8avE_Pyl3Wu6I5Zu9f3eV-",
+      "id": "1E3jxFGy6Zx1XmWyoVJzv_E9AWMVW9OFa",
+      "url": "https://drive.google.com/file/d/1E3jxFGy6Zx1XmWyoVJzv_E9AWMVW9OFa/view?usp=drivesdk",
+      "file_name": "MOD-05.svg",
+      "relative_path": "plans/MOD-05.svg",
+      "sha256": "9ab8dd3c616adb6377c056fb21d58f888afe1a559695a681d93acc931f2f4705"
+    },
+    {
+      "category": "plans",
+      "parent_id": "1cRQRQspEuS8avE_Pyl3Wu6I5Zu9f3eV-",
+      "id": "1nlxFdkjkOE5SklVWLJGT9lTkPDGqc73E",
+      "url": "https://drive.google.com/file/d/1nlxFdkjkOE5SklVWLJGT9lTkPDGqc73E/view?usp=drivesdk",
+      "file_name": "MOD-06-L1.svg",
+      "relative_path": "plans/MOD-06-L1.svg",
+      "sha256": "f33c612179e2c140ada1eb155845cf188cfee0bb86457452a6fab4583426b2c7"
+    },
+    {
+      "category": "plans",
+      "parent_id": "1cRQRQspEuS8avE_Pyl3Wu6I5Zu9f3eV-",
+      "id": "1gjsrZ3AcnuiNvuqkqlo8In-NhYfmSw9I",
+      "url": "https://drive.google.com/file/d/1gjsrZ3AcnuiNvuqkqlo8In-NhYfmSw9I/view?usp=drivesdk",
+      "file_name": "MOD-06.svg",
+      "relative_path": "plans/MOD-06.svg",
+      "sha256": "060bb77fdaf523180da3673c43809abc83bb982881d9d59ab6d5765c170da07a"
+    },
+    {
+      "category": "plans",
+      "parent_id": "1cRQRQspEuS8avE_Pyl3Wu6I5Zu9f3eV-",
+      "id": "1Lcrp2cDNbl-dSm4-uLRbMwwDZnmBKUHr",
+      "url": "https://drive.google.com/file/d/1Lcrp2cDNbl-dSm4-uLRbMwwDZnmBKUHr/view?usp=drivesdk",
+      "file_name": "MOD-07.svg",
+      "relative_path": "plans/MOD-07.svg",
+      "sha256": "d23a16bd139fbf22a0be5f94052c272a466981f5c5e248952efb9cb49bb5ada7"
+    },
+    {
+      "category": "plans",
+      "parent_id": "1cRQRQspEuS8avE_Pyl3Wu6I5Zu9f3eV-",
+      "id": "19ivCX2cJNtpIE299bCiYER0gDc3HtOGb",
+      "url": "https://drive.google.com/file/d/19ivCX2cJNtpIE299bCiYER0gDc3HtOGb/view?usp=drivesdk",
+      "file_name": "MOD-08.svg",
+      "relative_path": "plans/MOD-08.svg",
+      "sha256": "8f9dae13ea2c5929314975baedc251bda6850cccdce52f1e1719b90f1f492140"
+    },
+    {
+      "category": "plans",
+      "parent_id": "1cRQRQspEuS8avE_Pyl3Wu6I5Zu9f3eV-",
+      "id": "1ouKAVVs1vkDE4Mv_a-NG15-CNpTgv5N0",
+      "url": "https://drive.google.com/file/d/1ouKAVVs1vkDE4Mv_a-NG15-CNpTgv5N0/view?usp=drivesdk",
+      "file_name": "MOD-09.svg",
+      "relative_path": "plans/MOD-09.svg",
+      "sha256": "ab4f1be76723435908fa4aabc71bc37213ce613e349544e43bcfb00d45f69103"
+    },
+    {
+      "category": "plans",
+      "parent_id": "1cRQRQspEuS8avE_Pyl3Wu6I5Zu9f3eV-",
+      "id": "13J5UJa7wERwLjx0aHESW5tYnMFOBbUW1",
+      "url": "https://drive.google.com/file/d/13J5UJa7wERwLjx0aHESW5tYnMFOBbUW1/view?usp=drivesdk",
+      "file_name": "MOD-10-L1.svg",
+      "relative_path": "plans/MOD-10-L1.svg",
+      "sha256": "27b4cdd32cd6d8ba4426b085d9bf3bf0e9a26b8e6ecdd42827a0814e09afaaed"
+    },
+    {
+      "category": "plans",
+      "parent_id": "1cRQRQspEuS8avE_Pyl3Wu6I5Zu9f3eV-",
+      "id": "1BYu48a9wsZkZmvg30jjU01q-rKTMl53O",
+      "url": "https://drive.google.com/file/d/1BYu48a9wsZkZmvg30jjU01q-rKTMl53O/view?usp=drivesdk",
+      "file_name": "MOD-10.svg",
+      "relative_path": "plans/MOD-10.svg",
+      "sha256": "aac02eb660d58d18cf19ee1952a9b83214c29bce6c3cb7ad5f5e857925269af9"
+    },
+    {
+      "category": "plans",
+      "parent_id": "1cRQRQspEuS8avE_Pyl3Wu6I5Zu9f3eV-",
+      "id": "1Q_8xavBWpRnw59rJzsej4PwQ2euoq1fT",
+      "url": "https://drive.google.com/file/d/1Q_8xavBWpRnw59rJzsej4PwQ2euoq1fT/view?usp=drivesdk",
+      "file_name": "MOD-11.svg",
+      "relative_path": "plans/MOD-11.svg",
+      "sha256": "65e3b02eabef8e04cca1f8f7737a88ffb28203eb69dcdbfb8f78b1cfe69a641d"
+    },
+    {
+      "category": "plans",
+      "parent_id": "1cRQRQspEuS8avE_Pyl3Wu6I5Zu9f3eV-",
+      "id": "1wwY_FGrieOF9u321YIQYgcfoZmzhlJJy",
+      "url": "https://drive.google.com/file/d/1wwY_FGrieOF9u321YIQYgcfoZmzhlJJy/view?usp=drivesdk",
+      "file_name": "MOD-12.svg",
+      "relative_path": "plans/MOD-12.svg",
+      "sha256": "eb64a0eb001739085b2e3932bf51b351ff91315cc9f6e25a2433a009741c7d57"
+    },
+    {
+      "category": "plans",
+      "parent_id": "1cRQRQspEuS8avE_Pyl3Wu6I5Zu9f3eV-",
+      "id": "1TPF9Dulk9AOCV27LK4CsUX5ar0wEzk2v",
+      "url": "https://drive.google.com/file/d/1TPF9Dulk9AOCV27LK4CsUX5ar0wEzk2v/view?usp=drivesdk",
+      "file_name": "SITE-01.svg",
+      "relative_path": "plans/SITE-01.svg",
+      "sha256": "51c7efeed25d374a7529bb21a7e4dba05d9fbc29ee067ad1a8a71265a97ac22b"
+    },
+    {
+      "category": "plans",
+      "parent_id": "1cRQRQspEuS8avE_Pyl3Wu6I5Zu9f3eV-",
+      "id": "1Fnrp8zMtjjBDSJhZqOcA8GscHcGQjVKS",
+      "url": "https://drive.google.com/file/d/1Fnrp8zMtjjBDSJhZqOcA8GscHcGQjVKS/view?usp=drivesdk",
+      "file_name": "SITE-02.svg",
+      "relative_path": "plans/SITE-02.svg",
+      "sha256": "7780bad2456c1be9f9fa65d02bcfae5c91bd7d136489a3d0bc8ca26595859fa0"
+    },
+    {
+      "category": "plans",
+      "parent_id": "1cRQRQspEuS8avE_Pyl3Wu6I5Zu9f3eV-",
+      "id": "1gPp2rxOL9twB9yjIj6qDsDDNc2qWfuEt",
+      "url": "https://drive.google.com/file/d/1gPp2rxOL9twB9yjIj6qDsDDNc2qWfuEt/view?usp=drivesdk",
+      "file_name": "SITE-03.svg",
+      "relative_path": "plans/SITE-03.svg",
+      "sha256": "e4a345d57b8a2bd75b2a33a100c73074fafc0fddf5833847aab82ac6b781d643"
+    },
+    {
+      "category": "plans",
+      "parent_id": "1cRQRQspEuS8avE_Pyl3Wu6I5Zu9f3eV-",
+      "id": "1usKRMruwuuv6wy5soz0cS0fDqVbbHbwM",
+      "url": "https://drive.google.com/file/d/1usKRMruwuuv6wy5soz0cS0fDqVbbHbwM/view?usp=drivesdk",
+      "file_name": "SITE-04-B01.svg",
+      "relative_path": "plans/SITE-04-B01.svg",
+      "sha256": "1cb03ebdca5d71c0a844858c0cf531e9bea89e99c9cb87c395e7baabece8fd2f"
+    },
+    {
+      "category": "plans",
+      "parent_id": "1cRQRQspEuS8avE_Pyl3Wu6I5Zu9f3eV-",
+      "id": "1EuueAF0FTjoszGXHnPr-55sstXHy11wV",
+      "url": "https://drive.google.com/file/d/1EuueAF0FTjoszGXHnPr-55sstXHy11wV/view?usp=drivesdk",
+      "file_name": "SITE-04.svg",
+      "relative_path": "plans/SITE-04.svg",
+      "sha256": "f355b2822170b151fd999cae883be751d79806b91f646b026937ee045b7cf4b0"
+    },
+    {
+      "category": "plans",
+      "parent_id": "1cRQRQspEuS8avE_Pyl3Wu6I5Zu9f3eV-",
+      "id": "1H3g9wLIbO6iW5YcjjlxC_awQ16J00ORX",
+      "url": "https://drive.google.com/file/d/1H3g9wLIbO6iW5YcjjlxC_awQ16J00ORX/view?usp=drivesdk",
+      "file_name": "SITE-05.svg",
+      "relative_path": "plans/SITE-05.svg",
+      "sha256": "0344b98e5f08731f1ff68193d79482ea0a4acad1448982d137c232a0772525ff"
+    },
+    {
+      "category": "plans",
+      "parent_id": "1cRQRQspEuS8avE_Pyl3Wu6I5Zu9f3eV-",
+      "id": "1ITCp3fFYRB3pizAi-qmWxF4kS_hCoJhB",
+      "url": "https://drive.google.com/file/d/1ITCp3fFYRB3pizAi-qmWxF4kS_hCoJhB/view?usp=drivesdk",
+      "file_name": "SITE-06.svg",
+      "relative_path": "plans/SITE-06.svg",
+      "sha256": "9313200a7f2c8758605a0b1d3f748b7985bc901493ad34ed48bf019d98c66a50"
+    },
+    {
+      "category": "plans",
+      "parent_id": "1cRQRQspEuS8avE_Pyl3Wu6I5Zu9f3eV-",
+      "id": "1Z6tVB267muUVu4CwQ6Hhqxx7w5z_eFYj",
+      "url": "https://drive.google.com/file/d/1Z6tVB267muUVu4CwQ6Hhqxx7w5z_eFYj/view?usp=drivesdk",
+      "file_name": "SITE-07-B01.svg",
+      "relative_path": "plans/SITE-07-B01.svg",
+      "sha256": "826405a392a098ea36ef823537fc5a6a9994442cd31ab3b00487e3e81ede3ccb"
+    },
+    {
+      "category": "plans",
+      "parent_id": "1cRQRQspEuS8avE_Pyl3Wu6I5Zu9f3eV-",
+      "id": "1eV-D4OVu1nY1DhMJFg2ZkyNDWp1POune",
+      "url": "https://drive.google.com/file/d/1eV-D4OVu1nY1DhMJFg2ZkyNDWp1POune/view?usp=drivesdk",
+      "file_name": "SITE-07.svg",
+      "relative_path": "plans/SITE-07.svg",
+      "sha256": "793ecf0698eba6bb931542f6d6ed17104e1ed5dc11b9e639ef1ce33356ceeae2"
+    },
+    {
+      "category": "plans",
+      "parent_id": "1cRQRQspEuS8avE_Pyl3Wu6I5Zu9f3eV-",
+      "id": "10PizZ8x9z7XaVJXduY2tvKGhzDrOHImW",
+      "url": "https://drive.google.com/file/d/10PizZ8x9z7XaVJXduY2tvKGhzDrOHImW/view?usp=drivesdk",
+      "file_name": "SITE-08.svg",
+      "relative_path": "plans/SITE-08.svg",
+      "sha256": "8489ae4be3ea7b418c7127031d3619232827c20552d5dcb57af29e7051bd0d62"
+    },
+    {
+      "category": "source",
+      "parent_id": "1hI69phtuXnKGMvjBAVjzpMZnqpfF95MQ",
+      "id": "1-AR-dHfsWF3Gsa6nuMiOC4C_XksIIpqQ",
+      "url": "https://drive.google.com/file/d/1-AR-dHfsWF3Gsa6nuMiOC4C_XksIIpqQ/view?usp=drivesdk",
+      "file_name": "World_Atlas.json",
+      "relative_path": "output/World_Atlas.json",
+      "sha256": "7350200ca9a5874dca3d77e6608f8ab36cd0233ba888b5cb70ba3f6125950e64"
+    },
+    {
+      "category": "source",
+      "parent_id": "1hI69phtuXnKGMvjBAVjzpMZnqpfF95MQ",
+      "id": "1f2Q6WXIjO61rf3t2T6MyDF0ovmvgtXiy",
+      "url": "https://drive.google.com/file/d/1f2Q6WXIjO61rf3t2T6MyDF0ovmvgtXiy/view?usp=drivesdk",
+      "file_name": "Blueprint_Data.json",
+      "relative_path": "output/Blueprint_Data.json",
+      "sha256": "fba915b1c13a56caee9b065779ce8446797eb5b8648a18248e6895c08b4c6df8"
+    },
+    {
+      "category": "source",
+      "parent_id": "1hI69phtuXnKGMvjBAVjzpMZnqpfF95MQ",
+      "id": "1R_ysW8SIWuoXm4kwubosAt-xidTpv2C6",
+      "url": "https://drive.google.com/file/d/1R_ysW8SIWuoXm4kwubosAt-xidTpv2C6/view?usp=drivesdk",
+      "file_name": "Blueprint_Index.json",
+      "relative_path": "output/Blueprint_Index.json",
+      "sha256": "c1dbef0c145811096b257d624e8534e9bcd1e72f4b0cdf92c77008ea02f1e07b"
+    },
+    {
+      "category": "source",
+      "parent_id": "1hI69phtuXnKGMvjBAVjzpMZnqpfF95MQ",
+      "id": "1miiAXPwa1AbGsSn_2UlIU4fxKM_a4tco",
+      "url": "https://drive.google.com/file/d/1miiAXPwa1AbGsSn_2UlIU4fxKM_a4tco/view?usp=drivesdk",
+      "file_name": "Building_Instances.csv",
+      "relative_path": "output/Building_Instances.csv",
+      "sha256": "1300fd3b5ac178e7d9b53974469f072046efcb57fa5c657651d152ac65ce267e"
+    },
+    {
+      "category": "source",
+      "parent_id": "1hI69phtuXnKGMvjBAVjzpMZnqpfF95MQ",
+      "id": "1m4u7yVj0m5vOAgZOUHJHVs-pWBmeyJ3K",
+      "url": "https://drive.google.com/file/d/1m4u7yVj0m5vOAgZOUHJHVs-pWBmeyJ3K/view?usp=drivesdk",
+      "file_name": "Art_Manifest.json",
+      "relative_path": "output/Art_Manifest.json",
+      "sha256": "07fac6df29c165e7204dff2d62f9ebc6e032a1843cb3f57b036817d0be944cb0"
+    },
+    {
+      "category": "source",
+      "parent_id": "1hI69phtuXnKGMvjBAVjzpMZnqpfF95MQ",
+      "id": "1MwPNPzZVflF6L8o6a26gyo53MiEp9vky",
+      "url": "https://drive.google.com/file/d/1MwPNPzZVflF6L8o6a26gyo53MiEp9vky/view?usp=drivesdk",
+      "file_name": "VALIDATION.json",
+      "relative_path": "output/VALIDATION.json",
+      "sha256": "f2e8519911af0a0e31c7c68c7fee9be3c5f45447d84f41e8a356199f322f5c75"
+    },
+    {
+      "category": "source",
+      "parent_id": "1hI69phtuXnKGMvjBAVjzpMZnqpfF95MQ",
+      "id": "1971V2Fo4lQQp2fXjF2TwH-ahPeKDexDZ",
+      "url": "https://drive.google.com/file/d/1971V2Fo4lQQp2fXjF2TwH-ahPeKDexDZ/view?usp=drivesdk",
+      "file_name": "CHARACTERS.md",
+      "relative_path": "output/CHARACTERS.md",
+      "sha256": "6540b03177630ca9a3d1efa65f196949de0e17ad88e97c0fd36c0cb3100e694d"
+    },
+    {
+      "category": "source",
+      "parent_id": "1hI69phtuXnKGMvjBAVjzpMZnqpfF95MQ",
+      "id": "1m_GfdJwFvNlGkdZcDy1jn9h4fOURYn9_",
+      "url": "https://drive.google.com/file/d/1m_GfdJwFvNlGkdZcDy1jn9h4fOURYn9_/view?usp=drivesdk",
+      "file_name": "COMMUNITIES.md",
+      "relative_path": "output/COMMUNITIES.md",
+      "sha256": "71f61172aa7c66183a17f4ecdf68a27362800aa658b936c2393285a495e802b7"
+    },
+    {
+      "category": "source",
+      "parent_id": "1hI69phtuXnKGMvjBAVjzpMZnqpfF95MQ",
+      "id": "1CDVoAwp7fPLp79IGLcs6YAE6qrDp0rr2",
+      "url": "https://drive.google.com/file/d/1CDVoAwp7fPLp79IGLcs6YAE6qrDp0rr2/view?usp=drivesdk",
+      "file_name": "FACTIONS.md",
+      "relative_path": "output/FACTIONS.md",
+      "sha256": "7e83d8ab1c49d3d4b4d119fdddfd093abe7e7a76360c88a8a5ebc567565361c8"
+    },
+    {
+      "category": "source",
+      "parent_id": "1hI69phtuXnKGMvjBAVjzpMZnqpfF95MQ",
+      "id": "1NAoeutGaln_6NdcLSKKcguYVoEuZJgX2",
+      "url": "https://drive.google.com/file/d/1NAoeutGaln_6NdcLSKKcguYVoEuZJgX2/view?usp=drivesdk",
+      "file_name": "START_HERE.md",
+      "relative_path": "output/README.md",
+      "sha256": "cb36f8333dc71291a3143940ffcc93a9552468e4d5a7917875ec52185c7e9bcc"
+    }
+  ]
+}

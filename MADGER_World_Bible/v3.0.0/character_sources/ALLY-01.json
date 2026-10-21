@@ -1,0 +1,44 @@
+{
+  "id": "ALLY-01",
+  "name": "Sela Venn",
+  "group": "Ally",
+  "identity": "Adult female ibex",
+  "origin": "Latchford",
+  "affiliation": "FAC-03",
+  "seed": "Convoy captain who helped Madger’s first settlers travel. Concealed Veyra’s funding of the second flood rescue; trust must be rebuilt when this emerges.",
+  "status": "Developed baseline 3.0",
+  "age": 48,
+  "height_m": 1.62,
+  "design": "Female ibex, swept horns, weathered blue convoy coat, red cord around a brass whistle.",
+  "history": "Latchford convoy worker from sixteen, captain by thirty. At forty-one she chartered Reedbank’s second evacuation using Veyra’s concealed funding and accepted secrecy to get eighteen households out safely.",
+  "desire": "To make a promise of passage mean something real.",
+  "contradiction": "Will hide a morally complicated detail if she thinks disclosure will break confidence in the route.",
+  "relationships": "Madger trusts her; Veyra knows her omission; Lark admires her; Asha is an old colleague.",
+  "arc": "The funding reveal costs her standing. She releases records, accepts another captain’s oversight and earns trust through subsequent choices.",
+  "story_engine": "A timetable versus a stranded stranger; a return to a place she once chose to leave behind.",
+  "writer_truth": "Her shame kept the funding secret after immediate danger passed. The rescue was real and the silence was a choice.",
+  "voice": "No voice assigned; do not substitute an existing hero voice.",
+  "skills_and_limits": "Species anatomy, training, tools, fatigue and local knowledge constrain action. No unlisted magic or universal hacking.",
+  "art_status": "New design developed for this edition; exact colors and silhouette set by card and cast plate.",
+  "art": {
+    "file": "CAST-02.png",
+    "column": 2,
+    "row": 0,
+    "grid": [
+      3,
+      2
+    ]
+  },
+  "performance": {
+    "silhouette": "Female ibex, swept horns, weathered blue convoy coat, red cord around a brass whistle.",
+    "expression_set": [
+      "neutral listening",
+      "pleased",
+      "concerned",
+      "frustrated",
+      "focused"
+    ],
+    "motion_rule": "Use a held body pose for dialogue with separate mouth shapes, blinks and intentional expression changes. Preserve facial landmarks.",
+    "limits": "Species anatomy, training, tools, fatigue and local knowledge constrain action. No unlisted magic or universal hacking."
+  }
+}

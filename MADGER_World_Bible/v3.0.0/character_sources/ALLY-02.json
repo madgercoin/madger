@@ -1,0 +1,44 @@
+{
+  "id": "ALLY-02",
+  "name": "Oren Vale",
+  "group": "Ally",
+  "identity": "Older male tortoise",
+  "origin": "Stonewake",
+  "affiliation": "FAC-02",
+  "seed": "Repair teacher and exchange coordinator. Wants skills to outlive their teachers; can confuse caution with care.",
+  "status": "Developed baseline 3.0",
+  "age": 68,
+  "height_m": 1.04,
+  "design": "Older tortoise, olive shell with old repaired rim, burgundy work vest, long wooden straightedge.",
+  "history": "Stonewake mason who helped shift workshops from guarded family secrets to teachable public craft. Trained Gorilla and Iona at different times.",
+  "desire": "To see pupils become teachers who disagree with him well.",
+  "contradiction": "Calls delay prudence even when it protects his own reputation.",
+  "relationships": "Eris disputes his old methods; Gorilla still seeks approval; Kesh wants faster collaboration.",
+  "arc": "Authorizes a carefully bounded temporary repair, signs his responsibility and lets the younger builder explain it publicly.",
+  "story_engine": "An old prize-winning design fails modern needs; a student credits someone Oren once ignored.",
+  "writer_truth": "His early fame relied on an uncredited team. He is willing to correct the record, but fears the ceremony.",
+  "voice": "No voice assigned; do not substitute an existing hero voice.",
+  "skills_and_limits": "Species anatomy, training, tools, fatigue and local knowledge constrain action. No unlisted magic or universal hacking.",
+  "art_status": "New design developed for this edition; exact colors and silhouette set by card and cast plate.",
+  "art": {
+    "file": "CAST-02.png",
+    "column": 0,
+    "row": 1,
+    "grid": [
+      3,
+      2
+    ]
+  },
+  "performance": {
+    "silhouette": "Older tortoise, olive shell with old repaired rim, burgundy work vest, long wooden straightedge.",
+    "expression_set": [
+      "neutral listening",
+      "pleased",
+      "concerned",
+      "frustrated",
+      "focused"
+    ],
+    "motion_rule": "Use a held body pose for dialogue with separate mouth shapes, blinks and intentional expression changes. Preserve facial landmarks.",
+    "limits": "Species anatomy, training, tools, fatigue and local knowledge constrain action. No unlisted magic or universal hacking."
+  }
+}

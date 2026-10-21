@@ -1,5 +1,14 @@
 # Changelog
 
+## 2026-10-20 - World Bible 3.0 / The Open Ways
+
+- Complete an eight-region foundation: forty illustrated character cards, fourteen communities, nine factions, twelve creatures, regional history and measured travel.
+- Develop Gorilla White, MADGER Bot and Snow White histories alongside the full cast. Preserve Madger's revised story, four established heroes, approved voice references and the subtle interior-only pilot.
+- Add eighty vector blueprint sheets, twelve reusable building families and 658 registered exterior building placements, with named interiors, encounter plans and exact inherited Burrow overviews.
+- Add four ten-episode season outlines, twelve standalone stories, eight major action sequences and a writer-only revelation ledger.
+- Save four illustrated volumes, forty individual cards, eleven generated art plates and eighty editable SVG sheets in Google Drive. Archive reproducible lore, geometry, sources and verified links here; preserve older editions.
+- Validate inherited geometry and voice equality, IDs, room connections, building bounds, capacity, route lengths and rendered PDF layouts. This creative documentation archive does not change or deploy the production site/game and does not claim website deployment gates passed.
+
 ## 2026-10-20 - Madger story revision / Beyond the Burrow
 
 - Revise Madger before Gorilla White: add an estranged-friend antagonist, hidden rescue funding, a consequential missing-caravan adventure and a ten-episode season outline.

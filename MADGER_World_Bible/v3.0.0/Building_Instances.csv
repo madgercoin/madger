@@ -1,0 +1,659 @@
+id,settlement,module,x_m,y_m,z_m,rotation_deg,width_m,depth_m,levels,roof,materials
+EXT-01-H001,EXT-01,MOD-02,-555,-400,2.4,0,30,20,3,ochre tile,raised timber / limestone
+EXT-01-H002,EXT-01,MOD-02,-105,-400,2.4,0,30,20,3,ochre tile,raised timber / limestone
+EXT-01-H003,EXT-01,MOD-02,345,-400,2.4,0,30,20,3,ochre tile,raised timber / limestone
+EXT-01-H004,EXT-01,MOD-02,-555,120,2.4,0,30,20,3,ochre tile,raised timber / limestone
+EXT-01-H005,EXT-01,MOD-02,-105,120,2.4,0,30,20,3,ochre tile,raised timber / limestone
+EXT-01-H006,EXT-01,MOD-02,345,120,2.4,0,30,20,3,ochre tile,raised timber / limestone
+EXT-01-H007,EXT-01,MOD-02,-485,-400,2.4,0,30,20,3,ochre tile,raised timber / limestone
+EXT-01-H008,EXT-01,MOD-02,-35,-400,2.4,0,30,20,3,ochre tile,raised timber / limestone
+EXT-01-H009,EXT-01,MOD-02,415,-400,2.4,0,30,20,3,ochre tile,raised timber / limestone
+EXT-01-H010,EXT-01,MOD-02,-485,120,2.4,0,30,20,3,ochre tile,raised timber / limestone
+EXT-01-H011,EXT-01,MOD-02,-35,120,2.4,0,30,20,3,ochre tile,raised timber / limestone
+EXT-01-H012,EXT-01,MOD-02,415,120,2.4,0,30,20,3,ochre tile,raised timber / limestone
+EXT-01-H013,EXT-01,MOD-02,-415,-400,2.4,0,30,20,3,ochre tile,raised timber / limestone
+EXT-01-H014,EXT-01,MOD-02,35,-400,2.4,0,30,20,3,ochre tile,raised timber / limestone
+EXT-01-H015,EXT-01,MOD-02,485,-400,2.4,0,30,20,3,ochre tile,raised timber / limestone
+EXT-01-H016,EXT-01,MOD-02,-415,120,2.4,0,30,20,3,ochre tile,raised timber / limestone
+EXT-01-H017,EXT-01,MOD-02,35,120,2.4,0,30,20,3,ochre tile,raised timber / limestone
+EXT-01-H018,EXT-01,MOD-02,485,120,2.4,0,30,20,3,ochre tile,raised timber / limestone
+EXT-01-H019,EXT-01,MOD-02,-345,-400,2.4,0,30,20,3,ochre tile,raised timber / limestone
+EXT-01-H020,EXT-01,MOD-02,105,-400,2.4,0,30,20,3,ochre tile,raised timber / limestone
+EXT-01-H021,EXT-01,MOD-02,555,-400,2.4,0,30,20,3,ochre tile,raised timber / limestone
+EXT-01-H022,EXT-01,MOD-02,-345,120,2.4,0,30,20,3,ochre tile,raised timber / limestone
+EXT-01-H023,EXT-01,MOD-02,105,120,2.4,0,30,20,3,ochre tile,raised timber / limestone
+EXT-01-H024,EXT-01,MOD-02,555,120,2.4,0,30,20,3,ochre tile,raised timber / limestone
+EXT-01-H025,EXT-01,MOD-02,-555,-330,2.4,0,30,20,3,ochre tile,raised timber / limestone
+EXT-01-H026,EXT-01,MOD-02,-105,-330,2.4,0,30,20,3,ochre tile,raised timber / limestone
+EXT-01-H027,EXT-01,MOD-02,345,-330,2.4,0,30,20,3,ochre tile,raised timber / limestone
+EXT-01-H028,EXT-01,MOD-02,-555,190,2.4,0,30,20,3,ochre tile,raised timber / limestone
+EXT-01-H029,EXT-01,MOD-02,-105,190,2.4,0,30,20,3,ochre tile,raised timber / limestone
+EXT-01-H030,EXT-01,MOD-02,345,190,2.4,0,30,20,3,ochre tile,raised timber / limestone
+EXT-01-H031,EXT-01,MOD-02,-485,-330,2.4,0,30,20,3,ochre tile,raised timber / limestone
+EXT-01-H032,EXT-01,MOD-02,-35,-330,2.4,0,30,20,3,ochre tile,raised timber / limestone
+EXT-01-H033,EXT-01,MOD-02,415,-330,2.4,0,30,20,3,ochre tile,raised timber / limestone
+EXT-01-H034,EXT-01,MOD-02,-485,190,2.4,0,30,20,3,ochre tile,raised timber / limestone
+EXT-01-H035,EXT-01,MOD-02,-35,190,2.4,0,30,20,3,ochre tile,raised timber / limestone
+EXT-01-H036,EXT-01,MOD-02,415,190,2.4,0,30,20,3,ochre tile,raised timber / limestone
+EXT-01-H037,EXT-01,MOD-02,-415,-330,2.4,0,30,20,3,ochre tile,raised timber / limestone
+EXT-01-H038,EXT-01,MOD-02,35,-330,2.4,0,30,20,3,ochre tile,raised timber / limestone
+EXT-01-H039,EXT-01,MOD-02,485,-330,2.4,0,30,20,3,ochre tile,raised timber / limestone
+EXT-01-H040,EXT-01,MOD-02,-415,190,2.4,0,30,20,3,ochre tile,raised timber / limestone
+EXT-01-H041,EXT-01,MOD-02,35,190,2.4,0,30,20,3,ochre tile,raised timber / limestone
+EXT-01-H042,EXT-01,MOD-02,485,190,2.4,0,30,20,3,ochre tile,raised timber / limestone
+EXT-01-H043,EXT-01,MOD-02,-345,-330,2.4,0,30,20,3,ochre tile,raised timber / limestone
+EXT-01-H044,EXT-01,MOD-02,105,-330,2.4,0,30,20,3,ochre tile,raised timber / limestone
+EXT-01-H045,EXT-01,MOD-02,555,-330,2.4,0,30,20,3,ochre tile,raised timber / limestone
+EXT-01-H046,EXT-01,MOD-02,-345,190,2.4,0,30,20,3,ochre tile,raised timber / limestone
+EXT-01-H047,EXT-01,MOD-02,105,190,2.4,0,30,20,3,ochre tile,raised timber / limestone
+EXT-01-H048,EXT-01,MOD-02,555,190,2.4,0,30,20,3,ochre tile,raised timber / limestone
+EXT-01-H049,EXT-01,MOD-02,-555,-260,2.4,0,30,20,3,ochre tile,raised timber / limestone
+EXT-01-H050,EXT-01,MOD-02,-105,-260,2.4,0,30,20,3,ochre tile,raised timber / limestone
+EXT-01-B01,EXT-01,MOD-06,-120,0,2.4,0,24,20,2,ochre tile,raised timber / limestone
+EXT-01-B02,EXT-01,MOD-10,0,0,2.4,0,24,18,2,ochre tile,raised timber / limestone
+EXT-01-B03,EXT-01,MOD-11,120,0,2.4,0,36,24,1,ochre tile,raised timber / limestone
+EXT-01-U01,EXT-01,MOD-07,-250,100,2.4,0,20,16,1,ochre tile,raised timber / limestone
+EXT-01-U02,EXT-01,MOD-08,-150,100,2.4,0,22,16,1,ochre tile,raised timber / limestone
+EXT-01-U03,EXT-01,MOD-09,-50,100,2.4,0,24,18,1,ochre tile,raised timber / limestone
+EXT-01-U04,EXT-01,MOD-06,50,100,2.4,0,24,20,2,ochre tile,raised timber / limestone
+EXT-01-U05,EXT-01,MOD-04,150,100,2.4,0,30,18,1,ochre tile,raised timber / limestone
+EXT-01-U06,EXT-01,MOD-11,250,100,2.4,0,36,24,1,ochre tile,raised timber / limestone
+EXT-02-H001,EXT-02,MOD-02,-625,-440,0,0,30,20,3,copper caps,cut limestone / dark timber
+EXT-02-H002,EXT-02,MOD-02,-105,-390,0,0,30,20,3,copper caps,cut limestone / dark timber
+EXT-02-H003,EXT-02,MOD-02,415,-340,0,0,30,20,3,copper caps,cut limestone / dark timber
+EXT-02-H004,EXT-02,MOD-02,-625,60,12,0,30,20,3,copper caps,cut limestone / dark timber
+EXT-02-H005,EXT-02,MOD-02,-105,140,12,0,30,20,3,copper caps,cut limestone / dark timber
+EXT-02-H006,EXT-02,MOD-02,415,200,12,0,30,20,3,copper caps,cut limestone / dark timber
+EXT-02-H007,EXT-02,MOD-02,-555,-440,0,0,30,20,3,copper caps,cut limestone / dark timber
+EXT-02-H008,EXT-02,MOD-02,-35,-390,0,0,30,20,3,copper caps,cut limestone / dark timber
+EXT-02-H009,EXT-02,MOD-02,485,-340,0,0,30,20,3,copper caps,cut limestone / dark timber
+EXT-02-H010,EXT-02,MOD-02,-555,60,12,0,30,20,3,copper caps,cut limestone / dark timber
+EXT-02-H011,EXT-02,MOD-02,-35,140,12,0,30,20,3,copper caps,cut limestone / dark timber
+EXT-02-H012,EXT-02,MOD-02,485,200,12,0,30,20,3,copper caps,cut limestone / dark timber
+EXT-02-H013,EXT-02,MOD-02,-485,-440,0,0,30,20,3,copper caps,cut limestone / dark timber
+EXT-02-H014,EXT-02,MOD-02,35,-390,0,0,30,20,3,copper caps,cut limestone / dark timber
+EXT-02-H015,EXT-02,MOD-02,555,-340,0,0,30,20,3,copper caps,cut limestone / dark timber
+EXT-02-H016,EXT-02,MOD-02,-485,60,12,0,30,20,3,copper caps,cut limestone / dark timber
+EXT-02-H017,EXT-02,MOD-02,35,140,12,0,30,20,3,copper caps,cut limestone / dark timber
+EXT-02-H018,EXT-02,MOD-02,555,200,12,0,30,20,3,copper caps,cut limestone / dark timber
+EXT-02-H019,EXT-02,MOD-02,-415,-440,0,0,30,20,3,copper caps,cut limestone / dark timber
+EXT-02-H020,EXT-02,MOD-02,105,-390,0,0,30,20,3,copper caps,cut limestone / dark timber
+EXT-02-H021,EXT-02,MOD-02,625,-340,0,0,30,20,3,copper caps,cut limestone / dark timber
+EXT-02-H022,EXT-02,MOD-02,-415,60,12,0,30,20,3,copper caps,cut limestone / dark timber
+EXT-02-H023,EXT-02,MOD-02,105,140,12,0,30,20,3,copper caps,cut limestone / dark timber
+EXT-02-H024,EXT-02,MOD-02,625,200,12,0,30,20,3,copper caps,cut limestone / dark timber
+EXT-02-H025,EXT-02,MOD-02,-625,-370,0,0,30,20,3,copper caps,cut limestone / dark timber
+EXT-02-H026,EXT-02,MOD-02,-105,-320,0,0,30,20,3,copper caps,cut limestone / dark timber
+EXT-02-H027,EXT-02,MOD-02,415,-270,0,0,30,20,3,copper caps,cut limestone / dark timber
+EXT-02-H028,EXT-02,MOD-02,-625,130,12,0,30,20,3,copper caps,cut limestone / dark timber
+EXT-02-H029,EXT-02,MOD-02,-105,210,12,0,30,20,3,copper caps,cut limestone / dark timber
+EXT-02-H030,EXT-02,MOD-02,415,270,12,0,30,20,3,copper caps,cut limestone / dark timber
+EXT-02-B01,EXT-02,MOD-05,-120,0,0,0,24,18,1,copper caps,cut limestone / dark timber
+EXT-02-B02,EXT-02,MOD-05,0,0,0,0,24,18,1,copper caps,cut limestone / dark timber
+EXT-02-B03,EXT-02,MOD-12,120,0,0,0,20,16,1,copper caps,cut limestone / dark timber
+EXT-02-U01,EXT-02,MOD-07,-250,100,0,0,20,16,1,copper caps,cut limestone / dark timber
+EXT-02-U02,EXT-02,MOD-08,-150,100,0,0,22,16,1,copper caps,cut limestone / dark timber
+EXT-02-U03,EXT-02,MOD-09,-50,100,0,0,24,18,1,copper caps,cut limestone / dark timber
+EXT-02-U04,EXT-02,MOD-06,50,100,0,0,24,20,2,copper caps,cut limestone / dark timber
+EXT-02-U05,EXT-02,MOD-04,150,100,0,0,30,18,1,copper caps,cut limestone / dark timber
+EXT-02-U06,EXT-02,MOD-11,250,100,0,0,36,24,1,copper caps,cut limestone / dark timber
+EXT-03-H001,EXT-03,MOD-02,-705,-140,0,0,30,20,3,slate blue,plaster / timber
+EXT-03-H002,EXT-03,MOD-02,-405,-560,0,0,30,20,3,slate blue,plaster / timber
+EXT-03-H003,EXT-03,MOD-02,195,-560,0,0,30,20,3,slate blue,plaster / timber
+EXT-03-H004,EXT-03,MOD-02,495,-140,0,0,30,20,3,slate blue,plaster / timber
+EXT-03-H005,EXT-03,MOD-02,195,280,0,0,30,20,3,slate blue,plaster / timber
+EXT-03-H006,EXT-03,MOD-02,-405,280,0,0,30,20,3,slate blue,plaster / timber
+EXT-03-H007,EXT-03,MOD-02,-635,-140,0,0,30,20,3,slate blue,plaster / timber
+EXT-03-H008,EXT-03,MOD-02,-335,-560,0,0,30,20,3,slate blue,plaster / timber
+EXT-03-H009,EXT-03,MOD-02,265,-560,0,0,30,20,3,slate blue,plaster / timber
+EXT-03-H010,EXT-03,MOD-02,565,-140,0,0,30,20,3,slate blue,plaster / timber
+EXT-03-H011,EXT-03,MOD-02,265,280,0,0,30,20,3,slate blue,plaster / timber
+EXT-03-H012,EXT-03,MOD-02,-335,280,0,0,30,20,3,slate blue,plaster / timber
+EXT-03-H013,EXT-03,MOD-02,-565,-140,0,0,30,20,3,slate blue,plaster / timber
+EXT-03-H014,EXT-03,MOD-02,-265,-560,0,0,30,20,3,slate blue,plaster / timber
+EXT-03-H015,EXT-03,MOD-02,335,-560,0,0,30,20,3,slate blue,plaster / timber
+EXT-03-H016,EXT-03,MOD-02,635,-140,0,0,30,20,3,slate blue,plaster / timber
+EXT-03-H017,EXT-03,MOD-02,335,280,0,0,30,20,3,slate blue,plaster / timber
+EXT-03-H018,EXT-03,MOD-02,-265,280,0,0,30,20,3,slate blue,plaster / timber
+EXT-03-H019,EXT-03,MOD-02,-495,-140,0,0,30,20,3,slate blue,plaster / timber
+EXT-03-H020,EXT-03,MOD-02,-195,-560,0,0,30,20,3,slate blue,plaster / timber
+EXT-03-H021,EXT-03,MOD-02,405,-560,0,0,30,20,3,slate blue,plaster / timber
+EXT-03-H022,EXT-03,MOD-02,705,-140,0,0,30,20,3,slate blue,plaster / timber
+EXT-03-H023,EXT-03,MOD-02,405,280,0,0,30,20,3,slate blue,plaster / timber
+EXT-03-H024,EXT-03,MOD-02,-195,280,0,0,30,20,3,slate blue,plaster / timber
+EXT-03-H025,EXT-03,MOD-02,-705,-70,0,0,30,20,3,slate blue,plaster / timber
+EXT-03-H026,EXT-03,MOD-02,-405,-490,0,0,30,20,3,slate blue,plaster / timber
+EXT-03-H027,EXT-03,MOD-02,195,-490,0,0,30,20,3,slate blue,plaster / timber
+EXT-03-H028,EXT-03,MOD-02,495,-70,0,0,30,20,3,slate blue,plaster / timber
+EXT-03-H029,EXT-03,MOD-02,195,350,0,0,30,20,3,slate blue,plaster / timber
+EXT-03-H030,EXT-03,MOD-02,-405,350,0,0,30,20,3,slate blue,plaster / timber
+EXT-03-H031,EXT-03,MOD-02,-635,-70,0,0,30,20,3,slate blue,plaster / timber
+EXT-03-H032,EXT-03,MOD-02,-335,-490,0,0,30,20,3,slate blue,plaster / timber
+EXT-03-H033,EXT-03,MOD-02,265,-490,0,0,30,20,3,slate blue,plaster / timber
+EXT-03-H034,EXT-03,MOD-02,565,-70,0,0,30,20,3,slate blue,plaster / timber
+EXT-03-H035,EXT-03,MOD-02,265,350,0,0,30,20,3,slate blue,plaster / timber
+EXT-03-H036,EXT-03,MOD-02,-335,350,0,0,30,20,3,slate blue,plaster / timber
+EXT-03-H037,EXT-03,MOD-02,-565,-70,0,0,30,20,3,slate blue,plaster / timber
+EXT-03-H038,EXT-03,MOD-02,-265,-490,0,0,30,20,3,slate blue,plaster / timber
+EXT-03-H039,EXT-03,MOD-02,335,-490,0,0,30,20,3,slate blue,plaster / timber
+EXT-03-H040,EXT-03,MOD-02,635,-70,0,0,30,20,3,slate blue,plaster / timber
+EXT-03-B01,EXT-03,MOD-12,-120,0,0,0,20,16,1,slate blue,plaster / timber
+EXT-03-B02,EXT-03,MOD-06,0,0,0,0,24,20,2,slate blue,plaster / timber
+EXT-03-B03,EXT-03,MOD-10,120,0,0,0,24,18,2,slate blue,plaster / timber
+EXT-03-U01,EXT-03,MOD-07,-250,100,0,0,20,16,1,slate blue,plaster / timber
+EXT-03-U02,EXT-03,MOD-08,-150,100,0,0,22,16,1,slate blue,plaster / timber
+EXT-03-U03,EXT-03,MOD-09,-50,100,0,0,24,18,1,slate blue,plaster / timber
+EXT-03-U04,EXT-03,MOD-06,50,100,0,0,24,20,2,slate blue,plaster / timber
+EXT-03-U05,EXT-03,MOD-04,150,100,0,0,30,18,1,slate blue,plaster / timber
+EXT-03-U06,EXT-03,MOD-11,250,100,0,0,36,24,1,slate blue,plaster / timber
+EXT-04-H001,EXT-04,MOD-02,-655,-420,1.2,0,30,20,3,brick red,fired brick / painted timber
+EXT-04-H002,EXT-04,MOD-02,-105,-420,1.2,0,30,20,3,brick red,fired brick / painted timber
+EXT-04-H003,EXT-04,MOD-02,445,-420,1.2,0,30,20,3,brick red,fired brick / painted timber
+EXT-04-H004,EXT-04,MOD-02,-655,140,1.2,0,30,20,3,brick red,fired brick / painted timber
+EXT-04-H005,EXT-04,MOD-02,-105,140,1.2,0,30,20,3,brick red,fired brick / painted timber
+EXT-04-H006,EXT-04,MOD-02,445,140,1.2,0,30,20,3,brick red,fired brick / painted timber
+EXT-04-H007,EXT-04,MOD-02,-585,-420,1.2,0,30,20,3,brick red,fired brick / painted timber
+EXT-04-H008,EXT-04,MOD-02,-35,-420,1.2,0,30,20,3,brick red,fired brick / painted timber
+EXT-04-H009,EXT-04,MOD-02,515,-420,1.2,0,30,20,3,brick red,fired brick / painted timber
+EXT-04-H010,EXT-04,MOD-02,-585,140,1.2,0,30,20,3,brick red,fired brick / painted timber
+EXT-04-H011,EXT-04,MOD-02,-35,140,1.2,0,30,20,3,brick red,fired brick / painted timber
+EXT-04-H012,EXT-04,MOD-02,515,140,1.2,0,30,20,3,brick red,fired brick / painted timber
+EXT-04-H013,EXT-04,MOD-02,-515,-420,1.2,0,30,20,3,brick red,fired brick / painted timber
+EXT-04-H014,EXT-04,MOD-02,35,-420,1.2,0,30,20,3,brick red,fired brick / painted timber
+EXT-04-H015,EXT-04,MOD-02,585,-420,1.2,0,30,20,3,brick red,fired brick / painted timber
+EXT-04-H016,EXT-04,MOD-02,-515,140,1.2,0,30,20,3,brick red,fired brick / painted timber
+EXT-04-H017,EXT-04,MOD-02,35,140,1.2,0,30,20,3,brick red,fired brick / painted timber
+EXT-04-H018,EXT-04,MOD-02,585,140,1.2,0,30,20,3,brick red,fired brick / painted timber
+EXT-04-H019,EXT-04,MOD-02,-445,-420,1.2,0,30,20,3,brick red,fired brick / painted timber
+EXT-04-H020,EXT-04,MOD-02,105,-420,1.2,0,30,20,3,brick red,fired brick / painted timber
+EXT-04-H021,EXT-04,MOD-02,655,-420,1.2,0,30,20,3,brick red,fired brick / painted timber
+EXT-04-H022,EXT-04,MOD-02,-445,140,1.2,0,30,20,3,brick red,fired brick / painted timber
+EXT-04-H023,EXT-04,MOD-02,105,140,1.2,0,30,20,3,brick red,fired brick / painted timber
+EXT-04-H024,EXT-04,MOD-02,655,140,1.2,0,30,20,3,brick red,fired brick / painted timber
+EXT-04-H025,EXT-04,MOD-02,-655,-350,1.2,0,30,20,3,brick red,fired brick / painted timber
+EXT-04-H026,EXT-04,MOD-02,-105,-350,1.2,0,30,20,3,brick red,fired brick / painted timber
+EXT-04-H027,EXT-04,MOD-02,445,-350,1.2,0,30,20,3,brick red,fired brick / painted timber
+EXT-04-H028,EXT-04,MOD-02,-655,210,1.2,0,30,20,3,brick red,fired brick / painted timber
+EXT-04-H029,EXT-04,MOD-02,-105,210,1.2,0,30,20,3,brick red,fired brick / painted timber
+EXT-04-H030,EXT-04,MOD-02,445,210,1.2,0,30,20,3,brick red,fired brick / painted timber
+EXT-04-H031,EXT-04,MOD-02,-585,-350,1.2,0,30,20,3,brick red,fired brick / painted timber
+EXT-04-H032,EXT-04,MOD-02,-35,-350,1.2,0,30,20,3,brick red,fired brick / painted timber
+EXT-04-H033,EXT-04,MOD-02,515,-350,1.2,0,30,20,3,brick red,fired brick / painted timber
+EXT-04-H034,EXT-04,MOD-02,-585,210,1.2,0,30,20,3,brick red,fired brick / painted timber
+EXT-04-H035,EXT-04,MOD-02,-35,210,1.2,0,30,20,3,brick red,fired brick / painted timber
+EXT-04-H036,EXT-04,MOD-02,515,210,1.2,0,30,20,3,brick red,fired brick / painted timber
+EXT-04-H037,EXT-04,MOD-02,-515,-350,1.2,0,30,20,3,brick red,fired brick / painted timber
+EXT-04-H038,EXT-04,MOD-02,35,-350,1.2,0,30,20,3,brick red,fired brick / painted timber
+EXT-04-H039,EXT-04,MOD-02,585,-350,1.2,0,30,20,3,brick red,fired brick / painted timber
+EXT-04-H040,EXT-04,MOD-02,-515,210,1.2,0,30,20,3,brick red,fired brick / painted timber
+EXT-04-H041,EXT-04,MOD-02,35,210,1.2,0,30,20,3,brick red,fired brick / painted timber
+EXT-04-H042,EXT-04,MOD-02,585,210,1.2,0,30,20,3,brick red,fired brick / painted timber
+EXT-04-H043,EXT-04,MOD-02,-445,-350,1.2,0,30,20,3,brick red,fired brick / painted timber
+EXT-04-H044,EXT-04,MOD-02,105,-350,1.2,0,30,20,3,brick red,fired brick / painted timber
+EXT-04-H045,EXT-04,MOD-02,655,-350,1.2,0,30,20,3,brick red,fired brick / painted timber
+EXT-04-H046,EXT-04,MOD-02,-445,210,1.2,0,30,20,3,brick red,fired brick / painted timber
+EXT-04-H047,EXT-04,MOD-02,105,210,1.2,0,30,20,3,brick red,fired brick / painted timber
+EXT-04-H048,EXT-04,MOD-02,655,210,1.2,0,30,20,3,brick red,fired brick / painted timber
+EXT-04-H049,EXT-04,MOD-02,-655,-280,1.2,0,30,20,3,brick red,fired brick / painted timber
+EXT-04-H050,EXT-04,MOD-02,-105,-280,1.2,0,30,20,3,brick red,fired brick / painted timber
+EXT-04-B01,EXT-04,MOD-05,-120,0,1.2,0,24,18,1,brick red,fired brick / painted timber
+EXT-04-B02,EXT-04,MOD-10,0,0,1.2,0,24,18,2,brick red,fired brick / painted timber
+EXT-04-B03,EXT-04,MOD-04,120,0,1.2,0,30,18,1,brick red,fired brick / painted timber
+EXT-04-U01,EXT-04,MOD-07,-250,100,1.2,0,20,16,1,brick red,fired brick / painted timber
+EXT-04-U02,EXT-04,MOD-08,-150,100,1.2,0,22,16,1,brick red,fired brick / painted timber
+EXT-04-U03,EXT-04,MOD-09,-50,100,1.2,0,24,18,1,brick red,fired brick / painted timber
+EXT-04-U04,EXT-04,MOD-06,50,100,1.2,0,24,20,2,brick red,fired brick / painted timber
+EXT-04-U05,EXT-04,MOD-04,150,100,1.2,0,30,18,1,brick red,fired brick / painted timber
+EXT-04-U06,EXT-04,MOD-11,250,100,1.2,0,36,24,1,brick red,fired brick / painted timber
+EXT-05-H001,EXT-05,MOD-02,-605,-440,0,0,30,20,3,moss green,timber / pale plaster
+EXT-05-H002,EXT-05,MOD-02,-105,-460,0,0,30,20,3,moss green,timber / pale plaster
+EXT-05-H003,EXT-05,MOD-02,395,-440,0,0,30,20,3,moss green,timber / pale plaster
+EXT-05-H004,EXT-05,MOD-02,-605,120,0,0,30,20,3,moss green,timber / pale plaster
+EXT-05-H005,EXT-05,MOD-02,-105,180,0,0,30,20,3,moss green,timber / pale plaster
+EXT-05-H006,EXT-05,MOD-02,395,120,0,0,30,20,3,moss green,timber / pale plaster
+EXT-05-H007,EXT-05,MOD-02,-535,-440,0,0,30,20,3,moss green,timber / pale plaster
+EXT-05-H008,EXT-05,MOD-02,-35,-460,0,0,30,20,3,moss green,timber / pale plaster
+EXT-05-H009,EXT-05,MOD-02,465,-440,0,0,30,20,3,moss green,timber / pale plaster
+EXT-05-H010,EXT-05,MOD-02,-535,120,0,0,30,20,3,moss green,timber / pale plaster
+EXT-05-H011,EXT-05,MOD-02,-35,180,0,0,30,20,3,moss green,timber / pale plaster
+EXT-05-H012,EXT-05,MOD-02,465,120,0,0,30,20,3,moss green,timber / pale plaster
+EXT-05-H013,EXT-05,MOD-02,-465,-440,0,0,30,20,3,moss green,timber / pale plaster
+EXT-05-H014,EXT-05,MOD-02,35,-460,0,0,30,20,3,moss green,timber / pale plaster
+EXT-05-H015,EXT-05,MOD-02,535,-440,0,0,30,20,3,moss green,timber / pale plaster
+EXT-05-H016,EXT-05,MOD-02,-465,120,0,0,30,20,3,moss green,timber / pale plaster
+EXT-05-H017,EXT-05,MOD-02,35,180,0,0,30,20,3,moss green,timber / pale plaster
+EXT-05-H018,EXT-05,MOD-02,535,120,0,0,30,20,3,moss green,timber / pale plaster
+EXT-05-H019,EXT-05,MOD-02,-395,-440,0,0,30,20,3,moss green,timber / pale plaster
+EXT-05-H020,EXT-05,MOD-02,105,-460,0,0,30,20,3,moss green,timber / pale plaster
+EXT-05-H021,EXT-05,MOD-02,605,-440,0,0,30,20,3,moss green,timber / pale plaster
+EXT-05-H022,EXT-05,MOD-02,-395,120,0,0,30,20,3,moss green,timber / pale plaster
+EXT-05-H023,EXT-05,MOD-02,105,180,0,0,30,20,3,moss green,timber / pale plaster
+EXT-05-H024,EXT-05,MOD-02,605,120,0,0,30,20,3,moss green,timber / pale plaster
+EXT-05-B01,EXT-05,MOD-04,-120,0,0,0,30,18,1,moss green,timber / pale plaster
+EXT-05-B02,EXT-05,MOD-07,0,0,0,0,20,16,1,moss green,timber / pale plaster
+EXT-05-B03,EXT-05,MOD-12,120,0,0,0,20,16,1,moss green,timber / pale plaster
+EXT-05-U01,EXT-05,MOD-07,-250,100,0,0,20,16,1,moss green,timber / pale plaster
+EXT-05-U02,EXT-05,MOD-08,-150,100,0,0,22,16,1,moss green,timber / pale plaster
+EXT-05-U03,EXT-05,MOD-09,-50,100,0,0,24,18,1,moss green,timber / pale plaster
+EXT-05-U04,EXT-05,MOD-06,50,100,0,0,24,20,2,moss green,timber / pale plaster
+EXT-05-U05,EXT-05,MOD-04,150,100,0,0,30,18,1,moss green,timber / pale plaster
+EXT-05-U06,EXT-05,MOD-11,250,100,0,0,36,24,1,moss green,timber / pale plaster
+EXT-06-H001,EXT-06,MOD-02,-1105,160,0,0,30,20,3,rust ceramic,basalt / reused steel
+EXT-06-H002,EXT-06,MOD-02,-705,160,0,0,30,20,3,rust ceramic,basalt / reused steel
+EXT-06-H003,EXT-06,MOD-02,-305,160,0,0,30,20,3,rust ceramic,basalt / reused steel
+EXT-06-H004,EXT-06,MOD-02,95,160,0,0,30,20,3,rust ceramic,basalt / reused steel
+EXT-06-H005,EXT-06,MOD-02,495,160,0,0,30,20,3,rust ceramic,basalt / reused steel
+EXT-06-H006,EXT-06,MOD-02,895,160,0,0,30,20,3,rust ceramic,basalt / reused steel
+EXT-06-H007,EXT-06,MOD-02,-1035,160,0,0,30,20,3,rust ceramic,basalt / reused steel
+EXT-06-H008,EXT-06,MOD-02,-635,160,0,0,30,20,3,rust ceramic,basalt / reused steel
+EXT-06-H009,EXT-06,MOD-02,-235,160,0,0,30,20,3,rust ceramic,basalt / reused steel
+EXT-06-H010,EXT-06,MOD-02,165,160,0,0,30,20,3,rust ceramic,basalt / reused steel
+EXT-06-H011,EXT-06,MOD-02,565,160,0,0,30,20,3,rust ceramic,basalt / reused steel
+EXT-06-H012,EXT-06,MOD-02,965,160,0,0,30,20,3,rust ceramic,basalt / reused steel
+EXT-06-H013,EXT-06,MOD-02,-965,160,0,0,30,20,3,rust ceramic,basalt / reused steel
+EXT-06-H014,EXT-06,MOD-02,-565,160,0,0,30,20,3,rust ceramic,basalt / reused steel
+EXT-06-H015,EXT-06,MOD-02,-165,160,0,0,30,20,3,rust ceramic,basalt / reused steel
+EXT-06-H016,EXT-06,MOD-02,235,160,0,0,30,20,3,rust ceramic,basalt / reused steel
+EXT-06-B01,EXT-06,MOD-06,-120,0,0,0,24,20,2,rust ceramic,basalt / reused steel
+EXT-06-B02,EXT-06,MOD-04,0,0,0,0,30,18,1,rust ceramic,basalt / reused steel
+EXT-06-U01,EXT-06,MOD-07,-250,100,0,0,20,16,1,rust ceramic,basalt / reused steel
+EXT-06-U02,EXT-06,MOD-08,-150,100,0,0,22,16,1,rust ceramic,basalt / reused steel
+EXT-06-U03,EXT-06,MOD-09,-50,100,0,0,24,18,1,rust ceramic,basalt / reused steel
+EXT-06-U04,EXT-06,MOD-06,50,100,0,0,24,20,2,rust ceramic,basalt / reused steel
+EXT-06-U05,EXT-06,MOD-04,150,100,0,0,30,18,1,rust ceramic,basalt / reused steel
+EXT-06-U06,EXT-06,MOD-11,250,100,0,0,36,24,1,rust ceramic,basalt / reused steel
+EXT-07-H001,EXT-07,MOD-02,-605,-460,22,0,30,20,3,amber shingle,living fiber / light timber
+EXT-07-H002,EXT-07,MOD-02,-185,-540,34,0,30,20,3,amber shingle,living fiber / light timber
+EXT-07-H003,EXT-07,MOD-02,315,-420,27,0,30,20,3,amber shingle,living fiber / light timber
+EXT-07-H004,EXT-07,MOD-02,-605,110,46,0,30,20,3,amber shingle,living fiber / light timber
+EXT-07-H005,EXT-07,MOD-02,-145,160,18,0,30,20,3,amber shingle,living fiber / light timber
+EXT-07-H006,EXT-07,MOD-02,335,140,38,0,30,20,3,amber shingle,living fiber / light timber
+EXT-07-H007,EXT-07,MOD-02,-535,-460,22,0,30,20,3,amber shingle,living fiber / light timber
+EXT-07-H008,EXT-07,MOD-02,-115,-540,34,0,30,20,3,amber shingle,living fiber / light timber
+EXT-07-H009,EXT-07,MOD-02,385,-420,27,0,30,20,3,amber shingle,living fiber / light timber
+EXT-07-H010,EXT-07,MOD-02,-535,110,46,0,30,20,3,amber shingle,living fiber / light timber
+EXT-07-H011,EXT-07,MOD-02,-75,160,18,0,30,20,3,amber shingle,living fiber / light timber
+EXT-07-H012,EXT-07,MOD-02,405,140,38,0,30,20,3,amber shingle,living fiber / light timber
+EXT-07-H013,EXT-07,MOD-02,-465,-460,22,0,30,20,3,amber shingle,living fiber / light timber
+EXT-07-H014,EXT-07,MOD-02,-45,-540,34,0,30,20,3,amber shingle,living fiber / light timber
+EXT-07-H015,EXT-07,MOD-02,455,-420,27,0,30,20,3,amber shingle,living fiber / light timber
+EXT-07-H016,EXT-07,MOD-02,-465,110,46,0,30,20,3,amber shingle,living fiber / light timber
+EXT-07-H017,EXT-07,MOD-02,-5,160,18,0,30,20,3,amber shingle,living fiber / light timber
+EXT-07-H018,EXT-07,MOD-02,475,140,38,0,30,20,3,amber shingle,living fiber / light timber
+EXT-07-H019,EXT-07,MOD-02,-395,-460,22,0,30,20,3,amber shingle,living fiber / light timber
+EXT-07-H020,EXT-07,MOD-02,25,-540,34,0,30,20,3,amber shingle,living fiber / light timber
+EXT-07-B01,EXT-07,MOD-12,-120,0,0,0,20,16,1,amber shingle,living fiber / light timber
+EXT-07-B02,EXT-07,MOD-05,0,0,0,0,24,18,1,amber shingle,living fiber / light timber
+EXT-07-B03,EXT-07,MOD-04,120,0,0,0,30,18,1,amber shingle,living fiber / light timber
+EXT-07-U01,EXT-07,MOD-07,-250,100,0,0,20,16,1,amber shingle,living fiber / light timber
+EXT-07-U02,EXT-07,MOD-08,-150,100,0,0,22,16,1,amber shingle,living fiber / light timber
+EXT-07-U03,EXT-07,MOD-09,-50,100,0,0,24,18,1,amber shingle,living fiber / light timber
+EXT-07-U04,EXT-07,MOD-06,50,100,0,0,24,20,2,amber shingle,living fiber / light timber
+EXT-07-U05,EXT-07,MOD-04,150,100,0,0,30,18,1,amber shingle,living fiber / light timber
+EXT-07-U06,EXT-07,MOD-11,250,100,0,0,36,24,1,amber shingle,living fiber / light timber
+EXT-08-H001,EXT-08,MOD-02,-705,-140,0,0,30,20,3,pale sandstone,sandstone / turquoise shutters
+EXT-08-H002,EXT-08,MOD-02,-405,-560,0,0,30,20,3,pale sandstone,sandstone / turquoise shutters
+EXT-08-H003,EXT-08,MOD-02,195,-560,0,0,30,20,3,pale sandstone,sandstone / turquoise shutters
+EXT-08-H004,EXT-08,MOD-02,495,-140,0,0,30,20,3,pale sandstone,sandstone / turquoise shutters
+EXT-08-H005,EXT-08,MOD-02,195,280,0,0,30,20,3,pale sandstone,sandstone / turquoise shutters
+EXT-08-H006,EXT-08,MOD-02,-405,280,0,0,30,20,3,pale sandstone,sandstone / turquoise shutters
+EXT-08-H007,EXT-08,MOD-02,-635,-140,0,0,30,20,3,pale sandstone,sandstone / turquoise shutters
+EXT-08-H008,EXT-08,MOD-02,-335,-560,0,0,30,20,3,pale sandstone,sandstone / turquoise shutters
+EXT-08-H009,EXT-08,MOD-02,265,-560,0,0,30,20,3,pale sandstone,sandstone / turquoise shutters
+EXT-08-H010,EXT-08,MOD-02,565,-140,0,0,30,20,3,pale sandstone,sandstone / turquoise shutters
+EXT-08-H011,EXT-08,MOD-02,265,280,0,0,30,20,3,pale sandstone,sandstone / turquoise shutters
+EXT-08-H012,EXT-08,MOD-02,-335,280,0,0,30,20,3,pale sandstone,sandstone / turquoise shutters
+EXT-08-H013,EXT-08,MOD-02,-565,-140,0,0,30,20,3,pale sandstone,sandstone / turquoise shutters
+EXT-08-H014,EXT-08,MOD-02,-265,-560,0,0,30,20,3,pale sandstone,sandstone / turquoise shutters
+EXT-08-H015,EXT-08,MOD-02,335,-560,0,0,30,20,3,pale sandstone,sandstone / turquoise shutters
+EXT-08-H016,EXT-08,MOD-02,635,-140,0,0,30,20,3,pale sandstone,sandstone / turquoise shutters
+EXT-08-H017,EXT-08,MOD-02,335,280,0,0,30,20,3,pale sandstone,sandstone / turquoise shutters
+EXT-08-H018,EXT-08,MOD-02,-265,280,0,0,30,20,3,pale sandstone,sandstone / turquoise shutters
+EXT-08-H019,EXT-08,MOD-02,-495,-140,0,0,30,20,3,pale sandstone,sandstone / turquoise shutters
+EXT-08-H020,EXT-08,MOD-02,-195,-560,0,0,30,20,3,pale sandstone,sandstone / turquoise shutters
+EXT-08-H021,EXT-08,MOD-02,405,-560,0,0,30,20,3,pale sandstone,sandstone / turquoise shutters
+EXT-08-H022,EXT-08,MOD-02,705,-140,0,0,30,20,3,pale sandstone,sandstone / turquoise shutters
+EXT-08-H023,EXT-08,MOD-02,405,280,0,0,30,20,3,pale sandstone,sandstone / turquoise shutters
+EXT-08-H024,EXT-08,MOD-02,-195,280,0,0,30,20,3,pale sandstone,sandstone / turquoise shutters
+EXT-08-H025,EXT-08,MOD-02,-705,-70,0,0,30,20,3,pale sandstone,sandstone / turquoise shutters
+EXT-08-H026,EXT-08,MOD-02,-405,-490,0,0,30,20,3,pale sandstone,sandstone / turquoise shutters
+EXT-08-H027,EXT-08,MOD-02,195,-490,0,0,30,20,3,pale sandstone,sandstone / turquoise shutters
+EXT-08-H028,EXT-08,MOD-02,495,-70,0,0,30,20,3,pale sandstone,sandstone / turquoise shutters
+EXT-08-H029,EXT-08,MOD-02,195,350,0,0,30,20,3,pale sandstone,sandstone / turquoise shutters
+EXT-08-H030,EXT-08,MOD-02,-405,350,0,0,30,20,3,pale sandstone,sandstone / turquoise shutters
+EXT-08-H031,EXT-08,MOD-02,-635,-70,0,0,30,20,3,pale sandstone,sandstone / turquoise shutters
+EXT-08-H032,EXT-08,MOD-02,-335,-490,0,0,30,20,3,pale sandstone,sandstone / turquoise shutters
+EXT-08-H033,EXT-08,MOD-02,265,-490,0,0,30,20,3,pale sandstone,sandstone / turquoise shutters
+EXT-08-H034,EXT-08,MOD-02,565,-70,0,0,30,20,3,pale sandstone,sandstone / turquoise shutters
+EXT-08-H035,EXT-08,MOD-02,265,350,0,0,30,20,3,pale sandstone,sandstone / turquoise shutters
+EXT-08-H036,EXT-08,MOD-02,-335,350,0,0,30,20,3,pale sandstone,sandstone / turquoise shutters
+EXT-08-H037,EXT-08,MOD-02,-565,-70,0,0,30,20,3,pale sandstone,sandstone / turquoise shutters
+EXT-08-H038,EXT-08,MOD-02,-265,-490,0,0,30,20,3,pale sandstone,sandstone / turquoise shutters
+EXT-08-H039,EXT-08,MOD-02,335,-490,0,0,30,20,3,pale sandstone,sandstone / turquoise shutters
+EXT-08-H040,EXT-08,MOD-02,635,-70,0,0,30,20,3,pale sandstone,sandstone / turquoise shutters
+EXT-08-H041,EXT-08,MOD-02,335,350,0,0,30,20,3,pale sandstone,sandstone / turquoise shutters
+EXT-08-H042,EXT-08,MOD-02,-265,350,0,0,30,20,3,pale sandstone,sandstone / turquoise shutters
+EXT-08-H043,EXT-08,MOD-02,-495,-70,0,0,30,20,3,pale sandstone,sandstone / turquoise shutters
+EXT-08-H044,EXT-08,MOD-02,-195,-490,0,0,30,20,3,pale sandstone,sandstone / turquoise shutters
+EXT-08-H045,EXT-08,MOD-02,405,-490,0,0,30,20,3,pale sandstone,sandstone / turquoise shutters
+EXT-08-H046,EXT-08,MOD-02,705,-70,0,0,30,20,3,pale sandstone,sandstone / turquoise shutters
+EXT-08-H047,EXT-08,MOD-02,405,350,0,0,30,20,3,pale sandstone,sandstone / turquoise shutters
+EXT-08-H048,EXT-08,MOD-02,-195,350,0,0,30,20,3,pale sandstone,sandstone / turquoise shutters
+EXT-08-H049,EXT-08,MOD-02,-705,0,0,0,30,20,3,pale sandstone,sandstone / turquoise shutters
+EXT-08-H050,EXT-08,MOD-02,-405,-420,0,0,30,20,3,pale sandstone,sandstone / turquoise shutters
+EXT-08-H051,EXT-08,MOD-02,195,-420,0,0,30,20,3,pale sandstone,sandstone / turquoise shutters
+EXT-08-H052,EXT-08,MOD-02,495,0,0,0,30,20,3,pale sandstone,sandstone / turquoise shutters
+EXT-08-H053,EXT-08,MOD-02,195,420,0,0,30,20,3,pale sandstone,sandstone / turquoise shutters
+EXT-08-H054,EXT-08,MOD-02,-405,420,0,0,30,20,3,pale sandstone,sandstone / turquoise shutters
+EXT-08-H055,EXT-08,MOD-02,-635,0,0,0,30,20,3,pale sandstone,sandstone / turquoise shutters
+EXT-08-H056,EXT-08,MOD-02,-335,-420,0,0,30,20,3,pale sandstone,sandstone / turquoise shutters
+EXT-08-H057,EXT-08,MOD-02,265,-420,0,0,30,20,3,pale sandstone,sandstone / turquoise shutters
+EXT-08-H058,EXT-08,MOD-02,565,0,0,0,30,20,3,pale sandstone,sandstone / turquoise shutters
+EXT-08-H059,EXT-08,MOD-02,265,420,0,0,30,20,3,pale sandstone,sandstone / turquoise shutters
+EXT-08-H060,EXT-08,MOD-02,-335,420,0,0,30,20,3,pale sandstone,sandstone / turquoise shutters
+EXT-08-H061,EXT-08,MOD-02,-565,0,0,0,30,20,3,pale sandstone,sandstone / turquoise shutters
+EXT-08-H062,EXT-08,MOD-02,-265,-420,0,0,30,20,3,pale sandstone,sandstone / turquoise shutters
+EXT-08-H063,EXT-08,MOD-02,335,-420,0,0,30,20,3,pale sandstone,sandstone / turquoise shutters
+EXT-08-H064,EXT-08,MOD-02,635,0,0,0,30,20,3,pale sandstone,sandstone / turquoise shutters
+EXT-08-H065,EXT-08,MOD-02,335,420,0,0,30,20,3,pale sandstone,sandstone / turquoise shutters
+EXT-08-H066,EXT-08,MOD-02,-265,420,0,0,30,20,3,pale sandstone,sandstone / turquoise shutters
+EXT-08-H067,EXT-08,MOD-02,-495,0,0,0,30,20,3,pale sandstone,sandstone / turquoise shutters
+EXT-08-H068,EXT-08,MOD-02,-195,-420,0,0,30,20,3,pale sandstone,sandstone / turquoise shutters
+EXT-08-H069,EXT-08,MOD-02,405,-420,0,0,30,20,3,pale sandstone,sandstone / turquoise shutters
+EXT-08-H070,EXT-08,MOD-02,705,0,0,0,30,20,3,pale sandstone,sandstone / turquoise shutters
+EXT-08-H071,EXT-08,MOD-02,405,420,0,0,30,20,3,pale sandstone,sandstone / turquoise shutters
+EXT-08-H072,EXT-08,MOD-02,-195,420,0,0,30,20,3,pale sandstone,sandstone / turquoise shutters
+EXT-08-H073,EXT-08,MOD-02,-705,70,0,0,30,20,3,pale sandstone,sandstone / turquoise shutters
+EXT-08-H074,EXT-08,MOD-02,-405,-350,0,0,30,20,3,pale sandstone,sandstone / turquoise shutters
+EXT-08-H075,EXT-08,MOD-02,195,-350,0,0,30,20,3,pale sandstone,sandstone / turquoise shutters
+EXT-08-H076,EXT-08,MOD-02,495,70,0,0,30,20,3,pale sandstone,sandstone / turquoise shutters
+EXT-08-H077,EXT-08,MOD-02,195,490,0,0,30,20,3,pale sandstone,sandstone / turquoise shutters
+EXT-08-H078,EXT-08,MOD-02,-405,490,0,0,30,20,3,pale sandstone,sandstone / turquoise shutters
+EXT-08-H079,EXT-08,MOD-02,-635,70,0,0,30,20,3,pale sandstone,sandstone / turquoise shutters
+EXT-08-H080,EXT-08,MOD-02,-335,-350,0,0,30,20,3,pale sandstone,sandstone / turquoise shutters
+EXT-08-B01,EXT-08,MOD-09,-120,0,0,0,24,18,1,pale sandstone,sandstone / turquoise shutters
+EXT-08-B02,EXT-08,MOD-10,0,0,0,0,24,18,2,pale sandstone,sandstone / turquoise shutters
+EXT-08-B03,EXT-08,MOD-10,120,0,0,0,24,18,2,pale sandstone,sandstone / turquoise shutters
+EXT-08-U01,EXT-08,MOD-07,-250,100,0,0,20,16,1,pale sandstone,sandstone / turquoise shutters
+EXT-08-U02,EXT-08,MOD-08,-150,100,0,0,22,16,1,pale sandstone,sandstone / turquoise shutters
+EXT-08-U03,EXT-08,MOD-09,-50,100,0,0,24,18,1,pale sandstone,sandstone / turquoise shutters
+EXT-08-U04,EXT-08,MOD-06,50,100,0,0,24,20,2,pale sandstone,sandstone / turquoise shutters
+EXT-08-U05,EXT-08,MOD-04,150,100,0,0,30,18,1,pale sandstone,sandstone / turquoise shutters
+EXT-08-U06,EXT-08,MOD-11,250,100,0,0,36,24,1,pale sandstone,sandstone / turquoise shutters
+EXT-09-H001,EXT-09,MOD-02,-705,-360,3,0,30,20,3,coral tile,limestone / marine timber
+EXT-09-H002,EXT-09,MOD-02,-105,-360,3,0,30,20,3,coral tile,limestone / marine timber
+EXT-09-H003,EXT-09,MOD-02,495,-360,3,0,30,20,3,coral tile,limestone / marine timber
+EXT-09-H004,EXT-09,MOD-02,-705,160,3,0,30,20,3,coral tile,limestone / marine timber
+EXT-09-H005,EXT-09,MOD-02,-105,160,3,0,30,20,3,coral tile,limestone / marine timber
+EXT-09-H006,EXT-09,MOD-02,495,160,3,0,30,20,3,coral tile,limestone / marine timber
+EXT-09-H007,EXT-09,MOD-02,-635,-360,3,0,30,20,3,coral tile,limestone / marine timber
+EXT-09-H008,EXT-09,MOD-02,-35,-360,3,0,30,20,3,coral tile,limestone / marine timber
+EXT-09-H009,EXT-09,MOD-02,565,-360,3,0,30,20,3,coral tile,limestone / marine timber
+EXT-09-H010,EXT-09,MOD-02,-635,160,3,0,30,20,3,coral tile,limestone / marine timber
+EXT-09-H011,EXT-09,MOD-02,-35,160,3,0,30,20,3,coral tile,limestone / marine timber
+EXT-09-H012,EXT-09,MOD-02,565,160,3,0,30,20,3,coral tile,limestone / marine timber
+EXT-09-H013,EXT-09,MOD-02,-565,-360,3,0,30,20,3,coral tile,limestone / marine timber
+EXT-09-H014,EXT-09,MOD-02,35,-360,3,0,30,20,3,coral tile,limestone / marine timber
+EXT-09-H015,EXT-09,MOD-02,635,-360,3,0,30,20,3,coral tile,limestone / marine timber
+EXT-09-H016,EXT-09,MOD-02,-565,160,3,0,30,20,3,coral tile,limestone / marine timber
+EXT-09-H017,EXT-09,MOD-02,35,160,3,0,30,20,3,coral tile,limestone / marine timber
+EXT-09-H018,EXT-09,MOD-02,635,160,3,0,30,20,3,coral tile,limestone / marine timber
+EXT-09-H019,EXT-09,MOD-02,-495,-360,3,0,30,20,3,coral tile,limestone / marine timber
+EXT-09-H020,EXT-09,MOD-02,105,-360,3,0,30,20,3,coral tile,limestone / marine timber
+EXT-09-H021,EXT-09,MOD-02,705,-360,3,0,30,20,3,coral tile,limestone / marine timber
+EXT-09-H022,EXT-09,MOD-02,-495,160,3,0,30,20,3,coral tile,limestone / marine timber
+EXT-09-H023,EXT-09,MOD-02,105,160,3,0,30,20,3,coral tile,limestone / marine timber
+EXT-09-H024,EXT-09,MOD-02,705,160,3,0,30,20,3,coral tile,limestone / marine timber
+EXT-09-H025,EXT-09,MOD-02,-705,-290,3,0,30,20,3,coral tile,limestone / marine timber
+EXT-09-H026,EXT-09,MOD-02,-105,-290,3,0,30,20,3,coral tile,limestone / marine timber
+EXT-09-H027,EXT-09,MOD-02,495,-290,3,0,30,20,3,coral tile,limestone / marine timber
+EXT-09-H028,EXT-09,MOD-02,-705,230,3,0,30,20,3,coral tile,limestone / marine timber
+EXT-09-H029,EXT-09,MOD-02,-105,230,3,0,30,20,3,coral tile,limestone / marine timber
+EXT-09-H030,EXT-09,MOD-02,495,230,3,0,30,20,3,coral tile,limestone / marine timber
+EXT-09-H031,EXT-09,MOD-02,-635,-290,3,0,30,20,3,coral tile,limestone / marine timber
+EXT-09-H032,EXT-09,MOD-02,-35,-290,3,0,30,20,3,coral tile,limestone / marine timber
+EXT-09-H033,EXT-09,MOD-02,565,-290,3,0,30,20,3,coral tile,limestone / marine timber
+EXT-09-H034,EXT-09,MOD-02,-635,230,3,0,30,20,3,coral tile,limestone / marine timber
+EXT-09-H035,EXT-09,MOD-02,-35,230,3,0,30,20,3,coral tile,limestone / marine timber
+EXT-09-H036,EXT-09,MOD-02,565,230,3,0,30,20,3,coral tile,limestone / marine timber
+EXT-09-H037,EXT-09,MOD-02,-565,-290,3,0,30,20,3,coral tile,limestone / marine timber
+EXT-09-H038,EXT-09,MOD-02,35,-290,3,0,30,20,3,coral tile,limestone / marine timber
+EXT-09-H039,EXT-09,MOD-02,635,-290,3,0,30,20,3,coral tile,limestone / marine timber
+EXT-09-H040,EXT-09,MOD-02,-565,230,3,0,30,20,3,coral tile,limestone / marine timber
+EXT-09-H041,EXT-09,MOD-02,35,230,3,0,30,20,3,coral tile,limestone / marine timber
+EXT-09-H042,EXT-09,MOD-02,635,230,3,0,30,20,3,coral tile,limestone / marine timber
+EXT-09-H043,EXT-09,MOD-02,-495,-290,3,0,30,20,3,coral tile,limestone / marine timber
+EXT-09-H044,EXT-09,MOD-02,105,-290,3,0,30,20,3,coral tile,limestone / marine timber
+EXT-09-H045,EXT-09,MOD-02,705,-290,3,0,30,20,3,coral tile,limestone / marine timber
+EXT-09-H046,EXT-09,MOD-02,-495,230,3,0,30,20,3,coral tile,limestone / marine timber
+EXT-09-H047,EXT-09,MOD-02,105,230,3,0,30,20,3,coral tile,limestone / marine timber
+EXT-09-H048,EXT-09,MOD-02,705,230,3,0,30,20,3,coral tile,limestone / marine timber
+EXT-09-H049,EXT-09,MOD-02,-705,-220,3,0,30,20,3,coral tile,limestone / marine timber
+EXT-09-H050,EXT-09,MOD-02,-105,-220,3,0,30,20,3,coral tile,limestone / marine timber
+EXT-09-H051,EXT-09,MOD-02,495,-220,3,0,30,20,3,coral tile,limestone / marine timber
+EXT-09-H052,EXT-09,MOD-02,-705,300,3,0,30,20,3,coral tile,limestone / marine timber
+EXT-09-H053,EXT-09,MOD-02,-105,300,3,0,30,20,3,coral tile,limestone / marine timber
+EXT-09-H054,EXT-09,MOD-02,495,300,3,0,30,20,3,coral tile,limestone / marine timber
+EXT-09-H055,EXT-09,MOD-02,-635,-220,3,0,30,20,3,coral tile,limestone / marine timber
+EXT-09-H056,EXT-09,MOD-02,-35,-220,3,0,30,20,3,coral tile,limestone / marine timber
+EXT-09-H057,EXT-09,MOD-02,565,-220,3,0,30,20,3,coral tile,limestone / marine timber
+EXT-09-H058,EXT-09,MOD-02,-635,300,3,0,30,20,3,coral tile,limestone / marine timber
+EXT-09-H059,EXT-09,MOD-02,-35,300,3,0,30,20,3,coral tile,limestone / marine timber
+EXT-09-H060,EXT-09,MOD-02,565,300,3,0,30,20,3,coral tile,limestone / marine timber
+EXT-09-B01,EXT-09,MOD-04,-120,0,3,0,30,18,1,coral tile,limestone / marine timber
+EXT-09-B02,EXT-09,MOD-12,0,0,3,0,20,16,1,coral tile,limestone / marine timber
+EXT-09-U01,EXT-09,MOD-07,-250,100,3,0,20,16,1,coral tile,limestone / marine timber
+EXT-09-U02,EXT-09,MOD-08,-150,100,3,0,22,16,1,coral tile,limestone / marine timber
+EXT-09-U03,EXT-09,MOD-09,-50,100,3,0,24,18,1,coral tile,limestone / marine timber
+EXT-09-U04,EXT-09,MOD-06,50,100,3,0,24,20,2,coral tile,limestone / marine timber
+EXT-09-U05,EXT-09,MOD-04,150,100,3,0,30,18,1,coral tile,limestone / marine timber
+EXT-09-U06,EXT-09,MOD-11,250,100,3,0,36,24,1,coral tile,limestone / marine timber
+EXT-10-H001,EXT-10,MOD-02,-705,-400,0,0,30,20,3,ochre sail,basalt / light timber
+EXT-10-H002,EXT-10,MOD-02,-105,-400,6,0,30,20,3,ochre sail,basalt / light timber
+EXT-10-H003,EXT-10,MOD-02,495,-400,0,0,30,20,3,ochre sail,basalt / light timber
+EXT-10-H004,EXT-10,MOD-02,-705,120,12,0,30,20,3,ochre sail,basalt / light timber
+EXT-10-H005,EXT-10,MOD-02,-105,120,6,0,30,20,3,ochre sail,basalt / light timber
+EXT-10-H006,EXT-10,MOD-02,495,120,12,0,30,20,3,ochre sail,basalt / light timber
+EXT-10-H007,EXT-10,MOD-02,-635,-400,0,0,30,20,3,ochre sail,basalt / light timber
+EXT-10-H008,EXT-10,MOD-02,-35,-400,6,0,30,20,3,ochre sail,basalt / light timber
+EXT-10-H009,EXT-10,MOD-02,565,-400,0,0,30,20,3,ochre sail,basalt / light timber
+EXT-10-H010,EXT-10,MOD-02,-635,120,12,0,30,20,3,ochre sail,basalt / light timber
+EXT-10-H011,EXT-10,MOD-02,-35,120,6,0,30,20,3,ochre sail,basalt / light timber
+EXT-10-H012,EXT-10,MOD-02,565,120,12,0,30,20,3,ochre sail,basalt / light timber
+EXT-10-H013,EXT-10,MOD-02,-565,-400,0,0,30,20,3,ochre sail,basalt / light timber
+EXT-10-H014,EXT-10,MOD-02,35,-400,6,0,30,20,3,ochre sail,basalt / light timber
+EXT-10-H015,EXT-10,MOD-02,635,-400,0,0,30,20,3,ochre sail,basalt / light timber
+EXT-10-H016,EXT-10,MOD-02,-565,120,12,0,30,20,3,ochre sail,basalt / light timber
+EXT-10-H017,EXT-10,MOD-02,35,120,6,0,30,20,3,ochre sail,basalt / light timber
+EXT-10-H018,EXT-10,MOD-02,635,120,12,0,30,20,3,ochre sail,basalt / light timber
+EXT-10-H019,EXT-10,MOD-02,-495,-400,0,0,30,20,3,ochre sail,basalt / light timber
+EXT-10-H020,EXT-10,MOD-02,105,-400,6,0,30,20,3,ochre sail,basalt / light timber
+EXT-10-H021,EXT-10,MOD-02,705,-400,0,0,30,20,3,ochre sail,basalt / light timber
+EXT-10-H022,EXT-10,MOD-02,-495,120,12,0,30,20,3,ochre sail,basalt / light timber
+EXT-10-H023,EXT-10,MOD-02,105,120,6,0,30,20,3,ochre sail,basalt / light timber
+EXT-10-H024,EXT-10,MOD-02,705,120,12,0,30,20,3,ochre sail,basalt / light timber
+EXT-10-H025,EXT-10,MOD-02,-705,-330,0,0,30,20,3,ochre sail,basalt / light timber
+EXT-10-H026,EXT-10,MOD-02,-105,-330,6,0,30,20,3,ochre sail,basalt / light timber
+EXT-10-H027,EXT-10,MOD-02,495,-330,0,0,30,20,3,ochre sail,basalt / light timber
+EXT-10-H028,EXT-10,MOD-02,-705,190,12,0,30,20,3,ochre sail,basalt / light timber
+EXT-10-H029,EXT-10,MOD-02,-105,190,6,0,30,20,3,ochre sail,basalt / light timber
+EXT-10-H030,EXT-10,MOD-02,495,190,12,0,30,20,3,ochre sail,basalt / light timber
+EXT-10-H031,EXT-10,MOD-02,-635,-330,0,0,30,20,3,ochre sail,basalt / light timber
+EXT-10-H032,EXT-10,MOD-02,-35,-330,6,0,30,20,3,ochre sail,basalt / light timber
+EXT-10-B01,EXT-10,MOD-09,-120,0,0,0,24,18,1,ochre sail,basalt / light timber
+EXT-10-B02,EXT-10,MOD-05,0,0,0,0,24,18,1,ochre sail,basalt / light timber
+EXT-10-B03,EXT-10,MOD-12,120,0,0,0,20,16,1,ochre sail,basalt / light timber
+EXT-10-U01,EXT-10,MOD-07,-250,100,0,0,20,16,1,ochre sail,basalt / light timber
+EXT-10-U02,EXT-10,MOD-08,-150,100,0,0,22,16,1,ochre sail,basalt / light timber
+EXT-10-U03,EXT-10,MOD-09,-50,100,0,0,24,18,1,ochre sail,basalt / light timber
+EXT-10-U04,EXT-10,MOD-06,50,100,0,0,24,20,2,ochre sail,basalt / light timber
+EXT-10-U05,EXT-10,MOD-04,150,100,0,0,30,18,1,ochre sail,basalt / light timber
+EXT-10-U06,EXT-10,MOD-11,250,100,0,0,36,24,1,ochre sail,basalt / light timber
+EXT-11-H001,EXT-11,MOD-02,-605,-400,0,0,30,20,3,copper insulated,stone / insulated timber
+EXT-11-H002,EXT-11,MOD-02,-105,-440,0,0,30,20,3,copper insulated,stone / insulated timber
+EXT-11-H003,EXT-11,MOD-02,395,-400,0,0,30,20,3,copper insulated,stone / insulated timber
+EXT-11-H004,EXT-11,MOD-02,-605,80,12,0,30,20,3,copper insulated,stone / insulated timber
+EXT-11-H005,EXT-11,MOD-02,-105,160,12,0,30,20,3,copper insulated,stone / insulated timber
+EXT-11-H006,EXT-11,MOD-02,395,80,12,0,30,20,3,copper insulated,stone / insulated timber
+EXT-11-H007,EXT-11,MOD-02,-535,-400,0,0,30,20,3,copper insulated,stone / insulated timber
+EXT-11-H008,EXT-11,MOD-02,-35,-440,0,0,30,20,3,copper insulated,stone / insulated timber
+EXT-11-H009,EXT-11,MOD-02,465,-400,0,0,30,20,3,copper insulated,stone / insulated timber
+EXT-11-H010,EXT-11,MOD-02,-535,80,12,0,30,20,3,copper insulated,stone / insulated timber
+EXT-11-H011,EXT-11,MOD-02,-35,160,12,0,30,20,3,copper insulated,stone / insulated timber
+EXT-11-H012,EXT-11,MOD-02,465,80,12,0,30,20,3,copper insulated,stone / insulated timber
+EXT-11-H013,EXT-11,MOD-02,-465,-400,0,0,30,20,3,copper insulated,stone / insulated timber
+EXT-11-H014,EXT-11,MOD-02,35,-440,0,0,30,20,3,copper insulated,stone / insulated timber
+EXT-11-H015,EXT-11,MOD-02,535,-400,0,0,30,20,3,copper insulated,stone / insulated timber
+EXT-11-H016,EXT-11,MOD-02,-465,80,12,0,30,20,3,copper insulated,stone / insulated timber
+EXT-11-H017,EXT-11,MOD-02,35,160,12,0,30,20,3,copper insulated,stone / insulated timber
+EXT-11-H018,EXT-11,MOD-02,535,80,12,0,30,20,3,copper insulated,stone / insulated timber
+EXT-11-H019,EXT-11,MOD-02,-395,-400,0,0,30,20,3,copper insulated,stone / insulated timber
+EXT-11-H020,EXT-11,MOD-02,105,-440,0,0,30,20,3,copper insulated,stone / insulated timber
+EXT-11-H021,EXT-11,MOD-02,605,-400,0,0,30,20,3,copper insulated,stone / insulated timber
+EXT-11-H022,EXT-11,MOD-02,-395,80,12,0,30,20,3,copper insulated,stone / insulated timber
+EXT-11-H023,EXT-11,MOD-02,105,160,12,0,30,20,3,copper insulated,stone / insulated timber
+EXT-11-H024,EXT-11,MOD-02,605,80,12,0,30,20,3,copper insulated,stone / insulated timber
+EXT-11-H025,EXT-11,MOD-02,-605,-330,0,0,30,20,3,copper insulated,stone / insulated timber
+EXT-11-H026,EXT-11,MOD-02,-105,-370,0,0,30,20,3,copper insulated,stone / insulated timber
+EXT-11-H027,EXT-11,MOD-02,395,-330,0,0,30,20,3,copper insulated,stone / insulated timber
+EXT-11-H028,EXT-11,MOD-02,-605,150,12,0,30,20,3,copper insulated,stone / insulated timber
+EXT-11-B01,EXT-11,MOD-04,-120,0,0,0,30,18,1,copper insulated,stone / insulated timber
+EXT-11-B02,EXT-11,MOD-10,0,0,0,0,24,18,2,copper insulated,stone / insulated timber
+EXT-11-B03,EXT-11,MOD-10,120,0,0,0,24,18,2,copper insulated,stone / insulated timber
+EXT-11-U01,EXT-11,MOD-07,-250,100,0,0,20,16,1,copper insulated,stone / insulated timber
+EXT-11-U02,EXT-11,MOD-08,-150,100,0,0,22,16,1,copper insulated,stone / insulated timber
+EXT-11-U03,EXT-11,MOD-09,-50,100,0,0,24,18,1,copper insulated,stone / insulated timber
+EXT-11-U04,EXT-11,MOD-06,50,100,0,0,24,20,2,copper insulated,stone / insulated timber
+EXT-11-U05,EXT-11,MOD-04,150,100,0,0,30,18,1,copper insulated,stone / insulated timber
+EXT-11-U06,EXT-11,MOD-11,250,100,0,0,36,24,1,copper insulated,stone / insulated timber
+EXT-12-H001,EXT-12,MOD-02,-605,-490,0,0,30,20,3,red ceramic,basalt / fired ceramic
+EXT-12-H002,EXT-12,MOD-02,-105,-440,0,0,30,20,3,red ceramic,basalt / fired ceramic
+EXT-12-H003,EXT-12,MOD-02,395,-390,0,0,30,20,3,red ceramic,basalt / fired ceramic
+EXT-12-H004,EXT-12,MOD-02,-605,60,12,0,30,20,3,red ceramic,basalt / fired ceramic
+EXT-12-H005,EXT-12,MOD-02,-105,160,12,0,30,20,3,red ceramic,basalt / fired ceramic
+EXT-12-H006,EXT-12,MOD-02,395,260,12,0,30,20,3,red ceramic,basalt / fired ceramic
+EXT-12-H007,EXT-12,MOD-02,-535,-490,0,0,30,20,3,red ceramic,basalt / fired ceramic
+EXT-12-H008,EXT-12,MOD-02,-35,-440,0,0,30,20,3,red ceramic,basalt / fired ceramic
+EXT-12-H009,EXT-12,MOD-02,465,-390,0,0,30,20,3,red ceramic,basalt / fired ceramic
+EXT-12-H010,EXT-12,MOD-02,-535,60,12,0,30,20,3,red ceramic,basalt / fired ceramic
+EXT-12-H011,EXT-12,MOD-02,-35,160,12,0,30,20,3,red ceramic,basalt / fired ceramic
+EXT-12-H012,EXT-12,MOD-02,465,260,12,0,30,20,3,red ceramic,basalt / fired ceramic
+EXT-12-H013,EXT-12,MOD-02,-465,-490,0,0,30,20,3,red ceramic,basalt / fired ceramic
+EXT-12-H014,EXT-12,MOD-02,35,-440,0,0,30,20,3,red ceramic,basalt / fired ceramic
+EXT-12-H015,EXT-12,MOD-02,535,-390,0,0,30,20,3,red ceramic,basalt / fired ceramic
+EXT-12-H016,EXT-12,MOD-02,-465,60,12,0,30,20,3,red ceramic,basalt / fired ceramic
+EXT-12-H017,EXT-12,MOD-02,35,160,12,0,30,20,3,red ceramic,basalt / fired ceramic
+EXT-12-H018,EXT-12,MOD-02,535,260,12,0,30,20,3,red ceramic,basalt / fired ceramic
+EXT-12-H019,EXT-12,MOD-02,-395,-490,0,0,30,20,3,red ceramic,basalt / fired ceramic
+EXT-12-H020,EXT-12,MOD-02,105,-440,0,0,30,20,3,red ceramic,basalt / fired ceramic
+EXT-12-H021,EXT-12,MOD-02,605,-390,0,0,30,20,3,red ceramic,basalt / fired ceramic
+EXT-12-H022,EXT-12,MOD-02,-395,60,12,0,30,20,3,red ceramic,basalt / fired ceramic
+EXT-12-H023,EXT-12,MOD-02,105,160,12,0,30,20,3,red ceramic,basalt / fired ceramic
+EXT-12-H024,EXT-12,MOD-02,605,260,12,0,30,20,3,red ceramic,basalt / fired ceramic
+EXT-12-H025,EXT-12,MOD-02,-605,-420,0,0,30,20,3,red ceramic,basalt / fired ceramic
+EXT-12-H026,EXT-12,MOD-02,-105,-370,0,0,30,20,3,red ceramic,basalt / fired ceramic
+EXT-12-H027,EXT-12,MOD-02,395,-320,0,0,30,20,3,red ceramic,basalt / fired ceramic
+EXT-12-H028,EXT-12,MOD-02,-605,130,12,0,30,20,3,red ceramic,basalt / fired ceramic
+EXT-12-H029,EXT-12,MOD-02,-105,230,12,0,30,20,3,red ceramic,basalt / fired ceramic
+EXT-12-H030,EXT-12,MOD-02,395,330,12,0,30,20,3,red ceramic,basalt / fired ceramic
+EXT-12-H031,EXT-12,MOD-02,-535,-420,0,0,30,20,3,red ceramic,basalt / fired ceramic
+EXT-12-H032,EXT-12,MOD-02,-35,-370,0,0,30,20,3,red ceramic,basalt / fired ceramic
+EXT-12-H033,EXT-12,MOD-02,465,-320,0,0,30,20,3,red ceramic,basalt / fired ceramic
+EXT-12-H034,EXT-12,MOD-02,-535,130,12,0,30,20,3,red ceramic,basalt / fired ceramic
+EXT-12-H035,EXT-12,MOD-02,-35,230,12,0,30,20,3,red ceramic,basalt / fired ceramic
+EXT-12-H036,EXT-12,MOD-02,465,330,12,0,30,20,3,red ceramic,basalt / fired ceramic
+EXT-12-H037,EXT-12,MOD-02,-465,-420,0,0,30,20,3,red ceramic,basalt / fired ceramic
+EXT-12-H038,EXT-12,MOD-02,35,-370,0,0,30,20,3,red ceramic,basalt / fired ceramic
+EXT-12-H039,EXT-12,MOD-02,535,-320,0,0,30,20,3,red ceramic,basalt / fired ceramic
+EXT-12-H040,EXT-12,MOD-02,-465,130,12,0,30,20,3,red ceramic,basalt / fired ceramic
+EXT-12-H041,EXT-12,MOD-02,35,230,12,0,30,20,3,red ceramic,basalt / fired ceramic
+EXT-12-H042,EXT-12,MOD-02,535,330,12,0,30,20,3,red ceramic,basalt / fired ceramic
+EXT-12-H043,EXT-12,MOD-02,-395,-420,0,0,30,20,3,red ceramic,basalt / fired ceramic
+EXT-12-H044,EXT-12,MOD-02,105,-370,0,0,30,20,3,red ceramic,basalt / fired ceramic
+EXT-12-H045,EXT-12,MOD-02,605,-320,0,0,30,20,3,red ceramic,basalt / fired ceramic
+EXT-12-H046,EXT-12,MOD-02,-395,130,12,0,30,20,3,red ceramic,basalt / fired ceramic
+EXT-12-H047,EXT-12,MOD-02,105,230,12,0,30,20,3,red ceramic,basalt / fired ceramic
+EXT-12-H048,EXT-12,MOD-02,605,330,12,0,30,20,3,red ceramic,basalt / fired ceramic
+EXT-12-B01,EXT-12,MOD-05,-120,0,0,0,24,18,1,red ceramic,basalt / fired ceramic
+EXT-12-B02,EXT-12,MOD-07,0,0,0,0,20,16,1,red ceramic,basalt / fired ceramic
+EXT-12-B03,EXT-12,MOD-04,120,0,0,0,30,18,1,red ceramic,basalt / fired ceramic
+EXT-12-U01,EXT-12,MOD-07,-250,100,0,0,20,16,1,red ceramic,basalt / fired ceramic
+EXT-12-U02,EXT-12,MOD-08,-150,100,0,0,22,16,1,red ceramic,basalt / fired ceramic
+EXT-12-U03,EXT-12,MOD-09,-50,100,0,0,24,18,1,red ceramic,basalt / fired ceramic
+EXT-12-U04,EXT-12,MOD-06,50,100,0,0,24,20,2,red ceramic,basalt / fired ceramic
+EXT-12-U05,EXT-12,MOD-04,150,100,0,0,30,18,1,red ceramic,basalt / fired ceramic
+EXT-12-U06,EXT-12,MOD-11,250,100,0,0,36,24,1,red ceramic,basalt / fired ceramic
+EXT-13-H001,EXT-13,MOD-02,-705,-380,4,0,30,20,3,mineral vault,limestone / fungal textile
+EXT-13-H002,EXT-13,MOD-02,-105,-380,4,0,30,20,3,mineral vault,limestone / fungal textile
+EXT-13-H003,EXT-13,MOD-02,495,-380,4,0,30,20,3,mineral vault,limestone / fungal textile
+EXT-13-H004,EXT-13,MOD-02,-705,140,16,0,30,20,3,mineral vault,limestone / fungal textile
+EXT-13-H005,EXT-13,MOD-02,-105,140,16,0,30,20,3,mineral vault,limestone / fungal textile
+EXT-13-H006,EXT-13,MOD-02,495,140,16,0,30,20,3,mineral vault,limestone / fungal textile
+EXT-13-H007,EXT-13,MOD-02,-635,-380,4,0,30,20,3,mineral vault,limestone / fungal textile
+EXT-13-H008,EXT-13,MOD-02,-35,-380,4,0,30,20,3,mineral vault,limestone / fungal textile
+EXT-13-H009,EXT-13,MOD-02,565,-380,4,0,30,20,3,mineral vault,limestone / fungal textile
+EXT-13-H010,EXT-13,MOD-02,-635,140,16,0,30,20,3,mineral vault,limestone / fungal textile
+EXT-13-H011,EXT-13,MOD-02,-35,140,16,0,30,20,3,mineral vault,limestone / fungal textile
+EXT-13-H012,EXT-13,MOD-02,565,140,16,0,30,20,3,mineral vault,limestone / fungal textile
+EXT-13-H013,EXT-13,MOD-02,-565,-380,4,0,30,20,3,mineral vault,limestone / fungal textile
+EXT-13-H014,EXT-13,MOD-02,35,-380,4,0,30,20,3,mineral vault,limestone / fungal textile
+EXT-13-H015,EXT-13,MOD-02,635,-380,4,0,30,20,3,mineral vault,limestone / fungal textile
+EXT-13-H016,EXT-13,MOD-02,-565,140,16,0,30,20,3,mineral vault,limestone / fungal textile
+EXT-13-H017,EXT-13,MOD-02,35,140,16,0,30,20,3,mineral vault,limestone / fungal textile
+EXT-13-H018,EXT-13,MOD-02,635,140,16,0,30,20,3,mineral vault,limestone / fungal textile
+EXT-13-H019,EXT-13,MOD-02,-495,-380,4,0,30,20,3,mineral vault,limestone / fungal textile
+EXT-13-H020,EXT-13,MOD-02,105,-380,4,0,30,20,3,mineral vault,limestone / fungal textile
+EXT-13-H021,EXT-13,MOD-02,705,-380,4,0,30,20,3,mineral vault,limestone / fungal textile
+EXT-13-H022,EXT-13,MOD-02,-495,140,16,0,30,20,3,mineral vault,limestone / fungal textile
+EXT-13-H023,EXT-13,MOD-02,105,140,16,0,30,20,3,mineral vault,limestone / fungal textile
+EXT-13-H024,EXT-13,MOD-02,705,140,16,0,30,20,3,mineral vault,limestone / fungal textile
+EXT-13-H025,EXT-13,MOD-02,-705,-310,4,0,30,20,3,mineral vault,limestone / fungal textile
+EXT-13-H026,EXT-13,MOD-02,-105,-310,4,0,30,20,3,mineral vault,limestone / fungal textile
+EXT-13-H027,EXT-13,MOD-02,495,-310,4,0,30,20,3,mineral vault,limestone / fungal textile
+EXT-13-H028,EXT-13,MOD-02,-705,210,16,0,30,20,3,mineral vault,limestone / fungal textile
+EXT-13-H029,EXT-13,MOD-02,-105,210,16,0,30,20,3,mineral vault,limestone / fungal textile
+EXT-13-H030,EXT-13,MOD-02,495,210,16,0,30,20,3,mineral vault,limestone / fungal textile
+EXT-13-H031,EXT-13,MOD-02,-635,-310,4,0,30,20,3,mineral vault,limestone / fungal textile
+EXT-13-H032,EXT-13,MOD-02,-35,-310,4,0,30,20,3,mineral vault,limestone / fungal textile
+EXT-13-H033,EXT-13,MOD-02,565,-310,4,0,30,20,3,mineral vault,limestone / fungal textile
+EXT-13-H034,EXT-13,MOD-02,-635,210,16,0,30,20,3,mineral vault,limestone / fungal textile
+EXT-13-H035,EXT-13,MOD-02,-35,210,16,0,30,20,3,mineral vault,limestone / fungal textile
+EXT-13-H036,EXT-13,MOD-02,565,210,16,0,30,20,3,mineral vault,limestone / fungal textile
+EXT-13-H037,EXT-13,MOD-02,-565,-310,4,0,30,20,3,mineral vault,limestone / fungal textile
+EXT-13-H038,EXT-13,MOD-02,35,-310,4,0,30,20,3,mineral vault,limestone / fungal textile
+EXT-13-H039,EXT-13,MOD-02,635,-310,4,0,30,20,3,mineral vault,limestone / fungal textile
+EXT-13-H040,EXT-13,MOD-02,-565,210,16,0,30,20,3,mineral vault,limestone / fungal textile
+EXT-13-H041,EXT-13,MOD-02,35,210,16,0,30,20,3,mineral vault,limestone / fungal textile
+EXT-13-H042,EXT-13,MOD-02,635,210,16,0,30,20,3,mineral vault,limestone / fungal textile
+EXT-13-H043,EXT-13,MOD-02,-495,-310,4,0,30,20,3,mineral vault,limestone / fungal textile
+EXT-13-H044,EXT-13,MOD-02,105,-310,4,0,30,20,3,mineral vault,limestone / fungal textile
+EXT-13-H045,EXT-13,MOD-02,705,-310,4,0,30,20,3,mineral vault,limestone / fungal textile
+EXT-13-H046,EXT-13,MOD-02,-495,210,16,0,30,20,3,mineral vault,limestone / fungal textile
+EXT-13-H047,EXT-13,MOD-02,105,210,16,0,30,20,3,mineral vault,limestone / fungal textile
+EXT-13-H048,EXT-13,MOD-02,705,210,16,0,30,20,3,mineral vault,limestone / fungal textile
+EXT-13-H049,EXT-13,MOD-02,-705,-240,4,0,30,20,3,mineral vault,limestone / fungal textile
+EXT-13-H050,EXT-13,MOD-02,-105,-240,4,0,30,20,3,mineral vault,limestone / fungal textile
+EXT-13-H051,EXT-13,MOD-02,495,-240,4,0,30,20,3,mineral vault,limestone / fungal textile
+EXT-13-H052,EXT-13,MOD-02,-705,280,16,0,30,20,3,mineral vault,limestone / fungal textile
+EXT-13-H053,EXT-13,MOD-02,-105,280,16,0,30,20,3,mineral vault,limestone / fungal textile
+EXT-13-H054,EXT-13,MOD-02,495,280,16,0,30,20,3,mineral vault,limestone / fungal textile
+EXT-13-H055,EXT-13,MOD-02,-635,-240,4,0,30,20,3,mineral vault,limestone / fungal textile
+EXT-13-H056,EXT-13,MOD-02,-35,-240,4,0,30,20,3,mineral vault,limestone / fungal textile
+EXT-13-H057,EXT-13,MOD-02,565,-240,4,0,30,20,3,mineral vault,limestone / fungal textile
+EXT-13-H058,EXT-13,MOD-02,-635,280,16,0,30,20,3,mineral vault,limestone / fungal textile
+EXT-13-H059,EXT-13,MOD-02,-35,280,16,0,30,20,3,mineral vault,limestone / fungal textile
+EXT-13-H060,EXT-13,MOD-02,565,280,16,0,30,20,3,mineral vault,limestone / fungal textile
+EXT-13-H061,EXT-13,MOD-02,-565,-240,4,0,30,20,3,mineral vault,limestone / fungal textile
+EXT-13-H062,EXT-13,MOD-02,35,-240,4,0,30,20,3,mineral vault,limestone / fungal textile
+EXT-13-H063,EXT-13,MOD-02,635,-240,4,0,30,20,3,mineral vault,limestone / fungal textile
+EXT-13-H064,EXT-13,MOD-02,-565,280,16,0,30,20,3,mineral vault,limestone / fungal textile
+EXT-13-B01,EXT-13,MOD-04,-120,0,4,0,30,18,1,mineral vault,limestone / fungal textile
+EXT-13-B02,EXT-13,MOD-04,0,0,4,0,30,18,1,mineral vault,limestone / fungal textile
+EXT-13-B03,EXT-13,MOD-12,120,0,4,0,20,16,1,mineral vault,limestone / fungal textile
+EXT-13-U01,EXT-13,MOD-07,-250,100,4,0,20,16,1,mineral vault,limestone / fungal textile
+EXT-13-U02,EXT-13,MOD-08,-150,100,4,0,22,16,1,mineral vault,limestone / fungal textile
+EXT-13-U03,EXT-13,MOD-09,-50,100,4,0,24,18,1,mineral vault,limestone / fungal textile
+EXT-13-U04,EXT-13,MOD-06,50,100,4,0,24,20,2,mineral vault,limestone / fungal textile
+EXT-13-U05,EXT-13,MOD-04,150,100,4,0,30,18,1,mineral vault,limestone / fungal textile
+EXT-13-U06,EXT-13,MOD-11,250,100,4,0,36,24,1,mineral vault,limestone / fungal textile
+EXT-12-B01-A1,EXT-12,ANNEX-KILN,-120,35,0,0,12,10,1,red ceramic,firebrick / basalt

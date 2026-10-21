@@ -1,0 +1,44 @@
+{
+  "id": "RES-03",
+  "name": "Iona Flint",
+  "group": "Resident",
+  "identity": "Adult mole",
+  "origin": "Stonewake",
+  "affiliation": "FAC-01 / FAC-02",
+  "seed": "Water and air maintenance lead. Checks Bot’s records against equipment; blunt honesty needs patience. Home: Hearth Terraces.",
+  "status": "Developed baseline 3.0",
+  "age": 46,
+  "height_m": 1.02,
+  "design": "Compact charcoal mole, muted blue work coat, copper-rim magnifiers and chalk ledger.",
+  "history": "Trained in Stonewake ventilation crews, moved to the Burrow in its third year to help maintain expanding occupied levels.",
+  "desire": "To leave a system understandable enough that her absence is ordinary.",
+  "contradiction": "Accurate objections become contemptuous when others do not know her vocabulary.",
+  "relationships": "Oren trusts her; Sori disputes allocations; Bot is a colleague, not her instrument.",
+  "arc": "Explains a risk in language a child can repeat, then accepts a grower’s observation that her measurements missed.",
+  "story_engine": "A water discrepancy with no villain; a teaching shift where her students invent a better inspection route.",
+  "writer_truth": "She once missed a worn seal and recorded the mistake openly; her reputation was built after that, not on infallibility.",
+  "voice": "No voice assigned; do not substitute an existing hero voice.",
+  "skills_and_limits": "Species anatomy, training, tools, fatigue and local knowledge constrain action. No unlisted magic or universal hacking.",
+  "art_status": "New design developed for this edition; exact colors and silhouette set by card and cast plate.",
+  "art": {
+    "file": "CAST-01.png",
+    "column": 2,
+    "row": 0,
+    "grid": [
+      3,
+      2
+    ]
+  },
+  "performance": {
+    "silhouette": "Compact charcoal mole, muted blue work coat, copper-rim magnifiers and chalk ledger.",
+    "expression_set": [
+      "neutral listening",
+      "pleased",
+      "concerned",
+      "frustrated",
+      "focused"
+    ],
+    "motion_rule": "Use a held body pose for dialogue with separate mouth shapes, blinks and intentional expression changes. Preserve facial landmarks.",
+    "limits": "Species anatomy, training, tools, fatigue and local knowledge constrain action. No unlisted magic or universal hacking."
+  }
+}

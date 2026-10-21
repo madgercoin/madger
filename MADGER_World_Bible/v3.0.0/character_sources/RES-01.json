@@ -1,0 +1,44 @@
+{
+  "id": "RES-01",
+  "name": "Mara Reed",
+  "group": "Resident",
+  "identity": "Adult rabbit",
+  "origin": "Reedbank",
+  "affiliation": "FAC-01",
+  "seed": "Baker and kitchen coordinator; Jun’s friend. Overcommits and wants time to draw. Home: West Lantern.",
+  "status": "Developed baseline 3.0",
+  "age": 34,
+  "height_m": 1.18,
+  "design": "Warm brown rabbit, one darker ear tip, oat apron over a rust wrap tunic; round flour tin.",
+  "history": "Grew up above Dara’s kitchen in Reedbank and learned bulk cooking there. Arrived in the Burrow four years ago for a workshop opportunity, not as a fugitive.",
+  "desire": "To open a communal recipe wall and finish a sketchbook of everyone’s hands.",
+  "contradiction": "Says yes because being needed feels like being loved, then becomes sharp when exhausted.",
+  "relationships": "Jun is a close friend who notices fatigue; Dara is a mentor; Edda trades early shifts.",
+  "arc": "Moves from secret overtime to an honest limited menu, then teaches neighbors recipes without fearing replacement.",
+  "story_engine": "A banquet goes wrong when she hides a broken oven; a lost sketchbook reveals affectionate portraits people mistake for mockery.",
+  "writer_truth": "Her most praised root bun was Jun’s improvement, which she initially forgot to credit.",
+  "voice": "No voice assigned; do not substitute an existing hero voice.",
+  "skills_and_limits": "Species anatomy, training, tools, fatigue and local knowledge constrain action. No unlisted magic or universal hacking.",
+  "art_status": "New design developed for this edition; exact colors and silhouette set by card and cast plate.",
+  "art": {
+    "file": "CAST-01.png",
+    "column": 0,
+    "row": 0,
+    "grid": [
+      3,
+      2
+    ]
+  },
+  "performance": {
+    "silhouette": "Warm brown rabbit, one darker ear tip, oat apron over a rust wrap tunic; round flour tin.",
+    "expression_set": [
+      "neutral listening",
+      "pleased",
+      "concerned",
+      "frustrated",
+      "focused"
+    ],
+    "motion_rule": "Use a held body pose for dialogue with separate mouth shapes, blinks and intentional expression changes. Preserve facial landmarks.",
+    "limits": "Species anatomy, training, tools, fatigue and local knowledge constrain action. No unlisted magic or universal hacking."
+  }
+}

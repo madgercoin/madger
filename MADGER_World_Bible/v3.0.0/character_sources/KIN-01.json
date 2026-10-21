@@ -1,0 +1,44 @@
+{
+  "id": "KIN-01",
+  "name": "Dara",
+  "group": "Family",
+  "identity": "Adult female badger",
+  "origin": "Reedbank",
+  "affiliation": "Independent; local community kitchen",
+  "seed": "Madger’s mother, alive and living in Reedbank. Taught him that feeding a person creates a relationship, not a debt.",
+  "status": "Developed baseline 3.0",
+  "age": 52,
+  "height_m": 1.16,
+  "design": "Female badger, salt-gray temple fur, warm cream muzzle, berry shawl and river-green apron; distinct from Madger.",
+  "history": "Raised near Reedbank’s ferries; organized shared meals long before her son imagined a town. Stayed to rebuild after the flood.",
+  "desire": "To keep a kitchen where asking for food is ordinary, and finally learn a dance she has watched for years.",
+  "contradiction": "Offers help so quickly that she can miss when someone wants privacy.",
+  "relationships": "Hollis is her partner; Mara her former helper; Madger her adult son, not her project.",
+  "arc": "Learns to ask before intervening in Madger’s dispute while holding him responsible for hurtful words.",
+  "story_engine": "A family visit without an emergency; two rival cooks discover they learned from the same neighbor.",
+  "writer_truth": "She suspected the rescue had a wealthy backer but did not know Veyra paid.",
+  "voice": "No voice assigned; do not substitute an existing hero voice.",
+  "skills_and_limits": "Species anatomy, training, tools, fatigue and local knowledge constrain action. No unlisted magic or universal hacking.",
+  "art_status": "New design developed for this edition; exact colors and silhouette set by card and cast plate.",
+  "art": {
+    "file": "CAST-02.png",
+    "column": 2,
+    "row": 1,
+    "grid": [
+      3,
+      2
+    ]
+  },
+  "performance": {
+    "silhouette": "Female badger, salt-gray temple fur, warm cream muzzle, berry shawl and river-green apron; distinct from Madger.",
+    "expression_set": [
+      "neutral listening",
+      "pleased",
+      "concerned",
+      "frustrated",
+      "focused"
+    ],
+    "motion_rule": "Use a held body pose for dialogue with separate mouth shapes, blinks and intentional expression changes. Preserve facial landmarks.",
+    "limits": "Species anatomy, training, tools, fatigue and local knowledge constrain action. No unlisted magic or universal hacking."
+  }
+}

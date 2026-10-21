@@ -1,0 +1,511 @@
+{
+  "title": "MADGER World — Character & Faction Register",
+  "edition": "1.1.0",
+  "date": "2026-10-20",
+  "base_world": "2.1.0",
+  "scope": "27 characters; 6 factions; 6 exterior settlement concepts within 8 wider regions. One complete card: Madger, revised to 1.1. Other cards remain development seeds.",
+  "authority": "New story material authored at the owner’s request. It is not represented as previously approved. Completed card 001 is the character-development baseline; seed entries may be refined in their own cards. Existing geography, models, voice approvals and pilot restrictions continue to govern.",
+  "characters": [
+    {
+      "id": "MADGER",
+      "name": "Madger",
+      "group": "Core hero",
+      "identity": "Stylized badger; male; 24",
+      "origin": "Reedbank",
+      "affiliation": "FAC-01",
+      "seed": "Founder, explorer and organizer. Loves home and the unknown; the missing roads draw him into danger with his estranged friend Nix.",
+      "status": "Complete card 001 • v1.1"
+    },
+    {
+      "id": "GORILLA_WHITE",
+      "name": "Gorilla White",
+      "group": "Core hero",
+      "identity": "Gorilla; established adult",
+      "origin": "Stonewake [seed]",
+      "affiliation": "FAC-01",
+      "seed": "Craftsperson and protector. Madger’s closest building partner; Tavi’s mentor. Must accept help and teach others to carry weight.",
+      "status": "Next card 002"
+    },
+    {
+      "id": "MADGER_BOT",
+      "name": "MADGER Bot",
+      "group": "Core hero",
+      "identity": "Mechanical person",
+      "origin": "Maker and initial workshop reserved",
+      "affiliation": "FAC-01",
+      "seed": "Systems keeper and evidence partner. Joined the Burrow by choice; learns that honest uncertainty is useful.",
+      "status": "Card 003 queued"
+    },
+    {
+      "id": "SNOW_WHITE",
+      "name": "Snow White",
+      "group": "Core hero",
+      "identity": "Adult female shepherd dog; 6",
+      "origin": "Early home reserved; joined from a Wayfarer crew",
+      "affiliation": "Companion of FAC-01",
+      "seed": "Madger’s companion and physical scout. Learns to indicate, return and wait; communicates only as a real dog.",
+      "status": "Card 004 queued"
+    },
+    {
+      "id": "RES-01",
+      "name": "Mara Reed",
+      "group": "Resident",
+      "identity": "Adult rabbit",
+      "origin": "Reedbank [seed]",
+      "affiliation": "FAC-01",
+      "seed": "Baker and kitchen coordinator; Jun’s friend. Overcommits and wants time to draw. Home: West Lantern.",
+      "status": "Existing role; origin seed"
+    },
+    {
+      "id": "RES-02",
+      "name": "Tavi Moss",
+      "group": "Resident",
+      "identity": "Older adolescent river otter",
+      "origin": "Millmere [seed]",
+      "affiliation": "FAC-01 / FAC-02",
+      "seed": "Repair apprentice; Gorilla mentors workmanship, Iona teaches checks. Hides small mistakes. Home: West Deep.",
+      "status": "Existing role; origin seed"
+    },
+    {
+      "id": "RES-03",
+      "name": "Iona Flint",
+      "group": "Resident",
+      "identity": "Adult mole",
+      "origin": "Stonewake [seed]",
+      "affiliation": "FAC-01 / FAC-02",
+      "seed": "Water and air maintenance lead. Checks Bot’s records against equipment; blunt honesty needs patience. Home: Hearth Terraces.",
+      "status": "Existing role; origin seed"
+    },
+    {
+      "id": "RES-04",
+      "name": "Neri Tern",
+      "group": "Resident",
+      "identity": "Adult red panda",
+      "origin": "Willowmere [seed]",
+      "affiliation": "FAC-01",
+      "seed": "Teacher and makers-club organizer. Wants good questions but overplans. Home: East Orchard.",
+      "status": "Existing role; origin seed"
+    },
+    {
+      "id": "RES-05",
+      "name": "Pell Fen",
+      "group": "Resident",
+      "identity": "Adult hedgehog",
+      "origin": "Latchford [seed]",
+      "affiliation": "FAC-01",
+      "seed": "Welcome steward and records liaison. Translates rules; must question procedures that confuse newcomers. Home: East Deep.",
+      "status": "Existing role; origin seed"
+    },
+    {
+      "id": "RES-06",
+      "name": "Jun Ash",
+      "group": "Resident",
+      "identity": "Adult field mouse",
+      "origin": "Millmere [seed]",
+      "affiliation": "FAC-01",
+      "seed": "Mender and sign painter. Mara values Jun’s care; perfectionism delays useful work. Home: West Lantern.",
+      "status": "Existing role; origin seed"
+    },
+    {
+      "id": "RES-07",
+      "name": "Edda Brook",
+      "group": "Resident",
+      "identity": "Adult beaver",
+      "origin": "Reedbank [seed]",
+      "affiliation": "FAC-01",
+      "seed": "Care worker and recovery coordinator. Challenges Gorilla to receive care; must allow herself rest. Home: East Deep.",
+      "status": "Existing role; origin seed"
+    },
+    {
+      "id": "RES-08",
+      "name": "Sori Wren",
+      "group": "Resident",
+      "identity": "Adult fox",
+      "origin": "Willowmere [seed]",
+      "affiliation": "FAC-01",
+      "seed": "Grower and produce coordinator. Disagrees with Iona about allocations without becoming an enemy. Home: Hearth Terraces.",
+      "status": "Existing role; origin seed"
+    },
+    {
+      "id": "ALLY-01",
+      "name": "Sela Venn",
+      "group": "Ally",
+      "identity": "Adult female ibex",
+      "origin": "Latchford",
+      "affiliation": "FAC-03",
+      "seed": "Convoy captain who helped Madger’s first settlers travel. Concealed Veyra’s funding of the second flood rescue; trust must be rebuilt when this emerges.",
+      "status": "New seed"
+    },
+    {
+      "id": "ALLY-02",
+      "name": "Oren Vale",
+      "group": "Ally",
+      "identity": "Older male tortoise",
+      "origin": "Stonewake",
+      "affiliation": "FAC-02",
+      "seed": "Repair teacher and exchange coordinator. Wants skills to outlive their teachers; can confuse caution with care.",
+      "status": "New seed"
+    },
+    {
+      "id": "ALLY-03",
+      "name": "Lark Quill",
+      "group": "Ally",
+      "identity": "Adult female magpie",
+      "origin": "Millmere",
+      "affiliation": "FAC-03",
+      "seed": "Courier and route accountant. Exceptional at remembering stories, vulnerable to a source who makes her feel trusted.",
+      "status": "New seed"
+    },
+    {
+      "id": "KIN-01",
+      "name": "Dara",
+      "group": "Family",
+      "identity": "Adult female badger",
+      "origin": "Reedbank",
+      "affiliation": "Independent; local community kitchen",
+      "seed": "Madger’s mother, alive and living in Reedbank. Taught him that feeding a person creates a relationship, not a debt.",
+      "status": "New seed; card-001 anchor"
+    },
+    {
+      "id": "KIN-02",
+      "name": "Hollis",
+      "group": "Family",
+      "identity": "Adult male badger",
+      "origin": "Reedbank",
+      "affiliation": "Independent; boat repair cooperative",
+      "seed": "Madger’s father, alive and living in Reedbank. Measures twice; admires his son but distrusts promises made faster than plans.",
+      "status": "New seed; card-001 anchor"
+    },
+    {
+      "id": "VIL-01",
+      "name": "Veyra Kest",
+      "group": "Antagonist",
+      "identity": "Adult female sable",
+      "origin": "Reedbank",
+      "affiliation": "FAC-04 leader",
+      "seed": "Ledger director and hidden funder of the second flood convoy. Demands dependency in return for security; runs with Corvin and Bale.",
+      "status": "New seed"
+    },
+    {
+      "id": "VIL-02",
+      "name": "Corvin Silt",
+      "group": "Antagonist",
+      "identity": "Adult male stoat",
+      "origin": "Latchford",
+      "affiliation": "FAC-04 broker",
+      "seed": "Charm, contracts and selective truth. Buys Glass Thread services through Nix; fears losing access more than losing face.",
+      "status": "New seed"
+    },
+    {
+      "id": "VIL-03",
+      "name": "Bale Nacre",
+      "group": "Antagonist",
+      "identity": "Adult male badger",
+      "origin": "Stonewake",
+      "affiliation": "FAC-04 quartermaster",
+      "seed": "Controls warehouse allotments and collections. Loyal to orderly provision; excuses harm as a stock-management problem.",
+      "status": "New seed"
+    },
+    {
+      "id": "VIL-04",
+      "name": "Nix Vey",
+      "group": "Antagonist",
+      "identity": "Adult nonbinary pine marten",
+      "origin": "Millmere",
+      "affiliation": "FAC-05 leader",
+      "seed": "Madger’s estranged teenage friend, now Glass Thread leader. Wants recognition and erased communities acknowledged; endangers travelers to gain leverage. Runs with Tessera and Patch.",
+      "status": "New seed"
+    },
+    {
+      "id": "VIL-05",
+      "name": "Tessera Keen",
+      "group": "Antagonist",
+      "identity": "Adult female jackdaw",
+      "origin": "Latchford",
+      "affiliation": "FAC-05 access broker",
+      "seed": "Studies routines, impersonates trusted contacts and keeps leverage on clients. Wants anonymity, not Nix’s public recognition.",
+      "status": "New seed"
+    },
+    {
+      "id": "VIL-06",
+      "name": "Patch Serein",
+      "group": "Antagonist",
+      "identity": "Adult male gecko",
+      "origin": "Reedbank",
+      "affiliation": "FAC-05 equipment specialist",
+      "seed": "Keeps the crew’s devices and relays working. Claims he only maintains equipment; must confront the harm he enables.",
+      "status": "New seed"
+    },
+    {
+      "id": "VIL-07",
+      "name": "Brakka Mourn",
+      "group": "Antagonist",
+      "identity": "Adult female wolverine",
+      "origin": "Cinder Cuts",
+      "affiliation": "FAC-06 leader",
+      "seed": "Raiding captain who equates fear with respect. Runs with Dreg and Vessa; spends resources on demonstrations of strength.",
+      "status": "New seed"
+    },
+    {
+      "id": "VIL-08",
+      "name": "Dreg Husk",
+      "group": "Antagonist",
+      "identity": "Adult male boar",
+      "origin": "Millmere",
+      "affiliation": "FAC-06 supply chief",
+      "seed": "Organizes stolen freight and distributes shares. Wants predictable returns; resents Brakka wasting food on prestige.",
+      "status": "New seed"
+    },
+    {
+      "id": "VIL-09",
+      "name": "Vessa Rake",
+      "group": "Antagonist",
+      "identity": "Adult female eagle",
+      "origin": "Cinder Cuts",
+      "affiliation": "FAC-06 scout",
+      "seed": "Finds routes and sells observations. Wants autonomy; flight does not bypass sealed entrances or carry unlimited weight.",
+      "status": "New seed"
+    },
+    {
+      "id": "IND-01",
+      "name": "Pip Skein",
+      "group": "Independent",
+      "identity": "Adult raccoon; they/them",
+      "origin": "Latchford",
+      "affiliation": "Unaffiliated broker and fence",
+      "seed": "Trades with Lark, Corvin and Vessa separately. Buys some stolen goods while pretending to be neutral; can earn trust only through restitution.",
+      "status": "New seed"
+    }
+  ],
+  "factions": [
+    {
+      "id": "FAC-01",
+      "name": "Burrow Commons",
+      "alignment": "Good / civic",
+      "home": "The Burrow",
+      "members": [
+        "MADGER",
+        "GORILLA_WHITE",
+        "MADGER_BOT",
+        "RES-01",
+        "RES-02",
+        "RES-03",
+        "RES-04",
+        "RES-05",
+        "RES-06",
+        "RES-07",
+        "RES-08"
+      ],
+      "purpose": "Keep a welcoming town livable, fair and defensible. This names the civic cooperation already present in the Bible; it does not replace ward decisions with a new ruler.",
+      "leadership": "Ward delegates, open meetings and rotating work coordinators. Madger convenes and serves; his founder status gives him no permanent veto. Snow is a protected companion, not an office-holder.",
+      "methods": "Shared stores, maintenance rosters, public explanations, rescue practice and accountable protective closures. Disputes concern priorities and evidence, not whether ordinary residents deserve safety.",
+      "tension": "Welcome versus capacity. Pell wants understandable procedures; Iona wants verified limits; Madger sometimes promises both before consulting either.",
+      "ties": "Commonworks supplies expertise; the Wayfarer Accord brings visitors and goods. The Commons opposes coercion by the Gilt Ledger, intrusion by Glass Thread and predation by Riven Claw."
+    },
+    {
+      "id": "FAC-02",
+      "name": "Commonworks Fellowship",
+      "alignment": "Good / mutual aid",
+      "home": "Stonewake and a regional workshop network",
+      "members": [
+        "ALLY-02",
+        "RES-03",
+        "RES-02"
+      ],
+      "purpose": "Make essential knowledge teachable so no settlement depends on one indispensable specialist.",
+      "leadership": "Oren Vale coordinates exchanges. Iona is the Burrow contact; Tavi is an apprentice participant, never an unsupervised emergency specialist.",
+      "methods": "Travelling repair crews, apprenticeships, shared specifications and tool loans. Each town keeps local authority over its own machinery.",
+      "tension": "Their careful standards can postpone urgent improvisation. Oren must learn when a temporary repair is responsible, while Madger must accept when it is unsafe.",
+      "ties": "Works with the Commons and Wayfarers. Refuses exclusive maintenance deals from the Gilt Ledger. Glass Thread can steal records, but cannot acquire practical mastery by downloading them."
+    },
+    {
+      "id": "FAC-03",
+      "name": "Wayfarer Accord",
+      "alignment": "Good / travel and refuge",
+      "home": "Latchford; independent crews across the road network",
+      "members": [
+        "ALLY-01",
+        "ALLY-03"
+      ],
+      "purpose": "Keep travel, rescue and honest exchange possible for people without powerful sponsors.",
+      "leadership": "Sela Venn coordinates convoy safety. Lark Quill carries dispatches and keeps route accounts. Crews can decline a route they cannot safely serve.",
+      "methods": "Guides, escorted caravans, weather reports and voluntary rescue agreements. Their wagons are finite; an invitation does not create transport capacity.",
+      "tension": "Keeping a promised timetable may conflict with stopping for strangers. Sela supports Madger but will not endorse a comforting promise she cannot fulfill.",
+      "ties": "Supplies the Burrow and transports Commonworks crews. Pays legitimate tolls, contests Gilt Ledger coercion, and resists Riven Claw raids. Lark occasionally buys information from Pip Skein."
+    },
+    {
+      "id": "FAC-04",
+      "name": "Gilt Ledger",
+      "alignment": "Hostile / coercive commerce",
+      "home": "Privately controlled warehouses and offices in Reedbank",
+      "members": [
+        "VIL-01",
+        "VIL-02",
+        "VIL-03"
+      ],
+      "purpose": "Make independent settlements reliant on its depots, credit and permission to trade. Its public promise is dependable supply; its private objective is lasting leverage.",
+      "leadership": "Director Veyra Kest sets policy. Corvin Silt brokers contracts and influence. Bale Nacre controls stock, transport allocations and collections.",
+      "methods": "Exclusive supply terms, selective shortages, pressure on indebted operators and purchased information. It owns particular businesses, not Reedbank or every merchant.",
+      "tension": "Veyra calls dependence stability. Corvin profits from ambiguity; Bale knows that a frightened workforce eventually stops cooperating.",
+      "ties": "Buys limited information jobs from Glass Thread through Corvin. It has no command over the hacker crew. It sometimes buys stolen goods through intermediaries but regards Riven Claw as an expensive disruption."
+    },
+    {
+      "id": "FAC-05",
+      "name": "Glass Thread",
+      "alignment": "Hostile / information crime",
+      "home": "Changing rented workrooms around Latchford",
+      "members": [
+        "VIL-04",
+        "VIL-05",
+        "VIL-06"
+      ],
+      "purpose": "Sell privileged information and turn uncertain records into influence. Members claim that exposing weak systems excuses exploiting the people who rely on them.",
+      "leadership": "Nix Vey chooses targets and negotiates jobs. Tessera Keen handles social access and forged identities. Patch Serein maintains stolen equipment and relays.",
+      "methods": "Fictional record tampering, impersonation and constrained system intrusions. Access requires a particular opportunity; local controls, human checks and physical barriers still matter.",
+      "tension": "Nix wants recognition; Tessera wants profitable anonymity; Patch wants an exit before someone is physically harmed. Remorse does not erase responsibility.",
+      "ties": "Accepts selected Gilt Ledger contracts and keeps its own secrets. Distrusts Riven Claw, whose violence destroys useful contacts. Writer-only v1.1 answer: Tessera’s limited relay probe causes D17. Madger does not know Glass Thread’s membership at the pilot; Snow’s scent is unrelated."
+    },
+    {
+      "id": "FAC-06",
+      "name": "Riven Claw",
+      "alignment": "Hostile / raiding band",
+      "home": "Disused freight terraces in the Cinder Cuts",
+      "members": [
+        "VIL-07",
+        "VIL-08",
+        "VIL-09"
+      ],
+      "purpose": "Extract supplies and obedience from travellers and weaker outposts. Its leader treats possession as something proved through force.",
+      "leadership": "Brakka Mourn commands raids. Dreg Husk controls hauling and shares. Vessa Rake scouts routes and bargains for intelligence.",
+      "methods": "Ambush, intimidation and theft of movable supplies. They need food, rest, transport and local knowledge; they cannot appear anywhere without a route.",
+      "tension": "Brakka prizes spectacle, Dreg wants sustainable provisions, and Vessa resents being treated as expendable. Their cooperation depends on rewards and fear.",
+      "ties": "Sells through fences including Pip, who can refuse a deal. It has occasional transactions with Gilt Ledger intermediaries, no standing alliance. No species is inherently loyal to this band."
+    }
+  ],
+  "places": [
+    {
+      "id": "EXT-01",
+      "name": "Reedbank",
+      "concept": "A working river-port settlement with floodplain homes, public institutions, competing depots and boat repair yards. Madger’s family and the Gilt Ledger are from different parts of the same community."
+    },
+    {
+      "id": "EXT-02",
+      "name": "Stonewake",
+      "concept": "A quarry-and-workshop town where practical trades sustain a diverse population. Its old galleries are local to Stonewake, not a newly invented tunnel under the Burrow."
+    },
+    {
+      "id": "EXT-03",
+      "name": "Latchford",
+      "concept": "A road junction with inns, transfer yards, rented rooms and competing dispatch services. Many honest travellers live alongside brokers and criminal contacts."
+    },
+    {
+      "id": "EXT-04",
+      "name": "Millmere",
+      "concept": "A waterside manufacturing settlement with small repair shops, ferries and record offices. Ordinary work explains both skilled allies and information criminals."
+    },
+    {
+      "id": "EXT-05",
+      "name": "Willowmere",
+      "concept": "A woodland agricultural settlement with growing cooperatives and teaching houses. Its gardens require labor, water and seasonal planning."
+    },
+    {
+      "id": "EXT-06",
+      "name": "Cinder Cuts",
+      "concept": "A region of disused freight cuttings and exposed terraces. Riven Claw occupies one site; other residents and travellers are not automatically hostile."
+    }
+  ],
+  "links": {
+    "folder": "https://drive.google.com/drive/folders/1FpiwodNq-qeQmoDikp6_cDKG0jxbYe70",
+    "register": "https://docs.google.com/document/d/1g5qaZ925kGQYRpeblnXFQjnBwawV7_dQ-w1NW66iZZA/edit?usp=drivesdk",
+    "madger": "https://docs.google.com/document/d/1pOjStZtLeLm1m2Y7TW_ATQElXyuwWi2JWqRrwaccCEE/edit?usp=drivesdk"
+  },
+  "boundaries": [
+    "Exterior concepts have no locked direction, distance, route or blueprint. Do not stage exterior scenes until mapped.",
+    "Writer-only: Tessera relay probe causes D17; Snow notices unrelated canopy resin. Neither answer is revealed in the pilot.",
+    "Alignment follows choices, not species or birthplace. Living in a faction’s home settlement does not imply membership.",
+    "The protagonist is 24 at the pilot; the first Burrow settlement began six years earlier. Growth took collective work.",
+    "No new visual models or voices are approved by this register.",
+    "One full card per installment; next is Gorilla White."
+  ],
+  "story_framework": "https://docs.google.com/document/d/1P5poxZmoklCfgY9_EP7bmxMTFYXQkRC9ZeQV8UB8DmI/edit?usp=drivesdk",
+  "regions": [
+    {
+      "id": "REG-01",
+      "name": "Lowland Reach",
+      "environment": "River terraces, reed marshes, wooded escarpments and inhabited hills; the Burrow has daylight neighborhoods and a deep civic interior.",
+      "culture": "Reedbank, Latchford and Millmere belong to this regional cluster. Willowmere sits toward the canopy frontier; Stonewake serves the mountain approaches. Exact road lengths await the atlas.",
+      "travel_rule": "Boats, footpaths and maintained crossings; spring floods alter safe passage.",
+      "stories": "Flood rescue, town comedy, investigation, a surface defense and a lantern-lit underground supper.",
+      "creatures": "Flood-wyrms are huge river animals drawn to spawning grounds; a disturbed one is dangerous without being a moral villain."
+    },
+    {
+      "id": "REG-02",
+      "name": "Wandering Canopy",
+      "environment": "Immense trees migrate slowly between valleys during the wet season. Villages travel with some crowns; other communities stay on fixed stone ridges.",
+      "culture": "Local route singers preserve dated observations in practical songs; growers, climbers and instrument makers disagree about how much migration should be restrained.",
+      "travel_rule": "Living bridges separate as trees move. Respect the seasonal migration, local guides and climbing gear; no instantaneous forest teleportation.",
+      "stories": "A pursuit over folding root bridges; a harvest festival above the clouds; the missing caravan stranded between moving crowns.",
+      "creatures": "Mawroot blooms lure prey with warmth and a shelter-like glow. Some trees are ordinary and some predators are truly dangerous."
+    },
+    {
+      "id": "REG-03",
+      "name": "Mirrorglass Expanse",
+      "environment": "Storm-polished glass dunes, dry salt basins and buried observatories that briefly emerge after wind scours the surface.",
+      "culture": "Caravan cities maintain shaded markets and rotating well access. Their history includes rival trade leagues, astronomy and water-sharing victories, not only ruins.",
+      "travel_rule": "Travel at safe light angles with marked water reserves. Fused glass defeats Madger’s burrowing. Mirage-glass retains brief light impressions that may be incomplete or misleading.",
+      "stories": "A moving sand-sail race, a night-market theft, an apparent eyewitness image with the decisive moment missing.",
+      "creatures": "Glassback drakes feel vibration through the dunes; they cannot be distracted by an invisible digital signal."
+    },
+    {
+      "id": "REG-04",
+      "name": "Tidemark Sea",
+      "environment": "Reef islands and drowned civic halls exposed for short low-tide windows. Glowing shoals pass above submerged courtyards.",
+      "culture": "Independent harbor communities disagree over who owns objects recovered from flooded homes. Fishers, historians and salvagers have their own priorities.",
+      "travel_rule": "Charts, boats, breathable limits and tide clocks matter. A sunken archive can be visited only with a safe return plan.",
+      "stories": "An underwater heist, a rescue in a bell tower as water rises, a mystery where taking evidence damages somebody’s inheritance.",
+      "creatures": "Reefbacks are enormous living habitats. Hunting them for an easy resource creates consequences beyond one episode."
+    },
+    {
+      "id": "REG-05",
+      "name": "Saffron Isles",
+      "environment": "Floating basalt landmasses above amber storm clouds, linked by cargo sails, tether lifts and occasional living vine spans.",
+      "culture": "Terrace farmers, sailwrights and competing sky-port councils measure wealth partly in safe landing space. Some ports welcome guests; others refuse rescue alliances.",
+      "travel_rule": "Natural liftstone requires local counterweights and maintenance. Flight is weather-bound; cargo and passengers have weight. Islands do not hover because of one portable crystal.",
+      "stories": "A vertical pursuit through a crowded sky market, a cargo race, negotiating shelter with people who value distance over connection.",
+      "creatures": "Storm mantas feed along charged cloud fronts. Their migration grounds sky travel even when the sky looks clear."
+    },
+    {
+      "id": "REG-06",
+      "name": "Frostspine",
+      "environment": "Aurora-lit glaciers, warm caverns and observatories embedded in blue ice above a chain of winter settlements.",
+      "culture": "Winter guilds keep communal heat and weather records. Old route closures divided families, but the people now living here have ordinary art, rivalry and celebrations.",
+      "travel_rule": "Ropes, heat and pressure limits govern exploration. Echo-ice can retain fragments of old sound, never a complete mind or guaranteed truthful testimony.",
+      "stories": "A survival mystery, an ancestral argument heard out of context, deciding whether a sealed span should reopen.",
+      "creatures": "Choir wraiths mimic sounds they have heard to lure travelers away from shelter. They are predators, not resurrected relatives."
+    },
+    {
+      "id": "REG-07",
+      "name": "Ember Steps",
+      "environment": "Volcanic terraces, obsidian channels, hot-spring gardens and forge towns above cooling lava shelves. The Cinder Cuts lie on its disused freight fringe.",
+      "culture": "Smiths, thermal gardeners and freight families compete over workable ground. Riven Claw occupies one neglected site, not the entire region.",
+      "travel_rule": "Heat shields, stable footing and changing gas conditions constrain travel. Useful heat is not immunity to fire.",
+      "stories": "A forge tournament, a rescue on a stopped freight lift, a raid seen from the people who must live beside the raiders.",
+      "creatures": "Ashmaws are armored burrowing predators that follow heat gradients; moving a nest may redirect a threat toward another community."
+    },
+    {
+      "id": "REG-08",
+      "name": "Hollow Sea",
+      "environment": "Vast underground waters beneath mineral vaults, fungal shore forests and cities built on rock shelves above dark tides.",
+      "culture": "Deep-dwelling trading communities have their own navigation traditions and histories; surface visitors are guests. Some old passages are taboo for practical reasons.",
+      "travel_rule": "Mapped entry points, pressure changes, air supplies and boats matter. There is no new secret route under the Burrow’s existing defense line.",
+      "stories": "A luminous voyage, a missing expedition, a negotiation in darkness where the loudest voice gives away a position.",
+      "creatures": "Blind bell-eels hunt by vibration. Brilliant fungal blooms can be beautiful, nourishing or toxic depending on species and season."
+    }
+  ],
+  "new_writer_only_facts": [
+    "Nix is Madger’s estranged friend",
+    "Veyra financed the flood second convoy",
+    "Sela deliberately concealed the funding source",
+    "D17 and scent have separate planned causes"
+  ]
+}

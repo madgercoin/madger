@@ -1,0 +1,44 @@
+{
+  "id": "VIL-03",
+  "name": "Bale Nacre",
+  "group": "Antagonist",
+  "identity": "Adult male badger",
+  "origin": "Stonewake",
+  "affiliation": "FAC-04 quartermaster",
+  "seed": "Controls warehouse allotments and collections. Loyal to orderly provision; excuses harm as a stock-management problem.",
+  "status": "Developed baseline 3.0",
+  "age": 49,
+  "height_m": 1.43,
+  "design": "Male badger, broad gray muzzle, maroon warehouse coat, square brass inventory tags; no resemblance to Madger beyond species.",
+  "history": "Stonewake stores worker who survived winter shortages and joined a depot chain seeking regular provision.",
+  "desire": "To prevent chaotic scarcity by controlling who receives what.",
+  "contradiction": "Turns a person waiting for medicine into a tolerable inventory discrepancy.",
+  "relationships": "Veyra values his reliability; Dreg secretly sells him selected freight through a fence; Edda forces him to face recipients.",
+  "arc": "Falsely calls a deliberate withheld shipment a delay. Later chooses to release it and testify, sacrificing status rather than receiving instant absolution.",
+  "story_engine": "A depot count with a hidden human cost; an old neighbor recognizes him behind a shuttered counter.",
+  "writer_truth": "He knows a specific allotment policy causes harm; ignorance is not his defense.",
+  "voice": "No voice assigned; do not substitute an existing hero voice.",
+  "skills_and_limits": "Species anatomy, training, tools, fatigue and local knowledge constrain action. No unlisted magic or universal hacking.",
+  "art_status": "New design developed for this edition; exact colors and silhouette set by card and cast plate.",
+  "art": {
+    "file": "CAST-03.png",
+    "column": 0,
+    "row": 1,
+    "grid": [
+      3,
+      2
+    ]
+  },
+  "performance": {
+    "silhouette": "Male badger, broad gray muzzle, maroon warehouse coat, square brass inventory tags; no resemblance to Madger beyond species.",
+    "expression_set": [
+      "neutral listening",
+      "pleased",
+      "concerned",
+      "frustrated",
+      "focused"
+    ],
+    "motion_rule": "Use a held body pose for dialogue with separate mouth shapes, blinks and intentional expression changes. Preserve facial landmarks.",
+    "limits": "Species anatomy, training, tools, fatigue and local knowledge constrain action. No unlisted magic or universal hacking."
+  }
+}

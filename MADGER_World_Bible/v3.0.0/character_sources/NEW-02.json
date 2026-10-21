@@ -1,0 +1,44 @@
+{
+  "id": "NEW-02",
+  "name": "Maela Siroc",
+  "group": "Regional cast",
+  "identity": "Adult female sand cat",
+  "origin": "Ossara",
+  "affiliation": "FAC-07",
+  "seed": "To reopen a public well and prove its water belongs to the city.",
+  "status": "Developed baseline 3.0",
+  "age": 33,
+  "height_m": 1.12,
+  "design": "Sand cat, pale gold fur, broad ears, turquoise head wrap and ivory layered traveling coat.",
+  "history": "A public well examiner from a family of caravan cooks; learned optics to distinguish real water readings from reflected traces.",
+  "desire": "To reopen a public well and prove its water belongs to the city.",
+  "contradiction": "Her correct conclusions can become contempt for people afraid of change.",
+  "relationships": "Kavar owns the disputed equipment; Toma carries archive evidence; Bot helps compare records but needs her local knowledge.",
+  "arc": "Wins a well through shared evidence, then lets neighbors set use rules she would not have chosen.",
+  "story_engine": "A mirage appears to prove a witness lied; a rescue costs her the instrument that could win her case.",
+  "writer_truth": "The well is viable but cannot supply unlimited growth; victory still requires restraint.",
+  "voice": "No voice assigned; do not substitute an existing hero voice.",
+  "skills_and_limits": "Species anatomy, training, tools, fatigue and local knowledge constrain action. No unlisted magic or universal hacking.",
+  "art_status": "New design developed for this edition; exact colors and silhouette set by card and cast plate.",
+  "art": {
+    "file": "CAST-05.png",
+    "column": 0,
+    "row": 0,
+    "grid": [
+      3,
+      2
+    ]
+  },
+  "performance": {
+    "silhouette": "Sand cat, pale gold fur, broad ears, turquoise head wrap and ivory layered traveling coat.",
+    "expression_set": [
+      "neutral listening",
+      "pleased",
+      "concerned",
+      "frustrated",
+      "focused"
+    ],
+    "motion_rule": "Use a held body pose for dialogue with separate mouth shapes, blinks and intentional expression changes. Preserve facial landmarks.",
+    "limits": "Species anatomy, training, tools, fatigue and local knowledge constrain action. No unlisted magic or universal hacking."
+  }
+}

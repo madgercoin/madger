@@ -1,0 +1,44 @@
+{
+  "id": "VIL-01",
+  "name": "Veyra Kest",
+  "group": "Antagonist",
+  "identity": "Adult female sable",
+  "origin": "Reedbank",
+  "affiliation": "FAC-04 leader",
+  "seed": "Ledger director and hidden funder of the second flood convoy. Demands dependency in return for security; runs with Corvin and Bale.",
+  "status": "Developed baseline 3.0",
+  "age": 45,
+  "height_m": 1.36,
+  "design": "Female sable, deep chocolate fur, ivory chin, ink-blue tailored long coat, one warm brass clasp, composed posture.",
+  "history": "Reedbank depot worker who rose through crisis logistics. At thirty-eight she diverted reserves to fund a rescue convoy; later consolidation convinced her that only centralized control prevents chaos.",
+  "desire": "To make the Burrow sign a permanent exclusive supply agreement and prove that her form of order is indispensable.",
+  "contradiction": "Her generosity becomes a claim of ownership. She remembers every life she helped but discounts lives injured by her conditions.",
+  "relationships": "Corvin negotiates; Bale controls stock; Sela knows the rescue truth; Kavar is an occasional commercial counterpart.",
+  "arc": "Season one: her offer fails despite a genuine good deed. Later: she must choose between saving her ledger and releasing stock without a binding promise. An act of repair can cost her power without erasing accountability.",
+  "story_engine": "A negotiation where her diagnosis is partly right; a crisis in her own depot that exposes how little her workers trust her.",
+  "writer_truth": "She did not cause the flood, invent Nix’s grievance or command Brakka’s raid. Her culpability is her present coercion.",
+  "voice": "No voice assigned; do not substitute an existing hero voice.",
+  "skills_and_limits": "Species anatomy, training, tools, fatigue and local knowledge constrain action. No unlisted magic or universal hacking.",
+  "art_status": "New design developed for this edition; exact colors and silhouette set by card and cast plate.",
+  "art": {
+    "file": "CAST-03.png",
+    "column": 1,
+    "row": 0,
+    "grid": [
+      3,
+      2
+    ]
+  },
+  "performance": {
+    "silhouette": "Female sable, deep chocolate fur, ivory chin, ink-blue tailored long coat, one warm brass clasp, composed posture.",
+    "expression_set": [
+      "neutral listening",
+      "pleased",
+      "concerned",
+      "frustrated",
+      "focused"
+    ],
+    "motion_rule": "Use a held body pose for dialogue with separate mouth shapes, blinks and intentional expression changes. Preserve facial landmarks.",
+    "limits": "Species anatomy, training, tools, fatigue and local knowledge constrain action. No unlisted magic or universal hacking."
+  }
+}

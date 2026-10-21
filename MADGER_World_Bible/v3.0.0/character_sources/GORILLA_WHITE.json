@@ -1,0 +1,44 @@
+{
+  "id": "GORILLA_WHITE",
+  "name": "Gorilla White",
+  "group": "Core hero",
+  "identity": "Gorilla; established adult",
+  "origin": "Stonewake",
+  "affiliation": "FAC-01",
+  "seed": "Craftsperson and protector. Madger’s closest building partner; Tavi’s mentor. Must accept help and teach others to carry weight.",
+  "status": "Developed baseline 3.0",
+  "age": 28,
+  "height_m": 2.15,
+  "design": "Approved white/sandy fur, tan face and chest, blue eyes, broad long arms and exact established proportions. Work tools are removable props, not new armor.",
+  "history": "Born in Stonewake to a family of stone fitters. At nineteen, he noticed a temporary platform straining but tried to hold it while others cleared it instead of demanding a full stop. The platform failed; his older sister Eris survived with an injured hand and recovered, while an apprentice lost months of work. He testified honestly and helped repair the damage. Three years later, at twenty-two, he joined the Burrow builders and met eighteen-year-old Madger during their first-year storm bracing job. Madger accepted his refusal of a shortcut and stayed for the slower work.",
+  "desire": "To build places where nobody is left exposed, and to make a beautiful resonant instrument rather than another emergency brace.",
+  "contradiction": "He treats enduring pain as a private duty. His patience can become stubborn control: he moves someone out of danger without listening to what they know.",
+  "relationships": "Madger is his closest building partner. Eris loves him but refuses to be the story of his failure. Oren taught him; Iona checks his assumptions. Edda insists care is reciprocal. Tavi wants his praise and fears disappointing him.",
+  "arc": "Pilot: accepts help with an ordinary lift. Season one: delegates evacuation work and lets Edda treat an injury. Season two: returns to Stonewake, learns that Eris remembers his silence more than his weakness, and teaches Tavi how to stop a job. Season three: lets a smaller teammate lead a rescue he cannot physically reach.",
+  "story_engine": "A craft competition where strength is useless; a bridge rescue with a load he must release; a visit home where his family is happy without needing him to fix anything.",
+  "writer_truth": "The platform failure was a chain of bad decisions, not sabotage. Eris never blamed him for being insufficiently strong. His hardest apology concerns making her recovery about his guilt.",
+  "voice": "Approved Chad / Baritone R7 only; Mtmp3KhFIjYpWYRycDe3 and approved processing. Friendly youthful baritone, measured pace; no new render.",
+  "skills_and_limits": "Species anatomy, training, tools, fatigue and local knowledge constrain action. No unlisted magic or universal hacking.",
+  "art_status": "Inherited approved hero reference",
+  "art": {
+    "file": "HEROES-01.png",
+    "column": 1,
+    "row": 0,
+    "grid": [
+      4,
+      1
+    ]
+  },
+  "performance": {
+    "silhouette": "Approved white/sandy fur, tan face and chest, blue eyes, broad long arms and exact established proportions. Work tools are removable props, not new armor.",
+    "expression_set": [
+      "neutral listening",
+      "pleased",
+      "concerned",
+      "frustrated",
+      "focused"
+    ],
+    "motion_rule": "Use a held body pose for dialogue with separate mouth shapes, blinks and intentional expression changes. Preserve facial landmarks.",
+    "limits": "Species anatomy, training, tools, fatigue and local knowledge constrain action. No unlisted magic or universal hacking."
+  }
+}

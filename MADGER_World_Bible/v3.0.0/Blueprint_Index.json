@@ -1,0 +1,322 @@
+[
+  {
+    "id": "MAP-00",
+    "file": "MAP-00.svg"
+  },
+  {
+    "id": "EXT-01",
+    "file": "EXT-01.svg"
+  },
+  {
+    "id": "EXT-02",
+    "file": "EXT-02.svg"
+  },
+  {
+    "id": "EXT-03",
+    "file": "EXT-03.svg"
+  },
+  {
+    "id": "EXT-04",
+    "file": "EXT-04.svg"
+  },
+  {
+    "id": "EXT-05",
+    "file": "EXT-05.svg"
+  },
+  {
+    "id": "EXT-06",
+    "file": "EXT-06.svg"
+  },
+  {
+    "id": "EXT-07",
+    "file": "EXT-07.svg"
+  },
+  {
+    "id": "EXT-08",
+    "file": "EXT-08.svg"
+  },
+  {
+    "id": "EXT-09",
+    "file": "EXT-09.svg"
+  },
+  {
+    "id": "EXT-10",
+    "file": "EXT-10.svg"
+  },
+  {
+    "id": "EXT-11",
+    "file": "EXT-11.svg"
+  },
+  {
+    "id": "EXT-12",
+    "file": "EXT-12.svg"
+  },
+  {
+    "id": "EXT-13",
+    "file": "EXT-13.svg"
+  },
+  {
+    "id": "MOD-01",
+    "file": "MOD-01.svg"
+  },
+  {
+    "id": "MOD-02",
+    "file": "MOD-02.svg"
+  },
+  {
+    "id": "MOD-03",
+    "file": "MOD-03.svg"
+  },
+  {
+    "id": "MOD-03-L1",
+    "file": "MOD-03-L1.svg"
+  },
+  {
+    "id": "MOD-04",
+    "file": "MOD-04.svg"
+  },
+  {
+    "id": "MOD-05",
+    "file": "MOD-05.svg"
+  },
+  {
+    "id": "MOD-06",
+    "file": "MOD-06.svg"
+  },
+  {
+    "id": "MOD-06-L1",
+    "file": "MOD-06-L1.svg"
+  },
+  {
+    "id": "MOD-07",
+    "file": "MOD-07.svg"
+  },
+  {
+    "id": "MOD-08",
+    "file": "MOD-08.svg"
+  },
+  {
+    "id": "MOD-09",
+    "file": "MOD-09.svg"
+  },
+  {
+    "id": "MOD-10",
+    "file": "MOD-10.svg"
+  },
+  {
+    "id": "MOD-10-L1",
+    "file": "MOD-10-L1.svg"
+  },
+  {
+    "id": "MOD-11",
+    "file": "MOD-11.svg"
+  },
+  {
+    "id": "MOD-12",
+    "file": "MOD-12.svg"
+  },
+  {
+    "id": "EXT-01-B01",
+    "file": "EXT-01-B01.svg"
+  },
+  {
+    "id": "EXT-01-B02",
+    "file": "EXT-01-B02.svg"
+  },
+  {
+    "id": "EXT-01-B03",
+    "file": "EXT-01-B03.svg"
+  },
+  {
+    "id": "EXT-02-B01",
+    "file": "EXT-02-B01.svg"
+  },
+  {
+    "id": "EXT-02-B02",
+    "file": "EXT-02-B02.svg"
+  },
+  {
+    "id": "EXT-02-B03",
+    "file": "EXT-02-B03.svg"
+  },
+  {
+    "id": "EXT-03-B01",
+    "file": "EXT-03-B01.svg"
+  },
+  {
+    "id": "EXT-03-B02",
+    "file": "EXT-03-B02.svg"
+  },
+  {
+    "id": "EXT-03-B03",
+    "file": "EXT-03-B03.svg"
+  },
+  {
+    "id": "EXT-04-B01",
+    "file": "EXT-04-B01.svg"
+  },
+  {
+    "id": "EXT-04-B02",
+    "file": "EXT-04-B02.svg"
+  },
+  {
+    "id": "EXT-04-B03",
+    "file": "EXT-04-B03.svg"
+  },
+  {
+    "id": "EXT-05-B01",
+    "file": "EXT-05-B01.svg"
+  },
+  {
+    "id": "EXT-05-B02",
+    "file": "EXT-05-B02.svg"
+  },
+  {
+    "id": "EXT-05-B03",
+    "file": "EXT-05-B03.svg"
+  },
+  {
+    "id": "EXT-06-B01",
+    "file": "EXT-06-B01.svg"
+  },
+  {
+    "id": "EXT-06-B02",
+    "file": "EXT-06-B02.svg"
+  },
+  {
+    "id": "EXT-07-B01",
+    "file": "EXT-07-B01.svg"
+  },
+  {
+    "id": "EXT-07-B02",
+    "file": "EXT-07-B02.svg"
+  },
+  {
+    "id": "EXT-07-B03",
+    "file": "EXT-07-B03.svg"
+  },
+  {
+    "id": "EXT-08-B01",
+    "file": "EXT-08-B01.svg"
+  },
+  {
+    "id": "EXT-08-B02",
+    "file": "EXT-08-B02.svg"
+  },
+  {
+    "id": "EXT-08-B03",
+    "file": "EXT-08-B03.svg"
+  },
+  {
+    "id": "EXT-09-B01",
+    "file": "EXT-09-B01.svg"
+  },
+  {
+    "id": "EXT-09-B02",
+    "file": "EXT-09-B02.svg"
+  },
+  {
+    "id": "EXT-10-B01",
+    "file": "EXT-10-B01.svg"
+  },
+  {
+    "id": "EXT-10-B02",
+    "file": "EXT-10-B02.svg"
+  },
+  {
+    "id": "EXT-10-B03",
+    "file": "EXT-10-B03.svg"
+  },
+  {
+    "id": "EXT-11-B01",
+    "file": "EXT-11-B01.svg"
+  },
+  {
+    "id": "EXT-11-B02",
+    "file": "EXT-11-B02.svg"
+  },
+  {
+    "id": "EXT-11-B03",
+    "file": "EXT-11-B03.svg"
+  },
+  {
+    "id": "EXT-12-B01",
+    "file": "EXT-12-B01.svg"
+  },
+  {
+    "id": "EXT-12-B02",
+    "file": "EXT-12-B02.svg"
+  },
+  {
+    "id": "EXT-12-B03",
+    "file": "EXT-12-B03.svg"
+  },
+  {
+    "id": "EXT-13-B01",
+    "file": "EXT-13-B01.svg"
+  },
+  {
+    "id": "EXT-13-B02",
+    "file": "EXT-13-B02.svg"
+  },
+  {
+    "id": "EXT-13-B03",
+    "file": "EXT-13-B03.svg"
+  },
+  {
+    "id": "SITE-01",
+    "file": "SITE-01.svg"
+  },
+  {
+    "id": "SITE-02",
+    "file": "SITE-02.svg"
+  },
+  {
+    "id": "SITE-03",
+    "file": "SITE-03.svg"
+  },
+  {
+    "id": "SITE-04",
+    "file": "SITE-04.svg"
+  },
+  {
+    "id": "SITE-04-B01",
+    "file": "SITE-04-B01.svg"
+  },
+  {
+    "id": "SITE-05",
+    "file": "SITE-05.svg"
+  },
+  {
+    "id": "SITE-06",
+    "file": "SITE-06.svg"
+  },
+  {
+    "id": "SITE-07",
+    "file": "SITE-07.svg"
+  },
+  {
+    "id": "SITE-07-B01",
+    "file": "SITE-07-B01.svg"
+  },
+  {
+    "id": "SITE-08",
+    "file": "SITE-08.svg"
+  },
+  {
+    "id": "BRW-MASTER",
+    "file": "BRW-MASTER.svg"
+  },
+  {
+    "id": "BRW-Z12",
+    "file": "BRW-Z12.svg"
+  },
+  {
+    "id": "BRW-Z24",
+    "file": "BRW-Z24.svg"
+  },
+  {
+    "id": "BRW-Z36",
+    "file": "BRW-Z36.svg"
+  }
+]

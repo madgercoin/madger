@@ -1,0 +1,44 @@
+{
+  "id": "MADGER_BOT",
+  "name": "MADGER Bot",
+  "group": "Core hero",
+  "identity": "Mechanical person",
+  "origin": "Millmere / Varr Workshop",
+  "affiliation": "FAC-01",
+  "seed": "Systems keeper and evidence partner. Joined the Burrow by choice; learns that honest uncertainty is useful.",
+  "status": "Developed baseline 3.0",
+  "age": 8,
+  "height_m": 1.25,
+  "design": "Approved silver/black metal body, mechanical face, amber optics, blue lit joints. No organic muzzle. Panel seams and proportions inherit the official reference.",
+  "history": "Activated eight years before the pilot at Lume Varr’s Millmere workshop as a general maintenance learner. Lume and a cooperative built the body; sustained learning formed an independent person, not a remote employee. At age three Bot chose the Burrow, five years before the pilot, after working on a convoy repair. Madger welcomed a colleague who asked questions and could decline work.",
+  "desire": "To be trusted even when an answer is incomplete, and to compose a tune that is not optimized for anything.",
+  "contradiction": "Bot confuses usefulness with certainty. He can preserve a fact while overlooking why sharing it would hurt someone. His memory has gaps from ordinary early storage replacement.",
+  "relationships": "Lume is a parentlike maker, not an owner. Iona tests records against machinery. Pell helps distinguish public evidence from private care records. Patch recognizes old Varr fittings and envies Bot’s freedom.",
+  "arc": "Pilot: preserves D17 without guessing. Season one: admits a source was compromised and asks neighbors to verify physical conditions. Season two: declines a maker’s well-meant diagnostic request until its scope is agreed. Season three: chooses to discard a stolen private dataset while preserving the evidence needed to prove a crime.",
+  "story_engine": "A comedy about learning music; a mystery in which a perfect timestamp describes the wrong event; a reunion with a maker who must learn to ask permission.",
+  "writer_truth": "No hidden master switch or secret evil personality. Lume replaced a failing memory module with Bot’s consent during early development; the lost material is not a magical universal key.",
+  "voice": "Approved Brodie / Friendly Smooth R4 only; rHWSYoq8UlV0YIBKMryp and approved processing. Friendly youthful robotic delivery.",
+  "skills_and_limits": "Species anatomy, training, tools, fatigue and local knowledge constrain action. No unlisted magic or universal hacking.",
+  "art_status": "Inherited approved hero reference",
+  "art": {
+    "file": "HEROES-01.png",
+    "column": 2,
+    "row": 0,
+    "grid": [
+      4,
+      1
+    ]
+  },
+  "performance": {
+    "silhouette": "Approved silver/black metal body, mechanical face, amber optics, blue lit joints. No organic muzzle. Panel seams and proportions inherit the official reference.",
+    "expression_set": [
+      "neutral listening",
+      "pleased",
+      "concerned",
+      "frustrated",
+      "focused"
+    ],
+    "motion_rule": "Use a held body pose for dialogue with separate mouth shapes, blinks and intentional expression changes. Preserve facial landmarks.",
+    "limits": "Species anatomy, training, tools, fatigue and local knowledge constrain action. No unlisted magic or universal hacking."
+  }
+}

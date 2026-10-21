@@ -1,0 +1,44 @@
+{
+  "id": "NEW-05",
+  "name": "Ysolde Rime",
+  "group": "Regional cast",
+  "identity": "Adult female arctic hare",
+  "origin": "Hushvale",
+  "affiliation": "FAC-09",
+  "seed": "To publish the actual Severance record, including her order’s necessary and self-serving choices.",
+  "status": "Developed baseline 3.0",
+  "age": 37,
+  "height_m": 1.3,
+  "design": "Arctic hare, ivory fur, long dark-tipped ears, glacier-blue coat, copper scarf pin.",
+  "history": "An archive interpreter trained to separate echo-ice sound from later stories attached to it.",
+  "desire": "To publish the actual Severance record, including her order’s necessary and self-serving choices.",
+  "contradiction": "Facts become armor against grief; she neglects how a revelation lands on people.",
+  "relationships": "Ossa taught her; Oren wants technical evidence; Bot recognizes her discomfort with uncertainty.",
+  "arc": "Challenges the forged prohibition while preserving a real dangerous closure. Truth becomes a shared burden rather than a triumphant exposure.",
+  "story_engine": "An old voice repeats a sentence in the wrong order; an apparently heroic ancestor made a consequential mistake.",
+  "writer_truth": "Her own family benefited from prolonged closure, and she publishes that fact too.",
+  "voice": "No voice assigned; do not substitute an existing hero voice.",
+  "skills_and_limits": "Species anatomy, training, tools, fatigue and local knowledge constrain action. No unlisted magic or universal hacking.",
+  "art_status": "New design developed for this edition; exact colors and silhouette set by card and cast plate.",
+  "art": {
+    "file": "CAST-05.png",
+    "column": 0,
+    "row": 1,
+    "grid": [
+      3,
+      2
+    ]
+  },
+  "performance": {
+    "silhouette": "Arctic hare, ivory fur, long dark-tipped ears, glacier-blue coat, copper scarf pin.",
+    "expression_set": [
+      "neutral listening",
+      "pleased",
+      "concerned",
+      "frustrated",
+      "focused"
+    ],
+    "motion_rule": "Use a held body pose for dialogue with separate mouth shapes, blinks and intentional expression changes. Preserve facial landmarks.",
+    "limits": "Species anatomy, training, tools, fatigue and local knowledge constrain action. No unlisted magic or universal hacking."
+  }
+}

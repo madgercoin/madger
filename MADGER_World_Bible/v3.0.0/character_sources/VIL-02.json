@@ -1,0 +1,44 @@
+{
+  "id": "VIL-02",
+  "name": "Corvin Silt",
+  "group": "Antagonist",
+  "identity": "Adult male stoat",
+  "origin": "Latchford",
+  "affiliation": "FAC-04 broker",
+  "seed": "Charm, contracts and selective truth. Buys Glass Thread services through Nix; fears losing access more than losing face.",
+  "status": "Developed baseline 3.0",
+  "age": 38,
+  "height_m": 1.13,
+  "design": "Male stoat, winter-cream throat, charcoal fitted coat, lilac cuffs, narrow document case.",
+  "history": "Latchford inn clerk who discovered that introducing two powerful people paid better than serving them. Became Veyra’s broker eleven years ago.",
+  "desire": "To be required at every important table, with enough private leverage never to be dismissed.",
+  "contradiction": "Mistakes being tolerated for being trusted.",
+  "relationships": "Buys jobs from Nix, bargains with Pip and flatters Veyra while hiding small side fees.",
+  "arc": "Loses control when two clients compare accounts. Can confess a real crime to protect a subordinate or sacrifice them and become more isolated.",
+  "story_engine": "A perfect contract depends on one deliberately misunderstood word; a public feast seats him beside someone he exploited.",
+  "writer_truth": "He has no secret authority over Glass Thread; Tessera keeps evidence of his extra payments.",
+  "voice": "No voice assigned; do not substitute an existing hero voice.",
+  "skills_and_limits": "Species anatomy, training, tools, fatigue and local knowledge constrain action. No unlisted magic or universal hacking.",
+  "art_status": "New design developed for this edition; exact colors and silhouette set by card and cast plate.",
+  "art": {
+    "file": "CAST-03.png",
+    "column": 2,
+    "row": 0,
+    "grid": [
+      3,
+      2
+    ]
+  },
+  "performance": {
+    "silhouette": "Male stoat, winter-cream throat, charcoal fitted coat, lilac cuffs, narrow document case.",
+    "expression_set": [
+      "neutral listening",
+      "pleased",
+      "concerned",
+      "frustrated",
+      "focused"
+    ],
+    "motion_rule": "Use a held body pose for dialogue with separate mouth shapes, blinks and intentional expression changes. Preserve facial landmarks.",
+    "limits": "Species anatomy, training, tools, fatigue and local knowledge constrain action. No unlisted magic or universal hacking."
+  }
+}

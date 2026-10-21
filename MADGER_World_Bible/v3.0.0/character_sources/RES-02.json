@@ -1,0 +1,44 @@
+{
+  "id": "RES-02",
+  "name": "Tavi Moss",
+  "group": "Resident",
+  "identity": "Older adolescent river otter",
+  "origin": "Millmere",
+  "affiliation": "FAC-01 / FAC-02",
+  "seed": "Repair apprentice; Gorilla mentors workmanship, Iona teaches checks. Hides small mistakes. Home: West Deep.",
+  "status": "Developed baseline 3.0",
+  "age": 17,
+  "height_m": 1.24,
+  "design": "River otter, dark wet-brown fur, teal rolled sleeves, orange repair sash, short tool roll.",
+  "history": "Born in Millmere and moved with family to West Deep two years ago. Apprenticed after repairing a toy wheel, then discovered real machinery was less forgiving.",
+  "desire": "To earn a traveling Commonworks placement without being seen as someone’s child.",
+  "contradiction": "Hides small errors to protect the appearance of competence.",
+  "relationships": "Gorilla mentors craft; Iona teaches checks; Lume offers a future exchange.",
+  "arc": "Admits a misfit part before it fails, accepts the lost time, then becomes the person another apprentice can tell the truth to.",
+  "story_engine": "A repaired chair becomes a running comic prop; a contest tempts him to copy an elegant but unsuitable design.",
+  "writer_truth": "He has kept the first rejected part as a reminder; it is not evidence of sabotage.",
+  "voice": "No voice assigned; do not substitute an existing hero voice.",
+  "skills_and_limits": "Species anatomy, training, tools, fatigue and local knowledge constrain action. No unlisted magic or universal hacking.",
+  "art_status": "New design developed for this edition; exact colors and silhouette set by card and cast plate.",
+  "art": {
+    "file": "CAST-01.png",
+    "column": 1,
+    "row": 0,
+    "grid": [
+      3,
+      2
+    ]
+  },
+  "performance": {
+    "silhouette": "River otter, dark wet-brown fur, teal rolled sleeves, orange repair sash, short tool roll.",
+    "expression_set": [
+      "neutral listening",
+      "pleased",
+      "concerned",
+      "frustrated",
+      "focused"
+    ],
+    "motion_rule": "Use a held body pose for dialogue with separate mouth shapes, blinks and intentional expression changes. Preserve facial landmarks.",
+    "limits": "Species anatomy, training, tools, fatigue and local knowledge constrain action. No unlisted magic or universal hacking."
+  }
+}

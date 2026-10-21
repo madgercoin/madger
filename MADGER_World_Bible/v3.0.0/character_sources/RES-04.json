@@ -1,0 +1,44 @@
+{
+  "id": "RES-04",
+  "name": "Neri Tern",
+  "group": "Resident",
+  "identity": "Adult red panda",
+  "origin": "Willowmere",
+  "affiliation": "FAC-01",
+  "seed": "Teacher and makers-club organizer. Wants good questions but overplans. Home: East Orchard.",
+  "status": "Developed baseline 3.0",
+  "age": 31,
+  "height_m": 1.22,
+  "design": "Red panda with cream cheek patches, moss jacket, plum scarf, folding paper models.",
+  "history": "Left Willowmere after teaching mixed-age growing classes and came to East Orchard three years ago.",
+  "desire": "To make curiosity a public habit rather than a school-only activity.",
+  "contradiction": "Plans every discovery so carefully that learners cannot surprise her.",
+  "relationships": "Sori shares her home region; Jun challenges inaccessible signs; Senn sends seed stories.",
+  "arc": "Lets an unfinished question remain open, follows a student’s route, and changes the next lesson because of what happened.",
+  "story_engine": "Children design a misleading map; a visiting elder tells a history that contradicts her lesson plan.",
+  "writer_truth": "She failed an entrance exam for a prestigious teaching hall and still hides the rejection letter.",
+  "voice": "No voice assigned; do not substitute an existing hero voice.",
+  "skills_and_limits": "Species anatomy, training, tools, fatigue and local knowledge constrain action. No unlisted magic or universal hacking.",
+  "art_status": "New design developed for this edition; exact colors and silhouette set by card and cast plate.",
+  "art": {
+    "file": "CAST-01.png",
+    "column": 0,
+    "row": 1,
+    "grid": [
+      3,
+      2
+    ]
+  },
+  "performance": {
+    "silhouette": "Red panda with cream cheek patches, moss jacket, plum scarf, folding paper models.",
+    "expression_set": [
+      "neutral listening",
+      "pleased",
+      "concerned",
+      "frustrated",
+      "focused"
+    ],
+    "motion_rule": "Use a held body pose for dialogue with separate mouth shapes, blinks and intentional expression changes. Preserve facial landmarks.",
+    "limits": "Species anatomy, training, tools, fatigue and local knowledge constrain action. No unlisted magic or universal hacking."
+  }
+}

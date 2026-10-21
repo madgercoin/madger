@@ -1,0 +1,44 @@
+{
+  "id": "KIN-02",
+  "name": "Hollis",
+  "group": "Family",
+  "identity": "Adult male badger",
+  "origin": "Reedbank",
+  "affiliation": "Independent; boat repair cooperative",
+  "seed": "Madger’s father, alive and living in Reedbank. Measures twice; admires his son but distrusts promises made faster than plans.",
+  "status": "Developed baseline 3.0",
+  "age": 55,
+  "height_m": 1.27,
+  "design": "Male badger, grizzled cheeks, navy work vest, patched tan trousers, folding boat rule.",
+  "history": "A Reedbank boat fitter who built a cooperative after an employer withheld repair pay. Remained after the flood to keep local boats working.",
+  "desire": "To finish a small pleasure boat with no commercial deadline.",
+  "contradiction": "Uses practical criticism when the more difficult truth is that he misses his son.",
+  "relationships": "Dara understands his evasions; Madger hears disapproval; Gorilla enjoys quiet work beside him.",
+  "arc": "Tells Madger what he is proud of without appending a warning, then asks for company instead of inventing a repair.",
+  "story_engine": "A fishing trip turns into a stubborn contest; a supposedly useless offcut solves a household problem.",
+  "writer_truth": "His first boat was badly balanced. He keeps its crooked miniature on a high shelf.",
+  "voice": "No voice assigned; do not substitute an existing hero voice.",
+  "skills_and_limits": "Species anatomy, training, tools, fatigue and local knowledge constrain action. No unlisted magic or universal hacking.",
+  "art_status": "New design developed for this edition; exact colors and silhouette set by card and cast plate.",
+  "art": {
+    "file": "CAST-03.png",
+    "column": 0,
+    "row": 0,
+    "grid": [
+      3,
+      2
+    ]
+  },
+  "performance": {
+    "silhouette": "Male badger, grizzled cheeks, navy work vest, patched tan trousers, folding boat rule.",
+    "expression_set": [
+      "neutral listening",
+      "pleased",
+      "concerned",
+      "frustrated",
+      "focused"
+    ],
+    "motion_rule": "Use a held body pose for dialogue with separate mouth shapes, blinks and intentional expression changes. Preserve facial landmarks.",
+    "limits": "Species anatomy, training, tools, fatigue and local knowledge constrain action. No unlisted magic or universal hacking."
+  }
+}

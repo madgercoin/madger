@@ -1,0 +1,44 @@
+{
+  "id": "SNOW_WHITE",
+  "name": "Snow White",
+  "group": "Core hero",
+  "identity": "Adult female shepherd dog; 6",
+  "origin": "Latchford / Wayfarer household",
+  "affiliation": "Companion of FAC-01",
+  "seed": "Madger’s companion and physical scout. Learns to indicate, return and wait; communicates only as a real dog.",
+  "status": "Developed baseline 3.0",
+  "age": 6,
+  "height_m": 0.61,
+  "design": "Approved adult shepherd anatomy, long muzzle, slender legs, short coat, cream-frosted tail, rose collar and matching prominent SW charm. Height measured at shoulder. Four-legged movement.",
+  "history": "Born with a Wayfarer household near Latchford. Asha Bell raised her with patient scent games and ordinary household life. At three, when Asha retired from long routes, Snow spent increasingly long stays with Madger before settling with him. Asha visits; nobody abandoned her. Her familiar cue set comes from both homes.",
+  "desire": "Canine motivations: proximity to trusted companions, interesting scent work, play, food and a comfortable resting place.",
+  "contradiction": "A fresh moving scent can outrun her attention to a handler. Crowds, hot surfaces, fatigue and strong competing smells affect performance.",
+  "relationships": "Madger is her primary companion. Asha remains familiar family. Gorilla makes a quiet resting place near work. Bot learns to wait for her body language instead of treating every bark as an alert.",
+  "arc": "Pilot: pauses and looks back at a physical trace. Season one: returns to lead companions to a stranded traveler rather than pursuing alone. Later: accepts a new search partner through repeated practice and rest. Progress is shown in behavior, never a spoken moral.",
+  "story_engine": "A largely wordless search episode; an old-handler visit; a playful market mix-up in which the interesting scent is completely innocent.",
+  "writer_truth": "The pilot scent is ordinary canopy resin on a legitimate traveler’s gear. Snow cannot smell guilt, hacked signals or future danger. She receives rest and recovery after exertion.",
+  "voice": "Natural approved canine sounds only. No human dialogue, narration in her voice, telepathy or cloning.",
+  "skills_and_limits": "Species anatomy, training, tools, fatigue and local knowledge constrain action. No unlisted magic or universal hacking.",
+  "art_status": "Inherited approved hero reference",
+  "art": {
+    "file": "HEROES-01.png",
+    "column": 3,
+    "row": 0,
+    "grid": [
+      4,
+      1
+    ]
+  },
+  "performance": {
+    "silhouette": "Approved adult shepherd anatomy, long muzzle, slender legs, short coat, cream-frosted tail, rose collar and matching prominent SW charm. Height measured at shoulder. Four-legged movement.",
+    "expression_set": [
+      "relaxed",
+      "alert",
+      "playful",
+      "uncertain",
+      "resting"
+    ],
+    "motion_rule": "Canine ears, tail, posture and gaze; no speech mouth shapes or human acting gestures.",
+    "limits": "Species anatomy, training, tools, fatigue and local knowledge constrain action. No unlisted magic or universal hacking."
+  }
+}

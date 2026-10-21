@@ -1,0 +1,36 @@
+{
+  "edition": "3.0.0",
+  "errors": [],
+  "text_bounds_errors": [],
+  "counts": {
+    "characters": 40,
+    "communities": 14,
+    "regions": 8,
+    "factions": 9,
+    "creatures": 12,
+    "seasons": 4,
+    "episode_outlines": 40,
+    "standalone_stories": 12,
+    "setpieces": 8,
+    "building_instances": 658,
+    "blueprint_sheets": 80
+  },
+  "pdf_pages": {
+    "MADGER_Character_Bible.pdf": 47,
+    "MADGER_Blueprint_Atlas.pdf": 80,
+    "MADGER_World_Atlas.pdf": 39,
+    "MADGER_Stories_and_Factions.pdf": 27
+  },
+  "checks": [
+    "inherited Burrow footprints and routes unchanged",
+    "approved hero voices unchanged",
+    "all named characters have complete development fields and art references",
+    "faction memberships resolve",
+    "rooms fit module footprints and circulation graphs connect",
+    "building footprints fit settlement bounds without same-level overlap",
+    "residential capacity covers each settlement planning population",
+    "route lengths are at least straight-line distances",
+    "all PDF pages rendered for visual review"
+  ],
+  "scope": "Fictional production geometry; no claim of structural engineering validation or completed animation/game assets."
+}

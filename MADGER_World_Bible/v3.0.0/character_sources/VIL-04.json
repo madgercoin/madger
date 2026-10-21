@@ -1,0 +1,44 @@
+{
+  "id": "VIL-04",
+  "name": "Nix Vey",
+  "group": "Antagonist",
+  "identity": "Adult nonbinary pine marten",
+  "origin": "Millmere",
+  "affiliation": "FAC-05 leader",
+  "seed": "Madger’s estranged teenage friend, now Glass Thread leader. Wants recognition and erased communities acknowledged; endangers travelers to gain leverage. Runs with Tessera and Patch.",
+  "status": "Developed baseline 3.0",
+  "age": 24,
+  "height_m": 1.21,
+  "design": "Nonbinary pine marten, dark brown fur, cream throat bib, asymmetrical teal scarf, weathered plum coat, copper clamp toolkit.",
+  "history": "Born in Millmere, spent teenage work seasons in Reedbank repair yards with Madger. After the flood they returned to unequal restoration and grew bitter. Their correspondence faded. Later formed Glass Thread around paid access jobs and a campaign to expose erased communities.",
+  "desire": "To force powerful people to acknowledge the communities omitted from official routes, and to be recognized as the one who forced the truth into daylight.",
+  "contradiction": "A true grievance becomes permission to make strangers into instruments. They crave Madger’s respect while trying to prove his welcome is naive.",
+  "relationships": "Tessera wants anonymity; Patch wants out; Corvin pays; Madger remembers an inventive friend, not a monster.",
+  "arc": "Season one: accepts a consequence long enough to prevent one death, then flees. Later must return stolen evidence, testify and accept restrictions before friendship can become possible.",
+  "story_engine": "An old childhood joke during a hostile meeting; a rescue where telling the truth destroys their bargaining advantage.",
+  "writer_truth": "They did not intend the root bridge crossing but knowingly created unreliable guidance. Intention does not cancel foreseeable harm.",
+  "voice": "No voice assigned; do not substitute an existing hero voice.",
+  "skills_and_limits": "Species anatomy, training, tools, fatigue and local knowledge constrain action. No unlisted magic or universal hacking.",
+  "art_status": "New design developed for this edition; exact colors and silhouette set by card and cast plate.",
+  "art": {
+    "file": "CAST-03.png",
+    "column": 1,
+    "row": 1,
+    "grid": [
+      3,
+      2
+    ]
+  },
+  "performance": {
+    "silhouette": "Nonbinary pine marten, dark brown fur, cream throat bib, asymmetrical teal scarf, weathered plum coat, copper clamp toolkit.",
+    "expression_set": [
+      "neutral listening",
+      "pleased",
+      "concerned",
+      "frustrated",
+      "focused"
+    ],
+    "motion_rule": "Use a held body pose for dialogue with separate mouth shapes, blinks and intentional expression changes. Preserve facial landmarks.",
+    "limits": "Species anatomy, training, tools, fatigue and local knowledge constrain action. No unlisted magic or universal hacking."
+  }
+}

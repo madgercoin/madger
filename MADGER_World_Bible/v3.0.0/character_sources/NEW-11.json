@@ -1,0 +1,44 @@
+{
+  "id": "NEW-11",
+  "name": "Lume Varr",
+  "group": "Regional cast",
+  "identity": "Older female hare",
+  "origin": "Millmere",
+  "affiliation": "FAC-02",
+  "seed": "To see her creations become people who can tell her no, even when that hurts.",
+  "status": "Developed baseline 3.0",
+  "age": 55,
+  "height_m": 1.34,
+  "design": "Gray hare, cream ear interiors, violet rolled-sleeve coat, amber work goggles and blue ceramic mug.",
+  "history": "Cooperative instrument maker who helped build Bot’s body eight years ago. Supported his departure for the Burrow five years ago but still slips into parental instruction.",
+  "desire": "To see her creations become people who can tell her no, even when that hurts.",
+  "contradiction": "Calls a request routine maintenance when it is really worry about being left behind.",
+  "relationships": "Bot is family, not property; Tavi wants an apprenticeship; Patch recognizes her fittings.",
+  "arc": "Asks permission, accepts refusal and shares her own uncertainty. Their reunion becomes an adult relationship.",
+  "story_engine": "A repair visit becomes an awkward holiday; an old prototype is useful without being another conscious Bot.",
+  "writer_truth": "No ownership clause or remote shutdown right survives Bot’s independent consent.",
+  "voice": "No voice assigned; do not substitute an existing hero voice.",
+  "skills_and_limits": "Species anatomy, training, tools, fatigue and local knowledge constrain action. No unlisted magic or universal hacking.",
+  "art_status": "New design developed for this edition; exact colors and silhouette set by card and cast plate.",
+  "art": {
+    "file": "CAST-06.png",
+    "column": 0,
+    "row": 1,
+    "grid": [
+      3,
+      2
+    ]
+  },
+  "performance": {
+    "silhouette": "Gray hare, cream ear interiors, violet rolled-sleeve coat, amber work goggles and blue ceramic mug.",
+    "expression_set": [
+      "neutral listening",
+      "pleased",
+      "concerned",
+      "frustrated",
+      "focused"
+    ],
+    "motion_rule": "Use a held body pose for dialogue with separate mouth shapes, blinks and intentional expression changes. Preserve facial landmarks.",
+    "limits": "Species anatomy, training, tools, fatigue and local knowledge constrain action. No unlisted magic or universal hacking."
+  }
+}

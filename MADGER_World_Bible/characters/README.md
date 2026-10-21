@@ -1,40 +1,21 @@
 # MADGER characters and factions
 
-**Development edition 1.1.0 · 20 October 2026**
+**Current development edition 3.0.0 · 20 October 2026**
 
-[Open the Google Drive collection](https://drive.google.com/drive/folders/1FpiwodNq-qeQmoDikp6_cDKG0jxbYe70)
+All forty named characters now have illustrated cards with origins, history, desires, contradictions, relationships, arcs, story possibilities, writer-only truth and performance direction.
 
-## Finished first card
+- [Master collection index](https://docs.google.com/document/d/1mVmWBzLV7j1UFi5k8HSUqEnDxckAFl5X-jNZuhegg0M/edit)
+- [Forty individual PDF cards](https://drive.google.com/drive/folders/1MMXs4Qlk8aZjAamEl0zobkXHTi6lutnB)
+- [Readable current register](../v3.0.0/CHARACTERS.md)
+- [Individual structured cards](../v3.0.0/character_sources/)
+- [Nine factions](../v3.0.0/FACTIONS.md)
+- [World, story and character data](../v3.0.0/World_Atlas.json)
+- [Verified artifact links](../v3.0.0/Drive_Links.json)
 
-- [Madger — native Google Doc](https://docs.google.com/document/d/1pOjStZtLeLm1m2Y7TW_ATQElXyuwWi2JWqRrwaccCEE/edit?usp=drivesdk)
-- [Complete readable card](v1.1.0/MADGER_001.md) and [structured card](v1.1.0/MADGER_001.json)
+The existing four heroes and eight Burrow residents retain their identities. Edition 3.0 develops Gorilla White's Stonewake family and work-platform failure, Bot's Millmere maker and personhood, and Snow White's Latchford canine history. Thirteen additional characters extend the original twenty-seven-person register. New opponents have allies, homes, leverage and motives; no whole community or species is uniformly evil.
 
-The revised card develops Madger's origins, family, reason for founding the Burrow, personal habits, relationships, strengths, flaws, limitations and gradual arc. It uses his existing approved likeness and voice. His new age and founding chronology are authored story additions, not claims of prior approval.
+Madger's detailed edition 1.1 card is preserved within his structured record and remains available [as a native Google Doc](https://docs.google.com/document/d/1pOjStZtLeLm1m2Y7TW_ATQElXyuwWi2JWqRrwaccCEE/edit?usp=drivesdk). The new volume supplies a concise illustrated cross-series card for every character.
 
-## Cast and faction planning
+Established hero designs and approved voice IDs remain controlling. The new hero sheet is an adaptation incorporating later owner corrections; supporting art is newly authored development. No supporting voice is silently treated as approved, and no new voice generation was performed. Snow remains a non-speaking quadruped canine.
 
-- [Register — native Google Doc](https://docs.google.com/document/d/1g5qaZ925kGQYRpeblnXFQjnBwawV7_dQ-w1NW66iZZA/edit?usp=drivesdk)
-- [Readable character and faction register](v1.1.0/CHARACTER_AND_FACTION_REGISTER.md)
-- [Structured register](v1.1.0/Character_Register.json)
-- [Verified Drive links](v1.1.0/Drive_Links.json)
-
-The register contains 27 characters, three allied factions, three hostile factions, six settlement concepts and eight larger fantasy regions. Only Madger's card is fully developed in this installment. Other new biographies remain seeds. Existing four-hero and eight-resident roles continue from World Bible v2.1.
-
-The next complete card is **Gorilla White**, then MADGER Bot and Snow White. Veyra Kest follows to develop the opposing worldview. Cards grow individually; identities retain their established IDs even when publication order changes.
-
-## Authority and continuity
-
-Read this extension alongside [World Bible v2.1.0](../v2.1.0/README.md), with precedence recorded in [CURRENT.json](../CURRENT.json). This extension fills some previously reserved history fields; it does not rewrite historical editions.
-
-The physical world retains 37 primary areas, its fixed above/below-ground geometry and the 2,400-resident planning baseline. New exterior concepts have no locked routes, compass directions or distances. Blueprint each before production use.
-
-Episode one remains inside the Burrow with no attack or named villain reveal. Writer-only planning assigns D17 to Tessera's relay probe and Snow's scent to unrelated canopy resin; neither answer is revealed in the pilot. Snow is an adult quadrupedal dog using canine sounds only. Species and birthplace never determine morality.
-
-Do not treat new faction or resident descriptions as approved visual models or voice selections. Preserve all existing voice IDs and the owner's corrections to Madger's teeth and face. Update each completed card in place in Drive; archive meaningful canon revisions explicitly here.
-
-
-## Beyond the Burrow
-
-[Story review and adventure framework](v1.1.0/BEYOND_THE_BURROW.md) includes a ten-episode first-season outline, an illustrative midpoint scene, planted reveals, the Open Ways history, regional fantasy rules and varied future arcs. [Open the editable Google Doc](https://docs.google.com/document/d/1P5poxZmoklCfgY9_EP7bmxMTFYXQkRC9ZeQV8UB8DmI/edit?usp=drivesdk).
-
-Revision 1.1 deliberately changes Nix from an unknown antagonist to Madger's estranged friend, adds the hidden rescue funding and replaces the mainly civic plot with a missing-caravan adventure. The old edition remains in [v1.0.0](v1.0.0/MADGER_001.md). Gorilla White's full card has not been written.
+Episode one's warm interior-only setting and restricted clues remain fixed. Writer-only reveals are labeled in the source. Historical [edition 1.1](v1.1.0/) and [edition 1.0](v1.0.0/) remain available; their unexpanded companion and exterior reservations are now explicitly superseded by edition 3.0.

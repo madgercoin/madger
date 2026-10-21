@@ -1,0 +1,44 @@
+{
+  "id": "NEW-12",
+  "name": "Asha Bell",
+  "group": "Regional cast",
+  "identity": "Older female collie",
+  "origin": "Latchford",
+  "affiliation": "FAC-03",
+  "seed": "To keep meaningful friendships after leaving the road and teach a new handler without recreating herself.",
+  "status": "Developed baseline 3.0",
+  "age": 62,
+  "height_m": 1.4,
+  "design": "Sable-and-white anthropomorphic collie, soft green coat, orange knitted scarf and walking staff; distinct from quadrupedal Snow.",
+  "history": "A Wayfarer handler and route cook who raised Snow within a household and retired three years before the pilot.",
+  "desire": "To keep meaningful friendships after leaving the road and teach a new handler without recreating herself.",
+  "contradiction": "Pretends not to miss the work, then gives unsolicited route advice.",
+  "relationships": "Snow recognizes her; Madger respects her cues; Sela is an old colleague.",
+  "arc": "Accepts being needed differently, with visits and teaching rather than emergency journeys she cannot sustain.",
+  "story_engine": "Snow’s reunion is joyous without implying she must choose one family; an old route recipe reconnects two travelers.",
+  "writer_truth": "Retirement was a deliberate good decision, not a secret illness or abandonment.",
+  "voice": "No voice assigned; do not substitute an existing hero voice.",
+  "skills_and_limits": "Species anatomy, training, tools, fatigue and local knowledge constrain action. No unlisted magic or universal hacking.",
+  "art_status": "New design developed for this edition; exact colors and silhouette set by card and cast plate.",
+  "art": {
+    "file": "CAST-06.png",
+    "column": 1,
+    "row": 1,
+    "grid": [
+      3,
+      2
+    ]
+  },
+  "performance": {
+    "silhouette": "Sable-and-white anthropomorphic collie, soft green coat, orange knitted scarf and walking staff; distinct from quadrupedal Snow.",
+    "expression_set": [
+      "neutral listening",
+      "pleased",
+      "concerned",
+      "frustrated",
+      "focused"
+    ],
+    "motion_rule": "Use a held body pose for dialogue with separate mouth shapes, blinks and intentional expression changes. Preserve facial landmarks.",
+    "limits": "Species anatomy, training, tools, fatigue and local knowledge constrain action. No unlisted magic or universal hacking."
+  }
+}

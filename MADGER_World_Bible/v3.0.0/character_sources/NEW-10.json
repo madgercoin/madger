@@ -1,0 +1,44 @@
+{
+  "id": "NEW-10",
+  "name": "Ossa Quill",
+  "group": "Regional cast",
+  "identity": "Older female snowy owl",
+  "origin": "Hushvale",
+  "affiliation": "FAC-09",
+  "seed": "To prevent another route catastrophe by keeping the right to decide who may reconnect anything.",
+  "status": "Developed baseline 3.0",
+  "age": 73,
+  "height_m": 1.54,
+  "design": "Snowy owl, pale barred feathers, midnight-blue mantle, copper archival seals and one frost-darkened wing tip.",
+  "history": "An archivist raised by a parent born just after the Severance. Inherited the stories of genuine protective closures and later extended authority through altered records.",
+  "desire": "To prevent another route catastrophe by keeping the right to decide who may reconnect anything.",
+  "contradiction": "A necessary historical sacrifice becomes justification for permanent control.",
+  "relationships": "Ysolde is her student; Namu has independent records; Veyra sometimes benefits from closed routes but did not create the order.",
+  "arc": "Evidence forces her to distinguish a real dangerous coupling from a fabricated prohibition. She must surrender exclusive judgment or become the danger she fears.",
+  "story_engine": "A villain tells the truth about a hazard; the heroes need a technical procedure from someone they must also hold accountable.",
+  "writer_truth": "She forged one modern closure order; she did not cause the original Severance 92 years ago.",
+  "voice": "No voice assigned; do not substitute an existing hero voice.",
+  "skills_and_limits": "Species anatomy, training, tools, fatigue and local knowledge constrain action. No unlisted magic or universal hacking.",
+  "art_status": "New design developed for this edition; exact colors and silhouette set by card and cast plate.",
+  "art": {
+    "file": "CAST-06.png",
+    "column": 2,
+    "row": 0,
+    "grid": [
+      3,
+      2
+    ]
+  },
+  "performance": {
+    "silhouette": "Snowy owl, pale barred feathers, midnight-blue mantle, copper archival seals and one frost-darkened wing tip.",
+    "expression_set": [
+      "neutral listening",
+      "pleased",
+      "concerned",
+      "frustrated",
+      "focused"
+    ],
+    "motion_rule": "Use a held body pose for dialogue with separate mouth shapes, blinks and intentional expression changes. Preserve facial landmarks.",
+    "limits": "Species anatomy, training, tools, fatigue and local knowledge constrain action. No unlisted magic or universal hacking."
+  }
+}

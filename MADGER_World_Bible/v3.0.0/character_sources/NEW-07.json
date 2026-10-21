@@ -1,0 +1,44 @@
+{
+  "id": "NEW-07",
+  "name": "Namu Deep",
+  "group": "Regional cast",
+  "identity": "Adult nonbinary axolotl",
+  "origin": "Lumen Tide",
+  "affiliation": "FAC-07",
+  "seed": "To trade knowledge without turning the Hollow Sea into a resource claim.",
+  "status": "Developed baseline 3.0",
+  "age": 51,
+  "height_m": 1.22,
+  "design": "Pearl-gray axolotl, rose external gills, dark teal woven coat, amber mineral beads; humid habitat needs matter.",
+  "history": "A harbor navigator from a long-established deep-water community, chosen as a rotating speaker for surface relations.",
+  "desire": "To trade knowledge without turning the Hollow Sea into a resource claim.",
+  "contradiction": "Withholds so much context that partners cannot tell a boundary from a threat.",
+  "relationships": "Toma seeks passage; Eris manages surface descent; Ossa’s order holds an old partial chart.",
+  "arc": "Explains a protected route without surrendering restricted nesting grounds, and accepts a visitor’s useful correction.",
+  "story_engine": "A surface map omits an inhabited shoreline; a lost ship returns carrying the wrong season’s cargo.",
+  "writer_truth": "Their city’s founding traditions disagree; no single recovered tablet settles whose family belongs.",
+  "voice": "No voice assigned; do not substitute an existing hero voice.",
+  "skills_and_limits": "Species anatomy, training, tools, fatigue and local knowledge constrain action. No unlisted magic or universal hacking.",
+  "art_status": "New design developed for this edition; exact colors and silhouette set by card and cast plate.",
+  "art": {
+    "file": "CAST-05.png",
+    "column": 2,
+    "row": 1,
+    "grid": [
+      3,
+      2
+    ]
+  },
+  "performance": {
+    "silhouette": "Pearl-gray axolotl, rose external gills, dark teal woven coat, amber mineral beads; humid habitat needs matter.",
+    "expression_set": [
+      "neutral listening",
+      "pleased",
+      "concerned",
+      "frustrated",
+      "focused"
+    ],
+    "motion_rule": "Use a held body pose for dialogue with separate mouth shapes, blinks and intentional expression changes. Preserve facial landmarks.",
+    "limits": "Species anatomy, training, tools, fatigue and local knowledge constrain action. No unlisted magic or universal hacking."
+  }
+}
