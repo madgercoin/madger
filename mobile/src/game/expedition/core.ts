@@ -286,8 +286,10 @@ export function fixedStep(s: Expedition, course: CourseItem[], events: GameEvent
   if(s.mode!=='countdown' && s.mode!=='running') return;
   s.tick++;
   // Collision uses the damped physical x, never an instantly changed lane index.
-  const target=s.lane*LANE_WIDTH*(s.board==='overgrown'?overgrownPathWidth(s.route,s.distance):1), acceleration=95*(target-s.x)-19*s.vx;
-  s.vx+=acceleration*STEP; s.x=clamp(s.x+s.vx*STEP,-LANE_WIDTH-.04,LANE_WIDTH+.04);
+  const pathWidth=s.board==='overgrown'?overgrownPathWidth(s.route,s.distance):1;
+  const limit=LANE_WIDTH+.04+Math.max(0,pathWidth-1)*LANE_WIDTH*2;
+  const target=s.lane*LANE_WIDTH*Math.min(1,pathWidth), acceleration=95*(target-s.x)-19*s.vx;
+  s.vx+=acceleration*STEP; s.x=clamp(s.x+s.vx*STEP,-limit,limit);
   if(s.mode==='countdown') {s.countdown=Math.max(0,s.countdown-STEP);if(s.countdown<=1e-6){s.mode='running';event(s,events,'hint','GO! FOLLOW THE GOLD');}return;}
   s.time+=STEP;
   if(s.slide>0)s.slideAge+=STEP;
@@ -477,7 +479,10 @@ export function overgrownPathOffset(route:Route,d:number){
 export function overgrownPathWidth(route:Route,d:number){
  if(!OVERGROWN_ROUTES.includes(route))return 1;
  const start=['rootway','ridge','deep'].includes(route)?140:455;
- return 1/3+2/3*smooth((d-start)/24);
+ const entry=smooth((d-start)/24);
+ // The lower road catches a missed jump or tunnel from either entrance.
+ if(['mosswalk','causeway','mudslide'].includes(route))return 1.5-.5*entry;
+ return 1/3+2/3*entry;
 }
 /** Metres above the base trail. Upper roads have a real .65m entrance lip;
  * every road eases back to the same elevation before its safe rejoin. */
@@ -487,7 +492,7 @@ export function overgrownPathHeight(route:Route,d:number){
  const tunnel=['log-crossing','gearworks','ancient-vault'].includes(route);
  if(d<455||d>=900||(!upper&&!lower&&!tunnel))return 0;
  const entry=smooth((d-455)/24),exit=smooth((900-d)/28);
- return (upper?.65+1.25*entry:lower?-.85*entry:-.45*entry)*exit;
+ return (upper?.65+1.25*entry:lower?-.30-.55*entry:-.45*entry)*exit;
 }
 export function freshOvergrownExpedition(seed:number,id:string,shards:Record<CompanionId,number>={snow:0,gorilla:0,bot:0},upgrades:{armor:number;magnet:number;fortune:number}={armor:0,magnet:0,fortune:0}):Expedition{
  const s=freshExpedition(seed,id);
@@ -511,7 +516,7 @@ function commitFork(s:Expedition,choice:ForkOption,events:GameEvent[]){
  if(!s.secrets.includes(choice.id))s.secrets.push(choice.id);
  s.route=choice.id;s.routeStart=stage===1?140:455;s.routeEnd=stage===1?450:900;s.routeSide=choice.side;
  const localX=worldX-routeOffset(s),shift=localX-s.x;
- s.x=clamp(localX,-LANE_WIDTH,LANE_WIDTH);s.lane=0;
+ s.x=localX;s.lane=0;
  for(const id of COMPANION_IDS){s.companions[id].followX+=shift;clearCompanionAction(s.companions[id]);}
  // Preserve world-space jump height across the raised entrance.
  s.y=Math.max(0,s.y+previousHeight-overgrownPathHeight(choice.id,s.distance));

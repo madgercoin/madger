@@ -631,9 +631,11 @@ function fixedStep(s, course, events) {
         return;
     s.tick++;
     // Collision uses the damped physical x, never an instantly changed lane index.
-    const target = s.lane * exports.LANE_WIDTH * (s.board === 'overgrown' ? overgrownPathWidth(s.route, s.distance) : 1), acceleration = 95 * (target - s.x) - 19 * s.vx;
+    const pathWidth = s.board === 'overgrown' ? overgrownPathWidth(s.route, s.distance) : 1;
+    const limit = exports.LANE_WIDTH + .04 + Math.max(0, pathWidth - 1) * exports.LANE_WIDTH * 2;
+    const target = s.lane * exports.LANE_WIDTH * Math.min(1, pathWidth), acceleration = 95 * (target - s.x) - 19 * s.vx;
     s.vx += acceleration * exports.STEP;
-    s.x = (0, exports.clamp)(s.x + s.vx * exports.STEP, -exports.LANE_WIDTH - .04, exports.LANE_WIDTH + .04);
+    s.x = (0, exports.clamp)(s.x + s.vx * exports.STEP, -limit, limit);
     if (s.mode === 'countdown') {
         s.countdown = Math.max(0, s.countdown - exports.STEP);
         if (s.countdown <= 1e-6) {
@@ -962,7 +964,11 @@ function overgrownPathWidth(route, d) {
     if (!exports.OVERGROWN_ROUTES.includes(route))
         return 1;
     const start = ['rootway', 'ridge', 'deep'].includes(route) ? 140 : 455;
-    return 1 / 3 + 2 / 3 * (0, exports.smooth)((d - start) / 24);
+    const entry = (0, exports.smooth)((d - start) / 24);
+    // The lower road catches a missed jump or tunnel from either entrance.
+    if (['mosswalk', 'causeway', 'mudslide'].includes(route))
+        return 1.5 - .5 * entry;
+    return 1 / 3 + 2 / 3 * entry;
 }
 /** Metres above the base trail. Upper roads have a real .65m entrance lip;
  * every road eases back to the same elevation before its safe rejoin. */
@@ -973,7 +979,7 @@ function overgrownPathHeight(route, d) {
     if (d < 455 || d >= 900 || (!upper && !lower && !tunnel))
         return 0;
     const entry = (0, exports.smooth)((d - 455) / 24), exit = (0, exports.smooth)((900 - d) / 28);
-    return (upper ? .65 + 1.25 * entry : lower ? -.85 * entry : -.45 * entry) * exit;
+    return (upper ? .65 + 1.25 * entry : lower ? -.30 - .55 * entry : -.45 * entry) * exit;
 }
 function freshOvergrownExpedition(seed, id, shards = { snow: 0, gorilla: 0, bot: 0 }, upgrades = { armor: 0, magnet: 0, fortune: 0 }) {
     const s = freshExpedition(seed, id);
@@ -1013,7 +1019,7 @@ function commitFork(s, choice, events) {
     s.routeEnd = stage === 1 ? 450 : 900;
     s.routeSide = choice.side;
     const localX = worldX - routeOffset(s), shift = localX - s.x;
-    s.x = (0, exports.clamp)(localX, -exports.LANE_WIDTH, exports.LANE_WIDTH);
+    s.x = localX;
     s.lane = 0;
     for (const id of companions_1.COMPANION_IDS) {
         s.companions[id].followX += shift;

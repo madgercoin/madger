@@ -242,3 +242,13 @@ test('route ambience and lighting follow the actual biome even though the board 
  const s=run();for(const [route,zone] of [['rootway',0],['watchtower',1],['deep',2],['crystal-vein',2],['ancient-vault',2]]){s.route=route;assert.equal(G.environmentZone(s),zone);}
  const legacy=G.freshExpedition(1);legacy.zone=2;assert.equal(G.environmentZone(legacy),2);
 });
+
+test('a missed right tunnel falls onto the lower catch road without a horizontal teleport or recovery clamp',()=>{
+ const s=run();Object.assign(s,{distance:454.97,forkStage:1,majorPath:'rootway',route:'main',lane:1,x:G.LANE_WIDTH,y:0});
+ const before=s.x+G.routeOffset(s);step(s,[],[]);
+ assert.equal(s.route,'mosswalk');assert.equal(s.hp,3);assert(s.y>.29,'visible small drop to the lower surface');
+ assert(Math.abs(s.x+G.routeOffset(s)-before)<1e-10,'world x must survive a missed tunnel');
+ const restored=P.sanitizeExpedition(JSON.parse(JSON.stringify(s)));assert(restored);assert.equal(restored.x,s.x,'cold recovery preserves the catch-road position');
+ const oldX=s.x;step(s,[],[]);assert(Math.abs(s.x-oldX)<.04,'next fixed step cannot clamp the runner across lanes');
+ const half=3.225*G.overgrownPathWidth(s.route,s.distance);assert(Math.abs(s.x)<half,'the visible lower road must support this landing');
+});

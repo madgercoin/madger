@@ -13,7 +13,8 @@ its stricter native QA. The original Windows workspace is untouched.
   entrances overlapped. Forks now start at the three entrance lanes, widen into
   separate roads and rebase player-local coordinates without teleporting world
   position. Upper subroutes have a 0.65m jump lip and rise to 1.9m; lower and
-  tunnel roads descend. All ease to zero elevation before the 900m rejoin.
+  tunnel roads descend. A wider lower catch road supports missed centre/right
+  entrances, and cold recovery retains the full catch-road position. All ease to zero elevation before the 900m rejoin.
 - **Moving danger:** boulders previously spun on one spot. Their deterministic
   rockfall pose now starts on a visible bank, descends into the target lane and
   rolls forward. Rendering and swept collision use the same centre. Pause and
@@ -39,7 +40,7 @@ policy; it is not reported as a graphics pass. Hosted tests use their normal
 browser environment and retain the 400ms gameplay pause and strict two-second
 foreground-observation-through-kill deadline.
 
-This is still stylized 3D. Native albedo/normal lighting does not equal the full
+This is still stylized 3D. Native textured vertex-normal lighting does not equal the full
 browser PBR renderer or photorealism. Authored landmarks, long-duration device
 frame pacing, thermals, audible phone review and full companion activation on
 Android remain separate review work. High-value platform-top coin sequences
