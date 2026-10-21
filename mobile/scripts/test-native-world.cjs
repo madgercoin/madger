@@ -48,3 +48,14 @@ test('cave ceiling has matching end rings, inward normals and safe headroom',()=
  for(let i=0;i<v.length;i+=6){lowest=Math.min(lowest,v[i+1]);assert(v[i+4]<0,'ceiling normals face into the cave');if(Math.abs(v[i+2])===1)rings[v[i+2]===-1?0:1].set(v[i],v[i+1]);}
  assert.deepEqual([...rings[0]].sort(),[...rings[1]].sort());assert(10+lowest*4.2>6.5,'roof stays well above jumping characters');
 });
+
+test('native road surfaces meet across both forks and the final rejoin without false pits',()=>{
+ for(const distance of [0,132,137,139,140,141,448,450,453,455,456,898,900,902]){
+  const scene=Object.create(ExpeditionScene.prototype),drawn=[];
+  scene.renderer={worldReady:true,sceneryBudget:0,shape:(shape,c,x,y,z,sx,sy,sz)=>drawn.push({shape,x,y,z,sx,sy,sz}),add:()=>{}};
+  const run=C.freshOvergrownExpedition(42,'joins');run.distance=distance;run.mode='running';
+  run.route=distance<140||distance>=900?'main':distance<455?'rootway':'root-arch';run.majorPath=distance<140?null:'rootway';
+  scene.setCourse([]);scene.overgrownScenery(run,1,false);const centre=C.overgrownPathOffset(run.route,distance);
+  assert(drawn.some(o=>o.shape==='trail'&&Math.abs(o.z)<=o.sz*.5&&Math.abs(o.x-centre)<o.sx*.5),`continuous safe ground at ${distance}m on ${run.route}`);
+ }
+});

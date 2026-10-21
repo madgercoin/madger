@@ -316,8 +316,8 @@ export class ExpeditionScene {
     const mud=theme==='cavern'?color('#6c7b85',-8):theme==='ruins'?color('#716458',-1):color('#625848',-1);
     const edge=theme==='cavern'?color('#3A3446',-8):theme==='ruins'?color('#4F504D',-8):color('#4B4638',-8);
     const vegetation=theme==='cavern'?color('#4B6D69'):theme==='ruins'?C.leaf:C.leafLight;
-    const step=6,first=Math.max(phase.start+3,Math.floor((d-9)/step)*step);
-    for(let wd=first;wd<Math.min(phase.end-2,d+90);wd+=step){
+    const step=6,first=this.renderer.worldReady?Math.max(phase.start,Math.floor((d-12)/step)*step):Math.max(phase.start+3,Math.floor((d-9)/step)*step);
+    for(let wd=first;wd<Math.min(phase.end+(this.renderer.worldReady?3:-2),d+90);wd+=step){
      const z=d-wd,off=overgrownPathOffset(option.id,wd),x=off+curve(wd)-base,y=floorY(wd),n=Math.floor(wd/6);
      const delta=(overgrownPathOffset(option.id,wd+1)+curve(wd+1)-overgrownPathOffset(option.id,wd-1)-curve(wd-1))*.5;
      const roadYaw=-Math.atan(delta);
