@@ -303,3 +303,10 @@ test('Down on a terrace steers toward the lower road instead of passing through 
  for(let i=0;i<60;i++)step(s,c);
  assert.equal(s.y,0);assert(Math.abs(s.x)<.2);assert.equal(s.hp,3);
 });
+
+
+test('terrace support reaches the measured solid mesh edge before the safe drop',()=>{
+ const {s,c,deck}=terraceRun();Object.assign(s,{distance:deck.d+13.5,y:.9,vy:0,groundHeight:.9});
+ step(s,c);assert.equal(s.y,.9,'do not fall through the final solid rock section');
+ for(let i=0;i<35;i++)step(s,c);assert(s.distance>deck.d+13.7);assert(s.y<.9,'fall starts beyond the visible edge');
+});

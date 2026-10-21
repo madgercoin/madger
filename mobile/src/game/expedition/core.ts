@@ -292,7 +292,7 @@ function hurt(s: Expedition, item: CourseItem, events: GameEvent[]) {
 /** Shared solid terrace support, also used by checkpoint recovery and animation. */
 export function bonusDeckAt(s:Pick<Expedition,'route'|'distance'|'x'>, course:CourseItem[]){
  return course.find(i=>i.kind==='bonus-ledge'&&i.route===s.route
-  &&s.distance>=i.d+1.05&&s.distance<=i.d+13.1&&Math.abs(s.x-i.lane*LANE_WIDTH)<.74);
+  &&s.distance>=i.d+1.05&&s.distance<=i.d+13.7&&Math.abs(s.x-i.lane*LANE_WIDTH)<.90);
 }
 /** Mutates only this run. fixedStep is called at 120 Hz; rendering is independent. */
 export function fixedStep(s: Expedition, course: CourseItem[], events: GameEvent[]) {
