@@ -38,13 +38,16 @@ function hillGeometry() {
   const p=g.attributes.position,uv=g.attributes.uv;
   for(let i=0;i<p.count;i++){
     const x=p.getX(i),z=p.getZ(i);
-    const shoulder=Math.pow(Math.max(0,1-Math.abs(x)),.62);
-    // Uneven eroded crests instead of a repeated triangular mound silhouette.
-    const ridge=.46+.20*Math.sin(x*7.7+z*1.2)+.11*Math.sin(x*16.9-z*2.1)
-      +.075*Math.cos(x*25.1+z*6.1);
-    const erosion=.04*Math.sin(x*15.4+z*12.2)*Math.cos(z*9.1-x*7.7);
-    const y=Math.max(0,shoulder*(ridge+erosion));
-    p.setY(i,y);uv.setXY(i,(x+1)*2.3,(z+1)*2.3);
+    const shoulder=Math.pow(Math.max(0,1-Math.abs(x)),.58);
+    // Several geological bands and asymmetric crests break up the old
+    // repeated tent-shaped silhouette without adding material or draw calls.
+    const crest=.49+.18*Math.sin(x*5.7+z*.9)+.13*Math.cos(x*12.9-z*2.9)
+      +.075*Math.sin(x*22.2+z*7.1)+.040*Math.cos(x*37.1-z*13.4);
+    const fractured=.052*Math.sin(x*19.1+z*24.5)*Math.cos(z*12.1-x*13.7)
+      +.032*Math.sin(x*40.4-z*9.4)*Math.sin(z*26.1+x*11.9);
+    const strata=.034*Math.cos((z+1)*15.6+x*8.4);
+    const y=Math.max(0,shoulder*(crest+fractured+strata));
+    p.setY(i,y);uv.setXY(i,(x+1)*3.1,(z+1)*3.2);
   }
   p.needsUpdate=true;g.computeVertexNormals();g.computeBoundingSphere();return g;
 }
