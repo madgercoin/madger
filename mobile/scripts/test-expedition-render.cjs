@@ -127,3 +127,46 @@ test('native starts conservative but browser scene retains full detail', () => {
   assert.equal(web.sceneryBudget, 2);
   native.dispose();web.dispose();
 });
+
+test('native moving background uses one bounded smooth ridgeline batch', t => {
+  t.mock.method(console, 'info', () => {});
+  const {gl,state} = context();
+  const renderer=new ExpeditionRenderer(gl);
+  try {
+    const ridge=renderer.batches.get('ridge');
+    assert(ridge,'procedural far-bank mesh is absent on native GL');
+    assert.equal(ridge.vertices,12*8*2*3,'tessellation exceeds the mobile background budget');
+    assert(Number.isFinite(ridge.bounds.half[0]));
+    assert(ridge.bounds.half[0]>.95,'ridgeline cannot collapse to a billboard');
+    assert(ridge.bounds.half[1]>.20,'ridgeline has no real 3D relief');
+    renderer.reset();
+    renderer.shape('ridge',[.43,.52,.46,-8],0,-.2,-18,9,9,13);
+    renderer.shape('ridge',[.43,.52,.46,-8],0,-.2,-38,10,7,12);
+    renderer.render([0,4,9],[0,1,-14],2,0,340);
+    assert.equal(renderer.stats.drawCalls,1,'new bank cannot add one draw call per rock');
+    assert.equal(renderer.stats.instances,2);
+    assert.equal(renderer.stats.triangles,2*12*8*2);
+    assert.equal(state.pending.length,0,'background frames must drain before new simulation');
+  }finally {renderer.dispose();}
+});
+
+test('animated native sky uses the existing sphere batch and completes frame draining', t => {
+  t.mock.method(console, 'info', () => {});
+  const {gl,state}=context();
+  const shaderSources=[];
+  gl.shaderSource=(_shader,source)=>shaderSources.push(source);
+  const renderer=new ExpeditionRenderer(gl);
+  try{
+    const fragment=shaderSources.find(source=>source.includes('GL_FRAGMENT_PRECISION_HIGH'));
+    assert(fragment,'native fragment shader not provided to GL');
+    assert.match(fragment,/vColor\.a < -8\.5 && vColor\.a > -9\.5/);
+    assert.match(fragment,/float drift=uTime\*\.023/,'sky has no frame-time cloud motion');
+    renderer.reset();
+    renderer.shape('sphere',[.70,.81,.78,-9],0,4.4,9.6,138,138,138);
+    renderer.render([0,4.4,9.6],[0,1,-14],3,0,200);
+    assert.equal(renderer.stats.instances,1,'sky globe was frustum culled');
+    assert.equal(renderer.stats.drawCalls,1,'sky added an independent draw pass');
+    assert.equal(state.pending.length,0,'sky cannot queue unpresented frames');
+    assert.equal(renderer.stats.triangles,renderer.batches.get('sphere').vertices/3);
+  }finally{renderer.dispose();}
+});

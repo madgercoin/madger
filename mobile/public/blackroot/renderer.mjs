@@ -11,6 +11,7 @@ import { terrainBiome, terrainProfile, terrainSurfaceHeight, sceneryProfile, atm
 import { MadgerHero } from './madger-hero.mjs';
 import { CavernVault } from './cavern-vault.mjs';
 import { RuinLandmarks } from './ruin-landmarks.mjs';
+import { LivingBackdrop, canopyFade, canopyWind } from './living-backdrop.mjs';
 
 const ASSETS = '/blackroot/assets/';
 async function loadForestPack(){
@@ -165,7 +166,7 @@ class ForestRenderer {
     // Keep the protective safety pause and deterministic physics unchanged.
     const vault=this.cavernVault.mesh,wasVisible=vault.visible;
     const formations=[this.cavernVault.formations.stone,this.cavernVault.formations.quartz,
-      ...this.ruins.meshes,...this.scanBatches.map(batch=>batch.mesh)];
+      this.backdrop.hills,...this.ruins.meshes,...this.scanBatches.map(batch=>batch.mesh)];
     const oldFormationStates=formations.map(mesh=>({mesh,visible:mesh.visible,count:mesh.count}));
     vault.visible=true;
     for(const mesh of formations){
@@ -207,11 +208,17 @@ class ForestRenderer {
     }
     this.treeGeometry=mergeGeometries(tubes);tubes.forEach(g=>g.dispose());
     this.trees=new T.InstancedMesh(this.treeGeometry,new T.MeshStandardMaterial({...this.bark,color:'#ada48c',roughness:.95}),28);
-    this.trees.castShadow=true;this.trees.receiveShadow=true;this.trees.frustumCulled=false;this.scene.add(this.trees);
+    // Retain this fallback mesh resource for compatibility, but keep the old
+    // naked geometric tree skeletons invisible in the rich PBR routes.
+    this.trees.count=0;this.trees.castShadow=false;this.trees.receiveShadow=true;
+    this.trees.frustumCulled=false;this.scene.add(this.trees);
     const shaftMaterial=new T.MeshBasicMaterial({color:'#ffdda1',transparent:true,opacity:.035,depthWrite:false,side:T.DoubleSide,blending:T.AdditiveBlending});
     this.shafts=new T.InstancedMesh(new T.ConeGeometry(1,13,12,1,true),shaftMaterial,4);this.shafts.frustumCulled=false;this.scene.add(this.shafts);
     this.cavernVault=new CavernVault(this.scene,this.stone);
     this.ruins=new RuinLandmarks(this.scene,this.stone);
+    // Instanced PBR far banks and gently moving layered sky are visual only.
+    // Created during loading, not when the player encounters a new route.
+    this.backdrop=new LivingBackdrop(this.scene,this.stone);
   }
   category(shape,c) {
     if(shape==='halo'||shape==='shadow')return shape;
@@ -334,6 +341,10 @@ class ForestRenderer {
     this.terrain.visible=s.mode!=='chamber';
     this.cavernVault.update(s,travel,road,curve);
     this.ruins.update(s,travel,road,curve,surface,s.time||0,this.quality);
+    // Absolute-world-distance bank placement avoids cyclic tiling and scenery
+    // snaps when the runner approaches a fork or moves into the next area.
+    this.backdrop.update({biome,travel,time:breezeTime,quality:this.quality,
+      chamber:s.mode==='chamber',centre:d=>road(s,d)+curve(d)-curve(travel)});
     if(s.mode==='chamber'){
       for(const {mesh} of this.scanBatches)mesh.count=0;this.trees.count=0;this.shafts.count=0;
       const x=s.x+road(s,travel),accent=s.chamber==='guardian-nest'?'#ffd8a0':s.chamber==='moonwell'?'#b8a7ff':'#79d9e6';
@@ -371,14 +382,20 @@ class ForestRenderer {
           continue;
         }
         if(id==='island_tree_02'){
-          const near=i<=2&&side===(i%2===0?1:-1);
-          // Ruins prioritize stone landmarks: expensive scanned canopy belongs
-          // in the forest, not every distant watchridge background slot.
-          const distant=!ruins&&i>2&&n%2===0&&this.quality===1;
-          if(underground||(!near&&!distant))continue;
-          const spread=6.6+r*1.9,scale=(6.5+r*2.2)*scenery.treeScale;
+          // Absolute-world seed selects each tree, not its sliding view slot:
+          // a full scanned canopy never pops in/out when a 12m cell advances.
+          const ahead=d-travel,chosenSide=n%3===0?1:-1;
+          const nearRuin=ruins&&i<=2&&side===(i%2===0?1:-1);
+          const forestTree=!ruins&&!underground&&side===chosenSide
+            &&(n%2===0||n%5===0)&&(this.quality>=.58||ahead<=48);
+          if(underground||(!nearRuin&&!forestTree))continue;
+          const envelope=canopyFade(ahead);
+          if(!ruins&&envelope<.03)continue;
+          const spread=6.6+r*1.9,scale=(6.5+r*2.2)*scenery.treeScale
+            *(ruins?1:envelope);
           const x=road(s,d)+curve(d)-curve(travel)+side*spread;
-          mesh.setMatrixAt(count++,matrix(x,surface(x,d)-.02,z,scale,scale,scale,0,r*6.28,side*.035));
+          mesh.setMatrixAt(count++,matrix(x,surface(x,d)-.02,z,scale,scale,scale,
+            canopyWind(breezeTime,d,r*6.28)*.5,r*6.28,side*.035+canopyWind(breezeTime,d,side)));
           continue;
         }
         if(id==='fern_02'&&underground)continue;if(id==='dead_tree_trunk'&&(underground||n%3!==0))continue;
@@ -413,14 +430,10 @@ class ForestRenderer {
       }
       mesh.count=count;mesh.instanceMatrix.needsUpdate=true;
     }
-    let trees=0;
-    if(!underground&&!ruins&&this.quality>=.5)for(let i=8;i<=12;i++)for(const side of [-1,1]){ // forest silhouettes; masonry leads ruins
-      const d=start+i*9,z=travel-d,n=Math.floor(d/9),r=hash(n*3+side+scenery.seed*7),scale=(.88+r*.42)*scenery.treeScale;
-      if(z>-8)continue;
-      const x=road(s,d)+curve(d)-curve(travel)+side*(5.3+r*2);
-      this.trees.setMatrixAt(trees++,matrix(x,surface(x,d)-.12,z,scale,scale,scale,0,r*6.28,side*.06));
-    }
-    this.trees.count=trees;this.trees.instanceMatrix.needsUpdate=true;
+    // Do not draw the former stiff, leafless tube-tree silhouettes. Scanned,
+    // fully textured 3D canopies above now supply the distant living forest,
+    // wind response and stable world-distance transitions at lower draw cost.
+    this.trees.count=0;
     this.stats.groundedSceneryInstances=anchored;
     if(this.terrainRoute!==s.route||Math.abs(travel-(this.terrainD??-100))>1.8){
     this.terrainRoute=s.route;this.terrainD=travel;
@@ -513,10 +526,13 @@ class ForestRenderer {
     this.stats.ruinTowerCourses=this.ruins.stats.towerCourses;
     this.stats.ruinGears=this.ruins.stats.rotatingGears;
     this.stats.sunbeamPrimitives=this.shafts.count;
-    if(typeof window!=='undefined')window.madgerForestDiagnostics={photoscannedTrees:this.stats.photoscannedTrees,photoscannedRoots:this.stats.photoscannedRoots,photoscannedGrasses:this.stats.photoscannedGrasses,terrainVertices:this.stats.terrainVertices,drawCalls:this.stats.drawCalls,triangles:this.stats.triangles,scanCpuMs:this.stats.scanCpuMs,webglSubmitMs:this.stats.webglSubmitMs,resolutionScale:this.quality,dynamicShadows:this.stats.dynamicShadows,route:this.stats.route,biome:this.stats.biome,terrainProfileLoaded:this.stats.terrainProfileLoaded,sceneryProfileLoaded:this.stats.sceneryProfileLoaded,atmosphereProfileLoaded:this.stats.atmosphereProfileLoaded,sunbeamPrimitives:this.shafts.count,groundedSceneryInstances:this.stats.groundedSceneryInstances,terrainMaterial:this.terrainBiome,cavernVaultTriangles:this.stats.cavernVaultTriangles,cavernFormationInstances:this.stats.cavernFormationInstances,cavernMineralInstances:this.stats.cavernMineralInstances,cavernFormationTriangles:this.stats.cavernFormationTriangles,ruinArchStones:this.stats.ruinArchStones,ruinPierBlocks:this.stats.ruinPierBlocks,ruinRubbleStones:this.stats.ruinRubbleStones,ruinTowerCourses:this.stats.ruinTowerCourses,ruinGears:this.stats.ruinGears,madgerRig:this.stats.madgerRig,madgerMeshCount:this.stats.madgerMeshCount};
+    this.stats.backgroundLandforms=this.backdrop.stats.landforms;
+    this.stats.animatedSky=this.backdrop.stats.skyAnimated;
+    this.stats.skyVisible=this.backdrop.stats.skyVisible;
+    if(typeof window!=='undefined')window.madgerForestDiagnostics={photoscannedTrees:this.stats.photoscannedTrees,photoscannedRoots:this.stats.photoscannedRoots,photoscannedGrasses:this.stats.photoscannedGrasses,terrainVertices:this.stats.terrainVertices,drawCalls:this.stats.drawCalls,triangles:this.stats.triangles,scanCpuMs:this.stats.scanCpuMs,webglSubmitMs:this.stats.webglSubmitMs,resolutionScale:this.quality,dynamicShadows:this.stats.dynamicShadows,route:this.stats.route,biome:this.stats.biome,terrainProfileLoaded:this.stats.terrainProfileLoaded,sceneryProfileLoaded:this.stats.sceneryProfileLoaded,atmosphereProfileLoaded:this.stats.atmosphereProfileLoaded,sunbeamPrimitives:this.shafts.count,backgroundLandforms:this.stats.backgroundLandforms,animatedSky:this.stats.animatedSky,skyVisible:this.stats.skyVisible,groundedSceneryInstances:this.stats.groundedSceneryInstances,terrainMaterial:this.terrainBiome,cavernVaultTriangles:this.stats.cavernVaultTriangles,cavernFormationInstances:this.stats.cavernFormationInstances,cavernMineralInstances:this.stats.cavernMineralInstances,cavernFormationTriangles:this.stats.cavernFormationTriangles,ruinArchStones:this.stats.ruinArchStones,ruinPierBlocks:this.stats.ruinPierBlocks,ruinRubbleStones:this.stats.ruinRubbleStones,ruinTowerCourses:this.stats.ruinTowerCourses,ruinGears:this.stats.ruinGears,madgerRig:this.stats.madgerRig,madgerMeshCount:this.stats.madgerMeshCount};
     if(!this.logged){this.logged=true;console.info('MADGER_FOREST_RENDER',JSON.stringify(this.stats));}
   }
-  dispose(){if(this.dead)return;this.dead=true;this.cavernVault?.dispose();this.ruins?.dispose();for(const b of this.batches.values())b.mesh.dispose();for(const {mesh} of this.scanBatches){mesh.geometry.dispose();for(const value of Object.values(mesh.material))if(value?.isTexture)value.dispose();mesh.material.dispose();mesh.dispose();}for(const object of [this.terrain,this.trees,this.shafts]){object?.geometry.dispose();object?.material.dispose();}for(const g of this.geometries.values())g.dispose();for(const m of this.materials.values())m.dispose();for(const t of this.textures)t.dispose();for(const url of this.assetUrls?.values()||[])URL.revokeObjectURL(url);this.environment?.dispose();this.gpu.dispose();}
+  dispose(){if(this.dead)return;this.dead=true;this.cavernVault?.dispose();this.ruins?.dispose();this.backdrop?.dispose();for(const b of this.batches.values())b.mesh.dispose();for(const {mesh} of this.scanBatches){mesh.geometry.dispose();for(const value of Object.values(mesh.material))if(value?.isTexture)value.dispose();mesh.material.dispose();mesh.dispose();}for(const object of [this.terrain,this.trees,this.shafts]){object?.geometry.dispose();object?.material.dispose();}for(const g of this.geometries.values())g.dispose();for(const m of this.materials.values())m.dispose();for(const t of this.textures)t.dispose();for(const url of this.assetUrls?.values()||[])URL.revokeObjectURL(url);this.environment?.dispose();this.gpu.dispose();}
 }
 bridge=legacyCharacters(ForestRenderer);
 window.madgerOvergrownScene=async gl=> {

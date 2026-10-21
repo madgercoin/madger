@@ -287,11 +287,13 @@ export class ExpeditionScene {
       this.shape('rock',edge,bx,y+.16,z,1.08,.42,2.8,0,n*.21,0);
       if(n%3===0){
        if(theme==='forest'){
-        // Tapering trunks, forked branches, layered leaf crowns and hanging vines.
-        this.link([bx,y+.15,z],[bx+side*.14,y+3.65,z-.18],.30,bark);
-        this.link([bx+side*.14,y+2.65,z-.18],[bx-side*.92,y+4.26,z-.72],.15,bark);
-        this.link([bx+side*.14,y+3.05,z-.18],[bx+side*.86,y+4.72,z+.32],.13,bark);
-        for(let j=0;j<5;j++)this.shape('rock',j%2?C.leaf:C.leafLight,bx+Math.sin(j*2.32)*.67,y+4.6+Math.cos(j*3.1)*.37,z-.3+Math.cos(j*2.1)*.57,1.05,.53,.90,0,j,0);
+        // Living canopy sways above its fixed rooted base; only foliage and
+        // branch endpoints animate, never the path or hazard positions.
+        const wind=calm?0:Math.sin(time*.73+n*.43+side)*.095;
+        this.link([bx,y+.15,z],[bx+side*.14+wind*.42,y+3.65,z-.18+wind*.3],.30,bark);
+        this.link([bx+side*.14+wind*.31,y+2.65,z-.18],[bx-side*.92+wind,y+4.26,z-.72+wind*.4],.15,bark);
+        this.link([bx+side*.14+wind*.36,y+3.05,z-.18],[bx+side*.86+wind,y+4.72,z+.32+wind*.4],.13,bark);
+        for(let j=0;j<5;j++)this.shape('rock',j%2?C.leaf:C.leafLight,bx+Math.sin(j*2.32)*.67+wind,y+4.6+Math.cos(j*3.1)*.37,z-.3+Math.cos(j*2.1)*.57,1.05,.53,.90,0,j,0);
         if(!calm)this.link([bx-side*.5,y+4.1,z-.5],[bx-side*.48+Math.sin(time+n)*.05,y+2.65,z-.45],.020,C.leaf);
        }else if(theme==='ruins'){
         const broken=.65+hash(n*17+side)*1.75;
@@ -312,13 +314,9 @@ export class ExpeditionScene {
      }
      // Distant cliff silhouettes and softer outer banks fill the sky without
      // covering the runner or inventing hazards beyond the selected path.
-     if(n%4===0){
-      for(const side of [-1,1]){
-       const far=x+side*(17+hash(n*11+side)*4);
-       this.shape('rock',color(theme==='cavern'?'#383949':theme==='ruins'?'#43514F':'#344F49',-8),far,y+3.1,z-9,5.4,6.5,8.0,.1,n*.18,.04);
-       this.shape('rock',color(theme==='cavern'?'#456A67':'#476354',-8),far-side*3,y+.7,z-6,3.1,1.6,5.3,0,n*.19,0);
-      }
-     }
+     // Normal-shaded ridgeline strips now replace these old giant
+     // faceted placeholder rocks. The terrain banks are streamed below from
+     // stable absolute world distances and never block the three lanes.
      // Path-specific recognizable landmarks, not interchangeable filler props.
      if(option.id==='main'&&n%7===0){
       for(const side of [-1,1])this.shape('rock',C.leaf,x+side*3.6,y+.25,z+.6,.58,.35,.75,0,n*.31,0);
@@ -331,6 +329,26 @@ export class ExpeditionScene {
       if(option.id==='gearworks')this.gear(x-3.4,y+.95,z,.71,time*.5);
       if(option.id==='crystal-vein')for(const side of [-1,1])this.crystal(x+side*3.9,y+.1,z,.9,n+side);
       if(option.id==='ancient-vault'){this.shape('box',C.wood,x+3.8,y+.65,z,1.1,1.2,.9);this.shape('ring',C.goldGlow,x+3.8,y+1.12,z+.49,.29,1,.29);}
+     }
+    }
+    // Native WebGL counterpart of the richer browser PBR far banks.
+    // One reused indexed/instanced ridge batch; no new per-frame draw calls
+    // per hill, no collisions, no changes to the saved route or checkpoints.
+    const backdropFar=sceneryBudget===0?46:sceneryBudget===1?72:103;
+    const backdropTint=color(theme==='cavern'?'#4A5661':theme==='ruins'?'#898C83':'#607F72',-8);
+    const startBand=Math.floor((d-24)/24),endBand=Math.ceil((d+backdropFar)/24);
+    for(let band=startBand;band<=endBand;band++){
+     const distance=band*24,ahead=distance-d;
+     if(distance<phase.start+4||distance>phase.end-4||ahead<=2||ahead>=backdropFar)continue;
+     const fade=smooth((ahead-2)/16)*smooth((backdropFar-ahead)/20);
+     if(fade<.035)continue;
+     const roadCentre=overgrownPathOffset(option.id,distance)+curve(distance)-base;
+     for(const side of [-1,1]){
+      const noise=hash(band*71+side*17+(theme==='ruins'?89:13));
+      const bankX=roadCentre+side*(21+noise*3.1);
+      this.shape('ridge',backdropTint,bankX,floorY(distance)-.43,d-distance,
+       (8.2+noise*3)*fade,(7.4+noise*3)*fade,(13+noise*3.5)*fade,
+       0,(noise-.5)*.13,0);
      }
     }
     // At an imminent fork every doorway remains visible, even before choosing.
@@ -520,6 +538,16 @@ export class ExpeditionScene {
   const chamber=s.mode==='chamber',cx=s.x+routeOffset(s);
   const eye:Vec3=chamber?[cx+1.9,3.8,8]:lobby?[3.8,3.3,8.6]:[this.cameraX+shake,4.4+this.cameraY,9.6];
   const target:Vec3=chamber?[cx,1.3,-5]:lobby?[0,1.35,-.6]:[this.cameraX+curve(s.distance+22)-curve(s.distance),.9,-14];
+  // Inside a single existing sphere instancing batch: a low-cost moving
+  // atmospheric dome, not a static clear-color sky or an independent shader.
+  // Hidden underground and in secret chambers. Entirely visual: no physics,
+  // route state, checkpoint, rewards or hero transform changes.
+  const cavernRoutes=['deep','mudslide','crystal-vein','ancient-vault','hollow','grotto'];
+  if(s.board==='overgrown'&&!chamber&&!cavernRoutes.includes(s.route)){
+   const ruinRoutes=['ridge','causeway','watchtower','gearworks'];
+   const skyTint=ruinRoutes.includes(s.route)?'#bdc4b2':'#b4cfc8';
+   this.shape('sphere',color(skyTint,-9),eye[0],eye[1],eye[2],138,138,138);
+  }
   this.renderer.render(eye,target,visualTime,s.zone,s.distance);
  }
  dispose(){this.disposed=true;this.particles=[];this.renderer.dispose();}

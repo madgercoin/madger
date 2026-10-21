@@ -1,5 +1,5 @@
 import { multiply, perspective, lookAt, transform, type Mat4, type Vec3 } from './math';
-export type Shape='box'|'sphere'|'rock'|'cylinder'|'cone'|'ring'|'leaf'|'shadow'|'headStripe'|'tail'|'halo';
+export type Shape='box'|'sphere'|'rock'|'cylinder'|'cone'|'ring'|'leaf'|'shadow'|'headStripe'|'tail'|'halo'|'ridge';
 export type Color=[number,number,number,number];
 export type GL=WebGLRenderingContext|WebGL2RenderingContext;
 type NativeGL=GL & {endFrameEXP?:()=>void;flushEXP?:()=>void};
@@ -52,6 +52,26 @@ float hash(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
 float hash(vec2 p){p=mod(p,vec2(32.0));return fract(sin(dot(p,vec2(17.13,41.7)))*437.58545);}
 #endif
 void main(){
+ // Outdoor sky is an eye-centred instanced sphere in the existing sphere
+ // batch. World-space angular bands add animated clouds and a real horizon
+ // without a postprocess pass, extra GL program, or additional draw call.
+ if(vColor.a < -8.5 && vColor.a > -9.5){
+  vec3 direction=normalize(vLocal);
+  float height=smoothstep(-.16,.70,direction.y);
+  vec3 horizon=vColor.rgb;
+  vec3 zenith=vec3(.095,.19,.29);
+  vec3 atmosphere=mix(horizon,zenith,height);
+  float azimuth=atan(direction.x,direction.z);
+  float drift=uTime*.023;
+  float cloudWave=sin(azimuth*9.0+direction.y*17.0+drift)
+   *sin(azimuth*17.0-direction.y*12.0-drift*.63);
+  float cloudBand=smoothstep(.08,.26,direction.y)
+   *(1.0-smoothstep(.43,.75,direction.y));
+  float cirrus=smoothstep(.37,.76,cloudWave)*cloudBand*.27;
+  atmosphere=mix(atmosphere,vec3(.84,.88,.85),cirrus);
+  gl_FragColor=vec4(pow(max(atmosphere,vec3(0.0)),vec3(.4545)),1.0);
+  return;
+ }
  if(vColor.a < -5.5 && vColor.a > -6.5){float a=max(0.0,1.0-dot(vLocal.xy,vLocal.xy));gl_FragColor=vec4(vColor.rgb*1.8,a*a*.38);return;}
  if(vColor.a < -2.5 && vColor.a > -3.5){float a=max(0.0,1.0-dot(vLocal.xz,vLocal.xz));gl_FragColor=vec4(0.015,0.016,0.018,a*a*.32);return;}
  vec3 n=normalize(vNormal),view=normalize(uEye-vWorld);
@@ -120,6 +140,22 @@ function geometry(shape:Shape) {
    {n:[0,1,0],p:[[-.5,.5,.5],[.5,.5,.5],[.5,.5,-.5],[-.5,.5,-.5]]},
    {n:[0,-1,0],p:[[-.5,-.5,-.5],[.5,-.5,-.5],[.5,-.5,.5],[-.5,-.5,.5]]},
   ];for(const f of faces){triangle(v,f.p[0],f.p[1],f.p[2],f.n);triangle(v,f.p[0],f.p[2],f.p[3],f.n);}
+ }else if(shape==='ridge'){
+  // Coherent sculpted bank: 192 shaded triangles instead of large faceted
+  // primitive rocks. Instanced as a single low-cost native GL material batch.
+  const nx=12,nz=8;
+  const point=(i:number,j:number):Vec3=>{
+   const x=-1+i*2/nx,z=-1+j*2/nz;
+   const shoulder=Math.pow(Math.max(0,1-Math.abs(x)),.62);
+   const crown=.46+.20*Math.sin(x*7.7+z*1.2)+.11*Math.sin(x*16.9-z*2.1)
+      +.075*Math.cos(x*25.1+z*6.1);
+   const grain=.03*Math.sin(x*15.4+z*12.2)*Math.cos(z*9.1-x*7.7);
+   return [x,Math.max(0,shoulder*(crown+grain)),z];
+  };
+  for(let j=0;j<nz;j++)for(let i=0;i<nx;i++){
+   const a=point(i,j),b=point(i+1,j),c=point(i,j+1),d=point(i+1,j+1);
+   triangle(v,a,c,b);triangle(v,b,c,d);
+  }
  }else if(shape==='headStripe'){
   const point=(i:number,side:number):Vec3=>{const a=-1.29+i/64*3.65;const zig=[.00,.04,-.018,.05,-.023][i%5];const x=side*(.12+((i%4===0)?.03:0))+zig;const f=Math.sqrt(1-(x/.676)**2);return [x,.616*Math.cos(a)*f,-.03+.546*Math.sin(a)*f];};
   for(let i=0;i<64;i++){triangle(v,point(i,-1),point(i,1),point(i+1,-1));triangle(v,point(i,1),point(i+1,1),point(i+1,-1));}
@@ -260,7 +296,7 @@ export class ExpeditionRenderer {
   }else{
    const ext=gl.getExtension('ANGLE_instanced_arrays');if(ext){this.drawInstanced=ext.drawArraysInstancedANGLE.bind(ext);this.divisor=ext.vertexAttribDivisorANGLE.bind(ext);if('drawElementsInstancedANGLE' in ext&&typeof ext.drawElementsInstancedANGLE==='function')this.drawIndexedInstanced=ext.drawElementsInstancedANGLE.bind(ext);}
   }
-  for(const shape of ['box','sphere','rock','cylinder','cone','ring','leaf','headStripe','tail','shadow','halo'] as Shape[]){
+  for(const shape of ['box','sphere','rock','ridge','cylinder','cone','ring','leaf','headStripe','tail','shadow','halo'] as Shape[]){
    const data=shape==='tail'?tailGeometry(0,0,this.tailVertices,this.tailGrid):geometry(shape),vertex=gl.createBuffer(),instances=gl.createBuffer();if(!vertex||!instances)throw Error('GPU buffer allocation failed');
    gl.bindBuffer(gl.ARRAY_BUFFER,vertex);gl.bufferData(gl.ARRAY_BUFFER,data,gl.STATIC_DRAW);
    let elements:WebGLBuffer|null=null;
