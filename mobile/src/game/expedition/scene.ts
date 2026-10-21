@@ -122,7 +122,7 @@ export class ExpeditionScene {
   if(crouch>0)this.burrowTrail(s,crouch,calm);
   if(s.shields>0){this.shape('ring',C.mint,s.x+routeOffset(s),1.20+floorY(s.distance,s.route)+s.y,0,.88,1,.88,Math.PI/2,time*.8,0);this.shape('ring',C.mint,s.x+routeOffset(s),1.20+floorY(s.distance,s.route)+s.y,0,.88,1,.88,0,0,time*.5);}
   if(s.magnet>0)this.shape('ring',C.violet,s.x+routeOffset(s),floorY(s.distance,s.route)+.10,0,1.2+.07*Math.sin(time*5),1,1.2,0,time*.4,0);
-  if(s.burst>0)for(let i=0;i<7;i++)this.shape('cone',C.goldGlow,s.x+routeOffset(s)+(i-3)*.15,.45+s.y,i*.18+.35,.06,.8,.06,-Math.PI/2,0,0);
+  if(s.burst>0)for(let i=0;i<7;i++)this.shape('cone',C.goldGlow,s.x+routeOffset(s)+(i-3)*.15,floorY(s.distance,s.route)+.45+s.y,i*.18+.35,.06,.8,.06,-Math.PI/2,0,0);
  }
  /** Surface soil marks the runner's position while the articulated body is underground. */
  private burrowTrail(s:Expedition,weight:number,calm:boolean){
@@ -256,6 +256,14 @@ export class ExpeditionScene {
     this.shape('ceiling',color('#607582',-8),x,10.0,z,8.8,4.2,6.0,0,0,0);
     for(const side of [-1,1])this.shape('cone',color('#70838a',-8),x+side*4.7,y+6.8,z,.45,2.1,.52,Math.PI,0,0);
    }
+  }
+  // The narrow fork entrances expose the earth between roads. Give each
+  // junction a recessed ground bed so the clear sky cannot show through it.
+  // End before the first generated hazard row; authored gaps stay open.
+  for(const junction of [140,455]){
+   if(junction+27<d-18||junction-3>d+112)continue;
+   const wd=junction+12;
+   this.shape('trail',ground,curve(wd)-base,Math.sin(wd/34)*.12-1.25,d-wd,27,1,30);
   }
   for(let n=Math.floor(d/14);n*14<d+far;n++){
    const wd=n*14+7,ahead=wd-d;if(ahead<7)continue;

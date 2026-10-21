@@ -46,10 +46,12 @@ const server=http.createServer((req,res)=>{try{const u=new URL(req.url,'http://l
   assert(!await page.getByText('Choose your destiny.',{exact:true}).isVisible(),'Old blocking fork dialog returned');
   await page.getByLabel(/Expedition distance 1\d\d meters; lane .*; route rootway/).waitFor({timeout:7000});
   await page.waitForTimeout(1200);
+  // Read the non-preserved WebGL drawing buffer while it is actively rendered.
+  // After pause the compositor retains the picture but the buffer may be cleared.
+  assert(await nonblank(),'selected branch must render');
   await page.getByRole('button',{name:'Pause expedition',exact:true}).click();
   await page.getByText('Your run is safe.',{exact:true}).waitFor();
   await shot('05-rootway-physical-branch');
-  assert(await nonblank(),'selected branch must render');
   const forest=await page.evaluate(()=>window.madgerForestDiagnostics);
   assert(forest.photoscannedTrees>0,'Photogrammetry trees did not render');
   assert(forest.photoscannedGrasses>0,'3D ground-cover grass did not render');
