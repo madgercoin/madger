@@ -1,14 +1,14 @@
 {
   "world_id": "MADGER-BRW-HOME",
-  "canon_version": "3.0.0",
-  "volume": "The Open Ways / eight-region world atlas",
-  "bible": "v3.0.0/README.md",
+  "canon_version": "3.1.0",
+  "volume": "The Open Ways foundation + Living Places interior expansion",
+  "bible": "v3.1.0/README.md",
   "data": "v3.0.0/World_Atlas.json",
   "underground_blueprints": "v2.0.0/MADGER_Underground_Blueprints.pdf",
   "map": "v2.0.0/previews/UG-A2.png",
   "surface_blueprints": "blueprints/v1.0.0/MADGER_Burrow_Blueprints.pdf",
   "historical_foundation": "v1.0.0/MADGER_World_Bible.pdf",
-  "precedence": "v3.0 resolves exterior geography, companion origins and wider biographies reserved in earlier editions. Burrow v2.1 geometry, public access, population and approved hero voice references remain controlling and unchanged. Historical files are preserved.",
+  "precedence": "v3.0 resolves exterior geography, companion origins and wider biographies reserved in earlier editions. Burrow v2.1 geometry, public access, population and approved hero voice references remain controlling and unchanged. Historical files are preserved. v3.1 adds local histories and normal-day furnishing placements for thirteen existing exterior landmarks. Original geometry remains controlling. Companion stories and scene seeds are authored options pending placement in the dated episode ledger.",
   "source": "v3.0.0/source/",
   "living_world_text": "v2.1.0/LIVING_WORLD.md",
   "sub_locations": "v2.1.0/Sub_Locations.json",
@@ -75,5 +75,15 @@
     "verified_files": "v3.0.0/Drive_Links.json",
     "google_drive": "https://drive.google.com/drive/folders/1tTbzQwHeJqpzJfIrdjAXkteilfKnbgWv",
     "native_index": "https://docs.google.com/document/d/1mVmWBzLV7j1UFi5k8HSUqEnDxckAFl5X-jNZuhegg0M/edit"
+  },
+  "living_places": {
+    "edition": "3.1.0",
+    "index": "v3.1.0/README.md",
+    "data": "v3.1.0/output/Living_Places.json",
+    "props": "v3.1.0/output/Interior_Props.csv",
+    "plans": "v3.1.0/plans/",
+    "verified_files": "v3.1.0/output/Drive_Links.json",
+    "google_drive": "https://drive.google.com/drive/folders/11Txgava0ACtEftOU2rVZ34Le1W2n9XVC",
+    "base_commit": "0299a6f408ac43bf98789a1cb5b3c70af2249450"
   }
 }

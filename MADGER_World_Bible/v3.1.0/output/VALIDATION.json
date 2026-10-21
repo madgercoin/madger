@@ -1,0 +1,136 @@
+{
+  "edition": "3.1.0",
+  "base_commit": "0299a6f408ac43bf98789a1cb5b3c70af2249450",
+  "landmarks": 13,
+  "prop_count": 221,
+  "cast_references_valid": true,
+  "all_checks_passed": true,
+  "checks": [
+    {
+      "id": "INT-EXT-01-B01",
+      "unchanged_geometry": true,
+      "props": 24,
+      "within_room_and_nonoverlapping": true,
+      "clear_midwall_approaches_m": 1.6,
+      "central_circulation_unfurnished": true
+    },
+    {
+      "id": "INT-EXT-02-B02",
+      "unchanged_geometry": true,
+      "props": 16,
+      "within_room_and_nonoverlapping": true,
+      "clear_midwall_approaches_m": 1.6,
+      "central_circulation_unfurnished": true
+    },
+    {
+      "id": "INT-EXT-03-B02",
+      "unchanged_geometry": true,
+      "props": 29,
+      "within_room_and_nonoverlapping": true,
+      "clear_midwall_approaches_m": 1.6,
+      "central_circulation_unfurnished": true
+    },
+    {
+      "id": "INT-EXT-04-B01",
+      "unchanged_geometry": true,
+      "props": 16,
+      "within_room_and_nonoverlapping": true,
+      "clear_midwall_approaches_m": 1.6,
+      "central_circulation_unfurnished": true
+    },
+    {
+      "id": "INT-EXT-05-B01",
+      "unchanged_geometry": true,
+      "props": 8,
+      "within_room_and_nonoverlapping": true,
+      "clear_midwall_approaches_m": 1.6,
+      "central_circulation_unfurnished": true
+    },
+    {
+      "id": "INT-EXT-06-B01",
+      "unchanged_geometry": true,
+      "props": 24,
+      "within_room_and_nonoverlapping": true,
+      "clear_midwall_approaches_m": 1.6,
+      "central_circulation_unfurnished": true
+    },
+    {
+      "id": "INT-EXT-07-B02",
+      "unchanged_geometry": true,
+      "props": 16,
+      "within_room_and_nonoverlapping": true,
+      "clear_midwall_approaches_m": 1.6,
+      "central_circulation_unfurnished": true
+    },
+    {
+      "id": "INT-EXT-08-B02",
+      "unchanged_geometry": true,
+      "props": 16,
+      "within_room_and_nonoverlapping": true,
+      "clear_midwall_approaches_m": 1.6,
+      "central_circulation_unfurnished": true
+    },
+    {
+      "id": "INT-EXT-09-B02",
+      "unchanged_geometry": true,
+      "props": 16,
+      "within_room_and_nonoverlapping": true,
+      "clear_midwall_approaches_m": 1.6,
+      "central_circulation_unfurnished": true
+    },
+    {
+      "id": "INT-EXT-10-B02",
+      "unchanged_geometry": true,
+      "props": 16,
+      "within_room_and_nonoverlapping": true,
+      "clear_midwall_approaches_m": 1.6,
+      "central_circulation_unfurnished": true
+    },
+    {
+      "id": "INT-EXT-11-B02",
+      "unchanged_geometry": true,
+      "props": 16,
+      "within_room_and_nonoverlapping": true,
+      "clear_midwall_approaches_m": 1.6,
+      "central_circulation_unfurnished": true
+    },
+    {
+      "id": "INT-EXT-12-B01",
+      "unchanged_geometry": true,
+      "props": 16,
+      "within_room_and_nonoverlapping": true,
+      "clear_midwall_approaches_m": 1.6,
+      "central_circulation_unfurnished": true
+    },
+    {
+      "id": "INT-EXT-13-B01",
+      "unchanged_geometry": true,
+      "props": 8,
+      "within_room_and_nonoverlapping": true,
+      "clear_midwall_approaches_m": 1.6,
+      "central_circulation_unfurnished": true
+    }
+  ],
+  "story_word_counts": {
+    "The Unfinished Note": 959,
+    "The Empty Chair": 1017
+  },
+  "scope": "Fictional geometry and continuity assertions; not real-world fire, building or accessibility certification.",
+  "pdf_review": {
+    "MADGER_Living_Places.pdf": {
+      "pages": 22,
+      "out_of_bounds_text": 0,
+      "contact_sheets_reviewed": true,
+      "dense_page_reviewed": true,
+      "sha256": "dd2f21585a84e1761e956ab72df879d19387423692f23420c16bd9468918fb7a"
+    },
+    "MADGER_Furnished_Interiors.pdf": {
+      "pages": 13,
+      "out_of_bounds_text": 0,
+      "contact_sheets_reviewed": true,
+      "dense_page_reviewed": true,
+      "sha256": "fb0c2f90724418907d5dbc211c26c08985bc0ff2212042fbb9b20109c55ff610"
+    }
+  },
+  "visual_fix": "Six Roads prop legend spacing corrected and re-rendered; north exit label moved inside passage header area."
+}

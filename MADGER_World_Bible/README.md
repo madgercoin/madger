@@ -1,10 +1,15 @@
 # MADGER World Bible
 
-**Current development edition: [3.0 — The Open Ways](v3.0.0/README.md)** · 20 October 2026
+**Current development edition: [3.1 — Living Places](v3.1.0/README.md)** · 21 October 2026
+
+Edition 3.1 adds thirteen illustrated landmark interiors, local histories, 221 registered furnishings, thirteen measured furnished plans and two complete companion short stories. It extends the 3.0 world foundation below; it does not replace its geography or character cards.
 
 The Burrow is a populated home above and below ground within a larger fantasy world. The current foundation develops eight regions, fourteen principal communities, forty named characters, nine factions and twelve creatures. Four season outlines and twelve standalone stories connect personal choices to local history and competing loyalties.
 
 ## Start here
+
+- [Living Places 3.1 — illustrated interiors, local histories and complete stories](v3.1.0/README.md)
+- [Interior data and furnished plans](v3.1.0/output/Living_Places.json), [prop register](v3.1.0/output/Interior_Props.csv) and [SVG sheets](v3.1.0/plans/)
 
 - [Illustrated collection and master index](https://docs.google.com/document/d/1mVmWBzLV7j1UFi5k8HSUqEnDxckAFl5X-jNZuhegg0M/edit)
 - [Edition 3.0 scope, replication guide and sources](v3.0.0/README.md)

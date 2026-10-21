@@ -1,0 +1,679 @@
+{
+  "edition": "3.1.0",
+  "folder": {
+    "success": true,
+    "id": "11Txgava0ACtEftOU2rVZ34Le1W2n9XVC",
+    "url": "https://drive.google.com/drive/folders/11Txgava0ACtEftOU2rVZ34Le1W2n9XVC",
+    "title": "MADGER World Bible 3.1 — Living Places",
+    "parent_id": "1FpiwodNq-qeQmoDikp6_cDKG0jxbYe70"
+  },
+  "folders": {
+    "plans": {
+      "success": true,
+      "id": "1xEq6G5u_HWDfaKW_JJUeMlZLSw2Qk7Ii",
+      "url": "https://drive.google.com/drive/folders/1xEq6G5u_HWDfaKW_JJUeMlZLSw2Qk7Ii",
+      "title": "Furnished plans — SVG",
+      "parent_id": "11Txgava0ACtEftOU2rVZ34Le1W2n9XVC"
+    },
+    "art": {
+      "success": true,
+      "id": "1ZnL02BU-azQ396RtfQNtLSTQodYnb3uR",
+      "url": "https://drive.google.com/drive/folders/1ZnL02BU-azQ396RtfQNtLSTQodYnb3uR",
+      "title": "Interior art — original plates",
+      "parent_id": "11Txgava0ACtEftOU2rVZ34Le1W2n9XVC"
+    },
+    "source": {
+      "success": true,
+      "id": "1vw6jG_AXPUxntuOc8EpU1ByNIaRXxgUq",
+      "url": "https://drive.google.com/drive/folders/1vw6jG_AXPUxntuOc8EpU1ByNIaRXxgUq",
+      "title": "Editable source and validation",
+      "parent_id": "11Txgava0ACtEftOU2rVZ34Le1W2n9XVC"
+    }
+  },
+  "files": [
+    {
+      "path": "output/MADGER_Living_Places.pdf",
+      "result": {
+        "accepted_input": "file_uri",
+        "success": true,
+        "id": "1bz2u1omSRuv2XuL0QHhOMUJjtJI-ke6h",
+        "title": "MADGER_Living_Places.pdf",
+        "file_name": "MADGER_Living_Places.pdf",
+        "mime_type": "application/pdf",
+        "url": "https://drive.google.com/file/d/1bz2u1omSRuv2XuL0QHhOMUJjtJI-ke6h/view?usp=drivesdk",
+        "parent_id": "11Txgava0ACtEftOU2rVZ34Le1W2n9XVC",
+        "structuredContent": {
+          "accepted_input": "file_uri",
+          "success": true,
+          "id": "1bz2u1omSRuv2XuL0QHhOMUJjtJI-ke6h",
+          "title": "MADGER_Living_Places.pdf",
+          "file_name": "MADGER_Living_Places.pdf",
+          "mime_type": "application/pdf",
+          "url": "https://drive.google.com/file/d/1bz2u1omSRuv2XuL0QHhOMUJjtJI-ke6h/view?usp=drivesdk",
+          "parent_id": "11Txgava0ACtEftOU2rVZ34Le1W2n9XVC"
+        }
+      }
+    },
+    {
+      "path": "output/MADGER_Furnished_Interiors.pdf",
+      "result": {
+        "accepted_input": "file_uri",
+        "success": true,
+        "id": "1ieimc8b3mBZ1UNNB5-oDoLx9axnkjcGm",
+        "title": "MADGER_Furnished_Interiors.pdf",
+        "file_name": "MADGER_Furnished_Interiors.pdf",
+        "mime_type": "application/pdf",
+        "url": "https://drive.google.com/file/d/1ieimc8b3mBZ1UNNB5-oDoLx9axnkjcGm/view?usp=drivesdk",
+        "parent_id": "11Txgava0ACtEftOU2rVZ34Le1W2n9XVC",
+        "structuredContent": {
+          "accepted_input": "file_uri",
+          "success": true,
+          "id": "1ieimc8b3mBZ1UNNB5-oDoLx9axnkjcGm",
+          "title": "MADGER_Furnished_Interiors.pdf",
+          "file_name": "MADGER_Furnished_Interiors.pdf",
+          "mime_type": "application/pdf",
+          "url": "https://drive.google.com/file/d/1ieimc8b3mBZ1UNNB5-oDoLx9axnkjcGm/view?usp=drivesdk",
+          "parent_id": "11Txgava0ACtEftOU2rVZ34Le1W2n9XVC"
+        }
+      }
+    },
+    {
+      "path": "art/INTERIORS-01-v2.png",
+      "result": {
+        "accepted_input": "file_uri",
+        "success": true,
+        "id": "1Ltl_x-6CDMIE7T2i78ENLuQVoy_7or1Z",
+        "title": "INTERIORS-01-v2.png",
+        "file_name": "INTERIORS-01-v2.png",
+        "mime_type": "image/png",
+        "url": "https://drive.google.com/file/d/1Ltl_x-6CDMIE7T2i78ENLuQVoy_7or1Z/view?usp=drivesdk",
+        "parent_id": "1ZnL02BU-azQ396RtfQNtLSTQodYnb3uR",
+        "structuredContent": {
+          "accepted_input": "file_uri",
+          "success": true,
+          "id": "1Ltl_x-6CDMIE7T2i78ENLuQVoy_7or1Z",
+          "title": "INTERIORS-01-v2.png",
+          "file_name": "INTERIORS-01-v2.png",
+          "mime_type": "image/png",
+          "url": "https://drive.google.com/file/d/1Ltl_x-6CDMIE7T2i78ENLuQVoy_7or1Z/view?usp=drivesdk",
+          "parent_id": "1ZnL02BU-azQ396RtfQNtLSTQodYnb3uR"
+        }
+      }
+    },
+    {
+      "path": "art/INTERIORS-02.png",
+      "result": {
+        "accepted_input": "file_uri",
+        "success": true,
+        "id": "1G0cERrsTQzxr5uMrrxo-pL_fAVPlAM4-",
+        "title": "INTERIORS-02.png",
+        "file_name": "INTERIORS-02.png",
+        "mime_type": "image/png",
+        "url": "https://drive.google.com/file/d/1G0cERrsTQzxr5uMrrxo-pL_fAVPlAM4-/view?usp=drivesdk",
+        "parent_id": "1ZnL02BU-azQ396RtfQNtLSTQodYnb3uR",
+        "structuredContent": {
+          "accepted_input": "file_uri",
+          "success": true,
+          "id": "1G0cERrsTQzxr5uMrrxo-pL_fAVPlAM4-",
+          "title": "INTERIORS-02.png",
+          "file_name": "INTERIORS-02.png",
+          "mime_type": "image/png",
+          "url": "https://drive.google.com/file/d/1G0cERrsTQzxr5uMrrxo-pL_fAVPlAM4-/view?usp=drivesdk",
+          "parent_id": "1ZnL02BU-azQ396RtfQNtLSTQodYnb3uR"
+        }
+      }
+    },
+    {
+      "path": "art/INTERIORS-03.png",
+      "result": {
+        "accepted_input": "file_uri",
+        "success": true,
+        "id": "140R-keirG005Pyt9_dozO6cImFPocbWy",
+        "title": "INTERIORS-03.png",
+        "file_name": "INTERIORS-03.png",
+        "mime_type": "image/png",
+        "url": "https://drive.google.com/file/d/140R-keirG005Pyt9_dozO6cImFPocbWy/view?usp=drivesdk",
+        "parent_id": "1ZnL02BU-azQ396RtfQNtLSTQodYnb3uR",
+        "structuredContent": {
+          "accepted_input": "file_uri",
+          "success": true,
+          "id": "140R-keirG005Pyt9_dozO6cImFPocbWy",
+          "title": "INTERIORS-03.png",
+          "file_name": "INTERIORS-03.png",
+          "mime_type": "image/png",
+          "url": "https://drive.google.com/file/d/140R-keirG005Pyt9_dozO6cImFPocbWy/view?usp=drivesdk",
+          "parent_id": "1ZnL02BU-azQ396RtfQNtLSTQodYnb3uR"
+        }
+      }
+    },
+    {
+      "path": "art/INTERIORS-04-v2.png",
+      "result": {
+        "accepted_input": "file_uri",
+        "success": true,
+        "id": "1EoI-1-iiAbHndxcBjFyIlL-ar_iutAxE",
+        "title": "INTERIORS-04-v2.png",
+        "file_name": "INTERIORS-04-v2.png",
+        "mime_type": "image/png",
+        "url": "https://drive.google.com/file/d/1EoI-1-iiAbHndxcBjFyIlL-ar_iutAxE/view?usp=drivesdk",
+        "parent_id": "1ZnL02BU-azQ396RtfQNtLSTQodYnb3uR",
+        "structuredContent": {
+          "accepted_input": "file_uri",
+          "success": true,
+          "id": "1EoI-1-iiAbHndxcBjFyIlL-ar_iutAxE",
+          "title": "INTERIORS-04-v2.png",
+          "file_name": "INTERIORS-04-v2.png",
+          "mime_type": "image/png",
+          "url": "https://drive.google.com/file/d/1EoI-1-iiAbHndxcBjFyIlL-ar_iutAxE/view?usp=drivesdk",
+          "parent_id": "1ZnL02BU-azQ396RtfQNtLSTQodYnb3uR"
+        }
+      }
+    },
+    {
+      "path": "plans/INT-EXT-01-B01.svg",
+      "result": {
+        "accepted_input": "file_uri",
+        "success": true,
+        "id": "1QRTe1WMNy4utkCGsohKn-dxOgzSPJVvT",
+        "title": "INT-EXT-01-B01.svg",
+        "file_name": "INT-EXT-01-B01.svg",
+        "mime_type": "image/svg+xml",
+        "url": "https://drive.google.com/file/d/1QRTe1WMNy4utkCGsohKn-dxOgzSPJVvT/view?usp=drivesdk",
+        "parent_id": "1xEq6G5u_HWDfaKW_JJUeMlZLSw2Qk7Ii",
+        "structuredContent": {
+          "accepted_input": "file_uri",
+          "success": true,
+          "id": "1QRTe1WMNy4utkCGsohKn-dxOgzSPJVvT",
+          "title": "INT-EXT-01-B01.svg",
+          "file_name": "INT-EXT-01-B01.svg",
+          "mime_type": "image/svg+xml",
+          "url": "https://drive.google.com/file/d/1QRTe1WMNy4utkCGsohKn-dxOgzSPJVvT/view?usp=drivesdk",
+          "parent_id": "1xEq6G5u_HWDfaKW_JJUeMlZLSw2Qk7Ii"
+        }
+      }
+    },
+    {
+      "path": "plans/INT-EXT-02-B02.svg",
+      "result": {
+        "accepted_input": "file_uri",
+        "success": true,
+        "id": "15BwoxHjEh3TgfL3FsmdD4wwudoAmUy0K",
+        "title": "INT-EXT-02-B02.svg",
+        "file_name": "INT-EXT-02-B02.svg",
+        "mime_type": "image/svg+xml",
+        "url": "https://drive.google.com/file/d/15BwoxHjEh3TgfL3FsmdD4wwudoAmUy0K/view?usp=drivesdk",
+        "parent_id": "1xEq6G5u_HWDfaKW_JJUeMlZLSw2Qk7Ii",
+        "structuredContent": {
+          "accepted_input": "file_uri",
+          "success": true,
+          "id": "15BwoxHjEh3TgfL3FsmdD4wwudoAmUy0K",
+          "title": "INT-EXT-02-B02.svg",
+          "file_name": "INT-EXT-02-B02.svg",
+          "mime_type": "image/svg+xml",
+          "url": "https://drive.google.com/file/d/15BwoxHjEh3TgfL3FsmdD4wwudoAmUy0K/view?usp=drivesdk",
+          "parent_id": "1xEq6G5u_HWDfaKW_JJUeMlZLSw2Qk7Ii"
+        }
+      }
+    },
+    {
+      "path": "plans/INT-EXT-03-B02.svg",
+      "result": {
+        "accepted_input": "file_uri",
+        "success": true,
+        "id": "1YncwzJdoJanV7U0TboYFZo5rylf6ofXA",
+        "title": "INT-EXT-03-B02.svg",
+        "file_name": "INT-EXT-03-B02.svg",
+        "mime_type": "image/svg+xml",
+        "url": "https://drive.google.com/file/d/1YncwzJdoJanV7U0TboYFZo5rylf6ofXA/view?usp=drivesdk",
+        "parent_id": "1xEq6G5u_HWDfaKW_JJUeMlZLSw2Qk7Ii",
+        "structuredContent": {
+          "accepted_input": "file_uri",
+          "success": true,
+          "id": "1YncwzJdoJanV7U0TboYFZo5rylf6ofXA",
+          "title": "INT-EXT-03-B02.svg",
+          "file_name": "INT-EXT-03-B02.svg",
+          "mime_type": "image/svg+xml",
+          "url": "https://drive.google.com/file/d/1YncwzJdoJanV7U0TboYFZo5rylf6ofXA/view?usp=drivesdk",
+          "parent_id": "1xEq6G5u_HWDfaKW_JJUeMlZLSw2Qk7Ii"
+        }
+      }
+    },
+    {
+      "path": "plans/INT-EXT-04-B01.svg",
+      "result": {
+        "accepted_input": "file_uri",
+        "success": true,
+        "id": "1hIeYQXGnf4FFmnc1lbsNVv0iRKUpGYgO",
+        "title": "INT-EXT-04-B01.svg",
+        "file_name": "INT-EXT-04-B01.svg",
+        "mime_type": "image/svg+xml",
+        "url": "https://drive.google.com/file/d/1hIeYQXGnf4FFmnc1lbsNVv0iRKUpGYgO/view?usp=drivesdk",
+        "parent_id": "1xEq6G5u_HWDfaKW_JJUeMlZLSw2Qk7Ii",
+        "structuredContent": {
+          "accepted_input": "file_uri",
+          "success": true,
+          "id": "1hIeYQXGnf4FFmnc1lbsNVv0iRKUpGYgO",
+          "title": "INT-EXT-04-B01.svg",
+          "file_name": "INT-EXT-04-B01.svg",
+          "mime_type": "image/svg+xml",
+          "url": "https://drive.google.com/file/d/1hIeYQXGnf4FFmnc1lbsNVv0iRKUpGYgO/view?usp=drivesdk",
+          "parent_id": "1xEq6G5u_HWDfaKW_JJUeMlZLSw2Qk7Ii"
+        }
+      }
+    },
+    {
+      "path": "plans/INT-EXT-05-B01.svg",
+      "result": {
+        "accepted_input": "file_uri",
+        "success": true,
+        "id": "1B3YauJKLUAfqmgnC19fiBa4n67qS4KXx",
+        "title": "INT-EXT-05-B01.svg",
+        "file_name": "INT-EXT-05-B01.svg",
+        "mime_type": "image/svg+xml",
+        "url": "https://drive.google.com/file/d/1B3YauJKLUAfqmgnC19fiBa4n67qS4KXx/view?usp=drivesdk",
+        "parent_id": "1xEq6G5u_HWDfaKW_JJUeMlZLSw2Qk7Ii",
+        "structuredContent": {
+          "accepted_input": "file_uri",
+          "success": true,
+          "id": "1B3YauJKLUAfqmgnC19fiBa4n67qS4KXx",
+          "title": "INT-EXT-05-B01.svg",
+          "file_name": "INT-EXT-05-B01.svg",
+          "mime_type": "image/svg+xml",
+          "url": "https://drive.google.com/file/d/1B3YauJKLUAfqmgnC19fiBa4n67qS4KXx/view?usp=drivesdk",
+          "parent_id": "1xEq6G5u_HWDfaKW_JJUeMlZLSw2Qk7Ii"
+        }
+      }
+    },
+    {
+      "path": "plans/INT-EXT-06-B01.svg",
+      "result": {
+        "accepted_input": "file_uri",
+        "success": true,
+        "id": "1bs2ivSXjOGOcmsLY8lek9R46P6wiOUXg",
+        "title": "INT-EXT-06-B01.svg",
+        "file_name": "INT-EXT-06-B01.svg",
+        "mime_type": "image/svg+xml",
+        "url": "https://drive.google.com/file/d/1bs2ivSXjOGOcmsLY8lek9R46P6wiOUXg/view?usp=drivesdk",
+        "parent_id": "1xEq6G5u_HWDfaKW_JJUeMlZLSw2Qk7Ii",
+        "structuredContent": {
+          "accepted_input": "file_uri",
+          "success": true,
+          "id": "1bs2ivSXjOGOcmsLY8lek9R46P6wiOUXg",
+          "title": "INT-EXT-06-B01.svg",
+          "file_name": "INT-EXT-06-B01.svg",
+          "mime_type": "image/svg+xml",
+          "url": "https://drive.google.com/file/d/1bs2ivSXjOGOcmsLY8lek9R46P6wiOUXg/view?usp=drivesdk",
+          "parent_id": "1xEq6G5u_HWDfaKW_JJUeMlZLSw2Qk7Ii"
+        }
+      }
+    },
+    {
+      "path": "plans/INT-EXT-07-B02.svg",
+      "result": {
+        "accepted_input": "file_uri",
+        "success": true,
+        "id": "1EMV8DbdPGllM3Ffe8Xu0xx0clg8S1GX9",
+        "title": "INT-EXT-07-B02.svg",
+        "file_name": "INT-EXT-07-B02.svg",
+        "mime_type": "image/svg+xml",
+        "url": "https://drive.google.com/file/d/1EMV8DbdPGllM3Ffe8Xu0xx0clg8S1GX9/view?usp=drivesdk",
+        "parent_id": "1xEq6G5u_HWDfaKW_JJUeMlZLSw2Qk7Ii",
+        "structuredContent": {
+          "accepted_input": "file_uri",
+          "success": true,
+          "id": "1EMV8DbdPGllM3Ffe8Xu0xx0clg8S1GX9",
+          "title": "INT-EXT-07-B02.svg",
+          "file_name": "INT-EXT-07-B02.svg",
+          "mime_type": "image/svg+xml",
+          "url": "https://drive.google.com/file/d/1EMV8DbdPGllM3Ffe8Xu0xx0clg8S1GX9/view?usp=drivesdk",
+          "parent_id": "1xEq6G5u_HWDfaKW_JJUeMlZLSw2Qk7Ii"
+        }
+      }
+    },
+    {
+      "path": "plans/INT-EXT-08-B02.svg",
+      "result": {
+        "accepted_input": "file_uri",
+        "success": true,
+        "id": "1ftImVseiXCANTSVHfIncmWLWFlG3e9Em",
+        "title": "INT-EXT-08-B02.svg",
+        "file_name": "INT-EXT-08-B02.svg",
+        "mime_type": "image/svg+xml",
+        "url": "https://drive.google.com/file/d/1ftImVseiXCANTSVHfIncmWLWFlG3e9Em/view?usp=drivesdk",
+        "parent_id": "1xEq6G5u_HWDfaKW_JJUeMlZLSw2Qk7Ii",
+        "structuredContent": {
+          "accepted_input": "file_uri",
+          "success": true,
+          "id": "1ftImVseiXCANTSVHfIncmWLWFlG3e9Em",
+          "title": "INT-EXT-08-B02.svg",
+          "file_name": "INT-EXT-08-B02.svg",
+          "mime_type": "image/svg+xml",
+          "url": "https://drive.google.com/file/d/1ftImVseiXCANTSVHfIncmWLWFlG3e9Em/view?usp=drivesdk",
+          "parent_id": "1xEq6G5u_HWDfaKW_JJUeMlZLSw2Qk7Ii"
+        }
+      }
+    },
+    {
+      "path": "plans/INT-EXT-09-B02.svg",
+      "result": {
+        "accepted_input": "file_uri",
+        "success": true,
+        "id": "10ti0Ej-LfMpjxKrDd468uegakCUC9UnN",
+        "title": "INT-EXT-09-B02.svg",
+        "file_name": "INT-EXT-09-B02.svg",
+        "mime_type": "image/svg+xml",
+        "url": "https://drive.google.com/file/d/10ti0Ej-LfMpjxKrDd468uegakCUC9UnN/view?usp=drivesdk",
+        "parent_id": "1xEq6G5u_HWDfaKW_JJUeMlZLSw2Qk7Ii",
+        "structuredContent": {
+          "accepted_input": "file_uri",
+          "success": true,
+          "id": "10ti0Ej-LfMpjxKrDd468uegakCUC9UnN",
+          "title": "INT-EXT-09-B02.svg",
+          "file_name": "INT-EXT-09-B02.svg",
+          "mime_type": "image/svg+xml",
+          "url": "https://drive.google.com/file/d/10ti0Ej-LfMpjxKrDd468uegakCUC9UnN/view?usp=drivesdk",
+          "parent_id": "1xEq6G5u_HWDfaKW_JJUeMlZLSw2Qk7Ii"
+        }
+      }
+    },
+    {
+      "path": "plans/INT-EXT-10-B02.svg",
+      "result": {
+        "accepted_input": "file_uri",
+        "success": true,
+        "id": "1S1FMO_99b5qALyi7gw8fN8rab3g5gP0K",
+        "title": "INT-EXT-10-B02.svg",
+        "file_name": "INT-EXT-10-B02.svg",
+        "mime_type": "image/svg+xml",
+        "url": "https://drive.google.com/file/d/1S1FMO_99b5qALyi7gw8fN8rab3g5gP0K/view?usp=drivesdk",
+        "parent_id": "1xEq6G5u_HWDfaKW_JJUeMlZLSw2Qk7Ii",
+        "structuredContent": {
+          "accepted_input": "file_uri",
+          "success": true,
+          "id": "1S1FMO_99b5qALyi7gw8fN8rab3g5gP0K",
+          "title": "INT-EXT-10-B02.svg",
+          "file_name": "INT-EXT-10-B02.svg",
+          "mime_type": "image/svg+xml",
+          "url": "https://drive.google.com/file/d/1S1FMO_99b5qALyi7gw8fN8rab3g5gP0K/view?usp=drivesdk",
+          "parent_id": "1xEq6G5u_HWDfaKW_JJUeMlZLSw2Qk7Ii"
+        }
+      }
+    },
+    {
+      "path": "plans/INT-EXT-11-B02.svg",
+      "result": {
+        "accepted_input": "file_uri",
+        "success": true,
+        "id": "1BPBXkWxAp9QVjsuiPeWlnO8y5QOqo91A",
+        "title": "INT-EXT-11-B02.svg",
+        "file_name": "INT-EXT-11-B02.svg",
+        "mime_type": "image/svg+xml",
+        "url": "https://drive.google.com/file/d/1BPBXkWxAp9QVjsuiPeWlnO8y5QOqo91A/view?usp=drivesdk",
+        "parent_id": "1xEq6G5u_HWDfaKW_JJUeMlZLSw2Qk7Ii",
+        "structuredContent": {
+          "accepted_input": "file_uri",
+          "success": true,
+          "id": "1BPBXkWxAp9QVjsuiPeWlnO8y5QOqo91A",
+          "title": "INT-EXT-11-B02.svg",
+          "file_name": "INT-EXT-11-B02.svg",
+          "mime_type": "image/svg+xml",
+          "url": "https://drive.google.com/file/d/1BPBXkWxAp9QVjsuiPeWlnO8y5QOqo91A/view?usp=drivesdk",
+          "parent_id": "1xEq6G5u_HWDfaKW_JJUeMlZLSw2Qk7Ii"
+        }
+      }
+    },
+    {
+      "path": "plans/INT-EXT-12-B01.svg",
+      "result": {
+        "accepted_input": "file_uri",
+        "success": true,
+        "id": "1h3RANN9DSmd7oxHZ4gCqbOcTLr9ywQtK",
+        "title": "INT-EXT-12-B01.svg",
+        "file_name": "INT-EXT-12-B01.svg",
+        "mime_type": "image/svg+xml",
+        "url": "https://drive.google.com/file/d/1h3RANN9DSmd7oxHZ4gCqbOcTLr9ywQtK/view?usp=drivesdk",
+        "parent_id": "1xEq6G5u_HWDfaKW_JJUeMlZLSw2Qk7Ii",
+        "structuredContent": {
+          "accepted_input": "file_uri",
+          "success": true,
+          "id": "1h3RANN9DSmd7oxHZ4gCqbOcTLr9ywQtK",
+          "title": "INT-EXT-12-B01.svg",
+          "file_name": "INT-EXT-12-B01.svg",
+          "mime_type": "image/svg+xml",
+          "url": "https://drive.google.com/file/d/1h3RANN9DSmd7oxHZ4gCqbOcTLr9ywQtK/view?usp=drivesdk",
+          "parent_id": "1xEq6G5u_HWDfaKW_JJUeMlZLSw2Qk7Ii"
+        }
+      }
+    },
+    {
+      "path": "plans/INT-EXT-13-B01.svg",
+      "result": {
+        "accepted_input": "file_uri",
+        "success": true,
+        "id": "12x7x8EPuNFgszUUQTzOGU9NnK9K9tMsO",
+        "title": "INT-EXT-13-B01.svg",
+        "file_name": "INT-EXT-13-B01.svg",
+        "mime_type": "image/svg+xml",
+        "url": "https://drive.google.com/file/d/12x7x8EPuNFgszUUQTzOGU9NnK9K9tMsO/view?usp=drivesdk",
+        "parent_id": "1xEq6G5u_HWDfaKW_JJUeMlZLSw2Qk7Ii",
+        "structuredContent": {
+          "accepted_input": "file_uri",
+          "success": true,
+          "id": "12x7x8EPuNFgszUUQTzOGU9NnK9K9tMsO",
+          "title": "INT-EXT-13-B01.svg",
+          "file_name": "INT-EXT-13-B01.svg",
+          "mime_type": "image/svg+xml",
+          "url": "https://drive.google.com/file/d/12x7x8EPuNFgszUUQTzOGU9NnK9K9tMsO/view?usp=drivesdk",
+          "parent_id": "1xEq6G5u_HWDfaKW_JJUeMlZLSw2Qk7Ii"
+        }
+      }
+    },
+    {
+      "path": "README.md",
+      "result": {
+        "accepted_input": "file_uri",
+        "success": true,
+        "id": "1XDbY6185ngpTR_WAIdB-UaEwZM3oJZkv",
+        "title": "README.md",
+        "file_name": "README.md",
+        "mime_type": "text/plain",
+        "url": "https://drive.google.com/file/d/1XDbY6185ngpTR_WAIdB-UaEwZM3oJZkv/view?usp=drivesdk",
+        "parent_id": "1vw6jG_AXPUxntuOc8EpU1ByNIaRXxgUq",
+        "structuredContent": {
+          "accepted_input": "file_uri",
+          "success": true,
+          "id": "1XDbY6185ngpTR_WAIdB-UaEwZM3oJZkv",
+          "title": "README.md",
+          "file_name": "README.md",
+          "mime_type": "text/plain",
+          "url": "https://drive.google.com/file/d/1XDbY6185ngpTR_WAIdB-UaEwZM3oJZkv/view?usp=drivesdk",
+          "parent_id": "1vw6jG_AXPUxntuOc8EpU1ByNIaRXxgUq"
+        }
+      }
+    },
+    {
+      "path": "author_depth.py",
+      "result": {
+        "accepted_input": "file_uri",
+        "success": true,
+        "id": "1-3jiOAdaDDQtA4ar7yvUPEMfrl1jkysL",
+        "title": "author_depth.py",
+        "file_name": "author_depth.py",
+        "mime_type": "text/plain",
+        "url": "https://drive.google.com/file/d/1-3jiOAdaDDQtA4ar7yvUPEMfrl1jkysL/view?usp=drivesdk",
+        "parent_id": "1vw6jG_AXPUxntuOc8EpU1ByNIaRXxgUq",
+        "structuredContent": {
+          "accepted_input": "file_uri",
+          "success": true,
+          "id": "1-3jiOAdaDDQtA4ar7yvUPEMfrl1jkysL",
+          "title": "author_depth.py",
+          "file_name": "author_depth.py",
+          "mime_type": "text/plain",
+          "url": "https://drive.google.com/file/d/1-3jiOAdaDDQtA4ar7yvUPEMfrl1jkysL/view?usp=drivesdk",
+          "parent_id": "1vw6jG_AXPUxntuOc8EpU1ByNIaRXxgUq"
+        }
+      }
+    },
+    {
+      "path": "build_interiors.py",
+      "result": {
+        "accepted_input": "file_uri",
+        "success": true,
+        "id": "1nxkjaDPSSCrf5HYKqEmmyrkW7GUqWHtt",
+        "title": "build_interiors.py",
+        "file_name": "build_interiors.py",
+        "mime_type": "text/plain",
+        "url": "https://drive.google.com/file/d/1nxkjaDPSSCrf5HYKqEmmyrkW7GUqWHtt/view?usp=drivesdk",
+        "parent_id": "1vw6jG_AXPUxntuOc8EpU1ByNIaRXxgUq",
+        "structuredContent": {
+          "accepted_input": "file_uri",
+          "success": true,
+          "id": "1nxkjaDPSSCrf5HYKqEmmyrkW7GUqWHtt",
+          "title": "build_interiors.py",
+          "file_name": "build_interiors.py",
+          "mime_type": "text/plain",
+          "url": "https://drive.google.com/file/d/1nxkjaDPSSCrf5HYKqEmmyrkW7GUqWHtt/view?usp=drivesdk",
+          "parent_id": "1vw6jG_AXPUxntuOc8EpU1ByNIaRXxgUq"
+        }
+      }
+    },
+    {
+      "path": "render_volumes.py",
+      "result": {
+        "accepted_input": "file_uri",
+        "success": true,
+        "id": "1DSz1e81Xym6yLG9920a01oDLGIoiIEzk",
+        "title": "render_volumes.py",
+        "file_name": "render_volumes.py",
+        "mime_type": "text/plain",
+        "url": "https://drive.google.com/file/d/1DSz1e81Xym6yLG9920a01oDLGIoiIEzk/view?usp=drivesdk",
+        "parent_id": "1vw6jG_AXPUxntuOc8EpU1ByNIaRXxgUq",
+        "structuredContent": {
+          "accepted_input": "file_uri",
+          "success": true,
+          "id": "1DSz1e81Xym6yLG9920a01oDLGIoiIEzk",
+          "title": "render_volumes.py",
+          "file_name": "render_volumes.py",
+          "mime_type": "text/plain",
+          "url": "https://drive.google.com/file/d/1DSz1e81Xym6yLG9920a01oDLGIoiIEzk/view?usp=drivesdk",
+          "parent_id": "1vw6jG_AXPUxntuOc8EpU1ByNIaRXxgUq"
+        }
+      }
+    },
+    {
+      "path": "companion_stories.json",
+      "result": {
+        "accepted_input": "file_uri",
+        "success": true,
+        "id": "1aU3t0c6eA9dqR9k8CCdAIhitAdL5tifr",
+        "title": "companion_stories.json",
+        "file_name": "companion_stories.json",
+        "mime_type": "application/json",
+        "url": "https://drive.google.com/file/d/1aU3t0c6eA9dqR9k8CCdAIhitAdL5tifr/view?usp=drivesdk",
+        "parent_id": "1vw6jG_AXPUxntuOc8EpU1ByNIaRXxgUq",
+        "structuredContent": {
+          "accepted_input": "file_uri",
+          "success": true,
+          "id": "1aU3t0c6eA9dqR9k8CCdAIhitAdL5tifr",
+          "title": "companion_stories.json",
+          "file_name": "companion_stories.json",
+          "mime_type": "application/json",
+          "url": "https://drive.google.com/file/d/1aU3t0c6eA9dqR9k8CCdAIhitAdL5tifr/view?usp=drivesdk",
+          "parent_id": "1vw6jG_AXPUxntuOc8EpU1ByNIaRXxgUq"
+        }
+      }
+    },
+    {
+      "path": "output/Living_Places.json",
+      "result": {
+        "accepted_input": "file_uri",
+        "success": true,
+        "id": "1fSqli41UyYUeIKje68ipIFA3jFU0v7YP",
+        "title": "Living_Places.json",
+        "file_name": "Living_Places.json",
+        "mime_type": "application/json",
+        "url": "https://drive.google.com/file/d/1fSqli41UyYUeIKje68ipIFA3jFU0v7YP/view?usp=drivesdk",
+        "parent_id": "1vw6jG_AXPUxntuOc8EpU1ByNIaRXxgUq",
+        "structuredContent": {
+          "accepted_input": "file_uri",
+          "success": true,
+          "id": "1fSqli41UyYUeIKje68ipIFA3jFU0v7YP",
+          "title": "Living_Places.json",
+          "file_name": "Living_Places.json",
+          "mime_type": "application/json",
+          "url": "https://drive.google.com/file/d/1fSqli41UyYUeIKje68ipIFA3jFU0v7YP/view?usp=drivesdk",
+          "parent_id": "1vw6jG_AXPUxntuOc8EpU1ByNIaRXxgUq"
+        }
+      }
+    },
+    {
+      "path": "output/Interior_Props.csv",
+      "result": {
+        "accepted_input": "file_uri",
+        "success": true,
+        "id": "1NfKV3JRH9Ts33-CVV5Cj5cY5Mr_As7id",
+        "title": "Interior_Props.csv",
+        "file_name": "Interior_Props.csv",
+        "mime_type": "text/csv",
+        "url": "https://drive.google.com/file/d/1NfKV3JRH9Ts33-CVV5Cj5cY5Mr_As7id/view?usp=drivesdk",
+        "parent_id": "1vw6jG_AXPUxntuOc8EpU1ByNIaRXxgUq",
+        "structuredContent": {
+          "accepted_input": "file_uri",
+          "success": true,
+          "id": "1NfKV3JRH9Ts33-CVV5Cj5cY5Mr_As7id",
+          "title": "Interior_Props.csv",
+          "file_name": "Interior_Props.csv",
+          "mime_type": "text/csv",
+          "url": "https://drive.google.com/file/d/1NfKV3JRH9Ts33-CVV5Cj5cY5Mr_As7id/view?usp=drivesdk",
+          "parent_id": "1vw6jG_AXPUxntuOc8EpU1ByNIaRXxgUq"
+        }
+      }
+    },
+    {
+      "path": "output/Art_Manifest.json",
+      "result": {
+        "accepted_input": "file_uri",
+        "success": true,
+        "id": "11L9CB30jjIrQmqeRYLeagh-ucHL-QGaE",
+        "title": "Art_Manifest.json",
+        "file_name": "Art_Manifest.json",
+        "mime_type": "application/json",
+        "url": "https://drive.google.com/file/d/11L9CB30jjIrQmqeRYLeagh-ucHL-QGaE/view?usp=drivesdk",
+        "parent_id": "1vw6jG_AXPUxntuOc8EpU1ByNIaRXxgUq",
+        "structuredContent": {
+          "accepted_input": "file_uri",
+          "success": true,
+          "id": "11L9CB30jjIrQmqeRYLeagh-ucHL-QGaE",
+          "title": "Art_Manifest.json",
+          "file_name": "Art_Manifest.json",
+          "mime_type": "application/json",
+          "url": "https://drive.google.com/file/d/11L9CB30jjIrQmqeRYLeagh-ucHL-QGaE/view?usp=drivesdk",
+          "parent_id": "1vw6jG_AXPUxntuOc8EpU1ByNIaRXxgUq"
+        }
+      }
+    },
+    {
+      "path": "output/VALIDATION.json",
+      "result": {
+        "accepted_input": "file_uri",
+        "success": true,
+        "id": "153cQIq22y_-6kwumG_iNvUKT02vPKQcH",
+        "title": "VALIDATION.json",
+        "file_name": "VALIDATION.json",
+        "mime_type": "application/json",
+        "url": "https://drive.google.com/file/d/153cQIq22y_-6kwumG_iNvUKT02vPKQcH/view?usp=drivesdk",
+        "parent_id": "1vw6jG_AXPUxntuOc8EpU1ByNIaRXxgUq",
+        "structuredContent": {
+          "accepted_input": "file_uri",
+          "success": true,
+          "id": "153cQIq22y_-6kwumG_iNvUKT02vPKQcH",
+          "title": "VALIDATION.json",
+          "file_name": "VALIDATION.json",
+          "mime_type": "application/json",
+          "url": "https://drive.google.com/file/d/153cQIq22y_-6kwumG_iNvUKT02vPKQcH/view?usp=drivesdk",
+          "parent_id": "1vw6jG_AXPUxntuOc8EpU1ByNIaRXxgUq"
+        }
+      }
+    }
+  ]
+}

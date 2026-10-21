@@ -1,0 +1,54 @@
+[
+  {
+    "plate": "INTERIORS-01",
+    "prompt": "Use case: stylized-concept. Asset: MADGER Living Places interior reference plate, four detailed original Japanese theatrical anime background paintings in a clean 2 by 2 grid, equal panels, fine ivory gutters, small exact labels below each. Architecture and furniture are the subjects; no foreground characters. Top left label REEDBANK KITCHEN: welcoming 10 by 8 metre common room in a raised river town, pale lime plaster, dark timber beams, worn plank floor, long serving table, small bowl of red meal tokens, removable flood measuring board hung on wall, repaired reed baskets, blue-gray river daylight, warm task lamps. It is the dining room, cooking in a separate room, no water inside. Top right label WHITE FAMILY WORKSHOP: 10 by 8 metre stone-fitting bench room in a limestone quarry town, dark timber, paired low fitting benches, half-built wooden percussion frame on a jig, stop-board easel, measuring cord, pale stone dust and warm side light, ordinary family craft workshop, no fire or forge. Bottom left label SIX ROADS INN: hospitable 10 by 8 metre timber common room with a shared destination supper table, blue convoy cloth, terracotta cups, travel-gear rack, correction-ledger stand, small unoccupied dog resting mat under a side table, rainy blue doorway light against warm interior, no secret passages. Bottom right label VARR WORKSHOP: 10 by 8 metre brick-and-timber assembly room in a canal town, brass gauges and enamel instruments, isolated electronics repair bench, consent job-board, rolling stand holding a modest homemade musical instrument, a framed early worksheet, green canal reflections and warm light. Friendly working place, no master console, no restraints. Believable coherent rooms, useful open walking paths and doors, precise beautiful material texture, crisp cinematic depth, vivid but tasteful color, mature high-budget anime environment art. No photorealistic humans, no giant text, no modern cars, no watermarks, no heroes, no tears, no copied franchise architecture. These are appearance references, not measured diagrams.",
+    "edit_prompt": "Edit this existing 2 by 2 interior art reference sheet with extreme fidelity. Change ONLY the view through the exterior opening in the BOTTOM LEFT panel SIX ROADS INN: it must overlook a rain-washed cobbled road-junction arrival courtyard with a covered wagon, timber awnings and warm neighboring inn windows. This is an inland road junction, NOT a waterfront. Remove any river or water outside that opening. Keep every indoor detail, framing, characters if any, text, material color, and the other three panels EXACTLY unchanged. Preserve the four-panel layout and all labels. Hand-painted Japanese anime background art.",
+    "source": "INTERIORS-01-v2.png",
+    "layout": [
+      2,
+      2
+    ],
+    "authority": "Appearance and atmosphere reference. Measured 3.0 geometry and 3.1 dressing data control exact placement, openings, scale and ceiling height.",
+    "sha256": "54a5fb5394fc54f80fd5090a1aef0c966b4aac2854acd8e4e2724d6fbc746002",
+    "size_bytes": 2879728
+  },
+  {
+    "plate": "INTERIORS-02",
+    "prompt": "Use case: stylized-concept. Create a MADGER Living Places interior reference artboard with THREE full-width horizontal environment paintings stacked vertically, equal height, fine ivory gutters, small precise name captions beneath each. Large detailed portrait artboard. High-budget Japanese theatrical anime background painting, convincing warm and cool light, crisp materials, lived-in craft, expressive depth. No foreground characters, no heroes, no humans, no logos, no watermark, no blueprint lines. Maintain useful clear walking paths. Art is an interior atmosphere reference; no secret doors, tunnels or new building wings. Top label SEED HOUSE: broad orchard-town timber exchange hall, green woven shades, cream plaster, shallow ceramic seed-history drawers and hand-written provenance tags, trial results on a side table, children’s whimsical clay plants in a tray, west and east stall bays with a wide clear central aisle, filtered spring light. Middle label WORKERS HOSTEL: clean cared-for common room in a basalt freight town, patched limewash and salvaged timber, repaired communal table, public work board, retired train whistle on a small music stand, labeled food-crate rack, amber lamps, restrained dignity, no slum caricature, no raiders. Bottom label BRIDGEWRIGHT PAVILION: forest canopy town’s ordinary rectangular assembly workshop, living-fiber lashings, dark timber, pale resin repairs, adjustable sample bridge-joint frame, dry fiber cabinet, seasonal position board, small teaching bell on a stand, green reflected canopy light. Model bridge parts only, no enormous tree filling the passage or living bridge growing through the floor.",
+    "edit_prompt": null,
+    "source": "INTERIORS-02.png",
+    "layout": [
+      1,
+      3
+    ],
+    "authority": "Appearance and atmosphere reference. Measured 3.0 geometry and 3.1 dressing data control exact placement, openings, scale and ceiling height.",
+    "sha256": "ba7a866102ad4182486a7bc8be170ce672e313321b5f86acccb6b04a1bec9d85",
+    "size_bytes": 3134742
+  },
+  {
+    "plate": "INTERIORS-03",
+    "prompt": "Use case: stylized-concept. Create a MADGER Living Places interior reference artboard with THREE full-width horizontal environment paintings stacked vertically, equal height, fine ivory gutters, small precise name captions beneath each. Large detailed portrait artboard. High-budget Japanese theatrical anime background painting, convincing warm and cool light, crisp materials, lived-in craft, expressive depth. No foreground characters, no heroes, no humans, no logos, no watermark, no blueprint lines. Maintain useful clear walking paths. Art is an interior atmosphere reference; no secret doors, tunnels or new building wings. Top label MIRROR OBSERVATORY: sandstone desert city’s rectangular public reading room, turquoise shutters and cream linen screens, brass and dark glass measuring instruments, screened table with small safe mirrors, comparison ledger desk, broken measuring plate displayed beside its replacement, controlled warm reflected daylight, no giant beam or magical machine. Middle label RESCUE SAIL HOUSE: coastal town’s dry western refuge room above its harbor, limestone and salt-worn blue timber, coral plaster, dry assessment bench, clearly marked observed-tide board, rescue-kit rack and shallow recovered-property tray, ropes and folded blankets, strong maritime daylight, no indoor ocean or water washing the floor. Bottom label SAILMAKERS COURT: floating island town’s modest enclosed assembly workshop, basalt floor, ochre sailcloth on a short section test frame, brass mechanical scale, contract-comparison desk, tiny festival toy boat on a cradle, copper fittings, high cloud light through windows, indigo shadows. No full-size ship inside, no giant hole in floor, no unguarded abyss.",
+    "edit_prompt": null,
+    "source": "INTERIORS-03.png",
+    "layout": [
+      1,
+      3
+    ],
+    "authority": "Appearance and atmosphere reference. Measured 3.0 geometry and 3.1 dressing data control exact placement, openings, scale and ceiling height.",
+    "sha256": "40f77a7de7be16f3445e764d4ca74395d8408bc40472f39fc88d2cf667b3c6b7",
+    "size_bytes": 3187104
+  },
+  {
+    "plate": "INTERIORS-04",
+    "prompt": "Use case: stylized-concept. Create a MADGER Living Places interior reference artboard with THREE full-width horizontal environment paintings stacked vertically, equal height, fine ivory gutters, small precise name captions beneath each. Large detailed portrait artboard. High-budget Japanese theatrical anime background painting, convincing warm and cool light, crisp materials, lived-in craft, expressive depth. No foreground characters, no heroes, no humans, no logos, no watermark, no blueprint lines. Maintain useful clear walking paths. Art is an interior atmosphere reference; no secret doors, tunnels or new building wings. Top label ECHO ARCHIVE: glacier town’s warm public reading room, limestone, dark wool runners, copper fittings, cool blue glacier reflections balanced with amber reading lamps, paired transcription desk, small insulated cabinet holding one ice specimen, uncertainty-mark display and supervised listening chair. No ice wall or freezing occupied room. Middle label COMMON KILN HALL: volcanic town’s cool ceramic inspection workroom, dark stone, pale clay dust, red and cream ceramics, greenware inspection bench, cooled defect shelf, a practical cup with two handles on a small cradle, firing-batch record stand, lush green garden reflections. All high-temperature firing occurs in a separate annex: absolutely no flame, glowing pot or furnace in this room. Bottom label TIDE SPEAKERS HALL: dry inhabited limestone civic hall above a subterranean ocean, broad clear central aisle, movable benches stored in side bays, public raised-relief harbor chart on a side table, rotation-of-speakers board, shared harvest trays, deep teal cloth, mineral-window blue light, amber lamps and violet fungal accents, warm sophisticated community architecture. No underwater floor, no throne, no mystical tribal caricature.",
+    "edit_prompt": "Correct this existing three stacked panels interior concept sheet while retaining its detailed hand-painted Japanese anime background style, framing and all interior furniture. BOTTOM panel TIDE SPEAKERS HALL: replace every view through the openings with a vast fully ENCLOSED LIMESTONE CAVERN and an underground harbor, distant dark teal water below the dry elevated hall, amber settlement lamps and dim mineral/fungal glow on cavern rock. Absolutely NO daylight sky, sun, surface mountains, glacier or snow outside this underground city. Keep the floor and chart table completely dry, same furniture. MIDDLE panel COMMON KILN HALL: make wall and pillar materials dark basalt with warm red ceramic accents, a modest utilitarian cool workroom. Through its windows show basalt settlement terraces, not icy mountains. No fire or furnaces in this workroom; those are in a separate annex not shown. TOP ECHO ARCHIVE panel preserve unchanged. Simplify panel labels to exactly ECHO ARCHIVE, COMMON KILN HALL, TIDE SPEAKERS HALL, respectively. Do not add other writing or labels. Preserve three equal stacked panels.",
+    "source": "INTERIORS-04-v2.png",
+    "layout": [
+      1,
+      3
+    ],
+    "authority": "Appearance and atmosphere reference. Measured 3.0 geometry and 3.1 dressing data control exact placement, openings, scale and ceiling height.",
+    "sha256": "54e8dd9b12fbfc2f175f8743cdd8cbc606c48e3ea0d72bd43590062154819b97",
+    "size_bytes": 2853622
+  }
+]

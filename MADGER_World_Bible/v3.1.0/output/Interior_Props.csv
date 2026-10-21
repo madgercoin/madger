@@ -1,0 +1,222 @@
+landmark_id,building_id,id,name,room,signature,x_m,y_m,width_m,depth_m,height_m,rotation_deg
+INT-EXT-01-B01,EXT-01-B01,INT-EXT-01-B01-P01,Long serving table,Common room,True,0.55,0.55,3.0,1.25,0.82,0
+INT-EXT-01-B01,EXT-01-B01,INT-EXT-01-B01-P02,Red-token bowl,Common room,True,0.55,6.65,1.6,0.8,0.8,0
+INT-EXT-01-B01,EXT-01-B01,INT-EXT-01-B01-P03,Removable flood board,Common room,True,8.3,0.55,1.15,0.55,1.65,0
+INT-EXT-01-B01,EXT-01-B01,INT-EXT-01-B01-P04,Repaired river basket,Common room,True,7.85,6.65,1.6,0.8,0.8,0
+INT-EXT-01-B01,EXT-01-B01,INT-EXT-01-B01-P05,Preparation counter,Kitchen,False,14.55,0.55,3.0,1.25,0.82,0
+INT-EXT-01-B01,EXT-01-B01,INT-EXT-01-B01-P06,Cold pantry cabinet,Kitchen,False,14.55,6.75,2.5,0.7,1.8,0
+INT-EXT-01-B01,EXT-01-B01,INT-EXT-01-B01-P07,Serving-cart parking,Kitchen,False,21.85,0.55,1.6,0.8,0.8,0
+INT-EXT-01-B01,EXT-01-B01,INT-EXT-01-B01-P08,Covered wash bench,Kitchen,False,20.45,6.2,3.0,1.25,0.82,0
+INT-EXT-01-B01,EXT-01-B01,INT-EXT-01-B01-P09,Paired sleeping cots,Guest A,False,0.55,8.55,3.0,1.25,0.82,0
+INT-EXT-01-B01,EXT-01-B01,INT-EXT-01-B01-P10,Personal storage chest,Guest A,False,0.55,12.65,1.6,0.8,0.8,0
+INT-EXT-01-B01,EXT-01-B01,INT-EXT-01-B01-P11,Bedside lamp table,Guest A,False,6.45,8.55,3.0,1.25,0.82,0
+INT-EXT-01-B01,EXT-01-B01,INT-EXT-01-B01-P12,Folded bedding rack,Guest A,False,6.95,12.75,2.5,0.7,1.8,0
+INT-EXT-01-B01,EXT-01-B01,INT-EXT-01-B01-P13,Paired sleeping cots,Guest B,False,14.55,8.55,3.0,1.25,0.82,0
+INT-EXT-01-B01,EXT-01-B01,INT-EXT-01-B01-P14,Personal storage chest,Guest B,False,14.55,12.65,1.6,0.8,0.8,0
+INT-EXT-01-B01,EXT-01-B01,INT-EXT-01-B01-P15,Bedside lamp table,Guest B,False,20.45,8.55,3.0,1.25,0.82,0
+INT-EXT-01-B01,EXT-01-B01,INT-EXT-01-B01-P16,Folded bedding rack,Guest B,False,20.95,12.75,2.5,0.7,1.8,0
+INT-EXT-01-B01,EXT-01-B01,INT-EXT-01-B01-P17,Paired sleeping cots,Guest C,False,0.55,14.55,3.0,1.25,0.82,0
+INT-EXT-01-B01,EXT-01-B01,INT-EXT-01-B01-P18,Personal storage chest,Guest C,False,0.55,18.65,1.6,0.8,0.8,0
+INT-EXT-01-B01,EXT-01-B01,INT-EXT-01-B01-P19,Bedside lamp table,Guest C,False,6.45,14.55,3.0,1.25,0.82,0
+INT-EXT-01-B01,EXT-01-B01,INT-EXT-01-B01-P20,Folded bedding rack,Guest C,False,6.95,18.75,2.5,0.7,1.8,0
+INT-EXT-01-B01,EXT-01-B01,INT-EXT-01-B01-P21,Wash basin cabinet,Wash/store,False,14.55,14.55,2.5,0.7,1.8,0
+INT-EXT-01-B01,EXT-01-B01,INT-EXT-01-B01-P22,Work desk and chair,Wash/store,False,14.55,18.2,3.0,1.25,0.82,0
+INT-EXT-01-B01,EXT-01-B01,INT-EXT-01-B01-P23,Supply cabinet,Wash/store,False,20.95,14.55,2.5,0.7,1.8,0
+INT-EXT-01-B01,EXT-01-B01,INT-EXT-01-B01-P24,Records shelf,Wash/store,False,22.3,18.9,1.15,0.55,1.65,0
+INT-EXT-02-B02,EXT-02-B02,INT-EXT-02-B02-P01,Stop-board easel,Bench room,True,0.55,6.9,1.15,0.55,1.65,0
+INT-EXT-02-B02,EXT-02-B02,INT-EXT-02-B02-P02,Percussion-frame jig,Bench room,True,6.45,6.2,3.0,1.25,0.82,0
+INT-EXT-02-B02,EXT-02-B02,INT-EXT-02-B02-P03,Paired fitting bench,Bench room,True,0.55,0.55,3.0,1.25,0.82,0
+INT-EXT-02-B02,EXT-02-B02,INT-EXT-02-B02-P04,Repaired measuring cord,Bench room,True,8.3,0.55,1.15,0.55,1.65,0
+INT-EXT-02-B02,EXT-02-B02,INT-EXT-02-B02-P05,Movable assembly bench,Assembly,False,14.55,0.55,3.0,1.25,0.82,0
+INT-EXT-02-B02,EXT-02-B02,INT-EXT-02-B02-P06,Materials rack,Assembly,False,14.55,6.65,1.4,0.8,0.03,0
+INT-EXT-02-B02,EXT-02-B02,INT-EXT-02-B02-P07,Test jig stand,Assembly,False,22.3,0.55,1.15,0.55,1.65,0
+INT-EXT-02-B02,EXT-02-B02,INT-EXT-02-B02-P08,Parts trolley,Assembly,False,21.85,6.65,1.6,0.8,0.8,0
+INT-EXT-02-B02,EXT-02-B02,INT-EXT-02-B02-P09,Numbered tool cabinet,Tool store,False,0.55,8.55,2.5,0.7,1.8,0
+INT-EXT-02-B02,EXT-02-B02,INT-EXT-02-B02-P10,Material stock rack,Tool store,False,0.55,16.65,1.4,0.8,0.03,0
+INT-EXT-02-B02,EXT-02-B02,INT-EXT-02-B02-P11,Repair-parts drawers,Tool store,False,6.95,8.55,2.5,0.7,1.8,0
+INT-EXT-02-B02,EXT-02-B02,INT-EXT-02-B02-P12,Inspection table,Tool store,False,6.45,16.2,3.0,1.25,0.82,0
+INT-EXT-02-B02,EXT-02-B02,INT-EXT-02-B02-P13,Wash basin cabinet,Wash/office,False,14.55,8.55,2.5,0.7,1.8,0
+INT-EXT-02-B02,EXT-02-B02,INT-EXT-02-B02-P14,Work desk and chair,Wash/office,False,14.55,16.2,3.0,1.25,0.82,0
+INT-EXT-02-B02,EXT-02-B02,INT-EXT-02-B02-P15,Supply cabinet,Wash/office,False,20.95,8.55,2.5,0.7,1.8,0
+INT-EXT-02-B02,EXT-02-B02,INT-EXT-02-B02-P16,Records shelf,Wash/office,False,22.3,16.9,1.15,0.55,1.65,0
+INT-EXT-03-B02,EXT-03-B02,INT-EXT-03-B02-P01,Destination table,Common room,True,0.6,0.5,3,1.1,0.8,0
+INT-EXT-03-B02,EXT-03-B02,INT-EXT-03-B02-P02,Correction ledger stand,Common room,True,0.6,5.2,1.2,0.55,1.3,0
+INT-EXT-03-B02,EXT-03-B02,INT-EXT-03-B02-P03,Travel-gear rack,Common room,True,8.3,5.2,1.1,0.6,1.8,0
+INT-EXT-03-B02,EXT-03-B02,INT-EXT-03-B02-P04,Removable canine rest mat,Common room,True,6.4,5.2,1.4,0.8,0.03,0
+INT-EXT-03-B02,EXT-03-B02,INT-EXT-03-B02-P05,Destination table 2,Common room,False,6.4,0.5,3,1.1,0.8,0
+INT-EXT-03-B02,EXT-03-B02,INT-EXT-03-B02-P06,Destination table 3,Common room,False,0.6,2,3,1.1,0.8,0
+INT-EXT-03-B02,EXT-03-B02,INT-EXT-03-B02-P07,Destination table 4,Common room,False,6.4,2,3,1.1,0.8,0
+INT-EXT-03-B02,EXT-03-B02,INT-EXT-03-B02-P08,Destination table 5,Common room,False,0.6,6.4,3,1.1,0.8,0
+INT-EXT-03-B02,EXT-03-B02,INT-EXT-03-B02-P09,Destination table 6,Common room,False,6.4,6.4,3,1.1,0.8,0
+INT-EXT-03-B02,EXT-03-B02,INT-EXT-03-B02-P10,Preparation counter,Kitchen,False,14.55,0.55,3.0,1.25,0.82,0
+INT-EXT-03-B02,EXT-03-B02,INT-EXT-03-B02-P11,Cold pantry cabinet,Kitchen,False,14.55,6.75,2.5,0.7,1.8,0
+INT-EXT-03-B02,EXT-03-B02,INT-EXT-03-B02-P12,Serving-cart parking,Kitchen,False,21.85,0.55,1.6,0.8,0.8,0
+INT-EXT-03-B02,EXT-03-B02,INT-EXT-03-B02-P13,Covered wash bench,Kitchen,False,20.45,6.2,3.0,1.25,0.82,0
+INT-EXT-03-B02,EXT-03-B02,INT-EXT-03-B02-P14,Paired sleeping cots,Guest A,False,0.55,8.55,3.0,1.25,0.82,0
+INT-EXT-03-B02,EXT-03-B02,INT-EXT-03-B02-P15,Personal storage chest,Guest A,False,0.55,12.65,1.6,0.8,0.8,0
+INT-EXT-03-B02,EXT-03-B02,INT-EXT-03-B02-P16,Bedside lamp table,Guest A,False,6.45,8.55,3.0,1.25,0.82,0
+INT-EXT-03-B02,EXT-03-B02,INT-EXT-03-B02-P17,Folded bedding rack,Guest A,False,6.95,12.75,2.5,0.7,1.8,0
+INT-EXT-03-B02,EXT-03-B02,INT-EXT-03-B02-P18,Paired sleeping cots,Guest B,False,14.55,8.55,3.0,1.25,0.82,0
+INT-EXT-03-B02,EXT-03-B02,INT-EXT-03-B02-P19,Personal storage chest,Guest B,False,14.55,12.65,1.6,0.8,0.8,0
+INT-EXT-03-B02,EXT-03-B02,INT-EXT-03-B02-P20,Bedside lamp table,Guest B,False,20.45,8.55,3.0,1.25,0.82,0
+INT-EXT-03-B02,EXT-03-B02,INT-EXT-03-B02-P21,Folded bedding rack,Guest B,False,20.95,12.75,2.5,0.7,1.8,0
+INT-EXT-03-B02,EXT-03-B02,INT-EXT-03-B02-P22,Paired sleeping cots,Guest C,False,0.55,14.55,3.0,1.25,0.82,0
+INT-EXT-03-B02,EXT-03-B02,INT-EXT-03-B02-P23,Personal storage chest,Guest C,False,0.55,18.65,1.6,0.8,0.8,0
+INT-EXT-03-B02,EXT-03-B02,INT-EXT-03-B02-P24,Bedside lamp table,Guest C,False,6.45,14.55,3.0,1.25,0.82,0
+INT-EXT-03-B02,EXT-03-B02,INT-EXT-03-B02-P25,Folded bedding rack,Guest C,False,6.95,18.75,2.5,0.7,1.8,0
+INT-EXT-03-B02,EXT-03-B02,INT-EXT-03-B02-P26,Wash basin cabinet,Wash/store,False,14.55,14.55,2.5,0.7,1.8,0
+INT-EXT-03-B02,EXT-03-B02,INT-EXT-03-B02-P27,Work desk and chair,Wash/store,False,14.55,18.2,3.0,1.25,0.82,0
+INT-EXT-03-B02,EXT-03-B02,INT-EXT-03-B02-P28,Supply cabinet,Wash/store,False,20.95,14.55,2.5,0.7,1.8,0
+INT-EXT-03-B02,EXT-03-B02,INT-EXT-03-B02-P29,Records shelf,Wash/store,False,22.3,18.9,1.15,0.55,1.65,0
+INT-EXT-04-B01,EXT-04-B01,INT-EXT-04-B01-P01,Consent job-board,Assembly,True,14.55,0.55,1.15,0.55,1.65,0
+INT-EXT-04-B01,EXT-04-B01,INT-EXT-04-B01-P02,Isolated repair bench,Assembly,True,14.55,6.2,3.0,1.25,0.82,0
+INT-EXT-04-B01,EXT-04-B01,INT-EXT-04-B01-P03,Rolling instrument stand,Assembly,True,22.3,0.55,1.15,0.55,1.65,0
+INT-EXT-04-B01,EXT-04-B01,INT-EXT-04-B01-P04,Early worksheet case,Assembly,True,21.85,6.65,1.6,0.8,0.8,0
+INT-EXT-04-B01,EXT-04-B01,INT-EXT-04-B01-P05,Work bench,Bench room,False,0.55,0.55,3.0,1.25,0.82,0
+INT-EXT-04-B01,EXT-04-B01,INT-EXT-04-B01-P06,Tool cabinet,Bench room,False,0.55,6.75,2.5,0.7,1.8,0
+INT-EXT-04-B01,EXT-04-B01,INT-EXT-04-B01-P07,Inspection stand,Bench room,False,8.3,0.55,1.15,0.55,1.65,0
+INT-EXT-04-B01,EXT-04-B01,INT-EXT-04-B01-P08,Parts drawers,Bench room,False,6.95,6.75,2.5,0.7,1.8,0
+INT-EXT-04-B01,EXT-04-B01,INT-EXT-04-B01-P09,Numbered tool cabinet,Tool store,False,0.55,8.55,2.5,0.7,1.8,0
+INT-EXT-04-B01,EXT-04-B01,INT-EXT-04-B01-P10,Material stock rack,Tool store,False,0.55,16.65,1.4,0.8,0.03,0
+INT-EXT-04-B01,EXT-04-B01,INT-EXT-04-B01-P11,Repair-parts drawers,Tool store,False,6.95,8.55,2.5,0.7,1.8,0
+INT-EXT-04-B01,EXT-04-B01,INT-EXT-04-B01-P12,Inspection table,Tool store,False,6.45,16.2,3.0,1.25,0.82,0
+INT-EXT-04-B01,EXT-04-B01,INT-EXT-04-B01-P13,Wash basin cabinet,Wash/office,False,14.55,8.55,2.5,0.7,1.8,0
+INT-EXT-04-B01,EXT-04-B01,INT-EXT-04-B01-P14,Work desk and chair,Wash/office,False,14.55,16.2,3.0,1.25,0.82,0
+INT-EXT-04-B01,EXT-04-B01,INT-EXT-04-B01-P15,Supply cabinet,Wash/office,False,20.95,8.55,2.5,0.7,1.8,0
+INT-EXT-04-B01,EXT-04-B01,INT-EXT-04-B01-P16,Records shelf,Wash/office,False,22.3,16.9,1.15,0.55,1.65,0
+INT-EXT-05-B01,EXT-05-B01,INT-EXT-05-B01-P01,Seed-history cabinet,West stalls,True,0.55,0.55,2.5,0.7,1.8,0
+INT-EXT-05-B01,EXT-05-B01,INT-EXT-05-B01-P02,Ceramic provenance tags,West stalls,True,0.55,16.65,1.6,0.8,0.8,0
+INT-EXT-05-B01,EXT-05-B01,INT-EXT-05-B01-P03,Trial-results table,West stalls,True,6.45,0.55,3.0,1.25,0.82,0
+INT-EXT-05-B01,EXT-05-B01,INT-EXT-05-B01-P04,Clay impossible-plant tray,West stalls,True,7.85,16.65,1.6,0.8,0.8,0
+INT-EXT-05-B01,EXT-05-B01,INT-EXT-05-B01-P05,Display counter,East stalls,False,20.55,0.55,3.0,1.25,0.82,0
+INT-EXT-05-B01,EXT-05-B01,INT-EXT-05-B01-P06,Storage cabinet,East stalls,False,20.55,16.75,2.5,0.7,1.8,0
+INT-EXT-05-B01,EXT-05-B01,INT-EXT-05-B01-P07,Sorting table,East stalls,False,26.45,0.55,3.0,1.25,0.82,0
+INT-EXT-05-B01,EXT-05-B01,INT-EXT-05-B01-P08,Packing bench,East stalls,False,26.45,16.2,3.0,1.25,0.82,0
+INT-EXT-06-B01,EXT-06-B01,INT-EXT-06-B01-P01,Public work board,Common room,True,0.55,0.55,1.15,0.55,1.65,0
+INT-EXT-06-B01,EXT-06-B01,INT-EXT-06-B01-P02,Repaired communal table,Common room,True,0.55,6.2,3.0,1.25,0.82,0
+INT-EXT-06-B01,EXT-06-B01,INT-EXT-06-B01-P03,Retired whistle stand,Common room,True,8.3,0.55,1.15,0.55,1.65,0
+INT-EXT-06-B01,EXT-06-B01,INT-EXT-06-B01-P04,Labeled food-crate rack,Common room,True,6.95,6.75,2.5,0.7,1.8,0
+INT-EXT-06-B01,EXT-06-B01,INT-EXT-06-B01-P05,Preparation counter,Kitchen,False,14.55,0.55,3.0,1.25,0.82,0
+INT-EXT-06-B01,EXT-06-B01,INT-EXT-06-B01-P06,Cold pantry cabinet,Kitchen,False,14.55,6.75,2.5,0.7,1.8,0
+INT-EXT-06-B01,EXT-06-B01,INT-EXT-06-B01-P07,Serving-cart parking,Kitchen,False,21.85,0.55,1.6,0.8,0.8,0
+INT-EXT-06-B01,EXT-06-B01,INT-EXT-06-B01-P08,Covered wash bench,Kitchen,False,20.45,6.2,3.0,1.25,0.82,0
+INT-EXT-06-B01,EXT-06-B01,INT-EXT-06-B01-P09,Paired sleeping cots,Guest A,False,0.55,8.55,3.0,1.25,0.82,0
+INT-EXT-06-B01,EXT-06-B01,INT-EXT-06-B01-P10,Personal storage chest,Guest A,False,0.55,12.65,1.6,0.8,0.8,0
+INT-EXT-06-B01,EXT-06-B01,INT-EXT-06-B01-P11,Bedside lamp table,Guest A,False,6.45,8.55,3.0,1.25,0.82,0
+INT-EXT-06-B01,EXT-06-B01,INT-EXT-06-B01-P12,Folded bedding rack,Guest A,False,6.95,12.75,2.5,0.7,1.8,0
+INT-EXT-06-B01,EXT-06-B01,INT-EXT-06-B01-P13,Paired sleeping cots,Guest B,False,14.55,8.55,3.0,1.25,0.82,0
+INT-EXT-06-B01,EXT-06-B01,INT-EXT-06-B01-P14,Personal storage chest,Guest B,False,14.55,12.65,1.6,0.8,0.8,0
+INT-EXT-06-B01,EXT-06-B01,INT-EXT-06-B01-P15,Bedside lamp table,Guest B,False,20.45,8.55,3.0,1.25,0.82,0
+INT-EXT-06-B01,EXT-06-B01,INT-EXT-06-B01-P16,Folded bedding rack,Guest B,False,20.95,12.75,2.5,0.7,1.8,0
+INT-EXT-06-B01,EXT-06-B01,INT-EXT-06-B01-P17,Paired sleeping cots,Guest C,False,0.55,14.55,3.0,1.25,0.82,0
+INT-EXT-06-B01,EXT-06-B01,INT-EXT-06-B01-P18,Personal storage chest,Guest C,False,0.55,18.65,1.6,0.8,0.8,0
+INT-EXT-06-B01,EXT-06-B01,INT-EXT-06-B01-P19,Bedside lamp table,Guest C,False,6.45,14.55,3.0,1.25,0.82,0
+INT-EXT-06-B01,EXT-06-B01,INT-EXT-06-B01-P20,Folded bedding rack,Guest C,False,6.95,18.75,2.5,0.7,1.8,0
+INT-EXT-06-B01,EXT-06-B01,INT-EXT-06-B01-P21,Wash basin cabinet,Wash/store,False,14.55,14.55,2.5,0.7,1.8,0
+INT-EXT-06-B01,EXT-06-B01,INT-EXT-06-B01-P22,Work desk and chair,Wash/store,False,14.55,18.2,3.0,1.25,0.82,0
+INT-EXT-06-B01,EXT-06-B01,INT-EXT-06-B01-P23,Supply cabinet,Wash/store,False,20.95,14.55,2.5,0.7,1.8,0
+INT-EXT-06-B01,EXT-06-B01,INT-EXT-06-B01-P24,Records shelf,Wash/store,False,22.3,18.9,1.15,0.55,1.65,0
+INT-EXT-07-B02,EXT-07-B02,INT-EXT-07-B02-P01,Flexible-joint test frame,Assembly,True,14.55,0.55,3.0,1.25,0.82,0
+INT-EXT-07-B02,EXT-07-B02,INT-EXT-07-B02-P02,Dry fiber cabinet,Assembly,True,14.55,6.75,2.5,0.7,1.8,0
+INT-EXT-07-B02,EXT-07-B02,INT-EXT-07-B02-P03,Seasonal position board,Assembly,True,22.3,0.55,1.15,0.55,1.65,0
+INT-EXT-07-B02,EXT-07-B02,INT-EXT-07-B02-P04,Teaching bell stand,Assembly,True,22.3,6.9,1.15,0.55,1.65,0
+INT-EXT-07-B02,EXT-07-B02,INT-EXT-07-B02-P05,Work bench,Bench room,False,0.55,0.55,3.0,1.25,0.82,0
+INT-EXT-07-B02,EXT-07-B02,INT-EXT-07-B02-P06,Tool cabinet,Bench room,False,0.55,6.75,2.5,0.7,1.8,0
+INT-EXT-07-B02,EXT-07-B02,INT-EXT-07-B02-P07,Inspection stand,Bench room,False,8.3,0.55,1.15,0.55,1.65,0
+INT-EXT-07-B02,EXT-07-B02,INT-EXT-07-B02-P08,Parts drawers,Bench room,False,6.95,6.75,2.5,0.7,1.8,0
+INT-EXT-07-B02,EXT-07-B02,INT-EXT-07-B02-P09,Numbered tool cabinet,Tool store,False,0.55,8.55,2.5,0.7,1.8,0
+INT-EXT-07-B02,EXT-07-B02,INT-EXT-07-B02-P10,Material stock rack,Tool store,False,0.55,16.65,1.4,0.8,0.03,0
+INT-EXT-07-B02,EXT-07-B02,INT-EXT-07-B02-P11,Repair-parts drawers,Tool store,False,6.95,8.55,2.5,0.7,1.8,0
+INT-EXT-07-B02,EXT-07-B02,INT-EXT-07-B02-P12,Inspection table,Tool store,False,6.45,16.2,3.0,1.25,0.82,0
+INT-EXT-07-B02,EXT-07-B02,INT-EXT-07-B02-P13,Wash basin cabinet,Wash/office,False,14.55,8.55,2.5,0.7,1.8,0
+INT-EXT-07-B02,EXT-07-B02,INT-EXT-07-B02-P14,Work desk and chair,Wash/office,False,14.55,16.2,3.0,1.25,0.82,0
+INT-EXT-07-B02,EXT-07-B02,INT-EXT-07-B02-P15,Supply cabinet,Wash/office,False,20.95,8.55,2.5,0.7,1.8,0
+INT-EXT-07-B02,EXT-07-B02,INT-EXT-07-B02-P16,Records shelf,Wash/office,False,22.3,16.9,1.15,0.55,1.65,0
+INT-EXT-08-B02,EXT-08-B02,INT-EXT-08-B02-P01,Screened mirror demonstration,Public reading,True,0.55,0.55,1.6,0.8,0.8,0
+INT-EXT-08-B02,EXT-08-B02,INT-EXT-08-B02-P02,Comparison ledger desk,Public reading,True,0.55,6.2,3.0,1.25,0.82,0
+INT-EXT-08-B02,EXT-08-B02,INT-EXT-08-B02-P03,Damaged measuring-plate case,Public reading,True,7.85,0.55,1.6,0.8,0.8,0
+INT-EXT-08-B02,EXT-08-B02,INT-EXT-08-B02-P04,Covered instrument cabinet,Public reading,True,6.95,6.75,2.5,0.7,1.8,0
+INT-EXT-08-B02,EXT-08-B02,INT-EXT-08-B02-P05,Dispatch desk and chair,Dispatch,False,14.55,0.55,3.0,1.25,0.82,0
+INT-EXT-08-B02,EXT-08-B02,INT-EXT-08-B02-P06,Message-sort cabinet,Dispatch,False,14.55,6.75,2.5,0.7,1.8,0
+INT-EXT-08-B02,EXT-08-B02,INT-EXT-08-B02-P07,Instrument rack,Dispatch,False,20.95,0.55,2.5,0.7,1.8,0
+INT-EXT-08-B02,EXT-08-B02,INT-EXT-08-B02-P08,Waiting bench,Dispatch,False,20.45,6.2,3.0,1.25,0.82,0
+INT-EXT-08-B02,EXT-08-B02,INT-EXT-08-B02-P09,Catalogued record cabinet,Archive A,False,0.55,8.55,1.15,0.55,1.65,0
+INT-EXT-08-B02,EXT-08-B02,INT-EXT-08-B02-P10,Copying desk and chair,Archive A,False,0.55,16.2,3.0,1.25,0.82,0
+INT-EXT-08-B02,EXT-08-B02,INT-EXT-08-B02-P11,Secure document chest,Archive A,False,7.85,8.55,1.6,0.8,0.8,0
+INT-EXT-08-B02,EXT-08-B02,INT-EXT-08-B02-P12,Returns trolley,Archive A,False,7.85,16.65,1.6,0.8,0.8,0
+INT-EXT-08-B02,EXT-08-B02,INT-EXT-08-B02-P13,Catalogued record cabinet,Archive B,False,14.55,8.55,1.15,0.55,1.65,0
+INT-EXT-08-B02,EXT-08-B02,INT-EXT-08-B02-P14,Copying desk and chair,Archive B,False,14.55,16.2,3.0,1.25,0.82,0
+INT-EXT-08-B02,EXT-08-B02,INT-EXT-08-B02-P15,Secure document chest,Archive B,False,21.85,8.55,1.6,0.8,0.8,0
+INT-EXT-08-B02,EXT-08-B02,INT-EXT-08-B02-P16,Returns trolley,Archive B,False,21.85,16.65,1.6,0.8,0.8,0
+INT-EXT-09-B02,EXT-09-B02,INT-EXT-09-B02-P01,Dry assessment bench,Shelter west,True,0.55,0.55,2.65,1.25,0.82,0
+INT-EXT-09-B02,EXT-09-B02,INT-EXT-09-B02-P02,Observed-tide board,Shelter west,True,0.55,8.9,1.15,0.55,1.65,0
+INT-EXT-09-B02,EXT-09-B02,INT-EXT-09-B02-P03,Rescue-kit rack,Shelter west,True,4.95,0.55,2.5,0.7,1.8,0
+INT-EXT-09-B02,EXT-09-B02,INT-EXT-09-B02-P04,Recovered-property tray,Shelter west,True,5.85,8.65,1.6,0.8,0.8,0
+INT-EXT-09-B02,EXT-09-B02,INT-EXT-09-B02-P05,Rest cot,Shelter east,False,12.55,0.55,1.6,0.8,0.8,0
+INT-EXT-09-B02,EXT-09-B02,INT-EXT-09-B02-P06,Dry clothing cabinet,Shelter east,False,12.55,8.75,2.5,0.7,1.8,0
+INT-EXT-09-B02,EXT-09-B02,INT-EXT-09-B02-P07,Assessment seat,Shelter east,False,17.85,0.55,1.6,0.8,0.8,0
+INT-EXT-09-B02,EXT-09-B02,INT-EXT-09-B02-P08,Blanket chest,Shelter east,False,17.85,8.65,1.6,0.8,0.8,0
+INT-EXT-09-B02,EXT-09-B02,INT-EXT-09-B02-P09,Dry ration cabinet,Dry store,False,0.55,10.55,2.5,0.7,1.8,0
+INT-EXT-09-B02,EXT-09-B02,INT-EXT-09-B02-P10,Blanket rack,Dry store,False,0.55,14.75,2.5,0.7,1.8,0
+INT-EXT-09-B02,EXT-09-B02,INT-EXT-09-B02-P11,Water-vessel stand,Dry store,False,6.3,10.55,1.15,0.55,1.65,0
+INT-EXT-09-B02,EXT-09-B02,INT-EXT-09-B02-P12,Equipment crate rack,Dry store,False,4.95,14.75,2.5,0.7,1.8,0
+INT-EXT-09-B02,EXT-09-B02,INT-EXT-09-B02-P13,Wash basin cabinet,Guide/wash,False,12.55,10.55,2.5,0.7,1.8,0
+INT-EXT-09-B02,EXT-09-B02,INT-EXT-09-B02-P14,Work desk and chair,Guide/wash,False,12.55,14.2,2.65,1.25,0.82,0
+INT-EXT-09-B02,EXT-09-B02,INT-EXT-09-B02-P15,Supply cabinet,Guide/wash,False,16.95,10.55,2.5,0.7,1.8,0
+INT-EXT-09-B02,EXT-09-B02,INT-EXT-09-B02-P16,Records shelf,Guide/wash,False,18.3,14.9,1.15,0.55,1.65,0
+INT-EXT-10-B02,EXT-10-B02,INT-EXT-10-B02-P01,Sail-section test frame,Assembly,True,14.55,0.55,3.0,1.25,0.82,0
+INT-EXT-10-B02,EXT-10-B02,INT-EXT-10-B02-P02,Mechanical load scale,Assembly,True,14.55,6.65,1.6,0.8,0.8,0
+INT-EXT-10-B02,EXT-10-B02,INT-EXT-10-B02-P03,Contract comparison desk,Assembly,True,20.45,0.55,3.0,1.25,0.82,0
+INT-EXT-10-B02,EXT-10-B02,INT-EXT-10-B02-P04,Weight Day toy cradle,Assembly,True,21.85,6.65,1.6,0.8,0.8,0
+INT-EXT-10-B02,EXT-10-B02,INT-EXT-10-B02-P05,Work bench,Bench room,False,0.55,0.55,3.0,1.25,0.82,0
+INT-EXT-10-B02,EXT-10-B02,INT-EXT-10-B02-P06,Tool cabinet,Bench room,False,0.55,6.75,2.5,0.7,1.8,0
+INT-EXT-10-B02,EXT-10-B02,INT-EXT-10-B02-P07,Inspection stand,Bench room,False,8.3,0.55,1.15,0.55,1.65,0
+INT-EXT-10-B02,EXT-10-B02,INT-EXT-10-B02-P08,Parts drawers,Bench room,False,6.95,6.75,2.5,0.7,1.8,0
+INT-EXT-10-B02,EXT-10-B02,INT-EXT-10-B02-P09,Numbered tool cabinet,Tool store,False,0.55,8.55,2.5,0.7,1.8,0
+INT-EXT-10-B02,EXT-10-B02,INT-EXT-10-B02-P10,Material stock rack,Tool store,False,0.55,16.65,1.4,0.8,0.03,0
+INT-EXT-10-B02,EXT-10-B02,INT-EXT-10-B02-P11,Repair-parts drawers,Tool store,False,6.95,8.55,2.5,0.7,1.8,0
+INT-EXT-10-B02,EXT-10-B02,INT-EXT-10-B02-P12,Inspection table,Tool store,False,6.45,16.2,3.0,1.25,0.82,0
+INT-EXT-10-B02,EXT-10-B02,INT-EXT-10-B02-P13,Wash basin cabinet,Wash/office,False,14.55,8.55,2.5,0.7,1.8,0
+INT-EXT-10-B02,EXT-10-B02,INT-EXT-10-B02-P14,Work desk and chair,Wash/office,False,14.55,16.2,3.0,1.25,0.82,0
+INT-EXT-10-B02,EXT-10-B02,INT-EXT-10-B02-P15,Supply cabinet,Wash/office,False,20.95,8.55,2.5,0.7,1.8,0
+INT-EXT-10-B02,EXT-10-B02,INT-EXT-10-B02-P16,Records shelf,Wash/office,False,22.3,16.9,1.15,0.55,1.65,0
+INT-EXT-11-B02,EXT-11-B02,INT-EXT-11-B02-P01,Paired transcription desk,Public reading,True,0.55,0.55,3.0,1.25,0.82,0
+INT-EXT-11-B02,EXT-11-B02,INT-EXT-11-B02-P02,Insulated fragment cabinet,Public reading,True,0.55,6.75,2.5,0.7,1.8,0
+INT-EXT-11-B02,EXT-11-B02,INT-EXT-11-B02-P03,Uncertainty-mark display,Public reading,True,8.3,0.55,1.15,0.55,1.65,0
+INT-EXT-11-B02,EXT-11-B02,INT-EXT-11-B02-P04,Supervised listening seat,Public reading,True,7.85,6.65,1.6,0.8,0.8,0
+INT-EXT-11-B02,EXT-11-B02,INT-EXT-11-B02-P05,Dispatch desk and chair,Dispatch,False,14.55,0.55,3.0,1.25,0.82,0
+INT-EXT-11-B02,EXT-11-B02,INT-EXT-11-B02-P06,Message-sort cabinet,Dispatch,False,14.55,6.75,2.5,0.7,1.8,0
+INT-EXT-11-B02,EXT-11-B02,INT-EXT-11-B02-P07,Instrument rack,Dispatch,False,20.95,0.55,2.5,0.7,1.8,0
+INT-EXT-11-B02,EXT-11-B02,INT-EXT-11-B02-P08,Waiting bench,Dispatch,False,20.45,6.2,3.0,1.25,0.82,0
+INT-EXT-11-B02,EXT-11-B02,INT-EXT-11-B02-P09,Catalogued record cabinet,Archive A,False,0.55,8.55,1.15,0.55,1.65,0
+INT-EXT-11-B02,EXT-11-B02,INT-EXT-11-B02-P10,Copying desk and chair,Archive A,False,0.55,16.2,3.0,1.25,0.82,0
+INT-EXT-11-B02,EXT-11-B02,INT-EXT-11-B02-P11,Secure document chest,Archive A,False,7.85,8.55,1.6,0.8,0.8,0
+INT-EXT-11-B02,EXT-11-B02,INT-EXT-11-B02-P12,Returns trolley,Archive A,False,7.85,16.65,1.6,0.8,0.8,0
+INT-EXT-11-B02,EXT-11-B02,INT-EXT-11-B02-P13,Catalogued record cabinet,Archive B,False,14.55,8.55,1.15,0.55,1.65,0
+INT-EXT-11-B02,EXT-11-B02,INT-EXT-11-B02-P14,Copying desk and chair,Archive B,False,14.55,16.2,3.0,1.25,0.82,0
+INT-EXT-11-B02,EXT-11-B02,INT-EXT-11-B02-P15,Secure document chest,Archive B,False,21.85,8.55,1.6,0.8,0.8,0
+INT-EXT-11-B02,EXT-11-B02,INT-EXT-11-B02-P16,Returns trolley,Archive B,False,21.85,16.65,1.6,0.8,0.8,0
+INT-EXT-12-B01,EXT-12-B01,INT-EXT-12-B01-P01,Greenware inspection bench,Bench room,True,0.55,0.55,3.0,1.25,0.82,0
+INT-EXT-12-B01,EXT-12-B01,INT-EXT-12-B01-P02,Cooled defect shelf,Bench room,True,0.55,6.75,2.5,0.7,1.8,0
+INT-EXT-12-B01,EXT-12-B01,INT-EXT-12-B01-P03,Two-handled cup cradle,Bench room,True,7.85,0.55,1.6,0.8,0.8,0
+INT-EXT-12-B01,EXT-12-B01,INT-EXT-12-B01-P04,Batch record stand,Bench room,True,8.3,6.9,1.15,0.55,1.65,0
+INT-EXT-12-B01,EXT-12-B01,INT-EXT-12-B01-P05,Movable assembly bench,Assembly,False,14.55,0.55,3.0,1.25,0.82,0
+INT-EXT-12-B01,EXT-12-B01,INT-EXT-12-B01-P06,Materials rack,Assembly,False,14.55,6.65,1.4,0.8,0.03,0
+INT-EXT-12-B01,EXT-12-B01,INT-EXT-12-B01-P07,Test jig stand,Assembly,False,22.3,0.55,1.15,0.55,1.65,0
+INT-EXT-12-B01,EXT-12-B01,INT-EXT-12-B01-P08,Parts trolley,Assembly,False,21.85,6.65,1.6,0.8,0.8,0
+INT-EXT-12-B01,EXT-12-B01,INT-EXT-12-B01-P09,Numbered tool cabinet,Tool store,False,0.55,8.55,2.5,0.7,1.8,0
+INT-EXT-12-B01,EXT-12-B01,INT-EXT-12-B01-P10,Material stock rack,Tool store,False,0.55,16.65,1.4,0.8,0.03,0
+INT-EXT-12-B01,EXT-12-B01,INT-EXT-12-B01-P11,Repair-parts drawers,Tool store,False,6.95,8.55,2.5,0.7,1.8,0
+INT-EXT-12-B01,EXT-12-B01,INT-EXT-12-B01-P12,Inspection table,Tool store,False,6.45,16.2,3.0,1.25,0.82,0
+INT-EXT-12-B01,EXT-12-B01,INT-EXT-12-B01-P13,Wash basin cabinet,Wash/office,False,14.55,8.55,2.5,0.7,1.8,0
+INT-EXT-12-B01,EXT-12-B01,INT-EXT-12-B01-P14,Work desk and chair,Wash/office,False,14.55,16.2,3.0,1.25,0.82,0
+INT-EXT-12-B01,EXT-12-B01,INT-EXT-12-B01-P15,Supply cabinet,Wash/office,False,20.95,8.55,2.5,0.7,1.8,0
+INT-EXT-12-B01,EXT-12-B01,INT-EXT-12-B01-P16,Records shelf,Wash/office,False,22.3,16.9,1.15,0.55,1.65,0
+INT-EXT-13-B01,EXT-13-B01,INT-EXT-13-B01-P01,Public relief chart table,West stalls,True,0.55,0.55,3.0,1.25,0.82,0
+INT-EXT-13-B01,EXT-13-B01,INT-EXT-13-B01-P02,Movable hearing benches,West stalls,True,0.55,16.2,3.0,1.25,0.82,0
+INT-EXT-13-B01,EXT-13-B01,INT-EXT-13-B01-P03,Rotation-of-speakers board,East stalls,True,20.55,0.55,1.15,0.55,1.65,0
+INT-EXT-13-B01,EXT-13-B01,INT-EXT-13-B01-P04,Shared harvest trays,East stalls,True,20.55,16.65,1.6,0.8,0.8,0
+INT-EXT-13-B01,EXT-13-B01,INT-EXT-13-B01-P05,Visitor seat,West stalls,False,7.85,0.55,1.6,0.8,0.8,0
+INT-EXT-13-B01,EXT-13-B01,INT-EXT-13-B01-P06,Public copy desk,West stalls,False,6.45,16.2,3.0,1.25,0.82,0
+INT-EXT-13-B01,EXT-13-B01,INT-EXT-13-B01-P07,Visitor seat,East stalls,False,27.85,0.55,1.6,0.8,0.8,0
+INT-EXT-13-B01,EXT-13-B01,INT-EXT-13-B01-P08,Public copy desk,East stalls,False,26.45,16.2,3.0,1.25,0.82,0
