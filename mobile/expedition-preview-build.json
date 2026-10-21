@@ -1,10 +1,10 @@
 {
-    "githubRunId": 39633551817,
-    "githubArtifactId": 12361427017,
-    "sha256": "399c8beaae01d9d111268e5966d8d3a61fc170eac68136730b1f197ef35cff35",
+    "githubRunId": 39643200335,
+    "githubArtifactId": 12366822878,
+    "sha256": "f1850ad8ee2eff3cde9d93f44789535b32d73efc422141260b461e5549578553",
     "package": "com.madgercoin.preview",
     "version": "1.5.1",
-    "buildNumber": 27,
-    "sourceRevision": "44af3ebf8d8c8c43434230523c5ae4260cfa43d3",
-    "sourceHeadRevision": "7d9d6e0dbf10b7acc400c73d6d31caf4419f896e"
+    "buildNumber": 28,
+    "sourceRevision": "ab04f57df81bfe3524072543a4f5a6cf97a057a5",
+    "sourceHeadRevision": "8186c6bf9ae625548fe01e2bf1f8c13a75a8c189"
 }
