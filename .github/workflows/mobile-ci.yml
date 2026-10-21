@@ -197,7 +197,7 @@ jobs:
           apk=android/app/build/outputs/apk/release/app-release.apk
           "$ANDROID_HOME/build-tools/36.0.0/aapt" dump permissions "$apk" > android-permissions.txt
           cat android-permissions.txt
-          if rg 'RECORD_AUDIO|READ_EXTERNAL_STORAGE|WRITE_EXTERNAL_STORAGE|SYSTEM_ALERT_WINDOW' android-permissions.txt; then
+          if grep -E 'RECORD_AUDIO|READ_EXTERNAL_STORAGE|WRITE_EXTERNAL_STORAGE|SYSTEM_ALERT_WINDOW' android-permissions.txt; then
             exit 1
           fi
       - name: Verify package, signing, archive, and source provenance
