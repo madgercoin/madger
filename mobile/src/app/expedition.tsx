@@ -162,7 +162,7 @@ export default function ExpeditionScreen(){
  const hint=active?uiHint:'';
  const retryRender=()=>{stopAndSave();if(raf.current!==null)cancelAnimationFrame(raf.current);raf.current=null;sceneRef.current?.dispose();sceneRef.current=null;setRenderError(null);setReady3d(false);setContextKey(k=>k+1);};
  return <View style={styles.root}>
-  <GLView key={contextKey} style={StyleSheet.absoluteFill} onContextCreate={context} onLayout={()=>{needsDraw.current=true;}} msaaSamples={2} {...WEB_GL_PROPS} {...(Platform.OS==='web'?{onContextLost:contextLost}:{})}/>
+  <GLView key={contextKey} style={StyleSheet.absoluteFill} onContextCreate={context} onLayout={()=>{needsDraw.current=true;}} msaaSamples={0} {...WEB_GL_PROPS} {...(Platform.OS==='web'?{onContextLost:contextLost}:{})}/>
   <View style={StyleSheet.absoluteFill} {...pan.panHandlers} accessible={false}/>
   <LinearGradient pointerEvents="none" colors={['#061710E6','#06171000']} style={[styles.topShade,{height:insets.top+210}]}/>
   <View pointerEvents="box-none" style={[styles.hud,{top:Math.max(12,insets.top+6)}]}>
