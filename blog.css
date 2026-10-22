@@ -105,3 +105,14 @@ html{overflow-x:hidden}
 
 /* Evidence tables and machine-readable examples inside long-form dispatches. */
 .article-body>pre{max-width:100%;overflow-x:auto;margin:28px 0;padding:22px 24px;border:1px solid rgba(212,175,55,.32);border-left:4px solid var(--gold);background:#080906;box-shadow:inset 0 0 28px rgba(212,175,55,.035)}.article-body>pre code{color:var(--acid);font-size:.82em;white-space:pre}.article-body>table{width:100%;margin:30px 0;border-collapse:collapse;border:1px solid var(--line);font-family:var(--body);font-size:14px;line-height:1.55}.article-body>table th,.article-body>table td{padding:15px 14px;border-bottom:1px solid var(--line);vertical-align:top;text-align:left}.article-body>table th{background:rgba(212,175,55,.1);color:var(--sand);font-size:9px;font-weight:950;letter-spacing:.11em;text-transform:uppercase}.article-body>table td{color:var(--muted)}.article-body>table td strong{color:var(--bone);white-space:nowrap}@media(max-width:760px){.article-body>table{display:block;overflow-x:auto;white-space:nowrap}.article-body>pre{padding:18px 16px}}
+
+/* Creator-utility release: technical world material remains legible and tactile. */
+.world-bible-card .feature-image,.world-bible-card .story-image{background:radial-gradient(circle at 48% 42%,rgba(184,212,134,.12),transparent 58%),linear-gradient(145deg,#10130d,#050604)}
+.world-bible-card .feature-image img,.world-bible-card .story-image img{object-fit:contain;padding:18px;filter:saturate(.74) contrast(1.12) brightness(.94)}
+.article-cover--world{position:relative;display:grid;place-items:center;min-height:600px;padding:28px;background:radial-gradient(circle at 50% 45%,rgba(184,212,134,.1),transparent 48%),#080a07}
+.article-cover--world img{width:100%;height:auto;max-height:720px;object-fit:contain;filter:saturate(.78) contrast(1.11);box-shadow:0 24px 65px rgba(0,0,0,.42)}
+.article-update{margin:30px 0;padding:24px 26px;border:1px solid rgba(184,212,134,.36);border-left:4px solid var(--acid);background:linear-gradient(120deg,rgba(184,212,134,.09),transparent),#090b08}
+.article-update small{color:var(--acid);font-family:"Courier New",monospace;font-size:9px;font-weight:900;letter-spacing:.16em}
+.article-update p{margin:10px 0 0;color:var(--cream);line-height:1.7}
+.article-update a{color:var(--gold)}
+@media(max-width:620px){.article-cover--world{min-height:360px;padding:12px}.world-bible-card .feature-image img,.world-bible-card .story-image img{padding:10px}.article-update{padding:20px}}

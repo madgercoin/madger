@@ -23,6 +23,7 @@ const checks = [
   ["/collaborators", 200],
   ["/privacy", 200],
   ["/blog", 200],
+  ["/blog-open-burrow-blueprints", 200],
   ["/blog-mobile-preview-release-status", 200],
   ["/blog-circulating-supply-endpoint", 200],
   ["/blog-verify-without-social", 200],
@@ -47,7 +48,8 @@ const checks = [
   ["/assets/madger_v6_community_welcome.webp", 200],
   ["/assets/reports/game-upgrade/burrow-gameplay-390.png", 200],
   ["/assets/reports/game-upgrade/burrow-lobby-390.png", 200],
-  ["/assets/reports/game-upgrade/burrow-results-390.png", 200]
+  ["/assets/reports/game-upgrade/burrow-results-390.png", 200],
+  ["/assets/MADGER_World_Bible/v2.0.0/previews/UG-A0.png", 200]
 ];
 const redirects = [
   ["/app.html", "/app"],
@@ -186,10 +188,16 @@ if (game) {
   }
 }
 
-const latestDispatch = responses.get("/blog-mobile-preview-release-status");
+const latestDispatch = responses.get("/blog-open-burrow-blueprints");
 if (latestDispatch) {
-  const contentChecks = [[latestDispatch.body.includes("Dispatch 015"), "dispatch number"],[latestDispatch.body.includes("OCT 15, 2026") && latestDispatch.body.includes("REVISED"), "visible publication and revision dates"],[latestDispatch.body.includes("mobile-v1.3.0-preview.59"), "public Android prerelease"],[latestDispatch.body.includes("actions/runs/38601277824"), "passing Mobile CI evidence"],[latestDispatch.body.includes("actions/runs/38601277707"), "failed store gate evidence"],[latestDispatch.body.includes("469772f706b014f77e250a6caf4fb1b6c5db5d310d010f080068062051489266"), "APK checksum"],[latestDispatch.body.includes("not claiming") && latestDispatch.body.includes("did not run"), "store distribution boundary"],[latestDispatch.body.includes(officialMint), "official mint"],[latestDispatch.body.includes("does not guarantee"), "risk boundary"],[latestDispatch.body.includes('href="/buy"'), "separate beginner buying path"],[latestDispatch.body.includes('href="/commons"'), "no-purchase community utility"],[latestDispatch.body.includes('href="/game"'), "public browser game path"]];
+  const contentChecks = [[latestDispatch.body.includes("Dispatch 016"), "dispatch number"],[latestDispatch.body.includes("OCT 22, 2026") && latestDispatch.body.includes("REVISED"), "visible publication and revision dates"],[latestDispatch.body.includes("09c7f6a621baed68cf79956feb8dbffa6d463ca9"), "Living World release evidence"],[latestDispatch.body.includes("9ad90a700e2a7569b3263cc1e04d321e4d20b42f"), "underground atlas evidence"],[latestDispatch.body.includes("821839095effc2f194190d602de5b5fb60cadbed"), "surface atlas evidence"],[latestDispatch.body.includes("CURRENT.json") && latestDispatch.body.includes("validation.json"), "version and validation evidence"],[latestDispatch.body.includes("not a physical-device") && latestDispatch.body.includes("does not guarantee"), "implementation and financial boundaries"],[latestDispatch.body.includes(officialMint), "official mint"],[latestDispatch.body.includes('href="/buy"'), "separate beginner buying path"],[latestDispatch.body.includes('href="/commons"'), "community utility path"],[latestDispatch.body.includes('href="/collaborators"'), "creator contribution path"]];
   for (const [passed, label] of contentChecks) { console.log(`${passed ? "PASS" : "FAIL"} ${label}`); if (!passed) failures.push(`latest dispatch: ${label}`); }
+}
+
+const revisedPreviewDispatch = responses.get("/blog-mobile-preview-release-status");
+if (revisedPreviewDispatch) {
+  const contentChecks = [[revisedPreviewDispatch.body.includes("OCT 22, 2026"), "visible revised date"],[revisedPreviewDispatch.body.includes("mobile-v1.4.0-preview.70"), "1.4.0 follow-up evidence"],[revisedPreviewDispatch.body.includes("development-signed preview") && revisedPreviewDispatch.body.includes("not a Google Play or App Store release"), "store boundary"]];
+  for (const [passed, label] of contentChecks) { console.log(`${passed ? "PASS" : "FAIL"} Dispatch 015 ${label}`); if (!passed) failures.push(`Dispatch 015: ${label}`); }
 }
 
 const officialDirectory = responses.get("/official-links");

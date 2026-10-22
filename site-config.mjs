@@ -27,6 +27,7 @@ export const rootFiles = [
   "collaborators.html",
   "privacy.html",
   "blog.html",
+  "blog-open-burrow-blueprints.html",
   "blog-building-foundations.html",
   "blog-honey-badger-standard.html",
   "blog-token-link-safety.html",
@@ -97,7 +98,8 @@ export const assetFiles = [
   "madger_fieldnote_safety_v1_social.jpg",
   "reports/game-upgrade/burrow-gameplay-390.png",
   "reports/game-upgrade/burrow-lobby-390.png",
-  "reports/game-upgrade/burrow-results-390.png"
+  "reports/game-upgrade/burrow-results-390.png",
+  "MADGER_World_Bible/v2.0.0/previews/UG-A0.png"
 ];
 
 export const distAllowlist = [

@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026-10-22 — Signals dispatch: an open creator world system
+
+- Published Dispatch 016 as a creator-facing guide to the public MADGER World Bible, structured canon, current-version pointer, resident records, rebuildable source, and surface/underground blueprint atlases.
+- Distinguished repository canon from shipped gameplay, video implementation, final model sheets, construction engineering, and financial utility; preserved explicit uncertainty and risk boundaries.
+- Added the release to the Signals archive, homepage preview, RSS, sitemap, image-led reading library, production allowlist, structured metadata, share paths, and automated deployment checks.
+- Revised Dispatch 015 with the later public 1.4.0 Android prerelease while preserving its original 1.3.0 evidence and the Google Play/App Store boundary.
+- Expanded archive numbering and parity validation from 15 to 16 dispatches and added the blueprint overview as a production image asset.
+
 ## 2026-10-20 - Living Burrow / World Bible v2.1.0
 
 - Add a 26-page present-day world volume, five neighborhood identities, eight resident dossiers and seven measured sub-plans within existing allocations.
