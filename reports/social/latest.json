@@ -1,9 +1,9 @@
 {
-  "generatedAt": "2026-10-21T14:00:54.046Z",
-  "previousGeneratedAt": "2026-10-20T13:44:59.311Z",
+  "generatedAt": "2026-10-22T13:59:13.727Z",
+  "previousGeneratedAt": "2026-10-21T14:00:54.046Z",
   "window": {
-    "start": "2026-09-21T14:00:54.046Z",
-    "end": "2026-10-21T14:00:54.046Z"
+    "start": "2026-09-22T13:59:13.727Z",
+    "end": "2026-10-22T13:59:13.727Z"
   },
   "organization": {
     "id": "6a67aceacff325d8d2d231e9",
@@ -20,15 +20,15 @@
       "state": "connected",
       "healthy": true,
       "queuePaused": false,
-      "metricsUpdatedAt": "2026-10-21T00:09:50.789Z",
+      "metricsUpdatedAt": "2026-10-21T23:10:00.877Z",
       "metrics": {
         "postCount": 38,
         "reactions": 171,
         "comments": 135,
-        "engagementRate": 24.2,
+        "engagementRate": 24.18,
         "reposts": 4,
-        "impressions": 2012,
-        "clicks": 8
+        "impressions": 2031,
+        "clicks": 9
       },
       "requiresCommunityReview": true
     },
@@ -42,13 +42,13 @@
       "state": "connected",
       "healthy": true,
       "queuePaused": false,
-      "metricsUpdatedAt": "2026-10-20T15:04:45.533Z",
+      "metricsUpdatedAt": "2026-10-22T13:05:02.493Z",
       "metrics": {
-        "postCount": 25,
+        "postCount": 24,
         "reactions": 2,
         "comments": 5,
-        "engagementRate": 1.59,
-        "impressions": 441,
+        "engagementRate": 1.58,
+        "impressions": 443,
         "shares": 0,
         "clicks": 1
       },
@@ -64,19 +64,19 @@
       "state": "connected",
       "healthy": true,
       "queuePaused": false,
-      "metricsUpdatedAt": "2026-10-21T04:59:44.661Z",
+      "metricsUpdatedAt": "2026-10-22T03:59:53.999Z",
       "metrics": {
-        "postCount": 24,
-        "reactions": 49,
+        "postCount": 23,
+        "reactions": 46,
         "comments": 17,
-        "engagementRate": 45.89,
-        "views": 282,
+        "engagementRate": 44.76,
+        "views": 272,
         "shares": 1,
         "saves": 0,
         "follows": 0,
-        "reach": 146,
-        "totalTimeWatched": 1051.43,
-        "averageTimeWatched": 564.51
+        "reach": 143,
+        "totalTimeWatched": 1050.6,
+        "averageTimeWatched": 676.17
       },
       "requiresCommunityReview": true
     },
@@ -90,17 +90,17 @@
       "state": "connected",
       "healthy": true,
       "queuePaused": false,
-      "metricsUpdatedAt": "2026-10-21T03:25:13.499Z",
+      "metricsUpdatedAt": "2026-10-21T17:03:20.532Z",
       "metrics": {
-        "postCount": 25,
+        "postCount": 24,
         "reactions": 11,
         "comments": 0,
-        "engagementRate": 0.49,
-        "views": 2453,
+        "engagementRate": 0.51,
+        "views": 2360,
         "shares": 1,
-        "reach": 2236,
-        "totalTimeWatched": 141.68,
-        "averageTimeWatched": 2.95
+        "reach": 2150,
+        "totalTimeWatched": 138.75,
+        "averageTimeWatched": 2.99
       },
       "requiresCommunityReview": false
     }
@@ -161,7 +161,7 @@
         "views": 11,
         "clicks": 6,
         "saves": 6,
-        "follows": 6
+        "follows": 3
       },
       "averageEngagementRate": 16.770000000000003,
       "priorSnapshotAvailable": true
@@ -217,7 +217,8 @@
           "views": 141,
           "shares": 0,
           "saves": 0,
-          "follows": 0,
+          "totalTimeWatched": 0,
+          "averageTimeWatched": 0,
           "reach": 96
         },
         "metricDeltas": {
@@ -227,7 +228,6 @@
           "views": 0,
           "shares": 0,
           "saves": 0,
-          "follows": 0,
           "reach": 0
         }
       },
@@ -315,7 +315,8 @@
           "views": 125,
           "shares": 0,
           "saves": 0,
-          "follows": 0,
+          "totalTimeWatched": 0,
+          "averageTimeWatched": 0,
           "reach": 103
         },
         "metricDeltas": {
@@ -325,7 +326,6 @@
           "views": 0,
           "shares": 0,
           "saves": 0,
-          "follows": 0,
           "reach": 0
         }
       },
@@ -447,7 +447,8 @@
           "views": 136,
           "shares": 0,
           "saves": 0,
-          "follows": 0,
+          "totalTimeWatched": 0,
+          "averageTimeWatched": 0,
           "reach": 111
         },
         "metricDeltas": {
@@ -457,7 +458,6 @@
           "views": 0,
           "shares": 0,
           "saves": 0,
-          "follows": 0,
           "reach": 0
         }
       },
