@@ -311,6 +311,7 @@ const latestDispatchUrl = "https://madgercoin.com/blog-open-burrow-blueprints.ht
 const feed = await readFile("feed.xml", "utf8");
 const blogScript = await readFile("blog.js", "utf8");
 if (!pages.get("blog.html").includes('href="/blog-open-burrow-blueprints.html"') || !pages.get("blog.html").includes("16 DISPATCHES")) failures.push("blog.html: latest dispatch archive parity is missing");
+if (!pages.get("blog.html").includes("NEW · DISPATCH 016") || !pages.get("blog.html").includes("Browse 16 dispatches") || !pages.get("blog.html").includes('<div class="hero-meta"><span><b>16</b> DISPATCHES')) failures.push("blog.html: latest dispatch hero parity is missing");
 if (!pages.get("index.html").includes('href="/blog-open-burrow-blueprints.html"') || !pages.get("index.html").includes("16 DISPATCHES")) failures.push("index.html: latest dispatch homepage parity is missing");
 if (!feed.includes(latestDispatchUrl) || !feed.includes("Thu, 22 Oct 2026 14:20:00 GMT")) failures.push("feed.xml: latest dispatch or publication date is missing");
 if (!sitemap.includes(latestDispatchUrl)) failures.push("sitemap.xml: latest dispatch is missing");

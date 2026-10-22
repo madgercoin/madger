@@ -87,6 +87,7 @@ html{overflow-x:hidden}
 /* Release-desk visuals use real test captures as controls, without stretching
    portrait mobile evidence into decorative landscape crops. */
 .signal-button--mobile img{object-fit:contain;padding:8px;background:radial-gradient(circle at 50% 35%,rgba(157,255,0,.16),transparent 58%),#050706}
+.signal-button--world img{object-fit:contain;padding:8px;background:radial-gradient(circle at 50% 35%,rgba(184,212,134,.12),transparent 58%),#050706;filter:saturate(.8) contrast(1.12)}
 .mobile-preview-card .feature-image,.mobile-preview-card .story-image{background:radial-gradient(circle at 50% 38%,rgba(157,255,0,.14),transparent 55%),linear-gradient(145deg,#0a0d09,#030403)}
 .mobile-preview-card .feature-image img,.mobile-preview-card .story-image img{object-fit:contain;padding:22px;filter:saturate(.92) contrast(1.04)}
 .article-cover--mobile{display:grid;place-items:center;min-height:620px;background:radial-gradient(circle at 50% 45%,rgba(157,255,0,.14),transparent 42%),linear-gradient(135deg,#0b0e0a,#030403)}
