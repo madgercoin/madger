@@ -1,0 +1,24 @@
+{
+  "id": "WAY-13",
+  "baseline": {
+    "a": "EXT-02",
+    "b": "EXT-06",
+    "mode": "road",
+    "length_km": 150,
+    "days": 9,
+    "conditions": "Freight approach has public and raider-controlled branches.",
+    "id": "WAY-13"
+  },
+  "origin_name": "Stonewake",
+  "destination_name": "Cinder Cuts",
+  "title": "A road with competing stories",
+  "daily_life": "Stonewake\u2019s freight approach reaches Cinder Cuts, where families remember lost work and outsiders often remember only raiders. Both lawful households and coercion exist in the district.",
+  "timing": "Nine days is the base route. Public and raider-controlled branches are not interchangeable. A paid passage on one branch does not establish safe access to the other.",
+  "handoff": "Record which branch a witness actually saw. A yard document cannot certify the whole inhabited district, and a district name does not make every resident an accomplice.",
+  "story_option": "A stolen load carries a legitimate repair tag from an innocent workshop. Pursuing the tag without asking when the repair occurred threatens the wrong household.",
+  "production": "Civilian terraces remain distinct from Ashmouth Freight Yard. Travel shots should include inhabited life before the later crime location, without revealing writer-only villains early.",
+  "schedule_days": 9,
+  "schedule_status": "Inherited base schedule",
+  "direction": "Listed a-to-b planning reference; reverse passage requires a fresh itinerary.",
+  "geometry": "Regional endpoints and route length inherited; connecting line is not a surveyed track."
+}

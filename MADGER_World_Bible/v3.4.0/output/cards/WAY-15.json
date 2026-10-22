@@ -1,0 +1,24 @@
+{
+  "id": "WAY-15",
+  "baseline": {
+    "a": "EXT-02",
+    "b": "EXT-13",
+    "mode": "descent",
+    "length_km": 16,
+    "days": 2,
+    "conditions": "Dedicated Stonewake descent and pressure/air checks; 1,920 m vertical change. No Burrow connection.",
+    "id": "WAY-15"
+  },
+  "origin_name": "Stonewake",
+  "destination_name": "Lumen Tide",
+  "title": "A descent into someone else\u2019s home",
+  "daily_life": "Stonewake\u2019s descent reaches Lumen Tide, an independent community with its own long history. Travelers become guests, not discoverers of an unclaimed world.",
+  "timing": "The 16 km route changes elevation by 1,920 m from Stonewake z=320 to Lumen Tide z=-1600. Its two-day plan includes pressure and air checks; 16 km is not a straight vertical shaft.",
+  "handoff": "At the descent house, agree equipment, visitor limits, return arrangements and the scope of any chart sharing. No descendant of this route opens below Burrow defenses.",
+  "story_option": "A visitor reads a blank chart margin as an empty coast. A local inhabitant recognizes a protected shore whose omission was intentional.",
+  "production": "Regional plan and elevation profile are separate views. Do not draw a uniform shaft gradient: segment-by-segment construction is not defined by the two endpoint elevations.",
+  "schedule_days": 2,
+  "schedule_status": "Inherited base schedule",
+  "direction": "Listed a-to-b planning reference; reverse passage requires a fresh itinerary.",
+  "geometry": "Regional endpoints and route length inherited; connecting line is not a surveyed track."
+}

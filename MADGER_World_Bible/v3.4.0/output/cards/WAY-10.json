@@ -1,0 +1,29 @@
+{
+  "id": "WAY-10",
+  "baseline": {
+    "a": "EXT-09",
+    "b": "EXT-10",
+    "mode": "sky",
+    "length_km": 340,
+    "days": 5,
+    "conditions": "One weather wait and one load/transfer day; only in safe conditions.",
+    "id": "WAY-10"
+  },
+  "origin_name": "Nacre Quay",
+  "destination_name": "Aurel Quay",
+  "title": "An empty berth is useful",
+  "daily_life": "The Nacre Quay to Aurel Quay connection serves trade, craft and people visiting relatives. A canceled departure leaves kitchens, workshops and lodging under pressure.",
+  "timing": "340 km at 100 km/day takes 3.4 movement days. One weather-wait day plus one load/transfer day gives 5.4 elapsed days, scheduled as 6 whole day blocks.",
+  "handoff": "The named sky link is a regional service, not proof that liftstone works everywhere along a straight map line. The selected craft\u2019s support, propulsion, field compatibility and reserve must be established before an airborne sequence.",
+  "story_option": "A captain wins praise for leaving a berth empty, then privately accepts cargo that consumes its weight reserve. Evidence is in the actual load, not the heroic speech.",
+  "production": "Do not turn distant liftstone into free-floating ore. The network map is topological; it cannot certify the complete airborne track or the field envelope.",
+  "schedule_days": 6,
+  "schedule_status": "Explicit planning erratum",
+  "direction": "Listed a-to-b planning reference; reverse passage requires a fresh itinerary.",
+  "geometry": "Regional endpoints and route length inherited; connecting line is not a surveyed track.",
+  "arithmetic": {
+    "moving": 3.4,
+    "layover": 2,
+    "days": 6
+  }
+}

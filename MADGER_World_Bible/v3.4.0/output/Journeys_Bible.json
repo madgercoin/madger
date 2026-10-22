@@ -1,0 +1,1015 @@
+{
+  "edition": "3.4.0",
+  "title": "Journeys & Waycraft",
+  "date": "2026-10-21",
+  "base_commit": "4f3633b4a6e021e9c31053a970d4263be5a2116d",
+  "scope": "Sixteen existing routes, exact regional anchors, six timing examples, six bounded technologies and one complete proposed story.",
+  "route_cards": [
+    {
+      "id": "WAY-01",
+      "baseline": {
+        "a": "BRW",
+        "b": "EXT-03",
+        "mode": "road",
+        "length_km": 34,
+        "days": 2,
+        "conditions": "East public gate joins an exterior approach at regional (1.5,0); the Burrow interior graph is unchanged.",
+        "id": "WAY-01"
+      },
+      "origin_name": "The Burrow",
+      "destination_name": "Latchford",
+      "title": "Leaving is a civic act",
+      "daily_life": "Garden loads, repaired tools and travelers share the road to Latchford. A goodbye at the public entrance can be warm without treating the whole town as an expedition camp.",
+      "timing": "Departure uses the established east gate and regional approach (1.5,0). The itinerary begins outside the existing interior graph; do not draw a new gate.",
+      "handoff": "An arrival house checks the actual passengers against the sender\u2019s list. The returning goods list and the person count are separate records.",
+      "story_option": "A missing name on a message may be a late passenger, a copy error or deliberate omission. A delayed arrival is a question before it is an accusation.",
+      "production": "Open with a shared breakfast, show the exterior transition in a later episode, then cut to a changed sun angle and an overnight halt. Episode one contains none of this.",
+      "schedule_days": 2,
+      "schedule_status": "Inherited base schedule",
+      "direction": "Listed a-to-b planning reference; reverse passage requires a fresh itinerary.",
+      "geometry": "Regional endpoints and route length inherited; connecting line is not a surveyed track."
+    },
+    {
+      "id": "WAY-02",
+      "baseline": {
+        "a": "EXT-03",
+        "b": "EXT-01",
+        "mode": "road",
+        "length_km": 48,
+        "days": 3,
+        "conditions": "Raised river causeway; flood season can close the lower branch.",
+        "id": "WAY-02"
+      },
+      "origin_name": "Latchford",
+      "destination_name": "Reedbank",
+      "title": "The high road has a price",
+      "daily_life": "Reedbank kitchens buy flour and river households send repaired gear toward the junction. Flood marks on older stone tell the story of collective work, not a prophecy.",
+      "timing": "The raised causeway and lower river branch are distinct. Closing the lower branch does not automatically close the high route; local observers decide each separately.",
+      "handoff": "Before accepting a lower-branch instruction, compare its observation time with the bank marks. Do not relocate Floodglass Ford onto the main centreline simply to shorten a scene.",
+      "story_option": "A courier pays for a high-route berth, then finds the receipt describes the closed lower branch. The error can be exploited by a broker without making the river a conspiracy.",
+      "production": "Keep SITE-01 a separate local branch with no invented regional travel duration. Use the 3.3 habitat sheet if that encounter is staged.",
+      "schedule_days": 3,
+      "schedule_status": "Inherited base schedule",
+      "direction": "Listed a-to-b planning reference; reverse passage requires a fresh itinerary.",
+      "geometry": "Regional endpoints and route length inherited; connecting line is not a surveyed track."
+    },
+    {
+      "id": "WAY-03",
+      "baseline": {
+        "a": "EXT-01",
+        "b": "EXT-04",
+        "mode": "river",
+        "length_km": 58,
+        "days": 2,
+        "conditions": "One upstream day plus docking and current allowance.",
+        "id": "WAY-03"
+      },
+      "origin_name": "Reedbank",
+      "destination_name": "Millmere",
+      "title": "The river keeps two clocks",
+      "daily_life": "Millmere needs river deliveries while Reedbank crews need paid docking time. The same current that helps one direction slows the other.",
+      "timing": "58 km is the inherited route length. Two scheduled days include upstream and docking allowance; the regional 50 km/day rate is a broad planning baseline, not a guarantee against current.",
+      "handoff": "A boat report names direction, water mark, passengers and berth. Reversing the trip requires a new current and docking assessment; two days is not automatically a return timetable.",
+      "story_option": "A sealed cargo receipt arrives before its boat. The arrival clerk must distinguish acceptance of a message from arrival of people.",
+      "production": "A waterline, mooring rope and tired crew make elapsed time visible. Do not use a montage to erase a docking wait that changes the plot.",
+      "schedule_days": 2,
+      "schedule_status": "Inherited base schedule",
+      "direction": "Listed a-to-b planning reference; reverse passage requires a fresh itinerary.",
+      "geometry": "Regional endpoints and route length inherited; connecting line is not a surveyed track."
+    },
+    {
+      "id": "WAY-04",
+      "baseline": {
+        "a": "EXT-03",
+        "b": "EXT-04",
+        "mode": "road",
+        "length_km": 44,
+        "days": 3,
+        "conditions": "Canal service road with one staffed overnight yard.",
+        "id": "WAY-04"
+      },
+      "origin_name": "Latchford",
+      "destination_name": "Millmere",
+      "title": "A bed at the junction",
+      "daily_life": "The canal service road carries repair pieces too awkward to ship on the day\u2019s boat. Its staffed overnight yard is ordinary infrastructure maintained by people with work of their own.",
+      "timing": "One staffed overnight yard is established. A three-day road journey still needs a second overnight arrangement; it may be an inspected temporary camp, not a newly named permanent settlement.",
+      "handoff": "The yard registers the chosen next leg rather than assuming all arrivals continue by road. Transfer to WAY-03 is a separate decision, with separate timing.",
+      "story_option": "The last sheltered place belongs to a small party. A larger convoy has to divide its loads and book later departures instead of silently occupying someone else\u2019s space.",
+      "production": "Use a reusable camp dressing for the unregistered halt; log weather, water and who stayed awake. Do not add a city to fill a timing gap.",
+      "schedule_days": 3,
+      "schedule_status": "Inherited base schedule",
+      "direction": "Listed a-to-b planning reference; reverse passage requires a fresh itinerary.",
+      "geometry": "Regional endpoints and route length inherited; connecting line is not a surveyed track."
+    },
+    {
+      "id": "WAY-05",
+      "baseline": {
+        "a": "BRW",
+        "b": "EXT-02",
+        "mode": "road",
+        "length_km": 78,
+        "days": 5,
+        "conditions": "Departure still uses the existing east gate, then the exterior ring road turns northwest; no new western gate.",
+        "id": "WAY-05"
+      },
+      "origin_name": "The Burrow",
+      "destination_name": "Stonewake",
+      "title": "Home behind, stone ahead",
+      "daily_life": "Stonewake supplies fittings and skilled hands to the Burrow. Visits carry family expectations as well as cargo; Gorilla can arrive as a brother, apprentice or colleague.",
+      "timing": "All departures still use the east gate, then the exterior ring road turns northwest. The visual route may curve outside the basin; no western Burrow entrance is created.",
+      "handoff": "Five days is the base loaded-road schedule. Workshop appointments should be set after arrival and rest, not during the last walking block.",
+      "story_option": "A commission expects Gorilla\u2019s strength to replace a second crew. Eris can refuse that assumption without refusing his help.",
+      "production": "Use the same packed tools across the five-day sequence. A repaired strap remains repaired; fresh costume changes require laundry or a replacement source.",
+      "schedule_days": 5,
+      "schedule_status": "Inherited base schedule",
+      "direction": "Listed a-to-b planning reference; reverse passage requires a fresh itinerary.",
+      "geometry": "Regional endpoints and route length inherited; connecting line is not a surveyed track."
+    },
+    {
+      "id": "WAY-06",
+      "baseline": {
+        "a": "EXT-03",
+        "b": "EXT-05",
+        "mode": "road",
+        "length_km": 82,
+        "days": 5,
+        "conditions": "Forest-margin road via fixed ridge farms.",
+        "id": "WAY-06"
+      },
+      "origin_name": "Latchford",
+      "destination_name": "Willowmere",
+      "title": "Where the fields begin to lean",
+      "daily_life": "Willowmere sends seeds, teaching materials and orchard produce toward Latchford. Fixed ridge farms supply a landscape of inhabited margins, not empty wilderness.",
+      "timing": "The forest-margin road is a fixed approach to Willowmere. Moving-crown navigation belongs to the next route and cannot begin wherever an exciting root bridge would look best.",
+      "handoff": "At Willowmere, visitors exchange the road timetable for a guide\u2019s dated canopy briefing. Payment for a guide does not buy the right to overrule a closure.",
+      "story_option": "A crate of viable seed must arrive in shade while a merchant wants it displayed in the sun for customers. The transport problem becomes visible through living cargo.",
+      "production": "Let sounds change from wheels and open wind to insects and leaf cover. Carry the same crate dimensions and ventilation marks into the arrival set.",
+      "schedule_days": 5,
+      "schedule_status": "Inherited base schedule",
+      "direction": "Listed a-to-b planning reference; reverse passage requires a fresh itinerary.",
+      "geometry": "Regional endpoints and route length inherited; connecting line is not a surveyed track."
+    },
+    {
+      "id": "WAY-07",
+      "baseline": {
+        "a": "EXT-05",
+        "b": "EXT-07",
+        "mode": "guided forest",
+        "length_km": 100,
+        "days": 6,
+        "conditions": "Spring route; local guides update root crossings. Wet-season detour adds two days.",
+        "id": "WAY-07"
+      },
+      "origin_name": "Willowmere",
+      "destination_name": "Crownrest",
+      "title": "The path is alive, slowly",
+      "daily_life": "Guides and bridge crews work between Willowmere and Crownrest. Their songs preserve work sequences; living fibers take seasons to grow.",
+      "timing": "Six days is the spring guided route; wet-season detour adds two days. Inspection remains necessary even in spring. Roots do not grow a replacement span during a rescue.",
+      "handoff": "A guide signs off the intended crossing state, not the entire forest. A shift in one crown triggers a fresh choice while other communities continue ordinary work.",
+      "story_option": "A reliable old instruction now leads to a gap. It can become dangerous without being forged; the actual forgery plot must still supply independent evidence of deliberate alteration.",
+      "production": "Walking Root Crossing uses the 3.3 footprint, spans and rescue shelf. No unmeasured shortcut is added under the canopy. Show waiting and drying gear as part of the journey.",
+      "schedule_days": 6,
+      "schedule_status": "Inherited base schedule",
+      "direction": "Listed a-to-b planning reference; reverse passage requires a fresh itinerary.",
+      "geometry": "Regional endpoints and route length inherited; connecting line is not a surveyed track."
+    },
+    {
+      "id": "WAY-08",
+      "baseline": {
+        "a": "EXT-04",
+        "b": "EXT-08",
+        "mode": "caravan",
+        "length_km": 200,
+        "days": 12,
+        "conditions": "Two water stops and a storm reserve; walking convoy pace applies.",
+        "id": "WAY-08"
+      },
+      "origin_name": "Millmere",
+      "destination_name": "Ossara",
+      "title": "Water travels with the promise",
+      "daily_life": "Ossara\u2019s supply relies on handlers, salt grass, wells and animal rest. The caravan carries its dependence visibly: water, feed and cargo occupy the same finite load.",
+      "timing": "Twelve days includes two water stops and a storm reserve. Do not assign two extra full days to those stops without increasing the total; their durations are not fixed by the old summary.",
+      "handoff": "Before departure, record passengers, animal water, feed, accessible containers and the next confirmed water source. A promised well is not a measured refill.",
+      "story_option": "A packbeast refuses a brilliant-looking shortcut. Checking the harness before the ground lets an ordinary fault and a genuine terrain hazard coexist.",
+      "production": "Maintain six legs per sailfin packbeast. Count the same containers at each stop. This production reference does not assign a universal litre ration to all species.",
+      "schedule_days": 12,
+      "schedule_status": "Inherited base schedule",
+      "direction": "Listed a-to-b planning reference; reverse passage requires a fresh itinerary.",
+      "geometry": "Regional endpoints and route length inherited; connecting line is not a surveyed track."
+    },
+    {
+      "id": "WAY-09",
+      "baseline": {
+        "a": "EXT-08",
+        "b": "EXT-09",
+        "mode": "caravan",
+        "length_km": 230,
+        "days": 14,
+        "conditions": "Dry plateau to coast with two transfer days.",
+        "id": "WAY-09"
+      },
+      "origin_name": "Ossara",
+      "destination_name": "Nacre Quay",
+      "title": "The coast is not the finish",
+      "daily_life": "A caravan descends from the dry plateau toward Nacre Quay carrying goods whose ownership may be disputed once they reach water. The coast is a transfer workplace.",
+      "timing": "230 km at the loaded convoy rate of 18 km/day takes 12.78 movement days. Add the two stated transfer days: 14.78 elapsed days, scheduled as 15 whole day blocks.",
+      "handoff": "Cargo accepted into a quay store is not cargo loaded onto a vessel. Keep warehouse acceptance and departure authority as separate fields.",
+      "story_option": "A valuable sealed chest reaches the quay with two honest owners\u2019 marks from different transfers. The conflict is resolved by reconstructing custody, not by opening every private item.",
+      "production": "The old 14-day summary remains in the baseline record. Use the 15-day planning floor for new scenes unless a dated revised itinerary explicitly changes pace or overlap.",
+      "schedule_days": 15,
+      "schedule_status": "Explicit planning erratum",
+      "direction": "Listed a-to-b planning reference; reverse passage requires a fresh itinerary.",
+      "geometry": "Regional endpoints and route length inherited; connecting line is not a surveyed track.",
+      "arithmetic": {
+        "moving": 12.777777777777779,
+        "layover": 2,
+        "days": 15
+      }
+    },
+    {
+      "id": "WAY-10",
+      "baseline": {
+        "a": "EXT-09",
+        "b": "EXT-10",
+        "mode": "sky",
+        "length_km": 340,
+        "days": 5,
+        "conditions": "One weather wait and one load/transfer day; only in safe conditions.",
+        "id": "WAY-10"
+      },
+      "origin_name": "Nacre Quay",
+      "destination_name": "Aurel Quay",
+      "title": "An empty berth is useful",
+      "daily_life": "The Nacre Quay to Aurel Quay connection serves trade, craft and people visiting relatives. A canceled departure leaves kitchens, workshops and lodging under pressure.",
+      "timing": "340 km at 100 km/day takes 3.4 movement days. One weather-wait day plus one load/transfer day gives 5.4 elapsed days, scheduled as 6 whole day blocks.",
+      "handoff": "The named sky link is a regional service, not proof that liftstone works everywhere along a straight map line. The selected craft\u2019s support, propulsion, field compatibility and reserve must be established before an airborne sequence.",
+      "story_option": "A captain wins praise for leaving a berth empty, then privately accepts cargo that consumes its weight reserve. Evidence is in the actual load, not the heroic speech.",
+      "production": "Do not turn distant liftstone into free-floating ore. The network map is topological; it cannot certify the complete airborne track or the field envelope.",
+      "schedule_days": 6,
+      "schedule_status": "Explicit planning erratum",
+      "direction": "Listed a-to-b planning reference; reverse passage requires a fresh itinerary.",
+      "geometry": "Regional endpoints and route length inherited; connecting line is not a surveyed track.",
+      "arithmetic": {
+        "moving": 3.4,
+        "layover": 2,
+        "days": 6
+      }
+    },
+    {
+      "id": "WAY-11",
+      "baseline": {
+        "a": "EXT-08",
+        "b": "EXT-10",
+        "mode": "sky",
+        "length_km": 130,
+        "days": 3,
+        "conditions": "Two transfer/weather days included; finite scheduled craft.",
+        "id": "WAY-11"
+      },
+      "origin_name": "Ossara",
+      "destination_name": "Aurel Quay",
+      "title": "A short flight can take days",
+      "daily_life": "Ossara and Aurel Quay trade through finite scheduled craft. Their nearby map positions make waiting feel especially unfair, which gives scenes room for comedy and frustration.",
+      "timing": "130 km at 100 km/day takes 1.3 movement days. Add two transfer/weather days: 3.3 elapsed days, scheduled as 4 whole day blocks.",
+      "handoff": "A confirmed seat still depends on the inspected craft, load and weather. An unused booking is not a spare aircraft waiting behind the set.",
+      "story_option": "A guest learns every stall in the departure court during a delay, then must leave just as they begin to feel at home. The delay creates a relationship, not only an obstacle.",
+      "production": "The earlier three-day summary stays visible as historical input. Future staging uses four planning blocks unless a documented itinerary changes the assumptions.",
+      "schedule_days": 4,
+      "schedule_status": "Explicit planning erratum",
+      "direction": "Listed a-to-b planning reference; reverse passage requires a fresh itinerary.",
+      "geometry": "Regional endpoints and route length inherited; connecting line is not a surveyed track.",
+      "arithmetic": {
+        "moving": 1.3,
+        "layover": 2,
+        "days": 4
+      }
+    },
+    {
+      "id": "WAY-12",
+      "baseline": {
+        "a": "EXT-02",
+        "b": "EXT-11",
+        "mode": "mountain",
+        "length_km": 240,
+        "days": 15,
+        "conditions": "Winter closure possible; ridge wayhouses and slower ascent.",
+        "id": "WAY-12"
+      },
+      "origin_name": "Stonewake",
+      "destination_name": "Hushvale",
+      "title": "Warmth has an address",
+      "daily_life": "Stonewake crews trade with Hushvale guides and archive workers. A warm refuge is maintained, occupied and finite, not a reward placed at the end of every chase.",
+      "timing": "Fifteen days covers slower ascent and ridge wayhouses. Winter may close the route entirely. The two-day safe detour around the Cut Span is a separate local itinerary, not automatically included in these fifteen days.",
+      "handoff": "Send departure information before leaving and confirm the next refuge. A late report triggers a bounded search plan; silence alone cannot locate a party.",
+      "story_option": "A familiar voice from the ice offers a shortcut. A visual check and a known warm place are more valuable than a persuasive imitation.",
+      "production": "Snow, wet clothing and tool ice persist across cuts. Echo ice and choirwraith mimicry are different mechanisms, neither a resurrection or complete witness.",
+      "schedule_days": 15,
+      "schedule_status": "Inherited base schedule",
+      "direction": "Listed a-to-b planning reference; reverse passage requires a fresh itinerary.",
+      "geometry": "Regional endpoints and route length inherited; connecting line is not a surveyed track."
+    },
+    {
+      "id": "WAY-13",
+      "baseline": {
+        "a": "EXT-02",
+        "b": "EXT-06",
+        "mode": "road",
+        "length_km": 150,
+        "days": 9,
+        "conditions": "Freight approach has public and raider-controlled branches.",
+        "id": "WAY-13"
+      },
+      "origin_name": "Stonewake",
+      "destination_name": "Cinder Cuts",
+      "title": "A road with competing stories",
+      "daily_life": "Stonewake\u2019s freight approach reaches Cinder Cuts, where families remember lost work and outsiders often remember only raiders. Both lawful households and coercion exist in the district.",
+      "timing": "Nine days is the base route. Public and raider-controlled branches are not interchangeable. A paid passage on one branch does not establish safe access to the other.",
+      "handoff": "Record which branch a witness actually saw. A yard document cannot certify the whole inhabited district, and a district name does not make every resident an accomplice.",
+      "story_option": "A stolen load carries a legitimate repair tag from an innocent workshop. Pursuing the tag without asking when the repair occurred threatens the wrong household.",
+      "production": "Civilian terraces remain distinct from Ashmouth Freight Yard. Travel shots should include inhabited life before the later crime location, without revealing writer-only villains early.",
+      "schedule_days": 9,
+      "schedule_status": "Inherited base schedule",
+      "direction": "Listed a-to-b planning reference; reverse passage requires a fresh itinerary.",
+      "geometry": "Regional endpoints and route length inherited; connecting line is not a surveyed track."
+    },
+    {
+      "id": "WAY-14",
+      "baseline": {
+        "a": "EXT-06",
+        "b": "EXT-12",
+        "mode": "road",
+        "length_km": 46,
+        "days": 3,
+        "conditions": "Basalt freight terraces; gas closure adds a day.",
+        "id": "WAY-14"
+      },
+      "origin_name": "Cinder Cuts",
+      "destination_name": "Kettle Crown",
+      "title": "The freight that went uphill",
+      "daily_life": "Cinder Cuts and Kettle Crown share a history of unequal transport decisions. A new contract can provide real work while still asking the poorer terraces to absorb risk.",
+      "timing": "Three days covers the basalt freight terraces. A gas closure adds one day only for the established limited closure scenario; persistent unsafe conditions mean an indefinite hold.",
+      "handoff": "Local crews check the proposed departure, not an abstract daily quota. A clearance from yesterday does not establish the state of a vent today.",
+      "story_option": "A clean forge yard sends its waste downhill, drawing ashmaws toward another neighborhood. The apparent animal problem points back to a disposal decision.",
+      "production": "Ashmaws tolerate hot ground, not liquid lava. Keep safe civic terraces, gas troughs and raider storage geographically distinct.",
+      "schedule_days": 3,
+      "schedule_status": "Inherited base schedule",
+      "direction": "Listed a-to-b planning reference; reverse passage requires a fresh itinerary.",
+      "geometry": "Regional endpoints and route length inherited; connecting line is not a surveyed track."
+    },
+    {
+      "id": "WAY-15",
+      "baseline": {
+        "a": "EXT-02",
+        "b": "EXT-13",
+        "mode": "descent",
+        "length_km": 16,
+        "days": 2,
+        "conditions": "Dedicated Stonewake descent and pressure/air checks; 1,920 m vertical change. No Burrow connection.",
+        "id": "WAY-15"
+      },
+      "origin_name": "Stonewake",
+      "destination_name": "Lumen Tide",
+      "title": "A descent into someone else\u2019s home",
+      "daily_life": "Stonewake\u2019s descent reaches Lumen Tide, an independent community with its own long history. Travelers become guests, not discoverers of an unclaimed world.",
+      "timing": "The 16 km route changes elevation by 1,920 m from Stonewake z=320 to Lumen Tide z=-1600. Its two-day plan includes pressure and air checks; 16 km is not a straight vertical shaft.",
+      "handoff": "At the descent house, agree equipment, visitor limits, return arrangements and the scope of any chart sharing. No descendant of this route opens below Burrow defenses.",
+      "story_option": "A visitor reads a blank chart margin as an empty coast. A local inhabitant recognizes a protected shore whose omission was intentional.",
+      "production": "Regional plan and elevation profile are separate views. Do not draw a uniform shaft gradient: segment-by-segment construction is not defined by the two endpoint elevations.",
+      "schedule_days": 2,
+      "schedule_status": "Inherited base schedule",
+      "direction": "Listed a-to-b planning reference; reverse passage requires a fresh itinerary.",
+      "geometry": "Regional endpoints and route length inherited; connecting line is not a surveyed track."
+    },
+    {
+      "id": "WAY-16",
+      "baseline": {
+        "a": "EXT-13",
+        "b": "SITE-08",
+        "mode": "boat",
+        "length_km": 3,
+        "days": 1,
+        "conditions": "Local boat excursion; safe tide and quiet channel required.",
+        "id": "WAY-16"
+      },
+      "origin_name": "Lumen Tide",
+      "destination_name": "Bellwater Narrows",
+      "title": "Three kilometres can fill a day",
+      "daily_life": "Lumen Tide crews work Bellwater Narrows as local water, with nesting, craft and rescue responsibilities. A visitor\u2019s three-kilometre distance is not a reason to ignore them.",
+      "timing": "One day is a local excursion block, not 24 hours of propulsion. Safe tide, quiet movement, transfer and return decisions fill the schedule. No return duration is automatically granted.",
+      "handoff": "Share the usable passage, observation time and warning state without publishing protected nesting coordinates. Keep an author\u2019s full map separate from an in-world visitor chart.",
+      "story_option": "A depth correction helps a rescue without proving the visitor needs ownership of the whole chart. Namu can accept useful evidence while maintaining a boundary.",
+      "production": "Use the 3.3 boat approach, dock boarding link, stairs and upper refuge. Water and the high arch occupy different elevations. Light does not repel bell-eels.",
+      "schedule_days": 1,
+      "schedule_status": "Inherited base schedule",
+      "direction": "Listed a-to-b planning reference; reverse passage requires a fresh itinerary.",
+      "geometry": "Regional endpoints and route length inherited; connecting line is not a surveyed track."
+    }
+  ],
+  "planning_examples": [
+    {
+      "id": "JRN-01",
+      "name": "A first canopy journey",
+      "route_ids": [
+        "WAY-01",
+        "WAY-06",
+        "WAY-07"
+      ],
+      "reason": "Burrow to Latchford to Willowmere to Crownrest",
+      "extra_days": 0,
+      "condition": "Spring baseline; guide and next departure available.",
+      "segments": [
+        {
+          "route": "WAY-01",
+          "start_elapsed_day": 0,
+          "end_elapsed_day": 2
+        },
+        {
+          "route": "WAY-06",
+          "start_elapsed_day": 2,
+          "end_elapsed_day": 7
+        },
+        {
+          "route": "WAY-07",
+          "start_elapsed_day": 7,
+          "end_elapsed_day": 13
+        }
+      ],
+      "base_leg_sum_days": 13,
+      "elapsed_day_blocks": 13,
+      "status": "Planning example only; no episode-ledger adoption or calendar date."
+    },
+    {
+      "id": "JRN-02",
+      "name": "The same journey after rain",
+      "route_ids": [
+        "WAY-01",
+        "WAY-06",
+        "WAY-07"
+      ],
+      "reason": "Same geography; two additional days on the wet-season canopy detour.",
+      "extra_days": 2,
+      "condition": "Detour open and inspected. A closure is not a two-day delay by default.",
+      "segments": [
+        {
+          "route": "WAY-01",
+          "start_elapsed_day": 0,
+          "end_elapsed_day": 2
+        },
+        {
+          "route": "WAY-06",
+          "start_elapsed_day": 2,
+          "end_elapsed_day": 7
+        },
+        {
+          "route": "WAY-07",
+          "start_elapsed_day": 7,
+          "end_elapsed_day": 13
+        }
+      ],
+      "base_leg_sum_days": 13,
+      "elapsed_day_blocks": 15,
+      "status": "Planning example only; no episode-ledger adoption or calendar date."
+    },
+    {
+      "id": "JRN-03",
+      "name": "Cargo from home to the coast",
+      "route_ids": [
+        "WAY-01",
+        "WAY-04",
+        "WAY-08",
+        "WAY-09"
+      ],
+      "reason": "Burrow - Latchford - Millmere - Ossara - Nacre Quay",
+      "extra_days": 0,
+      "condition": "Uses the corrected 15-day coast leg. No extra inter-leg booking wait included.",
+      "segments": [
+        {
+          "route": "WAY-01",
+          "start_elapsed_day": 0,
+          "end_elapsed_day": 2
+        },
+        {
+          "route": "WAY-04",
+          "start_elapsed_day": 2,
+          "end_elapsed_day": 5
+        },
+        {
+          "route": "WAY-08",
+          "start_elapsed_day": 5,
+          "end_elapsed_day": 17
+        },
+        {
+          "route": "WAY-09",
+          "start_elapsed_day": 17,
+          "end_elapsed_day": 32
+        }
+      ],
+      "base_leg_sum_days": 32,
+      "elapsed_day_blocks": 32,
+      "status": "Planning example only; no episode-ledger adoption or calendar date."
+    },
+    {
+      "id": "JRN-04",
+      "name": "A visit below the surface",
+      "route_ids": [
+        "WAY-05",
+        "WAY-15",
+        "WAY-16"
+      ],
+      "reason": "Burrow - Stonewake - Lumen Tide - Bellwater Narrows",
+      "extra_days": 0,
+      "condition": "Seven days to Lumen Tide, then one excursion block; no hidden Burrow descent.",
+      "segments": [
+        {
+          "route": "WAY-05",
+          "start_elapsed_day": 0,
+          "end_elapsed_day": 5
+        },
+        {
+          "route": "WAY-15",
+          "start_elapsed_day": 5,
+          "end_elapsed_day": 7
+        },
+        {
+          "route": "WAY-16",
+          "start_elapsed_day": 7,
+          "end_elapsed_day": 8
+        }
+      ],
+      "base_leg_sum_days": 8,
+      "elapsed_day_blocks": 8,
+      "status": "Planning example only; no episode-ledger adoption or calendar date."
+    },
+    {
+      "id": "JRN-05",
+      "name": "The sky route through Ossara",
+      "route_ids": [
+        "WAY-01",
+        "WAY-04",
+        "WAY-08",
+        "WAY-11"
+      ],
+      "reason": "Burrow - Latchford - Millmere - Ossara - Aurel Quay",
+      "extra_days": 0,
+      "condition": "Uses corrected four-day scheduled sky leg; conditional on compatible craft and corridor.",
+      "segments": [
+        {
+          "route": "WAY-01",
+          "start_elapsed_day": 0,
+          "end_elapsed_day": 2
+        },
+        {
+          "route": "WAY-04",
+          "start_elapsed_day": 2,
+          "end_elapsed_day": 5
+        },
+        {
+          "route": "WAY-08",
+          "start_elapsed_day": 5,
+          "end_elapsed_day": 17
+        },
+        {
+          "route": "WAY-11",
+          "start_elapsed_day": 17,
+          "end_elapsed_day": 21
+        }
+      ],
+      "base_leg_sum_days": 21,
+      "elapsed_day_blocks": 21,
+      "status": "Planning example only; no episode-ledger adoption or calendar date."
+    },
+    {
+      "id": "JRN-06",
+      "name": "Freight to the forge terraces",
+      "route_ids": [
+        "WAY-05",
+        "WAY-13",
+        "WAY-14"
+      ],
+      "reason": "Burrow - Stonewake - Cinder Cuts - Kettle Crown",
+      "extra_days": 1,
+      "condition": "Includes the specific one-day gas closure allowance, not indefinite clearance.",
+      "segments": [
+        {
+          "route": "WAY-05",
+          "start_elapsed_day": 0,
+          "end_elapsed_day": 5
+        },
+        {
+          "route": "WAY-13",
+          "start_elapsed_day": 5,
+          "end_elapsed_day": 14
+        },
+        {
+          "route": "WAY-14",
+          "start_elapsed_day": 14,
+          "end_elapsed_day": 17
+        }
+      ],
+      "base_leg_sum_days": 17,
+      "elapsed_day_blocks": 18,
+      "status": "Planning example only; no episode-ledger adoption or calendar date."
+    }
+  ],
+  "rules": [
+    {
+      "title": "Distance is not elapsed time",
+      "text": "Keep movement, transfer, weather hold and recovery distinct. Add full stated layovers before rounding to whole planning day blocks. Do not add them again if the base schedule already includes them."
+    },
+    {
+      "title": "Record direction",
+      "text": "The same road may be traversable both ways, but the atlas lists one planning direction. Current, ascent, loading and departures can make the reverse schedule different."
+    },
+    {
+      "title": "A message is not an arrival",
+      "text": "A relay acknowledgment means a message reached a relay. Only a grounded arrival observation can establish where a traveler was. Preserve the sender, observation time and meaning of each field."
+    },
+    {
+      "title": "One gate remains one gate",
+      "text": "The Burrow\u2019s east public gate serves northwest departures through the exterior ring road. Interior access and defensive closure remain the 2.1 graph; neither sky nor deep routes create a bypass."
+    },
+    {
+      "title": "Ordinary life travels too",
+      "text": "Give each departure one domestic intention: returning a pan, visiting a sibling, delivering seedlings, finishing a song. Travel scenes can delight and surprise without introducing a new threat each day."
+    },
+    {
+      "title": "Closure has no promised ending",
+      "text": "A stated detour allowance applies only while that detour is open. Unsafe tide, air, weather or structure can extend a delay indefinitely; the plot must carry food, accommodation and changed commitments."
+    },
+    {
+      "title": "No invented season dates",
+      "text": "The world uses a 360-day year, twelve 30-day months and six-day weeks. Local ecological cues vary; that does not erase the established civic calendar. Relative travel examples below do not date an episode."
+    },
+    {
+      "title": "Useful technology has a boundary",
+      "text": "Liftstone is field-bound; echo ice repeats fragments; mirage glass preserves partial light; canopy shaping takes seasons; resonant spans can fail in chains; ordinary relays need power and access. No system grants universal travel, proof or control."
+    }
+  ],
+  "waycraft": [
+    {
+      "name": "Resonant spans",
+      "rule": "Coupled stone and metal structures can share loads only within a measured local frequency and material condition. Damage can propagate through a coupled chain. Cutting a coupling stops transmission but closes that route.",
+      "cost": "Inspection, tuned materials and locally powered mechanisms; reconnection is a tested engineering choice, not a spell."
+    },
+    {
+      "name": "Canopy shaping",
+      "rule": "Slow cultivation encourages living fibers; full bridges take growing seasons. Guide songs encode timing and work sequences, not mind control.",
+      "cost": "Water, trained care and seasonal limits. Fire or rapid cutting permanently damages a tree."
+    },
+    {
+      "name": "Mirage glass",
+      "rule": "Certain glass layers retain partial light impressions under rare conditions. They show fragments from an angle, without sound, intent or guaranteed dates.",
+      "cost": "Careful extraction, controlled light and comparison with independent evidence."
+    },
+    {
+      "name": "Liftstone",
+      "rule": "Specific basalt inclusions respond to local field zones in the Saffron Isles. Load, anchor field and weather determine stable altitude.",
+      "cost": "Counterweights and inspection; ore moved beyond a field does not float freely."
+    },
+    {
+      "name": "Echo ice",
+      "rule": "Layered mineral ice stores and repeats sound fragments under pressure changes. Sounds can overlap or be misordered.",
+      "cost": "Cold preservation and expert interpretation; no resurrection or reading minds."
+    },
+    {
+      "name": "Ordinary technology",
+      "rule": "Relays, instruments and local networks coexist with hand tools and sail transport. A message is a claim; a physical latch is independent.",
+      "cost": "Power, maintenance, specific access and local knowledge. No universal instant map or hacking power."
+    }
+  ],
+  "communities": [
+    {
+      "id": "BRW",
+      "name": "The Burrow",
+      "region": "REG-01",
+      "layout": "basin",
+      "population": 2400,
+      "appearance": "A welcoming limestone basin and a larger inhabited underground town.",
+      "government": "Ward assemblies and shared services; Madger has no permanent veto.",
+      "economy": "Food gardens, workshops, care, teaching and caravan exchange. Imports salt, metals, medicine and some grain.",
+      "custom": "Bridge Day celebrates ordinary repairs with races, food and deliberately terrible songs. Surface and underground households exchange supper invitations.",
+      "safe": "Sunwell and Underhall by day; inner shelter boundary during a surface overrun.",
+      "danger": "No new exterior route, shaft or bypass is added to its sealed defenses.",
+      "history": "Six years of collective construction grew from a camp and common store into five neighborhoods. Existing footprints and route graphs are inherited verbatim.",
+      "conflict": "Welcome without dependence; the missing-road crisis tests whether fear will make the town surrender its values.",
+      "buildings": "Existing Burrow plans control all 37 primary areas and seven detailed rooms.",
+      "position_km": [
+        0,
+        0
+      ],
+      "datum_z_m": 0
+    },
+    {
+      "id": "EXT-01",
+      "name": "Reedbank",
+      "region": "REG-01",
+      "layout": "river",
+      "population": 3600,
+      "appearance": "Raised river houses, terracotta roofs, timber wharves and long flood stairs.",
+      "government": "An elected harbor council; depot owners can petition but do not own the river.",
+      "economy": "Boat repair, reeds, ceramics and fish; grain arrives from the floodplain.",
+      "custom": "At Watermark Night families repaint their flood marks and launch harmless paper boats carrying promises they actually kept.",
+      "safe": "High-bank kitchen and public lofts during flood season.",
+      "danger": "Low wharves close in floodwater; boats follow marked channels.",
+      "history": "Founded 240 years ago around a ferry; survived the Severance on local river trade. The flood seven years ago scattered households and strengthened depot power.",
+      "conflict": "Dara and Hollis remain here. Veyra buys influence while kitchen volunteers investigate unfair allotments.",
+      "buildings": "Reedbank Kitchen|Flood Charter House|Kest Depot",
+      "position_km": [
+        5,
+        -45
+      ],
+      "datum_z_m": 4
+    },
+    {
+      "id": "EXT-02",
+      "name": "Stonewake",
+      "region": "REG-01",
+      "layout": "quarry",
+      "population": 2160,
+      "appearance": "Occupied quarry terraces, stone arches, copper roof caps and bright workshop shutters.",
+      "government": "Workshop delegates, quarry residents and water crews share a three-chamber council.",
+      "economy": "Cut stone, metal fittings and trained builders; imports grain and timber.",
+      "custom": "The Unfinished Fair exhibits useful failures alongside fine craft; apprentices explain what they learned.",
+      "safe": "Public lower yard and braced civic galleries.",
+      "danger": "Old quarry faces have marked collapse zones; deep descent is licensed and physically separate from the Burrow.",
+      "history": "Founded 310 years ago; abandoned extraction faces were converted into homes. A work-platform failure nine years ago changed local training rules.",
+      "conflict": "Eris wants productive change; Oren fears rushing. Gorilla must return as a colleague rather than the one who must save everyone.",
+      "buildings": "Commonworks Hall|White Family Workshop|Deep Descent House",
+      "position_km": [
+        -36,
+        55
+      ],
+      "datum_z_m": 320
+    },
+    {
+      "id": "EXT-03",
+      "name": "Latchford",
+      "region": "REG-01",
+      "layout": "crossroads",
+      "population": 2880,
+      "appearance": "A bustling junction town of inns, arcades, wagon courts and public dispatch boards.",
+      "government": "Rotating neighborhood council and an independent route tribunal.",
+      "economy": "Transport, repair, lodging and records; reliable information is an export.",
+      "custom": "The Six Roads Supper seats strangers by destination, not rank. Stories are traded before prices.",
+      "safe": "Accord courtyard and staffed arrival houses.",
+      "danger": "An unfamiliar seal is checked against a second source; private rented rooms are not automatic criminal sites.",
+      "history": "Grew around three roads 180 years ago. The Severance made it a transfer hub; relay trade arrived 38 years ago.",
+      "conflict": "Glass Thread rents limited rooms here. Honest dispatchers resent outsiders treating the whole town as a den of criminals.",
+      "buildings": "Accord Convoy House|Six Roads Inn|North Relay Rooms",
+      "position_km": [
+        28,
+        -8
+      ],
+      "datum_z_m": 12
+    },
+    {
+      "id": "EXT-04",
+      "name": "Millmere",
+      "region": "REG-01",
+      "layout": "canal",
+      "population": 3600,
+      "appearance": "Working canals, painted mill wheels, brick workshops and narrow planted bridges.",
+      "government": "Canal wards elect stewards; worker cooperatives operate many workshops.",
+      "economy": "Paper, instruments, small machines and food milling; imports ore and hardwood.",
+      "custom": "During Wheelstill Day every mill stops for inspection, music and races using hand-powered toy boats.",
+      "safe": "Canal schools and elevated public bridges.",
+      "danger": "Wheel pits and locked sluice works are industrial hazards, not secret monster entrances.",
+      "history": "A mill settlement for 220 years. Unequal restoration after a flood pushed some young residents away; Nix learned to distrust official accounts.",
+      "conflict": "Lume wants Bot to visit without feeling summoned. Nix tries to turn old neglect into permission to injure new strangers.",
+      "buildings": "Varr Workshop|Canal Records House|Wheelstill Market",
+      "position_km": [
+        54,
+        -36
+      ],
+      "datum_z_m": 8
+    },
+    {
+      "id": "EXT-05",
+      "name": "Willowmere",
+      "region": "REG-01",
+      "layout": "orchard",
+      "population": 1728,
+      "appearance": "Orchard lanes, rain gardens, low timber teaching halls and the first enormous canopy roots.",
+      "government": "Growing circles and household delegates; water decisions are recorded publicly.",
+      "economy": "Fruit, seeds, dyes and local guides; imports tools and salt.",
+      "custom": "Seed Exchange pairs every rare seed with the story of who kept it alive. Children invent impossible plants in clay.",
+      "safe": "Teaching courtyards and the fixed ridge path.",
+      "danger": "Migration-season root corridors are closed at dusk until guides inspect them.",
+      "history": "Founded 145 years ago by growers and guides at the forest margin. It stayed small by choice rather than isolation.",
+      "conflict": "Neri and Sori disagree about returning; each has relatives and responsibilities in two places.",
+      "buildings": "Seed House|Ridge Teaching Hall|Canopy Guide Lodge",
+      "position_km": [
+        40,
+        65
+      ],
+      "datum_z_m": 72
+    },
+    {
+      "id": "EXT-06",
+      "name": "Cinder Cuts",
+      "region": "REG-07",
+      "layout": "freight",
+      "population": 1152,
+      "appearance": "Old freight cuttings, exposed basalt terraces, repaired worker homes and abandoned sidings.",
+      "government": "Three occupied terraces maintain a residents council; Riven Claw occupies only the disused eastern spur.",
+      "economy": "Salvage, hauling and ceramic repair; independent workers trade with Kettle Crown.",
+      "custom": "The Last Whistle fair honors retired engines with percussion and shared food.",
+      "safe": "Occupied west terraces and public worker hostel.",
+      "danger": "Eastern Spur is controlled by Riven Claw; steam trenches and unstable freight edges are marked.",
+      "history": "Built 75 years ago as a freight district after the Severance. A route diversion 18 years ago reduced work; raiders arrived seven years ago.",
+      "conflict": "Dreg has family in the legitimate neighborhood. Brakka tries to turn neglected workers into a captive supply base.",
+      "buildings": "Workers Hostel|Salvage Exchange|Eastern Spur Stronghold",
+      "position_km": [
+        -140,
+        -42
+      ],
+      "datum_z_m": 410
+    },
+    {
+      "id": "EXT-07",
+      "name": "Crownrest",
+      "region": "REG-02",
+      "layout": "canopy",
+      "population": 1440,
+      "appearance": "A settlement on six colossal living crowns, joined by adjustable bridges above a fixed stone ridge.",
+      "government": "Each crown chooses a delegate; bridge crews can suspend a crossing despite a festival timetable.",
+      "economy": "Resin craft, living fiber, medicine plants and route guidance; grains are stored in the fixed ridge depot.",
+      "custom": "The Returning Shade festival reunites crowns after migration; dancers adjust tempo to swaying branches.",
+      "safe": "Fixed Ridge House during storms; tethered crown decks in normal weather.",
+      "danger": "A drifting crown changes its local position by up to 180 m during wet season; the baseline plan records spring anchor positions.",
+      "history": "Founded 160 years ago by orchard people and canopy guides. Its architecture moves with trees rather than forcing roots to stand still.",
+      "conflict": "Senn knows a route that records call abandoned. Saving outsiders may expose a shelter his community promised to keep quiet.",
+      "buildings": "Ridge House|Bridgewright Pavilion|Resin Exchange",
+      "position_km": [
+        100,
+        135
+      ],
+      "datum_z_m": 180
+    },
+    {
+      "id": "EXT-08",
+      "name": "Ossara",
+      "region": "REG-03",
+      "layout": "rings",
+      "population": 5760,
+      "appearance": "A sandstone city of shaded courts, wind towers, turquoise shutters and glass dunes beyond its walls.",
+      "government": "Public well assemblies and craft wards; the Salt Crown company is a powerful rival, not the government.",
+      "economy": "Optical glass, salt, astronomy and caravan goods; roof cisterns and three seasonal aquifers support agriculture.",
+      "custom": "The Night of Two Shadows uses lanterns and mirrored sails for street theater; guests must bring a story, not a gift.",
+      "safe": "Public cistern courts and deep caravan inns.",
+      "danger": "Dune travel stops during glass storms; reflected light is not a reliable navigation bearing.",
+      "history": "Founded 420 years ago at three wells. An old observatory survived the Severance, but its archives preserve only fragments.",
+      "conflict": "Maela discovers some water debts are fabricated. Kavar sells stability while deliberately keeping a competing well closed.",
+      "buildings": "Three Wells Court|Mirror Observatory|Salt Crown Counting House",
+      "position_km": [
+        230,
+        25
+      ],
+      "datum_z_m": 95
+    },
+    {
+      "id": "EXT-09",
+      "name": "Nacre Quay",
+      "region": "REG-04",
+      "layout": "tidal",
+      "population": 4320,
+      "appearance": "A coral-colored port wrapped around stepped tidal basins and limestone arcades.",
+      "government": "Harbor crews, salvage families and reef tenders elect a tide council.",
+      "economy": "Sailing, salt fish, reef gardening and salvage; fresh water comes from roof collection and inland springs.",
+      "custom": "Low Tide Theater stages plays on steps exposed for only an hour; everyone helps strike the stage before water returns.",
+      "safe": "Upper quay, rescue house and marked moorings.",
+      "danger": "The drowned archive opens only around low tide; reefback migration closes the outer channel seasonally.",
+      "history": "Founded 280 years ago above an older drowned district. The sinking preceded the Severance; neither event caused the other.",
+      "conflict": "Toma must choose between a profitable salvage claim and evidence belonging to living descendant communities.",
+      "buildings": "Tide Council Hall|Rescue Sail House|Drowned Archive",
+      "position_km": [
+        170,
+        -170
+      ],
+      "datum_z_m": 0
+    },
+    {
+      "id": "EXT-10",
+      "name": "Aurel Quay",
+      "region": "REG-05",
+      "layout": "sky",
+      "population": 2304,
+      "appearance": "Three floating basalt islands joined by cargo spans, with counterweights, hanging gardens and ochre sails.",
+      "government": "Independent dock cooperatives and neighborhood crews; no captain owns an island.",
+      "economy": "Weather routing, liftstone shaping and sail making; food arrives by cargo craft and terrace gardens.",
+      "custom": "Weight Day is a comedy festival where teams build the lightest absurd object that still performs its job.",
+      "safe": "Sheltered inner moorings and grounded storm refuges on each island.",
+      "danger": "Liftstone responds to local fields, with strict load budgets; it cannot be carried elsewhere to float arbitrary cities.",
+      "history": "Established 130 years ago around seasonal anchor fields. Its first charter outlawed selling residents with a vessel.",
+      "conflict": "Eri refuses a lucrative overloaded launch. Serik offers stranded crews a rescue that becomes a protection racket.",
+      "buildings": "Counterweight Hall|Sailmakers Court|Windward Rescue Dock",
+      "position_km": [
+        235,
+        140
+      ],
+      "datum_z_m": 1600
+    },
+    {
+      "id": "EXT-11",
+      "name": "Hushvale",
+      "region": "REG-06",
+      "layout": "cavern",
+      "population": 2016,
+      "appearance": "A geothermal town under a glacier shoulder, with copper roof caps, steam gardens and blue ice light.",
+      "government": "Winter guilds and household delegates share stores; the archive order holds expertise, not unlimited civil authority.",
+      "economy": "Insulation cloth, cold storage, optical ice study and mountain guiding.",
+      "custom": "The Quiet Hour marks storms survived; the following feast is deliberately noisy and full of imitation bird calls.",
+      "safe": "Warm civic cavern and staffed wayhouses.",
+      "danger": "Echo ice can repeat old sounds; choirwraith habitat is mapped beyond the warm ridge.",
+      "history": "Founded 360 years ago around springs. Routekeepers here cut resonance links during the Severance and inherited both gratitude and blame.",
+      "conflict": "Ysolde finds a true warning mixed with a forged prohibition. Ossa cannot accept that stewardship requires other people to judge the evidence.",
+      "buildings": "Winter Hall|Echo Archive|Warm Ridge Observatory",
+      "position_km": [
+        -60,
+        260
+      ],
+      "datum_z_m": 980
+    },
+    {
+      "id": "EXT-12",
+      "name": "Kettle Crown",
+      "region": "REG-07",
+      "layout": "volcanic",
+      "population": 3456,
+      "appearance": "A city on volcanic shelves, with obsidian stairs, red ceramic roofs and lush hot-spring gardens.",
+      "government": "Forge cooperatives, growers and freight neighborhoods negotiate heat and water shares.",
+      "economy": "Ceramics, tempered metal and heat-grown fruit; imports timber and cool-water crops.",
+      "custom": "The Cooling Feast celebrates a finished kiln cycle; rival makers exchange deliberately ridiculous cups.",
+      "safe": "Stone civic courts and supervised hot-spring gardens.",
+      "danger": "Gas troughs and active channels close under marked conditions; lava is not casually crossed by being brave.",
+      "history": "Founded 190 years ago on old cooled shelves. Industrial growth enriched the city while the diverted freight line harmed Cinder Cuts.",
+      "conflict": "Kesh must acknowledge the town profited from a decision that hurt its neighbors without accepting Brakka as their representative.",
+      "buildings": "Common Kiln Hall|Spring Garden House|Freight Mediation Hall",
+      "position_km": [
+        -180,
+        -40
+      ],
+      "datum_z_m": 620
+    },
+    {
+      "id": "EXT-13",
+      "name": "Lumen Tide",
+      "region": "REG-08",
+      "layout": "deepsea",
+      "population": 4608,
+      "appearance": "A vertical limestone city above a subterranean ocean, with mineral windows and fungal shore gardens.",
+      "government": "Harbor, air and food circles elect rotating speakers; surface visitors follow local law.",
+      "economy": "Fungal textiles, mineral instruments and cavern navigation; imports grains through Stonewake trade.",
+      "custom": "The Lantern Descent lowers lamps to remember people who left on voyages; it ends with dancing, not a funeral.",
+      "safe": "Ventilated upper civic terraces and inspected refuge docks.",
+      "danger": "Pressure, air quality and sea level determine access; no passage connects it directly to the Burrow.",
+      "history": "A continuous community for at least 600 years, with several written founding traditions. Its oldest harbor predates the Open Ways.",
+      "conflict": "Namu wants surface partnership on equal terms. A rediscovered chart threatens to invite extractive expeditions into sacred nesting waters.",
+      "buildings": "Tide Speakers Hall|Fungal Exchange|Pressure Gate House",
+      "position_km": [
+        -42,
+        63
+      ],
+      "datum_z_m": -1600
+    }
+  ],
+  "site_endpoint": {
+    "id": "SITE-08",
+    "name": "Bellwater Narrows",
+    "position_km": [
+      -43,
+      65
+    ]
+  },
+  "timing_errata": [
+    {
+      "route_id": "WAY-09",
+      "old_days": 14,
+      "moving_days": 12.777777777777779,
+      "full_layover_days": 2,
+      "exact_elapsed_days": 14.777777777777779,
+      "planning_day_blocks": 15,
+      "reason": "Full stated layovers added to movement at the inherited regional rate; round upward once."
+    },
+    {
+      "route_id": "WAY-10",
+      "old_days": 5,
+      "moving_days": 3.4,
+      "full_layover_days": 2,
+      "exact_elapsed_days": 5.4,
+      "planning_day_blocks": 6,
+      "reason": "Full stated layovers added to movement at the inherited regional rate; round upward once."
+    },
+    {
+      "route_id": "WAY-11",
+      "old_days": 3,
+      "moving_days": 1.3,
+      "full_layover_days": 2,
+      "exact_elapsed_days": 3.3,
+      "planning_day_blocks": 4,
+      "reason": "Full stated layovers added to movement at the inherited regional rate; round upward once."
+    }
+  ],
+  "authority": "Additive writer reference. Only the three explicitly identified planning durations supersede old route-day summaries. No geography, elapsed story event, character history or dated episode changes.",
+  "pilot_exterior_scenes": 0
+}

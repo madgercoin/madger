@@ -1,0 +1,17 @@
+id,origin,destination,mode,length_km,old_summary_days,planning_days,status
+WAY-01,The Burrow,Latchford,road,34,2,2,Inherited base schedule
+WAY-02,Latchford,Reedbank,road,48,3,3,Inherited base schedule
+WAY-03,Reedbank,Millmere,river,58,2,2,Inherited base schedule
+WAY-04,Latchford,Millmere,road,44,3,3,Inherited base schedule
+WAY-05,The Burrow,Stonewake,road,78,5,5,Inherited base schedule
+WAY-06,Latchford,Willowmere,road,82,5,5,Inherited base schedule
+WAY-07,Willowmere,Crownrest,guided forest,100,6,6,Inherited base schedule
+WAY-08,Millmere,Ossara,caravan,200,12,12,Inherited base schedule
+WAY-09,Ossara,Nacre Quay,caravan,230,14,15,Explicit planning erratum
+WAY-10,Nacre Quay,Aurel Quay,sky,340,5,6,Explicit planning erratum
+WAY-11,Ossara,Aurel Quay,sky,130,3,4,Explicit planning erratum
+WAY-12,Stonewake,Hushvale,mountain,240,15,15,Inherited base schedule
+WAY-13,Stonewake,Cinder Cuts,road,150,9,9,Inherited base schedule
+WAY-14,Cinder Cuts,Kettle Crown,road,46,3,3,Inherited base schedule
+WAY-15,Stonewake,Lumen Tide,descent,16,2,2,Inherited base schedule
+WAY-16,Lumen Tide,Bellwater Narrows,boat,3,1,1,Inherited base schedule

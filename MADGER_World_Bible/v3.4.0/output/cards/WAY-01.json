@@ -1,0 +1,24 @@
+{
+  "id": "WAY-01",
+  "baseline": {
+    "a": "BRW",
+    "b": "EXT-03",
+    "mode": "road",
+    "length_km": 34,
+    "days": 2,
+    "conditions": "East public gate joins an exterior approach at regional (1.5,0); the Burrow interior graph is unchanged.",
+    "id": "WAY-01"
+  },
+  "origin_name": "The Burrow",
+  "destination_name": "Latchford",
+  "title": "Leaving is a civic act",
+  "daily_life": "Garden loads, repaired tools and travelers share the road to Latchford. A goodbye at the public entrance can be warm without treating the whole town as an expedition camp.",
+  "timing": "Departure uses the established east gate and regional approach (1.5,0). The itinerary begins outside the existing interior graph; do not draw a new gate.",
+  "handoff": "An arrival house checks the actual passengers against the sender\u2019s list. The returning goods list and the person count are separate records.",
+  "story_option": "A missing name on a message may be a late passenger, a copy error or deliberate omission. A delayed arrival is a question before it is an accusation.",
+  "production": "Open with a shared breakfast, show the exterior transition in a later episode, then cut to a changed sun angle and an overnight halt. Episode one contains none of this.",
+  "schedule_days": 2,
+  "schedule_status": "Inherited base schedule",
+  "direction": "Listed a-to-b planning reference; reverse passage requires a fresh itinerary.",
+  "geometry": "Regional endpoints and route length inherited; connecting line is not a surveyed track."
+}

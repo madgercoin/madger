@@ -1,0 +1,24 @@
+{
+  "id": "WAY-16",
+  "baseline": {
+    "a": "EXT-13",
+    "b": "SITE-08",
+    "mode": "boat",
+    "length_km": 3,
+    "days": 1,
+    "conditions": "Local boat excursion; safe tide and quiet channel required.",
+    "id": "WAY-16"
+  },
+  "origin_name": "Lumen Tide",
+  "destination_name": "Bellwater Narrows",
+  "title": "Three kilometres can fill a day",
+  "daily_life": "Lumen Tide crews work Bellwater Narrows as local water, with nesting, craft and rescue responsibilities. A visitor\u2019s three-kilometre distance is not a reason to ignore them.",
+  "timing": "One day is a local excursion block, not 24 hours of propulsion. Safe tide, quiet movement, transfer and return decisions fill the schedule. No return duration is automatically granted.",
+  "handoff": "Share the usable passage, observation time and warning state without publishing protected nesting coordinates. Keep an author\u2019s full map separate from an in-world visitor chart.",
+  "story_option": "A depth correction helps a rescue without proving the visitor needs ownership of the whole chart. Namu can accept useful evidence while maintaining a boundary.",
+  "production": "Use the 3.3 boat approach, dock boarding link, stairs and upper refuge. Water and the high arch occupy different elevations. Light does not repel bell-eels.",
+  "schedule_days": 1,
+  "schedule_status": "Inherited base schedule",
+  "direction": "Listed a-to-b planning reference; reverse passage requires a fresh itinerary.",
+  "geometry": "Regional endpoints and route length inherited; connecting line is not a surveyed track."
+}

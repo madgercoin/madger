@@ -1,0 +1,24 @@
+{
+  "id": "WAY-05",
+  "baseline": {
+    "a": "BRW",
+    "b": "EXT-02",
+    "mode": "road",
+    "length_km": 78,
+    "days": 5,
+    "conditions": "Departure still uses the existing east gate, then the exterior ring road turns northwest; no new western gate.",
+    "id": "WAY-05"
+  },
+  "origin_name": "The Burrow",
+  "destination_name": "Stonewake",
+  "title": "Home behind, stone ahead",
+  "daily_life": "Stonewake supplies fittings and skilled hands to the Burrow. Visits carry family expectations as well as cargo; Gorilla can arrive as a brother, apprentice or colleague.",
+  "timing": "All departures still use the east gate, then the exterior ring road turns northwest. The visual route may curve outside the basin; no western Burrow entrance is created.",
+  "handoff": "Five days is the base loaded-road schedule. Workshop appointments should be set after arrival and rest, not during the last walking block.",
+  "story_option": "A commission expects Gorilla\u2019s strength to replace a second crew. Eris can refuse that assumption without refusing his help.",
+  "production": "Use the same packed tools across the five-day sequence. A repaired strap remains repaired; fresh costume changes require laundry or a replacement source.",
+  "schedule_days": 5,
+  "schedule_status": "Inherited base schedule",
+  "direction": "Listed a-to-b planning reference; reverse passage requires a fresh itinerary.",
+  "geometry": "Regional endpoints and route length inherited; connecting line is not a surveyed track."
+}

@@ -1,0 +1,24 @@
+{
+  "id": "WAY-06",
+  "baseline": {
+    "a": "EXT-03",
+    "b": "EXT-05",
+    "mode": "road",
+    "length_km": 82,
+    "days": 5,
+    "conditions": "Forest-margin road via fixed ridge farms.",
+    "id": "WAY-06"
+  },
+  "origin_name": "Latchford",
+  "destination_name": "Willowmere",
+  "title": "Where the fields begin to lean",
+  "daily_life": "Willowmere sends seeds, teaching materials and orchard produce toward Latchford. Fixed ridge farms supply a landscape of inhabited margins, not empty wilderness.",
+  "timing": "The forest-margin road is a fixed approach to Willowmere. Moving-crown navigation belongs to the next route and cannot begin wherever an exciting root bridge would look best.",
+  "handoff": "At Willowmere, visitors exchange the road timetable for a guide\u2019s dated canopy briefing. Payment for a guide does not buy the right to overrule a closure.",
+  "story_option": "A crate of viable seed must arrive in shade while a merchant wants it displayed in the sun for customers. The transport problem becomes visible through living cargo.",
+  "production": "Let sounds change from wheels and open wind to insects and leaf cover. Carry the same crate dimensions and ventilation marks into the arrival set.",
+  "schedule_days": 5,
+  "schedule_status": "Inherited base schedule",
+  "direction": "Listed a-to-b planning reference; reverse passage requires a fresh itinerary.",
+  "geometry": "Regional endpoints and route length inherited; connecting line is not a surveyed track."
+}

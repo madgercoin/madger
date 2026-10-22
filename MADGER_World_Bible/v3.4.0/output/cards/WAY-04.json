@@ -1,0 +1,24 @@
+{
+  "id": "WAY-04",
+  "baseline": {
+    "a": "EXT-03",
+    "b": "EXT-04",
+    "mode": "road",
+    "length_km": 44,
+    "days": 3,
+    "conditions": "Canal service road with one staffed overnight yard.",
+    "id": "WAY-04"
+  },
+  "origin_name": "Latchford",
+  "destination_name": "Millmere",
+  "title": "A bed at the junction",
+  "daily_life": "The canal service road carries repair pieces too awkward to ship on the day\u2019s boat. Its staffed overnight yard is ordinary infrastructure maintained by people with work of their own.",
+  "timing": "One staffed overnight yard is established. A three-day road journey still needs a second overnight arrangement; it may be an inspected temporary camp, not a newly named permanent settlement.",
+  "handoff": "The yard registers the chosen next leg rather than assuming all arrivals continue by road. Transfer to WAY-03 is a separate decision, with separate timing.",
+  "story_option": "The last sheltered place belongs to a small party. A larger convoy has to divide its loads and book later departures instead of silently occupying someone else\u2019s space.",
+  "production": "Use a reusable camp dressing for the unregistered halt; log weather, water and who stayed awake. Do not add a city to fill a timing gap.",
+  "schedule_days": 3,
+  "schedule_status": "Inherited base schedule",
+  "direction": "Listed a-to-b planning reference; reverse passage requires a fresh itinerary.",
+  "geometry": "Regional endpoints and route length inherited; connecting line is not a surveyed track."
+}

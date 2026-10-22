@@ -1,0 +1,15 @@
+{
+  "edition": "3.4.0",
+  "route_baselines_equal": 16,
+  "community_records_equal": 14,
+  "waycraft_records_equal": 6,
+  "route_chords_within_registered_lengths": 16,
+  "explicit_timing_corrections": 3,
+  "planning_examples_arithmetic_passed": 6,
+  "pilot_exterior_scenes": 0,
+  "pdf_pages": 33,
+  "out_of_page_text": [],
+  "story_status": "Proposed; no dated episode adoption",
+  "visual_review": "All 33 pages rendered and inspected; full-size map and route dossier reviewed. Deep-route label leaders improved and final map checked.",
+  "sha256": "4af42dda2fce90c67790fe2919a3a4b77607f9ad08d1cd5f57f33235ffb7b246"
+}

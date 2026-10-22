@@ -1,0 +1,29 @@
+{
+  "id": "WAY-09",
+  "baseline": {
+    "a": "EXT-08",
+    "b": "EXT-09",
+    "mode": "caravan",
+    "length_km": 230,
+    "days": 14,
+    "conditions": "Dry plateau to coast with two transfer days.",
+    "id": "WAY-09"
+  },
+  "origin_name": "Ossara",
+  "destination_name": "Nacre Quay",
+  "title": "The coast is not the finish",
+  "daily_life": "A caravan descends from the dry plateau toward Nacre Quay carrying goods whose ownership may be disputed once they reach water. The coast is a transfer workplace.",
+  "timing": "230 km at the loaded convoy rate of 18 km/day takes 12.78 movement days. Add the two stated transfer days: 14.78 elapsed days, scheduled as 15 whole day blocks.",
+  "handoff": "Cargo accepted into a quay store is not cargo loaded onto a vessel. Keep warehouse acceptance and departure authority as separate fields.",
+  "story_option": "A valuable sealed chest reaches the quay with two honest owners\u2019 marks from different transfers. The conflict is resolved by reconstructing custody, not by opening every private item.",
+  "production": "The old 14-day summary remains in the baseline record. Use the 15-day planning floor for new scenes unless a dated revised itinerary explicitly changes pace or overlap.",
+  "schedule_days": 15,
+  "schedule_status": "Explicit planning erratum",
+  "direction": "Listed a-to-b planning reference; reverse passage requires a fresh itinerary.",
+  "geometry": "Regional endpoints and route length inherited; connecting line is not a surveyed track.",
+  "arithmetic": {
+    "moving": 12.777777777777779,
+    "layover": 2,
+    "days": 15
+  }
+}

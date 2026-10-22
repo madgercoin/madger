@@ -1,0 +1,24 @@
+{
+  "id": "WAY-02",
+  "baseline": {
+    "a": "EXT-03",
+    "b": "EXT-01",
+    "mode": "road",
+    "length_km": 48,
+    "days": 3,
+    "conditions": "Raised river causeway; flood season can close the lower branch.",
+    "id": "WAY-02"
+  },
+  "origin_name": "Latchford",
+  "destination_name": "Reedbank",
+  "title": "The high road has a price",
+  "daily_life": "Reedbank kitchens buy flour and river households send repaired gear toward the junction. Flood marks on older stone tell the story of collective work, not a prophecy.",
+  "timing": "The raised causeway and lower river branch are distinct. Closing the lower branch does not automatically close the high route; local observers decide each separately.",
+  "handoff": "Before accepting a lower-branch instruction, compare its observation time with the bank marks. Do not relocate Floodglass Ford onto the main centreline simply to shorten a scene.",
+  "story_option": "A courier pays for a high-route berth, then finds the receipt describes the closed lower branch. The error can be exploited by a broker without making the river a conspiracy.",
+  "production": "Keep SITE-01 a separate local branch with no invented regional travel duration. Use the 3.3 habitat sheet if that encounter is staged.",
+  "schedule_days": 3,
+  "schedule_status": "Inherited base schedule",
+  "direction": "Listed a-to-b planning reference; reverse passage requires a fresh itinerary.",
+  "geometry": "Regional endpoints and route length inherited; connecting line is not a surveyed track."
+}

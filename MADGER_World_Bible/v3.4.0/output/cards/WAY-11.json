@@ -1,0 +1,29 @@
+{
+  "id": "WAY-11",
+  "baseline": {
+    "a": "EXT-08",
+    "b": "EXT-10",
+    "mode": "sky",
+    "length_km": 130,
+    "days": 3,
+    "conditions": "Two transfer/weather days included; finite scheduled craft.",
+    "id": "WAY-11"
+  },
+  "origin_name": "Ossara",
+  "destination_name": "Aurel Quay",
+  "title": "A short flight can take days",
+  "daily_life": "Ossara and Aurel Quay trade through finite scheduled craft. Their nearby map positions make waiting feel especially unfair, which gives scenes room for comedy and frustration.",
+  "timing": "130 km at 100 km/day takes 1.3 movement days. Add two transfer/weather days: 3.3 elapsed days, scheduled as 4 whole day blocks.",
+  "handoff": "A confirmed seat still depends on the inspected craft, load and weather. An unused booking is not a spare aircraft waiting behind the set.",
+  "story_option": "A guest learns every stall in the departure court during a delay, then must leave just as they begin to feel at home. The delay creates a relationship, not only an obstacle.",
+  "production": "The earlier three-day summary stays visible as historical input. Future staging uses four planning blocks unless a documented itinerary changes the assumptions.",
+  "schedule_days": 4,
+  "schedule_status": "Explicit planning erratum",
+  "direction": "Listed a-to-b planning reference; reverse passage requires a fresh itinerary.",
+  "geometry": "Regional endpoints and route length inherited; connecting line is not a surveyed track.",
+  "arithmetic": {
+    "moving": 1.3,
+    "layover": 2,
+    "days": 4
+  }
+}

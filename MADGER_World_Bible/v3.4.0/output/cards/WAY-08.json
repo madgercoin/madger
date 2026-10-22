@@ -1,0 +1,24 @@
+{
+  "id": "WAY-08",
+  "baseline": {
+    "a": "EXT-04",
+    "b": "EXT-08",
+    "mode": "caravan",
+    "length_km": 200,
+    "days": 12,
+    "conditions": "Two water stops and a storm reserve; walking convoy pace applies.",
+    "id": "WAY-08"
+  },
+  "origin_name": "Millmere",
+  "destination_name": "Ossara",
+  "title": "Water travels with the promise",
+  "daily_life": "Ossara\u2019s supply relies on handlers, salt grass, wells and animal rest. The caravan carries its dependence visibly: water, feed and cargo occupy the same finite load.",
+  "timing": "Twelve days includes two water stops and a storm reserve. Do not assign two extra full days to those stops without increasing the total; their durations are not fixed by the old summary.",
+  "handoff": "Before departure, record passengers, animal water, feed, accessible containers and the next confirmed water source. A promised well is not a measured refill.",
+  "story_option": "A packbeast refuses a brilliant-looking shortcut. Checking the harness before the ground lets an ordinary fault and a genuine terrain hazard coexist.",
+  "production": "Maintain six legs per sailfin packbeast. Count the same containers at each stop. This production reference does not assign a universal litre ration to all species.",
+  "schedule_days": 12,
+  "schedule_status": "Inherited base schedule",
+  "direction": "Listed a-to-b planning reference; reverse passage requires a fresh itinerary.",
+  "geometry": "Regional endpoints and route length inherited; connecting line is not a surveyed track."
+}

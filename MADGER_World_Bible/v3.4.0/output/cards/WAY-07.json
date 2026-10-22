@@ -1,0 +1,24 @@
+{
+  "id": "WAY-07",
+  "baseline": {
+    "a": "EXT-05",
+    "b": "EXT-07",
+    "mode": "guided forest",
+    "length_km": 100,
+    "days": 6,
+    "conditions": "Spring route; local guides update root crossings. Wet-season detour adds two days.",
+    "id": "WAY-07"
+  },
+  "origin_name": "Willowmere",
+  "destination_name": "Crownrest",
+  "title": "The path is alive, slowly",
+  "daily_life": "Guides and bridge crews work between Willowmere and Crownrest. Their songs preserve work sequences; living fibers take seasons to grow.",
+  "timing": "Six days is the spring guided route; wet-season detour adds two days. Inspection remains necessary even in spring. Roots do not grow a replacement span during a rescue.",
+  "handoff": "A guide signs off the intended crossing state, not the entire forest. A shift in one crown triggers a fresh choice while other communities continue ordinary work.",
+  "story_option": "A reliable old instruction now leads to a gap. It can become dangerous without being forged; the actual forgery plot must still supply independent evidence of deliberate alteration.",
+  "production": "Walking Root Crossing uses the 3.3 footprint, spans and rescue shelf. No unmeasured shortcut is added under the canopy. Show waiting and drying gear as part of the journey.",
+  "schedule_days": 6,
+  "schedule_status": "Inherited base schedule",
+  "direction": "Listed a-to-b planning reference; reverse passage requires a fresh itinerary.",
+  "geometry": "Regional endpoints and route length inherited; connecting line is not a surveyed track."
+}

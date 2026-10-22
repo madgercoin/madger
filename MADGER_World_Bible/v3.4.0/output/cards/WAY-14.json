@@ -1,0 +1,24 @@
+{
+  "id": "WAY-14",
+  "baseline": {
+    "a": "EXT-06",
+    "b": "EXT-12",
+    "mode": "road",
+    "length_km": 46,
+    "days": 3,
+    "conditions": "Basalt freight terraces; gas closure adds a day.",
+    "id": "WAY-14"
+  },
+  "origin_name": "Cinder Cuts",
+  "destination_name": "Kettle Crown",
+  "title": "The freight that went uphill",
+  "daily_life": "Cinder Cuts and Kettle Crown share a history of unequal transport decisions. A new contract can provide real work while still asking the poorer terraces to absorb risk.",
+  "timing": "Three days covers the basalt freight terraces. A gas closure adds one day only for the established limited closure scenario; persistent unsafe conditions mean an indefinite hold.",
+  "handoff": "Local crews check the proposed departure, not an abstract daily quota. A clearance from yesterday does not establish the state of a vent today.",
+  "story_option": "A clean forge yard sends its waste downhill, drawing ashmaws toward another neighborhood. The apparent animal problem points back to a disposal decision.",
+  "production": "Ashmaws tolerate hot ground, not liquid lava. Keep safe civic terraces, gas troughs and raider storage geographically distinct.",
+  "schedule_days": 3,
+  "schedule_status": "Inherited base schedule",
+  "direction": "Listed a-to-b planning reference; reverse passage requires a fresh itinerary.",
+  "geometry": "Regional endpoints and route length inherited; connecting line is not a surveyed track."
+}

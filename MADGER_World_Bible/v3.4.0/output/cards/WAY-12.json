@@ -1,0 +1,24 @@
+{
+  "id": "WAY-12",
+  "baseline": {
+    "a": "EXT-02",
+    "b": "EXT-11",
+    "mode": "mountain",
+    "length_km": 240,
+    "days": 15,
+    "conditions": "Winter closure possible; ridge wayhouses and slower ascent.",
+    "id": "WAY-12"
+  },
+  "origin_name": "Stonewake",
+  "destination_name": "Hushvale",
+  "title": "Warmth has an address",
+  "daily_life": "Stonewake crews trade with Hushvale guides and archive workers. A warm refuge is maintained, occupied and finite, not a reward placed at the end of every chase.",
+  "timing": "Fifteen days covers slower ascent and ridge wayhouses. Winter may close the route entirely. The two-day safe detour around the Cut Span is a separate local itinerary, not automatically included in these fifteen days.",
+  "handoff": "Send departure information before leaving and confirm the next refuge. A late report triggers a bounded search plan; silence alone cannot locate a party.",
+  "story_option": "A familiar voice from the ice offers a shortcut. A visual check and a known warm place are more valuable than a persuasive imitation.",
+  "production": "Snow, wet clothing and tool ice persist across cuts. Echo ice and choirwraith mimicry are different mechanisms, neither a resurrection or complete witness.",
+  "schedule_days": 15,
+  "schedule_status": "Inherited base schedule",
+  "direction": "Listed a-to-b planning reference; reverse passage requires a fresh itinerary.",
+  "geometry": "Regional endpoints and route length inherited; connecting line is not a surveyed track."
+}

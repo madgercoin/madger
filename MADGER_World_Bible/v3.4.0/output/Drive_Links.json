@@ -1,0 +1,177 @@
+{
+  "edition": "3.4.0",
+  "folder": {
+    "success": true,
+    "id": "1k9hI25iVXKFGq4ld9o4pXUefpxYhNzB1",
+    "url": "https://drive.google.com/drive/folders/1k9hI25iVXKFGq4ld9o4pXUefpxYhNzB1",
+    "title": "MADGER World Bible 3.4 - Journeys and Waycraft",
+    "parent_id": "1FpiwodNq-qeQmoDikp6_cDKG0jxbYe70"
+  },
+  "pdf": {
+    "accepted_input": "file_uri",
+    "success": true,
+    "id": "1apkYKX11S6A32jE3KjNJRv2eBJRAx2pF",
+    "title": "MADGER_Journeys_and_Waycraft.pdf",
+    "file_name": "MADGER_Journeys_and_Waycraft.pdf",
+    "mime_type": "application/pdf",
+    "url": "https://drive.google.com/file/d/1apkYKX11S6A32jE3KjNJRv2eBJRAx2pF/view?usp=drivesdk",
+    "parent_id": "1k9hI25iVXKFGq4ld9o4pXUefpxYhNzB1",
+    "structuredContent": {
+      "accepted_input": "file_uri",
+      "success": true,
+      "id": "1apkYKX11S6A32jE3KjNJRv2eBJRAx2pF",
+      "title": "MADGER_Journeys_and_Waycraft.pdf",
+      "file_name": "MADGER_Journeys_and_Waycraft.pdf",
+      "mime_type": "application/pdf",
+      "url": "https://drive.google.com/file/d/1apkYKX11S6A32jE3KjNJRv2eBJRAx2pF/view?usp=drivesdk",
+      "parent_id": "1k9hI25iVXKFGq4ld9o4pXUefpxYhNzB1"
+    }
+  },
+  "sources": [
+    {
+      "path": "README.md",
+      "id": "1uy-Pz4tQbGqLQbYZG3ier7ec1Rm07e1f",
+      "url": "https://drive.google.com/file/d/1uy-Pz4tQbGqLQbYZG3ier7ec1Rm07e1f/view?usp=drivesdk"
+    },
+    {
+      "path": "author_journeys.py",
+      "id": "13T8EO5SCKNsccl82ZP5OikcN3uPh_EFr",
+      "url": "https://drive.google.com/file/d/13T8EO5SCKNsccl82ZP5OikcN3uPh_EFr/view?usp=drivesdk"
+    },
+    {
+      "path": "author_story.py",
+      "id": "1yGZHVCekvoinDat3D_-RzPCY8va3ZX1f",
+      "url": "https://drive.google.com/file/d/1yGZHVCekvoinDat3D_-RzPCY8va3ZX1f/view?usp=drivesdk"
+    },
+    {
+      "path": "build_route_map.py",
+      "id": "1hbo5JPY70jkLAeSLMU_43AOYHk8EhR7g",
+      "url": "https://drive.google.com/file/d/1hbo5JPY70jkLAeSLMU_43AOYHk8EhR7g/view?usp=drivesdk"
+    },
+    {
+      "path": "render_journeys.py",
+      "id": "1w5FbuK907MpaWz_9Ow3FzSrLuoLoKLk2",
+      "url": "https://drive.google.com/file/d/1w5FbuK907MpaWz_9Ow3FzSrLuoLoKLk2/view?usp=drivesdk"
+    },
+    {
+      "path": "validate_journeys.py",
+      "id": "1OXDp3KpbrdAGbApfG21iSrlsgSpptFkv",
+      "url": "https://drive.google.com/file/d/1OXDp3KpbrdAGbApfG21iSrlsgSpptFkv/view?usp=drivesdk"
+    },
+    {
+      "path": "output/Complete_Story.json",
+      "id": "1j7uGCeAdXw7erKYhn7jdmaghJcEYvFVI",
+      "url": "https://drive.google.com/file/d/1j7uGCeAdXw7erKYhn7jdmaghJcEYvFVI/view?usp=drivesdk"
+    },
+    {
+      "path": "output/Journeys_Bible.json",
+      "id": "1PgC9UW2S1K1OZGgmPUs2ck1Jh-tWm1Ca",
+      "url": "https://drive.google.com/file/d/1PgC9UW2S1K1OZGgmPUs2ck1Jh-tWm1Ca/view?usp=drivesdk"
+    },
+    {
+      "path": "output/Navigation_Index.json",
+      "id": "1mPWNVNDMxIMbUsEZ15dNLEVii7kUVoQR",
+      "url": "https://drive.google.com/file/d/1mPWNVNDMxIMbUsEZ15dNLEVii7kUVoQR/view?usp=drivesdk"
+    },
+    {
+      "path": "output/VALIDATION.json",
+      "id": "1HKDSzSkimEzdiuSP_66JdhB1XizD8W_0",
+      "url": "https://drive.google.com/file/d/1HKDSzSkimEzdiuSP_66JdhB1XizD8W_0/view?usp=drivesdk"
+    },
+    {
+      "path": "output/Route_Register.csv",
+      "id": "179h7TUiPZ7tnJF7GssBlGtwvNjthp8mG",
+      "url": "https://drive.google.com/file/d/179h7TUiPZ7tnJF7GssBlGtwvNjthp8mG/view?usp=drivesdk"
+    },
+    {
+      "path": "output/cards/WAY-01.json",
+      "id": "1RQPk9x6jkJYe2TtZSXV9XopCueuS8FXL",
+      "url": "https://drive.google.com/file/d/1RQPk9x6jkJYe2TtZSXV9XopCueuS8FXL/view?usp=drivesdk"
+    },
+    {
+      "path": "output/cards/WAY-02.json",
+      "id": "1WDFX0m6iQqm2o02Vw_z9m3REIPWH07AH",
+      "url": "https://drive.google.com/file/d/1WDFX0m6iQqm2o02Vw_z9m3REIPWH07AH/view?usp=drivesdk"
+    },
+    {
+      "path": "output/cards/WAY-03.json",
+      "id": "11kOC4mLzNUz9w-tY1I3lN9ld-cuHkfGl",
+      "url": "https://drive.google.com/file/d/11kOC4mLzNUz9w-tY1I3lN9ld-cuHkfGl/view?usp=drivesdk"
+    },
+    {
+      "path": "output/cards/WAY-04.json",
+      "id": "1zL4lyDDGjrHOR1yX_TUemQusK2nYAGtG",
+      "url": "https://drive.google.com/file/d/1zL4lyDDGjrHOR1yX_TUemQusK2nYAGtG/view?usp=drivesdk"
+    },
+    {
+      "path": "output/cards/WAY-05.json",
+      "id": "19_XuWQlS0a3bOeroE9v9AvKglYXJTEqj",
+      "url": "https://drive.google.com/file/d/19_XuWQlS0a3bOeroE9v9AvKglYXJTEqj/view?usp=drivesdk"
+    },
+    {
+      "path": "output/cards/WAY-06.json",
+      "id": "1aanvJxYxMIsX4CBs3BamBwG2GPWmW4y7",
+      "url": "https://drive.google.com/file/d/1aanvJxYxMIsX4CBs3BamBwG2GPWmW4y7/view?usp=drivesdk"
+    },
+    {
+      "path": "output/cards/WAY-07.json",
+      "id": "1hZA-SHble5SZZvYXof4pPdBw75kS_kpC",
+      "url": "https://drive.google.com/file/d/1hZA-SHble5SZZvYXof4pPdBw75kS_kpC/view?usp=drivesdk"
+    },
+    {
+      "path": "output/cards/WAY-08.json",
+      "id": "14SR8QoYQBSv0f5YgAnPEFuLB-Zvz_hKk",
+      "url": "https://drive.google.com/file/d/14SR8QoYQBSv0f5YgAnPEFuLB-Zvz_hKk/view?usp=drivesdk"
+    },
+    {
+      "path": "output/cards/WAY-09.json",
+      "id": "1OJemV2uTfJgiDeje_6lIjVNAAx6zYGsH",
+      "url": "https://drive.google.com/file/d/1OJemV2uTfJgiDeje_6lIjVNAAx6zYGsH/view?usp=drivesdk"
+    },
+    {
+      "path": "output/cards/WAY-10.json",
+      "id": "16-UBeJ-Bvv2CQk13vKKlU_NHvKwlHBqV",
+      "url": "https://drive.google.com/file/d/16-UBeJ-Bvv2CQk13vKKlU_NHvKwlHBqV/view?usp=drivesdk"
+    },
+    {
+      "path": "output/cards/WAY-11.json",
+      "id": "1HjPNvAyGe0rU0YY0NGGDYP_jmSQAGLTs",
+      "url": "https://drive.google.com/file/d/1HjPNvAyGe0rU0YY0NGGDYP_jmSQAGLTs/view?usp=drivesdk"
+    },
+    {
+      "path": "output/cards/WAY-12.json",
+      "id": "1qWjBeG1dpffOBS7d8dOJ55mtr94ncDpp",
+      "url": "https://drive.google.com/file/d/1qWjBeG1dpffOBS7d8dOJ55mtr94ncDpp/view?usp=drivesdk"
+    },
+    {
+      "path": "output/cards/WAY-13.json",
+      "id": "1cxuHZy9U-sEqyy76_MDrcFXugGs-83gT",
+      "url": "https://drive.google.com/file/d/1cxuHZy9U-sEqyy76_MDrcFXugGs-83gT/view?usp=drivesdk"
+    },
+    {
+      "path": "output/cards/WAY-14.json",
+      "id": "193UmMScPYb3ODYVTsXM5npNHPkSHlDP4",
+      "url": "https://drive.google.com/file/d/193UmMScPYb3ODYVTsXM5npNHPkSHlDP4/view?usp=drivesdk"
+    },
+    {
+      "path": "output/cards/WAY-15.json",
+      "id": "180bkNvDjvPApr05ZVlmgXu-WZecVU8jJ",
+      "url": "https://drive.google.com/file/d/180bkNvDjvPApr05ZVlmgXu-WZecVU8jJ/view?usp=drivesdk"
+    },
+    {
+      "path": "output/cards/WAY-16.json",
+      "id": "1loyhCtElMZCkrsO6bkU3HOSzIY8rKwae",
+      "url": "https://drive.google.com/file/d/1loyhCtElMZCkrsO6bkU3HOSzIY8rKwae/view?usp=drivesdk"
+    },
+    {
+      "path": "plans/WAY-15-Datums.svg",
+      "id": "1dozxozUwHXJ_OTEJ_wR_2b01wLecNy8b",
+      "url": "https://drive.google.com/file/d/1dozxozUwHXJ_OTEJ_wR_2b01wLecNy8b/view?usp=drivesdk"
+    },
+    {
+      "path": "plans/WAY-Network.svg",
+      "id": "1eKwxPAmXoQyKdO5xuqQNDvw65twLdPvq",
+      "url": "https://drive.google.com/file/d/1eKwxPAmXoQyKdO5xuqQNDvw65twLdPvq/view?usp=drivesdk"
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "id": "WAY-03",
+  "baseline": {
+    "a": "EXT-01",
+    "b": "EXT-04",
+    "mode": "river",
+    "length_km": 58,
+    "days": 2,
+    "conditions": "One upstream day plus docking and current allowance.",
+    "id": "WAY-03"
+  },
+  "origin_name": "Reedbank",
+  "destination_name": "Millmere",
+  "title": "The river keeps two clocks",
+  "daily_life": "Millmere needs river deliveries while Reedbank crews need paid docking time. The same current that helps one direction slows the other.",
+  "timing": "58 km is the inherited route length. Two scheduled days include upstream and docking allowance; the regional 50 km/day rate is a broad planning baseline, not a guarantee against current.",
+  "handoff": "A boat report names direction, water mark, passengers and berth. Reversing the trip requires a new current and docking assessment; two days is not automatically a return timetable.",
+  "story_option": "A sealed cargo receipt arrives before its boat. The arrival clerk must distinguish acceptance of a message from arrival of people.",
+  "production": "A waterline, mooring rope and tired crew make elapsed time visible. Do not use a montage to erase a docking wait that changes the plot.",
+  "schedule_days": 2,
+  "schedule_status": "Inherited base schedule",
+  "direction": "Listed a-to-b planning reference; reverse passage requires a fresh itinerary.",
+  "geometry": "Regional endpoints and route length inherited; connecting line is not a surveyed track."
+}
