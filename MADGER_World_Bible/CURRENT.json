@@ -1,14 +1,14 @@
 {
   "world_id": "MADGER-BRW-HOME",
-  "canon_version": "3.3.0",
-  "volume": "The Open Ways foundation + Living Places + The Cost of Control + The Wilds Between",
-  "bible": "v3.3.0/README.md",
+  "canon_version": "3.4.0",
+  "volume": "The Open Ways foundation + Living Places + The Cost of Control + The Wilds Between + Journeys & Waycraft",
+  "bible": "v3.4.0/README.md",
   "data": "v3.0.0/World_Atlas.json",
   "underground_blueprints": "v2.0.0/MADGER_Underground_Blueprints.pdf",
   "map": "v2.0.0/previews/UG-A2.png",
   "surface_blueprints": "blueprints/v1.0.0/MADGER_Burrow_Blueprints.pdf",
   "historical_foundation": "v1.0.0/MADGER_World_Bible.pdf",
-  "precedence": "v3.0 resolves exterior geography, companion origins and wider biographies reserved in earlier editions. Burrow v2.1 geometry, public access, population and approved hero voice references remain controlling and unchanged. Historical files are preserved. v3.1 adds local histories and normal-day furnishing placements for thirteen existing exterior landmarks. Original geometry remains controlling. Companion stories and scene seeds are authored options pending placement in the dated episode ledger. v3.2 adds faction operating histories, character addenda and seven conflict locations. Detailed 3.2 site feature/approach layers refine generic 3.0 encounter guides within unchanged bounds; the Cut Span remains severed. Proposed choices and stories still require episode-ledger adoption. v3.3 adds wildlife ecology and four resolved habitat access layers within unchanged 3.0 site bounds and refuge footprints. SITE-03 replaces the reserved maintenance ramp with measured foot service stairs; SITE-08 connects the landing to the high refuge path with explicit water/arch elevations. Written anatomy and measured geometry control over atmospheric artwork. The two new complete stories remain authored options pending dated episode-ledger adoption; no pilot change.",
+  "precedence": "v3.0 resolves exterior geography, companion origins and wider biographies reserved in earlier editions. Burrow v2.1 geometry, public access, population and approved hero voice references remain controlling and unchanged. Historical files are preserved. v3.1 adds local histories and normal-day furnishing placements for thirteen existing exterior landmarks. Original geometry remains controlling. Companion stories and scene seeds are authored options pending placement in the dated episode ledger. v3.2 adds faction operating histories, character addenda and seven conflict locations. Detailed 3.2 site feature/approach layers refine generic 3.0 encounter guides within unchanged bounds; the Cut Span remains severed. Proposed choices and stories still require episode-ledger adoption. v3.3 adds wildlife ecology and four resolved habitat access layers within unchanged 3.0 site bounds and refuge footprints. SITE-03 replaces the reserved maintenance ramp with measured foot service stairs; SITE-08 connects the landing to the high refuge path with explicit water/arch elevations. Written anatomy and measured geometry control over atmospheric artwork. The two new complete stories remain authored options pending dated episode-ledger adoption; no pilot change. v3.4 adds sixteen route dossiers, exact-anchor connection diagrams and conditional travel examples. Original route records and all community anchors are retained. Explicit planning-duration errata supersede only WAY-09 (15 days), WAY-10 (6 days) and WAY-11 (4 days), using inherited movement rates plus full stated layovers rounded upward. No adopted dated event changes. The new Latchford story remains proposed and independent of D17. Regional lines are not surveyed tracks, intermediate junctions or flight-field boundaries.",
   "source": "v3.0.0/source/",
   "living_world_text": "v2.1.0/LIVING_WORLD.md",
   "sub_locations": "v2.1.0/Sub_Locations.json",
@@ -108,5 +108,17 @@
     "verified_files": "v3.3.0/output/Drive_Links.json",
     "google_drive": "https://drive.google.com/drive/folders/1uPFDIIWmIopoeEJU3siFfrqIVQHUo26Z",
     "source_commit": "632a5ba6b876bee36f8196727c9f5fb6e2629e52"
+  },
+  "journeys_waycraft": {
+    "edition": "3.4.0",
+    "index": "v3.4.0/README.md",
+    "data": "v3.4.0/output/Journeys_Bible.json",
+    "register": "v3.4.0/output/Route_Register.csv",
+    "story": "v3.4.0/output/Complete_Story.json",
+    "plans": "v3.4.0/plans/",
+    "validation": "v3.4.0/output/VALIDATION.json",
+    "verified_files": "v3.4.0/output/Drive_Links.json",
+    "google_drive": "https://drive.google.com/drive/folders/1k9hI25iVXKFGq4ld9o4pXUefpxYhNzB1",
+    "source_commit": "f04f7b5d5b14307536a0d127dfaba9134a2fa5fb"
   }
 }
