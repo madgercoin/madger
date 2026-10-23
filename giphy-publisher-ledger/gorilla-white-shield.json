@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "id": "gorilla-white-shield",
+  "sha256": "5c112f754caabd3ad9c73b8574047e735593b4b0ab32c059f36bbd9c33e73957",
+  "file": "giphy-publisher/assets/gorilla-white-shield.gif",
+  "title": "Gorilla White — shield up",
+  "test": false,
+  "scheduledFor": "2026-10-22T23:15:00Z",
+  "expectedOwner": "MadgerDaBadger",
+  "status": "reserved",
+  "reservedAt": "2026-10-23T01:31:52.404Z",
+  "runId": "39884500280"
+}
