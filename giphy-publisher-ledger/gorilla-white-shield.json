@@ -7,10 +7,12 @@
   "test": false,
   "scheduledFor": "2026-10-22T23:15:00Z",
   "expectedOwner": "MadgerDaBadger",
-  "status": "uploaded_unverified",
+  "status": "published",
   "reservedAt": "2026-10-23T01:31:52.404Z",
   "runId": "39884500280",
   "gifId": "HZivwYJoMQwVxXD7tI",
   "gifUrl": "https://giphy.com/gifs/HZivwYJoMQwVxXD7tI",
-  "updatedAt": "2026-10-23T01:32:10.684Z"
+  "updatedAt": "2026-10-23T01:32:10.684Z",
+  "owner": "MadgerDaBadger",
+  "publishedAt": "2026-10-23T01:32:12.250Z"
 }
