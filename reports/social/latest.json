@@ -1,9 +1,9 @@
 {
-  "generatedAt": "2026-10-25T13:17:23.032Z",
-  "previousGeneratedAt": "2026-10-24T12:50:40.476Z",
+  "generatedAt": "2026-10-26T15:21:38.628Z",
+  "previousGeneratedAt": "2026-10-25T13:17:23.032Z",
   "window": {
-    "start": "2026-09-25T13:17:23.032Z",
-    "end": "2026-10-25T13:17:23.032Z"
+    "start": "2026-09-26T15:21:38.628Z",
+    "end": "2026-10-26T15:21:38.628Z"
   },
   "organization": {
     "id": "6a67aceacff325d8d2d231e9",
@@ -20,14 +20,14 @@
       "state": "connected",
       "healthy": true,
       "queuePaused": false,
-      "metricsUpdatedAt": "2026-10-24T20:10:30.727Z",
+      "metricsUpdatedAt": "2026-10-25T19:10:40.611Z",
       "metrics": {
         "postCount": 38,
         "reactions": 171,
         "comments": 135,
-        "engagementRate": 24.16,
+        "engagementRate": 24.13,
         "reposts": 4,
-        "impressions": 2032,
+        "impressions": 2035,
         "clicks": 9
       },
       "requiresCommunityReview": true
@@ -42,13 +42,13 @@
       "state": "connected",
       "healthy": true,
       "queuePaused": false,
-      "metricsUpdatedAt": "2026-10-25T10:05:28.309Z",
+      "metricsUpdatedAt": "2026-10-26T09:05:38.511Z",
       "metrics": {
         "postCount": 20,
         "reactions": 2,
         "comments": 2,
         "engagementRate": 1.75,
-        "impressions": 285,
+        "impressions": 286,
         "shares": 0,
         "clicks": 1
       },
@@ -64,7 +64,7 @@
       "state": "connected",
       "healthy": true,
       "queuePaused": false,
-      "metricsUpdatedAt": "2026-10-25T01:00:25.185Z",
+      "metricsUpdatedAt": "2026-10-26T00:00:34.391Z",
       "metrics": {
         "postCount": 19,
         "reactions": 37,
@@ -90,17 +90,17 @@
       "state": "connected",
       "healthy": true,
       "queuePaused": false,
-      "metricsUpdatedAt": "2026-10-25T13:07:28.812Z",
+      "metricsUpdatedAt": "2026-10-26T12:08:40.626Z",
       "metrics": {
         "postCount": 20,
         "reactions": 9,
         "comments": 0,
         "engagementRate": 0.51,
-        "views": 1950,
+        "views": 1952,
         "shares": 1,
         "reach": 1811,
-        "totalTimeWatched": 128.9,
-        "averageTimeWatched": 3.34
+        "totalTimeWatched": 128.85,
+        "averageTimeWatched": 3.33
       },
       "requiresCommunityReview": false
     }
