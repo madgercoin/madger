@@ -24,7 +24,7 @@
     "test:social-domain": "node --test test/social-domain-preflight.test.mjs"
   },
   "devDependencies": {
-    "wrangler": "4.125.0"
+    "wrangler": "4.152.0"
   },
   "engines": {
     "node": ">=22"
