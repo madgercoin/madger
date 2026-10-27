@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-27T14:55:09.055Z",
+  "generatedAt": "2026-10-27T20:58:47.325Z",
   "snapshotLabel": "pre-liquidity-pre-proficy-2026-09-09",
   "network": "solana",
   "mint": "BHauMX8akk2umqkQqnJwpYkCRkZmefGnEBFByeFXRKqv",
@@ -26,9 +26,9 @@
     "liquidityQuote": 46.08885,
     "fdv": 1172626,
     "marketCap": 263841,
-    "volume24h": 16.99,
+    "volume24h": 2.61,
     "buys24h": 1,
-    "sells24h": 1,
+    "sells24h": 0,
     "pairCreatedAt": 1788193708000,
     "websites": [
       {
