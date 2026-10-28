@@ -1,9 +1,9 @@
 {
-  "generatedAt": "2026-10-27T14:47:29.860Z",
-  "previousGeneratedAt": "2026-10-26T15:21:38.628Z",
+  "generatedAt": "2026-10-28T15:18:45.246Z",
+  "previousGeneratedAt": "2026-10-27T14:47:29.860Z",
   "window": {
-    "start": "2026-09-27T14:47:29.860Z",
-    "end": "2026-10-27T14:47:29.860Z"
+    "start": "2026-09-28T15:18:45.246Z",
+    "end": "2026-10-28T15:18:45.246Z"
   },
   "organization": {
     "id": "6a67aceacff325d8d2d231e9",
@@ -16,21 +16,13 @@
       "service": "twitter",
       "externalLink": "https://twitter.com/MadgerDaBadger",
       "disconnected": false,
-      "locked": false,
-      "state": "connected",
-      "healthy": true,
+      "locked": true,
+      "state": "locked",
+      "healthy": false,
       "queuePaused": false,
-      "metricsUpdatedAt": "2026-10-26T23:02:25.229Z",
-      "metrics": {
-        "postCount": 40,
-        "reactions": 171,
-        "comments": 135,
-        "engagementRate": 24.1,
-        "reposts": 4,
-        "impressions": 2037,
-        "clicks": 9
-      },
-      "requiresCommunityReview": true
+      "metricsUpdatedAt": null,
+      "metrics": {},
+      "requiresCommunityReview": false
     },
     {
       "channelId": "6a67ecc14b2d03035f50dbad",
@@ -42,13 +34,13 @@
       "state": "connected",
       "healthy": true,
       "queuePaused": false,
-      "metricsUpdatedAt": "2026-10-27T08:05:49.796Z",
+      "metricsUpdatedAt": "2026-10-28T07:05:59.790Z",
       "metrics": {
-        "postCount": 21,
-        "reactions": 2,
+        "postCount": 19,
+        "reactions": 1,
         "comments": 2,
-        "engagementRate": 1.68,
-        "impressions": 297,
+        "engagementRate": 1.37,
+        "impressions": 292,
         "shares": 0,
         "clicks": 1
       },
@@ -64,19 +56,19 @@
       "state": "connected",
       "healthy": true,
       "queuePaused": false,
-      "metricsUpdatedAt": "2026-10-26T23:00:45.219Z",
+      "metricsUpdatedAt": "2026-10-27T22:00:54.020Z",
       "metrics": {
-        "postCount": 19,
-        "reactions": 37,
+        "postCount": 18,
+        "reactions": 33,
         "comments": 14,
-        "engagementRate": 40.62,
-        "views": 261,
+        "engagementRate": 19.35,
+        "views": 372,
         "shares": 1,
         "saves": 0,
         "follows": 0,
-        "reach": 128,
-        "totalTimeWatched": 1054.96,
-        "averageTimeWatched": 818.51
+        "reach": 248,
+        "totalTimeWatched": 1080.96,
+        "averageTimeWatched": 657.21
       },
       "requiresCommunityReview": true
     },
@@ -90,17 +82,17 @@
       "state": "connected",
       "healthy": true,
       "queuePaused": false,
-      "metricsUpdatedAt": "2026-10-27T11:09:52.724Z",
+      "metricsUpdatedAt": "2026-10-28T10:10:24.184Z",
       "metrics": {
-        "postCount": 21,
-        "reactions": 9,
+        "postCount": 18,
+        "reactions": 7,
         "comments": 0,
         "engagementRate": 0.5,
-        "views": 1993,
+        "views": 1587,
         "shares": 1,
-        "reach": 1811,
-        "totalTimeWatched": 132.5,
-        "averageTimeWatched": 3.45
+        "reach": 1436,
+        "totalTimeWatched": 98.53,
+        "averageTimeWatched": 3.34
       },
       "requiresCommunityReview": false
     }
