@@ -45,7 +45,7 @@ Repeat the Android scenarios on a supported physical iPhone, including VoiceOver
 
 ## Signed build and submission
 
-1. Run `npm run release:distribution`; do not bypass a failed gate.
+1. For Android only, run `npm run release:distribution:android`. For both platforms, run `npm run release:distribution`. Each target requires its own genuine physical-device acceptance; Android-only release does not require iPhone acceptance. Do not bypass a failed gate.
 2. Run `eas build --platform all --profile production --non-interactive`.
 3. Install and smoke-test the exact signed artifacts.
 4. Confirm the live canonical privacy policy matches `PRIVACY.md` and the store listing.
