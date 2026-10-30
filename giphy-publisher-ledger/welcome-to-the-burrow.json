@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "id": "welcome-to-the-burrow",
+  "sha256": "7454c4d0f8b00d60d121a58f543465f371f07cdfefc47e4e756994c93b0bff8c",
+  "file": "giphy-publisher/assets/welcome-to-the-burrow.gif",
+  "title": "Welcome to The Burrow",
+  "test": false,
+  "scheduledFor": "2026-10-29T23:15:00Z",
+  "expectedOwner": "MadgerDaBadger",
+  "status": "reserved",
+  "reservedAt": "2026-10-30T02:36:58.437Z",
+  "runId": "40992699340"
+}
