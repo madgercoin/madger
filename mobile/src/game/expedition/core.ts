@@ -276,6 +276,8 @@ function hurt(s: Expedition, item: CourseItem, events: GameEvent[]) {
   if(guard.timeLeft>0&&guard.charges>0&&guard.cooldown===0){
     guard.charges--;guard.actions++;guard.cooldown=COMPANIONS.gorilla.cooldown;guard.lastActionAt=s.time;guard.actionRemaining=COMPANIONS.gorilla.actionDuration;
     guard.targetId=item.id;guard.targetD=item.d;guard.targetX=item.lane*LANE_WIDTH;guard.targetRoute=s.route;guard.resolved=true;
+    // Finish the final brace, then allow the normal .65s departure before freeing the summon slot.
+    if(guard.charges===0)guard.timeLeft=Math.min(guard.timeLeft,COMPANIONS.gorilla.actionDuration+.65);
     s.immune=Math.max(s.immune,.8);s.mud=0;s.lastGood=s.time;
     if(item.kind==='gap'){s.y=Math.max(s.y,.35);s.vy=6;}
     allyEvent(s,events,'companion-guard','gorilla',item.kind==='gap'?'GORILLA WHITE · LEDGE RESCUE':'GORILLA WHITE · BODYGUARD SAVE',0,item);return;
