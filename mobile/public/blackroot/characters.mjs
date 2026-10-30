@@ -589,6 +589,9 @@ function hurt(s, item, events) {
         guard.targetX = item.lane * exports.LANE_WIDTH;
         guard.targetRoute = s.route;
         guard.resolved = true;
+        // Finish the final brace, then allow the normal .65s departure before freeing the summon slot.
+        if (guard.charges === 0)
+            guard.timeLeft = Math.min(guard.timeLeft, companions_1.COMPANIONS.gorilla.actionDuration + .65);
         s.immune = Math.max(s.immune, .8);
         s.mud = 0;
         s.lastGood = s.time;
