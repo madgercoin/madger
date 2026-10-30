@@ -9,3 +9,9 @@ Nonverbal creature reactions were generated in the connected Runway workspace:
 These are short animal reactions, not a new speaking voice. The approved MADGER spoken voice is not replaced. Audio ships locally. No microphone permission or runtime synthesis service is used.
 
 Instrumental underscore: Runway Lyria 3 Clip task d21babc1-e667-4bf6-8d12-90b46e08f8e9. Normalized to -22 LUFS, limited true peak -3 dB, mixed quietly below reactions and foley. Optional music toggle; no runtime network requests.
+
+Build 26 soundscape revision:
+- Natural paw contact source: Runway task 51458f56-3cf2-4b31-9d28-c311fdd9a52a (source/forest-paws.mp3).
+- Quiet forest air: Runway task c4841298-c176-4d93-a4e1-4ee87e9f1ecc (source/forest-air.mp3).
+- Reproducible preparation: scripts/prepare-expedition-soundscape.py. Four separate paw contacts, four filtered stone contacts, unpitched jump/landing/slide foley, and four original damped metal pickup tinkles.
+- The old repeating synthetic step/metal-step and bass-hum ambience are no longer played by Expedition. Footsteps are quiet, gain/rate varied and limited to four per second. Pickups share a 380 ms budget; near misses are silent. Damage takes priority, delayed catch-up cues are dropped, and positive vocal reactions are reserved for major discoveries/revival/finish.

@@ -69,7 +69,7 @@ Do not infer these answers from the code alone:
 - Content-rating questionnaire interpretations
 - Countries/regions selected for release
 
-The app does not connect a wallet, request wallet credentials, execute trades, sell tokens, process payments, or custody assets. It does expose user-selected external links documented in the privacy policy.
+The app does not connect a wallet, request wallet credentials, execute trades, sell tokens, process payments, or custody assets. Historical purchase deep links redirect to Home. No trading guides or exchange links are included. Optional support, website and community links follow the privacy policy.
 
 ## Internal-test release
 

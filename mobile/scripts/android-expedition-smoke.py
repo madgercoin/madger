@@ -39,7 +39,7 @@ APK = Path(os.environ.get("MADGER_ANDROID_APK", str(ROOT / "madger-expedition-pr
 STAMP = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
 OUT = Path(os.environ.get("MADGER_ANDROID_EVIDENCE_DIR", str(ROOT / "expedition-evidence" / "android-smoke" / STAMP)))
 ENTRY = "Play the 3D Expedition"
-HUD = re.compile(r"Expedition distance (\d+) meters; lane (-?\d); (jumping|burrowing|running); route (main|hollow|grotto)")
+HUD = re.compile(r"Expedition distance (\d+) meters; lane (-?\d); (jumping|burrowing|running); route (main|hollow|grotto|rootway|ridge|deep|mosswalk|root-arch|log-crossing|causeway|watchtower|gearworks|mudslide|crystal-vein|ancient-vault)$")
 SCORE = re.compile(r"Current expedition score (\d+)")
 ERROR_LABELS = (
     "The 3D view did not start.", "The 3D view needs a restart.",
@@ -94,7 +94,9 @@ class Smoke:
     def tree(self):
         # Long scans may add load; RPC duration alone does not prove a frame stall.
         # Required accessible labels and bounds are still checked by every caller.
-        xml = self.timed("hierarchy", lambda: self.device.dump_hierarchy(compressed=True))
+        # Keep Android's normal tree: flattening accessibility descendants adds
+        # synchronous work while the 3D view is rendering on software GPUs.
+        xml = self.timed("hierarchy", lambda: self.device.dump_hierarchy(compressed=False))
         nodes = list(ET.fromstring(xml).iter("node"))
         labels = [node.get(key, "") for node in nodes for key in ("text", "content-desc")]
         self.last_observation = self.observation(nodes, labels)
@@ -436,6 +438,14 @@ class Smoke:
         self.report["burst_scope"] = "Control and charge label checked; burst activation is not exercised by this short route."
         self.mark("Left, right, jump, and burrow respond through the visible HUD", burst_control=charge)
 
+        # Select through real steering while forward simulation continues.
+        # No modal chooser, saved-state injection, or relaxed lifecycle gate.
+        self.tap("LEFT")
+        approach = self.wait_hud(lambda state: state["lane"] == -1, "live left approach")
+        selected = self.wait_hud(lambda state: state['route'] == 'rootway', 'live Rootway branch', timeout=30)
+        if selected["distance_m"] <= approach["distance_m"]:
+            raise AssertionError("Live route selection did not preserve forward progress")
+        self.mark("Live steering selects Rootway without a blocking fork menu")
         self.tap("Pause expedition")
         paused = self.paused_state("05-manual-pause")
         self.mark("Manual pause freezes distance, score, lane, and action")

@@ -39,10 +39,10 @@ Run these commands from `mobile/`. The repository-root `.easignore` restricts no
 
 ## Release checks
 
-- Confirm the buying guide and Raydium route before every release.
+- Confirm retired purchase deep links redirect safely and no trading routes are included.
 - Confirm every URL in `src/constants/brand.ts` is official and reachable.
-- Test the buying guide and Raydium links on real Android and iPhone devices.
-- Verify the mint exactly matches madgercoin.com.
+- Test privacy and support links on the target devices.
+- Keep game rewards separate from real-world assets: no purchase, transfer or withdrawal.
 - Complete a Burrow Run on both a physical Android device and iPhone; verify backgrounding pauses the run and local records survive restart.
 - Review `PRIVACY.md` and the live privacy-policy URL.
 

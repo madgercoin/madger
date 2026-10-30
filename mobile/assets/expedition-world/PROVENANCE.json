@@ -1,0 +1,39 @@
+{
+  "license": "CC0-1.0",
+  "source": "Existing project assets, mobile/public/blackroot/ASSET_PROVENANCE.json",
+  "authoring": "scripts/bake-native-world.py",
+  "atlasTiles": [
+    "forest_ground_04",
+    "bark_brown_02",
+    "aerial_grass_rock",
+    "island_tree_02:0",
+    "island_tree_02:1",
+    "island_tree_02:2",
+    "rock_moss_set_01:0",
+    "fern_02:0",
+    "dead_tree_trunk:0",
+    "root_cluster_01:0",
+    "rock_face_02:0"
+  ],
+  "sourceSha256": {
+    "public/blackroot/assets/forest_ground_04/forest_ground_04_diff_1k.jpg": "528f3039765241b0abaf3211d818db7aa3d9b3871f42a17bd68e22ead3073368",
+    "public/blackroot/assets/bark_brown_02/bark_brown_02_diff_1k.jpg": "1e228aa0037959a7275cf33f5d587af77703b268cbbe48734e1c230dfb8be5bd",
+    "public/blackroot/assets/aerial_grass_rock/aerial_grass_rock_diff_1k.jpg": "65a28b1fdd6258a62c90a0a592a7d495847221e8385c1ba36fe594553fddc3e7",
+    "public/blackroot/assets/island_tree_02/island_tree_02_mobile.glb": "edfdb5873b907af3f5a999dd30c895e30225a818fa6b6326e1a3615cce633e10",
+    "public/blackroot/assets/rock_moss_set_01/rock_moss_set_01.gltf": "c36675aca9c6b2be7785c2534cf413b03ec82a5a2a5407a2b1c0cdb0346c9727",
+    "public/blackroot/assets/fern_02/fern_02.gltf": "33974295ee19670af4877705fc7d91f33f42d6302f0d44a625e072271223031f",
+    "public/blackroot/assets/dead_tree_trunk/dead_tree_trunk.gltf": "8baaf1ff66ba1f79acdceed0dc3797a882990a3abb10b18abe56762f34c26e39",
+    "public/blackroot/assets/root_cluster_01/root_cluster_01_mobile.glb": "e816ebd08b94d465dd80197f32f616caa49bea8598e2e8573a75db0918f2b0a8",
+    "public/blackroot/assets/rock_face_02/rock_face_02.gltf": "ebeab82d463c89eb5f894b85807da111280a73b552d694257118f3f2d47bf760"
+  },
+  "triangles": {
+    "scanTreeTrunk": 1771,
+    "scanTreeCrown": 3325,
+    "scanTreeTwigs": 941,
+    "scanRock": 2340,
+    "scanFern": 784,
+    "scanLog": 2089,
+    "scanRoots": 2653,
+    "scanCliff": 3294
+  }
+}

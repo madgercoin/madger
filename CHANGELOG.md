@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-10-30 - Exhausted bodyguard releases companion slot
+
+- Gorilla White now finishes his final defensive brace and departure after spending his third save, instead of blocking another earned companion summon for the remainder of his support timer.
+- Added a regression covering the final save, visible brace, single departure event, and subsequent Snow White summon. Local targeted gameplay, companion, audio, character-asset and Overgrown suites: 114 passed.
+- Prepared Android versionCode 29. Build 28 remains the last independently verified installer until a newer APK passes delivery checks.
+
 ## 2026-10-19 - Verified Expedition Android preview
 
 - Completed the signed MADGER Expedition 1.5.0 build 14 APK from app source a69220e80d8132b2e4dbe29d724f80c7dc01289f. Signature, SHA-256, package, version and permission inspection passed.

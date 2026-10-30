@@ -27,6 +27,18 @@ with sync_playwright() as p:
     context=browser.new_context(viewport={'width':390,'height':844},device_scale_factor=1,has_touch=True)
     page=context.new_page()
     page.on('pageerror',lambda e:report['errors'].append(str(e)))
+    # Hidden tabs are still deep-linkable. Verify retired financial routes in the
+    # actual exported application, including adversarial query parameters.
+    for retired_route in ['/buy', '/buy?redirect=https://example.invalid/trade']:
+        page.goto('http://127.0.0.1:8125' + retired_route)
+        expect(page.get_by_role('button', name='Play the 3D Expedition', exact=True)).to_be_visible()
+        assert urlsplit(page.url).path == '/', page.url
+        assert not re.search(r'Ready to swap|Buy \$MADGER|Raydium|Jupiter', page.locator('body').inner_text())
+    passed('Retired purchase deep links redirect home without trading content')
+    page.goto('http://127.0.0.1:8125/verify')
+    expect(page.get_by_text('Official MADGER game', exact=True)).to_be_visible()
+    assert not re.search(r'Official Mint|Copy address|SOLANA', page.locator('body').inner_text())
+    passed('Verification deep link exposes only nonfinancial game safety')
     page.goto('http://127.0.0.1:8125/play')
     expect(page.get_by_role('button',name='Let’s dig')).to_be_enabled()
     page.wait_for_timeout(600)

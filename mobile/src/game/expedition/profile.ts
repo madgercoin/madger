@@ -1,4 +1,4 @@
-import { buildCourse, buildOvergrownCourse, clamp, freshExpedition, freshOvergrownExpedition, OVERGROWN_ROUTES, MAJOR_FORKS, SUB_FORKS, CHAMBERS, type Expedition, type Mode, type Upgrade } from './core';
+import { buildCourse, buildOvergrownCourse, bonusDeckAt, BONUS_LEDGE_HEIGHT, overgrownPathWidth, clamp, freshExpedition, freshOvergrownExpedition, OVERGROWN_ROUTES, MAJOR_FORKS, SUB_FORKS, CHAMBERS, type Expedition, type Mode, type Upgrade } from './core';
 import { sanitizeCompanions, type CompanionId } from './companions';
 export const EXPEDITION_KEY = 'madger-expedition-3d-v1';
 export type ExpeditionResult = {id:string; score:number; coins:number; gems:number; secrets:string[]; distance:number; won:boolean; hits:number; date:string};
@@ -21,7 +21,9 @@ export function sanitizeExpedition(input:unknown):Expedition|null {
   const course=overgrown?buildOvergrownCourse(Number(p.seed)):buildCourse(Number(p.seed)),ids=new Set(course.map(i=>i.id));
   Object.assign(s,{
     tick:int(p.tick,200000),time:finite(p.time,0,2000),distance:finite(p.distance,0,1079.99),
-    countdown:finite(p.countdown,0,2.4),lane:p.lane,x:finite(p.x,-2.19,2.19),vx:finite(p.vx,-20,20),
+    countdown:finite(p.countdown,0,2.4),lane:p.lane,x:finite(p.x,
+      -(2.19+(overgrown?Math.max(0,overgrownPathWidth(p.route!,Number(p.distance))-1)*4.3:0)),
+      2.19+(overgrown?Math.max(0,overgrownPathWidth(p.route!,Number(p.distance))-1)*4.3:0)),vx:finite(p.vx,-20,20),
     y:finite(p.y,0,4),vy:finite(p.vy,-30,10),slide:finite(p.slide,0,1.10),slideAge:finite(p.slideAge,0,3),slideCooldown:finite(p.slideCooldown,0,1.2),jumpBuffer:0,
     speed:finite(p.speed,5,16,9.8),hp:int(p.hp,3),lives:int(p.lives,2),shields:int(p.shields,2),shieldTime:finite(p.shieldTime,0,overgrown?90:22),
     magnet:finite(p.magnet,0,18),burst:finite(p.burst,0,3.6),energy:finite(p.energy,0,100),immune:finite(p.immune,0,3),mud:finite(p.mud,0,2.5),
@@ -64,6 +66,7 @@ export function sanitizeExpedition(input:unknown):Expedition|null {
       s.chamber=chamber.id;s.mode='chamber';
     }
   }
+  s.groundHeight=bonusDeckAt(s,course)&&Math.abs(s.y-BONUS_LEDGE_HEIGHT)<.01&&s.vy<=0?BONUS_LEDGE_HEIGHT:0;
   return s;
 }
 export function normalizeProfile(input:unknown):ExpeditionProfile {

@@ -1,6 +1,7 @@
 name: Mobile CI
 
 on:
+  workflow_dispatch:
   pull_request:
     paths:
       - "mobile/**"
@@ -119,6 +120,12 @@ jobs:
         run: npx playwright install --with-deps chromium
       - name: Render all nine branches and three playable chamber interiors
         run: node scripts/render-overgrown-routes.cjs
+      - name: Inspect native renderer geometry, junctions and cave lighting through real WebGL
+        run: node scripts/expedition-render-check.cjs
+        env:
+          MADGER_NATIVE_GL: '1'
+          MADGER_WORLD_ASSETS: '1'
+          MADGER_RENDER_OUT: expedition-evidence/native-realism
       - name: Play the normal opening, earned-only workshop, first fork and BURROW controls
         run: node scripts/overgrown-browser-smoke.cjs
       - name: Exercise each hidden chamber through real input and checkpoint reloads
@@ -129,6 +136,7 @@ jobs:
         with:
           name: madger-overgrown-scene-qa
           path: |
+            mobile/expedition-evidence/native-realism/
             mobile/expedition-evidence/overgrown-routes/
             mobile/expedition-evidence/overgrown-board/
             mobile/expedition-evidence/secret-chambers/
@@ -184,32 +192,39 @@ jobs:
       - run: npx expo prebuild --platform android --no-install
         env:
           MADGER_ANDROID_PREVIEW: '1'
+          MADGER_BUILD_REVISION: ${{ github.sha }}
       - name: Build a standalone preview using the generated development key
         env:
           NODE_ENV: production
           MADGER_ANDROID_PREVIEW: '1'
+          MADGER_BUILD_REVISION: ${{ github.sha }}
         run: ./android/gradlew -p android assembleRelease -PreactNativeArchitectures=arm64-v8a,x86_64 --max-workers=2 --no-daemon
       - name: Inspect permissions on the actual APK
         run: |
           apk=android/app/build/outputs/apk/release/app-release.apk
           "$ANDROID_HOME/build-tools/36.0.0/aapt" dump permissions "$apk" > android-permissions.txt
           cat android-permissions.txt
-          if rg 'RECORD_AUDIO|READ_EXTERNAL_STORAGE|WRITE_EXTERNAL_STORAGE|SYSTEM_ALERT_WINDOW' android-permissions.txt; then
+          if grep -E 'RECORD_AUDIO|READ_EXTERNAL_STORAGE|WRITE_EXTERNAL_STORAGE|SYSTEM_ALERT_WINDOW' android-permissions.txt; then
             exit 1
           fi
+      - name: Verify package, signing, archive, and source provenance
+        env:
+          MADGER_BUILD_REVISION: ${{ github.sha }}
+        run: python3 scripts/package-android-preview.py
       - uses: actions/upload-artifact@v4
         with:
           name: madger-android-preview
           path: |
             mobile/android/app/build/outputs/apk/release/app-release.apk
             mobile/android-permissions.txt
+            mobile/android-delivery/*
           retention-days: 14
 
   android-runtime:
     name: Android runtime smoke
     needs: android-preview
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 30
     defaults:
       run:
         working-directory: mobile
@@ -241,11 +256,14 @@ jobs:
           arch: x86_64
           profile: pixel_6
           disable-animations: true
+          emulator-options: -no-window -gpu swiftshader -no-snapshot -noaudio -no-boot-anim
           working-directory: mobile
           script: |
             python3 -m venv /tmp/madger-android-qa
-            /tmp/madger-android-qa/bin/pip install 'uiautomator2==3.7.0'
-            /tmp/madger-android-qa/bin/python scripts/android-preview-smoke.py
+            /tmp/madger-android-qa/bin/pip install 'uiautomator2==3.7.0' pillow
+            adb shell wm size 480x960
+            adb shell wm density 160
+            MADGER_ANDROID_APK="$PWD/android/app/build/outputs/apk/release/app-release.apk" MADGER_ANDROID_PACKAGE=com.madgercoin.preview MADGER_ANDROID_EVIDENCE_DIR="$PWD/android-smoke" MADGER_ANDROID_RESET=1 /tmp/madger-android-qa/bin/python scripts/android-preview-suite.py
       - uses: actions/upload-artifact@v4
         if: always()
         with:
