@@ -62,7 +62,7 @@
     "test:daily-dig": "node --test scripts/test-daily-dig.mjs",
     "release:metadata": "node scripts/release-readiness.mjs",
     "release:check": "npm run validate && npx expo install --check && npx expo export --platform web && npm run release:metadata",
-    "test:release-gates": "node --test scripts/test-release-readiness.mjs",
+    "test:release-gates": "node --test scripts/test-release-readiness.mjs scripts/test-store-safe-routes.cjs",
     "release:distribution:android": "npm run release:check && node scripts/release-readiness.mjs --distribution --platform android",
     "release:distribution": "npm run release:check && node scripts/release-readiness.mjs --distribution",
     "test:profile": "node --test scripts/test-game-profile.mjs scripts/test-run-mode.mjs",
