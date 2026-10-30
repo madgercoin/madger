@@ -1,6 +1,6 @@
 # MADGER acquisition snapshot
 
-Generated: 2026-10-30T15:20:42.851Z
+Generated: 2026-10-30T21:03:17.463Z
 Label: `pre-liquidity-pre-proficy-2026-09-09`
 Mint: `BHauMX8akk2umqkQqnJwpYkCRkZmefGnEBFByeFXRKqv`
 Verified pool: `FVRpAmyDsdvKHQT2ds6ytZsJHt7SDDDbScQx3c4fu32h`
