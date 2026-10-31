@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-30T21:03:17.463Z",
+  "generatedAt": "2026-10-31T20:18:25.634Z",
   "snapshotLabel": "pre-liquidity-pre-proficy-2026-09-09",
   "network": "solana",
   "mint": "BHauMX8akk2umqkQqnJwpYkCRkZmefGnEBFByeFXRKqv",
@@ -19,16 +19,16 @@
       "name": "Wrapped SOL",
       "symbol": "SOL"
     },
-    "priceUsd": 0.00111,
-    "priceNative": 0.00001175,
-    "liquidityUsd": 8738.83,
-    "liquidityBase": 3933143,
-    "liquidityQuote": 46.2274,
-    "fdv": 1110922,
-    "marketCap": 249957,
-    "volume24h": 6.61,
-    "buys24h": 5,
-    "sells24h": 0,
+    "priceUsd": 0.001091,
+    "priceNative": 0.00001138,
+    "liquidityUsd": 8719.9,
+    "liquidityBase": 3996051,
+    "liquidityQuote": 45.5014,
+    "fdv": 1091065,
+    "marketCap": 245490,
+    "volume24h": 69.56,
+    "buys24h": 0,
+    "sells24h": 1,
     "pairCreatedAt": 1788193708000,
     "websites": [
       {
@@ -74,8 +74,8 @@
   "holders": {
     "status": "ok",
     "source": "Solana finalized RPC",
-    "uniqueOwnersWithPositiveBalance": 31,
-    "positiveTokenAccounts": 31
+    "uniqueOwnersWithPositiveBalance": 30,
+    "positiveTokenAccounts": 30
   },
   "interpretation": {
     "holderCount": "Unique SPL token-account owners with a positive raw token balance at finalized commitment.",
