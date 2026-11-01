@@ -1,6 +1,6 @@
 # MADGER on-chain verification
 
-Generated: 2026-11-01T13:28:31.397Z
+Generated: 2026-11-01T22:04:01.967Z
 Commitment: finalized
 Mint: `BHauMX8akk2umqkQqnJwpYkCRkZmefGnEBFByeFXRKqv`
 
@@ -16,4 +16,4 @@ Overall status: **PASS**
 
 Inference: Classic SPL Token mint; Token-2022 transfer-fee extensions do not apply.
 
-RPC slots: supply 464108961; account 464108961.
+RPC slots: supply 464253223; account 464253223.
