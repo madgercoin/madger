@@ -47,3 +47,28 @@ modified, that production signing is complete, or that emulator tests replace
 physical-device/audio acceptance. Keep development servers/MCP private and do
 not load untrusted plugins. A future upstream CLI update should replace this
 local compatibility patch only after reviewing its schemas and regressions.
+
+## Follow-up: single-pass URI decoding
+
+[GHSA-qr28-fpjm-wq7f / CVE-2026-118664](https://github.com/advisories/GHSA-qr28-fpjm-wq7f)
+affects `decode-uri-component` through 0.5.0. The earlier backport fixed the
+recursive scanner but retained a quadratic replacement loop for many distinct
+percent-encoded runs. This follow-up backports the exact scanner and single-pass
+replacement from upstream [0.5.1 commit fad01d6](https://github.com/SamVerschueren/decode-uri-component/commit/fad01d65b93bd3f2f0dc32dfd8d57a38b57bc608),
+while retaining the 0.2.2 CommonJS export, type error, and plus-to-space wrapper
+required by the installed `query-string` consumer. Decoded output is not rescanned;
+the fallback now preserves one-level decoding even beside a malformed suffix.
+
+The full reviewed installed source is `scripts/uri-decoder-linear.txt`, SHA-256
+`62fb0bb0341a0a76776143ecbb9861bea1e4eacdcec79f2bd471f93d91d15ce7`.
+Its upstream MIT notice is retained in `scripts/uri-decoder-LICENSE.txt`.
+The installer accepts only the exact original 0.2.2 source, the previously
+reviewed 0.5.0 backport, or this reviewed result; fixture/source/version drift
+fails closed. Regression coverage includes 64,000 distinct runs through actual
+`query-string` in a child process with a 3-second timeout, plus BOM/truncated-byte,
+malformed UTF-8, single-level decoding, idempotence and tamper checks.
+
+The dependency metadata intentionally remains **0.2.2**, so package-version-only
+audit tools can continue flagging it. This is an explicit source backport, not a
+claim that Dependabot/npm audit is clear. No ESM override, SDK upgrade, old-APK
+modification, production release, or physical-device acceptance is implied.
