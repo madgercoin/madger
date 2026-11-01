@@ -20,7 +20,7 @@ jobs:
     timeout-minutes: 3
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Read request
         id: req
@@ -87,7 +87,7 @@ jobs:
 
       - name: Upload transfer artifact
         if: steps.req.outputs.action == 'video'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: ${{ steps.fetch.outputs.artifact_name }}
           path: contest-sync/out/
