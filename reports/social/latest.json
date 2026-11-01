@@ -1,9 +1,9 @@
 {
-  "generatedAt": "2026-10-31T14:39:38.543Z",
-  "previousGeneratedAt": "2026-10-30T15:10:30.153Z",
+  "generatedAt": "2026-11-01T15:22:48.007Z",
+  "previousGeneratedAt": "2026-10-31T14:39:38.543Z",
   "window": {
-    "start": "2026-10-01T14:39:38.543Z",
-    "end": "2026-10-31T14:39:38.543Z"
+    "start": "2026-10-02T15:22:48.007Z",
+    "end": "2026-11-01T15:22:48.007Z"
   },
   "organization": {
     "id": "6a67aceacff325d8d2d231e9",
@@ -34,13 +34,13 @@
       "state": "connected",
       "healthy": true,
       "queuePaused": false,
-      "metricsUpdatedAt": "2026-10-31T04:06:29.690Z",
+      "metricsUpdatedAt": "2026-11-01T03:06:38.788Z",
       "metrics": {
-        "postCount": 18,
+        "postCount": 17,
         "reactions": 0,
         "comments": 2,
         "engagementRate": 0.74,
-        "impressions": 272,
+        "impressions": 271,
         "shares": 0,
         "clicks": 0
       },
@@ -56,17 +56,17 @@
       "state": "connected",
       "healthy": true,
       "queuePaused": false,
-      "metricsUpdatedAt": "2026-10-30T19:01:24.347Z",
+      "metricsUpdatedAt": "2026-10-31T18:15:35.032Z",
       "metrics": {
-        "postCount": 17,
-        "reactions": 31,
-        "comments": 13,
-        "engagementRate": 18.22,
-        "views": 356,
+        "postCount": 16,
+        "reactions": 29,
+        "comments": 12,
+        "engagementRate": 17.36,
+        "views": 344,
         "shares": 1,
         "saves": 0,
         "follows": 0,
-        "reach": 247,
+        "reach": 242,
         "totalTimeWatched": 1081.02,
         "averageTimeWatched": 657.18
       },
@@ -82,17 +82,17 @@
       "state": "connected",
       "healthy": true,
       "queuePaused": false,
-      "metricsUpdatedAt": "2026-10-31T07:13:23.909Z",
+      "metricsUpdatedAt": "2026-11-01T06:14:24.190Z",
       "metrics": {
-        "postCount": 17,
+        "postCount": 16,
         "reactions": 6,
         "comments": 0,
-        "engagementRate": 0.48,
-        "views": 1455,
+        "engagementRate": 0.49,
+        "views": 1436,
         "shares": 1,
-        "reach": 1351,
-        "totalTimeWatched": 95.52,
-        "averageTimeWatched": 3.44
+        "reach": 1336,
+        "totalTimeWatched": 93.65,
+        "averageTimeWatched": 3.27
       },
       "requiresCommunityReview": false
     }
