@@ -263,6 +263,8 @@ class Smoke:
             parsed = re.match(r"\d\d-\d\d\s+[\d:.]+\s+(\d+)\s+\d+\s+I\s+MadgerOfflineGame\s*:\s*(.*)", line)
             if not parsed or parsed[1] not in self.current_pids:
                 continue
+            if re.search(r"^ERROR:|MADGER_RENDER_START_ERROR|MADGER_RENDER_FRAME_ERROR", parsed[2]):
+                raise AssertionError("Offline renderer reported an error: " + parsed[2])
             marker = parsed[2].find("MADGER_OFFLINE_FRAME ")
             if marker < 0:
                 continue
@@ -270,6 +272,7 @@ class Smoke:
                 latest = json.JSONDecoder().raw_decode(parsed[2][marker + len("MADGER_OFFLINE_FRAME "):])[0]
             except ValueError as error:
                 raise AssertionError("Malformed latest frame telemetry") from error
+            # Newest complete proof only; never fall back past a rejected frame.
             break
         if latest is None:
             return None
@@ -320,6 +323,27 @@ class Smoke:
                 return last
             time.sleep(.06)
         raise AssertionError(f"Observed post-draw frame did not show {description}; last state: {last}; observation: {self.last_observation}")
+
+    def wait_startup_frame(self, expected_phase, timeout=45):
+        """Allow bounded renderer initialization, never stale/live-state grace.
+
+        The renderer's own startup guard is 45 s. No gameplay is resumed here;
+        once a proof exists, read_frame applies the same two-second freshness,
+        exact current/rendered identity and future-timestamp checks as always.
+        """
+        deadline = time.monotonic() + timeout
+        self.report.setdefault("startup_frame_waits", []).append({
+            "expected_phase": expected_phase, "timeout_s": timeout,
+            "started_s": round(time.monotonic() - self.started, 3)})
+        record = self.report["startup_frame_waits"][-1]
+        while time.monotonic() < deadline:
+            state = self.hud()
+            if state is not None and self.last_observation["phase"] == expected_phase:
+                record["completed_s"] = round(time.monotonic() - self.started, 3)
+                record["observation"] = self.last_observation
+                return state
+            time.sleep(.06)
+        raise AssertionError(f"Renderer startup produced no valid {expected_phase} frame within {timeout}s")
 
     def capture(self, name, require_running=False):
         if require_running:
@@ -457,10 +481,11 @@ class Smoke:
         self.pids.update(self.current_pids)
         self.calibrate_android_clock()
 
-    def paused_state(self, name):
+    def paused_state(self, name, cold_startup=False):
         self.wait_label("Your run is safe.")
         self.wait_label("Recovery point saved on this device.", timeout=15)
-        before = self.wait_hud(lambda _: True, "paused run")
+        before = (self.wait_startup_frame("paused") if cold_startup else
+                  self.wait_hud(lambda _: self.last_observation["phase"] == "paused", "paused run"))
         time.sleep(.8)
         after = self.hud()
         if before != after:
@@ -579,7 +604,7 @@ class Smoke:
         if not charge:
             raise AssertionError("Burst control and its charge announcement are absent")
         self.report["burst_scope"] = "Control and charge label checked; burst activation is not exercised by this short route."
-        self.mark("Left, right, jump, and burrow respond through the visible HUD", burst_control=charge)
+        self.mark("Left, right, jump, and burrow respond in observed post-draw state", burst_control=charge)
 
         self.tap("Pause expedition")
         paused = self.paused_state("05-manual-pause")
@@ -594,7 +619,7 @@ class Smoke:
 
         self.launch(cold=True)
         # Expedition is the launcher; saved runs must restore without old Home.
-        restored = self.paused_state("07-cold-restored")
+        restored = self.paused_state("07-cold-restored", cold_startup=True)
         if background != restored:
             raise AssertionError(f"Cold checkpoint changed: before={background}, restored={restored}")
         self.mark("Force-stop and cold launch restore the same saved run", restored_state=restored)
@@ -608,7 +633,7 @@ class Smoke:
         self.deep_reference_run()
 
     def deep_reference_run(self):
-        """Reach the user's Deep scene with real controls and displayed HUD.
+        """Reach the user's Deep scene with real controls and observed rendered state.
 
         Finish Rootway normally and replay. No storage, seed, health, route or
         distance injection. Course row distances are public gameplay geometry.
@@ -823,6 +848,34 @@ def self_test_frame_observer():
             assert "UiSelector" not in (smoke.last_observation or {}).get("source", "")
     finally:
         OUT = previous_out
+    smoke = Smoke()
+    sequence = iter((None, "running", "paused"))
+    def startup_observation():
+        phase = next(sequence)
+        smoke.last_observation = {"phase": phase, "hud": snapshot}
+        return None if phase is None else snapshot
+    with patch.object(smoke, "hud", side_effect=startup_observation), patch.object(time, "sleep"):
+        assert smoke.wait_startup_frame("paused") == snapshot
+        assert smoke.last_observation["phase"] == "paused"
+    checks += 1
+    smoke = Smoke()
+    with patch.object(smoke, "hud", side_effect=AssertionError("stale")):
+        try:
+            smoke.wait_startup_frame("paused")
+        except AssertionError as error:
+            assert str(error) == "stale"
+        else:
+            raise AssertionError("Startup wait swallowed freshness failure")
+    checks += 1
+    smoke = Smoke()
+    with patch.object(time, "monotonic", side_effect=(0, 0, 46)):
+        try:
+            smoke.wait_startup_frame("paused")
+        except AssertionError as error:
+            assert "within 45s" in str(error)
+        else:
+            raise AssertionError("Startup wait exceeded its bound")
+    checks += 1
     print(f"{checks} post-draw observer contract tests passed (not native acceptance)")
     return 0
 
