@@ -234,7 +234,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Verify strict live-HUD observation safety before emulator QA
-        run: python3 -m unittest discover -s scripts -p 'test_android_foreground_observation.py' -v
+        run: |
+          python3 -m unittest discover -s scripts -p 'test_android_foreground_observation.py' -v
+          python3 scripts/android-expedition-smoke.py --self-test-frame-observer
       - uses: actions/setup-java@v4
         with:
           distribution: temurin

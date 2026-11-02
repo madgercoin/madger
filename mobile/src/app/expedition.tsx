@@ -5,6 +5,7 @@ import { GLView, type ExpoWebGLRenderingContext } from 'expo-gl';
 import { LinearGradient } from 'expo-linear-gradient';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { expeditionStorage, installNativeGameStorage, nativeGameHost } from '@/game/expedition/native-host';
+import { renderSnapshot, type RenderedSnapshot } from '@/game/expedition/render-observation';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import * as Haptics from 'expo-haptics';
 import { Asset } from 'expo-asset';
@@ -63,6 +64,7 @@ export default function ExpeditionScreen(){
  const visualTime=useRef(0),lastFrame=useRef<number|null>(null),raf=useRef<number|null>(null),lastSnapshot=useRef(0),lastSave=useRef(0),lastFinish=useRef(-10000),finishedBanked=useRef('');
  const needsDraw=useRef(true),lastDrawn=useRef<{id:string;mode:Expedition['mode']|null;calm:boolean}>({id:'',mode:null,calm:false});
  const lastDrawMs=useRef(0),rendererEvidence=useRef('');
+ const renderedSnapshot=useRef<RenderedSnapshot|null>(null),lastObservation=useRef(0),lastObservedAction=useRef('');
  const [ui,setUi]=useState(()=>snapshotRun(runRef.current));
  const [ready3d,setReady3d]=useState(false),[renderError,setRenderError]=useState<string|null>(null),[contextKey,setContextKey]=useState(0),[journal,setJournal]=useState(false),[crew,setCrew]=useState(false),[shop,setShop]=useState(false);
  const [uiHint,setUiHint]=useState('');
@@ -138,7 +140,14 @@ export default function ExpeditionScreen(){
    // layout, or lifecycle changes instead of continually rebuilding the scene.
    const calm=preferences.current.calm,previous=lastDrawn.current;
    if((s.mode!=='paused'&&s.mode!=='upgrade'&&s.mode!=='fork'&&s.mode!=='chamber')||needsDraw.current||previous.id!==s.id||previous.mode!==s.mode||previous.calm!==calm){
-    try{const started=performance.now();sceneRef.current.draw(s,visualTime.current,calm);lastDrawMs.current=performance.now()-started;needsDraw.current=false;lastDrawn.current={id:s.id,mode:s.mode,calm};const proof=sceneRef.current.stats as Record<string,unknown>;const proofKey=s.route+':'+Math.floor(s.distance/50);if(nativeGameHost()&&proof.madgerRig==='authored-3d'&&rendererEvidence.current!==proofKey){rendererEvidence.current=proofKey;console.info('MADGER_OFFLINE_RENDER',JSON.stringify({renderer:window.madgerActiveRenderer,distance:Math.floor(s.distance),route:s.route,...proof}));}}catch(error){console.error('MADGER_RENDER_FRAME_ERROR',error);stopAndSave();setRenderError(error instanceof Error?error.message:'The 3D view was interrupted.');setReady3d(false);return;}
+    try{const started=performance.now();sceneRef.current.draw(s,visualTime.current,calm);renderedSnapshot.current={at:Date.now(),...renderSnapshot(s)};lastDrawMs.current=performance.now()-started;needsDraw.current=false;lastDrawn.current={id:s.id,mode:s.mode,calm};const proof=sceneRef.current.stats as Record<string,unknown>;const proofKey=s.route+':'+Math.floor(s.distance/50);if(nativeGameHost()&&proof.madgerRig==='authored-3d'&&rendererEvidence.current!==proofKey){rendererEvidence.current=proofKey;console.info('MADGER_OFFLINE_RENDER',JSON.stringify({renderer:window.madgerActiveRenderer,distance:Math.floor(s.distance),route:s.route,...proof}));}}catch(error){console.error('MADGER_RENDER_FRAME_ERROR',error);stopAndSave();setRenderError(error instanceof Error?error.message:'The 3D view was interrupted.');setReady3d(false);return;}
+   }
+   // Observe submitted pixels without querying the expensive WebView accessibility
+   // tree. The separate current/rendered snapshots expose stale or mismatched
+   // scenes; live acceptance still requires fresh actual draw and pixel evidence.
+   // Paused geometry is intentionally reused, with a fresh read-only heartbeat.
+   if(nativeGameHost()&&renderedSnapshot.current){const current=renderSnapshot(s),key=current.runId+':'+current.mode+':'+current.lane+':'+current.action;
+    if(timestamp-lastObservation.current>=500||key!==lastObservedAction.current){lastObservation.current=timestamp;lastObservedAction.current=key;console.info('MADGER_OFFLINE_FRAME',JSON.stringify({observedAt:Date.now(),rendered:renderedSnapshot.current,current}));}
    }
   }
   raf.current=requestAnimationFrame(tick);

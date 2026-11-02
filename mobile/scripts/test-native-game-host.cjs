@@ -9,3 +9,13 @@ test('newer hosted save wins over prior native import',()=>{const b=bridge('{"ve
 test('durable writes back up only Expedition',async()=>{const b=bridge(null);await b.api.expeditionStorage.setItem(key,'{"version":1}');await b.api.expeditionStorage.setItem('legacy','kept');assert.deepEqual(JSON.parse(JSON.stringify(b.messages)),[{type:'storage',key,value:'{"version":1}'}]);});
 test('malformed import fails without overwriting existing record',()=>{const b=bridge('{broken');assert.throws(()=>b.api.installNativeGameStorage());assert.equal(b.values.has(key),false);});
 test('native host refuses primitive fallback when authored module fails',async()=>{let fallback=0;const api=load('src/game/expedition/web-renderer.ts',{'./scene':{ExpeditionScene:class {constructor(){fallback++}}},'./native-host':{nativeGameHost:()=>({})}},{window:{},console,document:{createElement:()=>({remove(){}}),head:{appendChild:s=>s.onerror()}}});await assert.rejects(api.createWebExpeditionScene({}),/No simplified scene/);assert.equal(fallback,0);});
+test('render observer only snapshots actual state and never mutates gameplay',()=>{
+ const {renderSnapshot}=load('src/game/expedition/render-observation.ts',{});
+ const state=Object.freeze({id:'actual-run',mode:'running',distance:353.8,lane:1,y:0,slide:.5,route:'deep',score:2825});
+ const before=JSON.stringify(state),a=renderSnapshot(state);
+ assert.deepEqual(JSON.parse(JSON.stringify(a)),{runId:'actual-run',mode:'running',distance_m:353,lane:1,action:'burrowing',route:'deep',score:2825});
+ assert.equal(JSON.stringify(state),before);
+ assert.equal(renderSnapshot({...state,y:.3}).action,'jumping');
+ assert.equal(renderSnapshot({...state,slide:0}).action,'running');
+ assert.equal(renderSnapshot({...state,mode:'paused'}).mode,'paused');
+});

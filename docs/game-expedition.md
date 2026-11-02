@@ -172,3 +172,18 @@ Acceptance requires inspected actual Android screenshots, especially Deep around
 input, offline startup, pause/background and cold recovery. Source tests/export
 or prebuild alone are not visual acceptance. Physical phone performance/audio
 remain separate required checks; no publication is implied by this candidate.
+
+### Read-only native render observation (build 33 candidate)
+
+WebView accessibility queries on the software emulator took 2–6 seconds, longer
+than a real 0.83-second burrow animation. This is not evidence that input failed.
+The native host now logs a bounded read-only observation after successful scene
+submission and on visible foreground heartbeats. It contains only game-local
+run identity, mode, distance, lane, action, route, score and device timestamps.
+It has no mutation commands, injected checkpoints, forced wins, or network path.
+
+Acceptance compares current and rendered snapshots, checks exact app PID/tag and
+clock-calibrated two-second freshness, and separately inspects genuine pixels.
+A paused view may reuse identical already-drawn geometry; live play requires a
+fresh draw. This replaces expensive repeated accessibility traversal, not real
+touch input, actual screenshot/motion proof, or the 400ms protective pause.

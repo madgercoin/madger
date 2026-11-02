@@ -57,7 +57,10 @@ class Smoke:
         self.pids: set[str] = set()
         self.started = time.monotonic()
         self.last_observation = None
-        self.selector_fields = {}
+        self.control_bounds = {}
+        self.control_run_id = None
+        self.current_pids = set()
+        self.clock_calibration = None
         self.report = {"status": "running", "package": PACKAGE, "started_utc": STAMP,
                        "steps": [], "states": {}, "frames": {}, "errors": [], "automation_calls": []}
 
@@ -101,14 +104,14 @@ class Smoke:
         nodes = list(ET.fromstring(xml).iter("node"))
         labels = [node.get(key, "") for node in nodes for key in ("text", "content-desc")]
         self.last_observation = self.observation(nodes, labels)
-        for node in nodes:
-            for xml_key, selector_key in (("text", "text"), ("content-desc", "description")):
-                value = node.get(xml_key, "")
-                for prefix in ("Expedition distance ", "Current expedition score "):
-                    if value.startswith(prefix):
-                        self.selector_fields[prefix] = selector_key
-                if value in ("LEFT", "RIGHT", "JUMP", "BURROW", "Pause expedition"):
-                    self.selector_fields[value] = selector_key
+        controls = {label: self.label_node(nodes, label, clickable=True)
+                    for label in ("LEFT", "RIGHT", "JUMP", "BURROW", "Pause expedition")}
+        if all(controls.values()) and self.last_observation["phase"] == "running":
+            self.control_bounds = {label: value[0] for label, value in controls.items()}
+            self.control_run_id = None
+        else:
+            self.control_bounds = {}
+            self.control_run_id = None
         for bad in ERROR_LABELS:
             if any(bad.lower() in value.lower() for value in labels):
                 raise AssertionError(f"App displayed an error: {bad}")
@@ -186,66 +189,126 @@ class Smoke:
             time.sleep(.12)
         raise AssertionError(f"Visible {'enabled ' if enabled else ''}UI label not found: {label}")
 
-    def live_info(self, label, prefix=False, clickable=False):
-        """Read a unique native accessibility object, never WebView JS/state.
+    def calibrate_android_clock(self):
+        samples = []
+        for _ in range(3):
+            before = time.monotonic()
+            raw = self.adb("shell", "date", "+%s%3N")
+            after = time.monotonic()
+            if not re.fullmatch(r"\d{13}", raw):
+                raise AssertionError(f"Android millisecond clock unavailable: {raw!r}")
+            samples.append({"android_ms": int(raw), "host_mid_s": (before + after) / 2,
+                            "rtt_ms": (after - before) * 1000})
+        best = min(samples, key=lambda sample: sample["rtt_ms"])
+        if best["rtt_ms"] > 400:
+            raise AssertionError(f"Android clock calibration RTT too uncertain: {best}")
+        self.clock_calibration = best
+        self.report.setdefault("android_clock_calibrations", []).append({"selected": best, "samples": samples})
 
-        The full tree establishes whether this build exposes aria labels through
-        text or content-description. Every live read still checks uniqueness,
-        app identity, enabled state and visible bounds from UiSelector.info.
-        """
-        field = self.selector_fields.get(label, "text")
-        selector = self.device(**{field + ("StartsWith" if prefix else ""): label})
-        count = self.timed("live-count:" + label, lambda: selector.count)
-        if count == 0:
+    @staticmethod
+    def validate_frame(proof, android_now_low, android_now_high):
+        """Validate observed post-draw evidence; never repair or synthesize it."""
+        fields = ("runId", "mode", "distance_m", "lane", "action", "route", "score")
+        if not isinstance(proof, dict):
+            raise AssertionError("Frame proof is not an object")
+        observed = proof.get("observedAt")
+        rendered, current = proof.get("rendered"), proof.get("current")
+        if not isinstance(rendered, dict) or not isinstance(current, dict):
+            raise AssertionError("Frame proof lacks current/rendered objects")
+        at = rendered.get("at")
+        for value in (observed, at):
+            if isinstance(value, bool) or not isinstance(value, (int, float)) or not (0 < value < float('inf')):
+                raise AssertionError("Frame timestamp is invalid")
+        if observed > android_now_high or at > observed:
+            raise AssertionError("Frame proof has a future timestamp")
+        # Upper clock bound includes calibration RTT uncertainty; never accept
+        # an observation whose true age could exceed two seconds.
+        if android_now_high - observed > 2000:
+            raise AssertionError("Foreground frame heartbeat is stale (>2 seconds)")
+        if any(key not in rendered or key not in current or rendered[key] != current[key] for key in fields):
+            raise AssertionError("Current state differs from the actually rendered frame")
+        if current["mode"] != "paused" and android_now_high - at > 2000:
+            raise AssertionError("Rendered live frame is stale (>2 seconds)")
+        if not isinstance(current["runId"], str) or not current["runId"]:
+            raise AssertionError("Frame lacks run identity")
+        if current["mode"] not in ("ready", "countdown", "running", "paused", "fork", "chamber", "upgrade", "won", "lost"):
+            raise AssertionError("Unknown frame mode")
+        for key in ("distance_m", "score", "lane"):
+            if type(current[key]) is not int:
+                raise AssertionError(f"Invalid frame integer {key}")
+        if current["distance_m"] < 0 or current["score"] < 0 or current["lane"] not in (-1, 0, 1):
+            raise AssertionError("Frame HUD values outside valid bounds")
+        hud_label = f'Expedition distance {current["distance_m"]} meters; lane {current["lane"]}; {current["action"]}; route {current["route"]}'
+        if not HUD.fullmatch(hud_label):
+            raise AssertionError("Invalid frame action/route")
+        return {key: current[key] for key in ("distance_m", "lane", "action", "route", "score")}
+
+    def read_frame(self):
+        if not self.clock_calibration:
+            raise AssertionError("Android clock was not calibrated")
+        if self.log and self.log.poll() is not None:
+            raise AssertionError("Logcat collector stopped; live frame observation unavailable")
+        path = OUT / "logcat.txt"
+        if not path.exists():
             return None
-        if count != 1:
-            raise AssertionError(f"Ambiguous live accessibility selector {label}: {count}")
-        info = self.timed("live-info:" + label, lambda: selector.info)
-        value = info.get("text") if field == "text" else info.get("contentDescription")
-        if not isinstance(value, str) or not (value.startswith(label) if prefix else value == label):
-            raise AssertionError(f"Live accessibility identity changed: {label}: {info}")
-        bounds = info.get("visibleBounds") or info.get("bounds") or {}
-        if info.get("packageName") != PACKAGE or not info.get("enabled") or not all(k in bounds for k in ("left", "top", "right", "bottom")) or bounds["right"] <= bounds["left"] or bounds["bottom"] <= bounds["top"]:
-            raise AssertionError(f"Live accessibility object is not visible/enabled in this app: {label}: {info}")
-        if clickable and not info.get("clickable"):
-            raise AssertionError(f"Live control is not clickable: {label}")
-        return {"value": value, "bounds": bounds, "info": info}
+        with path.open("rb") as stream:
+            stream.seek(0, 2)
+            size = stream.tell()
+            stream.seek(max(0, size - 262144))
+            raw = stream.read().decode("utf-8", errors="replace")
+        # Ignore the last incomplete write, never interpret partial JSON.
+        lines = raw.splitlines() if raw.endswith("\n") else raw.splitlines()[:-1]
+        latest = None
+        for line in reversed(lines):
+            parsed = re.match(r"\d\d-\d\d\s+[\d:.]+\s+(\d+)\s+\d+\s+I\s+MadgerOfflineGame\s*:\s*(.*)", line)
+            if not parsed or parsed[1] not in self.current_pids:
+                continue
+            marker = parsed[2].find("MADGER_OFFLINE_FRAME ")
+            if marker < 0:
+                continue
+            try:
+                latest = json.JSONDecoder().raw_decode(parsed[2][marker + len("MADGER_OFFLINE_FRAME "):])[0]
+            except ValueError as error:
+                raise AssertionError("Malformed latest frame telemetry") from error
+            break
+        if latest is None:
+            return None
+        calibration = self.clock_calibration
+        now = calibration["android_ms"] + (time.monotonic() - calibration["host_mid_s"]) * 1000
+        uncertainty = calibration["rtt_ms"] / 2
+        state = self.validate_frame(latest, now - uncertainty, now + uncertainty)
+        self.last_observation = {"phase": latest["current"]["mode"], "hud": state,
+            "run_id": latest["current"]["runId"], "elapsed_s": round(time.monotonic() - self.started, 3),
+            "source": "app-PID scoped native post-draw log telemetry (not accessibility HUD)",
+            "proof": latest, "age_upper_ms": round(now + uncertainty - latest["observedAt"], 3)}
+        return state
 
     def tap(self, label, timeout=20):
         if label in ("LEFT", "RIGHT", "JUMP", "BURROW", "Pause expedition"):
-            started = time.monotonic()
-            live = self.live_info(label, clickable=True)
-            if not live:
-                raise AssertionError(f"Live enabled control missing: {label}")
-            b = live["bounds"]
-            if time.monotonic() - started > 2:
-                raise AssertionError(f"Control observation stale before input: {label}")
-            self.timed("click:" + label, lambda: self.device.click((b["left"] + b["right"]) // 2, (b["top"] + b["bottom"]) // 2))
+            self.hud()
+            self.require_running_observation(self.last_observation, "Cached-control input")
+            run_id = self.last_observation["run_id"]
+            if not self.control_bounds or self.control_run_id not in (None, run_id):
+                # Refresh only after a layout/run transition. Geometry comes
+                # from actual visible Android XML, never guessed coordinates.
+                self.tree()
+                self.hud()
+                self.require_running_observation(self.last_observation, "Control layout refresh")
+            if label not in self.control_bounds:
+                raise AssertionError(f"Visible gameplay control missing: {label}")
+            self.control_run_id = self.last_observation["run_id"]
+            x1, y1, x2, y2 = self.control_bounds[label]
+            self.timed("click:" + label, lambda: self.device.click((x1+x2)//2, (y1+y2)//2))
             return
         bounds, _ = self.wait_label(label, timeout, clickable=True)
         x1, y1, x2, y2 = bounds
-        self.timed("click:" + label, lambda: self.device.click((x1 + x2) // 2, (y1 + y2) // 2))
+        self.timed("click:" + label, lambda: self.device.click((x1+x2)//2, (y1+y2)//2))
 
     def hud(self):
-        started = time.monotonic()
-        live = self.live_info("Expedition distance ", prefix=True)
-        score = self.live_info("Current expedition score ", prefix=True)
-        pause = self.live_info("Pause expedition", clickable=True)
-        duration = time.monotonic() - started
-        if duration > 2:
-            raise AssertionError(f"Live HUD observation exceeded 2-second freshness bound: {duration:.3f}s")
-        if not live or not score:
-            self.last_observation = {"phase": "not-running", "hud": None,
-                "elapsed_s": round(time.monotonic() - self.started, 3), "source": "native UiSelector.info"}
-            return None
-        match, points = HUD.fullmatch(live["value"]), SCORE.fullmatch(score["value"])
-        if not match or not points:
-            raise AssertionError("Live HUD/score accessibility format changed")
-        state = {"distance_m": int(match[1]), "lane": int(match[2]), "action": match[3],
-                 "route": match[4], "score": int(points[1])}
-        self.last_observation = {"phase": "running" if pause else "not-running", "hud": state,
-            "elapsed_s": round(time.monotonic() - self.started, 3), "duration_s": round(duration, 3),
-            "source": "native UiSelector.info", "objects": {"hud": live, "score": score, "pause": pause}}
+        state = self.read_frame()
+        if state is None:
+            self.last_observation = {"phase": "unobserved", "hud": None,
+                "source": "no fresh native post-draw telemetry"}
         return state
 
     def wait_hud(self, predicate, description, timeout=8):
@@ -256,7 +319,7 @@ class Smoke:
             if last and predicate(last):
                 return last
             time.sleep(.06)
-        raise AssertionError(f"HUD did not show {description}; last state: {last}; observation: {self.last_observation}")
+        raise AssertionError(f"Observed post-draw frame did not show {description}; last state: {last}; observation: {self.last_observation}")
 
     def capture(self, name, require_running=False):
         if require_running:
@@ -385,10 +448,14 @@ class Smoke:
             raise AssertionError(f"Game field appears blank/flat in {name}: stddev={variation:.2f}, colors={colors}")
 
     def launch(self, cold=False):
+        self.control_bounds = {}
+        self.control_run_id = None
         if cold:
             self.adb("shell", "am", "force-stop", PACKAGE)
         self.adb("shell", "am", "start", "-W", "-n", self.component)
-        self.pids.update(self.adb("shell", "pidof", PACKAGE, check=False).split())
+        self.current_pids = set(self.adb("shell", "pidof", PACKAGE, check=False).split())
+        self.pids.update(self.current_pids)
+        self.calibrate_android_clock()
 
     def paused_state(self, name):
         self.wait_label("Your run is safe.")
@@ -448,7 +515,7 @@ class Smoke:
         self.capture("02-expedition-ready")
         self.tap("Start expedition")
         try:
-            initial = self.wait_hud(lambda state: state["distance_m"] >= 2, "running distance after countdown", timeout=12)
+            initial = self.wait_hud(lambda state: self.last_observation["phase"] == "running" and state["distance_m"] >= 2, "running distance after countdown", timeout=12)
         except Exception as original_error:
             try:
                 self.startup_diagnostic(original_error)
@@ -568,6 +635,8 @@ class Smoke:
             raise AssertionError("Prior Rootway run did not reach a replayable result within 150 seconds")
         self.capture("10-rootway-result")
         self.tap("Run another expedition")
+        self.wait_hud(lambda state: self.last_observation["phase"] == "running" and state["distance_m"] >= 2, "replayed game starts", timeout=12)
+        self.tree()
         self.wait_hud(lambda state: 110 <= state["distance_m"] < 140,
                       "approach to the main junction", timeout=60)
         self.tap("RIGHT")
@@ -594,23 +663,21 @@ class Smoke:
                 break
             for row in rows:
                 if row not in jumped and row - 16 <= state["distance_m"] <= row - 2:
-                    # Resolve the real control before waiting, not inside the
-                    # jump window. Its bounds must remain fresh through input.
-                    control_started = time.monotonic()
-                    control = self.live_info("JUMP", clickable=True)
-                    if not control:
-                        raise AssertionError("Visible Deep jump control unavailable")
                     speed = 9.8 + min(3.5, state["distance_m"] / 300)
-                    delay = max(0, (row - 5 - state["distance_m"]) / speed
-                                - scan_duration / 2 - (time.monotonic() - control_started))
+                    # State was sampled at observedAt, not when the log was
+                    # read. Compensate the heartbeat's measured midpoint age;
+                    # the independent conservative freshness bound stays 2 s.
+                    frame_age_s = max(0, (observation["age_upper_ms"]
+                                         - self.clock_calibration["rtt_ms"] / 2) / 1000)
+                    delay = max(0, (row - 5 - state["distance_m"]) / speed - frame_age_s)
                     time.sleep(delay)
-                    if time.monotonic() - control_started > 2:
-                        raise AssertionError("Deep jump control observation is stale before input")
-                    b = control["bounds"]
-                    self.timed("click:Deep JUMP", lambda: self.device.click((b["left"]+b["right"])//2, (b["top"]+b["bottom"])//2))
+                    # tap revalidates fresh foreground post-draw telemetry and
+                    # uses geometry last observed in the unchanged game layout.
+                    self.tap("JUMP")
                     jumped.add(row)
                     self.mark("Deep hazard-row jump", row_m=row, observed=state,
-                              scheduled_wait_s=round(delay, 3), scan_duration_s=round(scan_duration, 3))
+                              scheduled_wait_s=round(delay, 3), scan_duration_s=round(scan_duration, 3),
+                              frame_age_s=round(frame_age_s, 3))
             time.sleep(.06)
         else:
             raise AssertionError("Deep did not reach the reference distance through real gameplay")
@@ -704,6 +771,62 @@ class Smoke:
         print(json.dumps({"status": self.report["status"], "report": str(OUT / "report.json"), "errors": self.report["errors"]}), flush=True)
 
 
+def self_test_frame_observer():
+    """Offline contract tests; these never substitute for Android/pixel QA."""
+    import copy
+    import tempfile
+    from unittest.mock import patch
+    snapshot = {"runId": "test-run", "mode": "running", "distance_m": 353,
+                "lane": 1, "action": "burrowing", "route": "deep", "score": 2825}
+    proof = {"observedAt": 100000, "rendered": {"at": 99950, **snapshot}, "current": snapshot}
+    Smoke.validate_frame(proof, 100000, 100050)
+    checks = 1
+    def rejects(candidate):
+        nonlocal checks
+        try:
+            Smoke.validate_frame(candidate, 100000, 100050)
+        except AssertionError:
+            checks += 1
+            return
+        raise AssertionError(f"Invalid frame accepted: {candidate}")
+    for kind in ("stale-heartbeat", "stale-render", "future-heartbeat", "future-render", "mismatch", "missing", "nan"):
+        bad = copy.deepcopy(proof)
+        if kind == "stale-heartbeat": bad["observedAt"] = 97000; bad["rendered"]["at"] = 96950
+        if kind == "stale-render": bad["rendered"]["at"] = 97000
+        if kind == "future-heartbeat": bad["observedAt"] = 100100
+        if kind == "future-render": bad["rendered"]["at"] = 100010
+        if kind == "mismatch": bad["current"]["distance_m"] += 1
+        if kind == "missing": del bad["rendered"]["action"]
+        if kind == "nan": bad["observedAt"] = float('nan')
+        rejects(bad)
+    paused = copy.deepcopy(proof)
+    paused["current"]["mode"] = paused["rendered"]["mode"] = "paused"
+    paused["rendered"]["at"] = 1
+    Smoke.validate_frame(paused, 100000, 100050); checks += 1
+    paused["current"]["score"] += 1
+    rejects(paused)
+    # Parse real threadtime-shaped records; only exact current PID/tag counts.
+    global OUT
+    previous_out = OUT
+    try:
+        with tempfile.TemporaryDirectory() as directory:
+            OUT = Path(directory)
+            smoke = Smoke()
+            smoke.current_pids = {"123"}
+            smoke.clock_calibration = {"android_ms": 100000, "host_mid_s": 10, "rtt_ms": 100}
+            for pid, tag, present in (("123", "MadgerOfflineGame", True), ("999", "MadgerOfflineGame", False), ("123", "ReactNativeJS", False)):
+                (OUT / "logcat.txt").write_text(f"11-02 05:00:00.001 {pid} 456 I {tag}: INFO: MADGER_OFFLINE_FRAME " + json.dumps(proof) + "\n")
+                with patch.object(time, "monotonic", return_value=10):
+                    state = smoke.read_frame()
+                assert (state is not None) == present, (pid, tag)
+                checks += 1
+            assert "UiSelector" not in (smoke.last_observation or {}).get("source", "")
+    finally:
+        OUT = previous_out
+    print(f"{checks} post-draw observer contract tests passed (not native acceptance)")
+    return 0
+
+
 def main():
     OUT.mkdir(parents=True, exist_ok=True)
     smoke = Smoke()
@@ -723,4 +846,4 @@ def main():
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    sys.exit(self_test_frame_observer() if "--self-test-frame-observer" in sys.argv else main())
