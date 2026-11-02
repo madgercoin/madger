@@ -57,6 +57,7 @@ class Smoke:
         self.pids: set[str] = set()
         self.started = time.monotonic()
         self.last_observation = None
+        self.selector_fields = {}
         self.report = {"status": "running", "package": PACKAGE, "started_utc": STAMP,
                        "steps": [], "states": {}, "frames": {}, "errors": [], "automation_calls": []}
 
@@ -100,6 +101,14 @@ class Smoke:
         nodes = list(ET.fromstring(xml).iter("node"))
         labels = [node.get(key, "") for node in nodes for key in ("text", "content-desc")]
         self.last_observation = self.observation(nodes, labels)
+        for node in nodes:
+            for xml_key, selector_key in (("text", "text"), ("content-desc", "description")):
+                value = node.get(xml_key, "")
+                for prefix in ("Expedition distance ", "Current expedition score "):
+                    if value.startswith(prefix):
+                        self.selector_fields[prefix] = selector_key
+                if value in ("LEFT", "RIGHT", "JUMP", "BURROW", "Pause expedition"):
+                    self.selector_fields[value] = selector_key
         for bad in ERROR_LABELS:
             if any(bad.lower() in value.lower() for value in labels):
                 raise AssertionError(f"App displayed an error: {bad}")
@@ -177,19 +186,67 @@ class Smoke:
             time.sleep(.12)
         raise AssertionError(f"Visible {'enabled ' if enabled else ''}UI label not found: {label}")
 
+    def live_info(self, label, prefix=False, clickable=False):
+        """Read a unique native accessibility object, never WebView JS/state.
+
+        The full tree establishes whether this build exposes aria labels through
+        text or content-description. Every live read still checks uniqueness,
+        app identity, enabled state and visible bounds from UiSelector.info.
+        """
+        field = self.selector_fields.get(label, "text")
+        selector = self.device(**{field + ("StartsWith" if prefix else ""): label})
+        count = self.timed("live-count:" + label, lambda: selector.count)
+        if count == 0:
+            return None
+        if count != 1:
+            raise AssertionError(f"Ambiguous live accessibility selector {label}: {count}")
+        info = self.timed("live-info:" + label, lambda: selector.info)
+        value = info.get("text") if field == "text" else info.get("contentDescription")
+        if not isinstance(value, str) or not (value.startswith(label) if prefix else value == label):
+            raise AssertionError(f"Live accessibility identity changed: {label}: {info}")
+        bounds = info.get("visibleBounds") or info.get("bounds") or {}
+        if info.get("packageName") != PACKAGE or not info.get("enabled") or not all(k in bounds for k in ("left", "top", "right", "bottom")) or bounds["right"] <= bounds["left"] or bounds["bottom"] <= bounds["top"]:
+            raise AssertionError(f"Live accessibility object is not visible/enabled in this app: {label}: {info}")
+        if clickable and not info.get("clickable"):
+            raise AssertionError(f"Live control is not clickable: {label}")
+        return {"value": value, "bounds": bounds, "info": info}
+
     def tap(self, label, timeout=20):
+        if label in ("LEFT", "RIGHT", "JUMP", "BURROW", "Pause expedition"):
+            started = time.monotonic()
+            live = self.live_info(label, clickable=True)
+            if not live:
+                raise AssertionError(f"Live enabled control missing: {label}")
+            b = live["bounds"]
+            if time.monotonic() - started > 2:
+                raise AssertionError(f"Control observation stale before input: {label}")
+            self.timed("click:" + label, lambda: self.device.click((b["left"] + b["right"]) // 2, (b["top"] + b["bottom"]) // 2))
+            return
         bounds, _ = self.wait_label(label, timeout, clickable=True)
         x1, y1, x2, y2 = bounds
         self.timed("click:" + label, lambda: self.device.click((x1 + x2) // 2, (y1 + y2) // 2))
 
     def hud(self):
-        _, _, labels = self.tree()
-        match = next((HUD.search(value) for value in labels if HUD.search(value)), None)
-        score = next((SCORE.search(value) for value in labels if SCORE.search(value)), None)
-        if not match or not score:
+        started = time.monotonic()
+        live = self.live_info("Expedition distance ", prefix=True)
+        score = self.live_info("Current expedition score ", prefix=True)
+        pause = self.live_info("Pause expedition", clickable=True)
+        duration = time.monotonic() - started
+        if duration > 2:
+            raise AssertionError(f"Live HUD observation exceeded 2-second freshness bound: {duration:.3f}s")
+        if not live or not score:
+            self.last_observation = {"phase": "not-running", "hud": None,
+                "elapsed_s": round(time.monotonic() - self.started, 3), "source": "native UiSelector.info"}
             return None
-        return {"distance_m": int(match[1]), "lane": int(match[2]), "action": match[3],
-                "route": match[4], "score": int(score[1])}
+        match, points = HUD.fullmatch(live["value"]), SCORE.fullmatch(score["value"])
+        if not match or not points:
+            raise AssertionError("Live HUD/score accessibility format changed")
+        state = {"distance_m": int(match[1]), "lane": int(match[2]), "action": match[3],
+                 "route": match[4], "score": int(points[1])}
+        self.last_observation = {"phase": "running" if pause else "not-running", "hud": state,
+            "elapsed_s": round(time.monotonic() - self.started, 3), "duration_s": round(duration, 3),
+            "source": "native UiSelector.info", "objects": {"hud": live, "score": score, "pause": pause}}
+        return state
 
     def wait_hud(self, predicate, description, timeout=8):
         deadline = time.monotonic() + timeout
@@ -228,7 +285,7 @@ class Smoke:
                 key not in hud for key in ("distance_m", "lane", "action", "route", "score")):
             raise AssertionError(f"{context} must show a running phase and complete HUD; observed {observation}")
 
-    def capture_running_window(self, name, frame_names, quiet_waits):
+    def capture_running_window(self, name, frame_names, quiet_waits, targeted=False):
         """Bracket untouched gameplay with explicit phase/HUD observations.
 
         No UI input, hierarchy scans, or PNG decoding occur between endpoints.
@@ -242,9 +299,13 @@ class Smoke:
         window = {"frames": list(frame_names), "quiet_waits_s": list(quiet_waits),
                   "capture_method": "adb exec-out screencap -p", "phase_and_progress_passed": False}
         self.report.setdefault("motion_windows", {})[name] = window
-        xml, _, _ = self.tree()
+        if targeted:
+            self.hud()
+            (OUT / f"{name}-before.json").write_text(json.dumps(self.last_observation, indent=2), encoding="utf-8")
+        else:
+            xml, _, _ = self.tree()
+            (OUT / f"{name}-before.xml").write_text(xml, encoding="utf-8")
         window["before"] = self.last_observation
-        (OUT / f"{name}-before.xml").write_text(xml, encoding="utf-8")
         self.require_running_observation(window["before"], f"Motion window {name} start")
         raw_frames = []
         window["sampling_start_s"] = round(time.monotonic() - self.started, 3)
@@ -254,9 +315,13 @@ class Smoke:
                     time.sleep(delay)
                 raw_frames.append((frame_name, self.capture_adb_png(frame_name)))
             window["sampling_end_s"] = round(time.monotonic() - self.started, 3)
-            xml, _, _ = self.tree()
+            if targeted:
+                self.hud()
+                (OUT / f"{name}-after.json").write_text(json.dumps(self.last_observation, indent=2), encoding="utf-8")
+            else:
+                xml, _, _ = self.tree()
+                (OUT / f"{name}-after.xml").write_text(xml, encoding="utf-8")
             window["after"] = self.last_observation
-            (OUT / f"{name}-after.xml").write_text(xml, encoding="utf-8")
         finally:
             # Preserve raw evidence even if the final observation or capture fails.
             # Encoding/decoding and image analysis stay outside the sampled window.
@@ -425,6 +490,15 @@ class Smoke:
         self.mark("3D game field renders nonblank geometry and animates", initial_state=initial)
 
         self.tap("LEFT")
+        approach = self.wait_hud(lambda state: state["lane"] == -1, "live left approach")
+        if approach["route"] != "main" or approach["distance_m"] >= 140:
+            raise AssertionError(f"Rootway steering was not observed before the junction: {approach}")
+        selected = self.wait_hud(lambda state: state['route'] == 'rootway', 'live Rootway branch', timeout=30)
+        if selected["distance_m"] <= approach["distance_m"]:
+            raise AssertionError("Live route selection did not preserve forward progress")
+        self.mark("Live steering selects Rootway before the junction without a fork menu")
+        # The fork recenters the runner. Exercise both directions on this route.
+        self.tap("LEFT")
         self.wait_hud(lambda state: state["lane"] == -1, "left lane")
         self.tap("RIGHT")
         self.wait_hud(lambda state: state["lane"] == 0, "return to center lane")
@@ -440,14 +514,6 @@ class Smoke:
         self.report["burst_scope"] = "Control and charge label checked; burst activation is not exercised by this short route."
         self.mark("Left, right, jump, and burrow respond through the visible HUD", burst_control=charge)
 
-        # Select through real steering while forward simulation continues.
-        # No modal chooser, saved-state injection, or relaxed lifecycle gate.
-        self.tap("LEFT")
-        approach = self.wait_hud(lambda state: state["lane"] == -1, "live left approach")
-        selected = self.wait_hud(lambda state: state['route'] == 'rootway', 'live Rootway branch', timeout=30)
-        if selected["distance_m"] <= approach["distance_m"]:
-            raise AssertionError("Live route selection did not preserve forward progress")
-        self.mark("Live steering selects Rootway without a blocking fork menu")
         self.tap("Pause expedition")
         paused = self.paused_state("05-manual-pause")
         self.mark("Manual pause freezes distance, score, lane, and action")
@@ -508,7 +574,6 @@ class Smoke:
         selected = self.wait_hud(lambda state: state["route"] == "deep",
                                  "Deep selected with real RIGHT input", timeout=15)
         self.report["states"]["deep-selected"] = selected
-        self.capture("11-deep-entry", require_running=True)
         # Fork recenters. Rightmost lane avoids odd hazard rows; jump even rows.
         if selected["lane"] < 1:
             for _ in range(1 - selected["lane"]):
@@ -518,7 +583,7 @@ class Smoke:
         deadline = time.monotonic() + 90
         while time.monotonic() < deadline:
             scan_started = time.monotonic()
-            _, nodes, _ = self.tree()
+            self.hud()
             scan_duration = time.monotonic() - scan_started
             observation = self.last_observation
             self.require_running_observation(observation, "Deep approach")
@@ -529,23 +594,27 @@ class Smoke:
                 break
             for row in rows:
                 if row not in jumped and row - 16 <= state["distance_m"] <= row - 2:
-                    found = self.label_node(nodes, "JUMP", clickable=True)
-                    if not found:
+                    # Resolve the real control before waiting, not inside the
+                    # jump window. Its bounds must remain fresh through input.
+                    control_started = time.monotonic()
+                    control = self.live_info("JUMP", clickable=True)
+                    if not control:
                         raise AssertionError("Visible Deep jump control unavailable")
-                    (x1, y1, x2, y2), _ = found
-                    # Anticipate instead of hoping a slow accessibility scan lands
-                    # inside a 300 ms window. Use only actual displayed distance.
                     speed = 9.8 + min(3.5, state["distance_m"] / 300)
-                    delay = max(0, (row - 5 - state["distance_m"]) / speed - scan_duration / 2)
+                    delay = max(0, (row - 5 - state["distance_m"]) / speed
+                                - scan_duration / 2 - (time.monotonic() - control_started))
                     time.sleep(delay)
-                    self.timed("click:Deep JUMP", lambda: self.device.click((x1+x2)//2, (y1+y2)//2))
+                    if time.monotonic() - control_started > 2:
+                        raise AssertionError("Deep jump control observation is stale before input")
+                    b = control["bounds"]
+                    self.timed("click:Deep JUMP", lambda: self.device.click((b["left"]+b["right"])//2, (b["top"]+b["bottom"])//2))
                     jumped.add(row)
                     self.mark("Deep hazard-row jump", row_m=row, observed=state,
                               scheduled_wait_s=round(delay, 3), scan_duration_s=round(scan_duration, 3))
             time.sleep(.06)
         else:
             raise AssertionError("Deep did not reach the reference distance through real gameplay")
-        frames = self.capture_running_window("deep-reference", ["12-deep-reference-353m"], [0])
+        frames = self.capture_running_window("deep-reference", ["12-deep-reference-353m"], [0], targeted=True)
         window = self.report["motion_windows"]["deep-reference"]
         for endpoint in ("before", "after"):
             state = window[endpoint]["hud"]

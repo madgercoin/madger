@@ -68,7 +68,9 @@ def enter_classic_games():
         time.sleep(.2)
     else:
         raise AssertionError('Cold launch did not open the Expedition lobby or saved run')
-    wait_for('Play Burrow Run')
+    # The Classic card's play button is below the fold; home_action owns scrolling.
+    wait_for('Keep digging')
+    wait_for('Classic games')
 
 
 def home_action(label, max_swipes=5, forbidden_label=None):
