@@ -53,6 +53,24 @@ def wait_for(label, seconds=30):
     raise AssertionError(f'Enabled action did not appear: {label}')
 
 
+def enter_classic_games():
+    """Navigate explicitly from the current 3D game, preserving both saves."""
+    deadline = time.monotonic() + 60
+    while time.monotonic() < deadline:
+        root = hierarchy()
+        labels = {node.get(key) for node in root.iter('node') for key in ('text', 'content-desc')}
+        if 'Your run is safe.' in labels:
+            tap('Return to the Burrow')
+            break
+        if 'Start expedition' in labels:
+            tap('Classic games')
+            break
+        time.sleep(.2)
+    else:
+        raise AssertionError('Cold launch did not open the Expedition lobby or saved run')
+    wait_for('Play Burrow Run')
+
+
 def home_action(label, max_swipes=5, forbidden_label=None):
     """Find a Home action with bounded swipes inside the app's scroll view."""
     for swipe_count in range(max_swipes + 1):
@@ -256,9 +274,9 @@ adb('install', '-r', APK)
 adb('shell', 'am', 'force-stop', PACKAGE)
 adb('logcat', '-c')
 adb('shell', 'am', 'start', '-W', '-n', PACKAGE + '/.MainActivity')
-wait_for('Play the 3D Expedition')
+enter_classic_games()
 capture('01-home')
-passed('Standalone APK launches and renders the Home entry')
+passed('Standalone APK launches Expedition and explicitly opens Classic games')
 click_node(home_action('Play Burrow Run'))
 wait_for('Let’s dig')
 capture('02-lobby')
@@ -305,7 +323,7 @@ tap('Back to the run')
 time.sleep(3.2)
 live, observation_delay = kill_observed_foreground_run()
 adb('shell', 'am', 'start', '-W', '-n', PACKAGE + '/.MainActivity')
-wait_for('Play the 3D Expedition')
+enter_classic_games()
 click_node(home_action('Continue interrupted run'))
 wait_for('Back to the run')
 recovered_seconds = {int(node.get('text')[:-1]) for node in last_root.iter('node') if re.fullmatch(r'\d+s', node.get('text', ''))}
@@ -328,7 +346,7 @@ for attempt in range(2):
     assert before_score, 'Paused score not found'
     adb('shell', 'am', 'force-stop', PACKAGE)
     adb('shell', 'am', 'start', '-W', '-n', PACKAGE + '/.MainActivity')
-    wait_for('Play the 3D Expedition')
+    enter_classic_games()
     click_node(home_action('Continue interrupted run'))
     wait_for('Back to the run')
     wait_for('MADGER in the center lane')
@@ -356,7 +374,7 @@ capture('07-high-scores')
 passed('The native high-score table displays the banked daily score')
 adb('shell', 'am', 'force-stop', PACKAGE)
 adb('shell', 'am', 'start', '-W', '-n', PACKAGE + '/.MainActivity')
-wait_for('Play the 3D Expedition')
+enter_classic_games()
 home_action('Play Burrow Run', forbidden_label='Continue interrupted run')
 assert not any(node.get('content-desc') == 'Continue interrupted run' for node in last_root.iter('node')), 'Completed run was resurrected'
 tap('Scores')

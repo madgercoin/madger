@@ -136,6 +136,7 @@ export function createExpeditionStore(storage:StorageAdapter) {
       return persist().then(()=>true);
     },
     retry:()=>snapshot.ready?persist():load(),
+    flush:()=>queue,
     dispose:()=>{disposed=true;listeners.clear();},
   };
 }

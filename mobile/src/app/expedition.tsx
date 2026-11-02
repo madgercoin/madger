@@ -4,7 +4,7 @@ import { useFocusEffect, useRouter, type ErrorBoundaryProps } from 'expo-router'
 import { GLView, type ExpoWebGLRenderingContext } from 'expo-gl';
 import { LinearGradient } from 'expo-linear-gradient';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { expeditionStorage, installNativeGameStorage, nativeGameHost } from '@/game/expedition/native-host';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import * as Haptics from 'expo-haptics';
 import { Asset } from 'expo-asset';
@@ -52,8 +52,9 @@ function IconButton({name,label,onPress,selected=false}:{name:Icon;label:string;
 }
 export function ErrorBoundary({retry}:ErrorBoundaryProps){return <View style={styles.errorScreen}><MaterialCommunityIcons name="image-broken-variant" size={48} color={THEME.gold}/><Text style={styles.dialogTitle}>The 3D view did not start.</Text><Text style={styles.body}>Your original game and saved scores have not been changed. Retry the scene, or return to the Burrow.</Text><Button label="Retry 3D view" onPress={retry}/></View>;}
 export default function ExpeditionScreen(){
+ installNativeGameStorage();
  const router=useRouter(),insets=useSafeAreaInsets();
- const [store]=useState(()=>createExpeditionStore(AsyncStorage));
+ const [store]=useState(()=>createExpeditionStore(expeditionStorage));
  const saved=useSyncExternalStore(store.subscribe,store.getSnapshot,store.getSnapshot);
  const runRef=useRef<Expedition>(freshOvergrownExpedition(4242,'lobby'));
  const courseRef=useRef(buildOvergrownCourse(4242)),clockRef=useRef(createClock()),sceneRef=useRef<ExpeditionScene|null>(null),audioRef=useRef<ExpeditionAudio|null>(null);
@@ -61,14 +62,14 @@ export default function ExpeditionScreen(){
  const preferences=useRef({sound:true,calm:false,music:true});
  const visualTime=useRef(0),lastFrame=useRef<number|null>(null),raf=useRef<number|null>(null),lastSnapshot=useRef(0),lastSave=useRef(0),lastFinish=useRef(-10000),finishedBanked=useRef('');
  const needsDraw=useRef(true),lastDrawn=useRef<{id:string;mode:Expedition['mode']|null;calm:boolean}>({id:'',mode:null,calm:false});
- const lastDrawMs=useRef(0);
+ const lastDrawMs=useRef(0),rendererEvidence=useRef('');
  const [ui,setUi]=useState(()=>snapshotRun(runRef.current));
  const [ready3d,setReady3d]=useState(false),[renderError,setRenderError]=useState<string|null>(null),[contextKey,setContextKey]=useState(0),[journal,setJournal]=useState(false),[crew,setCrew]=useState(false),[shop,setShop]=useState(false);
  const [uiHint,setUiHint]=useState('');
  const [banner,setBanner]=useState<{text:string;kind:GameEvent['kind'];at:number}|null>(null);
  const bannerTimer=useRef<ReturnType<typeof setTimeout>|null>(null);
  const publish=useCallback(()=>{if(mounted.current){setUi(snapshotRun(runRef.current));setUiHint(nearbyHint(runRef.current,courseRef.current));}},[]);
- const checkpoint=useCallback(()=>{const s=runRef.current;if(!s.finished&&s.mode!=='ready')void store.checkpoint(s);},[store]);
+ const checkpoint=useCallback(()=>{const s=runRef.current;if(!s.finished&&s.mode!=='ready')return store.checkpoint(s);return Promise.resolve();},[store]);
  const onEvents=useCallback((events:GameEvent[])=>{
   if(!events.length)return;const s=runRef.current;
   sceneRef.current?.events(events,s,preferences.current.calm);audioRef.current?.events(events,environmentZone(s));
@@ -79,7 +80,7 @@ export default function ExpeditionScreen(){
    else if(events.some(e=>['secret','revive','upgrade'].includes(e.kind)))void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success).catch(()=>{});
   }
  },[]);
- const stopAndSave=useCallback(()=>{pause(runRef.current);audioRef.current?.active(false);clockRef.current.accumulator=0;lastFrame.current=null;checkpoint();publish();},[checkpoint,publish]);
+ const stopAndSave=useCallback(()=>{pause(runRef.current);audioRef.current?.active(false);clockRef.current.accumulator=0;lastFrame.current=null;const saved=checkpoint();publish();return saved;},[checkpoint,publish]);
  const command=useCallback((action:Command)=>{
   const s=runRef.current;if(!foreground.current||!focused.current)return;
   const events:GameEvent[]=[];
@@ -137,7 +138,7 @@ export default function ExpeditionScreen(){
    // layout, or lifecycle changes instead of continually rebuilding the scene.
    const calm=preferences.current.calm,previous=lastDrawn.current;
    if((s.mode!=='paused'&&s.mode!=='upgrade'&&s.mode!=='fork'&&s.mode!=='chamber')||needsDraw.current||previous.id!==s.id||previous.mode!==s.mode||previous.calm!==calm){
-    try{const started=performance.now();sceneRef.current.draw(s,visualTime.current,calm);lastDrawMs.current=performance.now()-started;needsDraw.current=false;lastDrawn.current={id:s.id,mode:s.mode,calm};}catch(error){console.error('MADGER_RENDER_FRAME_ERROR',error);stopAndSave();setRenderError(error instanceof Error?error.message:'The 3D view was interrupted.');setReady3d(false);return;}
+    try{const started=performance.now();sceneRef.current.draw(s,visualTime.current,calm);lastDrawMs.current=performance.now()-started;needsDraw.current=false;lastDrawn.current={id:s.id,mode:s.mode,calm};const proof=sceneRef.current.stats as Record<string,unknown>;const proofKey=s.route+':'+Math.floor(s.distance/50);if(nativeGameHost()&&proof.madgerRig==='authored-3d'&&rendererEvidence.current!==proofKey){rendererEvidence.current=proofKey;console.info('MADGER_OFFLINE_RENDER',JSON.stringify({renderer:window.madgerActiveRenderer,distance:Math.floor(s.distance),route:s.route,...proof}));}}catch(error){console.error('MADGER_RENDER_FRAME_ERROR',error);stopAndSave();setRenderError(error instanceof Error?error.message:'The 3D view was interrupted.');setReady3d(false);return;}
    }
   }
   raf.current=requestAnimationFrame(tick);
@@ -146,7 +147,7 @@ export default function ExpeditionScreen(){
  const context=useCallback(async (gl:ExpoWebGLRenderingContext)=>{
   if(!mounted.current)return;try{if(raf.current!==null)cancelAnimationFrame(raf.current);sceneRef.current?.dispose();const scene=Platform.OS==='web'?await createWebExpeditionScene(gl as unknown as GL):new ExpeditionScene(gl as unknown as GL);if(Platform.OS!=='web'){const portrait=await nativeTextureSource(Asset.fromModule(require('../../assets/images/madger-mascot-native.png')));scene.renderer.setMadgerPortrait(portrait);const atlas=await nativeTextureSource(Asset.fromModule(require('../../assets/expedition-world/forest-atlas.png')));const surfaces=await Promise.all([
     require('../../assets/expedition-world/forest_ground_04.jpg'),require('../../assets/expedition-world/bark_brown_02.jpg'),require('../../assets/expedition-world/aerial_grass_rock.jpg'),
-   ].map(module=>nativeTextureSource(Asset.fromModule(module))));scene.renderer.setWorldAssets(require('../../assets/expedition-world/meshes.json'),atlas,surfaces);}if(!mounted.current){scene.dispose();return;}scene.setCourse(courseRef.current);sceneRef.current=scene;scene.draw(runRef.current,visualTime.current,preferences.current.calm);setRenderError(null);setReady3d(true);lastFrame.current=null;raf.current=requestAnimationFrame(frame);}catch(error){console.error('MADGER_RENDER_START_ERROR',error);setRenderError(error instanceof Error?error.message:'3D graphics could not start.');setReady3d(false);}
+   ].map(module=>nativeTextureSource(Asset.fromModule(module))));scene.renderer.setWorldAssets(require('../../assets/expedition-world/meshes.json'),atlas,surfaces);}if(!mounted.current){scene.dispose();return;}scene.setCourse(courseRef.current);sceneRef.current=scene;scene.draw(runRef.current,visualTime.current,preferences.current.calm);if(nativeGameHost()&&(window.madgerActiveRenderer!=='pbr'||(scene.stats as Record<string,unknown>).madgerRig!=='authored-3d'))throw new Error('The authored 3D world is unavailable. No simplified scene will be substituted.');setRenderError(null);setReady3d(true);lastFrame.current=null;raf.current=requestAnimationFrame(frame);}catch(error){console.error('MADGER_RENDER_START_ERROR',error);setRenderError(error instanceof Error?error.message:'3D graphics could not start.');setReady3d(false);}
  },[frame]);
  useEffect(()=>{if(ready3d||renderError)return;const timer=setTimeout(()=>{if(mounted.current&&!sceneRef.current)setRenderError('The 3D graphics context did not become available.');},45000);return()=>clearTimeout(timer);},[ready3d,renderError,contextKey]);
  const start=()=>{
@@ -155,7 +156,15 @@ export default function ExpeditionScreen(){
   runRef.current=freshOvergrownExpedition(seed,id,saved.profile.heroShards,saved.profile.upgrades);courseRef.current=buildOvergrownCourse(seed);sceneRef.current?.setCourse(courseRef.current);clockRef.current=createClock();lastFrame.current=null;lastSave.current=0;finishedBanked.current='';setBanner(null);setJournal(false);setCrew(false);setShop(false);audioRef.current?.reset();begin(runRef.current);audioRef.current?.active(true,environmentZone(runRef.current));publish();checkpoint();
  };
  const continueRun=()=>{if(!ready3d||!saved.ready||saved.error)return;resume(runRef.current);lastFrame.current=null;clockRef.current.accumulator=0;audioRef.current?.active(true,environmentZone(runRef.current));publish();};
- const exit=()=>{stopAndSave();if(router.canGoBack())router.back();else router.replace('/');};
+ const exit=useCallback(async()=>{await stopAndSave();await store.flush();if(store.getSnapshot().error)return;const host=nativeGameHost();if(host)host.postMessage(JSON.stringify({type:'exit'}));else router.replace('/legacy');},[stopAndSave,router,store]);
+ useEffect(()=>{
+  if(!nativeGameHost())return;
+  const lifecycle=(event:Event)=>{const active=(event as CustomEvent<{active:boolean}>).detail.active;foreground.current=active;lastFrame.current=null;needsDraw.current=true;if(!active)stopAndSave();};
+  const back=()=>{if(['running','countdown'].includes(runRef.current.mode)){stopAndSave();return;}if(journal){setJournal(false);return;}if(crew){setCrew(false);return;}if(shop){setShop(false);return;}exit();};
+  window.addEventListener('madger-native-lifecycle',lifecycle);window.addEventListener('madger-native-back',back);
+  if(window.__madgerNativeActive===false){foreground.current=false;stopAndSave();}
+  return()=>{window.removeEventListener('madger-native-lifecycle',lifecycle);window.removeEventListener('madger-native-back',back);};
+ },[stopAndSave,journal,crew,shop,exit]);
  const upgrade=(choice:Upgrade)=>{const events:GameEvent[]=[];chooseUpgrade(runRef.current,choice,events);lastFrame.current=null;audioRef.current?.active(true,environmentZone(runRef.current));onEvents(events);checkpoint();publish();};
  const fork=(choice:Route)=>{const events:GameEvent[]=[];if(chooseFork(runRef.current,choice,events)){lastFrame.current=null;clockRef.current.accumulator=0;audioRef.current?.active(true,environmentZone(runRef.current));onEvents(events);checkpoint();publish();}};
  const claimChamber=(choice:'fragment'|'supplies')=>{const events:GameEvent[]=[];if(resolveChamber(runRef.current,choice,events)){lastFrame.current=null;clockRef.current.accumulator=0;onEvents(events);checkpoint();publish();}};
@@ -173,7 +182,7 @@ export default function ExpeditionScreen(){
   <View style={StyleSheet.absoluteFill} {...pan.panHandlers} accessible={false}/>
   <LinearGradient pointerEvents="none" colors={['#061710E6','#06171000']} style={[styles.topShade,{height:insets.top+210}]}/>
   <View pointerEvents="box-none" style={[styles.hud,{top:Math.max(12,insets.top+6)}]}>
-   <View style={styles.topRow}><View style={{flex:1}}><Text style={styles.brand}>MADGER / EXPEDITION</Text><Text style={styles.zone}>{ui.board==='overgrown'?'THE OVERGROWN BURROW':ZONES[ui.zone].name}</Text></View><IconButton name={active?'pause':phase==='paused'?'play':'home-outline'} label={active?'Pause expedition':phase==='paused'?'Resume expedition':'Return to the Burrow'} onPress={()=>active||phase==='paused'?command('pause'):exit()}/></View>
+   <View style={styles.topRow}><View style={{flex:1}}><Text style={styles.brand}>MADGER / EXPEDITION</Text><Text style={styles.zone}>{ui.board==='overgrown'?'THE OVERGROWN BURROW':ZONES[ui.zone].name}</Text></View><IconButton name={active?'pause':phase==='paused'?'play':'home-outline'} label={active?'Pause expedition':phase==='paused'?'Resume expedition':'Classic games'} onPress={()=>active||phase==='paused'?command('pause'):exit()}/></View>
    {phase!=='ready'?<><View style={styles.scoreRow}><View><Text accessibilityLabel={`Current expedition score ${ui.score}`} style={styles.score}>{ui.score.toLocaleString()}</Text><Text accessibilityLabel={`Expedition distance ${Math.floor(ui.distance)} meters; lane ${ui.lane}; ${ui.y>.1?'jumping':ui.slide>0?'burrowing':'running'}; route ${ui.route}`} style={styles.mini}>{Math.floor(ui.distance)} / {TRACK_LENGTH} m {ui.board==='overgrown'?' · '+(ui.subPath??ui.majorPath??'OVERGROWN'):(ui.route!=='main'?' · SECRET ROUTE':'')}</Text></View><View style={styles.health}><View style={styles.hearts}>{[0,1,2].map(i=><MaterialCommunityIcons key={i} name={i<ui.hp?'heart':'heart-outline'} color={i<ui.hp?THEME.red:'#76958A'} size={23}/>)}</View><Text style={styles.mini}>{ui.lives?`${ui.lives} EXTRA ${ui.lives===1?'LIFE':'LIVES'}`:'NO LIFE RESERVE'}</Text></View></View><View style={styles.progress}><View style={[styles.progressFill,{width:`${Math.min(100,ui.distance/TRACK_LENGTH*100)}%`}]}/></View><View style={styles.powers}>{ui.shields>0?<Text style={styles.power}>SHIELD ×{ui.shields}</Text>:null}{ui.magnet>0?<Text style={styles.power}>MAGNET {Math.ceil(ui.magnet)}s</Text>:null}{ui.keys>0?<Text style={styles.power}>VAULT KEY</Text>:null}{ui.combo>=8?<Text style={styles.power}>×{1+Math.min(4,Math.floor(ui.combo/8))} COMBO</Text>:null}</View><View style={[styles.companionDock,ui.board==='overgrown'&&{display:'none'}]}>{COMPANION_IDS.map(id=>{const c=ui.companions[id],meta=COMPANIONS[id],present=c.timeLeft>0;return <View key={id} accessible accessibilityRole="text" accessibilityLabel={meta.name+', '+meta.role+', '+(present?Math.ceil(c.timeLeft)+' seconds remaining'+(id==='gorilla'?', '+c.charges+' guard saves':''):'find this companion on the course')} style={[styles.companionCard,present&&{borderColor:meta.color}]}><Text numberOfLines={1} style={[styles.companionName,{color:present?meta.color:THEME.muted}]}>{meta.name}</Text><Text style={styles.companionDetail}>{present?(id==='gorilla'?c.charges+' SAVES · ':'')+Math.ceil(c.timeLeft)+'s':meta.role}</Text><View style={styles.companionMeter}><View style={{height:2,width:(Math.min(100,c.timeLeft/meta.duration*100)+'%') as `${number}%`,backgroundColor:meta.color}}/></View></View>;})}</View></>:null}
    {ui.board==='overgrown'&&phase!=='ready'?<><Text style={[styles.mini,{marginTop:6}]}>HERO ENERGY {Math.floor(ui.heroCharge??0)}% · EARN FRAGMENTS TO UNLOCK SUPPORT</Text><View style={styles.companionDock}>{COMPANION_IDS.map(id=>{const c=ui.companions[id],meta=COMPANIONS[id],unlocked=ui.heroUnlocked?.[id]===true,charged=(ui.heroCharge??0)>=100,present=c.timeLeft>0,ready=active&&unlocked&&charged&&!COMPANION_IDS.some(hero=>ui.companions[hero].timeLeft>0),have=(ui.baseShards?.[id]??0)+(ui.heroShards?.[id]??0);return <Pressable key={id} accessibilityRole="button" accessibilityLabel={ready?'Summon '+meta.name:meta.name+' '+(unlocked?'energy '+Math.floor(ui.heroCharge??0)+' percent':'locked '+have+' of '+HERO_SHARD_TARGET+' fragments')} accessibilityState={{disabled:!ready}} disabled={!ready} onPress={()=>summon(id)} style={[styles.companionCard,{minHeight:56,borderColor:ready?meta.color:'#627B7160',backgroundColor:ready?'#16483D':'#08231FE8',opacity:ready||present?1:.78}]}><View style={{flexDirection:'row',alignItems:'center',gap:2}}><RaisedGlyph name={id==='snow'?'paw':id==='gorilla'?'shield-check':'chip'} size={14} color={meta.color}/><Text numberOfLines={1} style={[styles.companionName,{color:meta.color,flexShrink:1}]}>{meta.name}</Text></View><Text numberOfLines={1} style={styles.companionDetail}>{present?Math.ceil(c.timeLeft)+'s ACTIVE':!unlocked?have+'/'+HERO_SHARD_TARGET+' SHARDS':charged?'SUMMON NOW':'ENERGY '+Math.floor(ui.heroCharge??0)+'%'}</Text><View style={styles.companionMeter}><View style={{height:3,width:((present?c.timeLeft/meta.duration*100:unlocked?(ui.heroCharge??0):have/HERO_SHARD_TARGET*100)+'%') as `${number}%`,backgroundColor:meta.color}}/></View></Pressable>;})}</View></>:null}
 

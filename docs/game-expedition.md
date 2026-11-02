@@ -147,3 +147,28 @@ A continuous PBR cavern tunnel mesh (cavern-vault.mjs) closes the previously ope
 Automated source checks now cover approved portrait hash parity, 3D rig articulation and geometric signatures, preserved game state, tail and back marks, cavern bounds, visibility and route differentiation. Existing 15 browser route/chamber visual fixtures, the ordinary-input Rootway playthrough and all three secret-chamber reload/reward tests passed on the Windows PC. These tests establish working browser presentation, not a finished exact sculpt, native Android parity, phone GPU performance, or photorealism.
 
 Do not replace the current public preview or represent this as final until a separate hosted browser link has passed direct normal-control acceptance, a real Deep Burrow playthrough with newly enclosed cave, source asset hashes, and save/reload recovery. A professional GLB sculpt/rig and physical Android evaluation remain future requirements.
+
+### Android authored-world parity correction — build 32 candidate
+
+Build 31's Android scene was not the scanned-material Chrome renderer, and the
+primary Home/Play routes still led to the old arcade game. Nonblank/motion tests
+did not establish visual parity. Android now opens Expedition directly, with
+Classic games explicitly secondary and existing records retained.
+
+The local Expo module packages the same exported web Expedition, Three/PBR,
+authored Madger, terrain and scanned assets into the APK. Android prebuild freshly
+exports and SHA-256 verifies the offline tree. WebView uses APK-only interception
+at https://appassets.androidplatform.net/expedition?nativeHost=1; remote loads,
+external navigation, file/content access and child frames are blocked. The native
+host fails visibly rather than substituting the primitive renderer.
+
+Existing Expedition saves are imported only when the durable hosted copy is
+absent. Hosted saves are mirrored to native storage; exit waits for queued
+purchases, preferences, checkpoints and rewards. Background/back pause and save;
+resume remains explicit. Shared audio is locally bundled and gated by game state.
+
+Acceptance requires inspected actual Android screenshots, especially Deep around
+353 m against the user's reference, plus actual authored-renderer diagnostics,
+input, offline startup, pause/background and cold recovery. Source tests/export
+or prebuild alone are not visual acceptance. Physical phone performance/audio
+remain separate required checks; no publication is implied by this candidate.

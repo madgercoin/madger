@@ -21,7 +21,7 @@
     },
     "android": {
       "package": "com.madgercoin.app",
-      "versionCode": 31,
+      "versionCode": 32,
       "blockedPermissions": [
         "android.permission.READ_EXTERNAL_STORAGE",
         "android.permission.WRITE_EXTERNAL_STORAGE",
@@ -59,7 +59,8 @@
           "recordAudioAndroid": false,
           "enableBackgroundPlayback": false
         }
-      ]
+      ],
+      "./plugins/with-offline-expedition.cjs"
     ],
     "experiments": {
       "typedRoutes": true,

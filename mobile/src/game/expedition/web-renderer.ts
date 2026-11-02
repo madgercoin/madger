@@ -1,5 +1,6 @@
 import { ExpeditionScene } from './scene';
 import type { GL } from './gl';
+import { nativeGameHost } from './native-host';
 
 type SceneFactory = (gl: GL) => Promise<ExpeditionScene>;
 declare global { interface Window { madgerOvergrownScene?: SceneFactory; madgerActiveRenderer?: 'pbr'|'fallback' } }
@@ -25,6 +26,7 @@ export async function createWebExpeditionScene(gl: GL): Promise<ExpeditionScene>
   } catch (error) {
     console.warn('MADGER_WEB_RENDERER_FALLBACK',error);
   }
+  if(nativeGameHost())throw new Error('The authored 3D world did not load. No simplified scene will be substituted.');
   window.madgerActiveRenderer='fallback';
   return new ExpeditionScene(gl);
 }

@@ -31,8 +31,9 @@ with sync_playwright() as p:
     # actual exported application, including adversarial query parameters.
     for retired_route in ['/buy', '/buy?redirect=https://example.invalid/trade']:
         page.goto('http://127.0.0.1:8125' + retired_route)
-        expect(page.get_by_role('button', name='Play the 3D Expedition', exact=True)).to_be_visible()
-        assert urlsplit(page.url).path == '/', page.url
+        expect(page.get_by_role('button', name='Start expedition', exact=True)).to_be_enabled(timeout=60000)
+        page.wait_for_function("window.madgerActiveRenderer === 'pbr' && window.madgerForestDiagnostics?.madgerRig === 'authored-3d'",timeout=60000)
+        assert urlsplit(page.url).path == '/expedition', page.url
         assert not re.search(r'Ready to swap|Buy \$MADGER|Raydium|Jupiter', page.locator('body').inner_text())
     passed('Retired purchase deep links redirect home without trading content')
     page.goto('http://127.0.0.1:8125/verify')
@@ -93,10 +94,11 @@ with sync_playwright() as p:
     page.get_by_role('button',name='Back to the run').click()
     page.clock.run_for(1000)
     page.screenshot(path=str(OUT/'burrow-gameplay-390.png'))
-    page.get_by_role('tab',name='Home',exact=True).click()
+    page.get_by_role('tab',name='Classic games',exact=True).click()
     page.keyboard.press('p')
     page.clock.run_for(1000)
-    page.get_by_role('tab',name='Play',exact=True).click()
+    page.get_by_role('tab',name='Classic games',exact=True).click()
+    page.get_by_role('button',name='Play Burrow Run',exact=True).click()
     expect(page.get_by_role('button',name='Back to the run')).to_be_visible()
     page.get_by_role('button',name='Back to the run').click()
     passed('Leaving the Play tab automatically pauses the run')
@@ -126,7 +128,7 @@ with sync_playwright() as p:
     saved_again=page.evaluate('localStorage.getItem("madger-burrow-run-native-v1")')
     assert json.loads(saved_again)==saved
     passed('Field record survives a reload')
-    page.get_by_role('tab',name='Home',exact=True).click()
+    page.get_by_role('tab',name='Classic games',exact=True).click()
     expect(page.get_by_role('button',name='Play Burrow Run')).to_be_visible()
     page.screenshot(path=str(OUT/'madger-home-390.png'))
     page.get_by_role('button',name='Play Burrow Run').click()
@@ -163,7 +165,8 @@ with sync_playwright() as p:
     expect(page.get_by_role('switch',name='Calm effects',exact=True)).to_have_attribute('aria-checked','true')
     assert page.evaluate('JSON.parse(localStorage.getItem("madger-arcade-profile-v2")).record')==saved
     passed('Scores and sound/haptic/calm preferences survive a full page reload')
-    page.get_by_role('tab',name='Play',exact=True).click()
+    page.get_by_role('tab',name='Classic games',exact=True).click()
+    page.get_by_role('button',name='Play Burrow Run',exact=True).click()
     page.get_by_role('button',name='End run & save score',exact=True).click()
     expect(page.get_by_role('button',name='Dig again')).to_be_enabled()
     recovered=page.evaluate('JSON.parse(localStorage.getItem("madger-arcade-profile-v2"))')
@@ -181,7 +184,8 @@ with sync_playwright() as p:
     page.get_by_role('tab',name='Settings',exact=True).click()
     expect(page.get_by_role('button',name='Reset game progress',exact=True)).to_be_disabled()
     passed('Progress cannot be reset underneath an active paused run')
-    page.get_by_role('tab',name='Play',exact=True).click()
+    page.get_by_role('tab',name='Classic games',exact=True).click()
+    page.get_by_role('button',name='Play Burrow Run',exact=True).click()
     page.get_by_role('button',name='End run & save score',exact=True).click()
     expect(page.get_by_text('Score saved on this device ✓',exact=True)).to_be_visible()
     daily_profile=page.evaluate('JSON.parse(localStorage.getItem("madger-arcade-profile-v2"))')
@@ -195,7 +199,7 @@ with sync_playwright() as p:
     expect(page.get_by_role('heading',name='Your scores',exact=True)).to_be_visible()
     assert page.evaluate('JSON.parse(localStorage.getItem("madger-arcade-profile-v2"))')==daily_profile
     passed('Both score categories and run history survive cold navigation reload')
-    page.get_by_role('tab',name='Home',exact=True).click()
+    page.get_by_role('tab',name='Classic games',exact=True).click()
     page.get_by_role('button',name='Play Burrow Run',exact=True).click()
     expect(page.get_by_role('button',name='Let’s dig')).to_be_enabled()
     for width in [320,768]:

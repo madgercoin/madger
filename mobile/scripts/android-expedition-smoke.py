@@ -38,7 +38,7 @@ PACKAGE = os.environ.get("MADGER_ANDROID_PACKAGE", "com.madgercoin.expedition.pr
 APK = Path(os.environ.get("MADGER_ANDROID_APK", str(ROOT / "madger-expedition-preview.apk")))
 STAMP = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
 OUT = Path(os.environ.get("MADGER_ANDROID_EVIDENCE_DIR", str(ROOT / "expedition-evidence" / "android-smoke" / STAMP)))
-ENTRY = "Play the 3D Expedition"
+ENTRY = "Start expedition"
 HUD = re.compile(r"Expedition distance (\d+) meters; lane (-?\d); (jumping|burrowing|running); route (main|hollow|grotto|rootway|ridge|deep|mosswalk|root-arch|log-crossing|causeway|watchtower|gearworks|mudslide|crystal-vein|ancient-vault)$")
 SCORE = re.compile(r"Current expedition score (\d+)")
 ERROR_LABELS = (
@@ -373,11 +373,13 @@ class Smoke:
         self.log_file = (OUT / "logcat.txt").open("w", encoding="utf-8")
         self.log = subprocess.Popen([os.environ.get("ADB", "adb"), "-s", self.serial, "logcat", "-v", "threadtime", "-T", "1"], stdout=self.log_file, stderr=subprocess.STDOUT)
         self.launch(cold=True)
-        self.wait_label(ENTRY, timeout=45)
+        self.wait_label(ENTRY, timeout=60)
         self.capture("01-home")
-        self.mark("Home launches and exposes the Expedition entry")
-        self.tap(ENTRY)
-        self.wait_label("Start expedition", timeout=35)
+        _, _, launch_labels = self.tree()
+        if "Play Burrow Run" in launch_labels or "Keep digging." in launch_labels:
+            raise AssertionError("Cold launch exposed the archived Home instead of the 3D Expedition")
+        self.wait_label("Classic games", clickable=True)
+        self.mark("Cold launch opens the 3D Expedition lobby directly")
         self.capture("02-expedition-ready")
         self.tap("Start expedition")
         try:
@@ -458,16 +460,7 @@ class Smoke:
         self.mark("Backgrounding saves and returns to a paused run")
 
         self.launch(cold=True)
-        # Android may recreate Home or retain the route. Both must recover safely.
-        deadline = time.monotonic() + 35
-        while time.monotonic() < deadline:
-            _, nodes, labels = self.tree()
-            if "Your run is safe." in labels:
-                break
-            if self.label_node(nodes, ENTRY):
-                self.tap(ENTRY)
-                break
-            time.sleep(.15)
+        # Expedition is the launcher; saved runs must restore without old Home.
         restored = self.paused_state("07-cold-restored")
         if background != restored:
             raise AssertionError(f"Cold checkpoint changed: before={background}, restored={restored}")
@@ -478,7 +471,90 @@ class Smoke:
         self.rendered("08-restored-running", image)
         self.tap("Pause expedition")
         self.paused_state("09-final-paused")
-        self.mark("Restored run resumes with a nonblank 3D view; left safely paused")
+        self.mark("Restored run resumes with a nonblank 3D view")
+        self.deep_reference_run()
+
+    def deep_reference_run(self):
+        """Reach the user's Deep scene with real controls and displayed HUD.
+
+        Finish Rootway normally and replay. No storage, seed, health, route or
+        distance injection. Course row distances are public gameplay geometry.
+        """
+        self.tap("Resume expedition")
+        finish_deadline = time.monotonic() + 150
+        while time.monotonic() < finish_deadline:
+            _, nodes, labels = self.tree()
+            if self.label_node(nodes, "Run another expedition", clickable=True):
+                break
+            choices = ["Take survival supplies",
+                       "Reinforced shield. Two blocked hits and longer protection. Gaps still require a jump."]
+            choices += [label for label in labels if label.startswith("Choose ") and " risk, " in label]
+            for label in choices:
+                if self.label_node(nodes, label, clickable=True):
+                    self.tap(label)
+                    self.mark("Finish prior run through visible choice", choice=label)
+                    break
+            # Never silently resume an unexpected lifecycle pause.
+            if "Your run is safe." in labels:
+                raise AssertionError("Prior run unexpectedly paused while waiting for its normal result")
+            time.sleep(.12)
+        else:
+            raise AssertionError("Prior Rootway run did not reach a replayable result within 150 seconds")
+        self.capture("10-rootway-result")
+        self.tap("Run another expedition")
+        self.wait_hud(lambda state: 110 <= state["distance_m"] < 140,
+                      "approach to the main junction", timeout=60)
+        self.tap("RIGHT")
+        selected = self.wait_hud(lambda state: state["route"] == "deep",
+                                 "Deep selected with real RIGHT input", timeout=15)
+        self.report["states"]["deep-selected"] = selected
+        self.capture("11-deep-entry", require_running=True)
+        # Fork recenters. Rightmost lane avoids odd hazard rows; jump even rows.
+        if selected["lane"] < 1:
+            for _ in range(1 - selected["lane"]):
+                self.tap("RIGHT")
+        rows = [round(155 + 270 * (i + .55) / 10.2) for i in range(0, 8, 2)]
+        jumped = set()
+        deadline = time.monotonic() + 90
+        while time.monotonic() < deadline:
+            scan_started = time.monotonic()
+            _, nodes, _ = self.tree()
+            scan_duration = time.monotonic() - scan_started
+            observation = self.last_observation
+            self.require_running_observation(observation, "Deep approach")
+            state = observation["hud"]
+            if state["route"] != "deep":
+                raise AssertionError(f"Left Deep before reference capture: {state}")
+            if state["distance_m"] >= 353:
+                break
+            for row in rows:
+                if row not in jumped and row - 16 <= state["distance_m"] <= row - 2:
+                    found = self.label_node(nodes, "JUMP", clickable=True)
+                    if not found:
+                        raise AssertionError("Visible Deep jump control unavailable")
+                    (x1, y1, x2, y2), _ = found
+                    # Anticipate instead of hoping a slow accessibility scan lands
+                    # inside a 300 ms window. Use only actual displayed distance.
+                    speed = 9.8 + min(3.5, state["distance_m"] / 300)
+                    delay = max(0, (row - 5 - state["distance_m"]) / speed - scan_duration / 2)
+                    time.sleep(delay)
+                    self.timed("click:Deep JUMP", lambda: self.device.click((x1+x2)//2, (y1+y2)//2))
+                    jumped.add(row)
+                    self.mark("Deep hazard-row jump", row_m=row, observed=state,
+                              scheduled_wait_s=round(delay, 3), scan_duration_s=round(scan_duration, 3))
+            time.sleep(.06)
+        else:
+            raise AssertionError("Deep did not reach the reference distance through real gameplay")
+        frames = self.capture_running_window("deep-reference", ["12-deep-reference-353m"], [0])
+        window = self.report["motion_windows"]["deep-reference"]
+        for endpoint in ("before", "after"):
+            state = window[endpoint]["hud"]
+            if state["route"] != "deep" or not 353 <= state["distance_m"] <= 380:
+                raise AssertionError(f"Deep screenshot not near the user's 353 m scene: {state}")
+        self.rendered("12-deep-reference-353m", frames[0])
+        self.tap("Pause expedition")
+        self.paused_state("13-deep-reference-paused")
+        self.mark("Real-input Deep run captured near the user's 353 m reference; left safely paused")
 
     def finish(self):
         if self.log:
@@ -505,6 +581,28 @@ class Smoke:
                     except ValueError:
                         pass  # The complete unmodified line remains in logcat.txt.
             self.report["render_metrics"] = metrics
+            # Nonblank animation is insufficient: prove actual authored PBR draws
+            # from the app-scoped offline Android host, not another log source.
+            authored = []
+            for line in lines:
+                parsed = re.match(r"\d\d-\d\d\s+[\d:.]+\s+(\d+)\s+\d+\s+I\s+MadgerOfflineGame\s*:\s*(.*)", line)
+                if not parsed or parsed[1] not in self.pids:
+                    continue
+                marker = parsed[2].find("MADGER_OFFLINE_RENDER ")
+                if marker < 0:
+                    continue
+                try:
+                    proof = json.JSONDecoder().raw_decode(parsed[2][marker + len("MADGER_OFFLINE_RENDER "):])[0]
+                except ValueError:
+                    continue
+                if isinstance(proof, dict) and proof.get("renderer") == "pbr" and proof.get("madgerRig") == "authored-3d":
+                    authored.append(proof)
+            self.report["authored_pbr_render_metrics"] = authored
+            if not authored:
+                self.report["errors"].append("Missing app-scoped MadgerOfflineGame authored-3d PBR render proof")
+            if not any(proof.get("route") == "deep" and isinstance(proof.get("distance"), (int, float))
+                       and 350 <= proof["distance"] <= 380 for proof in authored):
+                self.report["errors"].append("Missing authored PBR Deep render proof near the reference scene")
             if not lines:
                 self.report["errors"].append("Logcat capture is empty; native/JavaScript crash checks lack evidence")
             for line in lines:
@@ -521,7 +619,7 @@ class Smoke:
                 if not parsed or parsed[1] not in self.pids:
                     continue
                 level, tag, message = parsed[2], parsed[3].strip(), parsed[4]
-                if (tag == "ReactNativeJS" and level in ("E", "F")) or re.search(r"FATAL EXCEPTION|Fatal signal|JavascriptException|Unhandled JS Exception", message, re.I):
+                if (tag == "ReactNativeJS" and level in ("E", "F")) or (tag == "MadgerOfflineGame" and re.match(r"ERROR:|.*MADGER_RENDER_FRAME_ERROR", message)) or re.search(r"FATAL EXCEPTION|Fatal signal|JavascriptException|Unhandled JS Exception", message, re.I):
                     crashes.append(line)
             self.report["application_pids"] = sorted(self.pids)
             self.report["performance_lines"] = [line for line in lines if re.search(r"EGL_emulation.*app_time_stats|Choreographer.*Skipped|EXGL.*EGL error|EGL_BAD_MATCH|MADGER_EXPEDITION_FRAME_STALL", line)][-160:]
