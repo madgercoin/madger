@@ -609,6 +609,10 @@ class Smoke:
         self.tap("Pause expedition")
         paused = self.paused_state("05-manual-pause")
         self.mark("Manual pause freezes distance, score, lane, and action")
+        # Collect the requested real-input Deep scene before process recreation.
+        # This changes evidence order only: background/cold recovery below remain
+        # mandatory, now comparing the same paused Deep checkpoint end-to-end.
+        paused = self.deep_reference_run()
         self.tap("Resume expedition")
         self.wait_hud(lambda state: state["distance_m"] > paused["distance_m"], "progress after resume")
         self.device.press("home")
@@ -630,7 +634,6 @@ class Smoke:
         self.tap("Pause expedition")
         self.paused_state("09-final-paused")
         self.mark("Restored run resumes with a nonblank 3D view")
-        self.deep_reference_run()
 
     def deep_reference_run(self):
         """Reach the user's Deep scene with real controls and observed rendered state.
@@ -714,8 +717,9 @@ class Smoke:
                 raise AssertionError(f"Deep screenshot not near the user's 353 m scene: {state}")
         self.rendered("12-deep-reference-353m", frames[0])
         self.tap("Pause expedition")
-        self.paused_state("13-deep-reference-paused")
+        paused = self.paused_state("13-deep-reference-paused")
         self.mark("Real-input Deep run captured near the user's 353 m reference; left safely paused")
+        return paused
 
     def finish(self):
         if self.log:
