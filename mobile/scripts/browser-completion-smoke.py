@@ -91,8 +91,10 @@ with sync_playwright() as p:
     page.get_by_role('button',name='See run history',exact=True).click()
     expect(page.get_by_role('heading',name='Your scores',exact=True)).to_be_visible()
     expect(page.get_by_text('2,100',exact=True).first).to_be_visible()
-    page.get_by_role('tab',name='Classic games',exact=True).click()
-    page.get_by_role('button',name='Play Burrow Run',exact=True).click()
+    # Return to the existing Daily debrief; selecting Classic explicitly
+    # starts a different mode and must not be mistaken for tab restoration.
+    page.go_back()
+    expect(page.get_by_text('MADGER / DAILY RUN 2026-10-10',exact=True)).to_be_visible()
     page.get_by_role('button',name='Dig again',exact=True).click()
     page.clock.run_for(100)
     assert data(page)['checkpoint']['day']=='2026-10-11'

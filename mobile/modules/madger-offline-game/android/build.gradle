@@ -12,4 +12,8 @@ android {
     consumerProguardFiles 'consumer-rules.pro'
   }
 }
-dependencies { implementation 'androidx.webkit:webkit:1.14.0' }
+dependencies {
+  implementation 'androidx.webkit:webkit:1.14.0'
+  // The host observes React lifecycle; Expo core does not export React's API.
+  implementation 'com.facebook.react:react-android'
+}
