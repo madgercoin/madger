@@ -18,6 +18,7 @@ import android.webkit.WebViewClient
 import android.widget.LinearLayout
 import androidx.webkit.WebViewAssetLoader
 import com.facebook.react.bridge.LifecycleEventListener
+import com.facebook.react.bridge.ReactContext
 import expo.modules.kotlin.AppContext
 import expo.modules.kotlin.viewevent.EventDispatcher
 import expo.modules.kotlin.views.ExpoView
@@ -102,7 +103,7 @@ class MadgerOfflineGameView(context: Context, appContext: AppContext) : ExpoView
         return true
       }
     }
-    appContext.reactContext?.addLifecycleEventListener(this)
+    (appContext.reactContext as? ReactContext)?.addLifecycleEventListener(this)
   }
 
   private fun local(uri: Uri) = uri.scheme == "https" && uri.host == "appassets.androidplatform.net" && (uri.port == -1 || uri.port == 443)
@@ -190,7 +191,7 @@ class MadgerOfflineGameView(context: Context, appContext: AppContext) : ExpoView
   fun dispose() {
     if (disposed) return
     disposed = true
-    appContext.reactContext?.removeLifecycleEventListener(this)
+    (appContext.reactContext as? ReactContext)?.removeLifecycleEventListener(this)
     web.stopLoading()
     web.removeJavascriptInterface("MadgerNative")
     removeView(web)

@@ -198,7 +198,10 @@ jobs:
           NODE_ENV: production
           MADGER_ANDROID_PREVIEW: '1'
           MADGER_BUILD_REVISION: ${{ github.sha }}
-        run: ./android/gradlew -p android assembleRelease -PreactNativeArchitectures=arm64-v8a,x86_64 --max-workers=2 --no-daemon
+        run: |
+          # Fail quickly on the local host API before compiling both C++ ABIs.
+          ./android/gradlew -p android :madger-offline-game:compileReleaseKotlin --max-workers=2 --no-daemon
+          ./android/gradlew -p android assembleRelease -PreactNativeArchitectures=arm64-v8a,x86_64 --max-workers=2 --no-daemon
       - name: Inspect permissions on the actual APK
         run: |
           apk=android/app/build/outputs/apk/release/app-release.apk
