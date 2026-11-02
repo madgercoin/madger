@@ -257,7 +257,10 @@ jobs:
         uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: 35
-          emulator-build: 16428233
+          # 37.2.13 fixes GLES host resources retained after guest process exit.
+          # Relevant to repeated lifecycle QA; prior offline failures are not proven OOM.
+          # https://developer.android.com/studio/releases/emulator
+          emulator-build: 16740729
           arch: x86_64
           profile: pixel_6
           disable-animations: true
@@ -269,6 +272,34 @@ jobs:
             adb shell wm size 480x960
             adb shell wm density 160
             MADGER_ANDROID_APK="$PWD/android/app/build/outputs/apk/release/app-release.apk" MADGER_ANDROID_PACKAGE=com.madgercoin.preview MADGER_ANDROID_EVIDENCE_DIR="$PWD/android-smoke" MADGER_ANDROID_RESET=1 /tmp/madger-android-qa/bin/python scripts/android-preview-suite.py
+      - name: Preserve host emulator diagnostics without process secrets
+        if: always()
+        continue-on-error: true
+        shell: bash
+        working-directory: ${{ github.workspace }}
+        run: |
+          out="mobile/android-smoke/host-diagnostics"
+          mkdir -p "$out"
+          date -u +%FT%TZ > "$out/collected-at.txt"
+          free -m > "$out/memory-summary.txt" || true
+          cat /proc/meminfo > "$out/meminfo.txt" || true
+          # Process names and memory only: never arguments or environment values.
+          ps -eo pid,comm,rss,vsz --sort=-rss > "$out/process-memory.txt" || true
+          for metric in memory.events memory.events.local memory.current memory.max memory.peak; do
+            if [ -r "/sys/fs/cgroup/$metric" ]; then
+              cat "/sys/fs/cgroup/$metric" > "$out/cgroup-$metric.txt"
+            fi
+          done
+          (sudo -n dmesg --ctime 2>/dev/null || true) | grep -Ei 'out of memory|oom-kill|killed process|segfault|qemu|emulator' > "$out/kernel-emulator-events.txt" || true
+          # Crashpad dumps may contain process memory. Preserve existence, sizes,
+          # timestamps and hashes, not raw dumps/attachments that could hold secrets.
+          for database in /tmp/android-runner/emu-crash-* /tmp/emu-crash-*; do
+            [ -e "$database" ] || continue
+            find "$database" -maxdepth 3 -type f -printf '%p %s bytes %TY-%Tm-%TdT%TH:%TM:%TS\n' >> "$out/crash-database-inventory.txt" 2>/dev/null || true
+            find "$database" -maxdepth 3 -type f -exec sha256sum {} \; >> "$out/crash-database-sha256.txt" 2>/dev/null || true
+          done
+          printf '%s\n' 'No raw crash dumps, process arguments, or environment values collected. Missing kernel events do not exclude host OOM.' > "$out/interpretation.txt"
+
       - uses: actions/upload-artifact@v4
         if: always()
         with:
