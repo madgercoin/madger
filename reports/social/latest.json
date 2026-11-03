@@ -1,9 +1,9 @@
 {
-  "generatedAt": "2026-11-02T18:40:12.771Z",
-  "previousGeneratedAt": "2026-11-01T15:22:48.007Z",
+  "generatedAt": "2026-11-03T16:25:06.067Z",
+  "previousGeneratedAt": "2026-11-02T18:40:12.771Z",
   "window": {
-    "start": "2026-10-03T18:40:12.771Z",
-    "end": "2026-11-02T18:40:12.771Z"
+    "start": "2026-10-04T16:25:06.067Z",
+    "end": "2026-11-03T16:25:06.067Z"
   },
   "organization": {
     "id": "6a67aceacff325d8d2d231e9",
@@ -34,13 +34,13 @@
       "state": "connected",
       "healthy": true,
       "queuePaused": false,
-      "metricsUpdatedAt": "2026-11-02T02:06:47.250Z",
+      "metricsUpdatedAt": "2026-11-03T01:06:59.541Z",
       "metrics": {
-        "postCount": 18,
+        "postCount": 14,
         "reactions": 0,
         "comments": 2,
-        "engagementRate": 0.74,
-        "impressions": 271,
+        "engagementRate": 0.75,
+        "impressions": 266,
         "shares": 0,
         "clicks": 0
       },
@@ -56,19 +56,19 @@
       "state": "connected",
       "healthy": true,
       "queuePaused": false,
-      "metricsUpdatedAt": "2026-11-02T18:15:54.849Z",
+      "metricsUpdatedAt": "2026-11-03T15:11:55.396Z",
       "metrics": {
-        "postCount": 17,
-        "reactions": 30,
-        "comments": 12,
-        "engagementRate": 17.62,
-        "views": 350,
+        "postCount": 14,
+        "reactions": 26,
+        "comments": 10,
+        "engagementRate": 15.88,
+        "views": 328,
         "shares": 1,
         "saves": 0,
         "follows": 0,
-        "reach": 244,
-        "totalTimeWatched": 1081.02,
-        "averageTimeWatched": 657.18
+        "reach": 233,
+        "totalTimeWatched": 1081.19,
+        "averageTimeWatched": 657.15
       },
       "requiresCommunityReview": true
     },
@@ -82,17 +82,17 @@
       "state": "connected",
       "healthy": true,
       "queuePaused": false,
-      "metricsUpdatedAt": "2026-11-02T11:52:09.998Z",
+      "metricsUpdatedAt": "2026-11-03T04:16:26.865Z",
       "metrics": {
-        "postCount": 17,
-        "reactions": 6,
+        "postCount": 14,
+        "reactions": 5,
         "comments": 0,
-        "engagementRate": 0.45,
-        "views": 1563,
+        "engagementRate": 0.47,
+        "views": 1270,
         "shares": 1,
-        "reach": 1336,
-        "totalTimeWatched": 95.48,
-        "averageTimeWatched": 3.13
+        "reach": 1040,
+        "totalTimeWatched": 32.43,
+        "averageTimeWatched": 1.72
       },
       "requiresCommunityReview": false
     }
