@@ -109,11 +109,27 @@ const server=http.createServer((req,res)=>{
   const lod=await page.evaluate(({run,course})=>{
     const scene=window.fixtureScene,renderer=scene.renderer;
     scene.setCourse(course);
-    renderer.quality=1;scene.draw(run,20,false);const full=renderer.stats.triangles;
-    renderer.quality=.52;scene.draw(run,20.016,false);const reduced=renderer.stats.triangles;
-    renderer.quality=1;
-    return {full,reduced};
+    const original={budget:renderer.budget,quality:renderer.quality,sceneryQuality:renderer.sceneryQuality};
+    renderer.budget={scenery:2,scale:1,fastFrames:0};
+    renderer.quality=1;renderer.sceneryQuality=1;
+    scene.draw(run,20,false);const full=renderer.stats.triangles;
+    // Pixel scale and scenery density are intentionally independent. Feed
+    // controlled slow-frame samples through the real renderer adaptation path,
+    // rather than assigning the obsolete resolution-only quality shortcut.
+    // Freeze the visual clock and course position to isolate geometry budget.
+    const adapting={...run,mode:'running'};
+    for(let i=0;i<2;i++){
+      renderer.renderedFrames=Math.max(4,renderer.renderedFrames);
+      renderer.frameSamples=[70,70,70];renderer.previousFrame=performance.now();
+      scene.draw(adapting,20,false);
+    }
+    const reduced=renderer.stats.triangles;
+    const sceneryBudget=renderer.budget.scenery,resolutionScale=renderer.quality;
+    Object.assign(renderer,original);renderer.frameSamples=[];
+    return {full,reduced,sceneryBudget,resolutionScale};
   },{run:fixtures[0],course:G.buildOvergrownCourse(fixtures[0].seed)});
+  assert.equal(lod.sceneryBudget,0,'Sustained slow frames must reduce distant scenery first');
+  assert.equal(lod.resolutionScale,1,'Initial scenery fallback must preserve pixel clarity');
   assert(lod.full>0&&lod.reduced<lod.full*.95,'Adaptive 3D detail did not lower geometry: '+JSON.stringify(lod));
   // Exercise real 3D foliage instance transforms at two visual times. Route,
   // collision and checkpoint state are never changed by the renderer.

@@ -1,5 +1,5 @@
 /* MADGER articulated game mesh. Reference authority is the user-supplied
- * madger-user-pose-card.png. This is a modeled candidate, not an approved
+ * MADGER_Approved_Likeness.png. This is a modeled candidate, not an approved
  * production likeness. Identity acceptance requires actual rendered review.
  * No portrait, pose-card crop, billboard or generated substitute is rendered.
  */
@@ -82,10 +82,10 @@ function coat(parent,name,at,radii,material,zone='dark',density=450,shape=null){
   const q=sample(normal),unit=new T.Vector3(normal.x/radii[0],normal.y/radii[1],normal.z/radii[2]).normalize();
   const down=new T.Vector3(.10*Math.sin(i*2.7),-1,.10).addScaledVector(unit,unit.y).normalize();
   const across=new T.Vector3().crossVectors(unit,down).normalize();
-  const length=.035+.022*hash(i*19),width=.009+.006*hash(i*31),point=q.point;
+  const length=.026+.017*hash(i*19),width=.005+.004*hash(i*31),point=q.point;
   const left=point.clone().addScaledVector(across,-width).addScaledVector(unit,.003);
   const right=point.clone().addScaledVector(across,width).addScaledVector(unit,.003);
-  const ridge=point.clone().addScaledVector(down,length*.45).addScaledVector(unit,.016);
+  const ridge=point.clone().addScaledVector(down,length*.45).addScaledVector(unit,.006);
   const tip=point.clone().addScaledVector(down,length).addScaledVector(unit,.006);
   for(const triangle of [[left,right,ridge],[left,ridge,tip],[ridge,right,tip]]){
    for(const v of [triangle[0],triangle[2],triangle[1]]){p.push(v.x,v.y,v.z);n.push(unit.x,unit.y,unit.z);uv.push(.5+v.x*2,v.y*2);c.push(q.color.r,q.color.g,q.color.b);}
@@ -185,7 +185,7 @@ export class MadgerHero {
    tail:tailMaterial(fur)
   };
   this.root=new T.Group();this.root.name='MADGER_AUTHORED_3D_RIG';scene.add(this.root);
-  this.root.userData.reference='madger-user-pose-card.png';this.root.userData.visualApproval='pending';
+  this.root.userData.reference='MADGER_Approved_Likeness.png';this.root.userData.visualApproval='pending';
   this.body=new T.Group();this.body.name='compact-furred-body';this.root.add(this.body);
   coat(this.body,'continuous-spine-and-chest-coat',[0,-.02,.015],[.43,.57,.35],this.mats.coat,'body',1100);
   this.head=new T.Group();this.head.name='modeled-badger-face';this.head.position.set(0,.79,-.055);this.body.add(this.head);
@@ -196,33 +196,32 @@ export class MadgerHero {
    coat(this.head,name+'-ear-rim',[side*.49,.355,.015],[.16,.178,.10],this.mats.coat,'cream',180);
    const cavity=sphere(this.head,name+'-ear-cavity',[side*.49,.354,-.071],[.111,.132,.044],this.mats.black,24,16);cavity.rotation.z=-side*.14;
    // Broad angled cheek ruff provides the characteristic pointed side profile.
-   coat(this.head,name+'-cheek-ruff',[side*.39,-.195,-.265],[.247,.17,.19],this.mats.coat,'cream',450);
+   coat(this.head,name+'-cheek-ruff',[side*.39,-.19,-.25],[.225,.135,.13],this.mats.coat,'cream',450);
    for(let j=0;j<3;j++){
-    const tuft=mesh(this.head,name+'-cheek-point-'+j,new T.ConeGeometry(.072,.16,5),this.mats.cream);
+    const tuft=mesh(this.head,name+'-cheek-point-'+j,new T.ConeGeometry(.048,.125,5),this.mats.cream);
     tuft.position.set(side*(.575+j*.017),-.12-j*.065,-.23+j*.021);
     tuft.rotation.z=-side*(Math.PI*.53+j*.12);tuft.rotation.x=.15;
    }
-   const eye=sphere(this.head,name+'-eye-mask',[side*.252,.015,-.365],[.205,.215,.095],this.mats.black,30,22);
+   const eye=sphere(this.head,name+'-eye-mask',[side*.252,.008,-.365],[.205,.178,.095],this.mats.black,30,22);
    eye.rotation.z=-side*.18;
-   const white=sphere(this.head,name+'-sclera',[side*.247,.007,-.432],[.159,.174,.061],this.mats.eyeWhite,32,22);
+   const white=sphere(this.head,name+'-sclera',[side*.247,-.014,-.432],[.159,.134,.061],this.mats.eyeWhite,32,22);
    white.rotation.z=-side*.21;
-   sphere(this.head,name+'-amber-iris',[side*.225,-.017,-.488],[.108,.135,.038],this.mats.iris,30,20);
-   sphere(this.head,name+'-pupil',[side*.221,-.014,-.521],[.062,.089,.023],this.mats.pupil,24,18);
-   sphere(this.head,name+'-catchlight',[side*.221-.030,.037,-.542],[.026,.030,.012],this.mats.eyeWhite,14,10);
+   sphere(this.head,name+'-amber-iris',[side*.225,-.028,-.488],[.100,.105,.038],this.mats.iris,30,20);
+   sphere(this.head,name+'-pupil',[side*.221,-.024,-.521],[.062,.076,.023],this.mats.pupil,24,18);
+   sphere(this.head,name+'-catchlight',[side*.221-.027,.017,-.542],[.021,.023,.012],this.mats.eyeWhite,14,10);
    // Upper lids make the eyes intent rather than circular surprised buttons.
-   tube(this.head,name+'-upper-lid',[[side*.10,.105,-.444],[side*.20,.175,-.455],[side*.32,.175,-.403],[side*.408,.09,-.343]],.023,this.mats.black);
-   tube(this.head,name+'-raised-cream-brow',[[side*.094,.145,-.367],[side*.22,.247,-.371],[side*.34,.248,-.30],[side*.47,.105,-.235]],.042,this.mats.cream);
+   tube(this.head,name+'-upper-lid',[[side*.10,.045,-.444],[side*.20,.092,-.473],[side*.32,.124,-.440],[side*.408,.09,-.366]],.027,this.mats.black);
+   tube(this.head,name+'-raised-cream-brow',[[side*.094,.092,-.385],[side*.22,.167,-.410],[side*.34,.205,-.36],[side*.47,.16,-.265]],.033,this.mats.cream);
   }
-  coat(this.head,'projecting-short-muzzle',[0,-.251,-.455],[.315,.14,.225],this.mats.coat,'cream',550);
-  sphere(this.head,'lower-lip',[0,-.342,-.513],[.235,.052,.124],this.mats.cream,28,16);
+  coat(this.head,'projecting-short-muzzle',[0,-.255,-.455],[.285,.105,.205],this.mats.coat,'cream',550);
+  sphere(this.head,'lower-lip',[0,-.331,-.513],[.217,.044,.124],this.mats.cream,28,16);
   tube(this.head,'confident-smile',[[-.226,-.290,-.595],[-.13,-.335,-.646],[0,-.35,-.651],[.13,-.335,-.646],[.226,-.29,-.595]],.012,this.mats.black);
-  const nose=sphere(this.head,'projecting-triangular-nose',[0,-.188,-.671],[.133,.091,.093],this.mats.nose,32,22);
+  const nose=sphere(this.head,'projecting-triangular-nose',[0,-.188,-.671],[.115,.075,.083],this.mats.nose,32,22);
   const np=nose.geometry.attributes.position;
   for(let i=0;i<np.count;i++)np.setX(i,np.getX(i)*(.65+.35*(np.getY(i)+1)*.5));nose.geometry.computeVertexNormals();
   tube(this.head,'nose-to-smile',[[0,-.25,-.704],[0,-.30,-.686],[0,-.342,-.66]],.009,this.mats.black);
-  // One small inset tooth, not the previously rejected oversized fang.
-  const tooth=mesh(this.head,'small-inset-signature-tooth',new T.ConeGeometry(.019,.052,10),this.mats.pale);
-  tooth.position.set(-.15,-.346,-.647);tooth.rotation.z=Math.PI;
+  // The approved normal-tooth smile has no projecting signature fang.
+  // Closed lips conceal the teeth in the neutral gameplay expression.
   this.arms=[];this.legs=[];this.knees=[];this.feet=[];this.clawCount={hands:[5,5],feet:[5,5]};
   for(const side of [-1,1]){
    const arm=new T.Group();arm.name=(side<0?'left':'right')+'-continuous-arm';arm.position.set(side*.385,.34,-.015);this.body.add(arm);

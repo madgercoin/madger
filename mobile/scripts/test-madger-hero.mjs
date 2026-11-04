@@ -162,3 +162,18 @@ test('arm skins and directional fur have outward triangle winding',()=>{
    }
  }finally{hero.dispose();}
 });
+
+
+test('approved minecart reference uses restrained almond eyes and no signature fang',()=>{
+ const hero=new MadgerHero(new THREE.Scene(),()=>0);
+ try{
+   assert.equal(hero.root.userData.reference,'MADGER_Approved_Likeness.png');
+   assert.equal(hero.root.getObjectByName('small-inset-signature-tooth'),undefined);
+   for(const side of ['left','right']){
+     const eye=hero.root.getObjectByName(side+'-sclera');
+     assert(eye.scale.y<eye.scale.x,'neutral eyes must not return to tall surprised circles');
+     const iris=hero.root.getObjectByName(side+'-amber-iris');
+     assert(iris.scale.y<=.11,'iris height must fit beneath the lowered intent brow');
+   }
+ }finally{hero.dispose();}
+});
