@@ -6,8 +6,8 @@ import { GLTFLoader } from './vendor/examples/jsm/loaders/GLTFLoader.js';
 import { RGBELoader } from './vendor/examples/jsm/loaders/RGBELoader.js';
 import { legacyCharacters } from './characters.mjs?v=chambers-20261019-2';
 import { mergeGeometries } from './vendor/examples/jsm/utils/BufferGeometryUtils.js';
-import { adjustedSceneScale } from './quality.mjs';
-import { terrainBiome, terrainProfile, terrainSurfaceHeight, sceneryProfile, atmosphereProfile, foliageSway } from './terrain.mjs';
+import { adaptSceneBudget, sceneBufferSize } from './quality.mjs';
+import { terrainBiome, terrainProfile, sceneryProfile, atmosphereProfile, foliageSway, visibleRoads, nearestRoad, roadSurfaceHeight } from './terrain.mjs';
 import { MadgerHero } from './madger-hero.mjs';
 import { CavernVault } from './cavern-vault.mjs';
 import { RuinLandmarks } from './ruin-landmarks.mjs';
@@ -86,10 +86,10 @@ class ForestRenderer {
     this.fill=new T.PointLight('#ffb257',13,15,2);this.fill.position.set(0,3,1);this.scene.add(this.fill);
     this.batches=new Map();this.geometries=new Map();this.materials=new Map();this.scanBatches=[];
     this.travel={value:0};this.temp=new T.Matrix4();this.tint=new T.Color();this.stats={};
-    this.run=null;this.dead=false;this.textures=[];this.quality=this.mobileViewport?.84:1;
+    this.run=null;this.dead=false;this.textures=[];this.quality=1;this.budget={scenery:this.mobileViewport?1:2,scale:1,fastFrames:0};this.sceneryQuality=this.mobileViewport?.7:1;
     // Mobile viewport retains native-resolution UI and near-native 3D detail.
     // Avoid late shader recompiles from realtime shadow restoration on phones.
-    this.maxSceneScale=this.mobileViewport?.93:1;
+    this.maxSceneScale=1;
     this.frameSamples=[];this.stableFrames=0;this.renderedFrames=0;
     // Narrow/mobile screens keep PBR directional, IBL, normal and roughness
     // lighting but never switch on an extra dynamic-shadow shader mid-run.
@@ -326,7 +326,18 @@ class ForestRenderer {
     const biome=terrainBiome(this.worldPresets,s.route),profile=terrainProfile(this.worldPresets,s.route);
     const scenery=sceneryProfile(this.worldPresets,s.route);
     let anchored=0;
-    const surface=(x,d)=>{anchored++;return terrainSurfaceHeight(profile,x,d,road(s,d)+curve(d)-curve(travel))+bridge.pathHeight(s.route,d);};
+    const roadRows=new Map();
+    const roadsAt=d=>{
+      if(!roadRows.has(d))roadRows.set(d,visibleRoads(s,d,bridge.pathOffset,bridge.pathHeight,bridge.pathWidth).map(r=>({...r,centre:r.centre+curve(d)-curve(travel)})));
+      return roadRows.get(d);
+    };
+    const bankX=(x,d,margin=.4)=>{
+      const roads=roadsAt(d),clear=candidate=>roads.every(r=>Math.abs(candidate-r.centre)>=r.halfWidth+margin-.001);
+      if(clear(x))return x;
+      const candidates=roads.flatMap(r=>[r.centre-r.halfWidth-margin,r.centre+r.halfWidth+margin]).filter(clear);
+      return candidates.sort((a,b)=>Math.abs(a-x)-Math.abs(b-x))[0]??x;
+    };
+    const surface=(x,d)=>{anchored++;const near=nearestRoad(roadsAt(d),x);return roadSurfaceHeight(profile,near,x,d);};
     const underground=biome==='cavern',ruins=biome==='ruins';
     const breezeTime=Number.isFinite(s.time)?s.time:0;
     this.stats.biome=biome;this.stats.route=s.route;
@@ -343,10 +354,10 @@ class ForestRenderer {
     this.stats.terrainMaterial=this.terrainBiome;
     this.terrain.visible=s.mode!=='chamber';
     this.cavernVault.update(s,travel,road,curve);
-    this.ruins.update(s,travel,road,curve,surface,s.time||0,this.quality);
+    this.ruins.update(s,travel,road,curve,surface,s.time||0,this.sceneryQuality);
     // Absolute-world-distance bank placement avoids cyclic tiling and scenery
     // snaps when the runner approaches a fork or moves into the next area.
-    this.backdrop.update({biome,travel,time:breezeTime,quality:this.quality,
+    this.backdrop.update({biome,travel,time:breezeTime,quality:this.sceneryQuality,
       chamber:s.mode==='chamber',centre:d=>road(s,d)+curve(d)-curve(travel)});
     if(s.mode==='chamber'){
       for(const {mesh} of this.scanBatches)mesh.count=0;this.trees.count=0;this.shafts.count=0;
@@ -363,15 +374,18 @@ class ForestRenderer {
     this.stats.atmosphereProfileLoaded=Boolean(this.worldPresets?.atmosphereProfiles?.[s.route]);
     const start=Math.floor(travel/12)*12;
     for(const {id,mesh} of this.scanBatches){let count=0;
-      for(let i=1;i<=8;i++)for(const side of [-1,1]){
+      for(let i=1;i<=(this.budget.scenery===0?5:8);i++)for(const side of [-1,1]){
         const d=start+i*12,z=travel-d,n=Math.floor(d/12),r=hash(n*19+side+scenery.seed*7);
         if(z>-8)continue;
+        // Keep alternate trails unobscured. Scans belong to a bank, never the
+        // centre of an unselected but visible branch.
+        if(this.budget.scenery===0&&i>3&&['fern_02','grass_medium_02','root_cluster_01'].includes(id))continue;
         if(id==='grass_medium_02'){
           if(underground&&n%2===0)continue;
-          for(let j=0;j<(ruins||this.quality<.5?1:3);j++){
-            if(this.quality<1&&j===2)continue;
+          for(let j=0;j<(ruins||this.sceneryQuality<.5?1:3);j++){
+            if(this.sceneryQuality<1&&j===2)continue;
             const lateral=3.95+r*1.3+j*.52,scale=(.34+.18*hash(n*13+side*3+j))*scenery.understory;
-            const x=road(s,d)+curve(d)-curve(travel)+side*lateral;
+            const x=bankX(road(s,d)+curve(d)-curve(travel)+side*lateral,d,.4);
             mesh.setMatrixAt(count++,matrix(x,surface(x,d+j*2.1)+.07,z-j*2.1,scale,scale,scale,0,r*6.28+j*.8,
               ruins||underground?0:foliageSway(breezeTime,d+j*2.1,side+j*4)));
           }
@@ -380,7 +394,7 @@ class ForestRenderer {
         if(id==='root_cluster_01'){
           if(n%(ruins?6:3)!==0)continue;
           const lateral=5.0+r*1.6,scale=(1.25+r*.55)*scenery.rootScale;
-          const x=road(s,d)+curve(d)-curve(travel)+side*lateral;
+          const x=bankX(road(s,d)+curve(d)-curve(travel)+side*lateral,d,.4);
           mesh.setMatrixAt(count++,matrix(x,surface(x,d)-.06,z,scale,scale,scale,0,r*6.28,side*.13));
           continue;
         }
@@ -390,13 +404,13 @@ class ForestRenderer {
           const ahead=d-travel,chosenSide=n%3===0?1:-1;
           const nearRuin=ruins&&i<=2&&side===(i%2===0?1:-1);
           const forestTree=!ruins&&!underground&&side===chosenSide
-            &&(n%2===0||n%5===0)&&(this.quality>=.58||ahead<=48);
+            &&(n%2===0||n%5===0)&&(this.sceneryQuality>=.58||ahead<=48);
           if(underground||(!nearRuin&&!forestTree))continue;
           const envelope=canopyFade(ahead);
           if(!ruins&&envelope<.03)continue;
           const spread=6.6+r*1.9,scale=(6.5+r*2.2)*scenery.treeScale
             *(ruins?1:envelope);
-          const x=road(s,d)+curve(d)-curve(travel)+side*spread;
+          const x=bankX(road(s,d)+curve(d)-curve(travel)+side*spread,d,2.7);
           mesh.setMatrixAt(count++,matrix(x,surface(x,d)-.02,z,scale,scale,scale,
             canopyWind(breezeTime,d,r*6.28)*.5,r*6.28,side*.035+canopyWind(breezeTime,d,side)));
           continue;
@@ -414,7 +428,7 @@ class ForestRenderer {
         const bankOffset=id==='rock_face_02'?(ruins?12:9)
           :id==='dead_tree_trunk'?8.4+r*1.4
           :id==='rock_moss_set_01'?6.7+r*1.7:5.4+r*1.8;
-        const x=road(s,d)+curve(d)-curve(travel)+side*bankOffset;
+        const x=bankX(road(s,d)+curve(d)-curve(travel)+side*bankOffset,d,id==='fern_02'?.6:id==='rock_face_02'?3:1.2);
         const height=id==='fern_02'?1.1+r*.9:id==='dead_tree_trunk'?7+r*3:id==='rock_face_02'?(underground?7:4)+r*3:1.4+r*1.4;
         mesh.setMatrixAt(count++,matrix(x,surface(x,d)-.04,z,height,height,height,0,r*6.28,
           id==='fern_02'&&!ruins?foliageSway(breezeTime,d,side):0));
@@ -425,7 +439,7 @@ class ForestRenderer {
         if(id==='fern_02'&&!underground){
           // Layer scanned fronds on the ground, not suspended above the player.
           const cx=road(s,d)+curve(d)-curve(travel)+side*(4.0+r),scale=(.7+r*.85)*scenery.understory;
-          for(let j=0;j<(ruins||this.quality<.5?1:3);j++){const spread=.65*j,sz=z-j*2.3,plantX=cx+side*spread;
+          for(let j=0;j<(ruins||this.sceneryQuality<.5?1:3);j++){const spread=.65*j,sz=z-j*2.3,plantX=bankX(cx+side*spread,d+j*2.3,.5);
             const flowerScale=scale*(1-j*.13);
             mesh.setMatrixAt(count++,matrix(plantX,surface(plantX,d+j*2.3)+.07,sz,flowerScale,flowerScale,flowerScale,0,r*6.28+j,
               ruins?0:foliageSway(breezeTime,d+j*2.3,side+j)));}
@@ -440,19 +454,22 @@ class ForestRenderer {
     this.stats.groundedSceneryInstances=anchored;
     if(this.terrainRoute!==s.route||Math.abs(travel-(this.terrainD??-100))>1.8){
     this.terrainRoute=s.route;this.terrainD=travel;
+    const gapRows=new Map();
     const vertices=this.terrain.geometry.attributes.position,uv=this.terrain.geometry.attributes.uv,tint=this.terrain.geometry.attributes.color;
     this.trailTint.set(underground?'#80746D':ruins?'#A19782':'#B5A184');
     this.mossTint.set(underground?'#52605D':ruins?'#6A7967':'#4C6648');
     for(let i=0;i<vertices.count;i++){
-      const x=vertices.getX(i),z=vertices.getZ(i)-84,d=travel-z,centre=road(s,d)+curve(d)-curve(travel),lateral=Math.abs(x-centre);
-      const inGap=this.course?.some(o=>o.route===s.route&&o.kind==='gap'&&Math.abs(o.d-d)<2.8&&Math.abs(x-centre-o.lane*2.15)<1.55);
+      const x=vertices.getX(i),z=vertices.getZ(i)-84,d=travel-z;
+      const paths=roadsAt(d),near=nearestRoad(paths,x),centre=near.centre,lateral=Math.abs(x-centre);
+      const shoulder=Math.max(0,lateral-near.halfWidth);
+      if(!gapRows.has(d))gapRows.set(d,(this.gaps||[]).filter(o=>Math.abs(o.d-d)<2.8));
+      const inGap=gapRows.get(d).some(o=>o.route===near.route&&Math.abs(x-centre-o.lane*2.15)<1.55);
       // Authored profiles shape each route while preserving the three flat
       // gameplay lanes and original collision gap depth.
-      const landform=terrainSurfaceHeight(profile,x,d,centre,Boolean(inGap));
-      vertices.setY(i,landform+bridge.pathHeight(s.route,d));
+      vertices.setY(i,roadSurfaceHeight(profile,near,x,d,Boolean(inGap)));
       uv.setXY(i,x*.18,d*.18);
-      this.soilTint.copy(this.trailTint).lerp(this.mossTint,smooth((lateral-2.9)/4.6));
-      this.soilTint.multiplyScalar(.87+.11*Math.sin(d*.63+x*.55)+.07*Math.cos(x*.36-d*.29));
+      this.soilTint.copy(this.trailTint).lerp(this.mossTint,smooth(shoulder/1.7));
+      this.soilTint.multiplyScalar(.94+.055*Math.sin(d*.63+x*.55)+.035*Math.cos(x*.36-d*.29));
       tint.setXYZ(i,this.soilTint.r,this.soilTint.g,this.soilTint.b);
     }
     this.terrain.position.z=-84;vertices.needsUpdate=uv.needsUpdate=tint.needsUpdate=true;this.terrain.geometry.computeVertexNormals();
@@ -480,18 +497,15 @@ class ForestRenderer {
       const elapsed=now-(this.previousFrame??now);
       if(elapsed>0&&elapsed<1800)this.frameSamples.push(elapsed);
       if(this.frameSamples.length>=3){
-        const next=Math.min(this.maxSceneScale,adjustedSceneScale(this.quality,this.frameSamples));
-        const rapid=this.frameSamples.every(ms=>ms<24);
-        this.stableFrames=rapid?this.stableFrames+3:0;
-        // Restore visual quality only after sustained fast rendering.
-        const restored=this.stableFrames>=120&&next===this.quality&&next<this.maxSceneScale
-          ?Math.min(this.maxSceneScale,Math.round((next+.05)*100)/100):next;
-        if(restored!==this.quality){
-          this.quality=restored;
-          this.sun.castShadow=!this.mobileViewport&&this.quality>=.95;
-          this.stableFrames=0;
+        const previous=this.budget;
+        this.budget=adaptSceneBudget(previous,this.frameSamples);
+        this.quality=this.budget.scale;
+        this.sceneryQuality=[.44,.70,1][this.budget.scenery];
+        if(previous.scale!==this.quality||previous.scenery!==this.budget.scenery){
+          // Shadow shader defines remain fixed after loading. Distant scene
+          // density is the first lever; resolution is only the last lever.
           console.info('MADGER_FOREST_QUALITY',JSON.stringify({
-            resolutionScale:this.quality, dynamicShadows:this.sun.castShadow,
+            resolutionScale:this.quality,sceneryBudget:this.budget.scenery,
             recentFrameMs:this.frameSamples.map(v=>Math.round(v))
           }));
         }
@@ -500,7 +514,7 @@ class ForestRenderer {
     }
     this.previousFrame=now;this.renderedFrames++;
     // UI remains at native resolution; lower only the 3D buffer on slow devices.
-    const w=Math.round((this.gl.canvas.clientWidth||this.gl.drawingBufferWidth)*this.quality),h=Math.round((this.gl.canvas.clientHeight||this.gl.drawingBufferHeight)*this.quality);if(w<2||h<2)return;
+    const buffer=sceneBufferSize(this.gl.canvas.clientWidth||this.gl.drawingBufferWidth,this.gl.canvas.clientHeight||this.gl.drawingBufferHeight,typeof window!=='undefined'?window.devicePixelRatio:1,this.quality);const w=buffer.width,h=buffer.height;
     if(this.width!==w||this.height!==h){this.width=w;this.height=h;this.gpu.setSize(w,h,false);this.camera.aspect=w/h;this.camera.fov=T.MathUtils.radToDeg(2*Math.atan(Math.max(Math.tan(33*Math.PI/180),Math.tan(17*Math.PI/180)/(w/h))));this.camera.updateProjectionMatrix();}
     this.travel.value=travel;this.camera.position.fromArray(eye);this.camera.lookAt(new T.Vector3().fromArray(target));
     const sceneryStart=performance.now();this.scans(travel);
@@ -532,7 +546,7 @@ class ForestRenderer {
     this.stats.backgroundLandforms=this.backdrop.stats.landforms;
     this.stats.animatedSky=this.backdrop.stats.skyAnimated;
     this.stats.skyVisible=this.backdrop.stats.skyVisible;
-    if(typeof window!=='undefined')window.madgerForestDiagnostics={photoscannedTrees:this.stats.photoscannedTrees,photoscannedRoots:this.stats.photoscannedRoots,photoscannedGrasses:this.stats.photoscannedGrasses,terrainVertices:this.stats.terrainVertices,drawCalls:this.stats.drawCalls,triangles:this.stats.triangles,scanCpuMs:this.stats.scanCpuMs,webglSubmitMs:this.stats.webglSubmitMs,resolutionScale:this.quality,dynamicShadows:this.stats.dynamicShadows,route:this.stats.route,biome:this.stats.biome,terrainProfileLoaded:this.stats.terrainProfileLoaded,sceneryProfileLoaded:this.stats.sceneryProfileLoaded,atmosphereProfileLoaded:this.stats.atmosphereProfileLoaded,sunbeamPrimitives:this.shafts.count,backgroundLandforms:this.stats.backgroundLandforms,animatedSky:this.stats.animatedSky,skyVisible:this.stats.skyVisible,groundedSceneryInstances:this.stats.groundedSceneryInstances,terrainMaterial:this.terrainBiome,cavernVaultTriangles:this.stats.cavernVaultTriangles,cavernFormationInstances:this.stats.cavernFormationInstances,cavernMineralInstances:this.stats.cavernMineralInstances,cavernFormationTriangles:this.stats.cavernFormationTriangles,ruinArchStones:this.stats.ruinArchStones,ruinPierBlocks:this.stats.ruinPierBlocks,ruinRubbleStones:this.stats.ruinRubbleStones,ruinTowerCourses:this.stats.ruinTowerCourses,ruinGears:this.stats.ruinGears,madgerRig:this.stats.madgerRig,madgerMeshCount:this.stats.madgerMeshCount};
+    if(typeof window!=='undefined')window.madgerForestDiagnostics={photoscannedTrees:this.stats.photoscannedTrees,photoscannedRoots:this.stats.photoscannedRoots,photoscannedGrasses:this.stats.photoscannedGrasses,terrainVertices:this.stats.terrainVertices,drawCalls:this.stats.drawCalls,triangles:this.stats.triangles,scanCpuMs:this.stats.scanCpuMs,webglSubmitMs:this.stats.webglSubmitMs,resolutionScale:this.quality,sceneryBudget:this.budget.scenery,bufferWidth:this.width,bufferHeight:this.height,dynamicShadows:this.stats.dynamicShadows,route:this.stats.route,biome:this.stats.biome,terrainProfileLoaded:this.stats.terrainProfileLoaded,sceneryProfileLoaded:this.stats.sceneryProfileLoaded,atmosphereProfileLoaded:this.stats.atmosphereProfileLoaded,sunbeamPrimitives:this.shafts.count,backgroundLandforms:this.stats.backgroundLandforms,animatedSky:this.stats.animatedSky,skyVisible:this.stats.skyVisible,groundedSceneryInstances:this.stats.groundedSceneryInstances,terrainMaterial:this.terrainBiome,cavernVaultTriangles:this.stats.cavernVaultTriangles,cavernFormationInstances:this.stats.cavernFormationInstances,cavernMineralInstances:this.stats.cavernMineralInstances,cavernFormationTriangles:this.stats.cavernFormationTriangles,ruinArchStones:this.stats.ruinArchStones,ruinPierBlocks:this.stats.ruinPierBlocks,ruinRubbleStones:this.stats.ruinRubbleStones,ruinTowerCourses:this.stats.ruinTowerCourses,ruinGears:this.stats.ruinGears,madgerRig:this.stats.madgerRig,madgerMeshCount:this.stats.madgerMeshCount};
     if(!this.logged){this.logged=true;console.info('MADGER_FOREST_RENDER',JSON.stringify(this.stats));}
   }
   dispose(){if(this.dead)return;this.dead=true;this.cavernVault?.dispose();this.ruins?.dispose();this.backdrop?.dispose();for(const b of this.batches.values())b.mesh.dispose();for(const {mesh} of this.scanBatches){mesh.geometry.dispose();for(const value of Object.values(mesh.material))if(value?.isTexture)value.dispose();mesh.material.dispose();mesh.dispose();}for(const object of [this.terrain,this.trees,this.shafts]){object?.geometry.dispose();object?.material.dispose();}for(const g of this.geometries.values())g.dispose();for(const m of this.materials.values())m.dispose();for(const t of this.textures)t.dispose();for(const url of this.assetUrls?.values()||[])URL.revokeObjectURL(url);this.environment?.dispose();this.gpu.dispose();}
@@ -563,7 +577,7 @@ window.madgerOvergrownScene=async gl=> {
   const draw=scene.draw.bind(scene);
   scene.draw=(s,time,calm)=>{scene.renderer.run=s;draw(s,time,calm);};
   const setCourse=scene.setCourse.bind(scene);
-  scene.setCourse=course=>{scene.renderer.course=course.filter(i=>i.kind==='gap');setCourse(course);};
+  scene.setCourse=course=>{scene.renderer.course=course;scene.renderer.gaps=course.filter(i=>i.kind==='gap');setCourse(course);};
   const previousDispose=scene.dispose.bind(scene);
   scene.dispose=()=>{hero.dispose();previousDispose();};
   return scene;

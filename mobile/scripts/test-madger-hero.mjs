@@ -7,7 +7,7 @@ import path from 'node:path';
 import {createRequire} from 'node:module';
 const {PNG}=createRequire(import.meta.url)('pngjs');
 import * as THREE from '../public/blackroot/vendor/build/three.module.js';
-import {MadgerHero} from '../public/blackroot/madger-hero.mjs';
+import {MadgerHero,sampleFootGait} from '../public/blackroot/madger-hero.mjs';
 
 const mobile=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const source=readFileSync(path.join(mobile,'assets/images/madger-mascot.webp'));
@@ -28,16 +28,18 @@ test('a genuine 3D articulated character replaces the legacy sphere-only silhoue
  const scene=new THREE.Scene(),hero=new MadgerHero(scene,()=>0,new THREE.Texture());
  try{
    assert(hero.root.isGroup && hero.meshCount>=80);
-   assert(hero.triangles>30000 && hero.triangles<100000);
+   assert(hero.triangles>20000 && hero.triangles<50000);
    for(const name of ['center-cream-forehead-stripe','rear-head-blaze',
-     'signature-back-V-left','signature-back-V-right',
+     'continuous-spine-blaze',
      '3d-chevron-tail-mesh','approved-face-projection'])
      assert(hero.root.getObjectByName(name),name+' is missing');
    assert(hero.root.getObjectByName('approved-face-projection').geometry.attributes.position.count>700);
    const tail=hero.root.getObjectByName('3d-chevron-tail-mesh').geometry;
    assert(tail.attributes.position.count>1000);
    assert(tail.attributes.color.count===tail.attributes.position.count);
-   assert(hero.tail.position.x>.2,'tail must be offset rather than a striped ball on the spine');
+   assert.equal(hero.tail.position.x,0,'later user pose card has a tail rooted centrally at the rump');
+   assert(hero.renderMeshCount<=28,'rigid material batching must bound hero draw submissions');
+   assert(hero.faceSurface.material.map.repeat.x<0,'front projection must not mirror the approved face');
    assert.deepEqual(hero.clawCount,{hands:[5,5],feet:[5,5]});
  }finally{hero.dispose();}
 });
@@ -56,18 +58,18 @@ test('run, idle, jump and burrow animate geometry without changing any saved gam
      hero.update(state,state.time,false);
      assert.deepEqual(state,before,'character rendering modified deterministic game state');
      assert(hero.root.visible && hero.shadow.visible);
-     assert(hero.lastPose.approvedFace && hero.lastPose.backChevron);
+     assert(hero.lastPose.approvedFace && hero.lastPose.continuousSpineBlaze);
      assert(hero.lastPose.patternedTail && hero.lastPose.rearCreamBlaze);
      assert(hero.lastPose.position.every(Number.isFinite));
      assert.equal(hero.lastPose.clawsPerPaw,5);
      assert(hero.root.position.x<-2,'route offset from the real game was lost');
    }
-   hero.update(fixture({slide:.72}),40);
+   hero.update(fixture({slide:.72,slideAge:.18}),40);
    assert(hero.lastPose.burrowing);
    hero.update(fixture({y:.9}),45);
    assert(hero.lastPose.jumping);
    const before=hero.tail.rotation.z;
-   hero.update(fixture({y:0}),47);
+   hero.update(fixture({y:0,distance:202}),47);
    assert.notEqual(hero.tail.rotation.z,before,'tail animation was fixed');
  }finally{hero.dispose();}
 });
@@ -80,4 +82,49 @@ test('native portrait is a decoder-compatible PNG with identical approved RGBA p
  assert.equal(decoded.width,1254);assert.equal(decoded.height,1254);
  // Hash of decoded approved WebP, independently checked with Pillow and sharp.
  assert.equal(sha(decoded.data),'deaedace5829d58ad744fe0fccba3fadeb264e7ba4c296c86fc2c8a4243f56b5');
+});
+
+
+test('planted paws follow the passing ground and swing feet clear it',()=>{
+ const hero=new MadgerHero(new THREE.Scene(),()=>0,new THREE.Texture());
+ try{
+   for(let d=.04;d<5.6;d+=.04){
+     hero.update(fixture({distance:d}),10);
+     for(let i=0;i<2;i++){
+       const gait=sampleFootGait(d,i*.5),foot=hero.feet[i];
+       const p=foot.getWorldPosition(new THREE.Vector3());
+       const q=foot.getWorldQuaternion(new THREE.Quaternion());
+       assert(p.y>=-.212,'paw penetrated the ground');
+       assert(Math.abs(new THREE.Euler().setFromQuaternion(q).x)<.001,'paw lost its horizontal contact');
+       if(gait.contact){
+         assert(Math.abs(p.y-(-.205))<.012,'stance paw floated above the ground');
+         const next=sampleFootGait(d+.001,i*.5);
+         if(next.contact)assert(Math.abs((next.z-gait.z)/.001-1)<1e-8,'stance slipped against the scrolling ground');
+       } else assert(gait.lift>=0 && gait.lift<=.181);
+     }
+   }
+ }finally{hero.dispose();}
+});
+
+test('burrow entry and exit ease into the pose instead of snapping',()=>{
+ const hero=new MadgerHero(new THREE.Scene(),()=>0,new THREE.Texture());
+ try{
+   hero.update(fixture({slide:.82,slideAge:0}),10);const initial=hero.body.scale.y;
+   hero.update(fixture({slide:.80,slideAge:.02}),10.02);const entering=hero.body.scale.y;
+   hero.update(fixture({slide:.5,slideAge:.30}),10.3);const deep=hero.body.scale.y;
+   hero.update(fixture({slide:.01,slideAge:.80}),10.8);const exit=hero.body.scale.y;
+   assert.equal(initial,1);assert(entering<initial && entering>deep);assert(exit>.99);
+ }finally{hero.dispose();}
+});
+
+
+test('full burrow dives beneath real terrain, then the result pose emerges with frozen timers',()=>{
+ const hero=new MadgerHero(new THREE.Scene(),()=>0,new THREE.Texture());
+ try{
+   const state=fixture({slide:.5,slideAge:.3});hero.update(state,10);
+   const bounds=new THREE.Box3().setFromObject(hero.root,true);
+   assert(bounds.max.y<-.33,'a fully burrowing hero still clips through overhead hazards');
+   hero.update({...state,mode:'won'},11);hero.update({...state,mode:'won'},11.3);
+   assert(!hero.lastPose.burrowing,'frozen finished slide timer kept the hero underground');
+ }finally{hero.dispose();}
 });

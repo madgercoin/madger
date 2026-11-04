@@ -5,11 +5,11 @@ export type CompanionRoute = 'main' | 'hollow' | 'grotto' | 'rootway' | 'ridge' 
 export const COMPANION_IDS: readonly CompanionId[] = ['snow', 'gorilla', 'bot'];
 export const COMPANIONS = {
   snow: { name: 'Snow White', role: 'ATTACK', duration: 18, cooldown: 1.8, actionDuration: .90, impactAt: .40, color: '#D990B0', item: 'snow-white', offset: -1.35,
-    description: 'Runs alongside Madger and leaps at approaching drones and crates. Her attacks clear a threat in your path and award 125 points. Gaps, steam and stone still require your attention.' },
+    description: 'Runs alongside Madger and leaps at approaching drones and crates. Her attacks clear a threat in your path, award 125 points, and recharge 18 burst energy on the new expedition course. Gaps, steam and stone still require your attention.' },
   gorilla: { name: 'Gorilla White', role: 'DEFENSE', duration: 16, cooldown: .80, actionDuration: .80, impactAt: 0, color: '#DFE6EE', item: 'gorilla-white', offset: 1.55,
-    description: 'Provides three bodyguard saves, including catching Madger at a broken ledge. Each save preserves your grit and shield. Protection ends when time or guard charges run out.' },
+    description: 'Provides three bodyguard saves, including catching Madger at a broken ledge. Each save preserves your grit and shield. On the new course his brace clears mud and resets burrow recovery for your escape. Protection ends when time or guard charges run out.' },
   bot: { name: 'Madger Bot', role: 'TECH BOOST', duration: 14, cooldown: 3.0, actionDuration: 1.0, impactAt: .35, color: '#73DFEE', item: 'madger-bot', offset: .75,
-    description: 'Adds 45 burst energy on arrival, recharges energy, magnetizes pickups and disables nearby electronic traps. A burst activated with Bot lasts 1.2 seconds longer.' },
+    description: 'Adds 45 burst energy on arrival, recharges energy, magnetizes pickups and disables nearby electronic traps, chaining to one nearby electronic trap on the new course. A burst activated with Bot lasts 1.2 seconds longer.' },
 } as const;
 export const COMPANION_PICKUPS: Record<CompanionPickup, CompanionId> = { 'snow-white': 'snow', 'gorilla-white': 'gorilla', 'madger-bot': 'bot' };
 export function companionId(kind: string): CompanionId | null {

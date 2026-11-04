@@ -14,8 +14,112 @@ test('render observer only snapshots actual state and never mutates gameplay',()
  const state=Object.freeze({id:'actual-run',mode:'running',distance:353.8,lane:1,y:0,slide:.5,route:'deep',score:2825});
  const before=JSON.stringify(state),a=renderSnapshot(state);
  assert.deepEqual(JSON.parse(JSON.stringify(a)),{runId:'actual-run',mode:'running',distance_m:353,lane:1,action:'burrowing',route:'deep',score:2825});
+ assert.equal(renderSnapshot(state,'LOW ROOT CANOPY · BURROW · 20m').hint,'LOW ROOT CANOPY · BURROW · 20m');
+ assert.equal(renderSnapshot({...state,lastJumpAt:4.2}).jumpAt,4.2);
  assert.equal(JSON.stringify(state),before);
  assert.equal(renderSnapshot({...state,y:.3}).action,'jumping');
  assert.equal(renderSnapshot({...state,slide:0}).action,'running');
  assert.equal(renderSnapshot({...state,mode:'paused'}).mode,'paused');
+});
+
+// Exercise the Android wrapper's actual handlers with a minimal hook host. This
+// checks save/exit ordering and recovery UI, not Android rendering or GPU health.
+const turn = () => new Promise(resolve => setImmediate(resolve));
+function mountAndroid(storage) {
+ const slots=[], effects=[], exits=[], callbacks={}; let cursor=0, mounted=false, afterUnmountUpdates=0;
+ const react={
+  useState(initial){const index=cursor++;if(!(index in slots))slots[index]=typeof initial==='function'?initial():initial;return [slots[index],value=>{if(!mounted)afterUnmountUpdates++;slots[index]=typeof value==='function'?value(slots[index]):value;}];},
+  useRef(initial){const index=cursor++;if(!(index in slots))slots[index]={current:initial};return slots[index];},
+  useEffect(effect){const index=cursor++;if(!(index in slots)){slots[index]=true;effects.push(effect);}},
+ };
+ const jsx=(type,props)=>({type,props});
+ const Screen=load('src/app/expedition.android.tsx',{
+  react,'react/jsx-runtime':{jsx,jsxs:jsx},
+  'react-native':{View:'View',Text:'Text',Pressable:'Pressable',StyleSheet:{create:v=>v},
+   AppState:{currentState:'active',addEventListener:(name,callback)=>{callbacks.appState=callback;return{remove(){delete callbacks.appState;}};}},
+   BackHandler:{addEventListener:(name,callback)=>{callbacks.back=callback;return{remove(){delete callbacks.back;}};}},
+  },
+  'expo-modules-core':{requireNativeViewManager:()=> 'OfflineGame'},
+  '@react-native-async-storage/async-storage':{__esModule:true,default:storage},
+  'expo-router':{useRouter:()=>({replace:route=>exits.push(route)})},
+  'react-native-safe-area-context':{useSafeAreaInsets:()=>({top:0,bottom:0})},
+  '@/game/expedition/profile':{EXPEDITION_KEY:key},
+ }).default;
+ const render=()=>{cursor=0;return Screen();};
+ function find(node,predicate){if(!node||typeof node!=='object')return null;if(predicate(node))return node;for(const child of [node.props?.children].flat()){const match=find(child,predicate);if(match)return match;}return null;}
+ mounted=true;render();const cleanups=effects.map(effect=>effect());
+ return {render,exits,callbacks,
+  game:()=>find(render(),node=>node.type==='OfflineGame'),
+  button:label=>find(render(),node=>node.props?.accessibilityLabel===label),
+  text:()=>JSON.stringify(render()),
+  unmount:()=>{cleanups.forEach(cleanup=>cleanup?.());mounted=false;},
+  afterUnmountUpdates:()=>afterUnmountUpdates,
+ };
+}
+const saveEvent=value=>({nativeEvent:{message:JSON.stringify({type:'storage',key,value})}});
+const exitEvent={nativeEvent:{message:'{"type":"exit"}'}};
+
+test('Android read failure can retry in place without writing or clearing any save',async()=>{
+ const value='{"version":1,"coins":23}',writes=[];let reads=0;
+ const app=mountAndroid({getItem:async()=>{if(++reads===1)throw Error('temporarily unavailable');return value;},setItem:async(...args)=>writes.push(args)});
+ await turn();assert.equal(app.game(),null);assert.match(app.text(),/no records have been changed/);
+ app.button('Retry offline Expedition').props.onPress();await turn();
+ assert.equal(JSON.parse(app.game().props.initialStorage)[key],value);
+ assert.deepEqual(writes,[]);assert.equal(reads,2);app.unmount();
+});
+
+test('Android backup recovery waits queued saves and retries the newest value only',async()=>{
+ let value='{"version":1,"coins":3}',releaseSecond;const writes=[];
+ const app=mountAndroid({getItem:async()=>value,setItem:async(k,v)=>{
+  writes.push(v);if(writes.length===1)throw Error('disk unavailable');
+  if(writes.length===2)await new Promise(resolve=>{releaseSecond=resolve;});value=v;
+ }});
+ await turn();const onMessage=app.game().props.onMessage;
+ const old='{"version":1,"coins":4}',latest='{"version":1,"coins":5}';
+ onMessage(saveEvent(old));onMessage(saveEvent(latest));onMessage(exitEvent);await turn();
+ assert.equal(app.game(),null);assert.deepEqual(app.exits,[]);assert.deepEqual(writes,[old,latest]);
+ const retry=app.button('Retry offline Expedition').props.onPress;retry();retry();await turn();
+ assert.deepEqual(writes,[old,latest],'retry must wait for the existing write and ignore repeated taps');
+ assert.equal(app.button('Retry offline Expedition').props.disabled,true);
+ releaseSecond();await turn();
+ assert.deepEqual(writes,[old,latest,latest]);assert.equal(JSON.parse(app.game().props.initialStorage)[key],latest);
+ app.game().props.onMessage(exitEvent);await turn();assert.deepEqual(app.exits,['/legacy']);app.unmount();
+});
+
+test('Android normal exit waits for its native backup to become durable',async()=>{
+ let release;const app=mountAndroid({getItem:async()=>null,setItem:()=>new Promise(resolve=>{release=resolve;})});
+ await turn();const onMessage=app.game().props.onMessage;onMessage(saveEvent('{"version":1}'));onMessage(exitEvent);await turn();
+ assert.deepEqual(app.exits,[]);release();await turn();assert.deepEqual(app.exits,['/legacy']);app.unmount();
+});
+
+test('Android failed retry remains actionable and does not mount the game',async()=>{
+ const app=mountAndroid({getItem:async()=>null,setItem:async()=>{throw Error('still unavailable');}});
+ await turn();app.game().props.onMessage(saveEvent('{"version":1}'));await turn();
+ app.button('Retry offline Expedition').props.onPress();await turn();
+ assert.equal(app.game(),null);assert.equal(app.button('Retry offline Expedition').props.disabled,false);
+ assert.match(app.text(),/native backup could not be updated/);assert.deepEqual(app.exits,[]);app.unmount();
+});
+
+test('Android malformed bridge save retains prior backup and blocks automatic exit',async()=>{
+ const writes=[],value='{"version":1,"coins":8}';
+ const app=mountAndroid({getItem:async()=>value,setItem:async(k,v)=>writes.push(v)});
+ await turn();const onMessage=app.game().props.onMessage;
+ onMessage(saveEvent('{broken'));onMessage(exitEvent);await turn();assert.deepEqual(writes,[]);assert.deepEqual(app.exits,[]);
+ app.button('Retry offline Expedition').props.onPress();await turn();assert.equal(JSON.parse(app.game().props.initialStorage)[key],value);app.unmount();
+});
+
+test('Android graphics restart reopens the same save without clearing game data',async()=>{
+ const value='{"version":1,"checkpoint":{"distance":355}}',writes=[];
+ const app=mountAndroid({getItem:async()=>value,setItem:async(k,v)=>writes.push(v)});
+ await turn();app.game().props.onError({nativeEvent:{message:'The 3D graphics process stopped.'}});
+ assert.equal(app.game(),null);app.button('Retry offline Expedition').props.onPress();await turn();
+ assert.equal(JSON.parse(app.game().props.initialStorage)[key],value);assert.deepEqual(writes,[]);app.unmount();
+});
+
+test('Android pending callbacks cannot navigate or update an unmounted screen',async()=>{
+ let release;const app=mountAndroid({getItem:async()=>null,setItem:()=>new Promise((resolve,reject)=>{release=reject;})});
+ await turn();const onMessage=app.game().props.onMessage;onMessage(saveEvent('{"version":1}'));onMessage(exitEvent);await turn();
+ app.unmount();release(Error('unmounted failure'));await turn();
+ assert.deepEqual(app.exits,[]);assert.equal(app.afterUnmountUpdates(),0);
+ assert.equal(app.callbacks.appState,undefined);assert.equal(app.callbacks.back,undefined);
 });

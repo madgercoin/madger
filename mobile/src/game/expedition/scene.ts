@@ -1,4 +1,4 @@
-import { branchOffset, clamp, BONUS_LEDGE_LENGTH, hazardPose, environmentZone, LANE_WIDTH, routeOffset, overgrownPathOffset, overgrownPathHeight, overgrownPathWidth, MAJOR_FORKS, SUB_FORKS, CHAMBERS, smooth, type ForkOption, type CourseItem, type Expedition, type GameEvent } from './core';
+import { branchOffset, secretRevealDistance, clamp, BONUS_LEDGE_LENGTH, hazardPose, environmentZone, LANE_WIDTH, routeOffset, overgrownPathOffset, overgrownPathHeight, overgrownPathWidth, MAJOR_FORKS, SUB_FORKS, CHAMBERS, smooth, type ForkOption, type CourseItem, type Expedition, type GameEvent } from './core';
 import { ExpeditionRenderer, color, type Color, type GL, type Shape } from './gl';
 import { multiply, segment, transform, type Mat4, type Vec3 } from './math';
 import { gaitPose, burrowPose, reactionEnvelope } from './animation';
@@ -482,6 +482,7 @@ export class ExpeditionScene {
  setCourse(course:CourseItem[]){this.course=course;this.burrows=course.filter(o=>o.kind==='burrow');this.mainGaps=course.filter(o=>o.kind==='gap'&&o.route==='main');this.initializedCamera=false;}
  private item(item:CourseItem,s:Expedition,time:number){
   const ahead=item.d-s.distance;if(ahead < (item.kind==='bonus-ledge'?-BONUS_LEDGE_LENGTH-3:-6)||ahead>102)return;
+  if(item.secret&&ahead>secretRevealDistance(s))return;
   if(item.kind==='boulder'&&item.route===s.route&&ahead<52){
    const side=item.lane||(Math.sin(item.phase)>=0?1:-1),bx=side*6.6+routeOffset(s,item.d)+curve(item.d)-curve(s.distance),by=floorY(item.d,item.route);
    this.shape(this.renderer.worldReady?'scanCliff':'rock',C.stone,bx,by-.15,-ahead-5.76,2.6,3.3,3.2,0,side*.3,0);
@@ -497,6 +498,18 @@ export class ExpeditionScene {
   const bob=Math.sin(phase*3)*.09;
   const shadow=(size:number)=>this.shape('shadow',C.shadow,x,y+.020,z,size,1,size);
   if(['coin','gem','life','key','shield','magnet','snow-sigil','guardian-totem','tech-cell','treasure-cache'].includes(item.kind))this.shape('halo',color(item.kind==='gem'?'#b6a4ff':item.kind==='shield'?'#69efcf':'#ffc363',-6),x,y+1+bob,z,.68,.68,.68);
+  // Action-earned rewards advertise the required move only once discovered.
+  if(item.requiredAction){
+   const c=item.requiredAction==='burst'?C.mint:C.goldGlow,cy=y+2.5+bob;
+   if(item.requiredAction==='burst'){
+    for(let i=0;i<3;i++){const dx=x+(i-1)*.25;this.link([dx-.09,cy+.18,z],[dx+.09,cy,z],.035,c);this.link([dx+.09,cy,z],[dx-.09,cy-.18,z],.035,c);}
+   }else{
+    const sign=item.requiredAction==='jump'?1:-1;
+    this.link([x-.23,cy-sign*.12,z],[x,cy+sign*.16,z],.04,c);
+    this.link([x,cy+sign*.16,z],[x+.23,cy-sign*.12,z],.04,c);
+    this.link([x,cy-sign*.25,z],[x,cy+sign*.14,z],.035,c);
+   }
+  }
   const ally=companionId(item.kind);
   if(ally){
    const c=color(COMPANIONS[ally].color,.45),active=s.companions[ally].timeLeft>0;

@@ -14,7 +14,7 @@ export async function createWebExpeditionScene(gl: GL): Promise<ExpeditionScene>
   if (typeof window === 'undefined') return new ExpeditionScene(gl);
   if (!loading) loading = new Promise<void>((resolve, reject) => {
     const script = document.createElement('script');
-    script.type = 'module'; script.src = '/blackroot/renderer.mjs?v=grounded-scenery-20261020-1';
+    script.type = 'module'; script.src = '/blackroot/renderer.mjs?v=identity-challenge-20261104-1';
     script.onload = () => resolve();
     script.onerror = () => { loading = null; script.remove(); reject(new Error('Optional high-detail renderer not available')); };
     document.head.appendChild(script);

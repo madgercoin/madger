@@ -1,0 +1,21 @@
+/* Actual WebGL model review, not gameplay/FPS acceptance. The renderer reads
+ * the shipped geometry and unmodified approved texture. No generated images. */
+const fs=require('node:fs'),path=require('node:path'),http=require('node:http');
+const {chromium}=require('playwright');
+const root=path.resolve(__dirname,'../public'),out=path.resolve(__dirname,'../../reports/game-expedition/visual-review-20261104');
+fs.mkdirSync(out,{recursive:true});
+const html=`<!doctype html><html><head><link rel="icon" href="data:,"><style>html,body{margin:0;background:#26322d}canvas{display:block;width:720px;height:820px}</style></head><body><canvas></canvas><script type="module">
+import * as T from '/blackroot/vendor/build/three.module.js';
+import {MadgerHero} from '/blackroot/madger-hero.mjs';
+const scene=new T.Scene();scene.background=new T.Color('#26322d');
+const gpu=new T.WebGLRenderer({canvas:document.querySelector('canvas'),antialias:true,preserveDrawingBuffer:true});gpu.setSize(720,820);gpu.setPixelRatio(1);gpu.toneMapping=T.ACESFilmicToneMapping;gpu.toneMappingExposure=1.05;gpu.outputColorSpace=T.SRGBColorSpace;
+scene.add(new T.HemisphereLight('#e5efff','#78705e',2.2));const sun=new T.DirectionalLight('#ffe1b0',3.2);sun.position.set(-3,5,-4);scene.add(sun);const rim=new T.DirectionalLight('#b9d9ef',2);rim.position.set(4,3,3);scene.add(rim);
+const camera=new T.PerspectiveCamera(35,720/820,.1,40);camera.position.set(0,1.2,-6.6);camera.lookAt(0,.95,0);
+const texture=await new T.TextureLoader().loadAsync('/blackroot/assets/madger-official-face.webp');texture.colorSpace=T.SRGBColorSpace;
+const hero=new MadgerHero(scene,()=>0,texture);
+const floor=new T.Mesh(new T.CircleGeometry(5,64),new T.MeshStandardMaterial({color:'#667062',roughness:1}));floor.rotation.x=-Math.PI/2;floor.position.y=-.335;scene.add(floor);
+window.reviewPose=(pose)=>{const run={board:'overgrown',mode:'running',route:'main',distance:0,time:5,x:0,vx:0,y:0,slide:0,slideAge:0,lastHurt:-20};if(pose==='jump'){run.distance=12;run.y=.48;}if(pose==='burrow'){run.distance=13;run.slide=.5;run.slideAge=.3;}if(pose==='burrow-entry'){run.distance=13;run.slide=.79;run.slideAge=.04;}if(pose==='burrow-exit'){run.distance=14;run.slide=.05;run.slideAge=.78;}if(pose==='run'){run.distance=.24;}hero.update(run,5,false);hero.root.rotation.y=pose==='rear'?Math.PI:pose==='side'?Math.PI/2:pose==='run'?-.35:0;gpu.render(scene,camera);return {...hero.lastPose,drawCalls:gpu.info.render.calls,triangles:gpu.info.render.triangles};};window.reviewReady=true;
+</script></body></html>`;
+const mime={'.html':'text/html','.js':'text/javascript','.mjs':'text/javascript','.webp':'image/webp','.png':'image/png','.jpg':'image/jpeg'};
+const server=http.createServer((req,res)=>{let name=new URL(req.url,'http://localhost').pathname;if(name==='/review'){res.setHeader('Content-Type','text/html');return res.end(html);}const file=path.resolve(root,'.'+decodeURIComponent(name));if(!file.startsWith(root+path.sep)||!fs.existsSync(file)){res.writeHead(404);return res.end();}res.setHeader('Content-Type',mime[path.extname(file)]||'application/octet-stream');fs.createReadStream(file).pipe(res);});
+(async()=>{await new Promise(r=>server.listen(0,'127.0.0.1',r));const browser=await chromium.launch({headless:true,executablePath:process.env.CHROMIUM_PATH||undefined,args:['--no-sandbox']});try{const page=await browser.newPage({viewport:{width:720,height:820}});const errors=[];page.on('pageerror',e=>errors.push(String(e)));page.on('console',m=>{if(m.type()==='error')errors.push(m.text());});await page.goto('http://127.0.0.1:'+server.address().port+'/review');await page.waitForFunction(()=>window.reviewReady,{timeout:60000});const results={scope:'Actual model WebGL turntable, not end-to-end game or phone performance proof',at:new Date().toISOString(),poses:{},errors};for(const pose of ['front','rear','side','run','jump','burrow-entry','burrow','burrow-exit']){results.poses[pose]=await page.evaluate(p=>window.reviewPose(p),pose);await page.screenshot({path:path.join(out,pose+'.png')});}fs.writeFileSync(path.join(out,'model-review.json'),JSON.stringify(results,null,2));console.log(JSON.stringify(results));if(errors.filter(e=>!e.includes('404')).length)process.exitCode=1;}finally{await browser.close();server.close();}})().catch(e=>{console.error(e);process.exitCode=1;server.close();});

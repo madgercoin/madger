@@ -15,7 +15,8 @@ export type Mode = 'ready' | 'countdown' | 'running' | 'paused' | 'fork' | 'cham
 export type Kind = 'coin' | 'gem' | 'heart' | 'shield' | 'magnet' | 'life' | 'key' | 'vault' | 'workshop' | 'burrow' | 'boulder' | 'saw' | 'roots' | 'steam' | 'gap' | 'mud' | 'drone' | 'crate' | 'snow-white' | 'gorilla-white' | 'madger-bot' | 'snow-sigil' | 'guardian-totem' | 'tech-cell' | 'treasure-cache' | 'chamber-door' | 'bonus-ledge';
 export type Upgrade = 'magnet' | 'armor' | 'fortune';
 export type Route = 'main' | 'hollow' | 'grotto' | 'rootway' | 'ridge' | 'deep' | 'mosswalk' | 'root-arch' | 'log-crossing' | 'causeway' | 'watchtower' | 'gearworks' | 'mudslide' | 'crystal-vein' | 'ancient-vault';
-export type CourseItem = { id: number; d: number; lane: Lane; kind: Kind; phase: number; route: Route; elevation?: number };
+export type CourseAction = 'jump' | 'burrow' | 'burst';
+export type CourseItem = { id: number; d: number; lane: Lane; kind: Kind; phase: number; route: Route; elevation?: number; requiredAction?: CourseAction; secret?: boolean };
 export type EventKind = 'coin' | 'gem' | 'hit' | 'block' | 'jump' | 'land' | 'slide' | 'burst' | 'power' | 'secret' | 'revive' | 'upgrade' | 'near' | 'zone' | 'win' | 'lose' | 'step' | 'splash' | 'hint' | 'companion-join' | 'companion-attack' | 'companion-guard' | 'companion-boost' | 'companion-leave' | 'hero-shard' | 'fork';
 export type GameEvent = { id: number; kind: EventKind; at: number; x: number; text: string; value: number; companion?: CompanionId; targetD?: number; targetX?: number };
 export type Expedition = {
@@ -33,6 +34,8 @@ export type Expedition = {
   heroShards?: Record<CompanionId,number>; baseShards?: Record<CompanionId,number>;
   heroUnlocked?: Record<CompanionId,boolean>; heroCharge?: number; metaFortune?: number;
   chamber?: ChamberId; groundHeight?: number;
+  /** Absent in build-33 checkpoints: keep their original seeded course. */
+  courseRevision?: 1 | 2; metaArmor?: number; metaMagnet?: number; lastJumpAt?: number;
 };
 export const KINDS: Kind[] = ['coin','gem','heart','shield','magnet','life','key','vault','workshop','burrow','boulder','saw','roots','steam','gap','mud','drone','crate','snow-white','gorilla-white','madger-bot','snow-sigil','guardian-totem','tech-cell','treasure-cache','chamber-door','bonus-ledge'];
 export const HAZARDS = new Set<Kind>(['boulder','saw','roots','steam','gap','mud','drone','crate']);
@@ -151,7 +154,7 @@ export function steer(s: Expedition, direction: -1|1) {
 }
 export function jump(s: Expedition, events: GameEvent[]) {
   if(s.mode!=='running') return;
-  if(s.y-(s.groundHeight??0) <= .025 && s.slide <= .01) { s.vy=8.7; s.y=(s.groundHeight??0)+.025; s.groundHeight=0; s.jumpBuffer=0; event(s,events,'jump'); }
+  if(s.y-(s.groundHeight??0) <= .025 && s.slide <= .01) { s.vy=8.7; s.y=(s.groundHeight??0)+.025; s.groundHeight=0; s.jumpBuffer=0; if(s.courseRevision===2)s.lastJumpAt=s.time; event(s,events,'jump'); }
   else if(s.y > .025) s.jumpBuffer=.12;
 }
 /** Down digs beneath overhead obstacles; airborne Down makes a controlled descent.
@@ -214,8 +217,17 @@ function stepCompanions(s: Expedition, course: CourseItem[], used: Set<number>, 
           c.resolved=true;
           if(!used.has(target.id)&&target.d>=s.distance-.6){
             used.add(target.id);c.actions++;s.lastGood=s.time;
-            if(id==='snow'){s.score+=125;allyEvent(s,events,'companion-attack',id,'SNOW WHITE · THREAT CLEARED +125',125,target);}
-            else{s.score+=80;allyEvent(s,events,'companion-boost',id,'MADGER BOT · TRAP DISABLED +80',80,target);}
+            if(id==='snow'){s.score+=125;if(s.courseRevision===2)s.energy=clamp(s.energy+18,0,100);allyEvent(s,events,'companion-attack',id,'SNOW WHITE · THREAT CLEARED +125',125,target);}
+            else{
+              s.score+=80;allyEvent(s,events,'companion-boost',id,'MADGER BOT · TRAP DISABLED +80',80,target);
+              // A bounded EMP link is electronics-only. Do not steal a Snow
+              // target or let the pulse cross onto another road.
+              if(s.courseRevision===2){
+                const snow=s.companions.snow,reserved=snow.actionRemaining>0&&!snow.resolved?snow.targetId:null;
+                const linked=course.find(i=>i.route===s.route&&!used.has(i.id)&&i.id!==reserved&&['drone','saw','steam'].includes(i.kind)&&Math.abs(i.d-target.d)<=3);
+                if(linked){used.add(linked.id);c.actions++;s.score+=80;allyEvent(s,events,'companion-boost',id,'MADGER BOT · CHAIN HACK +80',80,linked);}
+              }
+            }
           }
         }
       }
@@ -239,24 +251,25 @@ function reward(s: Expedition, item: CourseItem, events: GameEvent[]) {
     const id:CompanionId=item.kind==='snow-sigil'?'snow':item.kind==='guardian-totem'?'gorilla':'bot';
     if(!s.heroShards||!s.baseShards||!s.heroUnlocked)return;
     s.heroShards[id]++;s.heroCharge=clamp((s.heroCharge??0)+24,0,100);s.score+=300;
-    const count=s.heroShards[id]+s.baseShards[id];
-    if(!s.heroUnlocked[id]&&count>=HERO_SHARD_TARGET){s.heroUnlocked[id]=true;event(s,events,'hero-shard',COMPANIONS[id].name.toUpperCase()+' UNLOCKED! · CHARGE TO SUMMON',300);}
-    else event(s,events,'hero-shard',COMPANIONS[id].name.toUpperCase()+' FRAGMENT · '+Math.min(count,HERO_SHARD_TARGET)+'/'+HERO_SHARD_TARGET,300);
+    const count=s.heroShards[id]+s.baseShards[id],target=s.courseRevision===1?LEGACY_HERO_SHARD_TARGET:HERO_SHARD_TARGET;
+    if(!s.heroUnlocked[id]&&count>=target){s.heroUnlocked[id]=true;event(s,events,'hero-shard',COMPANIONS[id].name.toUpperCase()+' UNLOCKED! · CHARGE TO SUMMON',300);}
+    else event(s,events,'hero-shard',COMPANIONS[id].name.toUpperCase()+' FRAGMENT · '+Math.min(count,target)+'/'+target,300);
     s.lastGood=s.time;return;
   }
   if(s.board==='overgrown'&&item.kind==='treasure-cache'){
-    s.gems+=3;s.coins+=5;s.score+=650;s.heroCharge=clamp((s.heroCharge??0)+30,0,100);
-    s.lastGood=s.time;event(s,events,'secret','ANCIENT TREASURE CACHE · +5 COINS / +3 RELICS',650);return;
+    const fortune=clamp(s.metaFortune??0,0,3),coins=5+fortune*2,gems=3+Math.floor(fortune/2),points=650+fortune*150;
+    s.gems+=gems;s.coins+=coins;s.score+=points;s.heroCharge=clamp((s.heroCharge??0)+30,0,100);
+    s.lastGood=s.time;event(s,events,'secret',`HIDDEN TREASURE CACHE · +${coins} COINS / +${gems} RELICS`,points);return;
   }
   if(item.kind==='coin'||item.kind==='gem') {
-    s.combo++; s.bestCombo=Math.max(s.bestCombo,s.combo); s.score+=points; s.energy=clamp(s.energy+7,0,100);
+    s.combo++; s.bestCombo=Math.max(s.bestCombo,s.combo); s.score+=points; s.energy=clamp(s.energy+7+(s.metaMagnet??0)*2,0,100);
     if(s.board==='overgrown')s.heroCharge=clamp((s.heroCharge??0)+(item.kind==='gem'?12:5),0,100);
     if(item.kind==='coin') s.coins++; else s.gems++;
     s.lastGood=s.time; event(s,events,item.kind,item.kind==='gem'?`RELIC +${points}`:'',points); return;
   }
   if(item.kind==='heart') { s.hp=clamp(s.hp+1,0,3); s.score+=150; event(s,events,'power','GRIT RESTORED',150); }
-  if(item.kind==='shield') { s.shields=s.upgrade==='armor'?2:1; s.shieldTime=18; event(s,events,'power','SHIELD UP'); }
-  if(item.kind==='magnet') { s.magnet=s.upgrade==='magnet'?18:10; event(s,events,'power','MAGNET ACTIVE'); }
+  if(item.kind==='shield') { s.shields=shieldCapacity(s); s.shieldTime=shieldDuration(s); event(s,events,'power','SHIELD UP'); }
+  if(item.kind==='magnet') { s.magnet=s.upgrade==='magnet'?18:10+(s.metaMagnet??0)*2; event(s,events,'power','MAGNET ACTIVE'); }
   if(item.kind==='life') { if(s.lives<2) {s.lives++;event(s,events,'power','EXTRA LIFE');} else {s.score+=750;event(s,events,'power','LIFE RESERVE FULL +750',750);} }
   if(item.kind==='key') { s.keys++;event(s,events,'secret','VAULT KEY FOUND'); }
   if(item.kind==='vault') {
@@ -278,13 +291,13 @@ function hurt(s: Expedition, item: CourseItem, events: GameEvent[]) {
     guard.targetId=item.id;guard.targetD=item.d;guard.targetX=item.lane*LANE_WIDTH;guard.targetRoute=s.route;guard.resolved=true;
     // Finish the final brace, then allow the normal .65s departure before freeing the summon slot.
     if(guard.charges===0)guard.timeLeft=Math.min(guard.timeLeft,COMPANIONS.gorilla.actionDuration+.65);
-    s.immune=Math.max(s.immune,.8);s.mud=0;s.lastGood=s.time;
-    if(item.kind==='gap'){s.y=Math.max(s.y,.35);s.vy=6;}
+    s.immune=Math.max(s.immune,s.courseRevision===2?1.1:.8);s.mud=0;if(s.courseRevision===2)s.slideCooldown=0;s.lastGood=s.time;
+    if(item.kind==='gap'){s.y=Math.max(s.y,.35);s.vy=6;if(s.courseRevision===2)s.lastJumpAt=-100;}
     allyEvent(s,events,'companion-guard','gorilla',item.kind==='gap'?'GORILLA WHITE · LEDGE RESCUE':'GORILLA WHITE · BODYGUARD SAVE',0,item);return;
   }
-  if(s.shields>0 && item.kind!=='gap') {s.shields--;s.immune=.9;event(s,events,'block','SHIELD BLOCK');return;}
+  if(s.shields>0 && item.kind!=='gap') {s.shields--;s.immune=.9+(s.metaArmor??0)*.15;event(s,events,'block','SHIELD BLOCK');return;}
   if(item.kind==='mud') {s.mud=2.5;s.combo=0;event(s,events,'splash','MUD! JUMP TO AVOID');return;}
-  s.hp--;s.hits++;s.combo=0;s.immune=1.7;s.lastHurt=s.time;event(s,events,'hit',item.kind==='gap'?'LEDGE RECOVERY · −1 GRIT':'OUCH! −1 GRIT',-1);
+  s.hp--;s.hits++;s.combo=0;s.immune=1.7+(s.metaArmor??0)*.15;s.lastHurt=s.time;if(s.courseRevision===2)s.lastJumpAt=-100;event(s,events,'hit',item.kind==='gap'?'LEDGE RECOVERY · −1 GRIT':'OUCH! −1 GRIT',-1);
   if(item.kind==='gap') {s.vy=6;s.y=.35;}
   if(s.hp<=0) {
     if(s.lives>0) {s.lives--;s.hp=3;s.immune=3;s.shields=Math.max(1,s.shields);s.shieldTime=3;s.lastGood=s.time;event(s,events,'revive','EXTRA LIFE! BACK IN THE RUN');}
@@ -332,7 +345,7 @@ export function fixedStep(s: Expedition, course: CourseItem[], events: GameEvent
     }
   }
   const base=9.8+Math.min(3.5,s.distance/300);
-  const targetSpeed=base*(s.mud>0?.65:1)*(s.burst>0?1.10:1);
+  const targetSpeed=base*(s.mud>0?.65:1)*(s.burst>0?(s.courseRevision===2?1.22:1.10):1);
   s.speed+=(targetSpeed-s.speed)*Math.min(1,STEP*5);
   s.distance=Math.min(TRACK_LENGTH,s.distance+s.speed*STEP);
   const zone=s.board==='overgrown'?0:zoneAt(s.distance);if(zone!==s.zone){s.zone=zone;event(s,events,'zone',ZONES[zone].name);}
@@ -379,9 +392,10 @@ export function fixedStep(s: Expedition, course: CourseItem[], events: GameEvent
     if(!withinLongitudinal)continue;
     const dx=Math.abs(pose.x-s.x), isHazard=HAZARDS.has(item.kind);
     const radius=isHazard?(item.kind==='drone'?.72:.82):.83;
-    const attracted=(item.kind==='coin'||item.kind==='gem')&&(s.magnet>0||s.companions.bot.timeLeft>0);
+    const attracted=(item.kind==='coin'||item.kind==='gem')&&(s.magnet>0||s.companions.bot.timeLeft>0||((s.metaMagnet??0)>0&&dx<=.83+(s.metaMagnet??0)*.5));
     if(dx>radius&&!attracted)continue;
     if(item.elevation!==undefined&&Math.abs(s.y-item.elevation)>.26)continue;
+    if(item.requiredAction&&!actionSatisfied(s,item.requiredAction))continue;
     if(item.kind==='chamber-door') {
       const chamber=CHAMBERS.find(c=>c.route===item.route&&c.d===item.d);
       if(!chamber||s.secrets.includes(chamber.id))continue;
@@ -424,12 +438,33 @@ export function advance(s: Expedition, course: CourseItem[], seconds: number, cl
   clock.accumulator+=seconds;
   while(clock.accumulator>=STEP-1e-9){fixedStep(s,course,events);clock.accumulator=Math.max(0,clock.accumulator-STEP);if(s.mode!=='running'&&s.mode!=='countdown'){clock.accumulator=0;break;}}
 }
+/** Visible hazards in the runner's physical corridor, never secret coordinates.
+ * Warn about the landing lane of an approaching rockfall, not its distant bank.
+ */
+export function upcomingChallenge(s:Pick<Expedition,'route'|'distance'|'used'|'x'|'time'>,course:CourseItem[]){
+ let item:CourseItem|undefined,ahead=32;
+ for(const candidate of course){
+  if(candidate.route!==s.route||!HAZARDS.has(candidate.kind)||s.used.includes(candidate.id)||Math.abs(candidate.lane*LANE_WIDTH-s.x)>=1.25)continue;
+  const distance=hazardPose(candidate,s.time,s.distance).ahead;
+  if(distance>0&&distance<ahead){item=candidate;ahead=distance;}
+ }
+ if(!item)return null;
+ return {distance:ahead,kind:item.kind,
+  action:item.kind==='roots'||item.kind==='drone'?'burrow':item.kind==='gap'||item.kind==='mud'?'jump':'jump-or-burst'} as const;
+}
 export function nearbyHint(s: Expedition, course: CourseItem[]) {
   if(s.board==='overgrown'){
+    const gate=upcomingChallenge(s,course);
+    if(gate){
+      const name:Partial<Record<Kind,string>>={roots:'LOW ROOT CANOPY',drone:'LOW FLYING DRONE',gap:'BROKEN TRAIL',mud:'DEEP MUD',boulder:'ROLLING BOULDER',saw:'SPINNING SAW',steam:'STEAM VENT',crate:'BARRICADE'};
+      return name[gate.kind]+' · '+(gate.action==='burrow'?'BURROW':gate.action==='jump'?'JUMP':'JUMP OR BURST')+' · '+Math.ceil(gate.distance)+'m';
+    }
     const bonus=course.find(i=>i.kind==='bonus-ledge'&&i.route===s.route&&i.d-s.distance>0&&i.d-s.distance<22);
     if(bonus)return 'RAISED TREASURE '+Math.ceil(bonus.d-s.distance)+'m · '+(bonus.lane<0?'LEFT':'RIGHT')+' + JUMP · CENTRE ROAD IS SAFE';
-    const chamber=CHAMBERS.find(c=>c.route===s.route&&c.d>s.distance-1&&c.d<s.distance+65);
-    if(chamber)return `${chamber.clue.toUpperCase()} · ${['LEFT','CENTRE','RIGHT'][chamber.lane+1]} · ${chamber.action==='burrow'?'BURROW':'JUMP'} AT ${chamber.d}m`;
+    const hidden=course.find(i=>i.secret&&i.route===s.route&&!s.used.includes(i.id)&&i.d>s.distance&&i.d<s.distance+secretRevealDistance(s));
+    if(hidden)return hidden.requiredAction==='burst'?'A SEALED CACHE HUMS WITH BURST ENERGY':hidden.requiredAction==='burrow'?'FRESH CLAW MARKS UNDER THE BANK':'A GOLD GLINT ABOVE THE TRAIL';
+    const chamber=CHAMBERS.find(c=>c.route===s.route&&c.d>s.distance-1&&c.d<s.distance+(s.courseRevision===2?28:65));
+    if(chamber)return s.courseRevision===2?chamber.clue.toUpperCase():`${chamber.clue.toUpperCase()} · ${['LEFT','CENTRE','RIGHT'][chamber.lane+1]} · ${chamber.action==='burrow'?'BURROW':'JUMP'} AT ${chamber.d}m`;
     if(s.forkStage===0)return s.distance>=98
       ?'LIVE FORK '+Math.max(0,Math.ceil(140-s.distance))+'m · STEER LEFT / MIDDLE / RIGHT'
       :'THREE REAL ROADS AHEAD · STEER TO CHOOSE';
@@ -453,7 +488,17 @@ export function nearbyHint(s: Expedition, course: CourseItem[]) {
  * Route rewards are fixed per seed; no purchase, ad or RNG may unlock a hero.
  * Kept alongside the v1 course so historical saved games remain playable.
  */
-export const HERO_SHARD_TARGET=4;
+export const HERO_SHARD_TARGET=8;
+/** Build-33 unlocks are permanent; new expeditions earn the larger target. */
+export const LEGACY_HERO_SHARD_TARGET=4;
+export const secretRevealDistance=(s:Pick<Expedition,'metaFortune'>)=>18+clamp(s.metaFortune??0,0,3)*4;
+export function actionSatisfied(s:Pick<Expedition,'y'|'groundHeight'|'slide'|'burst'|'time'|'lastJumpAt'|'lastHurt'>,action:CourseAction){
+ // A damage/guardian recovery bounce must never count as an earned jump.
+ const deliberateJump=s.lastJumpAt!==undefined&&Number.isFinite(s.lastJumpAt)&&s.lastJumpAt>=0&&s.time-s.lastJumpAt>=0&&s.time-s.lastJumpAt<.85&&s.lastJumpAt>=s.lastHurt;
+ return action==='burst'?s.burst>0:action==='burrow'?s.slide>0&&s.y<.25:deliberateJump&&s.y-(s.groundHeight??0)>.65;
+}
+const shieldCapacity=(s:Expedition)=>s.upgrade==='armor'?2:1+Math.floor(clamp(s.metaArmor??0,0,3)/2);
+const shieldDuration=(s:Expedition)=>18+clamp(s.metaArmor??0,0,3)*10;
 export type ChamberId='guardian-nest'|'capacitor-sanctum'|'moonwell';
 export const CHAMBERS:readonly {id:ChamberId;route:Route;d:number;lane:Lane;action:'burrow'|'jump';name:string;clue:string;story:string;hero:CompanionId;supplies:string;accent:string}[]=[
  {id:'guardian-nest',route:'root-arch',d:704,lane:-1,action:'burrow',name:'The Guardian Nest',clue:'Claw marks beneath the living roots',story:'Ancient roots cradle a guardian altar. Choose the carved totem, or leave it for a reserve of protective sap.',hero:'gorilla',supplies:'Restore 2 grit + one shield for 45 seconds',accent:'#A3DE85'},
@@ -532,15 +577,16 @@ export function overgrownPathHeight(route:Route,d:number){
  const entry=smooth((d-455)/24),exit=smooth((900-d)/28);
  return (upper?.65+1.25*entry:lower?-.30-.55*entry:-.45*entry)*exit;
 }
-export function freshOvergrownExpedition(seed:number,id:string,shards:Record<CompanionId,number>={snow:0,gorilla:0,bot:0},upgrades:{armor:number;magnet:number;fortune:number}={armor:0,magnet:0,fortune:0}):Expedition{
+export function freshOvergrownExpedition(seed:number,id:string,shards:Record<CompanionId,number>={snow:0,gorilla:0,bot:0},upgrades:{armor:number;magnet:number;fortune:number}={armor:0,magnet:0,fortune:0},earnedUnlocks:Partial<Record<CompanionId,boolean>>={}):Expedition{
  const s=freshExpedition(seed,id);
- s.board='overgrown';s.forkStage=0;s.majorPath=undefined;s.subPath=undefined;
+ s.board='overgrown';s.courseRevision=2;s.lastJumpAt=-100;s.forkStage=0;s.majorPath=undefined;s.subPath=undefined;
  s.heroShards={snow:0,gorilla:0,bot:0};
  s.baseShards={snow:shards.snow||0,gorilla:shards.gorilla||0,bot:shards.bot||0};
- s.heroUnlocked={snow:shards.snow>=HERO_SHARD_TARGET,gorilla:shards.gorilla>=HERO_SHARD_TARGET,bot:shards.bot>=HERO_SHARD_TARGET};
- s.heroCharge=0;s.metaFortune=upgrades.fortune||0;
- if(upgrades.armor>0){s.shields=1;s.shieldTime=45+upgrades.armor*15;}
- if(upgrades.magnet>0)s.magnet=4+upgrades.magnet*3;
+ s.heroUnlocked={snow:earnedUnlocks.snow===true||shards.snow>=HERO_SHARD_TARGET,gorilla:earnedUnlocks.gorilla===true||shards.gorilla>=HERO_SHARD_TARGET,bot:earnedUnlocks.bot===true||shards.bot>=HERO_SHARD_TARGET};
+ s.heroCharge=0;s.metaFortune=clamp(Math.floor(upgrades.fortune||0),0,3);
+ s.metaArmor=clamp(Math.floor(upgrades.armor||0),0,3);s.metaMagnet=clamp(Math.floor(upgrades.magnet||0),0,3);
+ if(s.metaArmor>0){s.shields=shieldCapacity(s);s.shieldTime=45+s.metaArmor*15;}
+ if(s.metaMagnet>0)s.magnet=4+s.metaMagnet*3;
  return s;
 }
 /** Commit a physically reached fork without pausing or skipping simulation.
@@ -572,7 +618,7 @@ export function activateHero(s:Expedition,id:CompanionId,events:GameEvent[]){
  if(s.board!=='overgrown'||s.mode!=='running'||s.heroUnlocked?.[id]!==true||(s.heroCharge??0)<100||COMPANION_IDS.some(hero=>s.companions[hero].timeLeft>0))return false;
  s.heroCharge=0;recruitCompanion(s,id,events);return true;
 }
-export function buildOvergrownCourse(seed:number):CourseItem[]{
+export function buildOvergrownCourse(seed:number,revision:1|2=2):CourseItem[]{
  const random=randomGenerator(seed),items:CourseItem[]=[];
  const add=(d:number,lane:Lane,kind:Kind,route:Route='main')=>{
   items.push({id:items.length,d,lane,kind,route,phase:random()*Math.PI*2});
@@ -642,5 +688,63 @@ export function buildOvergrownCourse(seed:number):CourseItem[]{
   }
   if(!placed)throw Error('No safe terrace corridor: '+choice.id);
  }
+ if(revision===2)enrichOvergrownCourse(seed,items);
  return items.sort((a,b)=>a.d-b.d||a.id-b.id);
+}
+
+/** Revision 2 keeps the old generator untouched for resumed build-33 runs.
+ * Each road has readable, spaced action gates plus an optional secret challenge.
+ * The salt isolates discovery placement from rendering and from legacy RNG use.
+ */
+function enrichOvergrownCourse(seed:number,items:CourseItem[]){
+ const random=randomGenerator((seed^0x6d2b79f5)>>>0),lanes:Lane[]=[-1,0,1];
+ const choices=[...MAJOR_FORKS,...Object.values(SUB_FORKS).flat()];
+ const append=(d:number,lane:Lane,kind:Kind,route:Route,extra:Partial<CourseItem>={})=>{
+  const item:CourseItem={id:items.length,d,lane,kind,route,phase:random()*Math.PI*2,...extra};items.push(item);return item;
+ };
+ for(const choice of choices){
+  const route=choice.id,major=MAJOR_FORKS.some(o=>o.id===route);
+  const deck=items.find(i=>i.route===route&&i.kind==='bonus-ledge')!;
+  const chamber=CHAMBERS.find(c=>c.route===route);
+  const rows=[...new Set(items.filter(i=>i.route===route&&HAZARDS.has(i.kind)).map(i=>i.d))]
+   .filter(d=>d>(major?184:502)&&d<(major?403:840)
+    &&(d<deck.d-9||d>deck.d+BONUS_LEDGE_LENGTH+10)
+    &&(!chamber||Math.abs(d-chamber.d)>24)).sort((a,b)=>a-b);
+  const count=Math.min(rows.length,choice.risk==='LOW'?2:choice.risk==='MEDIUM'?3:4);
+  const selected=Array.from({length:count},(_,i)=>rows[Math.round(i*(rows.length-1)/Math.max(1,count-1))]);
+  for(const [index,d] of selected.entries()){
+   // No steering-only escape: jump broken ground, burrow low roots, or
+   // choose jump/burst for a barricade. Every gate is at least 22m apart.
+   const kind:Kind=index%3===0?'gap':index%3===1?'roots':'crate';
+   const row=items.filter(i=>i.route===route&&i.d===d&&HAZARDS.has(i.kind));
+   for(const item of row)item.kind=kind;
+   for(const lane of lanes)if(!row.some(i=>i.lane===lane))append(d,lane,kind,route);
+  }
+  const fragments=items.filter(i=>i.route===route&&['snow-sigil','guardian-totem','tech-cell'].includes(i.kind));
+  for(const [index,item] of fragments.entries()){
+   if(index>0){item.kind='gem';continue;}
+   const gate=selected[Math.floor(random()*selected.length)];
+   const hazard=items.find(i=>i.route===route&&i.d===gate&&HAZARDS.has(i.kind));
+   item.d=gate+2;item.lane=lanes[Math.floor(random()*3)];
+   item.requiredAction=hazard?.kind==='roots'?'burrow':'jump';
+  }
+  // Search a genuinely free optional corridor; no mandatory trap is hidden.
+  // Secret action, lateral position and distance all vary with the run seed.
+  const first=major?208:526,last=major?390:826,candidates:number[]=[];
+  for(let d=first;d<=last;d+=2){
+   if(d>deck.d-18&&d<deck.d+BONUS_LEDGE_LENGTH+18)continue;
+   if(chamber&&Math.abs(d-chamber.d)<28)continue;
+   if(items.some(i=>i.route===route&&HAZARDS.has(i.kind)&&Math.abs(i.d-d)<10))continue;
+   candidates.push(d);
+  }
+  // A cache is always present on every playable route. Existing authored
+  // spaces guarantee at least one candidate; fail loudly in development if
+  // future layout edits break that contract rather than placing an unfair trap.
+  if(!candidates.length)throw Error('No safe secret corridor: '+route);
+  const d=candidates[Math.floor(random()*candidates.length)],lane=lanes[Math.floor(random()*3)];
+  const action:CourseAction=(['jump','burrow','burst'] as const)[Math.floor(random()*3)];
+  const cache=items.find(i=>i.route===route&&i.kind==='treasure-cache')??append(d,lane,'treasure-cache',route);
+  Object.assign(cache,{d,lane,requiredAction:action,secret:true});
+  if(action==='burst')for(const offset of [-3,0,3])append(d+offset,lane,'crate',route);
+ }
 }

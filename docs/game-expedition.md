@@ -187,3 +187,31 @@ clock-calibrated two-second freshness, and separately inspects genuine pixels.
 A paused view may reuse identical already-drawn geometry; live play requires a
 fresh draw. This replaces expensive repeated accessibility traversal, not real
 touch input, actual screenshot/motion proof, or the 400ms protective pause.
+
+## November 4, 2026 continuation (candidate build 34)
+
+This is a continuation of the offline Android PBR game, not a replacement with
+an earlier mini-game. Visual acceptance requires rendered model/route images
+and the actual Android artifact; source assertions are not likeness proof.
+The current reference is the user's ten-pose PNG documented in
+`mobile/public/blackroot/HERO_ASSET_PROVENANCE.md`, not the older bundled JPEG.
+
+New runs use course revision 2. Old checkpoints regenerate revision 1 exactly.
+Previously earned companions remain unlocked; newly earned companions require
+eight rare action-earned fragments. Mandatory readable jump/burrow/crate gates,
+seed-varied hidden caches, persistent upgrade effects, and distinct finite
+companion abilities replace free repeated fragment handouts. Hidden pickups
+appear only within discovery range; Fortune extends that range. Existing
+chamber entrances and live junctions remain ordinary playable routes.
+
+The renderer uses a smaller articulated hero rig, planted feet, gradual burrow
+motion, continuous branch surfaces, and scenery-first quality adaptation.
+The phone screenshot showed real low-resolution rendering, so pixel clarity
+and scenery density are now controlled separately. Device performance and
+character likeness must still be reviewed on this candidate's real images.
+
+The Android offline-host error view can retry a failed read/backup without
+clearing saves. This does not establish that the prior emulator disconnect
+on cold reopening was an application bug or that recovery now passes. The
+existing native cold-save/frame-evidence gate remains required and unchanged
+in purpose. Build 33 remains the previously delivered fallback.

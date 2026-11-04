@@ -147,3 +147,29 @@ test('forest foliage has subtle reproducible breeze without affecting track geom
   assert.equal(terrainSurfaceHeight(p,2.15,52,0),-.33,
     'Sway must never change lane, collision or save geometry');
 });
+
+
+test('all three physical branch surfaces exist before the runner makes the choice',async()=>{
+ const {visibleRoads,nearestRoad}=await import('../public/blackroot/terrain.mjs');
+ const offset=(route,d)=>({rootway:-1,ridge:0,deep:1,mosswalk:-1,'root-arch':0,'log-crossing':1}[route]||0)*(2.15+6.35*Math.min(1,Math.max(0,(d-(d<450?140:455))/24)));
+ const main={route:'main',forkStage:0};
+ assert.deepEqual(visibleRoads(main,130,offset).map(r=>r.route),['main']);
+ const split=visibleRoads(main,160,offset);
+ assert.equal(split.length,3);assert(split[0].centre<split[1].centre&&split[1].centre<split[2].centre);
+ assert.equal(nearestRoad(split,8).route,'deep');
+ assert.deepEqual(visibleRoads({route:'rootway',majorPath:'rootway'},470,offset).map(r=>r.route),['mosswalk','root-arch','log-crossing']);
+ assert.deepEqual(visibleRoads({route:'ridge',majorPath:'ridge'},470,offset).map(r=>r.route),['causeway','watchtower','gearworks']);
+ assert.equal(visibleRoads(main,140,offset)[0].halfWidth,3.25/3);
+});
+
+
+test('narrow fork shoulders use the identical height for terrain and grounded scenery',async()=>{
+ const {roadSurfaceHeight,nearestRoad}=await import('../public/blackroot/terrain.mjs');
+ const roads=[{route:'lower',centre:-2.15,halfWidth:4.875,height:-.3},{route:'upper',centre:0,halfWidth:1.08,height:.65},{route:'tunnel',centre:2.15,halfWidth:1.08,height:0}];
+ assert.equal(nearestRoad(roads,0).route,'upper','overlapping lower road must not swallow the raised entrance');
+ for(const road of roads)for(const x of [-8,-4,-2,0,2,4,8]){
+   const y=roadSurfaceHeight({bank:1.5,ripple:.9,frequency:.13,strata:0},road,x,456);
+   assert(Number.isFinite(y));
+   if(Math.abs(x-road.centre)<=road.halfWidth)assert(Math.abs(y-(-.33+road.height))<1e-10);
+ }
+});

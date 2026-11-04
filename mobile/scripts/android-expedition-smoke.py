@@ -44,6 +44,8 @@ SCORE = re.compile(r"Current expedition score (\d+)")
 ERROR_LABELS = (
     "The 3D view did not start.", "The 3D view needs a restart.",
     "Saved expedition could not be loaded.", "Progress is in memory only.",
+    "Your saved Expedition could not be loaded", "native backup could not be updated",
+    "The offline game sent an invalid local save", "The 3D graphics process stopped",
     "Unable to load script", "Uncaught Error", "keeps stopping",
 )
 
@@ -61,6 +63,9 @@ class Smoke:
         self.control_run_id = None
         self.current_pids = set()
         self.clock_calibration = None
+        self.road_samples = []
+        self.road_cue_samples = []
+        self.road_responses = []
         self.report = {"status": "running", "package": PACKAGE, "started_utc": STAMP,
                        "steps": [], "states": {}, "frames": {}, "errors": [], "automation_calls": []}
 
@@ -227,6 +232,19 @@ class Smoke:
             raise AssertionError("Foreground frame heartbeat is stale (>2 seconds)")
         if any(key not in rendered or key not in current or rendered[key] != current[key] for key in fields):
             raise AssertionError("Current state differs from the actually rendered frame")
+        # Optional for older fixtures. This is the same generated player-facing
+        # cue, not proof of the exact React text painted at that instant.
+        if "hint" in rendered or "hint" in current:
+            if (not isinstance(current.get("hint"), str)
+                    or len(current["hint"]) > 240
+                    or rendered.get("hint") != current["hint"]):
+                raise AssertionError("Visible hint differs from the actually rendered frame")
+        if "jumpAt" in rendered or "jumpAt" in current:
+            values = (rendered.get("jumpAt"), current.get("jumpAt"))
+            if (any(isinstance(value, bool) or not isinstance(value, (int, float))
+                    or not (-float('inf') < value < float('inf')) for value in values)
+                    or values[0] != values[1]):
+                raise AssertionError("Genuine jump time differs from the actually rendered frame")
         if current["mode"] != "paused" and android_now_high - at > 2000:
             raise AssertionError("Rendered live frame is stale (>2 seconds)")
         if not isinstance(current["runId"], str) or not current["runId"]:
@@ -283,6 +301,7 @@ class Smoke:
         self.last_observation = {"phase": latest["current"]["mode"], "hud": state,
             "run_id": latest["current"]["runId"], "elapsed_s": round(time.monotonic() - self.started, 3),
             "source": "app-PID scoped native post-draw log telemetry (not accessibility HUD)",
+            "hint": latest["current"].get("hint"),
             "proof": latest, "age_upper_ms": round(now + uncertainty - latest["observedAt"], 3)}
         return state
 
@@ -635,11 +654,133 @@ class Smoke:
         self.paused_state("09-final-paused")
         self.mark("Restored run resumes with a nonblank 3D view")
 
+    @staticmethod
+    def visible_road_cue(hint):
+        """Parse only player-visible road warnings, never hints about secrets."""
+        actions = {
+            "LOW ROOT CANOPY": "BURROW", "LOW FLYING DRONE": "BURROW",
+            "BROKEN TRAIL": "JUMP", "DEEP MUD": "JUMP",
+            "ROLLING BOULDER": "JUMP OR BURST", "SPINNING SAW": "JUMP OR BURST",
+            "STEAM VENT": "JUMP OR BURST", "BARRICADE": "JUMP OR BURST",
+        }
+        if not isinstance(hint, str):
+            raise AssertionError("Visible road cue is missing")
+        parts = hint.split(" · ")
+        if not parts or parts[0] not in actions:
+            return None
+        if (len(parts) != 3 or parts[1] != actions[parts[0]]
+                or not re.fullmatch(r"[1-9][0-9]?m", parts[2])):
+            raise AssertionError("Malformed visible road warning: " + hint)
+        metres = int(parts[2][:-1])
+        if metres > 32:
+            raise AssertionError("Road warning exceeds visible approach range: " + hint)
+        return {"name": parts[0], "control": "BURROW" if parts[1] == "BURROW" else "JUMP",
+                "remaining_m": metres, "visible_text": hint}
+
+    def observed_road_speed(self, observation):
+        """Estimate pace only from already validated, genuinely rendered progress."""
+        sample = (observation["proof"]["rendered"]["at"], observation["hud"]["distance_m"])
+        if not self.road_samples or sample[0] > self.road_samples[-1][0]:
+            self.road_samples.append(sample)
+        self.road_samples = [old for old in self.road_samples if sample[0] - old[0] <= 1400]
+        candidates = [(sample[1] - old[1]) * 1000 / (sample[0] - old[0])
+                      for old in self.road_samples
+                      if 350 <= sample[0] - old[0] <= 1400 and sample[1] - old[1] >= 3]
+        return sorted(candidates)[len(candidates) // 2] if candidates else None
+
+    def observed_cue_closing_speed(self, observation, cue):
+        # Moving rockfalls approach faster than the runner. Measure the visible
+        # countdown itself when enough matching observations are available.
+        at = observation["proof"]["rendered"]["at"]
+        row = observation["hud"]["distance_m"] + cue["remaining_m"]
+        identity = (observation["run_id"], observation["hud"]["route"], cue["name"])
+        sample = (at, cue["remaining_m"], row, identity)
+        if not self.road_cue_samples or at > self.road_cue_samples[-1][0]:
+            self.road_cue_samples.append(sample)
+        self.road_cue_samples = [old for old in self.road_cue_samples if at - old[0] <= 1400]
+        rates = [(old[1] - cue["remaining_m"]) * 1000 / (at - old[0])
+                 for old in self.road_cue_samples if old[3] == identity
+                 and abs(old[2] - row) <= 8 and 350 <= at - old[0] <= 1400
+                 and old[1] - cue["remaining_m"] >= 3]
+        return sorted(rates)[len(rates) // 2] if rates else None
+
+    @staticmethod
+    def observed_jump_time(observation):
+        value = observation.get("proof", {}).get("current", {}).get("jumpAt")
+        if (isinstance(value, bool) or not isinstance(value, (int, float))
+                or not (-float('inf') < value < float('inf'))):
+            raise AssertionError("Road JUMP requires genuine jump-event evidence")
+        return value
+
+    @staticmethod
+    def confirmed_road_response(before, after, control):
+        if (not after or after.get("phase") != "running"
+                or after.get("run_id") != before.get("run_id")):
+            return False
+        expected = "burrowing" if control == "BURROW" else "jumping"
+        if control == "JUMP":
+            # Hurt recoil also raises y. Only a new real jump event can satisfy
+            # the input check; no bounce or older jump can substitute for it.
+            advanced = Smoke.observed_jump_time(after) > Smoke.observed_jump_time(before)
+            return advanced and after.get("hud", {}).get("action") == expected
+        return after.get("hud", {}).get("action") == expected
+
+    def respond_to_visible_road_cue(self, observation):
+        self.require_running_observation(observation, "Visible road response")
+        speed = self.observed_road_speed(observation)
+        cue = self.visible_road_cue(observation.get("hint"))
+        if cue is None:
+            return False
+        closing_speed = self.observed_cue_closing_speed(observation, cue)
+        speed = closing_speed or speed
+        if speed is None:
+            return False
+        state = observation["hud"]
+        row_estimate = state["distance_m"] + cue["remaining_m"]
+        if any(response["run_id"] == observation["run_id"]
+               and response["route"] == state["route"]
+               and response["name"] == cue["name"]
+               and abs(response["row_estimate_m"] - row_estimate) <= 4
+               for response in self.road_responses):
+            return False
+        # HUD distances are rounded, and log receipt is later than the frame.
+        # Recheck each heartbeat instead of sleeping to a hidden course row.
+        frame_age_s = max(0, (observation["age_upper_ms"]
+                             - self.clock_calibration["rtt_ms"] / 2) / 1000)
+        clicks = [call["duration_ms"] / 1000 for call in self.report["automation_calls"]
+                  if call["name"].startswith("click:")][-3:]
+        input_s = sorted(clicks)[len(clicks) // 2] if clicks else .1
+        lead_s = (.3 if cue["control"] == "BURROW" else .4) + input_s
+        remaining_m = cue["remaining_m"] - .5 - speed * frame_age_s
+        if remaining_m > speed * lead_s or state["action"] != "running":
+            return False
+        if remaining_m <= .5:
+            raise AssertionError("Visible road warning arrived too late for a verified response: " + cue["visible_text"])
+        if cue["control"] == "JUMP":
+            self.observed_jump_time(observation)  # Fail closed before sending input.
+        response = {**cue, "run_id": observation["run_id"], "route": state["route"],
+                    "row_estimate_m": row_estimate, "observed_speed_mps": round(speed, 3),
+                    "pace_source": "visible warning countdown" if closing_speed else "rendered distance",
+                    "estimated_remaining_m": round(remaining_m, 3),
+                    "frame_age_s": round(frame_age_s, 3), "input_budget_s": round(input_s, 3),
+                    "before": observation}
+        self.road_responses.append(response)
+        self.tap(cue["control"])
+        expected = "burrowing" if cue["control"] == "BURROW" else "jumping"
+        self.wait_hud(lambda _: self.confirmed_road_response(observation, self.last_observation, cue["control"]),
+                      "real " + expected + " response to the visible road warning", timeout=2)
+        response["after"] = self.last_observation
+        self.report.setdefault("visible_road_responses", []).append(response)
+        self.mark("Deep visible road response", warning=cue["visible_text"], control=cue["control"],
+                  observed_speed_mps=round(speed, 3))
+        return True
+
     def deep_reference_run(self):
         """Reach the user's Deep scene with real controls and observed rendered state.
 
-        Finish Rootway normally and replay. No storage, seed, health, route or
-        distance injection. Course row distances are public gameplay geometry.
+        Finish Rootway normally and replay. Respond only to the genuine visible
+        road-hazard cues mirrored in fresh post-draw proof. No course schedule,
+        seed access, secret lookup, storage edit or gameplay-state injection.
         """
         self.tap("Resume expedition")
         finish_deadline = time.monotonic() + 150
@@ -671,41 +812,24 @@ class Smoke:
         selected = self.wait_hud(lambda state: state["route"] == "deep",
                                  "Deep selected with real RIGHT input", timeout=15)
         self.report["states"]["deep-selected"] = selected
-        # Fork recenters. Rightmost lane avoids odd hazard rows; jump even rows.
-        if selected["lane"] < 1:
-            for _ in range(1 - selected["lane"]):
-                self.tap("RIGHT")
-        rows = [round(155 + 270 * (i + .55) / 10.2) for i in range(0, 8, 2)]
-        jumped = set()
+        # The fork recenters naturally. Follow only the visible hazard in this
+        # actual lane; random seed, secret positions and course rows are unknown.
+        self.road_samples = []
+        self.road_cue_samples = []
+        self.road_responses = []
         deadline = time.monotonic() + 90
         while time.monotonic() < deadline:
-            scan_started = time.monotonic()
             self.hud()
-            scan_duration = time.monotonic() - scan_started
             observation = self.last_observation
             self.require_running_observation(observation, "Deep approach")
             state = observation["hud"]
             if state["route"] != "deep":
                 raise AssertionError(f"Left Deep before reference capture: {state}")
+            if not isinstance(observation.get("hint"), str):
+                raise AssertionError("Deep progression requires the real visible road cue in post-draw proof")
             if state["distance_m"] >= 353:
                 break
-            for row in rows:
-                if row not in jumped and row - 16 <= state["distance_m"] <= row - 2:
-                    speed = 9.8 + min(3.5, state["distance_m"] / 300)
-                    # State was sampled at observedAt, not when the log was
-                    # read. Compensate the heartbeat's measured midpoint age;
-                    # the independent conservative freshness bound stays 2 s.
-                    frame_age_s = max(0, (observation["age_upper_ms"]
-                                         - self.clock_calibration["rtt_ms"] / 2) / 1000)
-                    delay = max(0, (row - 5 - state["distance_m"]) / speed - frame_age_s)
-                    time.sleep(delay)
-                    # tap revalidates fresh foreground post-draw telemetry and
-                    # uses geometry last observed in the unchanged game layout.
-                    self.tap("JUMP")
-                    jumped.add(row)
-                    self.mark("Deep hazard-row jump", row_m=row, observed=state,
-                              scheduled_wait_s=round(delay, 3), scan_duration_s=round(scan_duration, 3),
-                              frame_age_s=round(frame_age_s, 3))
+            self.respond_to_visible_road_cue(observation)
             time.sleep(.06)
         else:
             raise AssertionError("Deep did not reach the reference distance through real gameplay")
@@ -880,6 +1004,103 @@ def self_test_frame_observer():
         else:
             raise AssertionError("Startup wait exceeded its bound")
     checks += 1
+    # The road driver consumes the same generated player-facing cue mirrored
+    # in strict post-draw proof. These fixtures test policy, never native success.
+    cue_proof = copy.deepcopy(proof)
+    cue_proof["current"]["hint"] = cue_proof["rendered"]["hint"] = "BROKEN TRAIL · JUMP · 12m"
+    Smoke.validate_frame(cue_proof, 100000, 100050); checks += 1
+    bad = copy.deepcopy(cue_proof); bad["rendered"]["hint"] = "LOW ROOT CANOPY · BURROW · 12m"; rejects(bad)
+    bad = copy.deepcopy(cue_proof); del bad["rendered"]["hint"]; rejects(bad)
+    bad = copy.deepcopy(cue_proof); bad["rendered"]["hint"] = bad["current"]["hint"] = 12; rejects(bad)
+    visible_actions = {
+        "LOW ROOT CANOPY": "BURROW", "LOW FLYING DRONE": "BURROW",
+        "BROKEN TRAIL": "JUMP", "DEEP MUD": "JUMP",
+        "ROLLING BOULDER": "JUMP OR BURST", "SPINNING SAW": "JUMP OR BURST",
+        "STEAM VENT": "JUMP OR BURST", "BARRICADE": "JUMP OR BURST",
+    }
+    for name, action in visible_actions.items():
+        cue = Smoke.visible_road_cue(f"{name} · {action} · 12m")
+        assert cue["control"] == ("BURROW" if action == "BURROW" else "JUMP")
+        assert cue["remaining_m"] == 12; checks += 1
+    for hint in ("FRESH CLAW MARKS UNDER THE BANK", "A SEALED CACHE HUMS WITH BURST ENERGY",
+                 "RAISED TREASURE 12m · LEFT + JUMP · CENTRE ROAD IS SAFE",
+                 "LIVE FORK 12m · STEER LEFT / MIDDLE / RIGHT", ""):
+        assert Smoke.visible_road_cue(hint) is None; checks += 1
+    for hint in (None, "LOW ROOT CANOPY · JUMP · 12m", "BROKEN TRAIL · JUMP · 0m",
+                 "BROKEN TRAIL · JUMP · 33m", "BROKEN TRAIL · JUMP · 1.5m"):
+        try:
+            Smoke.visible_road_cue(hint)
+        except AssertionError:
+            checks += 1
+        else:
+            raise AssertionError("Invalid warning accepted: " + str(hint))
+    def road_observation(hint, distance=198):
+        return {"phase": "running", "run_id": "real-observed-run", "hint": hint,
+                "hud": {"distance_m": distance, "lane": 0, "action": "running", "route": "deep", "score": 100},
+                "age_upper_ms": 100, "proof": {"rendered": {"at": 100000, "jumpAt": -100},
+                                                 "current": {"jumpAt": -100}}}
+    for control, hint in (("JUMP", "BROKEN TRAIL · JUMP · 6m"),
+                          ("BURROW", "LOW ROOT CANOPY · BURROW · 5m")):
+        smoke = Smoke(); smoke.clock_calibration = {"rtt_ms": 0}
+        smoke.road_samples = [(99000, 186), (99500, 192)]
+        observation = road_observation(hint)
+        with patch.object(smoke, "tap") as tap, patch.object(smoke, "wait_hud") as wait:
+            assert smoke.respond_to_visible_road_cue(observation)
+            tap.assert_called_once_with(control); wait.assert_called_once()
+            assert not smoke.respond_to_visible_road_cue(observation)
+            tap.assert_called_once(); checks += 2
+    smoke = Smoke(); smoke.clock_calibration = {"rtt_ms": 0}
+    smoke.road_samples = [(99000, 186), (99500, 192)]
+    with patch.object(smoke, "tap") as tap:
+        assert not smoke.respond_to_visible_road_cue(road_observation("BROKEN TRAIL · JUMP · 20m"))
+        assert not smoke.respond_to_visible_road_cue(road_observation("FRESH CLAW MARKS UNDER THE BANK"))
+        tap.assert_not_called(); checks += 2
+    moving = Smoke()
+    earlier = road_observation("ROLLING BOULDER · JUMP OR BURST · 22m", 186)
+    earlier["proof"]["rendered"]["at"] = 99000
+    later = road_observation("ROLLING BOULDER · JUMP OR BURST · 8m", 198)
+    assert moving.observed_cue_closing_speed(earlier, moving.visible_road_cue(earlier["hint"])) is None
+    assert moving.observed_cue_closing_speed(later, moving.visible_road_cue(later["hint"])) == 14
+    checks += 2
+    observation = road_observation("BROKEN TRAIL · JUMP · 6m"); observation["phase"] = "paused"
+    try:
+        smoke.respond_to_visible_road_cue(observation)
+    except AssertionError:
+        checks += 1
+    else:
+        raise AssertionError("Road driver silently resumed a paused game")
+    with patch.object(smoke, "tap", side_effect=AssertionError("stale input proof")):
+        try:
+            smoke.respond_to_visible_road_cue(road_observation("BROKEN TRAIL · JUMP · 6m"))
+        except AssertionError as error:
+            assert str(error) == "stale input proof"; checks += 1
+        else:
+            raise AssertionError("Road driver swallowed native input failure")
+    jump_proof = copy.deepcopy(proof)
+    jump_proof["current"]["jumpAt"] = jump_proof["rendered"]["jumpAt"] = -100
+    Smoke.validate_frame(jump_proof, 100000, 100050); checks += 1
+    for bad_value in (None, True, float('nan'), float('inf'), "10"):
+        bad = copy.deepcopy(jump_proof)
+        bad["current"]["jumpAt"] = bad["rendered"]["jumpAt"] = bad_value
+        rejects(bad)
+    bad = copy.deepcopy(jump_proof); bad["current"]["jumpAt"] = 10; rejects(bad)
+    bad = copy.deepcopy(jump_proof); del bad["rendered"]["jumpAt"]; rejects(bad)
+    before = road_observation("BROKEN TRAIL · JUMP · 6m")
+    bounce = copy.deepcopy(before); bounce["hud"]["action"] = "jumping"
+    assert not Smoke.confirmed_road_response(before, bounce, "JUMP"); checks += 1
+    actual_jump = copy.deepcopy(bounce); actual_jump["proof"]["current"]["jumpAt"] = 20
+    assert Smoke.confirmed_road_response(before, actual_jump, "JUMP"); checks += 1
+    actual_jump["run_id"] = "different-run"
+    assert not Smoke.confirmed_road_response(before, actual_jump, "JUMP"); checks += 1
+    for record in (before, bounce):
+        missing = copy.deepcopy(record); del missing["proof"]["current"]["jumpAt"]
+        try:
+            Smoke.confirmed_road_response(missing if record is before else before,
+                                          missing if record is bounce else bounce, "JUMP")
+        except AssertionError:
+            checks += 1
+        else:
+            raise AssertionError("Road jump accepted missing jump-event evidence")
     print(f"{checks} post-draw observer contract tests passed (not native acceptance)")
     return 0
 

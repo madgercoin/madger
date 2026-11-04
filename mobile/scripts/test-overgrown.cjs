@@ -2,18 +2,18 @@ const test=require('node:test'),assert=require('node:assert/strict'),fs=require(
 const dir=fs.mkdtempSync(path.join(os.tmpdir(),'madger-overgrown-'));test.after(()=>fs.rmSync(dir,{recursive:true,force:true}));
 for(const name of ['companions','core','profile']){const text=fs.readFileSync(path.join(__dirname,'../src/game/expedition',name+'.ts'),'utf8');fs.writeFileSync(path.join(dir,name+'.js'),ts.transpileModule(text,{compilerOptions:{module:ts.ModuleKind.CommonJS,target:ts.ScriptTarget.ES2022}}).outputText);}
 const G=require(path.join(dir,'core.js')),P=require(path.join(dir,'profile.js'));
-const run=(seed=17,profile=P.emptyExpeditionProfile())=>{const s=G.freshOvergrownExpedition(seed,'overgrown-'+seed,profile.heroShards,profile.upgrades);s.mode='running';return s;};
+const run=(seed=17,profile=P.emptyExpeditionProfile())=>{const s=G.freshOvergrownExpedition(seed,'overgrown-'+seed,profile.heroShards,profile.upgrades,profile.heroUnlocks);s.mode='running';return s;};
 const step=(s,c,e=[])=>G.fixedStep(s,c,e);
 test('the new board is deterministic and every branch has its own viable danger/reward selection',()=>{
  const all=[...G.MAJOR_FORKS,...Object.values(G.SUB_FORKS).flat()];
  assert.equal(G.MAJOR_FORKS.length,3);assert.equal(new Set(all.map(x=>x.id)).size,12);
  for(let seed=0;seed<45;seed++){
-  const course=G.buildOvergrownCourse(seed);assert.deepEqual(course,G.buildOvergrownCourse(seed));assert(course.length<600);
+  const course=G.buildOvergrownCourse(seed);assert.deepEqual(course,G.buildOvergrownCourse(seed));assert(course.length<700);
   assert.equal(new Set(course.map(x=>x.id)).size,course.length);
   assert(course.every(i=>G.KINDS.includes(i.kind)&&i.d<G.TRACK_LENGTH));
   for(const choice of all){const items=course.filter(i=>i.route===choice.id);assert(items.length>=14,choice.id);assert(items.some(i=>G.HAZARDS.has(i.kind)),choice.id+' hazards');assert(items.some(i=>i.kind==='coin'),choice.id+' currency');assert(items.some(i=>['snow-sigil','guardian-totem','tech-cell'].includes(i.kind)),choice.id+' unlocks');}
   const occupied=new Map();for(const item of course.filter(i=>G.HAZARDS.has(i.kind))){const key=item.route+':'+item.d,lanes=occupied.get(key)||new Set();lanes.add(item.lane);occupied.set(key,lanes);}
-  assert([...occupied.values()].every(lanes=>lanes.size<=2),'always keep at least one safe lane');
+  for(const [key,lanes] of occupied){if(lanes.size<3)continue;const [route,d]=key.split(':');const row=course.filter(i=>i.route===route&&i.d===Number(d)&&G.HAZARDS.has(i.kind));assert.equal(new Set(row.map(i=>i.kind)).size,1,'full rows have one readable action');assert(['gap','roots','crate'].includes(row[0].kind));}
   assert(!course.some(i=>['snow-white','gorilla-white','madger-bot'].includes(i.kind)),'no free hero spawn');
  }
 });
@@ -71,20 +71,24 @@ test('historical paused fork checkpoints still accept explicit choices',()=>{
  assert.equal(G.chooseFork(s,'mosswalk',events),false);
  assert(G.chooseFork(s,'crystal-vein',events));assert.equal(s.subPath,'crystal-vein');
 });
-test('hero fragments unlock a single selectable hero, no companion appears automatically',()=>{
- const s=run(),course=G.buildOvergrownCourse(s.seed),events=[];s.forkStage=1;s.majorPath='deep';s.route='deep';s.routeStart=140;s.routeEnd=450;s.routeSide=1;
+test('rare action-earned fragments unlock only at eight, then summon one selected hero',()=>{
+ const profile=P.emptyExpeditionProfile();profile.heroShards.snow=G.HERO_SHARD_TARGET-1;
+ const s=run(17,profile),course=G.buildOvergrownCourse(s.seed),events=[];
+ Object.assign(s,{forkStage:1,majorPath:'deep',route:'deep',routeStart:140,routeEnd:450,routeSide:1});
  assert(!Object.values(s.companions).some(c=>c.timeLeft>0));assert(!G.activateHero(s,'snow',events));
- const sigils=course.filter(i=>i.kind==='snow-sigil'&&i.route==='deep');assert.equal(sigils.length,3);
- for(const item of sigils){s.distance=item.d-.09;s.lane=item.lane;s.x=item.lane*G.LANE_WIDTH;step(s,course,events);}
- assert.equal(s.heroShards.snow,3);assert.equal(s.heroUnlocked.snow,false);
- s.mode='fork';s.forkStage=2;assert(G.chooseFork(s,'crystal-vein',events));
- const fourth=course.find(i=>i.kind==='snow-sigil'&&i.route==='crystal-vein');s.distance=fourth.d-.09;s.x=fourth.lane*G.LANE_WIDTH;s.lane=fourth.lane;step(s,course,events);
- assert.equal(s.heroUnlocked.snow,true);assert.equal(s.heroShards.snow,4);assert.equal(s.heroCharge,96,'fragments grant hero energy, but activation still needs earned charge');
- const coin=course.find(i=>i.route==='crystal-vein'&&i.kind==='coin'&&i.d>fourth.d);assert(coin);s.distance=coin.d-.09;s.x=coin.lane*G.LANE_WIDTH;s.lane=coin.lane;step(s,course,events);
- assert.equal(s.heroCharge,100);assert(G.activateHero(s,'snow',events));assert.equal(s.heroCharge,0);assert(s.companions.snow.timeLeft>0);
+ const sigils=course.filter(i=>i.kind==='snow-sigil'&&i.route==='deep');assert.equal(sigils.length,1);
+ const item=sigils[0];s.distance=item.d-.09;s.lane=item.lane;s.x=item.lane*G.LANE_WIDTH;
+ step(s,[item],events);assert.equal(s.heroShards.snow,0,'walking cannot collect an earned fragment');
+ s.distance=item.d-3;if(item.requiredAction==='jump')G.jump(s,events);else G.burrow(s,events);
+ while(s.distance<item.d+.7)step(s,[item],events);assert.equal(s.heroShards.snow,1);assert(s.heroUnlocked.snow);assert.equal(s.heroCharge,24);
+ assert(!G.activateHero(s,'snow',events),'unlocking does not fill the charge meter');
+ // Charge using actual collectible rewards, then select only one support role.
+ const coins=Array.from({length:16},(_,i)=>({id:10000+i,route:'deep',lane:0,d:item.d+10+i*3,phase:0,kind:'coin'}));
+ s.x=0;s.lane=0;s.y=0;s.vy=0;s.slide=0;
+ for(const coin of coins){s.distance=coin.d-.09;step(s,[coin],events);}
+ assert.equal(s.heroCharge,100);assert(G.activateHero(s,'snow',events));assert.equal(s.heroCharge,0);
  assert.equal(s.companions.gorilla.timeLeft,0);assert.equal(s.companions.bot.timeLeft,0);
- assert.equal(G.activateHero(s,'snow',events),false,'no duplicate active support');
- assert.equal(G.activateHero(s,'bot',events),false,'locked companion cannot be summoned');
+ assert.equal(G.activateHero(s,'snow',events),false);assert.equal(G.activateHero(s,'bot',events),false);
 });
 test('run banking, permanent hero unlocks and earned-coin upgrades survive reloading and cannot double count',async()=>{
  let stored=null;const store=P.createExpeditionStore({getItem:async()=>stored,setItem:async(_,v)=>{stored=v;}});await store.init();
@@ -94,7 +98,7 @@ test('run banking, permanent hero unlocks and earned-coin upgrades survive reloa
  const cost=P.upgradeCost('armor',0);assert(await store.buy('armor'));assert.equal(store.getSnapshot().profile.coins,150-cost);
  assert.equal(store.getSnapshot().profile.upgrades.armor,1);
  const load=P.normalizeProfile(JSON.parse(stored));assert.equal(load.heroShards.snow,4);assert.equal(load.upgrades.armor,1);
- const next=G.freshOvergrownExpedition(4,'next',load.heroShards,load.upgrades);assert(next.heroUnlocked.snow);assert(next.shields>0);assert(next.shieldTime>30);
+ const next=G.freshOvergrownExpedition(4,'next',load.heroShards,load.upgrades,load.heroUnlocks);assert(next.heroUnlocked.snow);assert(next.shields>0);assert(next.shieldTime>30);
  for(let i=0;i<2;i++)assert(await store.buy('armor'));assert.equal(await store.buy('armor'),false,'max level is enforced');
 });
 test('new forks, fragments and hero charges are safely checkpointed with legacy v1 records unaffected',()=>{
@@ -128,11 +132,11 @@ test('the ancient vault gate consumes a real collected key and survives checkpoi
  assert(course.some(i=>i.route==='ancient-vault'&&i.kind==='key'&&i.d<884));
 });
 
-test('subpaths have distinct mechanical hazard families for every seed',()=>{
+test('subpaths retain biome hazards alongside shared action gates for every seed',()=>{
  const permitted={'mosswalk':['mud','crate'],'root-arch':['roots','crate'],'log-crossing':['gap','boulder'],causeway:['gap','boulder','crate'],watchtower:['gap','drone'],gearworks:['steam','saw','drone'],mudslide:['mud','boulder'],'crystal-vein':['roots','gap','drone'],'ancient-vault':['steam','saw','gap']};
  for(let seed=0;seed<40;seed++){
   const course=G.buildOvergrownCourse(seed);
-  for(const [route,kinds] of Object.entries(permitted))assert(course.filter(i=>i.route===route&&G.HAZARDS.has(i.kind)).every(i=>kinds.includes(i.kind)),route);
+  for(const [route,kinds] of Object.entries(permitted))assert(course.filter(i=>i.route===route&&G.HAZARDS.has(i.kind)).every(i=>kinds.includes(i.kind)||['gap','roots','crate'].includes(i.kind)),route);
  }
 });
 
@@ -176,14 +180,16 @@ function chamberApproach(meta){
 test('secret entrances require their own route, lane and movement action',()=>{
  const course=G.buildOvergrownCourse(23);
  assert.equal(course.filter(i=>i.kind==='chamber-door').length,3);
- assert(Math.max(...course.filter(i=>i.kind!=='chamber-door'&&i.kind!=='bonus-ledge'&&i.elevation===undefined).map(i=>i.id))<Math.min(...course.filter(i=>i.kind==='chamber-door').map(i=>i.id)),'new object IDs are appended');
+ const legacy=G.buildOvergrownCourse(23,1);for(const door of course.filter(i=>i.kind==='chamber-door'))assert.deepEqual(door,legacy.find(i=>i.id===door.id),'chamber identity survives both course revisions');
  for(const meta of G.CHAMBERS){
   const miss=chamberApproach(meta);for(let i=0;i<20;i++)step(miss,course,[]);assert.equal(miss.mode,'running');
   const s=chamberApproach(meta);if(meta.action==='burrow')G.burrow(s,[]);else{s.y=1;s.vy=0;}
   for(let i=0;i<8&&s.mode==='running';i++)step(s,course,[]);
   assert.equal(s.mode,'chamber',meta.id);assert.equal(s.chamber,meta.id);
   const before=JSON.stringify(s);for(let i=0;i<400;i++)step(s,course,[]);assert.equal(JSON.stringify(s),before,'world, support and action timers freeze');
-  assert(G.nearbyHint(chamberApproach(meta),course).includes(meta.action==='burrow'?'BURROW':'JUMP'));
+  const approach=chamberApproach(meta),cue=G.upcomingChallenge(approach,course),hint=G.nearbyHint(approach,course);
+  if(cue)assert(hint.includes(cue.action==='burrow'?'BURROW':'JUMP'),'visible danger takes priority');
+  else assert.equal(hint,meta.clue.toUpperCase(),'environmental clue does not reveal exact coordinates or action');
  }
 });
 test('chambers cold-restore exactly and bank each choice only once',async()=>{

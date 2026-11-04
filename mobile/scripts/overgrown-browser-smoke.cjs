@@ -27,7 +27,7 @@ const server=http.createServer((req,res)=>{try{const u=new URL(req.url,'http://l
   await page.getByText('0 COINS').waitFor();await shot('02-earned-workshop');
   await page.getByRole('button',{name:'Return to the expedition'}).click();
   await page.getByRole('button',{name:'Hero unlocks'}).click();
-  await page.getByText('Earn four hero fragments',{exact:false}).waitFor({timeout:5000});
+  await page.getByText('Earn eight rare hero fragments',{exact:false}).waitFor({timeout:5000});
   await shot('03-locked-hero-roster');
   await page.getByRole('button',{name:'Back to the expedition'}).click();
   await page.getByRole('button',{name:'Start expedition'}).click();
