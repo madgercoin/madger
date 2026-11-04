@@ -143,3 +143,22 @@ test('full burrow dives beneath real terrain, then the result pose emerges with 
    assert(!hero.lastPose.burrowing,'frozen finished slide timer kept the hero underground');
  }finally{hero.dispose();}
 });
+
+
+test('arm skins and directional fur have outward triangle winding',()=>{
+ const hero=new MadgerHero(new THREE.Scene(),()=>0);
+ try{
+   const arm=hero.root.getObjectByName('continuous-shoulder-to-wrist').geometry;
+   assert(arm.attributes.normal.getX(0)>.9,'front-side arm material would cull its exterior');
+   assert(arm.attributes.normal.getX(12*21+10)<-.9,'opposite arm side must face outward too');
+   const a=new THREE.Vector3(),b=new THREE.Vector3(),c=new THREE.Vector3(),normal=new THREE.Vector3();
+   for(const name of ['sculpted-cranium-and-crown-directional-fur','furred-paw-directional-fur','continuous-spine-and-chest-coat-directional-fur']){
+     const geometry=hero.root.getObjectByName(name).geometry,position=geometry.attributes.position,normals=geometry.attributes.normal;
+     for(let i=0;i<position.count;i+=3){
+       a.fromBufferAttribute(position,i);b.fromBufferAttribute(position,i+1);c.fromBufferAttribute(position,i+2);
+       const actual=b.sub(a).cross(c.sub(a));normal.fromBufferAttribute(normals,i);
+       assert(actual.dot(normal)>0,name+' triangle '+i/3+' is inward-facing');
+     }
+   }
+ }finally{hero.dispose();}
+});

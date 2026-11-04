@@ -88,7 +88,7 @@ function coat(parent,name,at,radii,material,zone='dark',density=450,shape=null){
   const ridge=point.clone().addScaledVector(down,length*.45).addScaledVector(unit,.016);
   const tip=point.clone().addScaledVector(down,length).addScaledVector(unit,.006);
   for(const triangle of [[left,right,ridge],[left,ridge,tip],[ridge,right,tip]]){
-   for(const v of triangle){p.push(v.x,v.y,v.z);n.push(unit.x,unit.y,unit.z);uv.push(.5+v.x*2,v.y*2);c.push(q.color.r,q.color.g,q.color.b);}
+   for(const v of [triangle[0],triangle[2],triangle[1]]){p.push(v.x,v.y,v.z);n.push(unit.x,unit.y,unit.z);uv.push(.5+v.x*2,v.y*2);c.push(q.color.r,q.color.g,q.color.b);}
   }
  }
  const geometry=new T.BufferGeometry();geometry.setAttribute('position',new T.Float32BufferAttribute(p,3));
@@ -111,7 +111,7 @@ function armGeometry(side){
   const x=side*(.085*Math.sin(t*Math.PI*.7)),y=-t*.67,z=-.04-.09*t*t;
   for(let k=0;k<=sides;k++){
    const a=k/sides*Math.PI*2;p.push(x+Math.cos(a)*r,y,z+Math.sin(a)*r);uv.push(k/sides,t);
-   if(j<rings&&k<sides){const i=j*(sides+1)+k;indices.push(i,i+sides+1,i+1,i+1,i+sides+1,i+sides+2);}
+   if(j<rings&&k<sides){const i=j*(sides+1)+k;indices.push(i,i+1,i+sides+1,i+1,i+sides+2,i+sides+1);}
   }
  }
  const g=new T.BufferGeometry();g.setAttribute('position',new T.Float32BufferAttribute(p,3));g.setAttribute('uv',new T.Float32BufferAttribute(uv,2));g.setIndex(indices);g.computeVertexNormals();return g;
