@@ -20,7 +20,7 @@ fs.mkdirSync(out,{recursive:true});
  try{
   await page.goto(url,{waitUntil:'networkidle',timeout:100000});
   await page.getByRole('button',{name:'Start expedition',exact:true}).waitFor({timeout:70000});
-  await page.waitForFunction(()=>window.madgerActiveRenderer==='pbr'&&window.madgerHeroDiagnostics?.approvedFace,
+  await page.waitForFunction(()=>window.madgerActiveRenderer==='pbr'&&window.madgerHeroDiagnostics?.faceTechnique==='modeled-3d',
     undefined,{timeout:70000});
   await page.screenshot({path:path.join(out,'approved-madger-front.png')});
   await page.getByRole('button',{name:'Start expedition',exact:true}).click();
@@ -36,7 +36,7 @@ fs.mkdirSync(out,{recursive:true});
   assert.equal(state.forest.biome,'cavern');
   assert.equal(state.forest.madgerRig,'authored-3d');
   assert(state.forest.cavernVaultTriangles>4000);
-  assert(state.hero.approvedFace&&state.hero.backChevron&&state.hero.patternedTail);
+  assert(state.hero.faceTechnique==='modeled-3d'&&state.hero.faceProjection===false&&state.hero.continuousSpineBlaze&&state.hero.patternedTail);
   await page.screenshot({path:path.join(out,'deep-playable-cavern.png')});
   await page.getByRole('button',{name:'Pause expedition',exact:true}).click();
   await page.getByText('Your run is safe.',{exact:true}).waitFor();
@@ -48,7 +48,7 @@ fs.mkdirSync(out,{recursive:true});
   assert.equal(restored.id,saved.id);assert.equal(restored.distance,saved.distance);
   assert.deepEqual(errors,[]);assert.deepEqual(bad,[]);
   const report={date:new Date().toISOString(),status:'PASS',url,
-    checks:['approved face on live 3D rig','real controls choose Deep Burrow',
+    checks:['modeled face on live 3D rig','real controls choose Deep Burrow',
       'physically enclosed PBR cavern','real save/reload returns to Deep',
       'back stripe and 3D patterned tail','no JavaScript or failed requests'],
     hero:state.hero,cavernVaultTriangles:state.forest.cavernVaultTriangles,errors,bad};

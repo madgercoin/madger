@@ -7,7 +7,7 @@ import path from 'node:path';
 import {createRequire} from 'node:module';
 const {PNG}=createRequire(import.meta.url)('pngjs');
 import * as THREE from '../public/blackroot/vendor/build/three.module.js';
-import {MadgerHero,sampleFootGait} from '../public/blackroot/madger-hero.mjs';
+import {MadgerHero,sampleFootGait,creamCoatAt} from '../public/blackroot/madger-hero.mjs';
 
 const mobile=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const source=readFileSync(path.join(mobile,'assets/images/madger-mascot.webp'));
@@ -24,24 +24,37 @@ test('approved facial reference is shipped unmodified, not replaced by invented 
  assert(source.length>30000);
 });
 
-test('a genuine 3D articulated character replaces the legacy sphere-only silhouette',()=>{
- const scene=new THREE.Scene(),hero=new MadgerHero(scene,()=>0,new THREE.Texture());
+test('modeled facial anatomy replaces the failed photograph projection',()=>{
+ const portrait=new THREE.Texture(),hero=new MadgerHero(new THREE.Scene(),()=>0,portrait);
  try{
-   assert(hero.root.isGroup && hero.meshCount>=80);
-   assert(hero.triangles>20000 && hero.triangles<50000);
-   for(const name of ['center-cream-forehead-stripe','rear-head-blaze',
-     'continuous-spine-blaze',
-     '3d-chevron-tail-mesh','approved-face-projection'])
-     assert(hero.root.getObjectByName(name),name+' is missing');
-   assert(hero.root.getObjectByName('approved-face-projection').geometry.attributes.position.count>700);
+   assert(hero.root.isGroup);
+   assert(hero.triangles>20000 && hero.triangles<55000);
+   assert(hero.renderMeshCount<=28,'rigid batching must bound hero submissions');
+   assert.equal(hero.root.getObjectByName('approved-face-projection'),undefined);
+   const meshes=[];hero.root.traverse(node=>{if(node.isMesh)meshes.push(node);});
+   assert(meshes.every(node=>node.material.map!==portrait),'full portrait must never be rendered on skin');
+   for(const name of ['projecting-short-muzzle','projecting-triangular-nose','left-amber-iris','right-amber-iris','left-cheek-ruff','right-cheek-ruff','3d-chevron-tail-mesh'])
+     assert(hero.root.getObjectByName(name),name+' missing');
+   assert.equal(meshes.filter(node=>/^(left|right)-ear-rim$/.test(node.name)).length,2,'only two volumetric ears');
+   const nose=hero.root.getObjectByName('projecting-triangular-nose');
+   assert(nose.position.z<-.65,'side profile needs a genuinely projecting nose');
+   const muzzle=hero.root.getObjectByName('projecting-short-muzzle');
+   muzzle.geometry.computeBoundingBox();
+   assert(muzzle.geometry.boundingBox.min.z<-.65,'muzzle geometry must protrude beyond the skull');
    const tail=hero.root.getObjectByName('3d-chevron-tail-mesh').geometry;
-   assert(tail.attributes.position.count>1000);
-   assert(tail.attributes.color.count===tail.attributes.position.count);
-   assert.equal(hero.tail.position.x,0,'later user pose card has a tail rooted centrally at the rump');
-   assert(hero.renderMeshCount<=28,'rigid material batching must bound hero draw submissions');
-   assert(hero.faceSurface.material.map.repeat.x<0,'front projection must not mirror the approved face');
+   assert(tail.attributes.position.count>2000 && tail.attributes.uv,'sharp tail shader requires continuous UVs');
+   assert.equal(hero.mats.tail.customProgramCacheKey(),'madger-tail-sharp-chevron-v2');
    assert.deepEqual(hero.clawCount,{hands:[5,5],feet:[5,5]});
  }finally{hero.dispose();}
+});
+
+test('warm crown, rear stripe and small chest V are skin/fur marks, not a flat necklace',()=>{
+ assert(creamCoatAt(0,.42,-.2,'head'));
+ assert(creamCoatAt(0,-.25,.25,'head'));
+ assert(!creamCoatAt(.3,.3,.2,'head'));
+ assert(creamCoatAt(0,.2,.25,'body'));
+ assert(creamCoatAt(.2,.29,-.2,'body'));
+ assert(!creamCoatAt(.2,.13,-.2,'body'));
 });
 
 test('run, idle, jump and burrow animate geometry without changing any saved game values',()=>{
@@ -58,7 +71,9 @@ test('run, idle, jump and burrow animate geometry without changing any saved gam
      hero.update(state,state.time,false);
      assert.deepEqual(state,before,'character rendering modified deterministic game state');
      assert(hero.root.visible && hero.shadow.visible);
-     assert(hero.lastPose.approvedFace && hero.lastPose.continuousSpineBlaze);
+     assert.equal(hero.lastPose.faceTechnique,'modeled-3d');
+     assert.equal(hero.lastPose.faceProjection,false);
+     assert.equal(hero.lastPose.likenessStatus,'pending-visual-review');
      assert(hero.lastPose.patternedTail && hero.lastPose.rearCreamBlaze);
      assert(hero.lastPose.position.every(Number.isFinite));
      assert.equal(hero.lastPose.clawsPerPaw,5);

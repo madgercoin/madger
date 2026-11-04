@@ -148,8 +148,6 @@ class ForestRenderer {
     }
     // Project unchanged, approved MADGER facial pixels onto the 3D head.
     // The original mascot image is included in the same prepacked asset request.
-    this.approvedFace=await loader.loadAsync(ASSETS+'madger-official-face.webp');
-    this.approvedFace.colorSpace=T.SRGBColorSpace;this.textures.push(this.approvedFace);
     this.buildLandscape();
     // Gameplay masonry uses a *different* triplanar stone shader from terrain
     // and the architectural meshes. Prepare the real instanced stone variants
@@ -558,7 +556,7 @@ window.madgerOvergrownScene=async gl=> {
   // The original renderer had only primitive spheres for the playable badger.
   // Replace ONLY the visible Overgrown hero, not deterministic movement,
   // companion logic, saved records, UI controls or legacy fallback gameplay.
-  const hero=new MadgerHero(scene.renderer.scene,road,scene.renderer.approvedFace,(s,d)=>bridge.pathHeight(s.route,d));
+  const hero=new MadgerHero(scene.renderer.scene,road,null,(s,d)=>bridge.pathHeight(s.route,d));
   const previousMadger=scene.madger.bind(scene);
   scene.madger=(s,time,calm)=>{
     if(s?.board!=='overgrown')return previousMadger(s,time,calm);

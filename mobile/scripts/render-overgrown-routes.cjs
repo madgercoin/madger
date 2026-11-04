@@ -71,8 +71,9 @@ const server=http.createServer((req,res)=>{
    if(!['hollow','grotto'].includes(run.route))assert(data.stats.instances>30,'Missing authored running props: '+run.route);
    assert.equal(data.terrainPbr,true,'Terrain missing diffuse, normal or roughness PBR channels: '+run.route);
    assert.equal(data.stats.madgerRig,'authored-3d','Legacy generic character appeared');
-   assert(data.stats.madgerMeshCount>=80&&data.stats.madgerTriangles>30000,'Custom animated 3D hero was not rendered');
-   assert(data.hero?.approvedFace&&data.hero?.backChevron&&data.hero?.patternedTail,'Required MADGER identity marks missing');
+   assert(data.stats.madgerTriangles>=20000&&data.stats.madgerTriangles<=55000,'Authored hero geometry missing or outside its mobile budget');
+   assert(data.hero?.renderMeshCount>=15&&data.hero?.renderMeshCount<=30,'Batched articulated hero was not rendered');
+   assert(data.hero?.faceTechnique==='modeled-3d'&&data.hero?.faceProjection===false&&data.hero?.continuousSpineBlaze&&data.hero?.patternedTail,'Required MADGER identity marks missing');
    if(run.mode==='chamber'){
      assert.equal(data.stats.cavernVaultTriangles,0,'Cavern ceiling obstructed a secret room');
      assert.equal(data.stats.cavernFormationInstances,0,'Geological objects intruded into secret room');

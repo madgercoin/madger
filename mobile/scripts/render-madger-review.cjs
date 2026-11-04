@@ -1,5 +1,5 @@
 /* Actual WebGL model review, not gameplay/FPS acceptance. The renderer reads
- * the shipped geometry and unmodified approved texture. No generated images. */
+ * the shipped geometry and modeled facial anatomy. No generated images. */
 const fs=require('node:fs'),path=require('node:path'),http=require('node:http');
 const {chromium}=require('playwright');
 const root=path.resolve(__dirname,'../public'),out=path.resolve(__dirname,'../../reports/game-expedition/visual-review-20261104');
@@ -11,8 +11,7 @@ const scene=new T.Scene();scene.background=new T.Color('#26322d');
 const gpu=new T.WebGLRenderer({canvas:document.querySelector('canvas'),antialias:true,preserveDrawingBuffer:true});gpu.setSize(720,820);gpu.setPixelRatio(1);gpu.toneMapping=T.ACESFilmicToneMapping;gpu.toneMappingExposure=1.05;gpu.outputColorSpace=T.SRGBColorSpace;
 scene.add(new T.HemisphereLight('#e5efff','#78705e',2.2));const sun=new T.DirectionalLight('#ffe1b0',3.2);sun.position.set(-3,5,-4);scene.add(sun);const rim=new T.DirectionalLight('#b9d9ef',2);rim.position.set(4,3,3);scene.add(rim);
 const camera=new T.PerspectiveCamera(35,720/820,.1,40);camera.position.set(0,1.2,-6.6);camera.lookAt(0,.95,0);
-const texture=await new T.TextureLoader().loadAsync('/blackroot/assets/madger-official-face.webp');texture.colorSpace=T.SRGBColorSpace;
-const hero=new MadgerHero(scene,()=>0,texture);
+const hero=new MadgerHero(scene,()=>0);
 const floor=new T.Mesh(new T.CircleGeometry(5,64),new T.MeshStandardMaterial({color:'#667062',roughness:1}));floor.rotation.x=-Math.PI/2;floor.position.y=-.335;scene.add(floor);
 window.reviewPose=(pose)=>{const run={board:'overgrown',mode:'running',route:'main',distance:0,time:5,x:0,vx:0,y:0,slide:0,slideAge:0,lastHurt:-20};if(pose==='jump'){run.distance=12;run.y=.48;}if(pose==='burrow'){run.distance=13;run.slide=.5;run.slideAge=.3;}if(pose==='burrow-entry'){run.distance=13;run.slide=.79;run.slideAge=.04;}if(pose==='burrow-exit'){run.distance=14;run.slide=.05;run.slideAge=.78;}if(pose==='run'){run.distance=.24;}hero.update(run,5,false);hero.root.rotation.y=pose==='rear'?Math.PI:pose==='side'?Math.PI/2:pose==='run'?-.35:0;gpu.render(scene,camera);return {...hero.lastPose,drawCalls:gpu.info.render.calls,triangles:gpu.info.render.triangles};};window.reviewReady=true;
 </script></body></html>`;

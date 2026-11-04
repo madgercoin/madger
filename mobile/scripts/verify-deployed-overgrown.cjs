@@ -12,7 +12,7 @@ fs.mkdirSync(out,{recursive:true});
   await page.goto(url,{waitUntil:'networkidle',timeout:90000});const start=page.getByRole('button',{name:'Start expedition',exact:true});await start.waitFor({timeout:60000});await start.isEnabled().then(v=>assert(v));await raised(start,'Start expedition');
   await shot('overgrown-live-lobby');
   await page.getByRole('button',{name:'Visit the Burrow Workshop'}).click();await page.getByText('Earn it. Keep it.').waitFor();await page.getByRole('button',{name:'Return to the expedition'}).click();
-  await page.getByRole('button',{name:'Hero unlocks'}).click();await page.getByText('Earn four hero fragments',{exact:false}).waitFor();await page.getByRole('button',{name:'Back to the expedition'}).click();
+  await page.getByRole('button',{name:'Hero unlocks'}).click();await page.getByText('Earn eight rare hero fragments',{exact:false}).waitFor();await page.getByRole('button',{name:'Back to the expedition'}).click();
   await start.click();
   await raised(page.getByRole('button',{name:'BURROW',exact:true}),'BURROW control');
   await page.getByLabel(/Expedition distance \d+ meters; lane/).waitFor();
@@ -36,10 +36,10 @@ fs.mkdirSync(out,{recursive:true});
   assert.equal(forest?.madgerRig,'authored-3d','Hosted game still uses generic sphere character');
   assert(forest?.madgerMeshCount>=80,'Custom 3D character geometry was not loaded');
   const hero=await page.evaluate(()=>window.madgerHeroDiagnostics);
-  assert(hero?.approvedFace&&hero?.rearCreamBlaze&&hero?.backChevron&&hero?.patternedTail,'Approved hero identity markings missing from the playable hosted game');
+  assert(hero?.faceTechnique==='modeled-3d'&&hero?.faceProjection===false&&hero?.continuousSpineBlaze&&hero?.patternedTail,'Modeled hero identity markings missing from the playable hosted game');
   console.log('HOSTED_FOREST_METRICS',JSON.stringify(forest));
   assert.deepEqual(errors,[]);assert.deepEqual(bad,[]);
-  const report={date:new Date().toISOString(),status:'PASS',url,checks:['hosted game loads and enables play','modern layered controls and close-fitting icon shadows, with live physical path choices','real scanned models and material maps load from Expo','curved approved MADGER face, head/back cream blaze, and articulated tail render','workshop opens','heroes start locked','ordinary movement and burrow inputs','live three-way fork','physical Rootway selection','pause and cold reload preserve the same checkpoint','saved run resumes'],assets:assets.length,errors,bad};
+  const report={date:new Date().toISOString(),status:'PASS',url,checks:['hosted game loads and enables play','modern layered controls and close-fitting icon shadows, with live physical path choices','real scanned models and material maps load from Expo','modeled MADGER face, head/back coat markings, and articulated tail render','workshop opens','heroes start locked','ordinary movement and burrow inputs','live three-way fork','physical Rootway selection','pause and cold reload preserve the same checkpoint','saved run resumes'],assets:assets.length,errors,bad};
   fs.writeFileSync(path.join(out,'overgrown-live-verification.json'),JSON.stringify(report,null,2));console.log('HOSTED_OVERGROWN_PASS',JSON.stringify(report));
  }catch(e){await shot('hosted-failure').catch(()=>{});console.error('HOSTED_OVERGROWN_FAIL',String(e),errors,bad);throw e;}
  finally{await browser.close();}
