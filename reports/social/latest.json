@@ -1,9 +1,9 @@
 {
-  "generatedAt": "2026-11-03T16:25:06.067Z",
-  "previousGeneratedAt": "2026-11-02T18:40:12.771Z",
+  "generatedAt": "2026-11-04T16:28:43.735Z",
+  "previousGeneratedAt": "2026-11-03T16:25:06.067Z",
   "window": {
-    "start": "2026-10-04T16:25:06.067Z",
-    "end": "2026-11-03T16:25:06.067Z"
+    "start": "2026-10-05T16:28:43.735Z",
+    "end": "2026-11-04T16:28:43.735Z"
   },
   "organization": {
     "id": "6a67aceacff325d8d2d231e9",
@@ -34,13 +34,13 @@
       "state": "connected",
       "healthy": true,
       "queuePaused": false,
-      "metricsUpdatedAt": "2026-11-03T01:06:59.541Z",
+      "metricsUpdatedAt": "2026-11-04T00:07:08.774Z",
       "metrics": {
         "postCount": 14,
         "reactions": 0,
         "comments": 2,
         "engagementRate": 0.75,
-        "impressions": 266,
+        "impressions": 267,
         "shares": 0,
         "clicks": 0
       },
@@ -56,7 +56,7 @@
       "state": "connected",
       "healthy": true,
       "queuePaused": false,
-      "metricsUpdatedAt": "2026-11-03T15:11:55.396Z",
+      "metricsUpdatedAt": "2026-11-04T14:12:53.832Z",
       "metrics": {
         "postCount": 14,
         "reactions": 26,
@@ -82,16 +82,16 @@
       "state": "connected",
       "healthy": true,
       "queuePaused": false,
-      "metricsUpdatedAt": "2026-11-03T04:16:26.865Z",
+      "metricsUpdatedAt": "2026-11-04T03:17:22.879Z",
       "metrics": {
         "postCount": 14,
         "reactions": 5,
         "comments": 0,
-        "engagementRate": 0.47,
-        "views": 1270,
+        "engagementRate": 0.46,
+        "views": 1293,
         "shares": 1,
-        "reach": 1040,
-        "totalTimeWatched": 32.43,
+        "reach": 1170,
+        "totalTimeWatched": 32.68,
         "averageTimeWatched": 1.72
       },
       "requiresCommunityReview": false
