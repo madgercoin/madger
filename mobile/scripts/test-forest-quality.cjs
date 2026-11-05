@@ -77,7 +77,8 @@ test('GPU timing follows the submitted active frame through a protective pause',
  for(const elapsed of [NaN,0,-1,1800,10000])
    assert(!isActiveSceneTimingSample('running',elapsed,true,10));
  assert(!isActiveSceneTimingSample('running',567,false,10));
- assert(!isActiveSceneTimingSample('running',567,true,3));
+ assert(isActiveSceneTimingSample('running',567,true,1),'restored active frames cannot be discarded as lobby warmup');
+ assert(!isActiveSceneTimingSample('ready',567,true,3));
  let state={scenery:1,scale:1,fastFrames:0},samples=[];
  // Reproduce six slow frames, each followed by safety pause and real Resume.
  // Current-mode sampling used to discard every pressure frame in this loop.
@@ -88,4 +89,48 @@ test('GPU timing follows the submitted active frame through a protective pause',
    }
  }
  assert.equal(state.scenery,0);assert.equal(state.scale,.88);
+});
+
+test('cold restored run adapts before repeated safety pauses exhaust real Resume attempts',async()=>{
+ const fs=require('node:fs'),os=require('node:os'),ts=require('typescript');
+ const q=await quality;
+ const source=fs.readFileSync(path.join(__dirname,'../public/blackroot/renderer.mjs'),'utf8');
+ const signature='  render(eye,target,time,zone,travel=0) {';
+ const start=source.indexOf(signature)+signature.length;
+ const end=source.indexOf('    // UI remains at native resolution;',start);
+ assert(start>=signature.length&&end>start,'real renderer timing block must be found');
+ let now=0;
+ // Execute the actual production timing block, without allocating a WebGL GPU.
+ const timing=new Function('performance','document','console',...Object.keys(q),
+   'return function(){'+source.slice(start,end)+'}')( {now:()=>now},{visibilityState:'visible'},{info:()=>{}},...Object.values(q));
+ const dir=fs.mkdtempSync(path.join(os.tmpdir(),'madger-restored-quality-'));
+ try{
+   for(const name of ['companions','core'])fs.writeFileSync(path.join(dir,name+'.js'),ts.transpileModule(fs.readFileSync(path.join(__dirname,'../src/game/expedition',name+'.ts'),'utf8'),{compilerOptions:{module:ts.ModuleKind.CommonJS,target:ts.ScriptTarget.ES2022}}).outputText);
+   const G=require(path.join(dir,'core.js')),s=G.freshOvergrownExpedition(23,'cold-quality'),clock=G.createClock();
+   Object.assign(s,{mode:'paused',distance:697.6,route:'crystal-vein',majorPath:'deep',subPath:'crystal-vein',forkStage:2});
+   const course=G.buildOvergrownCourse(s.seed),renderer={run:s,renderedFrames:0,frameSamples:[],budget:{scenery:1,scale:1,fastFrames:0},quality:1,sceneryQuality:.7};
+   timing.call(renderer);const states=[];
+   for(let i=0;i<5;i++){
+     now+=800;G.resume(s);G.advance(s,course,0,clock,[]);timing.call(renderer);
+     const before=s.distance;now+=550;G.advance(s,course,.55,clock,[]);
+     assert.equal(s.mode,'paused','400ms gameplay safety gate must still pause');
+     assert.equal(s.distance,before,'no unseen motion during stalled frame');
+     timing.call(renderer);states.push({...renderer.budget});
+   }
+   assert.equal(states[0].scenery,1,'one slow frame must not be treated as sustained overload');
+   assert.equal(states[1].scenery,0,'two consecutive safety-level stalls must remove distant detail');
+   assert.equal(states[1].scale,1,'reduce scenery before pixel clarity');
+   assert.equal(states[2].scale,.88,'pixel fallback must start before five Resume clicks fail');
+   assert.equal(states[4].scale,q.MIN_SCENE_SCALE);
+ }finally{fs.rmSync(dir,{recursive:true,force:true});}
+});
+
+
+test('severe-pressure recovery requires consecutive real safety-level intervals',async()=>{
+ const {hasSevereScenePressure,adaptSceneBudget}=await quality;
+ for(const samples of [[550],[550,16],[16,550],[550,NaN],[550,2000],[399,550]])
+   assert(!hasSevereScenePressure(samples),JSON.stringify(samples));
+ assert(hasSevereScenePressure([550,517]));
+ assert.deepEqual(adaptSceneBudget({scenery:0,scale:1,fastFrames:0},[550,517]),
+   {scenery:0,scale:.88,fastFrames:0});
 });

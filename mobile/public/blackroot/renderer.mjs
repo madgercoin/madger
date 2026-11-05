@@ -6,7 +6,7 @@ import { GLTFLoader } from './vendor/examples/jsm/loaders/GLTFLoader.js';
 import { RGBELoader } from './vendor/examples/jsm/loaders/RGBELoader.js';
 import { legacyCharacters } from './characters.mjs?v=chambers-20261019-2';
 import { mergeGeometries } from './vendor/examples/jsm/utils/BufferGeometryUtils.js';
-import { adaptSceneBudget, sceneBufferSize, isActiveSceneTimingSample } from './quality.mjs';
+import { adaptSceneBudget, sceneBufferSize, isActiveSceneTimingSample, hasSevereScenePressure } from './quality.mjs';
 import { terrainBiome, terrainProfile, sceneryProfile, atmosphereProfile, foliageSway, visibleRoads, nearestRoad, roadSurfaceHeight } from './terrain.mjs';
 import { MadgerHero } from './madger-hero.mjs';
 import { CavernVault } from './cavern-vault.mjs';
@@ -494,7 +494,7 @@ class ForestRenderer {
     const visible=typeof document==='undefined'||document.visibilityState==='visible';
     if(isActiveSceneTimingSample(this.previousFrameMode,elapsed,visible,this.renderedFrames)){
       this.frameSamples.push(elapsed);
-      if(this.frameSamples.length>=3){
+      if(this.frameSamples.length>=3||hasSevereScenePressure(this.frameSamples)){
         const previous=this.budget;
         this.budget=adaptSceneBudget(previous,this.frameSamples);
         this.quality=this.budget.scale;
@@ -507,7 +507,7 @@ class ForestRenderer {
             recentFrameMs:this.frameSamples.map(v=>Math.round(v))
           }));
         }
-        this.frameSamples.length=0;
+        this.frameSamples=hasSevereScenePressure(this.frameSamples)?this.frameSamples.slice(-1):[];
       }
     }
     this.previousFrame=now;this.previousFrameMode=this.run?.mode;this.renderedFrames++;

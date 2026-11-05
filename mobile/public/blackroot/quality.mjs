@@ -8,13 +8,21 @@ const clamp=(n,a,b)=>Math.min(b,Math.max(a,n));
 // interval measures the user's idle wait, not GPU pressure.
 export function isActiveSceneTimingSample(previousMode,elapsed,visible,renderedFrames){
  return ['ready','countdown','running'].includes(previousMode)&&visible
-   &&renderedFrames>3&&Number.isFinite(elapsed)&&elapsed>0&&elapsed<1800;
+   &&(previousMode==='running'||renderedFrames>3)&&Number.isFinite(elapsed)&&elapsed>0&&elapsed<1800;
 }
 
+// Two consecutive intervals beyond the gameplay safety gate are sustained
+// severe pressure. Keep the latest real sample after responding so another
+// severe frame can continue recovery without three more pause/resume cycles.
+export function hasSevereScenePressure(samples){
+ return Array.isArray(samples)&&samples.length>=2
+   &&samples.slice(-2).every(n=>Number.isFinite(n)&&n>400&&n<1800);
+}
 function framePressure(samples){
  if(!Array.isArray(samples))return null;
  const valid=samples.filter(n=>Number.isFinite(n)&&n>0&&n<1800).sort((a,b)=>a-b);
- return valid.length>=3?valid[Math.floor((valid.length-1)*.75)]:null;
+ return valid.length>=3?valid[Math.floor((valid.length-1)*.75)]
+   :hasSevereScenePressure(samples)?Math.min(...valid):null;
 }
 export function adjustedSceneScale(scale,samples){
  if(!Number.isFinite(scale)||scale<MIN_SCENE_SCALE||scale>1)return scale;
