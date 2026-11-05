@@ -149,7 +149,7 @@ jobs:
           arch: x86_64
           profile: pixel_6
           disable-animations: true
-          emulator-options: -no-window -gpu swiftshader -no-snapshot -noaudio -no-boot-anim -feature -Vulkan
+          emulator-options: -no-window -gpu swangle -no-snapshot -noaudio -no-boot-anim -feature -Vulkan
           working-directory: app-source/mobile
           pre-emulator-launch-script: |
             test ! -e "$ANDROID_HOME/emulator/emulator.supervised-original" && mv "$ANDROID_HOME/emulator/emulator" "$ANDROID_HOME/emulator/emulator.supervised-original" && cp /tmp/madger-emulator-supervisor.py "$ANDROID_HOME/emulator/emulator" && chmod +x "$ANDROID_HOME/emulator/emulator"
