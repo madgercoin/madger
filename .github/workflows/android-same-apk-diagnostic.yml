@@ -1,0 +1,66 @@
+name: Diagnose existing Android APK once
+on:
+  workflow_dispatch:
+  push:
+    branches: [fix/android-cold-restore-diagnostic-20261105]
+    paths: [.github/workflows/android-same-apk-diagnostic.yml]
+permissions:
+  contents: read
+  actions: read
+jobs:
+  existing-apk:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: diagnostics-source
+      - uses: actions/checkout@v4
+        with:
+          ref: d341891d08d73900aaa36082e4f2a0f2cde45f05
+          path: app-source
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: android-actions/setup-android@v3
+        with:
+          packages: platform-tools platforms;android-35 build-tools;36.0.0
+      - uses: actions/download-artifact@v4
+        with:
+          artifact-ids: '13380768576'
+          run-id: 41949242899
+          github-token: ${{ github.token }}
+          path: app-source/mobile
+          merge-multiple: true
+      - name: Verify exact previously built APK
+        working-directory: app-source/mobile
+        run: |
+          echo '0311929fe9bba26f2fd1d4f4a12d1c728df9cbef6bab8c46178f70cd9bcfcae8  android/app/build/outputs/apk/release/app-release.apk' | sha256sum -c -
+      - name: Enable emulator acceleration
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+      - name: Run unchanged suites once with live host observations
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 35
+          emulator-build: 16740729
+          arch: x86_64
+          profile: pixel_6
+          disable-animations: true
+          emulator-options: -no-window -gpu swiftshader -no-snapshot -noaudio -no-boot-anim
+          working-directory: app-source/mobile
+          script: |
+            python3 -m venv /tmp/madger-android-qa
+            /tmp/madger-android-qa/bin/pip install 'uiautomator2==3.7.0' pillow
+            adb shell wm size 480x960
+            adb shell wm density 160
+            MADGER_ANDROID_APK="$PWD/android/app/build/outputs/apk/release/app-release.apk" MADGER_ANDROID_PACKAGE=com.madgercoin.preview MADGER_ANDROID_EVIDENCE_DIR="$PWD/android-smoke" MADGER_ANDROID_RESET=1 /tmp/madger-android-qa/bin/python ../../diagnostics-source/mobile/scripts/android-host-diagnostic.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: madger-same-apk-diagnostic
+          path: app-source/mobile/android-smoke
+          retention-days: 14
