@@ -1,4 +1,4 @@
-name: Diagnose existing Android APK once
+name: Compare existing Android APK controls once
 on:
   workflow_dispatch:
   push:
@@ -11,6 +11,23 @@ jobs:
   existing-apk:
     runs-on: ubuntu-latest
     timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      max-parallel: 1
+      matrix:
+        include:
+          - label: baseline-build34
+            run_id: 41929411077
+            artifact_id: '13371759264'
+            apk_sha256: baf21369186baed77315b906e632509428105500d4487818482a7d95f2d90a3a
+            # PR head 4c0a603; APK embeds its tested merge revision.
+            source_revision: 1a6c513bdd6ab3f481ec702df5490ce22c22adc0
+          - label: current-d341
+            run_id: 41949242899
+            artifact_id: '13380768576'
+            apk_sha256: 0311929fe9bba26f2fd1d4f4a12d1c728df9cbef6bab8c46178f70cd9bcfcae8
+            source_revision: 54e0f90c58dd6e2357a58af706f1a2ca8b857826
+    name: ${{ matrix.label }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -28,15 +45,15 @@ jobs:
           packages: platform-tools platforms;android-35 build-tools;36.0.0
       - uses: actions/download-artifact@v4
         with:
-          artifact-ids: '13380768576'
-          run-id: 41949242899
+          artifact-ids: ${{ matrix.artifact_id }}
+          run-id: ${{ matrix.run_id }}
           github-token: ${{ github.token }}
           path: app-source/mobile
           merge-multiple: true
       - name: Verify exact previously built APK
         working-directory: app-source/mobile
         run: |
-          echo '0311929fe9bba26f2fd1d4f4a12d1c728df9cbef6bab8c46178f70cd9bcfcae8  android/app/build/outputs/apk/release/app-release.apk' | sha256sum -c -
+          echo '${{ matrix.apk_sha256 }}  android/app/build/outputs/apk/release/app-release.apk' | sha256sum -c -
       - name: Stage only candidate capture harness and test it
         run: |
           cp diagnostics-source/mobile/scripts/android-expedition-smoke.py app-source/mobile/scripts/android-expedition-smoke.py
@@ -66,6 +83,6 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: madger-same-apk-diagnostic
+          name: madger-same-apk-diagnostic-${{ matrix.label }}
           path: app-source/mobile/android-smoke
           retention-days: 14
