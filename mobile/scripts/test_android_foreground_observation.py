@@ -1,8 +1,10 @@
 """Regression tests for native HUD freshness: no stale recovery proofs."""
 from pathlib import Path
+import importlib.util
 import sys
 import time
 import unittest
+from unittest.mock import patch
 
 sys.path.insert(0, str(Path(__file__).parent))
 from android_foreground_observation import sample_live_pair, sample_live_pair_with_retry, sample_live_snapshot
@@ -114,6 +116,78 @@ class ForegroundObservationTests(unittest.TestCase):
         self.assertIn("observation['force_stop_completed'] - started", main)
         self.assertIn("delay <= observation['max_age_seconds']", main)
         self.assertIn("assert active is True", main)
+
+
+class ExpeditionResumeObservationTests(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        spec = importlib.util.spec_from_file_location(
+            "expedition_resume_harness", Path(__file__).with_name("android-expedition-smoke.py"))
+        cls.harness = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(cls.harness)
+
+    def smoke(self, frames):
+        smoke = self.harness.Smoke()
+        sequence = iter(frames)
+        smoke.clicks = []
+        smoke.tap = smoke.clicks.append
+        def hud():
+            frame = next(sequence)
+            if isinstance(frame, Exception):
+                raise frame
+            phase, distance, run_id = frame
+            state = {"distance_m": distance, "lane": 0, "action": "running",
+                     "route": "rootway", "score": 350}
+            smoke.last_observation = {"phase": phase, "hud": state, "run_id": run_id}
+            return state
+        smoke.hud = hud
+        return smoke
+
+    def test_resume_waits_for_same_run_progress_after_transitional_pause(self):
+        smoke = self.smoke([("paused", 233, "one"), ("paused", 233, "one"),
+                            ("running", 233, "one"), ("running", 237, "one")])
+        with patch.object(self.harness.time, "sleep"):
+            run_id, state = smoke.resume_observed_run()
+        self.assertEqual((run_id, state["distance_m"]), ("one", 237))
+        self.assertEqual(smoke.clicks, ["Resume expedition"])
+        self.assertEqual(len(smoke.report["resume_observations"]), 1)
+
+    def test_resume_rejects_new_run(self):
+        smoke = self.smoke([("paused", 233, "one"), ("running", 237, "two")])
+        with self.assertRaisesRegex(AssertionError, "run identity"):
+            smoke.resume_observed_run()
+
+    def test_resume_rejects_genuine_repause_without_second_tap(self):
+        smoke = self.smoke([("paused", 233, "one"), ("running", 233, "one"),
+                            ("paused", 233, "one")])
+        with patch.object(self.harness.time, "sleep"):
+            with self.assertRaisesRegex(AssertionError, "paused again"):
+                smoke.resume_observed_run()
+        self.assertEqual(smoke.clicks, ["Resume expedition"])
+
+    def test_resume_keeps_bounded_default_wait(self):
+        smoke = self.smoke([("paused", 233, "one"), ("paused", 233, "one")])
+        with patch.object(self.harness.time, "monotonic", side_effect=[0, 1, 9]), \
+                patch.object(self.harness.time, "sleep"):
+            with self.assertRaisesRegex(AssertionError, "same-run progress"):
+                smoke.resume_observed_run()
+
+    def test_stale_live_proof_is_not_caught_or_retried(self):
+        smoke = self.smoke([("paused", 233, "one"), AssertionError("Foreground frame heartbeat is stale (>2 seconds)")])
+        with self.assertRaisesRegex(AssertionError, "heartbeat is stale"):
+            smoke.resume_observed_run()
+
+    def test_stale_pause_label_accepts_only_fresh_same_run_nonpaused_proof(self):
+        smoke = self.smoke([("running", 237, "one")])
+        smoke.confirm_no_unexpected_pause("one")
+        self.assertEqual(smoke.clicks, [])
+        self.assertEqual(len(smoke.report["stale_pause_labels"]), 1)
+        for frame, message in [(("paused", 233, "one"), "unexpectedly paused"),
+                               (("running", 237, "two"), "Cannot verify")]:
+            smoke = self.smoke([frame])
+            with self.assertRaisesRegex(AssertionError, message):
+                smoke.confirm_no_unexpected_pause("one")
+            self.assertEqual(smoke.clicks, [])
 
 
 if __name__ == "__main__":

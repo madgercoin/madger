@@ -59,7 +59,8 @@ function coat(parent,name,at,radii,material,zone='dark',density=450,shape=null){
  const segments=density>=1500?36:density>=800?32:density>=400?26:20;
  const rings=density>=1500?24:density>=800?22:density>=400?18:14;
  const base=new T.SphereGeometry(1,segments,rings),position=base.attributes.position;
- const colors=[];
+ const colors=[],coatLocal=[];
+ const region={dark:0,head:1,body:2,cream:3}[zone]??0;
  const sample=(n)=>{
   let x=n.x*radii[0],y=n.y*radii[1],z=n.z*radii[2];
   if(shape==='head'){
@@ -67,15 +68,18 @@ function coat(parent,name,at,radii,material,zone='dark',density=450,shape=null){
    x*=cheek;z+=.025*Math.max(0,-n.y);
   }
   const color=creamCoatAt(x,y,z,zone)?tan:dark;
-  return {point:new T.Vector3(x+at[0],y+at[1],z+at[2]),color};
+  return {point:new T.Vector3(x+at[0],y+at[1],z+at[2]),local:[x,y,z],color};
  };
  for(let i=0;i<position.count;i++){
   const q=sample(new T.Vector3().fromBufferAttribute(position,i));
-  position.setXYZ(i,...q.point.toArray());colors.push(q.color.r,q.color.g,q.color.b);
+  position.setXYZ(i,...q.point.toArray());colors.push(q.color.r,q.color.g,q.color.b);coatLocal.push(...q.local);
  }
- base.setAttribute('color',new T.Float32BufferAttribute(colors,3));base.computeVertexNormals();
+ base.setAttribute('color',new T.Float32BufferAttribute(colors,3));
+ base.setAttribute('coatLocal',new T.Float32BufferAttribute(coatLocal,3));
+ base.setAttribute('coatRegion',new T.Float32BufferAttribute(new Array(position.count).fill(region),1));
+ base.computeVertexNormals();
  mesh(parent,name,base,material);
- const p=[],n=[],uv=[],c=[];
+ const p=[],n=[],uv=[],c=[],local=[];
  for(let i=0;i<density;i++){
   const y=1-2*(i+.5)/density,a=i*2.39996323,r=Math.sqrt(1-y*y);
   const normal=new T.Vector3(Math.cos(a)*r,y,Math.sin(a)*r);
@@ -88,13 +92,48 @@ function coat(parent,name,at,radii,material,zone='dark',density=450,shape=null){
   const ridge=point.clone().addScaledVector(down,length*.45).addScaledVector(unit,.006);
   const tip=point.clone().addScaledVector(down,length).addScaledVector(unit,.006);
   for(const triangle of [[left,right,ridge],[left,ridge,tip],[ridge,right,tip]]){
-   for(const v of [triangle[0],triangle[2],triangle[1]]){p.push(v.x,v.y,v.z);n.push(unit.x,unit.y,unit.z);uv.push(.5+v.x*2,v.y*2);c.push(q.color.r,q.color.g,q.color.b);}
+   for(const v of [triangle[0],triangle[2],triangle[1]]){p.push(v.x,v.y,v.z);n.push(unit.x,unit.y,unit.z);uv.push(.5+v.x*2,v.y*2);c.push(q.color.r,q.color.g,q.color.b);local.push(...q.local);}
   }
  }
  const geometry=new T.BufferGeometry();geometry.setAttribute('position',new T.Float32BufferAttribute(p,3));
  geometry.setAttribute('normal',new T.Float32BufferAttribute(n,3));geometry.setAttribute('uv',new T.Float32BufferAttribute(uv,2));
- geometry.setAttribute('color',new T.Float32BufferAttribute(c,3));mesh(parent,name+'-directional-fur',geometry,material);
+ geometry.setAttribute('color',new T.Float32BufferAttribute(c,3));
+ geometry.setAttribute('coatLocal',new T.Float32BufferAttribute(local,3));
+ geometry.setAttribute('coatRegion',new T.Float32BufferAttribute(new Array(p.length/3).fill(region),1));
+ mesh(parent,name+'-directional-fur',geometry,material);
 }
+// Markings are evaluated on the actual curved skin, instead of interpolating
+// tan vertex colors across large triangles into disconnected cream blocks.
+function coatMaterial(fur){
+ const material=new T.MeshStandardMaterial({map:fur,bumpMap:fur,bumpScale:.012,roughness:.96,side:T.DoubleSide});
+ material.onBeforeCompile=shader=>{
+  shader.vertexShader='attribute vec3 coatLocal; attribute float coatRegion; varying vec3 vCoatLocal; varying float vCoatRegion;\n'+shader.vertexShader;
+  shader.vertexShader=shader.vertexShader.replace('#include <begin_vertex>','#include <begin_vertex>\nvCoatLocal=coatLocal;vCoatRegion=coatRegion;');
+  shader.fragmentShader='varying vec3 vCoatLocal; varying float vCoatRegion;\n'+shader.fragmentShader;
+  shader.fragmentShader=shader.fragmentShader.replace('#include <color_fragment>',`#include <color_fragment>
+   float x=vCoatLocal.x,y=vCoatLocal.y,z=vCoatLocal.z,a=abs(x);
+   float jag=.006*sin(y*93.0)+.003*sin(y*159.0);
+   float aa=max(fwidth(a)+fwidth(y),.0015),mark=-1.0;
+   if(vCoatRegion>2.5){mark=1.0;}
+   else if(vCoatRegion>1.5){
+    if(z>.02)mark=min(y+.50,.063+jag-a);
+    else if(z<-.10)mark=min(.33-a,.024+jag*.35-abs(y-(.16+.65*a)));
+   }else if(vCoatRegion>.5){
+    if(z>=.015)mark=.066+.055*clamp(y+.5,0.0,1.0)+jag-a;
+    else{
+     float crown=min(y+.105,.034+.125*clamp((y+.105)/.6,0.0,1.0)+jag-a);
+     float cheek=min(-.105-y,a-.12);
+     mark=max(max(crown,cheek),-.32-y);
+    }
+    mark=max(mark,min(y-.38,.12+jag-a));
+   }
+   float cream=smoothstep(-aa,aa,mark);
+   diffuseColor.rgb*=mix(vec3(${dark.r},${dark.g},${dark.b}),vec3(${tan.r},${tan.g},${tan.b}),cream);
+  `);
+ };
+ material.customProgramCacheKey=()=> 'madger-continuous-coat-v1';return material;
+}
+
 function tube(parent,name,points,radius,material,radial=8){
  return mesh(parent,name,new T.TubeGeometry(new T.CatmullRomCurve3(points.map(p=>new T.Vector3(...p))),18,radius,radial,false),material);
 }
@@ -174,7 +213,7 @@ export class MadgerHero {
   const fur=furTexture();
   this.mats={
    fur:new T.MeshStandardMaterial({color:'#242421',map:fur,bumpMap:fur,bumpScale:.018,roughness:.94}),
-   coat:new T.MeshStandardMaterial({vertexColors:true,map:fur,bumpMap:fur,bumpScale:.012,roughness:.96,side:T.DoubleSide}),
+   coat:coatMaterial(fur),
    cream:new T.MeshStandardMaterial({color:TAN,map:fur,bumpMap:fur,bumpScale:.012,roughness:.95}),
    pale:new T.MeshStandardMaterial({color:PALE,roughness:.6}),
    black:new T.MeshStandardMaterial({color:BLACK,roughness:.74}),
@@ -215,11 +254,11 @@ export class MadgerHero {
   }
   coat(this.head,'projecting-short-muzzle',[0,-.255,-.455],[.285,.105,.205],this.mats.coat,'cream',550);
   sphere(this.head,'lower-lip',[0,-.331,-.513],[.217,.044,.124],this.mats.cream,28,16);
-  tube(this.head,'confident-smile',[[-.226,-.290,-.595],[-.13,-.335,-.646],[0,-.35,-.651],[.13,-.335,-.646],[.226,-.29,-.595]],.012,this.mats.black);
+  tube(this.head,'confident-smile',[[-.20,-.291,-.579],[-.12,-.322,-.611],[0,-.329,-.623],[.12,-.318,-.611],[.20,-.282,-.579]],.006,this.mats.black);
   const nose=sphere(this.head,'projecting-triangular-nose',[0,-.188,-.671],[.115,.075,.083],this.mats.nose,32,22);
   const np=nose.geometry.attributes.position;
   for(let i=0;i<np.count;i++)np.setX(i,np.getX(i)*(.65+.35*(np.getY(i)+1)*.5));nose.geometry.computeVertexNormals();
-  tube(this.head,'nose-to-smile',[[0,-.25,-.704],[0,-.30,-.686],[0,-.342,-.66]],.009,this.mats.black);
+  tube(this.head,'nose-to-smile',[[0,-.25,-.681],[0,-.286,-.651],[0,-.321,-.624]],.005,this.mats.black);
   // The approved normal-tooth smile has no projecting signature fang.
   // Closed lips conceal the teeth in the neutral gameplay expression.
   this.arms=[];this.legs=[];this.knees=[];this.feet=[];this.clawCount={hands:[5,5],feet:[5,5]};

@@ -775,6 +775,49 @@ class Smoke:
                   observed_speed_mps=round(speed, 3))
         return True
 
+    def resume_observed_run(self):
+        """Confirm an intentional resume before judging later lifecycle pauses.
+
+        Android may return the prior pause dialog immediately after the tap.
+        Only fresh, matching current/rendered proof can establish resumed
+        gameplay; neither another tap nor a relaxed freshness limit is used.
+        """
+        before = self.hud()
+        observation = self.last_observation
+        if not before or observation["phase"] != "paused":
+            raise AssertionError("Intentional resume requires an observed paused run")
+        run_id = observation["run_id"]
+        saw_running = False
+
+        def progressed(state):
+            nonlocal saw_running
+            current = self.last_observation
+            if current["run_id"] != run_id:
+                raise AssertionError("Resume changed the observed run identity")
+            if current["phase"] == "paused":
+                if saw_running:
+                    raise AssertionError("Resumed run paused again before verified progress")
+                return False
+            self.require_running_observation(current, "Intentional resume")
+            saw_running = True
+            return state["distance_m"] > before["distance_m"]
+
+        self.tap("Resume expedition")
+        state = self.wait_hud(progressed, "same-run progress after Resume expedition")
+        self.report.setdefault("resume_observations", []).append({
+            "before": observation, "after": self.last_observation})
+        return run_id, state
+
+    def confirm_no_unexpected_pause(self, run_id):
+        """Disambiguate transition-stale XML without resuming a stopped run."""
+        state = self.hud()
+        current = self.last_observation
+        if not state or current.get("run_id") != run_id:
+            raise AssertionError("Cannot verify prior run after a visible pause label")
+        if current["phase"] == "paused":
+            raise AssertionError("Prior run unexpectedly paused while waiting for its normal result")
+        self.report.setdefault("stale_pause_labels", []).append(current)
+
     def deep_reference_run(self):
         """Reach the user's Deep scene with real controls and observed rendered state.
 
@@ -782,7 +825,7 @@ class Smoke:
         road-hazard cues mirrored in fresh post-draw proof. No course schedule,
         seed access, secret lookup, storage edit or gameplay-state injection.
         """
-        self.tap("Resume expedition")
+        prior_run_id, _ = self.resume_observed_run()
         finish_deadline = time.monotonic() + 150
         while time.monotonic() < finish_deadline:
             _, nodes, labels = self.tree()
@@ -798,7 +841,7 @@ class Smoke:
                     break
             # Never silently resume an unexpected lifecycle pause.
             if "Your run is safe." in labels:
-                raise AssertionError("Prior run unexpectedly paused while waiting for its normal result")
+                self.confirm_no_unexpected_pause(prior_run_id)
             time.sleep(.12)
         else:
             raise AssertionError("Prior Rootway run did not reach a replayable result within 150 seconds")

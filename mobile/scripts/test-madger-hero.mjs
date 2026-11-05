@@ -177,3 +177,24 @@ test('approved minecart reference uses restrained almond eyes and no signature f
    }
  }finally{hero.dispose();}
 });
+
+test('continuous coat coordinates survive rigid batching without vertex-color patches',()=>{
+ const hero=new MadgerHero(new THREE.Scene(),()=>0);
+ try{
+   assert.equal(hero.mats.coat.vertexColors,false);
+   assert.equal(hero.mats.coat.customProgramCacheKey(),'madger-continuous-coat-v1');
+   let batches=0;
+   hero.root.traverse(node=>{
+     if(!node.isMesh||!node.visible||node.material!==hero.mats.coat)return;
+     batches++;
+     assert.equal(node.geometry.attributes.coatLocal.count,node.geometry.attributes.position.count);
+     assert.equal(node.geometry.attributes.coatRegion.count,node.geometry.attributes.position.count);
+   });
+   assert(batches>5,'articulated coat batches must retain volumetric marking coordinates');
+   const shader={vertexShader:'#include <begin_vertex>',fragmentShader:'#include <color_fragment>'};
+   hero.mats.coat.onBeforeCompile(shader);
+   assert(shader.vertexShader.includes('vCoatLocal=coatLocal'));
+   assert(shader.fragmentShader.includes('smoothstep(-aa,aa,mark)'));
+   assert(!shader.fragmentShader.includes('NaN'));
+ }finally{hero.dispose();}
+});
