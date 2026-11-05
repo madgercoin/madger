@@ -22,11 +22,11 @@ jobs:
             apk_sha256: baf21369186baed77315b906e632509428105500d4487818482a7d95f2d90a3a
             # PR head 4c0a603; APK embeds its tested merge revision.
             source_revision: 1a6c513bdd6ab3f481ec702df5490ce22c22adc0
-          - label: current-d341
-            run_id: 41949242899
-            artifact_id: '13380768576'
-            apk_sha256: 0311929fe9bba26f2fd1d4f4a12d1c728df9cbef6bab8c46178f70cd9bcfcae8
-            source_revision: 54e0f90c58dd6e2357a58af706f1a2ca8b857826
+          - label: current-ed1df5f
+            run_id: 41978331482
+            artifact_id: '13392929798'
+            apk_sha256: 0e34196f62f63af9567f08290646f61c138e25b942f6e46484f71b6be5bbc6a7
+            source_revision: 2359b634228871b522b8aa4064651693b8b0b125
     name: ${{ matrix.label }}
     steps:
       - uses: actions/checkout@v4
@@ -34,7 +34,7 @@ jobs:
           path: diagnostics-source
       - uses: actions/checkout@v4
         with:
-          ref: d341891d08d73900aaa36082e4f2a0f2cde45f05
+          ref: ed1df5fc530f263f9d34a26c56773762aa50a2be
           path: app-source
       - uses: actions/setup-java@v4
         with:
