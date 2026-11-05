@@ -133,18 +133,49 @@ class ForestRenderer {
       const normalizer=new T.Matrix4().makeScale(1/unit,1/unit,1/unit);
       normalizer.multiply(new T.Matrix4().makeTranslation(-centre.x,-bounds.min.y,-centre.z));
       let rockVariant=0;
-      model.traverse(node=>{if(!node.isMesh)return;
-        if(id==='rock_moss_set_01'&&rockVariant++>=2)return;
-        let geometry=node.geometry.clone();geometry.applyMatrix4(node.matrixWorld);geometry.applyMatrix4(normalizer);
-        if(!['fern_02','island_tree_02','root_cluster_01','grass_medium_02'].includes(id))geometry=clusterScan(geometry,id==='dead_tree_trunk'?.025:id==='rock_face_02'?.045:.04);
-        const material=id==='fern_02'?new T.MeshLambertMaterial({map:node.material.map,color:'#a6b987',side:T.DoubleSide}):node.material.clone();
+      // Material primitives of an asset share placements. Merge only identical
+      // source materials after the existing transform and shader policies.
+      // Keep transparent, multi-material and grouped geometry draws separate.
+      const materialGroups=new Map();
+      const prepareMaterial=source=>{
+        const material=id==='fern_02'?new T.MeshLambertMaterial({map:source.map,color:'#a6b987',side:T.DoubleSide}):source.clone();
         const foliageCutout=['island_tree_02','grass_medium_02'].includes(id)&&material.transparent;
         if(foliageCutout){material.alphaTest=.16;material.transparent=false;material.depthWrite=true;material.alphaToCoverage=true;}
         material.envMapIntensity=.4;material.side=['fern_02','island_tree_02','grass_medium_02'].includes(id)?T.DoubleSide:T.FrontSide;
-        const mesh=new T.InstancedMesh(geometry,material,['fern_02','grass_medium_02'].includes(id)?96:32);mesh.instanceMatrix.setUsage(T.DynamicDrawUsage);
-        mesh.castShadow=id==='island_tree_02'&&!foliageCutout;mesh.receiveShadow=true;mesh.frustumCulled=false;mesh.count=0;
-        this.scene.add(mesh);this.scanBatches.push({id,mesh});
+        return {material,foliageCutout};
+      };
+      model.traverse(node=>{if(!node.isMesh)return;
+        if(id==='rock_moss_set_01'&&rockVariant++>=2)return;
+        let geometry=node.geometry.clone();geometry.applyMatrix4(node.matrixWorld);geometry.applyMatrix4(normalizer);
+        const materialArray=Array.isArray(node.material);
+        // Preserve explicit material groups if a future asset supplies them.
+        if(!materialArray&&!geometry.groups.length&&!['fern_02','island_tree_02','root_cluster_01','grass_medium_02'].includes(id))geometry=clusterScan(geometry,id==='dead_tree_trunk'?.025:id==='rock_face_02'?.045:.04);
+        const convertsToOpaque=['fern_02','island_tree_02','grass_medium_02'].includes(id);
+        const groupable=!materialArray&&!geometry.groups.length&&(!node.material.transparent||convertsToOpaque);
+        const materialKey=groupable?node.material:node;
+        let group=materialGroups.get(materialKey);
+        if(!group){
+          const prepared=(materialArray?node.material:[node.material]).map(prepareMaterial);
+          group={material:materialArray?prepared.map(p=>p.material):prepared[0].material,
+            foliageCutout:prepared.some(p=>p.foliageCutout),geometries:[]};
+          materialGroups.set(materialKey,group);
+        }
+        group.geometries.push(geometry);
       });
+      for(const {material,foliageCutout,geometries} of materialGroups.values()){
+        let combined=geometries;
+        if(geometries.length>1&&!Array.isArray(material)&&!material.transparent
+          &&geometries.every(g=>!g.groups.length&&g.drawRange.start===0&&g.drawRange.count===Infinity)){
+          const merged=mergeGeometries(geometries,false);
+          // Incompatible attributes retain the original independent draws.
+          if(merged){combined=[merged];geometries.forEach(geometry=>geometry.dispose());}
+        }
+        for(const geometry of combined){
+          const mesh=new T.InstancedMesh(geometry,material,['fern_02','grass_medium_02'].includes(id)?96:32);mesh.instanceMatrix.setUsage(T.DynamicDrawUsage);
+          mesh.castShadow=id==='island_tree_02'&&!foliageCutout;mesh.receiveShadow=true;mesh.frustumCulled=false;mesh.count=0;
+          this.scene.add(mesh);this.scanBatches.push({id,mesh,sourceMeshCount:combined.length===1?geometries.length:1});
+        }
+      }
     }
     // Project unchanged, approved MADGER facial pixels onto the 3D head.
     // The original mascot image is included in the same prepacked asset request.
@@ -374,12 +405,12 @@ class ForestRenderer {
     // A scanned asset's material meshes share placement. Reuse only within
     // this frame, so route, wind, terrain and quality changes remain immediate.
     const placements=new Map();
-    for(const {id,mesh} of this.scanBatches){let count=0;
+    for(const {id,mesh,sourceMeshCount=1} of this.scanBatches){let count=0;
       const reused=placements.get(id);
       if(reused){
         count=reused.mesh.count;
         mesh.instanceMatrix.array.set(reused.mesh.instanceMatrix.array.subarray(0,count*16));
-        mesh.count=count;anchored+=reused.anchored;
+        mesh.count=count;anchored+=reused.anchored*sourceMeshCount;
         mesh.instanceMatrix.clearUpdateRanges();
         if(count){mesh.instanceMatrix.addUpdateRange(0,count*16);mesh.instanceMatrix.needsUpdate=true;}
         continue;
@@ -459,12 +490,17 @@ class ForestRenderer {
       mesh.count=count;
       mesh.instanceMatrix.clearUpdateRanges();
       if(count){mesh.instanceMatrix.addUpdateRange(0,count*16);mesh.instanceMatrix.needsUpdate=true;}
-      placements.set(id,{mesh,anchored:anchored-anchoredBefore});
+      const rawAnchored=anchored-anchoredBefore;
+      anchored+=rawAnchored*(sourceMeshCount-1);
+      // Cache raw placements: material groups can represent different counts
+      // of source meshes. Keep the diagnostic weighted once, not recursively.
+      placements.set(id,{mesh,anchored:rawAnchored});
     }
     // Do not draw the former stiff, leafless tube-tree silhouettes. Scanned,
     // fully textured 3D canopies above now supply the distant living forest,
     // wind response and stable world-distance transitions at lower draw cost.
     this.trees.count=0;
+    // Original source-mesh placement metric, preserved after batching.
     this.stats.groundedSceneryInstances=anchored;
     if(this.terrainRoute!==s.route||Math.abs(travel-(this.terrainD??-100))>1.8){
     this.terrainRoute=s.route;this.terrainD=travel;
