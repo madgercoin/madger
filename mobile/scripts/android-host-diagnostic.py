@@ -72,6 +72,48 @@ def snapshot():
             'sampler_cgroups': cgroups('self')}
 
 
+def failure_liveness():
+    """Observe once after failure; never restart adb, resume, or send console commands."""
+    import socket
+    result = {}
+    adb = os.environ.get('ADB', 'adb')
+    serial = os.environ.get('MADGER_ANDROID_SERIAL', 'emulator-5554')
+    # Never invoke adb if its server is already gone, avoiding implicit startup.
+    try:
+        with socket.create_connection(('127.0.0.1', 5037), timeout=1):
+            server_present = True
+    except OSError:
+        server_present = False
+    for name, command in [('devices', [adb, 'devices']),
+                          ('state', [adb, '-s', serial, 'get-state']),
+                          ('guest_echo', [adb, '-s', serial, 'shell', 'echo', 'MADGER_DIAGNOSTIC_ALIVE'])]:
+        if not server_present:
+            result[name] = {'skipped': 'existing adb server unavailable'}
+            continue
+        try:
+            check = subprocess.run(command, capture_output=True, text=True, timeout=3)
+            # Do not retain arbitrary shell or daemon output.
+            allowed = ('device', 'offline', 'unauthorized', 'unknown', 'MADGER_DIAGNOSTIC_ALIVE')
+            result[name] = {'exit_code': check.returncode,
+                            'states': [word for word in check.stdout.split() if word in allowed]}
+        except (OSError, subprocess.TimeoutExpired) as error:
+            result[name] = {'error': type(error).__name__}
+    try:
+        with socket.create_connection(('127.0.0.1', 5554), timeout=2):
+            result['console_tcp_connect'] = True
+    except OSError as error:
+        result['console_tcp_connect'] = False
+        result['console_error'] = type(error).__name__
+    result['threads'] = []
+    for process in snapshot()['emulators']:
+        for task in (Path('/proc') / str(process['pid']) / 'task').glob('[0-9]*'):
+            status = read(task / 'status') or ''
+            state = next((line.split(':', 1)[1].strip() for line in status.splitlines()
+                          if line.startswith('State:')), 'unavailable')
+            result['threads'].append({'pid': process['pid'], 'tid': int(task.name), 'state': state})
+    return result
+
+
 def main():
     out = Path(os.environ['MADGER_ANDROID_EVIDENCE_DIR']) / 'host-live'
     out.mkdir(parents=True, exist_ok=True)
@@ -88,6 +130,26 @@ def main():
                 stop.wait(1)
     thread = threading.Thread(target=sample, daemon=True)
     thread.start()
+    # Keep known app telemetry/crash markers across BOTH suites. No broad log dump.
+    guest = None
+    guest_thread = None
+    def collect_guest(process):
+        import re
+        with (out / 'guest-lifecycle.log').open('w') as stream:
+            for line in process.stdout:
+                if (re.search(r'MADGER_OFFLINE_FRAME|MADGER_EXPEDITION_FRAME_STALL|FATAL EXCEPTION|Fatal signal|RGBELoader', line)
+                        and not re.search(r'password|token|secret|authorization', line, re.I)):
+                    stream.write(line[:16384])
+                    stream.flush()
+    try:
+        guest = subprocess.Popen([os.environ.get('ADB', 'adb'), '-s',
+            os.environ.get('MADGER_ANDROID_SERIAL', 'emulator-5554'), 'logcat', '-T', '1',
+            '-v', 'threadtime', 'MadgerOfflineGame:I', 'AndroidRuntime:E', 'libc:F', '*:S'],
+            stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, text=True, errors='replace')
+        guest_thread = threading.Thread(target=collect_guest, args=(guest,), daemon=True)
+        guest_thread.start()
+    except OSError:
+        pass
     started = time.monotonic()
     result = {'timeout': False}
     try:
@@ -106,6 +168,21 @@ def main():
                 os.killpg(process.pid, signal.SIGKILL)
                 process.wait()
     finally:
+        if result.get('exit_code', 1) != 0:
+            try:
+                probes = failure_liveness()
+            except Exception as error:
+                probes = {'probe_error': type(error).__name__}
+            (out / 'failure-liveness.json').write_text(json.dumps(probes, indent=2) + '\n')
+        if guest:
+            result['guest_log_exit_before_cleanup'] = guest.poll()
+            guest.terminate()
+            try:
+                guest.wait(timeout=3)
+            except subprocess.TimeoutExpired:
+                guest.kill()
+                guest.wait(timeout=3)
+            guest_thread.join(timeout=3)
         stop.set()
         thread.join(timeout=5)
         result['duration_s'] = round(time.monotonic() - started, 3)

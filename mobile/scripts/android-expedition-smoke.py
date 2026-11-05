@@ -378,6 +378,34 @@ class Smoke:
         result = self.timed("screenshot:adb:" + name, lambda: subprocess.run(command, capture_output=True, check=True, timeout=30))
         return result.stdout
 
+    def capture_adb_raw(self, name):
+        command = [os.environ.get("ADB", "adb"), "-s", self.serial, "exec-out", "screencap"]
+        result = self.timed("screenshot:adb-raw:" + name, lambda: subprocess.run(
+            command, capture_output=True, check=True, timeout=30))
+        return result.stdout
+
+    @staticmethod
+    def raw_screencap_png(raw):
+        """Decode exact Android raw layouts; never guess offsets or silently retry."""
+        import struct
+        from PIL import Image
+        if len(raw) < 12:
+            raise AssertionError("Truncated raw screencap header")
+        width, height, pixel_format = struct.unpack_from("<III", raw)
+        formats = {1: ("RGBA", 4), 2: ("RGBX", 4), 3: ("RGB", 3),
+                   4: ("BGR;16", 2), 5: ("BGRA", 4)}
+        if not 0 < width <= 8192 or not 0 < height <= 8192 or pixel_format not in formats:
+            raise AssertionError("Unsupported raw screencap dimensions or pixel format")
+        mode, size = formats[pixel_format]
+        header = len(raw) - width * height * size
+        if header not in (12, 16):
+            raise AssertionError("Unexpected raw screencap payload size")
+        image = Image.frombytes("RGBA" if pixel_format in (1, 5) else "RGB",
+                                (width, height), raw[header:], "raw", mode).convert("RGB")
+        output = io.BytesIO()
+        image.save(output, format="PNG")
+        return output.getvalue()
+
     def capture_adb(self, name):
         from PIL import Image
         png = self.capture_adb_png(name)
@@ -402,8 +430,10 @@ class Smoke:
         from PIL import Image
         if not frame_names or len(frame_names) != len(quiet_waits):
             raise ValueError("Each motion frame requires an explicit preceding quiet wait")
+        raw_capture = os.environ.get("MADGER_ANDROID_RAW_CAPTURE") == "1"
         window = {"frames": list(frame_names), "quiet_waits_s": list(quiet_waits),
-                  "capture_method": "adb exec-out screencap -p", "phase_and_progress_passed": False}
+                  "capture_method": "adb exec-out screencap" if raw_capture else "adb exec-out screencap -p",
+                  "phase_and_progress_passed": False}
         self.report.setdefault("motion_windows", {})[name] = window
         if targeted:
             self.hud()
@@ -419,7 +449,7 @@ class Smoke:
             for frame_name, delay in zip(frame_names, quiet_waits):
                 if delay:
                     time.sleep(delay)
-                raw_frames.append((frame_name, self.capture_adb_png(frame_name)))
+                raw_frames.append((frame_name, self.capture_adb_raw(frame_name) if raw_capture else self.capture_adb_png(frame_name)))
             window["sampling_end_s"] = round(time.monotonic() - self.started, 3)
             if targeted:
                 self.hud()
@@ -431,8 +461,12 @@ class Smoke:
         finally:
             # Preserve raw evidence even if the final observation or capture fails.
             # Encoding/decoding and image analysis stay outside the sampled window.
-            for frame_name, png in raw_frames:
-                (OUT / f"{frame_name}.png").write_bytes(png)
+            for index, (frame_name, data) in enumerate(raw_frames):
+                if raw_capture:
+                    (OUT / f"{frame_name}.raw").write_bytes(data)
+                    data = self.raw_screencap_png(data)
+                    raw_frames[index] = (frame_name, data)
+                (OUT / f"{frame_name}.png").write_bytes(data)
         self.require_running_observation(window["after"], f"Motion window {name} end")
         progress = window["after"]["hud"]["distance_m"] - window["before"]["hud"]["distance_m"]
         window["distance_delta_m"] = progress

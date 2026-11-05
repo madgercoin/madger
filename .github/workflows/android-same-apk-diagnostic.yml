@@ -37,6 +37,13 @@ jobs:
         working-directory: app-source/mobile
         run: |
           echo '0311929fe9bba26f2fd1d4f4a12d1c728df9cbef6bab8c46178f70cd9bcfcae8  android/app/build/outputs/apk/release/app-release.apk' | sha256sum -c -
+      - name: Stage only candidate capture harness and test it
+        run: |
+          cp diagnostics-source/mobile/scripts/android-expedition-smoke.py app-source/mobile/scripts/android-expedition-smoke.py
+          cp diagnostics-source/mobile/scripts/test_android_raw_capture.py app-source/mobile/scripts/test_android_raw_capture.py
+          python3 -m venv /tmp/madger-android-qa
+          /tmp/madger-android-qa/bin/pip install 'uiautomator2==3.7.0' pillow
+          /tmp/madger-android-qa/bin/python -m unittest discover -s app-source/mobile/scripts -p test_android_raw_capture.py -v
       - name: Enable emulator acceleration
         run: |
           echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
@@ -53,11 +60,9 @@ jobs:
           emulator-options: -no-window -gpu swiftshader -no-snapshot -noaudio -no-boot-anim
           working-directory: app-source/mobile
           script: |
-            python3 -m venv /tmp/madger-android-qa
-            /tmp/madger-android-qa/bin/pip install 'uiautomator2==3.7.0' pillow
             adb shell wm size 480x960
             adb shell wm density 160
-            MADGER_ANDROID_APK="$PWD/android/app/build/outputs/apk/release/app-release.apk" MADGER_ANDROID_PACKAGE=com.madgercoin.preview MADGER_ANDROID_EVIDENCE_DIR="$PWD/android-smoke" MADGER_ANDROID_RESET=1 /tmp/madger-android-qa/bin/python ../../diagnostics-source/mobile/scripts/android-host-diagnostic.py
+            MADGER_ANDROID_RAW_CAPTURE=1 MADGER_ANDROID_APK="$PWD/android/app/build/outputs/apk/release/app-release.apk" MADGER_ANDROID_PACKAGE=com.madgercoin.preview MADGER_ANDROID_EVIDENCE_DIR="$PWD/android-smoke" MADGER_ANDROID_RESET=1 /tmp/madger-android-qa/bin/python ../../diagnostics-source/mobile/scripts/android-host-diagnostic.py
       - uses: actions/upload-artifact@v4
         if: always()
         with:
