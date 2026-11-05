@@ -53,3 +53,31 @@ Maintain MADGER's existing characters, original world and familiar controls.
    plus an asset/license inventory and full Android/native PBR parity review.
 
 No paid generation credits. No signed or public Android release without proof.
+
+## Real-time route traversal and crisp-control follow-up (October 20)
+- The former stopping fork menus are retained only to restore historical
+  paused checkpoints. New runs commit one of three physical junctions from
+  Madger's **actual interpolated lateral position** without pausing forward
+  simulation. At 455m, left is the lower trail, centre requires a timed
+  upward jump and right requires burrowing beneath a root tunnel; absent
+  actions or a locked vault redirect to the lower route. Actual route rewards,
+  secret chambers, fragment gating, key consumption and persistence remain.
+- The foreground native scene now illustrates a descending channel, a raised
+  ledge, and a low root entrance, plus live approach direction labels. These
+  are preliminary rendered approach markers, **not yet a fully sculpted,
+  physically graded multi-level canyon**; genuine vertical terrain continuity,
+  fall animations and per-route biome refinement remain artwork/gameplay work.
+- Expo control icons use a 1-pixel contact extrusion rather than detached 5px
+  shadow silhouettes, with shallower modern bevels and a contextual live
+  three-choice indicator. Verify touch size and contrast on physical devices.
+- The browser PBR terrain remains textured with normal/roughness channels;
+  anisotropic sample caps increase to 6 on narrow devices and 8 elsewhere,
+  and near/far scenery mesh subdivision and camera visibility are refined.
+  Texture source resolution remains 1K; this is **not** a 4K asset upgrade
+  or measured Android clarity improvement.
+- New unit tests distinguish requested steering from physically reached lanes,
+  exercise all nine path combinations, verify missed jumps/tunnels descend
+  without fabricated damage and preserve legacy paused-fork saves.
+- The unmodified protective >400ms pause and <=2-second native foreground
+  verification remain mandatory. Android native PBR parity, sustained frame
+  pacing and temperature certification are **not** established.

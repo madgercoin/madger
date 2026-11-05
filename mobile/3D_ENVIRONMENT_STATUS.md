@@ -173,3 +173,31 @@ No paid image, mesh, video, or other asset-generation credits were used.
 - Added five isolated streaming/backdrop/sky/wind/clearance/LOD/disposal regression tests and a native ridgeline draw-cost test. Included backdrop tests in normal project validate and all-route browser visual assertions.
 - All 15 saved-route plus three chamber renderer fixtures passed in local Chrome with zero WebGL errors. Three real UI biome choices passed (Rootway, Ridge, Deep); room sky remained hidden. The exported-app real-input acceptance passed with 211 frames over 3.501 seconds, mean 16.59ms, max 17.3ms, zero frames exceeding 400ms and zero protective pauses. Three actual chamber entry/reward/cold-reload browser tests also passed with zero protective pauses. Full project validate/TypeScript/lint and fresh Expo web export were run. This short Chrome measurement does not certify native Android or long-term thermal behavior.
 - Known independent source-matched Android CI on predecessor ac83d1f still fails at strict foreground observation; never weaken the two-second freshness requirement or protective 400ms pause. No new preview published, no paid generation credits used, no signed release/photorealism claim.
+
+## Live elevation-path and modern controls follow-up — October 20
+
+- Separate worktree `feat/madger-realtime-vertical-trails-ui-20261020`
+  layered on top of the existing living-world draft, with no replacement of
+  earlier QA worktrees and no merge into the release branch.
+- The previous pausing major and subpath menus remain compatible with old
+  checkpoints, but new runs choose the left, centre or right road through
+  **current physical lateral position at 140m** without interrupting play.
+  At 455m, the left low path is available, the centre upper road requires a
+  timed jump, and the hidden right tunnel requires BURROW while grounded.
+  Missed or locked entrances descend to the lower route without invented
+  damage, preserving real key requirements, companion unlocks and save keys.
+- New live route indicators identify the three approaches and movement
+  requirements; the native/browser scene adds a preliminary visible low
+  descent, high ledge and root tunnel at the action junction. These need
+  additional full 3D vertical terrain continuity and visual art review.
+- Control styling uses tightly aligned one-pixel icon extrusion, shallower
+  pressed elevations and high-contrast glass-green layered action surfaces.
+- Backdrop PBR ridges use a denser shared vertex grid, 176m far camera plane
+  and capped anisotropy for more readable distant forms and oblique textures.
+  This is incremental; 1K source textures, faceted art, native GL parity,
+  sustained mobile FPS/thermals and photorealistic quality remain outstanding.
+- New route physics, key/unlock, nine-combination and legacy checkpoint unit
+  tests pass locally; full validation, fresh web export, live Chrome opening
+  gameplay and all three real-input biome selections also passed on Windows.
+  Native source-matched APK verification is **NOT** complete; existing Android
+  runtime CI failures still block publication. Do not change safety limits.

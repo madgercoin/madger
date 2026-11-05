@@ -140,3 +140,80 @@ test('native frames still drain even when fully culled and the fallback draws on
   renderer.dispose();
  }
 });
+
+// Exercise the real item renderer and its normal GL batches. No production
+// state hook or replacement drawing implementation is needed for these checks.
+function itemSubmissions(scene,item,state,time=2){
+ scene.renderer.reset();
+ const before=structuredClone(state),original=structuredClone(item);
+ scene.item(item,state,time);
+ assert.deepEqual(state,before,'reward drawing mutated the saved run');
+ assert.deepEqual(item,original,'reward drawing mutated the seeded course');
+ const records=[];
+ for(const [shape,batch] of scene.renderer.batches)for(let n=0;n<batch.count;n++)
+  records.push({shape,data:Array.from(batch.data.subarray(n*20,(n+1)*20))});
+ return records;
+}
+function rewardFixture(extra={}){
+ return {id:9000,d:220,lane:0,kind:'treasure-cache',route:'rootway',phase:0,...extra};
+}
+function rewardRun(extra={}){
+ return Object.assign(Core.freshOvergrownExpedition(23,'render-rewards'),
+  {mode:'running',route:'rootway',distance:200,time:2},extra);
+}
+test('secret caches conceal their reward, halo and action glyph until the earned reveal distance',()=>{
+ const scene=new Scene.ExpeditionScene(context().gl);
+ try{
+  for(const fortune of [0,1,2,3])for(const action of ['jump','burrow','burst']){
+   const state=rewardRun({metaFortune:fortune}),reveal=Core.secretRevealDistance(state);
+   const cache=rewardFixture({secret:true,requiredAction:action,d:state.distance+reveal+.01});
+   assert.equal(itemSubmissions(scene,cache,state).length,0,'distant secret leaked visible primitives');
+   cache.d=state.distance+reveal;
+   const visible=itemSubmissions(scene,cache,state);
+   assert(visible.some(record=>record.shape==='halo'),'discovered cache needs a visible reward');
+   assert(visible.some(record=>record.shape==='cylinder'),'discovered cache needs its action glyph');
+  }
+  const cache=rewardFixture({secret:true,requiredAction:'jump',d:225});
+  assert.equal(itemSubmissions(scene,cache,rewardRun()).length,0);
+  assert(itemSubmissions(scene,cache,rewardRun({metaFortune:3})).length>0,'fortune must reveal the actual scene earlier');
+ }finally{scene.dispose();}
+});
+test('secret concealment never hides ordinary rewards or mandatory action gates',()=>{
+ const scene=new Scene.ExpeditionScene(context().gl),state=rewardRun();
+ try{
+  assert(itemSubmissions(scene,rewardFixture({d:260}),state).length>0,'legacy ordinary cache became hidden');
+  for(const kind of ['gap','roots','crate'])for(const lane of [-1,0,1])
+   assert(itemSubmissions(scene,rewardFixture({kind,lane,d:260}),state).length>0,kind+' gate disappeared before its warning window');
+ }finally{scene.dispose();}
+});
+test('jump, burrow and burst rewards submit distinct directionally correct movement glyphs',()=>{
+ const scene=new Scene.ExpeditionScene(context().gl),state=rewardRun();
+ try{
+  const cache=rewardFixture({d:212}),base=itemSubmissions(scene,cache,state);
+  for(const action of ['jump','burrow','burst']){
+   const plain=new Map();for(const record of base){const key=JSON.stringify(record);plain.set(key,(plain.get(key)||0)+1);}
+   const added=itemSubmissions(scene,{...cache,requiredAction:action},state).filter(record=>{
+    const key=JSON.stringify(record),left=plain.get(key)||0;if(!left)return true;plain.set(key,left-1);return false;
+   });
+   assert([...plain.values()].every(left=>left===0),'glyph replaced or moved the reward itself');
+   assert.equal(added.length,action==='burst'?6:3);
+   assert(added.every(record=>record.shape==='cylinder'&&record.data.every(Number.isFinite)));
+   if(action==='burst'){
+    assert.equal(new Set(added.map(record=>record.data[12].toFixed(3))).size,3,'burst must show three separate lightning strokes');
+    const mint=GL.color('#70e4d7',.35);
+    assert(added.every(record=>mint.every((channel,i)=>Math.abs(record.data[16+i]-channel)<1e-7)),'burst glyph lost its distinct mint color');
+   }else{
+    const stem=added.find(record=>Math.abs(record.data[4])<1e-6&&Math.abs(record.data[6])<1e-6);
+    assert(stem,'arrow has no vertical shaft');
+    assert(Math.abs(stem.data[5]-(action==='jump'?.39:-.39))<1e-6,'arrow points in the wrong direction');
+   }
+  }
+ }finally{scene.dispose();}
+});
+test('collected or off-route secret rewards cannot leave an orphaned action glyph',()=>{
+ const scene=new Scene.ExpeditionScene(context().gl),cache=rewardFixture({d:212,secret:true,requiredAction:'burst'});
+ try{
+  assert.equal(itemSubmissions(scene,cache,rewardRun({used:[cache.id]})).length,0);
+  assert.equal(itemSubmissions(scene,cache,rewardRun({route:'ridge'})).length,0);
+ }finally{scene.dispose();}
+});

@@ -44,7 +44,7 @@ jobs:
       - name: Validate the release source
         run: |
           npm ci
-          npm run release:distribution
+          npm run release:distribution:android
           npx expo-doctor
       - name: Build the persistent-key Play bundle and submit it to internal testing
         run: npx --yes eas-cli@24.3.0 build --platform android --profile production --non-interactive --wait --auto-submit

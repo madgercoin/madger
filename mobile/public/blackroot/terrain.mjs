@@ -112,3 +112,32 @@ export function sceneryProfile(presets, route) {
     rootScale: bounded('rootScale', .2, 1.6)
   };
 }
+const MAJOR_ROADS=['rootway','ridge','deep'];
+const MINOR_ROADS={rootway:['mosswalk','root-arch','log-crossing'],ridge:['causeway','watchtower','gearworks'],deep:['mudslide','crystal-vein','ancient-vault']};
+/** All physically connected roads, including unselected alternatives. A fork
+ * is part of the world ahead of the player, not created after choosing it. */
+export function visibleRoads(run,distance,pathOffset=()=>0,pathHeight=()=>0,pathWidth=null){
+ let routes=['main'];
+ if(distance>=140&&distance<450)routes=MAJOR_ROADS;
+ else if(distance>=455&&distance<900){
+   const family=run?.majorPath||Object.keys(MINOR_ROADS).find(key=>key===run?.route||MINOR_ROADS[key].includes(run?.route))||'rootway';
+   routes=MINOR_ROADS[family]||MINOR_ROADS.rootway;
+ }
+ return routes.map(route=>{
+   const start=MAJOR_ROADS.includes(route)?140:455;
+   const width=pathWidth?pathWidth(route,distance):route==='main'?1:1/3+2/3*smooth((distance-start)/24);
+   return {route,centre:pathOffset(route,distance),height:pathHeight(route,distance),halfWidth:Math.max(.7,3.25*width)};
+ });
+}
+export function nearestRoad(roads,x){
+ // Compare centres, not distance outside each width: the broad lower catch
+ // road overlaps the raised fork at entry and must not win every inside tie.
+ return roads.reduce((best,road)=>Math.abs(x-road.centre)<Math.abs(x-best.centre)?road:best,roads[0]);
+}
+
+/** One shoulder-height definition for both the mesh and every scan anchor. */
+export function roadSurfaceHeight(profile,road,x,distance,isGap=false){
+ const shoulder=Math.max(0,Math.abs(x-road.centre)-road.halfWidth);
+ const sampleX=road.centre+Math.sign(x-road.centre)*(shoulder+3.5);
+ return terrainSurfaceHeight(profile,sampleX,distance,road.centre,isGap)+road.height;
+}

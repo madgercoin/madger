@@ -1,314 +1,292 @@
-/* MADGER playable hero: sculpted, articulated Three.js mesh, not the legacy sphere runner.
- * Visual reference: MADGER official ten-pose card and madger-mascot.webp.
- * This remains an authored approximation of the reference, NOT an exact
- * photogrammetric likeness or a completed production character asset.
- * Never alter deterministic Expedition rules, saved checkpoints, or hero unlocks.
+/* MADGER articulated game mesh. Reference authority is the user-supplied
+ * MADGER_Approved_Likeness.png. This is a modeled candidate, not an approved
+ * production likeness. Identity acceptance requires actual rendered review.
+ * No portrait, pose-card crop, billboard or generated substitute is rendered.
  */
 import * as T from './vendor/build/three.module.js';
-
-const DARK='#1d1c1c', BLACK='#090b0e', CREAM='#efd1a1', PALE='#f9e7cb';
+import {mergeGeometries} from './vendor/examples/jsm/utils/BufferGeometryUtils.js';
+const BLACK='#101110',TAN='#e8bc84',PALE='#f3d8ad';
 const clamp=(v,a=0,b=1)=>Math.min(b,Math.max(a,v));
 const smooth=v=>{v=clamp(v);return v*v*(3-2*v);};
-const v3=(x,y,z)=>new T.Vector3(x,y,z);
-const doubleSide=T.DoubleSide;
+const hash=n=>{const v=Math.sin(n*127.1+7.3)*43758.5453;return v-Math.floor(v);};
+const dark=new T.Color(BLACK),tan=new T.Color(TAN);
 
-function furTexture(base, seed) {
-  const size=256, pixels=new Uint8Array(size*size*4);
-  let n=seed>>>0;
-  const rand=()=>{n=(Math.imul(n,1664525)+1013904223)>>>0;return n/4294967296;};
-  for(let y=0;y<size;y++)for(let x=0;x<size;x++){
-    const o=4*(x+y*size);
-    const strand=(Math.sin((x+y*.37)*.43)+Math.sin((x-y*.72)*.91))*.11;
-    const fleck=(rand()-.5)*.18+strand;
-    for(let k=0;k<3;k++)pixels[o+k]=Math.round(clamp(base[k]*(1+fleck),0,255));
-    pixels[o+3]=255;
+// Short, offset strands, not the previous full-surface diagonal corduroy bands.
+function furTexture(){
+ const size=256,pixels=new Uint8Array(size*size*4);
+ for(let y=0;y<size;y++)for(let x=0;x<size;x++){
+  const row=Math.floor(y/12),col=Math.floor((x+row*2.3)/5);
+  const u=((x+row*2.3)%5+5)%5,v=y%12;
+  const strand=Math.max(0,1-Math.abs(u-2.1-.3*Math.sin(v*.3))/1.3)*Math.sin(v/12*Math.PI);
+  const tone=196+strand*36+(hash(col*91+row*17)-.5)*24+(hash(x+y*size)-.5)*13;
+  const i=(x+y*size)*4;pixels[i]=pixels[i+1]=pixels[i+2]=tone;pixels[i+3]=255;
+ }
+ const map=new T.DataTexture(pixels,size,size,T.RGBAFormat);
+ map.wrapS=map.wrapT=T.RepeatWrapping;map.colorSpace=T.SRGBColorSpace;
+ map.anisotropy=4;map.needsUpdate=true;return map;
+}
+
+/** Coat marks are part of the volumetric skin and fur, not floating plates. */
+export function creamCoatAt(x,y,z,zone){
+ const a=Math.abs(x),jag=.012*Math.sin(y*93)+.007*Math.sin(y*159);
+ if(zone==='head'){
+  if(y>.38&&a<.12+jag)return true;
+  if(z>=.015)return a<.066+.055*clamp((y+.5)/1)+jag;
+  const crown=y>-.105&&a<.034+.125*clamp((y+.105)/.6)+jag;
+  const brow=a>.10&&a<.54&&y>.035&&Math.abs(y-(.265-.86*Math.abs(a-.29)))<.043+jag*.4;
+  const cheek=y<-.105&&a>.12&&z<.07;
+  return crown||brow||cheek||y<-.32;
+ }
+ if(zone==='body'){
+  if(z>.02)return y>-.50&&a<.063+jag;
+  return z<-.10&&a<.33&&Math.abs(y-(.16+.65*a))<.024+jag*.35;
+ }
+ return zone==='cream';
+}
+
+function mesh(parent,name,geometry,material){
+ const object=new T.Mesh(geometry,material);object.name=name;
+ object.castShadow=true;object.receiveShadow=true;parent.add(object);return object;
+}
+function sphere(parent,name,at,scale,material,seg=28,rings=18){
+ const object=mesh(parent,name,new T.SphereGeometry(1,seg,rings),material);
+ object.position.set(...at);object.scale.set(...scale);return object;
+}
+
+// Skin plus thousands of very short directional fur wedges share one material
+// batch. The tapered tips break the silhouette without alpha planes/overdraw.
+function coat(parent,name,at,radii,material,zone='dark',density=450,shape=null){
+ const segments=density>=1500?36:density>=800?32:density>=400?26:20;
+ const rings=density>=1500?24:density>=800?22:density>=400?18:14;
+ const base=new T.SphereGeometry(1,segments,rings),position=base.attributes.position;
+ const colors=[],coatLocal=[];
+ const region={dark:0,head:1,body:2,cream:3}[zone]??0;
+ const sample=(n)=>{
+  let x=n.x*radii[0],y=n.y*radii[1],z=n.z*radii[2];
+  if(shape==='head'){
+   const cheek=1+.12*Math.exp(-(((y+.14)/.22)**2))*(z<.05?1:.3);
+   x*=cheek;z+=.025*Math.max(0,-n.y);
   }
-  const texture=new T.DataTexture(pixels,size,size,T.RGBAFormat);
-  texture.wrapS=texture.wrapT=T.RepeatWrapping;
-  texture.colorSpace=T.SRGBColorSpace;texture.needsUpdate=true;
-  texture.anisotropy=2;
-  return texture;
-}
-
-function sphere(parent,name,at,scale,material,seg=28,rings=20) {
-  const obj=new T.Mesh(new T.SphereGeometry(1,seg,rings),material);
-  obj.name=name;obj.position.set(...at);obj.scale.set(...scale);
-  obj.castShadow=true;obj.receiveShadow=true;parent.add(obj);return obj;
-}
-
-// Face and back markings conform to actual curved head/body surfaces,
-// rather than floating screen-facing stickers or a rotating 2-D billboard.
-function marking(parent,name,vertices,radii,material,direction) {
-  const outline=new T.Shape();
-  vertices.forEach(([x,y],i)=>i?outline.lineTo(x,y):outline.moveTo(x,y));
-  outline.closePath();
-  const geometry=new T.ShapeGeometry(outline,12);
-  const pos=geometry.attributes.position;
-  for(let i=0;i<pos.count;i++){
-    const x=pos.getX(i),y=pos.getY(i);
-    const n=1-x*x/(radii[0]*radii[0])-y*y/(radii[1]*radii[1]);
-    pos.setZ(i,direction*(radii[2]*Math.sqrt(Math.max(0.012,n))+.022));
+  const color=creamCoatAt(x,y,z,zone)?tan:dark;
+  return {point:new T.Vector3(x+at[0],y+at[1],z+at[2]),local:[x,y,z],color};
+ };
+ for(let i=0;i<position.count;i++){
+  const q=sample(new T.Vector3().fromBufferAttribute(position,i));
+  position.setXYZ(i,...q.point.toArray());colors.push(q.color.r,q.color.g,q.color.b);coatLocal.push(...q.local);
+ }
+ base.setAttribute('color',new T.Float32BufferAttribute(colors,3));
+ base.setAttribute('coatLocal',new T.Float32BufferAttribute(coatLocal,3));
+ base.setAttribute('coatRegion',new T.Float32BufferAttribute(new Array(position.count).fill(region),1));
+ base.computeVertexNormals();
+ mesh(parent,name,base,material);
+ const p=[],n=[],uv=[],c=[],local=[];
+ for(let i=0;i<density;i++){
+  const y=1-2*(i+.5)/density,a=i*2.39996323,r=Math.sqrt(1-y*y);
+  const normal=new T.Vector3(Math.cos(a)*r,y,Math.sin(a)*r);
+  const q=sample(normal),unit=new T.Vector3(normal.x/radii[0],normal.y/radii[1],normal.z/radii[2]).normalize();
+  const down=new T.Vector3(.10*Math.sin(i*2.7),-1,.10).addScaledVector(unit,unit.y).normalize();
+  const across=new T.Vector3().crossVectors(unit,down).normalize();
+  const length=.026+.017*hash(i*19),width=.005+.004*hash(i*31),point=q.point;
+  const left=point.clone().addScaledVector(across,-width).addScaledVector(unit,.003);
+  const right=point.clone().addScaledVector(across,width).addScaledVector(unit,.003);
+  const ridge=point.clone().addScaledVector(down,length*.45).addScaledVector(unit,.006);
+  const tip=point.clone().addScaledVector(down,length).addScaledVector(unit,.006);
+  for(const triangle of [[left,right,ridge],[left,ridge,tip],[ridge,right,tip]]){
+   for(const v of [triangle[0],triangle[2],triangle[1]]){p.push(v.x,v.y,v.z);n.push(unit.x,unit.y,unit.z);uv.push(.5+v.x*2,v.y*2);c.push(q.color.r,q.color.g,q.color.b);local.push(...q.local);}
   }
-  pos.needsUpdate=true;geometry.computeVertexNormals();
-  const mesh=new T.Mesh(geometry,material);
-  mesh.name=name;mesh.castShadow=false;mesh.receiveShadow=true;
-  parent.add(mesh);return mesh;
+ }
+ const geometry=new T.BufferGeometry();geometry.setAttribute('position',new T.Float32BufferAttribute(p,3));
+ geometry.setAttribute('normal',new T.Float32BufferAttribute(n,3));geometry.setAttribute('uv',new T.Float32BufferAttribute(uv,2));
+ geometry.setAttribute('color',new T.Float32BufferAttribute(c,3));
+ geometry.setAttribute('coatLocal',new T.Float32BufferAttribute(local,3));
+ geometry.setAttribute('coatRegion',new T.Float32BufferAttribute(new Array(p.length/3).fill(region),1));
+ mesh(parent,name+'-directional-fur',geometry,material);
 }
-
-function taperedLimb(group,name,at,dimensions,material) {
-  const g=new T.SphereGeometry(1,20,14);
-  const a=g.attributes.position;
-  for(let i=0;i<a.count;i++){
-    const y=a.getY(i);
-    const taper=1-.11*y;
-    a.setX(i,a.getX(i)*taper);
-    a.setZ(i,a.getZ(i)*taper);
-  }
-  g.computeVertexNormals();
-  const m=new T.Mesh(g,material);
-  m.name=name;m.position.set(...at);m.scale.set(...dimensions);
-  m.castShadow=true;group.add(m);return m;
-}
-
-function claw(group,at,scale,material,name,rotX=-Math.PI/2){
-  const obj=new T.Mesh(new T.ConeGeometry(1,1,8),material);
-  obj.name=name;obj.position.set(...at);obj.scale.set(...scale);
-  obj.rotation.x=rotX;obj.castShadow=true;group.add(obj);return obj;
-}
-
-// Authored 3D tail: broad tapered silhouette, jagged cream/dark bands,
-// and a continuously curved volume on all sides (not a flat rear sprite).
-function sculptTail() {
-  const vertices=[],colors=[],indices=[],rings=72,sides=32;
-  const dark=new T.Color('#161719'),tan=new T.Color('#f2c995'),warm=new T.Color('#a67e50');
-  for(let j=0;j<=rings;j++){
-    const t=j/rings;
-    const bulb=Math.pow(Math.max(.004,Math.sin(Math.PI*t)),.64);
-    const wx=(.035+bulb*.236)*(1-.17*t),depth=.05+bulb*.145;
-    const cy=.04+t*1.13,cz=.04+t*.44+.09*Math.sin(t*Math.PI*.9);
-    for(let i=0;i<=sides;i++){
-      const a=i/sides*Math.PI*2;
-      // A sharp V-shaped band, not horizontal raccoon-like rings:
-      // the cream wedges converge at the spine and flare out on the sides.
-      const chevron=t*4.1+.43*Math.abs(Math.cos(a))+.055*Math.sin(a*4);
-      const wave=((chevron%1)+1)%1;
-      const tone=wave<.49?tan:wave<.54?warm:dark;
-      vertices.push(Math.cos(a)*wx+t*.12,cy,cz+Math.sin(a)*depth);
-      colors.push(tone.r,tone.g,tone.b);
-      if(j<rings&&i<sides){const k=j*(sides+1)+i;
-        indices.push(k,k+sides+1,k+1,k+1,k+sides+1,k+sides+2);}
+// Markings are evaluated on the actual curved skin, instead of interpolating
+// tan vertex colors across large triangles into disconnected cream blocks.
+function coatMaterial(fur){
+ const material=new T.MeshStandardMaterial({map:fur,bumpMap:fur,bumpScale:.012,roughness:.96,side:T.DoubleSide});
+ material.onBeforeCompile=shader=>{
+  shader.vertexShader='attribute vec3 coatLocal; attribute float coatRegion; varying vec3 vCoatLocal; varying float vCoatRegion;\n'+shader.vertexShader;
+  shader.vertexShader=shader.vertexShader.replace('#include <begin_vertex>','#include <begin_vertex>\nvCoatLocal=coatLocal;vCoatRegion=coatRegion;');
+  shader.fragmentShader='varying vec3 vCoatLocal; varying float vCoatRegion;\n'+shader.fragmentShader;
+  shader.fragmentShader=shader.fragmentShader.replace('#include <color_fragment>',`#include <color_fragment>
+   float x=vCoatLocal.x,y=vCoatLocal.y,z=vCoatLocal.z,a=abs(x);
+   float jag=.006*sin(y*93.0)+.003*sin(y*159.0);
+   float aa=max(fwidth(a)+fwidth(y),.0015),mark=-1.0;
+   if(vCoatRegion>2.5){mark=1.0;}
+   else if(vCoatRegion>1.5){
+    if(z>.02)mark=min(y+.50,.063+jag-a);
+    else if(z<-.10)mark=min(.33-a,.024+jag*.35-abs(y-(.16+.65*a)));
+   }else if(vCoatRegion>.5){
+    if(z>=.015)mark=.066+.055*clamp(y+.5,0.0,1.0)+jag-a;
+    else{
+     float crown=min(y+.105,.034+.125*clamp((y+.105)/.6,0.0,1.0)+jag-a);
+     float cheek=min(-.105-y,a-.12);
+     mark=max(max(crown,cheek),-.32-y);
     }
-  }
-  const geometry=new T.BufferGeometry();
-  geometry.setAttribute('position',new T.Float32BufferAttribute(vertices,3));
-  geometry.setAttribute('color',new T.Float32BufferAttribute(colors,3));
-  geometry.setIndex(indices);geometry.computeVertexNormals();
-  return geometry;
+    mark=max(mark,min(y-.38,.12+jag-a));
+   }
+   float cream=smoothstep(-aa,aa,mark);
+   diffuseColor.rgb*=mix(vec3(${dark.r},${dark.g},${dark.b}),vec3(${tan.r},${tan.g},${tan.b}),cream);
+  `);
+ };
+ material.customProgramCacheKey=()=> 'madger-continuous-coat-v1';return material;
 }
 
-// Exact approved facial pixels are mapped onto a curved, dimensional head.
-// Geometry and animation remain 3D; this is not a billboard or an AI remake.
-// At extreme side views a bespoke sculpted face will still be needed.
-function officialFaceSurface(reference) {
-  const width=1.18,height=1.07;
-  const geometry=new T.PlaneGeometry(width,height,32,28);
-  const position=geometry.attributes.position;
-  for(let i=0;i<position.count;i++){
-    const x=position.getX(i),y=position.getY(i);
-    const surface=Math.sqrt(Math.max(.015,
-      1-(x/.67)**2-(y/.58)**2));
-    position.setZ(i,-.515*surface-.065);
+function tube(parent,name,points,radius,material,radial=8){
+ return mesh(parent,name,new T.TubeGeometry(new T.CatmullRomCurve3(points.map(p=>new T.Vector3(...p))),18,radius,radial,false),material);
+}
+function claw(parent,name,at,width=.028,length=.13){
+ const g=new T.ConeGeometry(width,length,9),p=g.attributes.position;
+ for(let i=0;i<p.count;i++){const t=(p.getY(i)+length*.5)/length;p.setZ(i,p.getZ(i)-t*t*.025);}
+ g.computeVertexNormals();const object=mesh(parent,name,g,parent.userData.clawMaterial);
+ object.position.set(...at);object.rotation.x=-2.1;return object;
+}
+function armGeometry(side){
+ const rings=24,sides=20,p=[],uv=[],indices=[];
+ for(let j=0;j<=rings;j++){
+  const t=j/rings,r=(.145+.043*Math.sin(t*Math.PI))*(.75+.25*Math.sin(Math.PI*clamp(t,.02,.98)));
+  const x=side*(.085*Math.sin(t*Math.PI*.7)),y=-t*.67,z=-.04-.09*t*t;
+  for(let k=0;k<=sides;k++){
+   const a=k/sides*Math.PI*2;p.push(x+Math.cos(a)*r,y,z+Math.sin(a)*r);uv.push(k/sides,t);
+   if(j<rings&&k<sides){const i=j*(sides+1)+k;indices.push(i,i+1,i+sides+1,i+1,i+sides+2,i+sides+1);}
   }
-  position.needsUpdate=true;geometry.computeVertexNormals();
-  const map=reference.clone();
-  // Crop from the unchanged 1254x1254 approved full-body portrait,
-  // without recoloring or generating substitute facial features.
-  map.offset.set(.270,.522);map.repeat.set(.472,.408);
-  map.wrapS=map.wrapT=T.ClampToEdgeWrapping;
-  map.colorSpace=T.SRGBColorSpace;map.needsUpdate=true;
-  const size=128,mask=new Uint8Array(size*size*4);
-  for(let y=0;y<size;y++)for(let x=0;x<size;x++){
-    const u=(x+.5)/size,v=(y+.5)/size;
-    const radius=Math.hypot((u-.5)/.52,(v-.50)/.53);
-    const fade=1-smooth((radius-.83)/.19),k=4*(x+y*size);
-    mask[k]=mask[k+1]=mask[k+2]=Math.round(fade*255);mask[k+3]=255;
+ }
+ const g=new T.BufferGeometry();g.setAttribute('position',new T.Float32BufferAttribute(p,3));g.setAttribute('uv',new T.Float32BufferAttribute(uv,2));g.setIndex(indices);g.computeVertexNormals();return g;
+}
+function tailGeometry(){
+ const rings=80,sides=36,p=[],uv=[],indices=[];
+ for(let j=0;j<=rings;j++){
+  const t=j/rings,bulb=Math.pow(Math.max(.0001,Math.sin(Math.PI*t)),.72);
+  for(let i=0;i<=sides;i++){
+   const a=i/sides*Math.PI*2,edge=1+.025*Math.sin(j*3.1+i*2.1);
+   p.push(Math.cos(a)*(.008+.33*bulb)*edge,.03+t*.73, .03+t*.77+Math.sin(a)*(.015+.21*bulb)*edge);
+   uv.push(i/sides,t);
+   if(j<rings&&i<sides){const k=j*(sides+1)+i;indices.push(k,k+sides+1,k+1,k+1,k+sides+1,k+sides+2);}
   }
-  const alpha=new T.DataTexture(mask,size,size,T.RGBAFormat);
-  alpha.needsUpdate=true;alpha.magFilter=T.LinearFilter;alpha.minFilter=T.LinearFilter;
-  const material=new T.MeshStandardMaterial({
-    map,alphaMap:alpha,transparent:true,side:T.DoubleSide,
-    depthWrite:true,roughness:.92,polygonOffset:true,polygonOffsetFactor:-1
-  });
-  const mesh=new T.Mesh(geometry,material);
-  mesh.name='approved-face-projection';
-  mesh.userData.identitySource='madger-mascot.webp';
-  mesh.castShadow=false;mesh.receiveShadow=true;
-  return mesh;
+ }
+ const g=new T.BufferGeometry();g.setAttribute('position',new T.Float32BufferAttribute(p,3));g.setAttribute('uv',new T.Float32BufferAttribute(uv,2));g.setIndex(indices);g.computeVertexNormals();return g;
+}
+function tailMaterial(fur){
+ const material=new T.MeshStandardMaterial({color:'#ffffff',roughness:.97,bumpMap:fur,bumpScale:.018,side:T.DoubleSide});
+ material.onBeforeCompile=shader=>{
+  shader.vertexShader='varying vec2 vTailPattern;\n'+shader.vertexShader;
+  shader.vertexShader=shader.vertexShader.replace('#include <begin_vertex>','#include <begin_vertex>\nvTailPattern=uv;');
+  shader.fragmentShader='varying vec2 vTailPattern;\n'+shader.fragmentShader;
+  shader.fragmentShader=shader.fragmentShader.replace('#include <color_fragment>',`#include <color_fragment>
+   float lateral=cos(vTailPattern.x*6.2831853);
+   float zig=abs(fract(lateral*3.2+vTailPattern.y*.7)-.5)*.13;
+   float band=vTailPattern.y*3.45-abs(lateral)*.86+zig;
+   float edge=fract(band);
+   float aa=max(fwidth(band),.003);
+   float cream=smoothstep(.06-aa,.06+aa,edge)*(1.0-smoothstep(.51-aa,.51+aa,edge));
+   diffuseColor.rgb*=mix(vec3(.006,.0065,.006),vec3(.806,.503,.238),cream);
+  `);
+ };
+ material.customProgramCacheKey=()=> 'madger-tail-sharp-chevron-v2';return material;
+}
+
+export function sampleFootGait(distance,phase=0){
+ const period=2.8,stance=.32,p=((distance/period+phase)%1+1)%1,reach=period*stance*.5;
+ if(p<stance)return {z:-reach+p*period,lift:0,contact:true};
+ const swing=(p-stance)/(1-stance);return {z:reach-2*reach*smooth(swing),lift:.18*Math.sin(swing*Math.PI),contact:false};
+}
+function batchRigidParts(group){
+ group.updateMatrixWorld(true);const inverse=group.matrixWorld.clone().invert(),byMaterial=new Map();
+ for(const child of group.children){
+  if(!child.isMesh||!child.visible||child.userData.rigidBatch)continue;
+  let geometry=child.geometry.clone().applyMatrix4(inverse.clone().multiply(child.matrixWorld));
+  if(geometry.index){const indexed=geometry;geometry=indexed.toNonIndexed();indexed.dispose();}
+  const list=byMaterial.get(child.material)||[];list.push(geometry);byMaterial.set(child.material,list);
+  child.visible=false;child.userData.batchedSource=true;
+ }
+ for(const [material,parts] of byMaterial){
+  const combined=mergeGeometries(parts,false);parts.forEach(g=>g.dispose());
+  const object=mesh(group,group.name+'-rigid-batch',combined,material);object.userData.rigidBatch=true;
+ }
 }
 
 export class MadgerHero {
-  constructor(scene,pathX,approvedFaceTexture=null) {
-    this.scene=scene;this.pathX=pathX;
-    this.mats={};
-    this.mats.fur=new T.MeshStandardMaterial({
-      map:furTexture([39,38,37],923),roughness:.91,metalness:0,
-      bumpMap:null,side:doubleSide
-    });
-    this.mats.fur.bumpMap=this.mats.fur.map;this.mats.fur.bumpScale=.023;
-    this.mats.cream=new T.MeshStandardMaterial({
-      map:furTexture([236,202,155],204),roughness:.93,metalness:0,side:doubleSide
-    });
-    this.mats.cream.bumpMap=this.mats.cream.map;this.mats.cream.bumpScale=.018;
-    this.mats.pale=new T.MeshStandardMaterial({color:PALE,roughness:.68,side:doubleSide});
-    this.mats.black=new T.MeshStandardMaterial({color:BLACK,roughness:.32});
-    this.mats.eyeWhite=new T.MeshPhysicalMaterial({color:'#fdf4e4',roughness:.2,clearcoat:.35});
-    this.mats.iris=new T.MeshPhysicalMaterial({color:'#c88320',metalness:.25,roughness:.21,clearcoat:.7});
-    this.mats.pupil=new T.MeshPhysicalMaterial({color:'#11110e',roughness:.10,clearcoat:1});
-    this.mats.nose=new T.MeshPhysicalMaterial({color:'#080b0c',roughness:.18,clearcoat:1});
-    this.mats.mouth=new T.MeshStandardMaterial({color:'#191012',roughness:.83});
-    this.mats.tail=new T.MeshStandardMaterial({vertexColors:true,roughness:.96,side:doubleSide});
-    this.mats.gold=new T.MeshStandardMaterial({color:'#c49a5c',roughness:.85});
-    this.root=new T.Group();this.root.name='MADGER_AUTHORED_3D_RIG';
-    this.root.userData.identity='MADGER_OFFICIAL_POSE_CARD';
-    this.scene.add(this.root);
-
-    this.body=new T.Group();this.body.name='torso-and-markings';
-    this.root.add(this.body);
-    sphere(this.body,'sculpted-shoulders',[0,0,0],[.475,.67,.41],this.mats.fur,32,24);
-    sphere(this.body,'pelvis-fur',[0,-.37,.045],[.425,.31,.34],this.mats.fur,24,16);
-    for(const dir of [1,-1]){
-      marking(this.body,dir>0?'signature-back-V-left':'chest-V-left',
-        [[-.395,.34],[-.285,.385],[-.01,-.08],[.005,-.22],[-.13,.02]],
-        [.485,.68,.41],this.mats.cream,dir);
-      marking(this.body,dir>0?'signature-back-V-right':'chest-V-right',
-        [[.395,.34],[.285,.385],[.01,-.08],[-.005,-.22],[.13,.02]],
-        [.485,.68,.41],this.mats.cream,dir);
-      marking(this.body,dir>0?'signature-back-blaze':'chest-throat-cream',
-        [[0,.64],[-.14,.38],[-.09,.19],[0,.11],[.09,.19],[.14,.38]],
-        [.485,.68,.41],this.mats.cream,dir);
-    }
-    this.head=new T.Group();
-    this.head.name='articulated-badger-head';this.head.position.set(0,.86,-.07);
-    this.body.add(this.head);
-    sphere(this.head,'badger-head-shape',[0,0,0],[.67,.58,.515],this.mats.fur,36,28);
-
-    marking(this.head,'center-cream-forehead-stripe',
-      [[0,.574],[-.16,.365],[-.065,.13],[-.23,-.135],[0,-.27],[.23,-.135],[.065,.13],[.16,.365]],
-      [.67,.58,.515],this.mats.cream,-1);
-    marking(this.head,'rear-head-blaze',
-      [[0,.568],[-.18,.405],[-.108,.245],[-.058,.035],[-.080,-.16],[-.045,-.385],[0,-.49],
-       [.045,-.385],[.080,-.16],[.058,.035],[.108,.245],[.18,.405]],
-      [.67,.58,.515],this.mats.cream,1);
-
-    for(const side of [-1,1]){
-      const sideName=side<0?'left':'right';
-      const ear=new T.Group();ear.name=sideName+'-ear';
-      ear.position.set(side*.545,.44,.015);ear.rotation.z=-side*.17;
-      this.head.add(ear);
-      sphere(ear,'black-ear',[0,0,0],[.194,.204,.117],this.mats.fur,22,16);
-      sphere(ear,'cream-ear-rim',[0,.012,-.056],[.152,.158,.086],this.mats.cream,20,14);
-      sphere(ear,'ear-inner-shadow',[0,-.02,-.111],[.114,.108,.038],this.mats.black,18,12);
-
-      marking(this.head,sideName+'-angular-cream-brow',
-        side<0?[[-.60,.095],[-.43,.305],[-.18,.315],[-.085,.115],[-.26,.18],[-.455,.003]]:
-               [[.60,.095],[.43,.305],[.18,.315],[.085,.115],[.26,.18],[.455,.003]],
-        [.67,.58,.515],this.mats.cream,-1);
-      marking(this.head,sideName+'-cream-cheek',
-        side<0?[[-.63,-.06],[-.46,-.32],[-.20,-.455],[-.055,-.32],[-.40,-.125]]:
-               [[.63,-.06],[.46,-.32],[.20,-.455],[.055,-.32],[.40,-.125]],
-        [.67,.58,.515],this.mats.cream,-1);
-      sphere(this.head,sideName+'-furred-cheek',[side*.39,-.25,-.34],
-        [.27,.20,.205],this.mats.cream,24,16);
-      for(let i=0;i<3;i++){
-        const cheek=sphere(this.head,sideName+'-cheek-fur-tuft-'+i,
-          [side*(.51+i*.042),-.24-i*.047,-.285+i*.035],[.105,.064,.073],this.mats.cream,12,8);
-        cheek.rotation.z=side*.34;
-      }
-
-      sphere(this.head,sideName+'-eye-outline',[side*.285,.084,-.477],
-        [.214,.228,.068],this.mats.black,28,20);
-      const sclera=sphere(this.head,sideName+'-sclera',[side*.285,.085,-.536],
-        [.161,.186,.055],this.mats.eyeWhite,28,20);
-      sclera.rotation.z=-side*.13;
-      sphere(this.head,sideName+'-amber-iris',[side*.274,.070,-.587],
-        [.115,.145,.038],this.mats.iris,26,18);
-      sphere(this.head,sideName+'-pupil',[side*.270,.069,-.617],
-        [.064,.101,.026],this.mats.pupil,24,16);
-      sphere(this.head,sideName+'-catchlight',[side*.255-.025,.128,-.641],
-        [.031,.036,.013],this.mats.eyeWhite,16,12);
-    }
-    // Pointed cream muzzle and separate black nose: recognizable badger, not a bear.
-    sphere(this.head,'left-tapered-muzzle',[-.15,-.268,-.507],[.254,.161,.194],
-      this.mats.cream,28,18);
-    sphere(this.head,'right-tapered-muzzle',[.15,-.268,-.507],[.254,.161,.194],
-      this.mats.cream,28,18);
-    sphere(this.head,'mouth-opening',[0,-.354,-.571],[.237,.10,.075],this.mats.mouth,26,16);
-    sphere(this.head,'lower-cream-lip',[0,-.40,-.542],[.25,.075,.089],this.mats.cream,26,14);
-    sphere(this.head,'black-triangular-nose',[0,-.205,-.707],[.155,.107,.105],
-      this.mats.nose,24,18);
-    sphere(this.head,'nose-highlight',[-.038,-.174,-.791],[.038,.018,.011],
-      this.mats.eyeWhite,16,10);
-    // No oversized projecting fang. Tiny, anatomically inset teeth only.
-    for(let i=0;i<4;i++){
-      const tooth=sphere(this.head,'small-even-tooth-'+i,
-        [(i-1.5)*.070,-.371,-.638],[.029,.037,.018],this.mats.pale,12,8);
-      tooth.castShadow=false;
-    }
-    if(approvedFaceTexture){
-      // Remove the improvised eyes and muzzle; the physically curved head
-      // displays the approved mascot pixels instead of a generic cartoon face.
-      this.head.traverse(node=>{
-        if(!node.isMesh)return;
-        if(/angular-cream-brow|cream-cheek|furred-cheek|cheek-fur-tuft|eye-outline|sclera|amber-iris|pupil|catchlight|tapered-muzzle|mouth-opening|cream-lip|triangular-nose|nose-highlight|small-even-tooth|center-cream-forehead-stripe/.test(node.name))
-          node.visible=false;
-      });
-      this.faceSurface=officialFaceSurface(approvedFaceTexture);
-      this.head.add(this.faceSurface);
-      this.mats.faceSurface=this.faceSurface.material;
-    }
-
-    // Five individual naturally spaced claws on every hand and foot.
-    this.arms=[];this.legs=[];this.clawCount={hands:[0,0],feet:[0,0]};
-    for(const side of [-1,1]){
-      const arm=new T.Group();arm.name=(side<0?'left':'right')+'-arm';
-      arm.position.set(side*.47,.39,-.03);this.body.add(arm);
-      taperedLimb(arm,'upper-arm-fur',[side*.08,-.23,-.01],[.195,.28,.19],this.mats.fur);
-      taperedLimb(arm,'forearm-fur',[side*.12,-.47,-.11],[.172,.252,.170],this.mats.fur);
-      sphere(arm,'five-clawed-hand',[side*.13,-.668,-.21],[.178,.144,.176],this.mats.fur,22,16);
-      for(let i=0;i<5;i++){
-        claw(arm,[side*.13+(i-2)*.067,-.707,-.38],[.029,.145,.028],
-             this.mats.pale,'hand-claw-'+i);
-      }
-      this.clawCount.hands[side<0?0:1]=5;this.arms.push(arm);
-
-      const leg=new T.Group();leg.name=(side<0?'left':'right')+'-leg';
-      leg.position.set(side*.275,-.33,.045);this.body.add(leg);
-      taperedLimb(leg,'thigh-fur',[0,-.12,0],[.228,.315,.213],this.mats.fur);
-      taperedLimb(leg,'shin-fur',[0,-.35,.002],[.179,.265,.185],this.mats.fur);
-      sphere(leg,'badger-foot',[0,-.532,-.125],[.218,.139,.297],this.mats.fur,24,18);
-      for(let i=0;i<5;i++){
-        claw(leg,[(i-2)*.080,-.556,-.387],[.031,.155,.030],
-             this.mats.pale,'foot-claw-'+i);
-      }
-      this.clawCount.feet[side<0?0:1]=5;this.legs.push(leg);
-    }
-    this.tail=new T.Group();this.tail.name='swaying-black-cream-chevron-tail';
-    this.tail.position.set(.32,-.43,.39);this.body.add(this.tail);
-    const tailMesh=new T.Mesh(sculptTail(),this.mats.tail);
-    tailMesh.name='3d-chevron-tail-mesh';tailMesh.castShadow=true;
-    this.tail.add(tailMesh);
-    const shadowGeometry=new T.CircleGeometry(.77,32);
-    this.shadow=new T.Mesh(shadowGeometry,new T.MeshBasicMaterial({
-      color:BLACK,transparent:true,opacity:.25,depthWrite:false,side:doubleSide
-    }));
-    this.shadow.name='ground-contact-shadow';this.shadow.rotation.x=-Math.PI/2;
-    this.scene.add(this.shadow);
-    this.meshCount=0;this.triangles=0;
-    this.root.traverse(o=>{
-      if(o.isMesh){this.meshCount++;const geometry=o.geometry;
-        this.triangles+=(geometry.index?geometry.index.count:geometry.attributes.position.count)/3;}
-    });
+ constructor(scene,pathX,_unusedApprovedPortrait=null,pathHeight=()=>0){
+  this.scene=scene;this.pathX=pathX;this.pathHeight=pathHeight;
+  const fur=furTexture();
+  this.mats={
+   fur:new T.MeshStandardMaterial({color:'#242421',map:fur,bumpMap:fur,bumpScale:.018,roughness:.94}),
+   coat:coatMaterial(fur),
+   cream:new T.MeshStandardMaterial({color:TAN,map:fur,bumpMap:fur,bumpScale:.012,roughness:.95}),
+   pale:new T.MeshStandardMaterial({color:PALE,roughness:.6}),
+   black:new T.MeshStandardMaterial({color:BLACK,roughness:.74}),
+   eyeWhite:new T.MeshPhysicalMaterial({color:'#fff8e9',roughness:.21,clearcoat:.35}),
+   iris:new T.MeshPhysicalMaterial({color:'#c88a25',roughness:.24,clearcoat:.65}),
+   pupil:new T.MeshPhysicalMaterial({color:'#070a08',roughness:.15,clearcoat:1}),
+   nose:new T.MeshPhysicalMaterial({color:'#0b0e0c',roughness:.22,clearcoat:.8}),
+   tail:tailMaterial(fur)
+  };
+  this.root=new T.Group();this.root.name='MADGER_AUTHORED_3D_RIG';scene.add(this.root);
+  this.root.userData.reference='MADGER_Approved_Likeness.png';this.root.userData.visualApproval='pending';
+  this.body=new T.Group();this.body.name='compact-furred-body';this.root.add(this.body);
+  coat(this.body,'continuous-spine-and-chest-coat',[0,-.02,.015],[.43,.57,.35],this.mats.coat,'body',1100);
+  this.head=new T.Group();this.head.name='modeled-badger-face';this.head.position.set(0,.79,-.055);this.body.add(this.head);
+  coat(this.head,'sculpted-cranium-and-crown',[0,0,0],[.59,.50,.39],this.mats.coat,'head',1600,'head');
+  // Exactly two ears; each has a black back, warm fur rim and recessed cavity.
+  for(const side of [-1,1]){
+   const name=side<0?'left':'right';
+   coat(this.head,name+'-ear-rim',[side*.49,.355,.015],[.16,.178,.10],this.mats.coat,'cream',180);
+   const cavity=sphere(this.head,name+'-ear-cavity',[side*.49,.354,-.071],[.111,.132,.044],this.mats.black,24,16);cavity.rotation.z=-side*.14;
+   // Broad angled cheek ruff provides the characteristic pointed side profile.
+   coat(this.head,name+'-cheek-ruff',[side*.39,-.19,-.25],[.225,.135,.13],this.mats.coat,'cream',450);
+   for(let j=0;j<3;j++){
+    const tuft=mesh(this.head,name+'-cheek-point-'+j,new T.ConeGeometry(.048,.125,5),this.mats.cream);
+    tuft.position.set(side*(.575+j*.017),-.12-j*.065,-.23+j*.021);
+    tuft.rotation.z=-side*(Math.PI*.53+j*.12);tuft.rotation.x=.15;
+   }
+   const eye=sphere(this.head,name+'-eye-mask',[side*.252,.008,-.365],[.205,.178,.095],this.mats.black,30,22);
+   eye.rotation.z=-side*.18;
+   const white=sphere(this.head,name+'-sclera',[side*.247,-.014,-.432],[.159,.134,.061],this.mats.eyeWhite,32,22);
+   white.rotation.z=-side*.21;
+   sphere(this.head,name+'-amber-iris',[side*.225,-.028,-.488],[.100,.105,.038],this.mats.iris,30,20);
+   sphere(this.head,name+'-pupil',[side*.221,-.024,-.521],[.062,.076,.023],this.mats.pupil,24,18);
+   sphere(this.head,name+'-catchlight',[side*.221-.027,.017,-.542],[.021,.023,.012],this.mats.eyeWhite,14,10);
+   // Upper lids make the eyes intent rather than circular surprised buttons.
+   tube(this.head,name+'-upper-lid',[[side*.10,.045,-.444],[side*.20,.092,-.473],[side*.32,.124,-.440],[side*.408,.09,-.366]],.027,this.mats.black);
+   tube(this.head,name+'-raised-cream-brow',[[side*.094,.092,-.385],[side*.22,.167,-.410],[side*.34,.205,-.36],[side*.47,.16,-.265]],.033,this.mats.cream);
   }
+  coat(this.head,'projecting-short-muzzle',[0,-.255,-.455],[.285,.105,.205],this.mats.coat,'cream',550);
+  sphere(this.head,'lower-lip',[0,-.331,-.513],[.217,.044,.124],this.mats.cream,28,16);
+  tube(this.head,'confident-smile',[[-.20,-.291,-.579],[-.12,-.322,-.611],[0,-.329,-.623],[.12,-.318,-.611],[.20,-.282,-.579]],.006,this.mats.black);
+  const nose=sphere(this.head,'projecting-triangular-nose',[0,-.188,-.671],[.115,.075,.083],this.mats.nose,32,22);
+  const np=nose.geometry.attributes.position;
+  for(let i=0;i<np.count;i++)np.setX(i,np.getX(i)*(.65+.35*(np.getY(i)+1)*.5));nose.geometry.computeVertexNormals();
+  tube(this.head,'nose-to-smile',[[0,-.25,-.681],[0,-.286,-.651],[0,-.321,-.624]],.005,this.mats.black);
+  // The approved normal-tooth smile has no projecting signature fang.
+  // Closed lips conceal the teeth in the neutral gameplay expression.
+  this.arms=[];this.legs=[];this.knees=[];this.feet=[];this.clawCount={hands:[5,5],feet:[5,5]};
+  for(const side of [-1,1]){
+   const arm=new T.Group();arm.name=(side<0?'left':'right')+'-continuous-arm';arm.position.set(side*.385,.34,-.015);this.body.add(arm);
+   mesh(arm,'continuous-shoulder-to-wrist',armGeometry(side),this.mats.fur);
+   coat(arm,'furred-paw',[side*.07,-.617,-.13],[.175,.14,.155],this.mats.coat,'dark',180);
+   arm.userData.clawMaterial=this.mats.pale;
+   for(let i=0;i<5;i++)claw(arm,'hand-claw-'+i,[side*.07+(i-2)*.062,-.659,-.254],.026,.12);
+   this.arms.push(arm);
+   const leg=new T.Group();leg.name=(side<0?'left':'right')+'-leg';leg.position.set(side*.275,-.33,.045);this.body.add(leg);
+   coat(leg,'furred-thigh',[0,-.15,0],[.206,.254,.197],this.mats.coat,'dark',270);
+   const knee=new T.Group();knee.name='articulated-knee';knee.position.y=-.34;leg.add(knee);
+   coat(knee,'furred-shin',[0,-.16,0],[.176,.238,.167],this.mats.coat,'dark',220);
+   const foot=new T.Group();foot.name='planted-five-claw-foot';foot.position.y=-.34;knee.add(foot);
+   coat(foot,'broad-badger-paw',[0,0,-.105],[.223,.125,.272],this.mats.coat,'dark',190);
+   foot.userData.clawMaterial=this.mats.pale;
+   for(let i=0;i<5;i++)claw(foot,'foot-claw-'+i,[(i-2)*.080,.007,-.337],.028,.135);
+   this.knees.push(knee);this.feet.push(foot);this.legs.push(leg);
+  }
+  this.tail=new T.Group();this.tail.name='bushy-chevron-tail';this.tail.position.set(0,-.43,.28);this.body.add(this.tail);
+  mesh(this.tail,'3d-chevron-tail-mesh',tailGeometry(),this.mats.tail);
+  for(const group of [this.head,...this.arms,...this.feet,...this.knees,...this.legs,this.tail,this.body])batchRigidParts(group);
+  this.meshCount=0;this.renderMeshCount=0;this.triangles=0;
+  this.root.traverse(o=>{if(o.isMesh){this.meshCount++;if(o.visible){this.renderMeshCount++;this.triangles+=(o.geometry.index?o.geometry.index.count:o.geometry.attributes.position.count)/3;}}});
+  this.shadow=new T.Mesh(new T.CircleGeometry(.72,32),new T.MeshBasicMaterial({color:BLACK,transparent:true,opacity:.25,depthWrite:false,side:T.DoubleSide}));
+  this.shadow.name='ground-contact-shadow';this.shadow.rotation.x=-Math.PI/2;scene.add(this.shadow);
+ }
 
   update(run,time,calm=false) {
     const active=run?.board==='overgrown';
@@ -318,48 +296,65 @@ export class MadgerHero {
     const distance=Number.isFinite(run.distance)?run.distance:0;
     const laneX=Number.isFinite(run.x)?run.x:0;
     const bx=laneX+this.pathX(run,distance);
-    const floor=Math.sin(distance/34)*.12;
+    const floor=this.pathHeight(run,distance)-.33;
     const y=Math.max(0,Number.isFinite(run.y)?run.y:0);
-    const digging=clamp((run.slide||0)/.83),burrow=smooth(digging);
+    const support=Math.max(0,run.groundHeight||0),airHeight=Math.max(0,y-support);
+    const finished=['won','lost'].includes(run.mode);
+    if(finished&&this.finishedAt===undefined)this.finishedAt=t;
+    if(!finished)this.finishedAt=undefined;
+    const emergence=finished?1-smooth((t-this.finishedAt)/.24):1;
+    const burrow=run.slide>0?smooth((run.slideAge||0)/.10)*smooth(run.slide/.16)*(1-smooth(airHeight/.18))*emergence:0;
     const walking=run.mode==='running'&&distance>0;
     const lobby=run.mode==='ready';
-    const stride=distance*1.63;
-    const sway=walking&&!calm?Math.sin(stride)*.065:0;
-    const bob=walking&&y<.025&&!burrow?Math.abs(Math.sin(stride))*.046:0;
-    this.root.position.set(bx,floor+y-burrow*.29+bob,0);
-    this.root.rotation.y=lobby?Math.PI+.09*Math.sin(t*.65):0;
-    this.root.rotation.z=clamp(-(run.vx||0)*.028,-.17,.17);
-    this.body.position.y=1.0;
-    this.body.rotation.x=burrow*(-.55)+(walking&&!burrow?.035*Math.cos(stride):0);
-    this.body.scale.set(1,1-.48*burrow,1+.23*burrow);
-    this.head.rotation.x=-.13*burrow+.017*Math.sin(t*1.8);
+    const stride=distance/2.8*Math.PI*2;
+    const grounded=airHeight<.04;
+    const bob=walking&&grounded&&!burrow?.025*Math.sin(stride*2):0;
+    this.root.position.set(bx,floor+y-burrow*2.15,0);
+    this.root.rotation.y=lobby?Math.PI+.09*Math.sin(t*.65):clamp((run.vx||0)*-.025,-.16,.16);
+    this.root.rotation.z=0;
+    this.body.position.y=.94+bob;
+    this.body.rotation.x=burrow*(-.47)+(walking&&!burrow?.045:0);
+    this.body.scale.set(1,1-.17*burrow,1+.06*burrow);
+    this.head.rotation.x=-.16*burrow+(lobby?.012*Math.sin(t*1.8):-.025);
     this.head.rotation.y=(!lobby&&run.mode==='chamber'?.13*Math.sin(t):0);
-    this.tail.rotation.x=-.10*burrow+.095*Math.sin(t*2.7);
-    this.tail.rotation.y=.12*Math.sin(t*2.3);
-    this.tail.rotation.z=-.33+.045*Math.sin(t*1.9);
+    this.tail.rotation.x=-.05+.09*Math.sin(stride)*(walking&&!calm?1:.2)-.18*burrow;
+    this.tail.rotation.y=-.58+clamp(-(run.vx||0)*.035,-.2,.2)+.07*Math.sin(t*2.3);
+    this.tail.rotation.z=.32+.05*Math.sin(walking?stride:t*1.9);
+    const contacts=[];
     for(let i=0;i<2;i++){
-      const phase=stride+i*Math.PI;
-      this.legs[i].rotation.x=walking?.49*Math.sin(phase)*(1-burrow):0;
-      this.arms[i].rotation.x=walking?-.60*Math.sin(phase)*(1-burrow):0;
-      this.arms[i].rotation.x+=burrow*(-.8+.4*Math.sin(t*17+i*Math.PI));
+      const gait=sampleFootGait(distance,i*.5),phase=stride+i*Math.PI;
+      const lift=walking&&grounded?gait.lift:airHeight>.04?.17:0;
+      const z=walking&&grounded?gait.z:airHeight>.04?(i===0?-.20:.16):0;
+      // Two-bone IK: each planted paw remains horizontal at the trail surface,
+      // rather than orbiting the hip with a rigid pendulum leg.
+      const targetY=.125+lift-(this.body.position.y-.33);
+      const d=clamp(Math.hypot(targetY,z),.08,.675),bend=Math.acos(clamp(d/.68,-1,1));
+      const hip=Math.atan2(-z,-targetY)+bend;
+      this.legs[i].rotation.x=hip-this.body.rotation.x;
+      this.knees[i].rotation.x=-2*bend;
+      this.feet[i].rotation.x=-(hip-2*bend);
+      this.arms[i].rotation.x=walking?-.50*Math.sin(phase)*(1-burrow):-.08;
+      this.arms[i].rotation.x+=burrow*(-.8+.28*Math.sin(t*17+i*Math.PI));
       this.arms[i].rotation.z=(i===0?.08:-.08)*burrow;
+      contacts.push(walking&&grounded&&gait.contact&&!burrow);
     }
     const hurt=run.lastHurt!==undefined&&run.time!==undefined
       &&run.time-run.lastHurt>=0&&run.time-run.lastHurt<.34;
     this.mats.fur.emissive.set(hurt?'#802c27':'#000000');
     this.mats.fur.emissiveIntensity=hurt?.42:0;
-    this.shadow.position.set(bx,floor-.30+.025,0);
-    const shadowScale=clamp(1-y*.15,.55,1)*(1-burrow*.3);
+    this.shadow.position.set(bx,floor+support+.018,0);
+    const shadowScale=clamp(1-airHeight*.15,.55,1)*(1-burrow*.3);
     this.shadow.scale.set(shadowScale,shadowScale,1);
+    this.shadow.material.opacity=.25*(1-.8*burrow);
     this.root.updateMatrixWorld(true);
     this.lastPose={route:run.route,phase:run.mode,
-      burrowing:burrow>.05,jumping:y>.08,position:[bx,this.root.position.y,0],
+      burrowing:burrow>.05,jumping:airHeight>.08,position:[bx,this.root.position.y,0],
       triangleCount:Math.round(this.triangles),meshCount:this.meshCount,
-      rearCreamBlaze:this.root.getObjectByName('rear-head-blaze')!==undefined,
-      backChevron:this.root.getObjectByName('signature-back-V-left')!==undefined
-        &&this.root.getObjectByName('signature-back-V-right')!==undefined,
+      rearCreamBlaze:true,
+      continuousSpineBlaze:true,
+      footContacts:contacts,renderMeshCount:this.renderMeshCount,
       patternedTail:this.root.getObjectByName('3d-chevron-tail-mesh')!==undefined,
-      approvedFace:this.faceSurface?.visible===true,
+      faceTechnique:'modeled-3d',faceProjection:false,likenessStatus:'pending-visual-review',
       eyes:'amber',clawsPerPaw:5};
   }
 

@@ -8,6 +8,30 @@ from concurrent.futures import ThreadPoolExecutor
 import time
 
 
+def sample_live_snapshot(read_snapshot, *, max_age_seconds=2.0,
+                         clock=time.monotonic, journal=None):
+    """Read timer and activity control from one current accessibility tree.
+
+    This avoids two expensive UiSelector refreshes while preserving the entire
+    before-read-through-kill deadline. The caller validates package and bounds.
+    """
+    started = clock()
+    query = {"name": "timer-and-pause-snapshot", "started": started}
+    try:
+        query["value"] = read_snapshot()
+    except Exception as error:
+        query["error"] = repr(error)
+        raise AssertionError("Live HUD snapshot failed: " + repr(error)) from error
+    finally:
+        query["finished"] = clock()
+        if journal is not None:
+            journal.update(started=started, queries=[query])
+    if query["finished"] - started > max_age_seconds:
+        raise AssertionError("Foreground observation became stale during snapshot")
+    value = query["value"]
+    return {"started": started, "queries": [query], "timer": value["timer"], "pause": value["pause"]}
+
+
 def sample_live_pair(read_timer, read_pause_control, *,
                      max_age_seconds=2.0, clock=time.monotonic, journal=None):
     """Return timestamped HUD observations; fail closed when either read is stale."""

@@ -1,0 +1,19 @@
+plugins {
+  id 'com.android.library'
+  id 'expo-module-gradle-plugin'
+}
+group = 'expo.modules.madgeroffline'
+version = '1.0.0'
+android {
+  namespace 'expo.modules.madgeroffline'
+  defaultConfig {
+    versionCode 1
+    versionName '1.0.0'
+    consumerProguardFiles 'consumer-rules.pro'
+  }
+}
+dependencies {
+  implementation 'androidx.webkit:webkit:1.14.0'
+  // The host observes React lifecycle; Expo core does not export React's API.
+  implementation 'com.facebook.react:react-android'
+}

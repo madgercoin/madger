@@ -52,7 +52,7 @@ Game / Arcade
 
 No sign-in or special access is required. The four main tabs are Home, Play, Scores and Settings. Gameplay is local and does not require a wallet. No advertising, in-app purchases, prizes, token rewards, remote leaderboard or game telemetry is implemented.
 
-Optional community, verification and buying-information routes remain accessible in the application. External links are user initiated. Any purchase or swap route opens an external service; the app does not connect to wallets, execute transactions or request private keys. Store declarations must account for those informational routes as well as the primary game.
+Optional support, privacy, website and community links are user initiated. Historical purchase deep links redirect to Home. The app contains no trading guide, exchange links, wallet tools, transactions, or requests for private keys. Game coins and relics have no cash value. Store declarations must account for those informational routes as well as the primary game.
 
 Progress and unfinished-run checkpoints are stored locally. Score sharing uses the operating system share sheet only when the player chooses to share. Clearing app storage or uninstalling removes local progress.
 

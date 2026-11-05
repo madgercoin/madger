@@ -1,5 +1,9 @@
 # MADGER Expedition 1.5.0 — Android build 14
 
+> This page preserves historical build-14 evidence and download links. Current
+> preview work, acceptance results and phone downloads are tracked in
+> [PR #134](https://github.com/madgercoin/madger/pull/134).
+
 The signed standalone preview APK below passed source validation, renderer pixel comparisons, the exported-web functional check, and both native Android suites. This README records the accepted artifact and the scope of those checks.
 
 ## Verified APK and source

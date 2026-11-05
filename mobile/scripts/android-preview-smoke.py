@@ -8,7 +8,7 @@ import time
 import xml.etree.ElementTree as ET
 import atexit
 import uiautomator2 as u2
-from android_foreground_observation import sample_live_pair_with_retry
+from android_foreground_observation import sample_live_snapshot
 
 PACKAGE = os.environ.get('MADGER_ANDROID_PACKAGE') or 'com.madgercoin.preview'
 APK = os.environ.get('MADGER_ANDROID_APK') or 'android/app/build/outputs/apk/release/app-release.apk'
@@ -51,6 +51,26 @@ def wait_for(label, seconds=30):
                 return node
         time.sleep(0.5)
     raise AssertionError(f'Enabled action did not appear: {label}')
+
+
+def enter_classic_games():
+    """Navigate explicitly from the current 3D game, preserving both saves."""
+    deadline = time.monotonic() + 60
+    while time.monotonic() < deadline:
+        root = hierarchy()
+        labels = {node.get(key) for node in root.iter('node') for key in ('text', 'content-desc')}
+        if 'Your run is safe.' in labels:
+            tap('Return to the Burrow')
+            break
+        if 'Start expedition' in labels:
+            tap('Classic games')
+            break
+        time.sleep(.2)
+    else:
+        raise AssertionError('Cold launch did not open the Expedition lobby or saved run')
+    # The Classic card's play button is below the fold; home_action owns scrolling.
+    wait_for('Keep digging')
+    wait_for('Classic games')
 
 
 def home_action(label, max_swipes=5, forbidden_label=None):
@@ -111,7 +131,7 @@ def kill_observed_foreground_run():
     preparation = {'started': time.monotonic(), 'queries': []}
     observation = {'status': 'preparing', 'clock': 'host monotonic seconds',
                    'started': started, 'max_age_seconds': 2.0, 'queries': [],
-                   'freshness_scope': 'Before live getText through completed force-stop',
+                   'freshness_scope': 'Before current UI hierarchy capture through completed force-stop',
                    'pre_observation': preparation}
     screenshot = None
 
@@ -135,6 +155,14 @@ def kill_observed_foreground_run():
         for node in reference_controls:
             assert_visible(node)
         observation['paused_reference'] = [node.attrib for node in timers + reference_controls]
+        def node_depth(node, target, depth=0):
+            if node is target:
+                return depth
+            return max((node_depth(child, target, depth + 1) for child in node), default=-1)
+        # Only descend far enough to include the already-identified HUD and
+        # controls. Animated scenery below them is not part of this observation.
+        hud_depth = max(node_depth(last_root, node) for node in timers + reference_controls)
+        observation['hierarchy_max_depth'] = hud_depth
         # Read back the zero-idle/selector waits set at connection time. The
         # driver must not wait for this continuously animated game to go idle.
         configuration = {'name': 'driver-config', 'started': time.monotonic()}
@@ -158,29 +186,31 @@ def kill_observed_foreground_run():
             visual['finished'] = time.monotonic()
         assert screenshot.startswith(b'\x89PNG\r\n\x1a\n'), 'Foreground reference screenshot was not a PNG'
 
-        # Scalar getText/exist avoid full hierarchy scans, count/absence
-        # searches, and .info's repeated accessibility property refreshes.
-        # instance=0 selects the UiSelector getText path, avoiding this
-        # backend's two UiObject2 lookups for a single timer value.
-        timer_selector = {'packageName': PACKAGE, 'className': 'android.widget.TextView',
-                          'enabled': True, 'textMatches': r'\d+s', 'instance': 0}
-        observation['timer_selector'] = timer_selector
-        timer_object = device(**timer_selector)
-        # Pause run exists only in the active route. Reading the live HUD timer
-        # and this control serially aged the two-second observation on slow
-        # software emulators. Query both independent read-only RPCs together,
-        # then require the *same* two-second deadline through force-stop.
-        pause_selector = {'packageName': PACKAGE, 'description': 'Pause run', 'enabled': True}
-        observation['activity_selector'] = pause_selector
-        pause_object = device(**pause_selector)
+        # UiSelector scalar refreshes took 3+ seconds despite zero idle waits.
+        # A single fresh hierarchy observes timer and Pause together; package,
+        # visibility, and the same two-second kill deadline remain mandatory.
+        def live_snapshot():
+            # Keep the same hierarchy mode used by the preceding observations.
+            # Toggling accessibility compression here refreshes Android's service
+            # and traverses animated nonessential nodes inside the strict deadline.
+            # The active window is also a stronger foreground check than
+            # traversing unrelated status-bar/background window roots.
+            current = ET.fromstring(device.dump_hierarchy(
+                compressed=False, max_depth=hud_depth, root_in_active=True))
+            nodes = [n for n in current.iter('node') if n.get('package') == PACKAGE]
+            timers = [n for n in nodes if n.get('class') == 'android.widget.TextView'
+                      and re.fullmatch(r'\d+s', n.get('text', ''))]
+            controls = [n for n in nodes if n.get('content-desc') == 'Pause run']
+            assert len({n.get('text') for n in timers}) == 1, 'Live HUD timer missing or ambiguous'
+            assert controls, 'Live Pause control missing'
+            for node in timers + controls:
+                assert_visible(node)
+            return {'timer': timers[0].get('text'), 'pause': True}
+
         preparation['finished'] = time.monotonic()
         observation['status'] = 'sampling'
-        # Under software-emulator contention one read can miss its freshness
-        # limit. Discard that sample and take at most one new, independently
-        # timed observation; never extend the two-second kill requirement.
-        pair = sample_live_pair_with_retry(
-            lambda: device.jsonrpc.getText(timer_object.selector),
-            lambda: pause_object.exists(timeout=0),
+        pair = sample_live_snapshot(
+            live_snapshot,
             max_age_seconds=observation['max_age_seconds'],
             journal=observation,
         )
@@ -246,9 +276,9 @@ adb('install', '-r', APK)
 adb('shell', 'am', 'force-stop', PACKAGE)
 adb('logcat', '-c')
 adb('shell', 'am', 'start', '-W', '-n', PACKAGE + '/.MainActivity')
-wait_for('Play the 3D Expedition')
+enter_classic_games()
 capture('01-home')
-passed('Standalone APK launches and renders the Home entry')
+passed('Standalone APK launches Expedition and explicitly opens Classic games')
 click_node(home_action('Play Burrow Run'))
 wait_for('Let’s dig')
 capture('02-lobby')
@@ -295,7 +325,7 @@ tap('Back to the run')
 time.sleep(3.2)
 live, observation_delay = kill_observed_foreground_run()
 adb('shell', 'am', 'start', '-W', '-n', PACKAGE + '/.MainActivity')
-wait_for('Play the 3D Expedition')
+enter_classic_games()
 click_node(home_action('Continue interrupted run'))
 wait_for('Back to the run')
 recovered_seconds = {int(node.get('text')[:-1]) for node in last_root.iter('node') if re.fullmatch(r'\d+s', node.get('text', ''))}
@@ -318,7 +348,7 @@ for attempt in range(2):
     assert before_score, 'Paused score not found'
     adb('shell', 'am', 'force-stop', PACKAGE)
     adb('shell', 'am', 'start', '-W', '-n', PACKAGE + '/.MainActivity')
-    wait_for('Play the 3D Expedition')
+    enter_classic_games()
     click_node(home_action('Continue interrupted run'))
     wait_for('Back to the run')
     wait_for('MADGER in the center lane')
@@ -346,7 +376,7 @@ capture('07-high-scores')
 passed('The native high-score table displays the banked daily score')
 adb('shell', 'am', 'force-stop', PACKAGE)
 adb('shell', 'am', 'start', '-W', '-n', PACKAGE + '/.MainActivity')
-wait_for('Play the 3D Expedition')
+enter_classic_games()
 home_action('Play Burrow Run', forbidden_label='Continue interrupted run')
 assert not any(node.get('content-desc') == 'Continue interrupted run' for node in last_root.iter('node')), 'Completed run was resurrected'
 tap('Scores')

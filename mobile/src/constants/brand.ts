@@ -6,15 +6,7 @@ export const COLORS = {
 
 export const LINKS = {
   website: 'https://madgercoin.com',
-  blockspot: 'https://blockspot.io/coin/madger/',
-  buyGuide: 'https://madgercoin.com/buy?utm_source=madger_app&utm_medium=app&utm_campaign=buy_screen&utm_content=guide',
-  raydiumSwap: 'https://madgercoin.com/r/raydium?utm_source=madger_app&utm_medium=app&utm_campaign=buy_screen&utm_content=raydium',
-  jupiterSwap: 'https://madgercoin.com/r/jupiter?utm_source=madger_app&utm_medium=app&utm_campaign=buy_screen&utm_content=jupiter',
-  bonkbotBuy: 'https://madgercoin.com/r/bonkbot?utm_source=madger_app&utm_medium=app&utm_campaign=buy_screen&utm_content=bonkbot',
-  trojanBuy: 'https://madgercoin.com/r/trojan?utm_source=madger_app&utm_medium=app&utm_campaign=buy_screen&utm_content=trojan',
   telegramNews: 'https://t.me/madgercoin',
   telegramCommunity: 'https://t.me/madgerburrow', email: 'mailto:madgercoin@gmail.com',
-  litepaper: 'https://madgercoin.com/litepaper.html', privacy: 'https://madgercoin.com/privacy.html',
+  privacy: 'https://madgercoin.com/privacy.html',
 } as const;
-
-export const MINT = 'BHauMX8akk2umqkQqnJwpYkCRkZmefGnEBFByeFXRKqv';

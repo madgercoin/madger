@@ -13,7 +13,7 @@ const server=http.createServer((req,res)=>{
 });
 (async()=>{
  await new Promise(r=>server.listen(0,'127.0.0.1',r));
- const browser=await chromium.launch({headless:true,executablePath:process.platform==='win32'?'C:/Program Files/Google/Chrome/Application/chrome.exe':undefined});
+ const browser=await chromium.launch({headless:true,executablePath:process.env.CHROMIUM_PATH||(process.platform==='win32'?'C:/Program Files/Google/Chrome/Application/chrome.exe':undefined)});
  const page=await browser.newPage({viewport:{width:430,height:920}}),errors=[],failed=[];
  page.on('pageerror',e=>errors.push(e.message));page.on('console',m=>{if(m.type()==='error')errors.push(m.text())});page.on('response',r=>{if(r.status()>=400&&!r.url().endsWith('/favicon.ico'))failed.push(r.url())});
  try{
@@ -71,8 +71,9 @@ const server=http.createServer((req,res)=>{
    if(!['hollow','grotto'].includes(run.route))assert(data.stats.instances>30,'Missing authored running props: '+run.route);
    assert.equal(data.terrainPbr,true,'Terrain missing diffuse, normal or roughness PBR channels: '+run.route);
    assert.equal(data.stats.madgerRig,'authored-3d','Legacy generic character appeared');
-   assert(data.stats.madgerMeshCount>=80&&data.stats.madgerTriangles>30000,'Custom animated 3D hero was not rendered');
-   assert(data.hero?.approvedFace&&data.hero?.backChevron&&data.hero?.patternedTail,'Required MADGER identity marks missing');
+   assert(data.stats.madgerTriangles>=20000&&data.stats.madgerTriangles<=55000,'Authored hero geometry missing or outside its mobile budget');
+   assert(data.hero?.renderMeshCount>=15&&data.hero?.renderMeshCount<=30,'Batched articulated hero was not rendered');
+   assert(data.hero?.faceTechnique==='modeled-3d'&&data.hero?.faceProjection===false&&data.hero?.continuousSpineBlaze&&data.hero?.patternedTail,'Required MADGER identity marks missing');
    if(run.mode==='chamber'){
      assert.equal(data.stats.cavernVaultTriangles,0,'Cavern ceiling obstructed a secret room');
      assert.equal(data.stats.cavernFormationInstances,0,'Geological objects intruded into secret room');
@@ -108,11 +109,27 @@ const server=http.createServer((req,res)=>{
   const lod=await page.evaluate(({run,course})=>{
     const scene=window.fixtureScene,renderer=scene.renderer;
     scene.setCourse(course);
-    renderer.quality=1;scene.draw(run,20,false);const full=renderer.stats.triangles;
-    renderer.quality=.52;scene.draw(run,20.016,false);const reduced=renderer.stats.triangles;
-    renderer.quality=1;
-    return {full,reduced};
+    const original={budget:renderer.budget,quality:renderer.quality,sceneryQuality:renderer.sceneryQuality};
+    renderer.budget={scenery:2,scale:1,fastFrames:0};
+    renderer.quality=1;renderer.sceneryQuality=1;
+    scene.draw(run,20,false);const full=renderer.stats.triangles;
+    // Pixel scale and scenery density are intentionally independent. Feed
+    // controlled slow-frame samples through the real renderer adaptation path,
+    // rather than assigning the obsolete resolution-only quality shortcut.
+    // Freeze the visual clock and course position to isolate geometry budget.
+    const adapting={...run,mode:'running'};
+    for(let i=0;i<2;i++){
+      renderer.renderedFrames=Math.max(4,renderer.renderedFrames);
+      renderer.frameSamples=[70,70,70];renderer.previousFrame=performance.now();renderer.previousFrameMode='running';
+      scene.draw(adapting,20,false);
+    }
+    const reduced=renderer.stats.triangles;
+    const sceneryBudget=renderer.budget.scenery,resolutionScale=renderer.quality;
+    Object.assign(renderer,original);renderer.frameSamples=[];
+    return {full,reduced,sceneryBudget,resolutionScale};
   },{run:fixtures[0],course:G.buildOvergrownCourse(fixtures[0].seed)});
+  assert.equal(lod.sceneryBudget,0,'Sustained slow frames must reduce distant scenery first');
+  assert.equal(lod.resolutionScale,1,'Initial scenery fallback must preserve pixel clarity');
   assert(lod.full>0&&lod.reduced<lod.full*.95,'Adaptive 3D detail did not lower geometry: '+JSON.stringify(lod));
   // Exercise real 3D foliage instance transforms at two visual times. Route,
   // collision and checkpoint state are never changed by the renderer.

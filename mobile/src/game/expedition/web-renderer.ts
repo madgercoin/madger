@@ -1,5 +1,6 @@
 import { ExpeditionScene } from './scene';
 import type { GL } from './gl';
+import { nativeGameHost } from './native-host';
 
 type SceneFactory = (gl: GL) => Promise<ExpeditionScene>;
 declare global { interface Window { madgerOvergrownScene?: SceneFactory; madgerActiveRenderer?: 'pbr'|'fallback' } }
@@ -13,7 +14,7 @@ export async function createWebExpeditionScene(gl: GL): Promise<ExpeditionScene>
   if (typeof window === 'undefined') return new ExpeditionScene(gl);
   if (!loading) loading = new Promise<void>((resolve, reject) => {
     const script = document.createElement('script');
-    script.type = 'module'; script.src = '/blackroot/renderer.mjs?v=grounded-scenery-20261020-1';
+    script.type = 'module'; script.src = '/blackroot/renderer.mjs?v=identity-challenge-20261104-1';
     script.onload = () => resolve();
     script.onerror = () => { loading = null; script.remove(); reject(new Error('Optional high-detail renderer not available')); };
     document.head.appendChild(script);
@@ -25,6 +26,7 @@ export async function createWebExpeditionScene(gl: GL): Promise<ExpeditionScene>
   } catch (error) {
     console.warn('MADGER_WEB_RENDERER_FALLBACK',error);
   }
+  if(nativeGameHost())throw new Error('The authored 3D world did not load. No simplified scene will be substituted.');
   window.madgerActiveRenderer='fallback';
   return new ExpeditionScene(gl);
 }

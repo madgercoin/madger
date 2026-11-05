@@ -52,3 +52,6 @@ expedition-evidence/
 dist-expedition/
 *.qa.json
 assets/audio/expedition/*-source.mp3
+
+# Deterministic APK offline game export
+.offline-game/

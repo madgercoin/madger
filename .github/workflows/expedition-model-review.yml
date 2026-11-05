@@ -1,0 +1,42 @@
+name: Expedition model visual review
+on:
+  push:
+    branches: [fix/expedition-model-review-20261104]
+    paths: ['mobile/**', '.github/workflows/expedition-model-review.yml']
+permissions:
+  contents: read
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: mobile
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: mobile/package-lock.json
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - name: Verify authored model and renderer contracts
+        run: node --test scripts/test-madger-hero.mjs scripts/test-forest-quality.cjs scripts/test-world-terrain.mjs
+      - name: Capture actual model geometry from every review angle
+        run: node scripts/render-madger-review.cjs
+      - name: Capture every route using the identical repository renderer
+        run: |
+          mkdir -p dist
+          cp -a public/. dist/
+          node scripts/render-overgrown-routes.cjs
+      - name: Retain real model and route evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: madger-model-and-route-review
+          path: |
+            reports/game-expedition/visual-review-20261104/
+            mobile/expedition-evidence/overgrown-routes/
+          retention-days: 14
+          if-no-files-found: warn
