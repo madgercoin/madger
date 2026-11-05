@@ -6,7 +6,7 @@ import { GLTFLoader } from './vendor/examples/jsm/loaders/GLTFLoader.js';
 import { RGBELoader } from './vendor/examples/jsm/loaders/RGBELoader.js';
 import { legacyCharacters } from './characters.mjs?v=chambers-20261019-2';
 import { mergeGeometries } from './vendor/examples/jsm/utils/BufferGeometryUtils.js';
-import { adaptSceneBudget, sceneBufferSize } from './quality.mjs';
+import { adaptSceneBudget, sceneBufferSize, isActiveSceneTimingSample } from './quality.mjs';
 import { terrainBiome, terrainProfile, sceneryProfile, atmosphereProfile, foliageSway, visibleRoads, nearestRoad, roadSurfaceHeight } from './terrain.mjs';
 import { MadgerHero } from './madger-hero.mjs';
 import { CavernVault } from './cavern-vault.mjs';
@@ -490,10 +490,10 @@ class ForestRenderer {
     // Include lobby/countdown frames so adaptation acts before a run begins.
     // Ignore background-tab gaps and initial shader warmup, not persistent
     // 500-1000ms frames (the old <350ms filter never adapted to those).
-    if(['ready','countdown','running'].includes(this.run?.mode)&&this.renderedFrames>3
-      &&(typeof document==='undefined'||document.visibilityState==='visible')){
-      const elapsed=now-(this.previousFrame??now);
-      if(elapsed>0&&elapsed<1800)this.frameSamples.push(elapsed);
+    const elapsed=now-(this.previousFrame??now);
+    const visible=typeof document==='undefined'||document.visibilityState==='visible';
+    if(isActiveSceneTimingSample(this.previousFrameMode,elapsed,visible,this.renderedFrames)){
+      this.frameSamples.push(elapsed);
       if(this.frameSamples.length>=3){
         const previous=this.budget;
         this.budget=adaptSceneBudget(previous,this.frameSamples);
@@ -510,7 +510,7 @@ class ForestRenderer {
         this.frameSamples.length=0;
       }
     }
-    this.previousFrame=now;this.renderedFrames++;
+    this.previousFrame=now;this.previousFrameMode=this.run?.mode;this.renderedFrames++;
     // UI remains at native resolution; lower only the 3D buffer on slow devices.
     const buffer=sceneBufferSize(this.gl.canvas.clientWidth||this.gl.drawingBufferWidth,this.gl.canvas.clientHeight||this.gl.drawingBufferHeight,typeof window!=='undefined'?window.devicePixelRatio:1,this.quality);const w=buffer.width,h=buffer.height;
     if(this.width!==w||this.height!==h){this.width=w;this.height=h;this.gpu.setSize(w,h,false);this.camera.aspect=w/h;this.camera.fov=T.MathUtils.radToDeg(2*Math.atan(Math.max(Math.tan(33*Math.PI/180),Math.tan(17*Math.PI/180)/(w/h))));this.camera.updateProjectionMatrix();}

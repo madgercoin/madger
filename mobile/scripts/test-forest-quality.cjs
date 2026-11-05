@@ -66,3 +66,26 @@ test('continued overload never raises an already reduced resolution',async()=>{
    assert(adjustedSceneScale(scale,[60,60,60])<=scale);
  assert.equal(adjustedSceneScale(.72,[60,60,60]),.72);
 });
+
+
+test('GPU timing follows the submitted active frame through a protective pause',async()=>{
+ const {isActiveSceneTimingSample,adaptSceneBudget}=await quality;
+ assert(isActiveSceneTimingSample('running',567,true,10),
+   'The previous running frame must count after advance pauses the current state');
+ assert(!isActiveSceneTimingSample('paused',550,true,10),
+   'A Resume click after an idle pause is not a slow GPU frame');
+ for(const elapsed of [NaN,0,-1,1800,10000])
+   assert(!isActiveSceneTimingSample('running',elapsed,true,10));
+ assert(!isActiveSceneTimingSample('running',567,false,10));
+ assert(!isActiveSceneTimingSample('running',567,true,3));
+ let state={scenery:1,scale:1,fastFrames:0},samples=[];
+ // Reproduce six slow frames, each followed by safety pause and real Resume.
+ // Current-mode sampling used to discard every pressure frame in this loop.
+ for(let i=0;i<6;i++){
+   for(const [previousMode,elapsed] of [['running',550],['paused',800]]){
+     if(isActiveSceneTimingSample(previousMode,elapsed,true,10+i))samples.push(elapsed);
+     if(samples.length===3){state=adaptSceneBudget(state,samples);samples=[];}
+   }
+ }
+ assert.equal(state.scenery,0);assert.equal(state.scale,.88);
+});

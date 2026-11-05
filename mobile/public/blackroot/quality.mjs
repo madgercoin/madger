@@ -3,6 +3,14 @@
  * participate in quality adaptation. */
 export const MIN_SCENE_SCALE = .72;
 const clamp=(n,a,b)=>Math.min(b,Math.max(a,n));
+// Attribute the render interval to the frame that was submitted, not to the
+// game mode after the safety gate has already paused it. A paused-to-running
+// interval measures the user's idle wait, not GPU pressure.
+export function isActiveSceneTimingSample(previousMode,elapsed,visible,renderedFrames){
+ return ['ready','countdown','running'].includes(previousMode)&&visible
+   &&renderedFrames>3&&Number.isFinite(elapsed)&&elapsed>0&&elapsed<1800;
+}
+
 function framePressure(samples){
  if(!Array.isArray(samples))return null;
  const valid=samples.filter(n=>Number.isFinite(n)&&n>0&&n<1800).sort((a,b)=>a-b);

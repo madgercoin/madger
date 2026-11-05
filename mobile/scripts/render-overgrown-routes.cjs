@@ -120,7 +120,7 @@ const server=http.createServer((req,res)=>{
     const adapting={...run,mode:'running'};
     for(let i=0;i<2;i++){
       renderer.renderedFrames=Math.max(4,renderer.renderedFrames);
-      renderer.frameSamples=[70,70,70];renderer.previousFrame=performance.now();
+      renderer.frameSamples=[70,70,70];renderer.previousFrame=performance.now();renderer.previousFrameMode='running';
       scene.draw(adapting,20,false);
     }
     const reduced=renderer.stats.triangles;
