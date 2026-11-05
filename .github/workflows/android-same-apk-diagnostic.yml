@@ -54,7 +54,7 @@ jobs:
         working-directory: app-source/mobile
         run: |
           echo '${{ matrix.apk_sha256 }}  android/app/build/outputs/apk/release/app-release.apk' | sha256sum -c -
-      - name: Stage only candidate capture harness and test it
+      - name: Stage and test safe-opening control capture harness
         run: |
           cp diagnostics-source/mobile/scripts/android-expedition-smoke.py app-source/mobile/scripts/android-expedition-smoke.py
           cp diagnostics-source/mobile/scripts/test_android_raw_capture.py app-source/mobile/scripts/test_android_raw_capture.py

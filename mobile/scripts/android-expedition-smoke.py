@@ -305,6 +305,41 @@ class Smoke:
             "proof": latest, "age_upper_ms": round(now + uncertainty - latest["observedAt"], 3)}
         return state
 
+    def prime_start_controls(self):
+        """Read real control geometry in the safe opening, not before steering.
+
+        Only geometry is cached. Each input still requires fresh native proof;
+        this scan never supplies gameplay state or excuses an unexpected pause.
+        """
+        self.control_bounds = {}
+        self.control_run_id = None
+        self.wait_hud(lambda state: self.last_observation["phase"] in ("countdown", "running"),
+                      "new run countdown or opening", timeout=12)
+        before = self.last_observation
+        def safe_opening(observed):
+            hud = observed.get("hud") if observed else None
+            return (observed and observed.get("phase") in ("countdown", "running")
+                    and hud and hud.get("route") == "main" and 0 <= hud.get("distance_m", -1) < 53
+                    and observed.get("run_id"))
+        if not safe_opening(before):
+            raise AssertionError("Control priming requires the observed hazard-free opening")
+        xml, nodes, _ = self.tree()
+        self.control_bounds = {}
+        self.control_run_id = None
+        self.hud()
+        after = self.last_observation
+        if not safe_opening(after) or before["run_id"] != after["run_id"]:
+            raise AssertionError("Control priming left the same active hazard-free opening")
+        labels = ("LEFT", "RIGHT", "JUMP", "BURROW", "Pause expedition")
+        controls = {label: self.label_node(nodes, label, clickable=True) for label in labels}
+        if any(not found or found[1].get("visible-to-user") == "false" for found in controls.values()):
+            raise AssertionError("Opening lacks visible enabled gameplay controls")
+        self.control_bounds = {label: found[0] for label, found in controls.items()}
+        self.control_run_id = after["run_id"]
+        (OUT / f"opening-controls-{len(self.report.get('control_priming', []))}.xml").write_text(xml, encoding="utf-8")
+        self.report.setdefault("control_priming", []).append({"before": before, "after": after,
+            "bounds": self.control_bounds, "scope": "geometry only; inputs require fresh native telemetry"})
+
     def tap(self, label, timeout=20):
         if label in ("LEFT", "RIGHT", "JUMP", "BURROW", "Pause expedition"):
             self.hud()
@@ -593,6 +628,7 @@ class Smoke:
         self.capture("02-expedition-ready")
         self.tap("Start expedition")
         try:
+            self.prime_start_controls()
             initial = self.wait_hud(lambda state: self.last_observation["phase"] == "running" and state["distance_m"] >= 2, "running distance after countdown", timeout=12)
         except Exception as original_error:
             try:
@@ -881,8 +917,8 @@ class Smoke:
             raise AssertionError("Prior Rootway run did not reach a replayable result within 150 seconds")
         self.capture("10-rootway-result")
         self.tap("Run another expedition")
+        self.prime_start_controls()
         self.wait_hud(lambda state: self.last_observation["phase"] == "running" and state["distance_m"] >= 2, "replayed game starts", timeout=12)
-        self.tree()
         self.wait_hud(lambda state: 110 <= state["distance_m"] < 140,
                       "approach to the main junction", timeout=60)
         self.tap("RIGHT")

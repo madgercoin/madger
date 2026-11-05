@@ -99,5 +99,74 @@ class RawCaptureTests(unittest.TestCase):
         self.assertFalse(smoke.report['motion_windows']['test']['phase_and_progress_passed'])
 
 
+class OpeningControlTests(unittest.TestCase):
+    def setup_smoke(self, end_phase='running', end_distance=10, end_id='run-1', missing=False):
+        smoke = harness.Smoke()
+        events = []
+        labels = ('LEFT', 'RIGHT', 'JUMP', 'BURROW', 'Pause expedition')
+        nodes = [harness.ET.Element('node', {'text': label, 'clickable': 'true',
+                 'enabled': 'true', 'visible-to-user': 'true', 'bounds': '[10,20][30,40]'})
+                 for label in labels if not (missing and label == 'LEFT')]
+        def observed(phase, distance, run_id):
+            return {'phase': phase, 'run_id': run_id, 'hud': {'route': 'main',
+                    'distance_m': distance, 'lane': 0, 'action': 'running', 'score': 0}}
+        def wait(predicate, description, timeout):
+            smoke.last_observation = observed('countdown', 0, 'run-1')
+            self.assertTrue(predicate(smoke.last_observation['hud']))
+        def tree():
+            events.append('tree')
+            return '<hierarchy/>', nodes, list(labels)
+        def hud():
+            events.append('hud')
+            smoke.last_observation = observed(end_phase, end_distance, end_id)
+            return smoke.last_observation['hud']
+        smoke.wait_hud, smoke.tree, smoke.hud = wait, tree, hud
+        return smoke, events
+
+    def prime(self, smoke):
+        with tempfile.TemporaryDirectory() as directory, patch.object(harness, 'OUT', Path(directory)):
+            smoke.prime_start_controls()
+
+    def test_geometry_is_real_and_bound_to_same_run(self):
+        smoke, events = self.setup_smoke()
+        self.prime(smoke)
+        self.assertEqual(smoke.control_bounds['LEFT'], (10, 20, 30, 40))
+        self.assertEqual(smoke.control_run_id, 'run-1')
+        self.assertEqual(events, ['tree', 'hud'])
+        self.assertEqual(smoke.report['control_priming'][0]['before']['phase'], 'countdown')
+
+    def test_paused_changed_run_and_late_opening_fail(self):
+        for kwargs in ({'end_phase': 'paused'}, {'end_id': 'run-2'}, {'end_distance': 53}, {'missing': True}):
+            smoke, _ = self.setup_smoke(**kwargs)
+            with self.assertRaises(AssertionError):
+                self.prime(smoke)
+            self.assertFalse(smoke.control_bounds)
+
+    def test_primed_input_still_requires_fresh_running_telemetry(self):
+        smoke, events = self.setup_smoke()
+        self.prime(smoke)
+        class Device:
+            def click(self, x, y):
+                events.append(('click', x, y))
+        smoke.device = Device()
+        smoke.tap('LEFT')
+        self.assertEqual(events, ['tree', 'hud', 'hud', ('click', 20, 30)])
+        def stale():
+            raise AssertionError('Foreground frame heartbeat is stale (>2 seconds)')
+        smoke.hud = stale
+        with self.assertRaisesRegex(AssertionError, 'heartbeat is stale'):
+            smoke.tap('RIGHT')
+        self.assertEqual(sum(isinstance(x, tuple) for x in events), 1)
+
+    def test_priming_does_not_accept_stale_post_scan_proof(self):
+        smoke, _ = self.setup_smoke()
+        def stale():
+            raise AssertionError('Foreground frame heartbeat is stale (>2 seconds)')
+        smoke.hud = stale
+        with self.assertRaisesRegex(AssertionError, 'heartbeat is stale'):
+            self.prime(smoke)
+        self.assertFalse(smoke.control_bounds)
+
+
 if __name__ == '__main__':
     unittest.main()
