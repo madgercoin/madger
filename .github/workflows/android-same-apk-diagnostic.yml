@@ -136,9 +136,16 @@ jobs:
               return code if code >= 0 else 128 - code
 
 
+          def is_avd_launch(arguments):
+              return '-avd' in arguments or any(value.startswith('@') for value in arguments)
+
+
           if __name__ == '__main__':
-              out = Path(os.environ['GITHUB_WORKSPACE']) / 'app-source/mobile/android-smoke/emulator-supervisor'
               binary = str(Path(__file__).resolve().with_name('emulator.supervised-original'))
+              if not is_avd_launch(sys.argv[1:]):
+                  # Utility/version/cleanup invocations must never overwrite the AVD report.
+                  os.execv(binary, [binary, *sys.argv[1:]])
+              out = Path(os.environ['GITHUB_WORKSPACE']) / 'app-source/mobile/android-smoke/emulator-supervisor'
               raise SystemExit(supervise([binary, *sys.argv[1:]], out))
           PY_SUPERVISOR
       - name: Run unchanged suites once with live host observations

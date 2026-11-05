@@ -69,6 +69,35 @@ class RawCaptureTests(unittest.TestCase):
             self.assertTrue((Path(directory) / 'frame.raw').exists())
         self.assertFalse(smoke.report['motion_windows']['test']['phase_and_progress_passed'])
 
+    def test_initial_window_requires_native_targeted_endpoints(self):
+        import ast
+        source = Path(harness.__file__).read_text()
+        calls = [node for node in ast.walk(ast.parse(source))
+                 if isinstance(node, ast.Call) and isinstance(node.func, ast.Attribute)
+                 and node.func.attr == 'capture_running_window' and node.args
+                 and isinstance(node.args[0], ast.Constant) and node.args[0].value == 'initial-running']
+        self.assertEqual(len(calls), 1)
+        self.assertTrue(any(item.arg == 'targeted' and isinstance(item.value, ast.Constant)
+                            and item.value.value is True for item in calls[0].keywords))
+
+    def test_stale_final_native_proof_fails_without_tree_fallback(self):
+        smoke, events = self.window('running')
+        original = smoke.hud
+        count = 0
+        def hud():
+            nonlocal count
+            count += 1
+            if count == 2:
+                raise AssertionError('Foreground frame heartbeat is stale (>2 seconds)')
+            original()
+        smoke.hud = hud
+        smoke.tree = lambda: self.fail('Must not fall back to accessibility snapshots')
+        with tempfile.TemporaryDirectory() as directory, patch.object(harness, 'OUT', Path(directory)), patch.dict(os.environ, {'MADGER_ANDROID_RAW_CAPTURE': '1'}):
+            with self.assertRaisesRegex(AssertionError, 'heartbeat is stale'):
+                smoke.capture_running_window('test', ['frame'], [0], targeted=True)
+            self.assertTrue((Path(directory) / 'frame.raw').exists())
+        self.assertFalse(smoke.report['motion_windows']['test']['phase_and_progress_passed'])
+
 
 if __name__ == '__main__':
     unittest.main()

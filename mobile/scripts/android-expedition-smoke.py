@@ -601,7 +601,7 @@ class Smoke:
                 self.report.setdefault("startup_diagnostic", {})["diagnostic_error"] = str(diagnostic_error)
             raise
         frame_names = ["03-running-a", "04-running-b", "04-sustained-motion-1", "04-sustained-motion-2"]
-        motion_frames = self.capture_running_window("initial-running", frame_names, [0, .55, .4, .4])
+        motion_frames = self.capture_running_window("initial-running", frame_names, [0, .55, .4, .4], targeted=True)
         for name, image in zip(frame_names, motion_frames):
             self.rendered(name, image)
         first, second = motion_frames[:2]
