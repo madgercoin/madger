@@ -371,7 +371,20 @@ class ForestRenderer {
     this.gpu.toneMappingExposure=atmosphere.exposure;
     this.stats.atmosphereProfileLoaded=Boolean(this.worldPresets?.atmosphereProfiles?.[s.route]);
     const start=Math.floor(travel/12)*12;
+    // A scanned asset's material meshes share placement. Reuse only within
+    // this frame, so route, wind, terrain and quality changes remain immediate.
+    const placements=new Map();
     for(const {id,mesh} of this.scanBatches){let count=0;
+      const reused=placements.get(id);
+      if(reused){
+        count=reused.mesh.count;
+        mesh.instanceMatrix.array.set(reused.mesh.instanceMatrix.array.subarray(0,count*16));
+        mesh.count=count;anchored+=reused.anchored;
+        mesh.instanceMatrix.clearUpdateRanges();
+        if(count){mesh.instanceMatrix.addUpdateRange(0,count*16);mesh.instanceMatrix.needsUpdate=true;}
+        continue;
+      }
+      const anchoredBefore=anchored;
       for(let i=1;i<=(this.budget.scenery===0?5:8);i++)for(const side of [-1,1]){
         const d=start+i*12,z=travel-d,n=Math.floor(d/12),r=hash(n*19+side+scenery.seed*7);
         if(z>-8)continue;
@@ -443,7 +456,10 @@ class ForestRenderer {
               ruins?0:foliageSway(breezeTime,d+j*2.3,side+j)));}
         }
       }
-      mesh.count=count;mesh.instanceMatrix.needsUpdate=true;
+      mesh.count=count;
+      mesh.instanceMatrix.clearUpdateRanges();
+      if(count){mesh.instanceMatrix.addUpdateRange(0,count*16);mesh.instanceMatrix.needsUpdate=true;}
+      placements.set(id,{mesh,anchored:anchored-anchoredBefore});
     }
     // Do not draw the former stiff, leafless tube-tree silhouettes. Scanned,
     // fully textured 3D canopies above now supply the distant living forest,
