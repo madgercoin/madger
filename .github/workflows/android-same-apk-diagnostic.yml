@@ -66,6 +66,81 @@ jobs:
           echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
           sudo udevadm control --reload-rules
           sudo udevadm trigger --name-match=kvm
+      - name: Prepare bounded emulator exit supervisor
+        shell: bash
+        run: |
+          cat > /tmp/madger-emulator-supervisor.py <<'PY_SUPERVISOR'
+          #!/usr/bin/env python3
+          """Preserve official emulator argv; record OS exit without retaining raw output."""
+          import json
+          import os
+          from pathlib import Path
+          import signal
+          import subprocess
+          import sys
+          import threading
+          import time
+
+
+          def supervise(command, out, limit=1650):
+              out.mkdir(parents=True, exist_ok=True)
+              report = {'status': 'starting', 'started_utc': time.strftime('%Y-%m-%dT%H:%M:%SZ', time.gmtime()),
+                        'output_categories': {}, 'supervisor_timeout': False}
+              report_path = out / 'supervisor.json'
+              lock = threading.Lock()
+              def save():
+                  temporary = out / 'supervisor.tmp'
+                  temporary.write_text(json.dumps(report, indent=2) + '\n')
+                  temporary.replace(report_path)
+              save()
+              process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
+                                         text=True, errors='replace', start_new_session=True)
+              report.update(status='running', child_pid=process.pid)
+              save()
+              def drain():
+                  # Categorize only; never persist lines, auth material, argv, or env.
+                  patterns = {'segmentation': 'segmentation fault', 'fatal': 'fatal',
+                              'abort': 'aborted', 'vulkan': 'vulkan', 'out_of_memory': 'out of memory',
+                              'color_buffer': 'colorbuffer', 'boot_complete': 'boot completed'}
+                  for line in process.stdout:
+                      lowered = line.lower()
+                      with lock:
+                          for category, token in patterns.items():
+                              if token in lowered:
+                                  report['output_categories'][category] = report['output_categories'].get(category, 0) + 1
+              reader = threading.Thread(target=drain, daemon=True)
+              reader.start()
+              def interrupted(signum, frame):
+                  report['supervisor_received_signal'] = signum
+                  if process.poll() is None:
+                      os.killpg(process.pid, signal.SIGTERM)
+              for signum in (signal.SIGTERM, signal.SIGINT):
+                  signal.signal(signum, interrupted)
+              try:
+                  code = process.wait(timeout=limit)
+              except subprocess.TimeoutExpired:
+                  report['supervisor_timeout'] = True
+                  os.killpg(process.pid, signal.SIGTERM)
+                  try:
+                      code = process.wait(timeout=5)
+                  except subprocess.TimeoutExpired:
+                      os.killpg(process.pid, signal.SIGKILL)
+                      code = process.wait(timeout=5)
+              reader.join(timeout=2)
+              with lock:
+                  report.update(status='exited', return_code=code,
+                                terminating_signal=-code if code < 0 else None,
+                                test_teardown_marked=(out / 'test-teardown-requested').exists(),
+                                ended_utc=time.strftime('%Y-%m-%dT%H:%M:%SZ', time.gmtime()))
+                  save()
+              return code if code >= 0 else 128 - code
+
+
+          if __name__ == '__main__':
+              out = Path(os.environ['GITHUB_WORKSPACE']) / 'app-source/mobile/android-smoke/emulator-supervisor'
+              binary = str(Path(__file__).resolve().with_name('emulator.supervised-original'))
+              raise SystemExit(supervise([binary, *sys.argv[1:]], out))
+          PY_SUPERVISOR
       - name: Run unchanged suites once with live host observations
         uses: reactivecircus/android-emulator-runner@v2
         with:
@@ -76,10 +151,27 @@ jobs:
           disable-animations: true
           emulator-options: -no-window -gpu swiftshader -no-snapshot -noaudio -no-boot-anim -feature -Vulkan
           working-directory: app-source/mobile
+          pre-emulator-launch-script: |
+            test ! -e "$ANDROID_HOME/emulator/emulator.supervised-original" && mv "$ANDROID_HOME/emulator/emulator" "$ANDROID_HOME/emulator/emulator.supervised-original" && cp /tmp/madger-emulator-supervisor.py "$ANDROID_HOME/emulator/emulator" && chmod +x "$ANDROID_HOME/emulator/emulator"
           script: |
             adb shell wm size 480x960
             adb shell wm density 160
-            MADGER_ANDROID_RAW_CAPTURE=1 MADGER_ANDROID_APK="$PWD/android/app/build/outputs/apk/release/app-release.apk" MADGER_ANDROID_PACKAGE=com.madgercoin.preview MADGER_ANDROID_EVIDENCE_DIR="$PWD/android-smoke" MADGER_ANDROID_RESET=1 /tmp/madger-android-qa/bin/python ../../diagnostics-source/mobile/scripts/android-host-diagnostic.py
+            status=0; MADGER_ANDROID_RAW_CAPTURE=1 MADGER_ANDROID_APK="$PWD/android/app/build/outputs/apk/release/app-release.apk" MADGER_ANDROID_PACKAGE=com.madgercoin.preview MADGER_ANDROID_EVIDENCE_DIR="$PWD/android-smoke" MADGER_ANDROID_RESET=1 /tmp/madger-android-qa/bin/python ../../diagnostics-source/mobile/scripts/android-host-diagnostic.py || status=$?; mkdir -p android-smoke/emulator-supervisor; touch android-smoke/emulator-supervisor/test-teardown-requested; exit "$status"
+      - name: Wait briefly for supervised exit record
+        if: always()
+        shell: bash
+        run: |
+          python3 - <<'PY_EXIT'
+          import json, time
+          from pathlib import Path
+          path = Path('app-source/mobile/android-smoke/emulator-supervisor/supervisor.json')
+          for _ in range(50):
+              if path.exists() and json.loads(path.read_text()).get('status') == 'exited':
+                  break
+              time.sleep(.2)
+          else:
+              print('Emulator exit record unavailable or still running; do not infer an exit signal.')
+          PY_EXIT
       - uses: actions/upload-artifact@v4
         if: always()
         with:
