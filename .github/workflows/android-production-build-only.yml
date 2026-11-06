@@ -1,0 +1,75 @@
+name: Android Production Bundle (Build Only)
+
+on:
+  workflow_dispatch:
+    inputs:
+      account_and_cost_authorized:
+        description: 'Existing MADGER Expo account/signing and this build cost or confirmed free allowance are authorized'
+        type: boolean
+        required: true
+        default: false
+
+permissions:
+  contents: read
+
+concurrency:
+  group: android-production-build-only
+  cancel-in-progress: false
+
+jobs:
+  build-bundle:
+    if: github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    defaults:
+      run:
+        working-directory: mobile
+    env:
+      MADGER_ANDROID_DEVICE_QA: ${{ vars.MADGER_ANDROID_DEVICE_QA }}
+      MADGER_ANDROID_PREVIEW: '0'
+      MADGER_EXPEDITION_PREVIEW: '0'
+    steps:
+      - name: Require reviewed account and build-cost authority
+        working-directory: .
+        env:
+          BUILD_AUTHORIZED: ${{ inputs.account_and_cost_authorized }}
+        run: |
+          if [ "$BUILD_AUTHORIZED" != 'true' ]; then
+            echo '::error::Confirm existing account/signing authority and approved cost or verified free allowance before dispatch.'
+            exit 1
+          fi
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: mobile/package-lock.json
+      - name: Validate source and genuine Android acceptance
+        run: |
+          npm ci
+          node --test scripts/test-production-build-only.cjs
+          npm run release:distribution:android
+          npx expo-doctor
+          npx expo config --type public --json > /tmp/madger-production-config.json
+          node -e "const c=require('/tmp/madger-production-config.json'); if(c.android?.package!=='com.madgercoin.app'||c.owner!=='madgercoins-team'||c.extra?.eas?.projectId!=='e4c06d4a-4d6c-44da-b405-624382b15c56')throw Error('Unexpected production identity');"
+      - name: Confirm access using only the existing Expo token
+        env:
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+        run: |
+          if [ -z "${EXPO_TOKEN:-}" ]; then
+            echo '::error::Existing EXPO_TOKEN is unavailable; no login or credential creation is performed.'
+            exit 1
+          fi
+          npx --yes eas-cli@24.3.0 whoami
+      - name: Build signed production-package AAB without submission
+        env:
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+        run: |
+          npx --yes eas-cli@24.3.0 build --platform android --profile closed-test-build --non-interactive --freeze-credentials --wait --json > eas-android-build.json
+      - name: Retain build identity and artifact URL for separate review
+        uses: actions/upload-artifact@v4
+        with:
+          name: madger-production-build-result
+          path: mobile/eas-android-build.json
+          if-no-files-found: error
+          retention-days: 14
