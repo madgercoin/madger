@@ -1,0 +1,51 @@
+name: MADGER SDK 57 release-gate refresh (temporary)
+
+on:
+  push:
+    branches: [fix/madger-android-release-gates-20261107]
+    paths:
+      - .github/workflows/refresh-madger-sdk57-lock.yml
+
+permissions:
+  contents: write
+
+jobs:
+  refresh:
+    if: github.repository == 'madgercoin/madger'
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: mobile/package-lock.json
+      - name: Refresh only the seven Expo SDK 57 patch-level dependencies
+        working-directory: mobile
+        run: |
+          npm install --package-lock-only --save-exact --ignore-scripts --no-audit --no-fund \
+            expo@57.0.32 \
+            expo-asset@57.0.21 \
+            expo-constants@57.0.23 \
+            expo-gl@57.0.3 \
+            expo-glass-effect@57.0.5 \
+            expo-router@57.0.30 \
+            expo-splash-screen@57.0.11
+      - name: Commit the deterministic package and lockfile delta
+        run: |
+          git add mobile/package.json mobile/package-lock.json
+          if ! git diff --cached --quiet; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git commit -m "Align Expo SDK 57 patch dependencies and lockfile"
+            git push origin HEAD:fix/madger-android-release-gates-20261107
+          fi
+      - name: Verify fresh install and release gates on generated lockfile
+        working-directory: mobile
+        run: |
+          npm ci --no-audit --no-fund
+          npm run release:check
+          npx expo-doctor
