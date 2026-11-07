@@ -31,7 +31,7 @@ function untouchedArray(length) {
 }
 
 test('both actual consumers resolve the reviewed patched Zod version', () => {
-  assert.equal(require(cliPackage).version, '57.0.32');
+  assert.equal(require(cliPackage).version, '57.0.33');
   assert.equal(cliRequire('zod/package.json').version, '4.6.7');
   const hooksRequire = createRequire(require.resolve('eslint-plugin-react-hooks'));
   assert.equal(hooksRequire('zod/package.json').version, '4.6.7');
@@ -57,7 +57,7 @@ test('fresh patch and source/version tamper guards work in an isolated install f
     const zod = path.join(cli, 'node_modules/zod');
     for (const dir of [scripts, target, zod]) mkdirSync(dir, { recursive: true });
     writeFileSync(path.join(expo, 'package.json'), JSON.stringify({ name: 'expo', version: '57.0.31' }));
-    writeFileSync(path.join(cli, 'package.json'), JSON.stringify({ name: '@expo/cli', version: '57.0.32' }));
+    writeFileSync(path.join(cli, 'package.json'), JSON.stringify({ name: '@expo/cli', version: '57.0.33' }));
     writeFileSync(path.join(zod, 'package.json'), JSON.stringify({ name: 'zod', version: '4.6.7' }));
     cpSync(path.join(__dirname, 'patch-devtools-validation.mjs'), path.join(scripts, 'patch.mjs'));
     cpSync(path.join(__dirname, 'devtools-validation-original'), path.join(scripts, 'devtools-validation-original'), { recursive: true });
