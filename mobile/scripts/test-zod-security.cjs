@@ -112,12 +112,20 @@ test('development collection limits are applied by the real JSON-schema validato
   assert.doesNotThrow(() => check(PluginSchema, valid));
 });
 
-test('actual MCP schema preserves typed CLI parameters', () => {
-  const schema = createMCPDevToolsExtensionSchema(plugin());
-  assert.ok(schema && typeof schema === 'object');
-  assert.doesNotThrow(() => check(schema, { command: 'inspect', count: 2, confirm: true, label: 'sample' }));
-  invalid(schema, { command: 'wrong' });
-  invalid(schema, { command: 'inspect', count: '2' });
+test('actual MCP bridge correctly validates typed CLI parameters with injected Zod', () => {
+  const hooksRequire = createRequire(require.resolve('eslint-plugin-react-hooks'));
+  const { z } = hooksRequire('zod');
+  const schema = createMCPDevToolsExtensionSchema(plugin(), z);
+  assert.deepEqual(schema.parse({ command: 'inspect', count: 2, confirm: true, label: 'sample' }),
+    { command: 'inspect', count: 2, confirm: true, label: 'sample' });
+  assert.equal(schema.safeParse({ command: 'inspect' }).success, true);
+  for (const broken of [
+    { command: 'wrong' },
+    { command: 'inspect', count: '2' },
+    { command: 'inspect', confirm: 'yes' },
+    { command: 'inspect', unknown: 1 },
+  ]) assert.equal(schema.safeParse(broken).success, false);
+  assert.throws(() => createMCPDevToolsExtensionSchema({ packageName: 'empty' }, z), /no commands/);
 });
 
 test('real plugin output schema preserves text, audio and image and rejects invalid output', () => {
