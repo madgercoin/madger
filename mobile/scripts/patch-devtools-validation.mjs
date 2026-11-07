@@ -10,7 +10,7 @@ const expoRequire = createRequire(require.resolve('expo/package.json'));
 const cliPackage = expoRequire.resolve('@expo/cli/package.json');
 const cliRequire = createRequire(cliPackage);
 const metadata = JSON.parse(await readFile(cliPackage, 'utf8'));
-if (metadata.version !== '57.0.32' || cliRequire('zod/package.json').version !== '4.6.7') {
+if (metadata.version !== '57.0.33' || cliRequire('zod/package.json').version !== '4.6.7') {
   throw new Error('Reassess development validation hardening after dependency update');
 }
 const specifications = [
