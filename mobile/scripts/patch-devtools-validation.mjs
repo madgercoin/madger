@@ -30,7 +30,7 @@ const specifications = [
 // Both original and patched hashes are checked, so repeat install is idempotent and
 // altered/updated dependency sources fail closed rather than receiving a fuzzy patch.
 for (const [name, originalHash, replacements] of specifications) {
-  const target = join(dirname(cliPackage), 'build/src/start/server', name);
+  const target = join(dirname(cliPackage), 'build/src/start/server/devtools', name);
   const original = await readFile(new URL(`./devtools-validation-original/${name}.txt`, import.meta.url), 'utf8');
   if (createHash('sha256').update(original).digest('hex') !== originalHash) throw new Error(`Corrupt reviewed fixture: ${name}`);
   let patched = original;
