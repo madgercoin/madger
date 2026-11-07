@@ -13,10 +13,11 @@ const cliPackage = expoRequire.resolve('@expo/cli/package.json');
 const cliRequire = createRequire(cliPackage);
 const cliRoot = path.dirname(cliPackage);
 const server = path.join(cliRoot, 'build/src/start/server');
+const devtools = path.join(server, 'devtools');
 const { z } = cliRequire('zod');
-const { PluginSchema, DevToolsPluginOutputSchema } = require(path.join(server, 'DevToolsPlugin.schema.js'));
-const { createMCPDevToolsExtensionSchema } = require(path.join(server, 'createMCPDevToolsExtensionSchema.js'));
-const { DevToolsPluginCliExtensionResults } = require(path.join(server, 'DevToolsPluginCliExtensionResults.js'));
+const { PluginSchema, DevToolsPluginOutputSchema } = require(path.join(devtools, 'DevToolsPlugin.schema.js'));
+const { createMCPDevToolsExtensionSchema } = require(path.join(server, 'mcp/createMCPDevToolsExtensionSchema.js'));
+const { DevToolsPluginCliExtensionResults } = require(path.join(devtools, 'DevToolsPluginCliExtensionResults.js'));
 
 const command = () => ({ name: 'inspect', title: 'Inspect', environments: ['cli', 'mcp'], parameters: [
   { name: 'count', type: 'number' }, { name: 'confirm', type: 'confirm' }, { name: 'label', type: 'text' },
@@ -39,7 +40,7 @@ test('both actual consumers resolve the reviewed patched Zod version', () => {
 });
 
 test('reviewed CLI patch is idempotent on the installed exact dependency', () => {
-  const files = ['DevToolsPlugin.schema.js', 'DevToolsPluginCliExtensionResults.js'].map(name => path.join(server, name));
+  const files = ['DevToolsPlugin.schema.js', 'DevToolsPluginCliExtensionResults.js'].map(name => path.join(devtools, name));
   const before = files.map(file => readFileSync(file, 'utf8'));
   for (let attempt = 0; attempt < 2; attempt++) {
     execFileSync(process.execPath, [path.join(__dirname, 'patch-devtools-validation.mjs')], { timeout: 5000 });
@@ -53,7 +54,7 @@ test('fresh patch and source/version tamper guards work in an isolated install f
     const scripts = path.join(root, 'scripts');
     const expo = path.join(root, 'node_modules/expo');
     const cli = path.join(expo, 'node_modules/@expo/cli');
-    const target = path.join(cli, 'build/src/start/server');
+    const target = path.join(cli, 'build/src/start/server/devtools');
     const zod = path.join(cli, 'node_modules/zod');
     for (const dir of [scripts, target, zod]) mkdirSync(dir, { recursive: true });
     writeFileSync(path.join(expo, 'package.json'), JSON.stringify({ name: 'expo', version: '57.0.31' }));
@@ -66,7 +67,7 @@ test('fresh patch and source/version tamper guards work in an isolated install f
     const run = () => execFileSync(process.execPath, [path.join(scripts, 'patch.mjs')], { timeout: 5000, stdio: 'pipe' });
     run();
     const patched = names.map(name => readFileSync(path.join(target, name), 'utf8'));
-    assert.deepEqual(patched, names.map(name => readFileSync(path.join(server, name), 'utf8')));
+    assert.deepEqual(patched, names.map(name => readFileSync(path.join(devtools, name), 'utf8')));
     run();
     assert.deepEqual(names.map(name => readFileSync(path.join(target, name), 'utf8')), patched);
     writeFileSync(path.join(target, names[0]), patched[0] + '\n// unexpected dependency modification\n');
