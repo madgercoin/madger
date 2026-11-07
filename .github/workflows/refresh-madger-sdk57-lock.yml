@@ -46,13 +46,6 @@ jobs:
       - name: Verify fresh install and release gates on generated lockfile
         working-directory: mobile
         run: |
-          npm ci --ignore-scripts --no-audit --no-fund
-          node -e "const {createRequire}=require('node:module'); const p=createRequire(require.resolve('expo/package.json'))('@expo/cli/package.json');console.log('CLI_VERSION',p.version)"
-          node -e "const {createRequire}=require('node:module');const r=createRequire(require.resolve('expo/package.json'));console.log('CLI_ROOT',r.resolve('@expo/cli/package.json'));"
-          CLI_ROOT="$(dirname "$(node -e "const {createRequire}=require('node:module');console.log(createRequire(require.resolve('expo/package.json')).resolve('@expo/cli/package.json'))")")"
-          echo "DEVTOOLS_SOURCE_FILES"
-          find "$CLI_ROOT/build/src" -type f | grep -Ei 'DevTools|[Pp]lugin|MCP' | head -70 || true
-          echo "SEARCH_VALIDATION_CALLS"
-          grep -R -l -E 'PluginSchema|DevToolsPluginOutputSchema|createMCPDevToolsExtensionSchema' "$CLI_ROOT/build/src" | head -40 || true
-          echo "EXPO_57_REVIEW_REQUIRED"
-          exit 1
+          npm ci --no-audit --no-fund
+          npm run release:check
+          npx expo-doctor
