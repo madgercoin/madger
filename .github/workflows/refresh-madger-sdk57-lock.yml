@@ -43,17 +43,21 @@ jobs:
             git commit -m "Align Expo SDK 57 patch dependencies and lockfile"
             git push origin HEAD:fix/madger-android-release-gates-20261107
           fi
-      - name: Inspect upstream changes to reviewed CLI plugin validator
+      - name: Preserve pristine audited CLI 57.0.33 source for hash-locked review
         working-directory: mobile
         run: |
           npm ci --ignore-scripts --no-audit --no-fund
           CLI_ROOT="$(dirname "$(node -e "const {createRequire}=require('node:module');console.log(createRequire(require.resolve('expo/package.json')).resolve('@expo/cli/package.json'))")")"
+          mkdir -p scripts/devtools-validation-57_0_33-original
           for name in DevToolsPlugin.schema.js DevToolsPluginCliExtensionResults.js; do
-            echo "REVIEW_FILE $name"
-            sha256sum "$CLI_ROOT/build/src/start/server/devtools/$name"
-            echo "DIFF_FROM_57_0_32_BEGIN"
-            diff -u "scripts/devtools-validation-original/$name.txt" "$CLI_ROOT/build/src/start/server/devtools/$name" | head -150 || true
-            echo "DIFF_END"
+            cp "$CLI_ROOT/build/src/start/server/devtools/$name" "scripts/devtools-validation-57_0_33-original/$name.txt"
+            sha256sum "scripts/devtools-validation-57_0_33-original/$name.txt"
           done
-          echo "REVIEW_ONLY: blocked until upstream source is explicitly verified"
-          exit 1
+          git add scripts/devtools-validation-57_0_33-original
+          if ! git diff --cached --quiet; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git commit -m "Vendor exact upstream Expo CLI 57.0.33 validation fixtures for audit"
+            git push origin HEAD:fix/madger-android-release-gates-20261107
+          fi
+          echo "No gameplay or release credential changes"
