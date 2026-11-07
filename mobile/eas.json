@@ -18,10 +18,25 @@
     "expedition-preview": {
       "extends": "preview",
       "autoIncrement": true,
-      "env": { "MADGER_EXPEDITION_PREVIEW": "1" }
+      "env": {
+        "MADGER_EXPEDITION_PREVIEW": "1"
+      }
     },
     "production": {
       "autoIncrement": true
+    },
+    "closed-test-build": {
+      "extends": "production",
+      "distribution": "store",
+      "environment": "production",
+      "credentialsSource": "remote",
+      "android": {
+        "buildType": "app-bundle"
+      },
+      "env": {
+        "MADGER_ANDROID_PREVIEW": "0",
+        "MADGER_EXPEDITION_PREVIEW": "0"
+      }
     }
   },
   "submit": {
