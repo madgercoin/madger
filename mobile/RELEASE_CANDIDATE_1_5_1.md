@@ -37,7 +37,7 @@ or changing save keys, route physics, companion unlock requirements, or identity
    package, manifest, signature, and archive hashes. Do not reuse the previous
    build-33 APK: its source predates these changes, and strict artifact checks
    correctly reject it.
-3. **Physical Android QA:** install an exact-source signed testing APK on
+3. **Physical Android QA:** complete and attach [ANDROID_DEVICE_QA_REPORT_TEMPLATE.md](./ANDROID_DEVICE_QA_REPORT_TEMPLATE.md). Install an exact-source signed testing APK on
    a real Android phone. Record phone model, OS, display/font scale, nav mode,
    build ID, graphics metrics, and failures. Exercise launch, JUMP, BURROW,
    steering, three biome entries, secret rooms, collectible upgrades, vault
