@@ -16,7 +16,9 @@ a Zod instance injected by the MCP consumer for typed tool arguments. The
 previous patch written against CLI 57.0.32 Zod schema no longer applies;
 blindly reusing it would break npm installs and development tooling.
 ESLint React Hooks 7.1.1 remains pinned to Zod 4.6.7 as a narrowly scoped
-security override; the old CLI 57.0.32 scoped Zod override was removed.
+security override; the old CLI 57.0.32 scoped override was retargeted to
+CLI 57.0.33 as defense-in-depth for any residual CLI Zod dependencies.
+The new developer plugin JSON-schema validation itself does not depend on Zod.
 
 ## Exact-source security controls
 
