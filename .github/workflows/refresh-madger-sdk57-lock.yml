@@ -43,9 +43,17 @@ jobs:
             git commit -m "Align Expo SDK 57 patch dependencies and lockfile"
             git push origin HEAD:fix/madger-android-release-gates-20261107
           fi
-      - name: Verify fresh install and release gates on generated lockfile
+      - name: Inspect upstream changes to reviewed CLI plugin validator
         working-directory: mobile
         run: |
-          npm ci --no-audit --no-fund
-          npm run release:check
-          npx expo-doctor
+          npm ci --ignore-scripts --no-audit --no-fund
+          CLI_ROOT="$(dirname "$(node -e "const {createRequire}=require('node:module');console.log(createRequire(require.resolve('expo/package.json')).resolve('@expo/cli/package.json'))")")"
+          for name in DevToolsPlugin.schema.js DevToolsPluginCliExtensionResults.js; do
+            echo "REVIEW_FILE $name"
+            sha256sum "$CLI_ROOT/build/src/start/server/devtools/$name"
+            echo "DIFF_FROM_57_0_32_BEGIN"
+            diff -u "scripts/devtools-validation-original/$name.txt" "$CLI_ROOT/build/src/start/server/devtools/$name" | head -150 || true
+            echo "DIFF_END"
+          done
+          echo "REVIEW_ONLY: blocked until upstream source is explicitly verified"
+          exit 1
