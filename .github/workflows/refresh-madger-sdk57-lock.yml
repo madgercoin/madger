@@ -26,7 +26,7 @@ jobs:
       - name: Refresh only the seven Expo SDK 57 patch-level dependencies
         working-directory: mobile
         run: |
-          npm install --package-lock-only --save-exact --ignore-scripts --no-audit --no-fund \
+          npm install --save-exact --ignore-scripts --no-audit --no-fund \
             expo@57.0.32 \
             expo-asset@57.0.21 \
             expo-constants@57.0.23 \
