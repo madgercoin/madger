@@ -27,6 +27,27 @@ or changing save keys, route physics, companion unlock requirements, or identity
   audible sound, signing, upload, acceptance by Google, or live privacy-policy
   deployment.
 
+## November 7 Android native startup investigation
+
+The source-matched Android APK in CI run
+https://github.com/madgercoin/madger/actions/runs/42408711941 compiled, but
+the API-35 x86_64 emulator crashed before displaying the Expedition lobby.
+Its own logcat and APK archive confirm the cause:
+`lib/arm64-v8a/libexpo-gl.so` is present while
+`lib/x86_64/libexpo-gl.so` is **absent**. SoLoader failed loading
+`libexpo-gl.so` while initializing the GLModule; the missing
+`Start expedition` UI and render proofs are downstream symptoms.
+
+To address the missing x86_64 library without changing actual gameplay,
+the Android Expo Autolinking config now builds *only* `expo-gl` from source,
+while retaining precompiled packages for the other libraries. A new
+post-assembly APK gate inspects both arm64-v8a and x86_64 native libraries
+(including expo-gl, expo-modules-core, and reactnative) before preview
+delivery. A configuration regression prevents accidentally dropping this
+source-build requirement. These changes remain **unverified** until a
+new CI APK compile, source/ABI inspection and Android emulator smoke pass.
+Do not reuse the previously failing artifact or lower any smoke threshold.
+
 ## Before Play Closed testing
 
 1. **Integrate source:** approve the new release preparation PR against
