@@ -391,6 +391,32 @@ class Smoke:
                 key not in hud for key in ("distance_m", "lane", "action", "route", "score")):
             raise AssertionError(f"{context} must show a running phase and complete HUD; observed {observation}")
 
+    def motion_window_observation(self, not_before_host, context, expected_run_id=None):
+        """Require a live post-draw frame produced after the endpoint boundary."""
+        calibration = self.clock_calibration
+        if not calibration:
+            raise AssertionError("Motion observation requires a calibrated Android clock")
+        # Use the upper clock bound so uncertainty cannot label an earlier
+        # rendered frame as proof of a later screenshot endpoint.
+        not_before_android = (calibration["android_ms"]
+            + (not_before_host - calibration["host_mid_s"]) * 1000
+            + calibration["rtt_ms"] / 2)
+        deadline = time.monotonic() + 2
+        while True:
+            self.hud()  # Retains the existing two-second freshness and PID checks.
+            observation = self.last_observation
+            self.require_running_observation(observation, context)
+            run_id = observation.get("run_id")
+            if not run_id:
+                raise AssertionError(f"{context} lacks a proven run identity")
+            if expected_run_id is not None and run_id != expected_run_id:
+                raise AssertionError(f"{context} crossed a run identity change")
+            if observation["proof"]["rendered"]["at"] >= not_before_android:
+                return observation
+            if time.monotonic() >= deadline:
+                raise AssertionError(f"{context} lacks a post-boundary frame within 2 seconds")
+            time.sleep(.06)
+
     def capture_running_window(self, name, frame_names, quiet_waits, targeted=False):
         """Bracket untouched gameplay with explicit phase/HUD observations.
 
@@ -405,14 +431,15 @@ class Smoke:
         window = {"frames": list(frame_names), "quiet_waits_s": list(quiet_waits),
                   "capture_method": "adb exec-out screencap -p", "phase_and_progress_passed": False}
         self.report.setdefault("motion_windows", {})[name] = window
-        if targeted:
-            self.hud()
-            (OUT / f"{name}-before.json").write_text(json.dumps(self.last_observation, indent=2), encoding="utf-8")
-        else:
+        if not targeted:
+            # Validate visible controls once before sampling. The cached bounds
+            # remain valid while this same running layout/run stays active.
             xml, _, _ = self.tree()
             (OUT / f"{name}-before.xml").write_text(xml, encoding="utf-8")
-        window["before"] = self.last_observation
-        self.require_running_observation(window["before"], f"Motion window {name} start")
+        # Use the same strict post-draw observer at both endpoints. A full
+        # hierarchy traversal after screenshots can contend with gameplay.
+        window["before"] = self.motion_window_observation(time.monotonic(), f"Motion window {name} start")
+        (OUT / f"{name}-before.json").write_text(json.dumps(window["before"], indent=2), encoding="utf-8")
         raw_frames = []
         window["sampling_start_s"] = round(time.monotonic() - self.started, 3)
         try:
@@ -420,20 +447,19 @@ class Smoke:
                 if delay:
                     time.sleep(delay)
                 raw_frames.append((frame_name, self.capture_adb_png(frame_name)))
-            window["sampling_end_s"] = round(time.monotonic() - self.started, 3)
-            if targeted:
-                self.hud()
-                (OUT / f"{name}-after.json").write_text(json.dumps(self.last_observation, indent=2), encoding="utf-8")
-            else:
-                xml, _, _ = self.tree()
-                (OUT / f"{name}-after.xml").write_text(xml, encoding="utf-8")
-            window["after"] = self.last_observation
+            capture_end = time.monotonic()
+            window["sampling_end_s"] = round(capture_end - self.started, 3)
+            window["after"] = self.motion_window_observation(capture_end,
+                f"Motion window {name} end", expected_run_id=window["before"]["run_id"])
+            (OUT / f"{name}-after.json").write_text(json.dumps(window["after"], indent=2), encoding="utf-8")
         finally:
             # Preserve raw evidence even if the final observation or capture fails.
             # Encoding/decoding and image analysis stay outside the sampled window.
             for frame_name, png in raw_frames:
                 (OUT / f"{frame_name}.png").write_bytes(png)
         self.require_running_observation(window["after"], f"Motion window {name} end")
+        if window["after"].get("run_id") != window["before"]["run_id"]:
+            raise AssertionError(f"Motion window {name} crossed a run identity change")
         progress = window["after"]["hud"]["distance_m"] - window["before"]["hud"]["distance_m"]
         window["distance_delta_m"] = progress
         if progress <= 0:
@@ -1186,6 +1212,99 @@ def self_test_frame_observer():
             checks += 1
         else:
             raise AssertionError("Road jump accepted missing jump-event evidence")
+
+    # Motion-window endpoints use strict native telemetry. The initial window
+    # still validates real visible control bounds before captures; it must not
+    # traverse the accessibility hierarchy after captures during live play.
+    import types
+    fake_pil = types.SimpleNamespace(Image=types.SimpleNamespace(
+        open=lambda _: types.SimpleNamespace(convert=lambda _: "decoded-test-frame")))
+    previous_out = OUT
+    try:
+        with tempfile.TemporaryDirectory() as directory, patch.dict(sys.modules, {"PIL": fake_pil}), patch.object(time, "sleep"), patch.object(time, "monotonic", return_value=0):
+            OUT = Path(directory)
+            for case in ("valid", "targeted", "paused-before", "paused-after",
+                         "changed-run", "missing-run", "no-progress", "stale-after"):
+                smoke = Smoke()
+                events = []
+                smoke.clock_calibration = {"android_ms": 100000, "host_mid_s": 0, "rtt_ms": 0}
+                before = {"phase": "running", "run_id": "observed-run",
+                          "proof": {"rendered": {"at": 100000}},
+                          "hud": {"distance_m": 2, "lane": 0, "action": "running", "route": "main", "score": 0}}
+                after = copy.deepcopy(before)
+                after["hud"]["distance_m"] = 8
+                if case == "paused-before": before["phase"] = "paused"
+                if case == "paused-after": after["phase"] = "paused"
+                if case == "changed-run": after["run_id"] = "new-run"
+                if case == "missing-run": del before["run_id"]
+                if case == "no-progress": after["hud"]["distance_m"] = 2
+                observations = iter((before, after))
+                def observe():
+                    events.append("hud")
+                    if case == "stale-after" and events.count("hud") == 2:
+                        raise AssertionError("stale native frame")
+                    smoke.last_observation = next(observations)
+                    return smoke.last_observation["hud"]
+                def visible_controls():
+                    events.append("tree")
+                    smoke.control_bounds = {"LEFT": (10, 20, 30, 40)}
+                    return "<hierarchy/>", [], []
+                def raw_capture(name):
+                    events.append("capture:" + name)
+                    return b"unit-test PNG bytes"
+                with patch.object(smoke, "hud", side_effect=observe), patch.object(smoke, "tree", side_effect=visible_controls), patch.object(smoke, "capture_adb_png", side_effect=raw_capture), patch.object(smoke, "tap", side_effect=AssertionError("No input allowed in a motion window")):
+                    try:
+                        images = smoke.capture_running_window(case, [case + "-a", case + "-b"], [0, .1], targeted=(case == "targeted"))
+                    except AssertionError as error:
+                        assert case not in ("valid", "targeted"), (case, error)
+                        if case == "stale-after": assert str(error) == "stale native frame"
+                        assert not smoke.report["motion_windows"][case]["phase_and_progress_passed"]
+                    else:
+                        assert case in ("valid", "targeted"), case
+                        assert images == ["decoded-test-frame", "decoded-test-frame"]
+                        assert smoke.report["motion_windows"][case]["distance_delta_m"] == 6
+                        assert (OUT / (case + "-after.json")).exists()
+                    if "capture:" + case + "-a" in events:
+                        assert "tree" not in events[events.index("capture:" + case + "-a"):]
+                    assert not (OUT / (case + "-after.xml")).exists()
+                    if case == "valid":
+                        assert events == ["tree", "hud", "capture:valid-a", "capture:valid-b", "hud"]
+                        assert smoke.control_bounds == {"LEFT": (10, 20, 30, 40)}
+                    if case == "targeted": assert "tree" not in events
+                    checks += 1
+    finally:
+        OUT = previous_out
+
+
+    # A fresh, progressed same-run proof can still predate the last capture.
+    # Never accept it merely because it is younger than the freshness limit.
+    for case in ("old-endpoint", "delayed-paused", "delayed-running", "clock-uncertainty"):
+        smoke = Smoke()
+        smoke.clock_calibration = {"android_ms": 100000, "host_mid_s": 10, "rtt_ms": 10}
+        endpoint = {"phase": "running", "run_id": "same-run",
+                    "hud": {"distance_m": 8, "lane": 0, "action": "running", "route": "main", "score": 0},
+                    "proof": {"rendered": {"at": 100000}}}
+        later = copy.deepcopy(endpoint)
+        later["proof"]["rendered"]["at"] = 100200
+        if case == "delayed-paused": later["phase"] = "paused"
+        if case == "clock-uncertainty": endpoint["proof"]["rendered"]["at"] = 100102
+        sequence = iter((endpoint, later))
+        def endpoint_hud():
+            smoke.last_observation = next(sequence)
+            return smoke.last_observation["hud"]
+        # Host boundary 10.1 maps conservatively to Android time 100105.
+        clock = (10, 12.1) if case in ("old-endpoint", "clock-uncertainty") else (10, 10.1)
+        with patch.object(smoke, "hud", side_effect=endpoint_hud), patch.object(time, "monotonic", side_effect=clock), patch.object(time, "sleep"):
+            try:
+                observed = smoke.motion_window_observation(10.1, "test endpoint", expected_run_id="same-run")
+            except AssertionError as error:
+                assert case != "delayed-running", error
+                assert "running phase" in str(error) if case == "delayed-paused" else "within 2 seconds" in str(error)
+            else:
+                assert case == "delayed-running", case
+                assert observed["proof"]["rendered"]["at"] == 100200
+            checks += 1
+
     print(f"{checks} post-draw observer contract tests passed (not native acceptance)")
     return 0
 
