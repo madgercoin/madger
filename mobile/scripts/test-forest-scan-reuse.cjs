@@ -31,6 +31,21 @@ function run(fn,target,travel,ruins,underground,time){
   (t,d,side)=>Math.sin(t+d+side)*.03,ahead=>Math.max(0,Math.min(1,(110-ahead)/20)),
   (t,d,r)=>Math.sin(t+d+r)*.02);
 }
+test('minimum scenery budget retains scanned roots at every forest travel offset',()=>{
+  // Exercise the production placement loop under the strictest GPU fallback.
+  // Root candidates are 36m apart. The first candidate can be clipped by
+  // the near-plane guard, so the next one must still be drawable at budget 0.
+  for(let travel=0;travel<144;travel+=.5){
+    const target=scene(.44,0);
+    run(optimized,target,travel,false,false,10);
+    const roots=target.scanBatches.filter(entry=>entry.id==='root_cluster_01');
+    assert(roots.some(entry=>entry.mesh.count>0),
+      'Missing visible scanned root at travel='+travel+'m');
+    assert(roots.every(entry=>entry.mesh.count<=4),
+      'Fallback added too many distant scanned roots at '+travel+'m');
+  }
+});
+
 test('all biome/quality placements remain byte-identical while duplicate material work drops',()=>{
  let before=0,after=0,capacity=0,uploads=0,cases=0;
  for(const [ruins,underground] of [[false,false],[true,false],[false,true]])
