@@ -528,23 +528,30 @@ class ForestRenderer {
     const terrainFamily=s.route==='hollow'||s.route==='grotto'?s.route:s.majorPath;
     if(this.terrainRoute!==terrainFamily||this.terrainD!==terrainAnchor){
     this.terrainRoute=terrainFamily;this.terrainD=terrainAnchor;
-    const gapRows=new Map();
+    const gapRows=new Map(),worldRows=new Map(),routeStyles=new Map(),travelCurve=curve(travel);
+    const styleFor=route=>{
+      if(!routeStyles.has(route)){
+        const biome=terrainBiome(this.worldPresets,route);
+        routeStyles.set(route,{profile:terrainProfile(this.worldPresets,route),
+          trail:new T.Color(biome==='cavern'?'#80746D':biome==='ruins'?'#A19782':'#B5A184'),
+          moss:new T.Color(biome==='cavern'?'#52605D':biome==='ruins'?'#6A7967':'#4C6648')});
+      }
+      return routeStyles.get(route);
+    };
     const vertices=this.terrain.geometry.attributes.position,uv=this.terrain.geometry.attributes.uv,tint=this.terrain.geometry.attributes.color;
 
     for(let i=0;i<vertices.count;i++){
       const x=vertices.getX(i),z=vertices.getZ(i)-84,d=terrainAnchor-z;
-      const paths=roadsAt(d).map(r=>({...r,centre:r.centre+curve(travel)})),near=nearestRoad(paths,x),centre=near.centre,lateral=Math.abs(x-centre);
-      const localBiome=terrainBiome(this.worldPresets,near.route);
-      this.trailTint.set(localBiome==='cavern'?'#80746D':localBiome==='ruins'?'#A19782':'#B5A184');
-      this.mossTint.set(localBiome==='cavern'?'#52605D':localBiome==='ruins'?'#6A7967':'#4C6648');
+      if(!worldRows.has(d))worldRows.set(d,roadsAt(d).map(r=>({...r,centre:r.centre+travelCurve})));
+      const paths=worldRows.get(d),near=nearestRoad(paths,x),centre=near.centre,lateral=Math.abs(x-centre),style=styleFor(near.route);
       const shoulder=Math.max(0,lateral-near.halfWidth);
       if(!gapRows.has(d))gapRows.set(d,(this.gaps||[]).filter(o=>Math.abs(o.d-d)<2.8));
       const inGap=gapRows.get(d).some(o=>o.route===near.route&&Math.abs(x-centre-o.lane*2.15)<1.55);
       // Authored profiles shape each route while preserving the three flat
       // gameplay lanes and original collision gap depth.
-      vertices.setY(i,roadSurfaceHeight(terrainProfile(this.worldPresets,near.route),near,x,d,Boolean(inGap)));
+      vertices.setY(i,roadSurfaceHeight(style.profile,near,x,d,Boolean(inGap)));
       uv.setXY(i,x*.18,d*.18);
-      this.soilTint.copy(this.trailTint).lerp(this.mossTint,smooth(shoulder/1.7));
+      this.soilTint.copy(style.trail).lerp(style.moss,smooth(shoulder/1.7));
       this.soilTint.multiplyScalar(.94+.055*Math.sin(d*.63+x*.55)+.035*Math.cos(x*.36-d*.29));
       tint.setXYZ(i,this.soilTint.r,this.soilTint.g,this.soilTint.b);
     }
