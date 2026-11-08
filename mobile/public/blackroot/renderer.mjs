@@ -421,7 +421,13 @@ class ForestRenderer {
         if(z>-8)continue;
         // Keep alternate trails unobscured. Scans belong to a bank, never the
         // centre of an unselected but visible branch.
-        if(this.budget.scenery===0&&i>3&&['fern_02','grass_medium_02','root_cluster_01'].includes(id))continue;
+        // At the minimum scenery budget, preserve the nearest visible root group.
+        // Root locations use n % 3; if the first candidate is too close and
+        // hidden by the z > -8 guard, i=4 supplies the next valid location.
+        // The extra two root instances share the existing instanced draw,
+        // with no change to routes, collisions, rewards or gameplay timing.
+        if(this.budget.scenery===0&&i>3&&
+          (['fern_02','grass_medium_02'].includes(id)||(id==='root_cluster_01'&&i>4)))continue;
         if(id==='grass_medium_02'){
           if(underground&&n%2===0)continue;
           for(let j=0;j<(ruins||this.sceneryQuality<.5?1:3);j++){
