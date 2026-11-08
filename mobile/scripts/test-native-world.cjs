@@ -139,3 +139,37 @@ test('authored PBR world never receives duplicate native terrain or dressing',()
   scene.overgrownScenery(s,1,true);assert.equal(drawn.length,0,route+' received duplicate native world meshes');
  }
 });
+
+test('distant route fixture resets entrance offsets rather than placing hero in a bank',async()=>{
+ const T=await import('../public/blackroot/vendor/build/three.module.js');
+ const {visibleRoads,nearestRoad,roadSurfaceHeight,terrainProfile}=await import('../public/blackroot/terrain.mjs');
+ const presets=JSON.parse(fs.readFileSync(path.join(root,'public/blackroot/world-presets.json')));
+ const curve=d=>Math.sin(d/76)*.8+Math.sin(d/185)*1.1;
+ const s=C.freshOvergrownExpedition(19,'render-rootway');
+ Object.assign(s,{mode:'fork',distance:140,forkStage:1});C.chooseFork(s,'rootway',[]);
+ Object.assign(s,{route:'main',mode:'fork',distance:455,forkStage:2,keys:1});C.chooseFork(s,'mosswalk',[]);
+ Object.assign(s,{distance:680,mode:'paused'});
+ assert.equal(s.x,4.3,'fork preserves world position until ordinary simulation recenters');
+ const travel=s.distance,anchor=Math.floor(travel/(205/96))*(205/96);
+ const geo=new T.PlaneGeometry(100,205,56,96);geo.rotateX(-Math.PI/2);
+ const positions=geo.attributes.position;
+ for(let i=0;i<positions.count;i++){
+  const x=positions.getX(i),d=anchor-(positions.getZ(i)-84);
+  const roads=visibleRoads(s,d,C.overgrownPathOffset,C.overgrownPathHeight,C.overgrownPathWidth).map(r=>({...r,centre:r.centre+curve(d)}));
+  const road=nearestRoad(roads,x);
+  positions.setY(i,roadSurfaceHeight(terrainProfile(presets,road.route),road,x,d));
+ }
+ const mesh=new T.Mesh(geo,new T.MeshBasicMaterial());
+ mesh.position.set(-curve(travel),0,travel-anchor-84);mesh.updateMatrixWorld(true);
+ const obstruction=()=>{
+  const x=C.overgrownPathOffset(s.route,travel),height=C.overgrownPathHeight(s.route,travel);
+  const eye=new T.Vector3(x+s.x*.72,4.4+Math.sin(travel/34)*.12+height+s.y*.18,9.6);
+  const target=new T.Vector3(x+s.x,height-.33+s.y+.65,0),direction=target.clone().sub(eye);
+  return new T.Raycaster(eye,direction.clone().normalize(),.05,direction.length()-.1).intersectObject(mesh)[0];
+ };
+ try{
+  assert(Math.abs(obstruction().distance-9.91404057)<.0001,'reproduces actual CI obstruction');
+  Object.assign(s,{x:0,y:0,vx:0,vy:0,lane:0,groundHeight:0,slide:0,slideAge:0});
+  for(const lane of [-1,0,1]){s.x=lane*C.LANE_WIDTH;s.lane=lane;assert.equal(obstruction(),undefined,'grounded lane '+lane+' has clear lower body');}
+ }finally{geo.dispose();mesh.material.dispose();}
+});
