@@ -208,6 +208,16 @@ jobs:
         env:
           MADGER_ANDROID_PREVIEW: '1'
           MADGER_BUILD_REVISION: ${{ github.sha }}
+      - name: Prepare checksum-pinned official Gradle download
+        run: |
+          python3 scripts/prepare-gradle-download.py --self-test
+          python3 scripts/prepare-gradle-download.py
+          # Bootstrap only the fixed distribution, with bounded network retries.
+          for attempt in 1 2 3; do
+            if ./android/gradlew --version --no-daemon; then break; fi
+            if [ "$attempt" = 3 ]; then exit 1; fi
+            sleep $((attempt * 5))
+          done
       - name: Build a standalone preview using the generated development key
         env:
           NODE_ENV: production

@@ -31,6 +31,29 @@ async function reachApproach(page,minimumDistance,chamber){
  throw new Error('Chamber approach did not reach '+minimumDistance+'m for '+chamber+
    '; last observed='+meters+'m; protective resumes='+resumes);
 }
+// Claim through Playwright's real pointer input, then pause in the same click
+// event turn. A second Playwright round trip lets a one-health runner reach
+// the next trap; an unguarded later P can instead resume a protective pause.
+// React Native Web stops click propagation at its root. This later listener
+// on that SAME root runs after React's reward handler, before another frame.
+// The synthetic P is checkpoint-capture sequencing, not native input proof.
+// Only the normal keyboard handler is invoked; game state/clocks are untouched.
+async function claimAndPause(page,rewardButton){
+ const cleanup=await rewardButton.evaluateHandle(button=>{
+  const root=document.getElementById('root');
+  if(!root||!root.contains(button))throw new Error('Reward button is not inside the Expo root');
+  const afterReward=event=>{
+   if(!event.composedPath().includes(button))return;
+   root.removeEventListener('click',afterReward);
+   window.dispatchEvent(new KeyboardEvent('keydown',{key:'p',bubbles:true,cancelable:true}));
+  };
+  root.addEventListener('click',afterReward);
+  return ()=>root.removeEventListener('click',afterReward);
+ });
+ try{await rewardButton.click();}
+ finally{await cleanup.evaluate(remove=>remove());await cleanup.dispose();}
+ await page.getByText('Your run is safe.',{exact:true}).waitFor();
+}
 (async()=>{
  await new Promise(r=>server.listen(0,'127.0.0.1',r));const browser=await chromium.launch({headless:true,executablePath:process.env.CHROMIUM_PATH||(process.platform==='win32'?'C:/Program Files/Google/Chrome/Application/chrome.exe':undefined)}),results=[];
  try{
@@ -72,9 +95,8 @@ async function reachApproach(page,minimumDistance,chamber){
     await page.waitForTimeout(450);const frozen=await stored();assert.equal(frozen.distance,before.distance);assert.equal(frozen.time,before.time);
     await page.reload({waitUntil:'domcontentloaded',timeout:60000});await page.getByText(meta.name,{exact:true}).waitFor({timeout:60000});await page.waitForFunction(()=>window.madgerActiveRenderer==='pbr',undefined,{timeout:60000});
     const choice=meta.hero==='bot'?'supplies':'fragment';
-    await page.getByRole('button',{name:choice==='supplies'?'Take survival supplies':'Take '+require(path.join(temp,'companions.js')).COMPANIONS[meta.hero].name+' fragment',exact:true}).click();
-    if(!await page.getByText('Your run is safe.',{exact:true}).isVisible()){try{await page.getByRole('button',{name:'Pause expedition',exact:true}).click({timeout:2500});}catch(e){if(!await page.getByText('Your run is safe.',{exact:true}).isVisible())throw e;}}await page.getByText('Your run is safe.',{exact:true}).waitFor();
-    const rewarded=await stored();assert(rewarded.coins>=8);assert(rewarded.gems>=2);assert(rewarded.secrets.includes(meta.id));
+    await claimAndPause(page,page.getByRole('button',{name:choice==='supplies'?'Take survival supplies':'Take '+require(path.join(temp,'companions.js')).COMPANIONS[meta.hero].name+' fragment',exact:true}));
+    const rewarded=await stored();assert.equal(rewarded.mode,'paused');assert(rewarded.hp>0,'Reward pause must preserve a living run');assert(rewarded.coins>=8);assert(rewarded.gems>=2);assert(rewarded.secrets.includes(meta.id));
     if(choice==='fragment')assert(rewarded.heroShards[meta.hero]>=1);
     else {
       // The 18s reward ticks with GAME time after the modal closes. Slow
@@ -94,6 +116,6 @@ async function reachApproach(page,minimumDistance,chamber){
    }catch(e){const debug={error:String(e),errors,warnings,requests,state:await page.evaluate(()=>({renderer:window.madgerActiveRenderer,body:document.body.innerText.slice(-3000)})).catch(()=>null)};fs.writeFileSync(path.join(out,meta.id+'-failure.json'),JSON.stringify(debug,null,2));console.error('CHAMBER_DEBUG',JSON.stringify(debug));await page.screenshot({path:path.join(out,meta.id+'-failure.png')});throw e;}
    finally{await context.close();console.log('CHAMBER_CHECK_FINISHED',meta.id);}
   }
-  fs.writeFileSync(path.join(out,'chambers-browser.json'),JSON.stringify({date:new Date().toISOString(),scope:'Saved approach fixtures with ordinary movement, choice and reload controls',results},null,2));console.log('CHAMBERS_BROWSER_PASS',JSON.stringify(results));
+  fs.writeFileSync(path.join(out,'chambers-browser.json'),JSON.stringify({date:new Date().toISOString(),scope:'Saved approach fixtures with real entry keys, Playwright reward pointer and reload controls; same-turn synthetic pause key for checkpoint capture',results},null,2));console.log('CHAMBERS_BROWSER_PASS',JSON.stringify(results));
  }finally{await browser.close();server.closeAllConnections();await new Promise(r=>server.close(r));fs.rmSync(temp,{recursive:true,force:true});}
 })().catch(e=>{console.error(e.stack||e);process.exitCode=1;});
