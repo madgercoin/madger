@@ -33,11 +33,11 @@ const server=http.createServer((req,res)=>{try{const u=new URL(req.url,'http://l
   await page.getByRole('button',{name:'Start expedition'}).click();
   await assert3DButton(page.getByRole('button',{name:'BURROW',exact:true}),'Raised BURROW control');
   await page.getByText('HERO ENERGY',{exact:false}).waitFor({timeout:10000}).catch(()=>{});
-  await page.getByText(/LIVE PATH · \d+ m · STEER BEFORE THE JUNCTION/).waitFor({timeout:45000});
   await page.waitForFunction(()=>{const label=document.querySelector('[aria-label^="Expedition distance"]')?.getAttribute('aria-label')||'';const metres=Number(label.match(/distance (\d+)/)?.[1]||0);return metres>=119&&metres<140;},{},{timeout:45000});
   assert(await page.locator('canvas').count()>0,'live split must keep rendering');
   // Do not stall active physics with a GPU screenshot readback at the fork.
-  assert(await page.getByText('Rootway',{exact:false}).isVisible(),'Three live path labels must be visible');
+  assert.equal(await page.getByText(/LIVE PATH|STEER BEFORE THE JUNCTION/).count(),0,'Named route-choice overlay must not reveal hidden paths');
+  await page.getByText('BROKEN STONE RISES AHEAD · CLAW MARKS BELOW THE ROOTS',{exact:true}).waitFor({timeout:2000});
   const d1=await page.getByLabel(/Expedition distance \d+ meters; lane/).getAttribute('aria-label');
   await page.keyboard.press('ArrowLeft');
   await page.waitForTimeout(350);
@@ -63,7 +63,7 @@ const server=http.createServer((req,res)=>{try{const u=new URL(req.url,'http://l
   assert(await page.getByLabel(/HERO ENERGY/).count()>=0);
   assert.equal(errors.length,0,JSON.stringify(errors));
   assert.equal(badRequests.length,0,JSON.stringify(badRequests));
-  const report={date:new Date().toISOString(),status:'PASS',checks:['rendered 3D lobby','modern layered Start button and crisp one-pixel icon shadows','workshop opens and displays earned-only upgrades','heroes begin locked','three choices appear in real time','live visible three-road guidance','BURROW input retains raised tactile control','real-time fork preserves forward movement','selection opens physical Rootway route','selected branch remains nonblank','photoscanned CC0 trees, 3D roots, grass and contoured terrain load','per-route scenery configuration and grounded 3D instances verified','no JS errors or failed assets'],errors,badRequests};
+  const report={date:new Date().toISOString(),status:'PASS',checks:['rendered 3D lobby','modern layered Start button and crisp one-pixel icon shadows','workshop opens and displays earned-only upgrades','heroes begin locked','unnamed environmental clues replace route-choice cards','safe lower trail remains reachable through ordinary movement','BURROW input retains raised tactile control','real-time fork preserves forward movement','selection opens physical Rootway route','selected branch remains nonblank','photoscanned CC0 trees, 3D roots, grass and contoured terrain load','per-route scenery configuration and grounded 3D instances verified','no JS errors or failed assets'],errors,badRequests};
   fs.writeFileSync(path.join(out,'browser-branch-acceptance.json'),JSON.stringify(report,null,2));console.log('OVERGROWN_BROWSER_PASS',JSON.stringify(report));
  }catch(e){await shot('failure').catch(()=>{});console.error('OVERGROWN_BROWSER_FAIL',String(e),'ERRORS',errors);throw e;}
  finally{await context.close();await browser.close();await new Promise(resolve=>server.close(resolve));}

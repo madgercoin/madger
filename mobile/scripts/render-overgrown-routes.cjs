@@ -106,6 +106,23 @@ const server=http.createServer((req,res)=>{
   }
   // Prove that the existing mobile fallback actually reduces rendered geometry,
   // not merely canvas resolution. This is a browser LOD comparison, not phone FPS.
+  // Compile and draw the actual active shield in both upright and burrowing
+  // poses. A no-shield fixture cannot catch effect-specific GLSL failures.
+  const shieldChecks=[];
+  for(const burrowing of [false,true]){
+   const run=G.freshOvergrownExpedition(19,'shield-visual');
+   Object.assign(run,{mode:'paused',distance:98,time:9,shields:1,slide:burrowing?.4:0,slideAge:burrowing?.4:0});
+   const check=await page.evaluate(({run,course})=>{
+    const scene=window.fixtureScene;scene.setCourse(course);scene.draw(run,20,true);
+    const batch=scene.renderer.batches.get('shield:shield');
+    const gl=document.querySelector('canvas').getContext('webgl2');
+    return {glError:gl.getError(),count:batch?.count,transparent:batch?.mesh.material.transparent,depthWrite:batch?.mesh.material.depthWrite};
+   },{run,course:G.buildOvergrownCourse(run.seed)});
+   assert.equal(check.glError,0);assert.equal(check.count,1);assert.equal(check.transparent,true);assert.equal(check.depthWrite,false);
+   assert.deepEqual(errors,[],'Active shield shader must compile without errors');
+   const name=burrowing?'shield-burrowing':'shield-upright';
+   await page.screenshot({path:path.join(out,name+'.png')});shieldChecks.push({name,...check});
+  }
   const lod=await page.evaluate(({run,course})=>{
     const scene=window.fixtureScene,renderer=scene.renderer;
     scene.setCourse(course);
@@ -148,7 +165,7 @@ const server=http.createServer((req,res)=>{
     'PBR instanced understory must animate subtly without new geometry');
   const timing=await page.evaluate(async()=>{const s=window.fixtureScene,r=s.renderer.run,gaps=[];r.mode='paused';r.chamber=undefined;r.route='ancient-vault';r.routeSide=1;r.distance=680;let previous=performance.now();for(let i=0;i<55;i++){await new Promise(requestAnimationFrame);const now=performance.now();if(i>4)gaps.push(now-previous);previous=now;r.distance+=.16;s.draw(r,15+i/60,false);}const sorted=gaps.sort((a,b)=>a-b);return {mean:gaps.reduce((a,b)=>a+b,0)/gaps.length,p95:sorted[Math.floor(sorted.length*.95)],triangles:s.stats.triangles,drawCalls:s.stats.drawCalls};});
   assert.deepEqual(errors,[]);assert.deepEqual(failed,[]);
-  const report={date:new Date().toISOString(),scope:'Actual exported renderer with deterministic route fixtures, separate from real-control gameplay tests',results,timing,lod,foliageMotion,errors,failed};
+  const report={date:new Date().toISOString(),scope:'Actual exported renderer with deterministic route fixtures, separate from real-control gameplay tests',results,timing,lod,foliageMotion,shieldChecks,errors,failed};
   fs.writeFileSync(path.join(out,'renderer-routes.json'),JSON.stringify(report,null,2));console.log('ALL_ROUTES_RENDER_PASS',JSON.stringify({routes:results.length,timing,lod,foliageMotion}));
  }finally{await browser.close();server.closeAllConnections();await new Promise(r=>server.close(r));fs.rmSync(temporary,{recursive:true,force:true});}
 })().catch(e=>{console.error(e.stack||e);process.exitCode=1;});

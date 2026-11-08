@@ -90,8 +90,38 @@ test('the actual rolling stone mesh fits below successful jump clearance through
  for(let distance=219.5;distance<=220.5;distance+=.1){
   drawn.length=0;s.distance=distance;scene.item(rock,s,20);
   const stone=drawn.find(d=>d.shape==='geologyRock');assert(stone);
-  const floor=Math.sin(C.hazardPose(rock,s.time,distance).d/34)*.12;
+  const floor=Math.sin(C.hazardPose(rock,s.time,distance).d/34)*.12+C.overgrownPathHeight(s.route,C.hazardPose(rock,s.time,distance).d);
   assert(stone.y+radius*stone.sy-floor<1.08,'an engine-cleared jump must visibly clear every rotated mesh vertex');
   assert(radius*stone.sx+.32<=.821,'visual radius plus player body matches physical contact radius');
  }
+});
+
+function landscapeAt(distance,route='main',majorPath=null){
+ const drawn=[],scene=Object.create(ExpeditionScene.prototype);
+ scene.renderer={worldReady:true,sceneryBudget:1,shape:(shape,c,x,y,z,sx,sy,sz)=>drawn.push({shape,c,x,y,z,sx,sy,sz}),add:()=>{}};
+ const s=C.freshOvergrownExpedition(42,'stable-world');Object.assign(s,{distance,route,majorPath,mode:'running'});
+ scene.setCourse([]);scene.nativeLandscape(s,5,true);return drawn;
+}
+const curve=d=>Math.sin(d/76)*.8+Math.sin(d/185)*1.1;
+test('native trees survive passing the runner at fixed world positions and scale',()=>{
+ const before=landscapeAt(20),after=landscapeAt(25);
+ const trees=before.filter(x=>x.shape==='scanTreeTrunk'&&Math.abs(20-x.z-21)<.001);
+ assert(trees.length,'near tree fixture exists');
+ for(const tree of trees){
+  const next=after.find(x=>x.shape===tree.shape&&Math.abs((25-x.z)-(20-tree.z))<.001&&Math.abs(x.x+curve(25)-tree.x-curve(20))<.001);
+  assert(next,'a passed tree cannot vanish while still visible beside the runner');
+  assert.equal(next.sy,tree.sy);assert.equal(next.y,tree.y);
+ }
+});
+test('native route commitment cannot move, remove or restyle visible landscape',()=>{
+ const before=landscapeAt(140,'main');
+ for(const route of ['rootway','ridge','deep'])assert.deepEqual(landscapeAt(140,route,route),before,route+' changed existing geography');
+});
+test('shield is one transparent body-following shell, never opaque intersecting rings',()=>{
+ const drawn=[],scene=Object.create(ExpeditionScene.prototype);
+ scene.renderer={shape:(...args)=>drawn.push(args)};
+ const s=C.freshOvergrownExpedition(42,'shield');s.shields=1;
+ scene.shield(s,2,true);assert.equal(drawn.length,1);assert.equal(drawn[0][0],'shield');assert.equal(drawn[0][1][3],-12);
+ const y=drawn[0][3];drawn.length=0;s.y=1.4;scene.shield(s,2,true);assert(Math.abs(drawn[0][3]-y-1.4)<1e-9);
+ const mesh=require(path.join(temp,'gl.js')).geometryForTest('shield');assert(mesh.every(Number.isFinite));assert(mesh.length>10000);
 });

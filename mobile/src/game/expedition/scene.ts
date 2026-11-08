@@ -121,11 +121,17 @@ export class ExpeditionScene {
   }
   this.shape('shadow',C.shadow,s.x+routeOffset(s),floorY(s.distance,s.route)+(s.groundHeight??0)+.018,0,.76*(1-heightAboveFloor*.10)*(1-crouch*.45),1,.62*(1-s.y*.10));
   if(crouch>0)this.burrowTrail(s,crouch,calm);
-  if(s.shields>0){this.shape('ring',C.mint,s.x+routeOffset(s),1.20+floorY(s.distance,s.route)+s.y,0,.88,1,.88,Math.PI/2,time*.8,0);this.shape('ring',C.mint,s.x+routeOffset(s),1.20+floorY(s.distance,s.route)+s.y,0,.88,1,.88,0,0,time*.5);}
+  if(s.shields>0)this.shield(s,time,calm);
   if(s.magnet>0)this.shape('ring',C.violet,s.x+routeOffset(s),floorY(s.distance,s.route)+.10,0,1.2+.07*Math.sin(time*5),1,1.2,0,time*.4,0);
   if(s.burst>0)for(let i=0;i<7;i++)this.shape('cone',C.goldGlow,s.x+routeOffset(s)+(i-3)*.15,floorY(s.distance,s.route)+.45+s.y,i*.18+.35,.06,.8,.06,-Math.PI/2,0,0);
  }
  /** Surface soil marks the runner's position while the articulated body is underground. */
+ /** A single translucent protective shell, not intersecting opaque hoops. */
+ private shield(s:Expedition,time:number,calm:boolean){
+  const crouch=s.slide>0?.42:0,pulse=calm?1:1+Math.sin(time*2.2)*.012;
+  this.shape('shield',color('#70e4d7',-12),s.x+routeOffset(s),
+   floorY(s.distance,s.route)+s.y+1.10-crouch,0,1.08*pulse,(1.40-crouch)*pulse,1.12*pulse);
+ }
  private burrowTrail(s:Expedition,weight:number,calm:boolean){
   const x=s.x+routeOffset(s),y=floorY(s.distance,s.route),pulse=calm?0:Math.sin(s.slideAge*34)*.025;
   const soil=s.zone===2?color('#75677b'):s.zone===1?color('#85735c'):color('#8b6743');
@@ -242,75 +248,108 @@ export class ExpeditionScene {
   * draw distance change. Trees are full meshes, never camera-facing sprites. */
  private nativeLandscape(s:Expedition,time:number,calm:boolean){
   const d=s.distance,base=curve(d),budget=this.renderer.sceneryBudget;
-  const cave=['deep','mudslide','crystal-vein','ancient-vault'].includes(s.route);
-  const ruins=['ridge','causeway','watchtower','gearworks'].includes(s.route);
+  const major=s.majorPath==='ridge'||s.majorPath==='deep'?s.majorPath:'rootway';
+  const segments:{start:number;end:number;route:Expedition['route']}[]=[
+   {start:-24,end:140,route:'main'},
+   ...MAJOR_FORKS.map(o=>({start:140,end:455,route:o.id})),
+   ...SUB_FORKS[major].map(o=>({start:455,end:900,route:o.id})),
+   {start:900,end:1110,route:'main'},
+  ];
+  const roadsAt=(wd:number)=>segments.filter(p=>wd>=p.start&&wd<p.end).map(p=>({
+   x:curve(wd)-base+overgrownPathOffset(p.route,wd),y:floorY(wd,p.route),
+   half:3.25*overgrownPathWidth(p.route,wd),
+  }));
+  // One continuous outer bank, never one overlapping slab per branch. Keep
+  // every visible road/gap clear even when the lower catcher overlaps a lip.
+  for(let wd=Math.floor((d-24)/12)*12;wd<d+112;wd+=12){
+   const roads=roadsAt(wd);if(!roads.length)continue;
+   const left=Math.min(...roads.map(r=>r.x-r.half)),right=Math.max(...roads.map(r=>r.x+r.half));
+   const y=Math.min(...roads.map(r=>r.y))-.10;
+   this.shape('terrain',color('#9eab7b',-1),left,y,d-wd,-29,6,6.7);
+   this.shape('terrain',color('#9eab7b',-1),right,y,d-wd,29,6,6.7);
+  }
+  const plant=(shape:Shape,c:Color,x:number,y:number,z:number,sx=1,sy=1,sz=1,rx=0,ry=0,rz=0)=>{
+   const roads=roadsAt(d-z),margin=shape.startsWith('scanTree')?2.2:shape==='scanCliff'?2.5:.7;
+   if(roads.some(r=>Math.abs(x-r.x)<r.half+margin)){
+    const bounds=roads.flatMap(r=>[r.x-r.half-margin,r.x+r.half+margin]);
+    const choices=bounds.filter(v=>roads.every(r=>Math.abs(v-r.x)>=r.half+margin-.001));
+    x=choices.sort((a,b)=>Math.abs(a-x)-Math.abs(b-x))[0]??x;
+   }
+   this.shape(shape,c,x,y,z,sx,sy,sz,rx,ry,rz);
+  };
+  for(const segment of segments){
+  if(segment.end<d-24||segment.start>d+112)continue;
+  const route=segment.route;
+  const cave=['deep','mudslide','crystal-vein','ancient-vault'].includes(route);
+  const ruins=['ridge','causeway','watchtower','gearworks'].includes(route);
   const white=color('#f2f1dd'),stone=color(cave?'#a4bbc9':'#d6d8cc'),ground=color(cave?'#717a85':ruins?'#a7a48a':'#9eab7b',cave?-8:-1);
   const far=[44,64,86][budget];
-  const centre=(wd:number)=>curve(wd)-base+overgrownPathOffset(s.route,wd);
-  if(cave)for(const side of [-1,1])this.shape('box',color('#526576',-8),centre(d+74)+side*7.8,4.2,-74,4,9,80);
+  const centre=(wd:number)=>curve(wd)-base+overgrownPathOffset(route,wd);
+
   // Fill from the edge of the playable road out into the forest and hills.
   // The playable surface itself remains open at every authored gap.
-  for(let wd=Math.floor((d-18)/12)*12;wd<d+112;wd+=12){
-   const z=d-wd,x=centre(wd),y=floorY(wd,s.route);
-   for(const side of [-1,1])this.shape('terrain',ground,x+side*3.02,y-.10,z,side*29,6,6.7,0,0,0);
-   if(cave){
-    this.shape('ceiling',color('#607582',-8),x,10.0,z,8.8,4.2,6.0,0,0,0);
+  for(let wd=segment.start+Math.max(0,Math.floor((d-24-segment.start)/12))*12;wd<Math.min(segment.end,d+112);wd+=12){
+   const z=d-wd,x=centre(wd),y=floorY(wd,route);
+
+   if(cave&&wd>segment.start+26){
+    this.shape('ceiling',color('#607582',-8),x,y+10.0,z,4.2,4.2,6.0,0,0,0);
     for(const side of [-1,1])this.shape('cone',color('#70838a',-8),x+side*4.7,y+6.8,z,.45,2.1,.52,Math.PI,0,0);
    }
   }
   // The narrow fork entrances expose the earth between roads. Give each
   // junction a recessed ground bed so the clear sky cannot show through it.
   // End before the first generated hazard row; authored gaps stay open.
-  for(const junction of [140,455]){
+  for(const junction of segment.route==='main'?[140,455]:[]){
    if(junction+27<d-18||junction-3>d+112)continue;
    const wd=junction+12;
    this.shape('trail',ground,curve(wd)-base,Math.sin(wd/34)*.12-1.25,d-wd,27,1,30);
   }
-  for(let n=Math.floor(d/14);n*14<d+far;n++){
-   const wd=n*14+7,ahead=wd-d;if(ahead<7)continue;
-   const z=-ahead,x=centre(wd),y=floorY(wd,s.route),side=n%2?1:-1;
+  for(let n=Math.floor((d-24)/14);n*14<d+far;n++){
+   const wd=n*14+7,ahead=wd-d;if(wd<segment.start||wd>=segment.end||ahead < -20)continue;
+   const z=-ahead,x=centre(wd),y=floorY(wd,route),side=n%2?1:-1;
    const yaw=hash(n*17)*TAU,h=9.2+hash(n*31)*2.2;
    if(!cave){
     const bx=x+side*(8.0+hash(n)*1.7);
     for(const part of ['scanTreeTrunk','scanTreeCrown','scanTreeTwigs'] as const)
-     this.shape(part,white,bx,y-.12,z,h,h,h,0,yaw,0);
-    this.shape('shadow',C.shadow,bx,y+.015,z,2.1,1,1.9);
+     plant(part,white,bx,y-.12,z,h,h,h,0,yaw,0);
+    plant('shadow',C.shadow,bx,y+.015,z,2.1,1,1.9);
     if(budget>0&&n%2===0)for(const part of ['scanTreeTrunk','scanTreeCrown','scanTreeTwigs'] as const)
-     this.shape(part,color('#c9d8c1'),x-side*10,y+.25,z-5,h*.85,h*.85,h*.85,0,yaw+1,0);
-    if(ahead<32||budget>0){
-     this.shape('scanFern',color('#b7cc94'),x+side*4.25,y-.02,z+2,.90,.90,.90,0,yaw,0);
-     if(ahead<25)this.shape('scanFern',color('#b7cc94'),x-side*3.95,y-.02,z+4,.65,.65,.65,0,yaw+2,0);
-     this.shape('scanRoots',white,x+side*5.7,y-.05,z-2,3.1,1.5,2.5,0,yaw,0);
+     plant(part,color('#c9d8c1'),x-side*10,y+.25,z-5,h*.85,h*.85,h*.85,0,yaw+1,0);
+    if(n%2===0||budget>0){
+     plant('scanFern',color('#b7cc94'),x+side*4.25,y-.02,z+2,.90,.90,.90,0,yaw,0);
+     if(n%2===0)plant('scanFern',color('#b7cc94'),x-side*3.95,y-.02,z+4,.65,.65,.65,0,yaw+2,0);
+     plant('scanRoots',white,x+side*5.7,y-.05,z-2,3.1,1.5,2.5,0,yaw,0);
     }
     // Highest detail: actual scanned near-ground meshes form a varied
     // understory rather than adding fog/cards. Every position is seeded by
     // absolute travel distance, so streaming and cold resume never swim.
     // Keep all new stones/ferns beyond the widest playable catch road.
-    if(budget===2&&ahead<58)for(const flank of [-1,1]){
+    if(budget===2)for(const flank of [-1,1]){
      const seed=n*23+flank*5,offset=flank*(7.6+hash(seed)*1.6);
      const planted=wd+(flank===side?3.8:-2.4);
-     const fx=centre(planted)+offset,fy=floorY(planted,s.route),fz=d-planted;
+     const fx=centre(planted)+offset,fy=floorY(planted,route),fz=d-planted;
      if(!ruins){
       const scale=.54+hash(seed+7)*.43;
-      this.shape('scanFern',color('#c2d5ac'),fx,fy-.09,fz,scale,scale,scale,0,yaw+flank*.7,0);
-     }else this.shape('scanRock',stone,fx,fy-.12,fz,1.35,.65,1.08,0,yaw+flank*.31,0);
-     if(n%2===0)this.shape('scanRoots',white,fx+flank*.32,fy-.07,fz-1.35,1.8,.70,1.75,0,yaw+flank,0);
+      plant('scanFern',color('#c2d5ac'),fx,fy-.09,fz,scale,scale,scale,0,yaw+flank*.7,0);
+     }else plant('scanRock',stone,fx,fy-.12,fz,1.35,.65,1.08,0,yaw+flank*.31,0);
+     if(n%2===0)plant('scanRoots',white,fx+flank*.32,fy-.07,fz-1.35,1.8,.70,1.75,0,yaw+flank,0);
     }
    }else{
-    this.shape('scanCliff',stone,x+side*7.9,y-.7,z,7.3,9.2,5.8,0,yaw,0);
-    this.shape('scanCliff',stone,x-side*7.9,y-.7,z-4,7.3,9.2,5.8,0,yaw+2,0);
+    plant('scanCliff',stone,x+side*7.9,y-.7,z,7.3,9.2,5.8,0,yaw,0);
+    plant('scanCliff',stone,x-side*7.9,y-.7,z-4,7.3,9.2,5.8,0,yaw+2,0);
     this.crystal(x+side*4.35,y+.05,z,.72,n);
    }
-   this.shape('scanRock',stone,x-side*4.6,y-.10,z-2,2.1,1.9,1.8,0,yaw,0);
-   this.shape('shadow',C.shadow,x-side*4.6,y+.01,z-2,1.2,1,1.1);
-   if(n%3===0&&!cave)this.shape('scanLog',white,x-side*6.0,y+.05,z+3,4.2,5.4,4.0,0,yaw*.3,0);
+   plant('scanRock',stone,x-side*4.6,y-.10,z-2,2.1,1.9,1.8,0,yaw,0);
+   plant('shadow',C.shadow,x-side*4.6,y+.01,z-2,1.2,1,1.1);
+   if(n%3===0&&!cave)plant('scanLog',white,x-side*6.0,y+.05,z+3,4.2,5.4,4.0,0,yaw*.3,0);
    if(ruins&&n%2===0){
-    for(let row=0;row<4;row++)for(let col=0;col<2;col++)this.shape('box',C.stone,x+side*(5.1+col*.8),y+.36+row*.73,z, .77,.71,1.14,0,.1*side,0);
-    this.shape('scanCliff',stone,x+side*9,y-.3,z-5,5.3,4.2,4.7,0,yaw,0);
+    for(let row=0;row<4;row++)for(let col=0;col<2;col++)plant('box',C.stone,x+side*(5.1+col*.8),y+.36+row*.73,z, .77,.71,1.14,0,.1*side,0);
+    plant('scanCliff',stone,x+side*9,y-.3,z-5,5.3,4.2,4.7,0,yaw,0);
    }
    // Moving air is subtle. No particle curtain over collision silhouettes.
-   if(!calm&&ahead<35&&n%2===0)this.shape('leaf',C.leaf,x+side*(4.0+Math.sin(time*.5+n)),y+1.5+Math.sin(time*.7+n)*.5,z+Math.cos(time*.4+n),.16,.22,.26,time*.4,n,time*.6);
+   if(!calm&&ahead<35&&n%2===0)plant('leaf',C.leaf,x+side*(4.0+Math.sin(time*.5+n)),y+1.5+Math.sin(time*.7+n)*.5,z+Math.cos(time*.4+n),.16,.22,.26,time*.4,n,time*.6);
   }
+ }
  }
  private overgrownScenery(s:Expedition,time:number,calm:boolean){
   const d=s.distance,base=curve(d);
@@ -331,15 +370,16 @@ export class ExpeditionScene {
    {start:900,end:1080,options:[approach]},
   ];
   for(const phase of phases){
-   if(d>phase.end+8||d+94<phase.start)continue;
-   const allRoutes=(s.mode==='fork'||d<phase.start)&&d<phase.start+25;
-   const options=allRoutes?phase.options:phase.options.filter(o=>o.id===s.route);
+   if(d>phase.end+24||d+94<phase.start)continue;
+   // A route is geography, not a menu state. Keep its geometry until it is
+   // behind the camera; committing to another branch must not erase it.
+   const options=phase.options;
    for(const option of options){
     const theme=mainTheme(option.id),highlight=option.accent;
     const mud=theme==='cavern'?color('#6c7b85',-8):theme==='ruins'?color('#716458',-1):color('#625848',-1);
     const edge=theme==='cavern'?color('#3A3446',-8):theme==='ruins'?color('#4F504D',-8):color('#4B4638',-8);
     const vegetation=theme==='cavern'?color('#4B6D69'):theme==='ruins'?C.leaf:C.leafLight;
-    const step=6,first=this.renderer.worldReady?Math.max(phase.start,Math.floor((d-12)/step)*step):Math.max(phase.start+3,Math.floor((d-9)/step)*step);
+    const step=6,first=this.renderer.worldReady?phase.start+Math.max(0,Math.floor((d-24-phase.start)/step))*step:Math.max(phase.start+3,Math.floor((d-9)/step)*step);
     for(let wd=first;wd<Math.min(phase.end+(this.renderer.worldReady?3:-2),d+90);wd+=step){
      const z=d-wd,off=overgrownPathOffset(option.id,wd),x=off+curve(wd)-base,y=floorY(wd,option.id),n=Math.floor(wd/6);
      const delta=(overgrownPathOffset(option.id,wd+1)+curve(wd+1)-overgrownPathOffset(option.id,wd-1)-curve(wd-1))*.5;
@@ -426,8 +466,9 @@ export class ExpeditionScene {
     const startBand=Math.floor((d-24)/24),endBand=Math.ceil((d+backdropFar)/24);
     for(let band=startBand;band<=endBand;band++){
      const distance=band*24,ahead=distance-d;
-     if(distance<phase.start+4||distance>phase.end-4||ahead<=2||ahead>=backdropFar)continue;
-     const fade=smooth((ahead-2)/16)*smooth((backdropFar-ahead)/20);
+     if(distance<phase.start+4||distance>phase.end-4||ahead < -24||ahead>=backdropFar)continue;
+     // Never shrink landforms as the player approaches. Retire behind camera.
+     const fade=smooth((backdropFar-ahead)/20);
      if(fade<.035)continue;
      const roadCentre=overgrownPathOffset(option.id,distance)+curve(distance)-base;
      for(const side of [-1,1]){
@@ -442,8 +483,8 @@ export class ExpeditionScene {
     // three approach lanes at 140m, then a low descent, raised jump ledge and
     // root-clad burrow tunnel at 455m. Only artwork; the fixed-step engine
     // decides which path was genuinely reached, without scripted teleports.
-    if(allRoutes&&phase.start===455){
-     const junction=455,jz=d-junction,ix=curve(junction)-base+option.side*LANE_WIDTH,iy=floorY(junction);
+    if((phase.start===140||phase.start===455)&&d<phase.start+20){
+     const junction=phase.start,jz=d-junction,ix=curve(junction)-base+option.side*LANE_WIDTH,iy=floorY(junction);
      if(jz>-60&&jz<11){
       const metal=theme==='ruins'?C.copper:C.stone;
       if(option.side===-1){
@@ -466,7 +507,7 @@ export class ExpeditionScene {
      }
     }
     // At an imminent fork every doorway remains visible, even before choosing.
-    if(allRoutes){
+    if(phase.start===140||phase.start===455){
      const portal=phase.start+13,z=d-portal;
      if(z>-95&&z<14){
       const x=curve(portal)-base+overgrownPathOffset(option.id,portal),y=floorY(portal,option.id);

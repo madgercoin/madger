@@ -154,7 +154,7 @@ export function steer(s: Expedition, direction: -1|1) {
 }
 export function jump(s: Expedition, events: GameEvent[]) {
   if(s.mode!=='running') return;
-  if(s.y-(s.groundHeight??0) <= .025 && s.slide <= .01) { s.vy=8.7; s.y=(s.groundHeight??0)+.025; s.groundHeight=0; s.jumpBuffer=0; if(s.courseRevision===2)s.lastJumpAt=s.time; event(s,events,'jump'); }
+  if(s.y-(s.groundHeight??0) <= .025 && s.slide <= .01) { s.vy=8.7; s.y=(s.groundHeight??0)+.025; s.groundHeight=0; s.jumpBuffer=0; s.lastJumpAt=s.time; event(s,events,'jump'); }
   else if(s.y > .025) s.jumpBuffer=.12;
 }
 /** Down digs beneath overhead obstacles; airborne Down makes a controlled descent.
@@ -350,30 +350,26 @@ export function fixedStep(s: Expedition, course: CourseItem[], events: GameEvent
   s.distance=Math.min(TRACK_LENGTH,s.distance+s.speed*STEP);
   const zone=s.board==='overgrown'?0:zoneAt(s.distance);if(zone!==s.zone){s.zone=zone;event(s,events,'zone',ZONES[zone].name);}
   if(s.route!=='main' && s.distance>=s.routeEnd){s.route='main';s.immune=Math.max(s.immune,2);event(s,events,'hint',s.board==='overgrown'?'PATHS REJOIN · PICK YOUR NEXT CHALLENGE':'SHORTCUT COMPLETE · SAFE REJOIN');}
-  // Real-time three-way junctions: steering determines the road while the
-  // game keeps moving. The second junction has a low trail, a jump-only
-  // elevated ledge and a properly timed burrow tunnel. Saved v1 modal fork
-  // checkpoints remain supported by chooseFork below.
-  // Use the damped actual player x at a fork, not the requested lane, so
-  // last-millisecond steering cannot teleport Madger onto an unreachable road.
+  // Discover branches by physically reaching them. Merely steering toward a
+  // raised road or low opening cannot select it; the broad lower trail catches
+  // missed actions without damage or teleporting. Historical modal saves still
+  // recover through chooseFork, but new runs never stop for a route menu.
   const physicalLane:Lane=s.x<-LANE_WIDTH*.56?-1:s.x>LANE_WIDTH*.56?1:0;
-  if(s.board==='overgrown'&&s.forkStage===0&&s.distance>=140){
-    s.forkStage=1;
-    commitFork(s,MAJOR_FORKS[physicalLane+1],events);
-  }else if(s.board==='overgrown'&&s.forkStage===1&&s.distance>=455){
-    s.forkStage=2;
+  const firstEntrance=s.board==='overgrown'&&s.forkStage===0&&s.distance>=140;
+  const secondEntrance=s.board==='overgrown'&&s.forkStage===1&&s.distance>=455;
+  if(firstEntrance||secondEntrance){
     const family=(s.majorPath==='ridge'||s.majorPath==='deep')?s.majorPath:'rootway';
-    const options=SUB_FORKS[family],desired=options[physicalLane+1];
-    const clearedLedge=physicalLane===0&&s.y>.65;
-    const foundTunnel=physicalLane===1&&s.slide>0&&s.y<.25;
-    // Not reaching an elevated platform or tunnel entrance is a fall to the
-    // visible lower road, NOT an arbitrary damage event or a paused menu.
+    const options=firstEntrance?MAJOR_FORKS:SUB_FORKS[family];
+    const desired=options[physicalLane+1];
+    const clearedLedge=physicalLane===0&&actionSatisfied(s,'jump');
+    const foundTunnel=physicalLane===1&&actionSatisfied(s,'burrow');
     const accessible=(physicalLane===-1||clearedLedge||foundTunnel)&&
       (desired.id!=='ancient-vault'||s.keys>0);
     const chosen=accessible?desired:options[0];
     if(!accessible)event(s,events,'hint',desired.id==='ancient-vault'&&s.keys<1&&foundTunnel
-      ?'VAULT LOCKED · DESCEND TO THE LOWER CHANNEL'
-      :physicalLane===0?'MISSED THE UPPER LEDGE · LOWER PATH':'MISSED THE LOW TUNNEL · LOWER PATH');
+      ?'A LOCKED HATCH · THE LOWER TRAIL CATCHES YOU'
+      :'THE LOWER TRAIL CATCHES YOU · LOOK ABOVE AND BELOW');
+    s.forkStage=firstEntrance?1:2;
     commitFork(s,chosen,events);
   }
   const used=new Set(s.used);
@@ -466,11 +462,11 @@ export function nearbyHint(s: Expedition, course: CourseItem[]) {
     const chamber=CHAMBERS.find(c=>c.route===s.route&&c.d>s.distance-1&&c.d<s.distance+(s.courseRevision===2?28:65));
     if(chamber)return s.courseRevision===2?chamber.clue.toUpperCase():`${chamber.clue.toUpperCase()} · ${['LEFT','CENTRE','RIGHT'][chamber.lane+1]} · ${chamber.action==='burrow'?'BURROW':'JUMP'} AT ${chamber.d}m`;
     if(s.forkStage===0)return s.distance>=98
-      ?'LIVE FORK '+Math.max(0,Math.ceil(140-s.distance))+'m · STEER LEFT / MIDDLE / RIGHT'
-      :'THREE REAL ROADS AHEAD · STEER TO CHOOSE';
+      ?'BROKEN STONE RISES AHEAD · CLAW MARKS BELOW THE ROOTS'
+      :'JUMP ONTO HIGH GROUND · BURROW INTO LOW OPENINGS';
     if(s.forkStage===1&&s.distance<455)return s.distance>=411
-      ?'LIVE FORK '+Math.max(0,Math.ceil(455-s.distance))+'m · LEFT: LOWER · MIDDLE: JUMP · RIGHT: BURROW'
-      :(s.majorPath??'ROOTWAY').toUpperCase()+' · LEDGE / LOWER TRAIL / HIDDEN TUNNEL AT 455m';
+      ?'A HIGH LEDGE · A LOW OPENING · FOLLOW THE CLUES'
+      :'LOOK FOR GLEAMS ABOVE THE TRAIL AND CLAW MARKS BELOW';
     if(s.route!=='main')return (s.subPath??'FOREST').toUpperCase().replace(/-/g,' ')+' · RARE FRAGMENTS AHEAD';
     return 'THE BURROW TREASURY · 1080m FINISH';
   }
@@ -564,17 +560,19 @@ export function overgrownPathWidth(route:Route,d:number){
  const start=['rootway','ridge','deep'].includes(route)?140:455;
  const entry=smooth((d-start)/24);
  // The lower road catches a missed jump or tunnel from either entrance.
- if(['mosswalk','causeway','mudslide'].includes(route))return 1.5-.5*entry;
+ if(['rootway','mosswalk','causeway','mudslide'].includes(route))return 1.5-.5*entry;
  return 1/3+2/3*entry;
 }
 /** Metres above the base trail. Upper roads have a real .65m entrance lip;
  * every road eases back to the same elevation before its safe rejoin. */
 export function overgrownPathHeight(route:Route,d:number){
- const upper=['root-arch','watchtower','crystal-vein'].includes(route);
- const lower=['mosswalk','causeway','mudslide'].includes(route);
- const tunnel=['log-crossing','gearworks','ancient-vault'].includes(route);
- if(d<455||d>=900||(!upper&&!lower&&!tunnel))return 0;
- const entry=smooth((d-455)/24),exit=smooth((900-d)/28);
+ const major=['rootway','ridge','deep'].includes(route);
+ const upper=['ridge','root-arch','watchtower','crystal-vein'].includes(route);
+ const lower=['rootway','mosswalk','causeway','mudslide'].includes(route);
+ const tunnel=['deep','log-crossing','gearworks','ancient-vault'].includes(route);
+ const start=major?140:455,end=major?450:900;
+ if(d<start||d>=end||(!upper&&!lower&&!tunnel))return 0;
+ const entry=smooth((d-start)/24),exit=smooth((end-d)/28);
  return (upper?.65+1.25*entry:lower?-.30-.55*entry:-.45*entry)*exit;
 }
 export function freshOvergrownExpedition(seed:number,id:string,shards:Record<CompanionId,number>={snow:0,gorilla:0,bot:0},upgrades:{armor:number;magnet:number;fortune:number}={armor:0,magnet:0,fortune:0},earnedUnlocks:Partial<Record<CompanionId,boolean>>={}):Expedition{
@@ -719,6 +717,12 @@ function enrichOvergrownCourse(seed:number,items:CourseItem[]){
    const row=items.filter(i=>i.route===route&&i.d===d&&HAZARDS.has(i.kind));
    for(const item of row)item.kind=kind;
    for(const lane of lanes)if(!row.some(i=>i.lane===lane))append(d,lane,kind,route);
+  }
+  // Healing is a deliberate detour, not an automatic centre-lane refill. Keep
+  // item identities and clear, hazard-free positions while rewarding steering.
+  for(const heart of items.filter(i=>i.route===route&&i.kind==='heart'&&i.lane===0)){
+   const clear=lanes.filter(l=>l!==0&&!items.some(i=>i.route===route&&HAZARDS.has(i.kind)&&i.lane===l&&Math.abs(i.d-heart.d)<7));
+   if(clear.length)heart.lane=clear[heart.id%clear.length];
   }
   const fragments=items.filter(i=>i.route===route&&['snow-sigil','guardian-totem','tech-cell'].includes(i.kind));
   for(const [index,item] of fragments.entries()){

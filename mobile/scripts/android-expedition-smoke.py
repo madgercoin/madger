@@ -854,6 +854,34 @@ class Smoke:
             time.sleep(.12)
         raise AssertionError("Prior Rootway run did not reach a replayable result within 150 seconds")
 
+    def enter_deep_route(self):
+        """Steer toward the low opening, then burrow through it in live play.
+
+        Steering alone must not reach Deep. Timing comes from fresh rendered
+        HUD observations, never the course seed or a modified checkpoint.
+        """
+        self.wait_hud(lambda state: state["route"] == "main" and 110 <= state["distance_m"] < 134,
+                      "approach to the low root opening", timeout=60)
+        self.require_running_observation(self.last_observation, "Tunnel approach")
+        run_id = self.last_observation["run_id"]
+        self.tap("RIGHT")
+        self.wait_hud(lambda state: state["route"] == "main" and state["lane"] == 1
+                      and 134 <= state["distance_m"] < 138,
+                      "right-lane burrow entrance within reach", timeout=15)
+        self.require_running_observation(self.last_observation, "Tunnel entry")
+        if self.last_observation["run_id"] != run_id:
+            raise AssertionError("Run changed while approaching the low opening")
+        self.tap("BURROW")
+        self.wait_hud(lambda state: state["route"] == "main" and state["distance_m"] < 140
+                      and state["action"] == "burrowing",
+                      "deliberate burrow before the low entrance", timeout=2)
+        selected = self.wait_hud(lambda state: state["route"] == "deep",
+                                 "Deep reached with RIGHT and BURROW inputs", timeout=5)
+        self.require_running_observation(self.last_observation, "Reached Deep")
+        if self.last_observation["run_id"] != run_id:
+            raise AssertionError("Run changed instead of reaching Deep through the tunnel")
+        return selected
+
     def deep_reference_run(self):
         """Reach the user's Deep scene with real controls and observed rendered state.
 
@@ -867,11 +895,7 @@ class Smoke:
         self.tap("Run another expedition")
         self.wait_hud(lambda state: self.last_observation["phase"] == "running" and state["distance_m"] >= 2, "replayed game starts", timeout=12)
         self.tree()
-        self.wait_hud(lambda state: 110 <= state["distance_m"] < 140,
-                      "approach to the main junction", timeout=60)
-        self.tap("RIGHT")
-        selected = self.wait_hud(lambda state: state["route"] == "deep",
-                                 "Deep selected with real RIGHT input", timeout=15)
+        selected = self.enter_deep_route()
         self.report["states"]["deep-selected"] = selected
         # The fork recenters naturally. Follow only the visible hazard in this
         # actual lane; random seed, secret positions and course rows are unknown.

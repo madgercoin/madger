@@ -322,8 +322,7 @@ function jump(s, events) {
         s.y = (s.groundHeight ?? 0) + .025;
         s.groundHeight = 0;
         s.jumpBuffer = 0;
-        if (s.courseRevision === 2)
-            s.lastJumpAt = s.time;
+        s.lastJumpAt = s.time;
         event(s, events, 'jump');
     }
     else if (s.y > .025)
@@ -746,32 +745,27 @@ function fixedStep(s, course, events) {
         s.immune = Math.max(s.immune, 2);
         event(s, events, 'hint', s.board === 'overgrown' ? 'PATHS REJOIN · PICK YOUR NEXT CHALLENGE' : 'SHORTCUT COMPLETE · SAFE REJOIN');
     }
-    // Real-time three-way junctions: steering determines the road while the
-    // game keeps moving. The second junction has a low trail, a jump-only
-    // elevated ledge and a properly timed burrow tunnel. Saved v1 modal fork
-    // checkpoints remain supported by chooseFork below.
-    // Use the damped actual player x at a fork, not the requested lane, so
-    // last-millisecond steering cannot teleport Madger onto an unreachable road.
+    // Discover branches by physically reaching them. Merely steering toward a
+    // raised road or low opening cannot select it; the broad lower trail catches
+    // missed actions without damage or teleporting. Historical modal saves still
+    // recover through chooseFork, but new runs never stop for a route menu.
     const physicalLane = s.x < -exports.LANE_WIDTH * .56 ? -1 : s.x > exports.LANE_WIDTH * .56 ? 1 : 0;
-    if (s.board === 'overgrown' && s.forkStage === 0 && s.distance >= 140) {
-        s.forkStage = 1;
-        commitFork(s, exports.MAJOR_FORKS[physicalLane + 1], events);
-    }
-    else if (s.board === 'overgrown' && s.forkStage === 1 && s.distance >= 455) {
-        s.forkStage = 2;
+    const firstEntrance = s.board === 'overgrown' && s.forkStage === 0 && s.distance >= 140;
+    const secondEntrance = s.board === 'overgrown' && s.forkStage === 1 && s.distance >= 455;
+    if (firstEntrance || secondEntrance) {
         const family = (s.majorPath === 'ridge' || s.majorPath === 'deep') ? s.majorPath : 'rootway';
-        const options = exports.SUB_FORKS[family], desired = options[physicalLane + 1];
-        const clearedLedge = physicalLane === 0 && s.y > .65;
-        const foundTunnel = physicalLane === 1 && s.slide > 0 && s.y < .25;
-        // Not reaching an elevated platform or tunnel entrance is a fall to the
-        // visible lower road, NOT an arbitrary damage event or a paused menu.
+        const options = firstEntrance ? exports.MAJOR_FORKS : exports.SUB_FORKS[family];
+        const desired = options[physicalLane + 1];
+        const clearedLedge = physicalLane === 0 && actionSatisfied(s, 'jump');
+        const foundTunnel = physicalLane === 1 && actionSatisfied(s, 'burrow');
         const accessible = (physicalLane === -1 || clearedLedge || foundTunnel) &&
             (desired.id !== 'ancient-vault' || s.keys > 0);
         const chosen = accessible ? desired : options[0];
         if (!accessible)
             event(s, events, 'hint', desired.id === 'ancient-vault' && s.keys < 1 && foundTunnel
-                ? 'VAULT LOCKED · DESCEND TO THE LOWER CHANNEL'
-                : physicalLane === 0 ? 'MISSED THE UPPER LEDGE · LOWER PATH' : 'MISSED THE LOW TUNNEL · LOWER PATH');
+                ? 'A LOCKED HATCH · THE LOWER TRAIL CATCHES YOU'
+                : 'THE LOWER TRAIL CATCHES YOU · LOOK ABOVE AND BELOW');
+        s.forkStage = firstEntrance ? 1 : 2;
         commitFork(s, chosen, events);
     }
     const used = new Set(s.used);
@@ -951,12 +945,12 @@ function nearbyHint(s, course) {
             return s.courseRevision === 2 ? chamber.clue.toUpperCase() : `${chamber.clue.toUpperCase()} · ${['LEFT', 'CENTRE', 'RIGHT'][chamber.lane + 1]} · ${chamber.action === 'burrow' ? 'BURROW' : 'JUMP'} AT ${chamber.d}m`;
         if (s.forkStage === 0)
             return s.distance >= 98
-                ? 'LIVE FORK ' + Math.max(0, Math.ceil(140 - s.distance)) + 'm · STEER LEFT / MIDDLE / RIGHT'
-                : 'THREE REAL ROADS AHEAD · STEER TO CHOOSE';
+                ? 'BROKEN STONE RISES AHEAD · CLAW MARKS BELOW THE ROOTS'
+                : 'JUMP ONTO HIGH GROUND · BURROW INTO LOW OPENINGS';
         if (s.forkStage === 1 && s.distance < 455)
             return s.distance >= 411
-                ? 'LIVE FORK ' + Math.max(0, Math.ceil(455 - s.distance)) + 'm · LEFT: LOWER · MIDDLE: JUMP · RIGHT: BURROW'
-                : (s.majorPath ?? 'ROOTWAY').toUpperCase() + ' · LEDGE / LOWER TRAIL / HIDDEN TUNNEL AT 455m';
+                ? 'A HIGH LEDGE · A LOW OPENING · FOLLOW THE CLUES'
+                : 'LOOK FOR GLEAMS ABOVE THE TRAIL AND CLAW MARKS BELOW';
         if (s.route !== 'main')
             return (s.subPath ?? 'FOREST').toUpperCase().replace(/-/g, ' ') + ' · RARE FRAGMENTS AHEAD';
         return 'THE BURROW TREASURY · 1080m FINISH';
@@ -1082,19 +1076,21 @@ function overgrownPathWidth(route, d) {
     const start = ['rootway', 'ridge', 'deep'].includes(route) ? 140 : 455;
     const entry = (0, exports.smooth)((d - start) / 24);
     // The lower road catches a missed jump or tunnel from either entrance.
-    if (['mosswalk', 'causeway', 'mudslide'].includes(route))
+    if (['rootway', 'mosswalk', 'causeway', 'mudslide'].includes(route))
         return 1.5 - .5 * entry;
     return 1 / 3 + 2 / 3 * entry;
 }
 /** Metres above the base trail. Upper roads have a real .65m entrance lip;
  * every road eases back to the same elevation before its safe rejoin. */
 function overgrownPathHeight(route, d) {
-    const upper = ['root-arch', 'watchtower', 'crystal-vein'].includes(route);
-    const lower = ['mosswalk', 'causeway', 'mudslide'].includes(route);
-    const tunnel = ['log-crossing', 'gearworks', 'ancient-vault'].includes(route);
-    if (d < 455 || d >= 900 || (!upper && !lower && !tunnel))
+    const major = ['rootway', 'ridge', 'deep'].includes(route);
+    const upper = ['ridge', 'root-arch', 'watchtower', 'crystal-vein'].includes(route);
+    const lower = ['rootway', 'mosswalk', 'causeway', 'mudslide'].includes(route);
+    const tunnel = ['deep', 'log-crossing', 'gearworks', 'ancient-vault'].includes(route);
+    const start = major ? 140 : 455, end = major ? 450 : 900;
+    if (d < start || d >= end || (!upper && !lower && !tunnel))
         return 0;
-    const entry = (0, exports.smooth)((d - 455) / 24), exit = (0, exports.smooth)((900 - d) / 28);
+    const entry = (0, exports.smooth)((d - start) / 24), exit = (0, exports.smooth)((end - d) / 28);
     return (upper ? .65 + 1.25 * entry : lower ? -.30 - .55 * entry : -.45 * entry) * exit;
 }
 function freshOvergrownExpedition(seed, id, shards = { snow: 0, gorilla: 0, bot: 0 }, upgrades = { armor: 0, magnet: 0, fortune: 0 }, earnedUnlocks = {}) {
@@ -1305,6 +1301,13 @@ function enrichOvergrownCourse(seed, items) {
             for (const lane of lanes)
                 if (!row.some(i => i.lane === lane))
                     append(d, lane, kind, route);
+        }
+        // Healing is a deliberate detour, not an automatic centre-lane refill. Keep
+        // item identities and clear, hazard-free positions while rewarding steering.
+        for (const heart of items.filter(i => i.route === route && i.kind === 'heart' && i.lane === 0)) {
+            const clear = lanes.filter(l => l !== 0 && !items.some(i => i.route === route && exports.HAZARDS.has(i.kind) && i.lane === l && Math.abs(i.d - heart.d) < 7));
+            if (clear.length)
+                heart.lane = clear[heart.id % clear.length];
         }
         const fragments = items.filter(i => i.route === route && ['snow-sigil', 'guardian-totem', 'tech-cell'].includes(i.kind));
         for (const [index, item] of fragments.entries()) {
@@ -1777,10 +1780,8 @@ class ExpeditionScene {
         this.shape('shadow', C.shadow, s.x + (0, core_1.routeOffset)(s), floorY(s.distance, s.route) + (s.groundHeight ?? 0) + .018, 0, .76 * (1 - heightAboveFloor * .10) * (1 - crouch * .45), 1, .62 * (1 - s.y * .10));
         if (crouch > 0)
             this.burrowTrail(s, crouch, calm);
-        if (s.shields > 0) {
-            this.shape('ring', C.mint, s.x + (0, core_1.routeOffset)(s), 1.20 + floorY(s.distance, s.route) + s.y, 0, .88, 1, .88, Math.PI / 2, time * .8, 0);
-            this.shape('ring', C.mint, s.x + (0, core_1.routeOffset)(s), 1.20 + floorY(s.distance, s.route) + s.y, 0, .88, 1, .88, 0, 0, time * .5);
-        }
+        if (s.shields > 0)
+            this.shield(s, time, calm);
         if (s.magnet > 0)
             this.shape('ring', C.violet, s.x + (0, core_1.routeOffset)(s), floorY(s.distance, s.route) + .10, 0, 1.2 + .07 * Math.sin(time * 5), 1, 1.2, 0, time * .4, 0);
         if (s.burst > 0)
@@ -1788,6 +1789,11 @@ class ExpeditionScene {
                 this.shape('cone', C.goldGlow, s.x + (0, core_1.routeOffset)(s) + (i - 3) * .15, floorY(s.distance, s.route) + .45 + s.y, i * .18 + .35, .06, .8, .06, -Math.PI / 2, 0, 0);
     }
     /** Surface soil marks the runner's position while the articulated body is underground. */
+    /** A single translucent protective shell, not intersecting opaque hoops. */
+    shield(s, time, calm) {
+        const crouch = s.slide > 0 ? .42 : 0, pulse = calm ? 1 : 1 + Math.sin(time * 2.2) * .012;
+        this.shape('shield', (0, gl_1.color)('#70e4d7', -12), s.x + (0, core_1.routeOffset)(s), floorY(s.distance, s.route) + s.y + 1.10 - crouch, 0, 1.08 * pulse, (1.40 - crouch) * pulse, 1.12 * pulse);
+    }
     burrowTrail(s, weight, calm) {
         const x = s.x + (0, core_1.routeOffset)(s), y = floorY(s.distance, s.route), pulse = calm ? 0 : Math.sin(s.slideAge * 34) * .025;
         const soil = s.zone === 2 ? (0, gl_1.color)('#75677b') : s.zone === 1 ? (0, gl_1.color)('#85735c') : (0, gl_1.color)('#8b6743');
@@ -1970,92 +1976,123 @@ class ExpeditionScene {
      * draw distance change. Trees are full meshes, never camera-facing sprites. */
     nativeLandscape(s, time, calm) {
         const d = s.distance, base = curve(d), budget = this.renderer.sceneryBudget;
-        const cave = ['deep', 'mudslide', 'crystal-vein', 'ancient-vault'].includes(s.route);
-        const ruins = ['ridge', 'causeway', 'watchtower', 'gearworks'].includes(s.route);
-        const white = (0, gl_1.color)('#f2f1dd'), stone = (0, gl_1.color)(cave ? '#a4bbc9' : '#d6d8cc'), ground = (0, gl_1.color)(cave ? '#717a85' : ruins ? '#a7a48a' : '#9eab7b', cave ? -8 : -1);
-        const far = [44, 64, 86][budget];
-        const centre = (wd) => curve(wd) - base + (0, core_1.overgrownPathOffset)(s.route, wd);
-        if (cave)
-            for (const side of [-1, 1])
-                this.shape('box', (0, gl_1.color)('#526576', -8), centre(d + 74) + side * 7.8, 4.2, -74, 4, 9, 80);
-        // Fill from the edge of the playable road out into the forest and hills.
-        // The playable surface itself remains open at every authored gap.
-        for (let wd = Math.floor((d - 18) / 12) * 12; wd < d + 112; wd += 12) {
-            const z = d - wd, x = centre(wd), y = floorY(wd, s.route);
-            for (const side of [-1, 1])
-                this.shape('terrain', ground, x + side * 3.02, y - .10, z, side * 29, 6, 6.7, 0, 0, 0);
-            if (cave) {
-                this.shape('ceiling', (0, gl_1.color)('#607582', -8), x, 10.0, z, 8.8, 4.2, 6.0, 0, 0, 0);
-                for (const side of [-1, 1])
-                    this.shape('cone', (0, gl_1.color)('#70838a', -8), x + side * 4.7, y + 6.8, z, .45, 2.1, .52, Math.PI, 0, 0);
+        const major = s.majorPath === 'ridge' || s.majorPath === 'deep' ? s.majorPath : 'rootway';
+        const segments = [
+            { start: -24, end: 140, route: 'main' },
+            ...core_1.MAJOR_FORKS.map(o => ({ start: 140, end: 455, route: o.id })),
+            ...core_1.SUB_FORKS[major].map(o => ({ start: 455, end: 900, route: o.id })),
+            { start: 900, end: 1110, route: 'main' },
+        ];
+        const roadsAt = (wd) => segments.filter(p => wd >= p.start && wd < p.end).map(p => ({
+            x: curve(wd) - base + (0, core_1.overgrownPathOffset)(p.route, wd), y: floorY(wd, p.route),
+            half: 3.25 * (0, core_1.overgrownPathWidth)(p.route, wd),
+        }));
+        // One continuous outer bank, never one overlapping slab per branch. Keep
+        // every visible road/gap clear even when the lower catcher overlaps a lip.
+        for (let wd = Math.floor((d - 24) / 12) * 12; wd < d + 112; wd += 12) {
+            const roads = roadsAt(wd);
+            if (!roads.length)
+                continue;
+            const left = Math.min(...roads.map(r => r.x - r.half)), right = Math.max(...roads.map(r => r.x + r.half));
+            const y = Math.min(...roads.map(r => r.y)) - .10;
+            this.shape('terrain', (0, gl_1.color)('#9eab7b', -1), left, y, d - wd, -29, 6, 6.7);
+            this.shape('terrain', (0, gl_1.color)('#9eab7b', -1), right, y, d - wd, 29, 6, 6.7);
+        }
+        const plant = (shape, c, x, y, z, sx = 1, sy = 1, sz = 1, rx = 0, ry = 0, rz = 0) => {
+            const roads = roadsAt(d - z), margin = shape.startsWith('scanTree') ? 2.2 : shape === 'scanCliff' ? 2.5 : .7;
+            if (roads.some(r => Math.abs(x - r.x) < r.half + margin)) {
+                const bounds = roads.flatMap(r => [r.x - r.half - margin, r.x + r.half + margin]);
+                const choices = bounds.filter(v => roads.every(r => Math.abs(v - r.x) >= r.half + margin - .001));
+                x = choices.sort((a, b) => Math.abs(a - x) - Math.abs(b - x))[0] ?? x;
             }
-        }
-        // The narrow fork entrances expose the earth between roads. Give each
-        // junction a recessed ground bed so the clear sky cannot show through it.
-        // End before the first generated hazard row; authored gaps stay open.
-        for (const junction of [140, 455]) {
-            if (junction + 27 < d - 18 || junction - 3 > d + 112)
+            this.shape(shape, c, x, y, z, sx, sy, sz, rx, ry, rz);
+        };
+        for (const segment of segments) {
+            if (segment.end < d - 24 || segment.start > d + 112)
                 continue;
-            const wd = junction + 12;
-            this.shape('trail', ground, curve(wd) - base, Math.sin(wd / 34) * .12 - 1.25, d - wd, 27, 1, 30);
-        }
-        for (let n = Math.floor(d / 14); n * 14 < d + far; n++) {
-            const wd = n * 14 + 7, ahead = wd - d;
-            if (ahead < 7)
-                continue;
-            const z = -ahead, x = centre(wd), y = floorY(wd, s.route), side = n % 2 ? 1 : -1;
-            const yaw = hash(n * 17) * TAU, h = 9.2 + hash(n * 31) * 2.2;
-            if (!cave) {
-                const bx = x + side * (8.0 + hash(n) * 1.7);
-                for (const part of ['scanTreeTrunk', 'scanTreeCrown', 'scanTreeTwigs'])
-                    this.shape(part, white, bx, y - .12, z, h, h, h, 0, yaw, 0);
-                this.shape('shadow', C.shadow, bx, y + .015, z, 2.1, 1, 1.9);
-                if (budget > 0 && n % 2 === 0)
-                    for (const part of ['scanTreeTrunk', 'scanTreeCrown', 'scanTreeTwigs'])
-                        this.shape(part, (0, gl_1.color)('#c9d8c1'), x - side * 10, y + .25, z - 5, h * .85, h * .85, h * .85, 0, yaw + 1, 0);
-                if (ahead < 32 || budget > 0) {
-                    this.shape('scanFern', (0, gl_1.color)('#b7cc94'), x + side * 4.25, y - .02, z + 2, .90, .90, .90, 0, yaw, 0);
-                    if (ahead < 25)
-                        this.shape('scanFern', (0, gl_1.color)('#b7cc94'), x - side * 3.95, y - .02, z + 4, .65, .65, .65, 0, yaw + 2, 0);
-                    this.shape('scanRoots', white, x + side * 5.7, y - .05, z - 2, 3.1, 1.5, 2.5, 0, yaw, 0);
+            const route = segment.route;
+            const cave = ['deep', 'mudslide', 'crystal-vein', 'ancient-vault'].includes(route);
+            const ruins = ['ridge', 'causeway', 'watchtower', 'gearworks'].includes(route);
+            const white = (0, gl_1.color)('#f2f1dd'), stone = (0, gl_1.color)(cave ? '#a4bbc9' : '#d6d8cc'), ground = (0, gl_1.color)(cave ? '#717a85' : ruins ? '#a7a48a' : '#9eab7b', cave ? -8 : -1);
+            const far = [44, 64, 86][budget];
+            const centre = (wd) => curve(wd) - base + (0, core_1.overgrownPathOffset)(route, wd);
+            // Fill from the edge of the playable road out into the forest and hills.
+            // The playable surface itself remains open at every authored gap.
+            for (let wd = segment.start + Math.max(0, Math.floor((d - 24 - segment.start) / 12)) * 12; wd < Math.min(segment.end, d + 112); wd += 12) {
+                const z = d - wd, x = centre(wd), y = floorY(wd, route);
+                if (cave && wd > segment.start + 26) {
+                    this.shape('ceiling', (0, gl_1.color)('#607582', -8), x, y + 10.0, z, 4.2, 4.2, 6.0, 0, 0, 0);
+                    for (const side of [-1, 1])
+                        this.shape('cone', (0, gl_1.color)('#70838a', -8), x + side * 4.7, y + 6.8, z, .45, 2.1, .52, Math.PI, 0, 0);
                 }
-                // Highest detail: actual scanned near-ground meshes form a varied
-                // understory rather than adding fog/cards. Every position is seeded by
-                // absolute travel distance, so streaming and cold resume never swim.
-                // Keep all new stones/ferns beyond the widest playable catch road.
-                if (budget === 2 && ahead < 58)
-                    for (const flank of [-1, 1]) {
-                        const seed = n * 23 + flank * 5, offset = flank * (7.6 + hash(seed) * 1.6);
-                        const planted = wd + (flank === side ? 3.8 : -2.4);
-                        const fx = centre(planted) + offset, fy = floorY(planted, s.route), fz = d - planted;
-                        if (!ruins) {
-                            const scale = .54 + hash(seed + 7) * .43;
-                            this.shape('scanFern', (0, gl_1.color)('#c2d5ac'), fx, fy - .09, fz, scale, scale, scale, 0, yaw + flank * .7, 0);
-                        }
-                        else
-                            this.shape('scanRock', stone, fx, fy - .12, fz, 1.35, .65, 1.08, 0, yaw + flank * .31, 0);
+            }
+            // The narrow fork entrances expose the earth between roads. Give each
+            // junction a recessed ground bed so the clear sky cannot show through it.
+            // End before the first generated hazard row; authored gaps stay open.
+            for (const junction of segment.route === 'main' ? [140, 455] : []) {
+                if (junction + 27 < d - 18 || junction - 3 > d + 112)
+                    continue;
+                const wd = junction + 12;
+                this.shape('trail', ground, curve(wd) - base, Math.sin(wd / 34) * .12 - 1.25, d - wd, 27, 1, 30);
+            }
+            for (let n = Math.floor((d - 24) / 14); n * 14 < d + far; n++) {
+                const wd = n * 14 + 7, ahead = wd - d;
+                if (wd < segment.start || wd >= segment.end || ahead < -20)
+                    continue;
+                const z = -ahead, x = centre(wd), y = floorY(wd, route), side = n % 2 ? 1 : -1;
+                const yaw = hash(n * 17) * TAU, h = 9.2 + hash(n * 31) * 2.2;
+                if (!cave) {
+                    const bx = x + side * (8.0 + hash(n) * 1.7);
+                    for (const part of ['scanTreeTrunk', 'scanTreeCrown', 'scanTreeTwigs'])
+                        plant(part, white, bx, y - .12, z, h, h, h, 0, yaw, 0);
+                    plant('shadow', C.shadow, bx, y + .015, z, 2.1, 1, 1.9);
+                    if (budget > 0 && n % 2 === 0)
+                        for (const part of ['scanTreeTrunk', 'scanTreeCrown', 'scanTreeTwigs'])
+                            plant(part, (0, gl_1.color)('#c9d8c1'), x - side * 10, y + .25, z - 5, h * .85, h * .85, h * .85, 0, yaw + 1, 0);
+                    if (n % 2 === 0 || budget > 0) {
+                        plant('scanFern', (0, gl_1.color)('#b7cc94'), x + side * 4.25, y - .02, z + 2, .90, .90, .90, 0, yaw, 0);
                         if (n % 2 === 0)
-                            this.shape('scanRoots', white, fx + flank * .32, fy - .07, fz - 1.35, 1.8, .70, 1.75, 0, yaw + flank, 0);
+                            plant('scanFern', (0, gl_1.color)('#b7cc94'), x - side * 3.95, y - .02, z + 4, .65, .65, .65, 0, yaw + 2, 0);
+                        plant('scanRoots', white, x + side * 5.7, y - .05, z - 2, 3.1, 1.5, 2.5, 0, yaw, 0);
                     }
+                    // Highest detail: actual scanned near-ground meshes form a varied
+                    // understory rather than adding fog/cards. Every position is seeded by
+                    // absolute travel distance, so streaming and cold resume never swim.
+                    // Keep all new stones/ferns beyond the widest playable catch road.
+                    if (budget === 2)
+                        for (const flank of [-1, 1]) {
+                            const seed = n * 23 + flank * 5, offset = flank * (7.6 + hash(seed) * 1.6);
+                            const planted = wd + (flank === side ? 3.8 : -2.4);
+                            const fx = centre(planted) + offset, fy = floorY(planted, route), fz = d - planted;
+                            if (!ruins) {
+                                const scale = .54 + hash(seed + 7) * .43;
+                                plant('scanFern', (0, gl_1.color)('#c2d5ac'), fx, fy - .09, fz, scale, scale, scale, 0, yaw + flank * .7, 0);
+                            }
+                            else
+                                plant('scanRock', stone, fx, fy - .12, fz, 1.35, .65, 1.08, 0, yaw + flank * .31, 0);
+                            if (n % 2 === 0)
+                                plant('scanRoots', white, fx + flank * .32, fy - .07, fz - 1.35, 1.8, .70, 1.75, 0, yaw + flank, 0);
+                        }
+                }
+                else {
+                    plant('scanCliff', stone, x + side * 7.9, y - .7, z, 7.3, 9.2, 5.8, 0, yaw, 0);
+                    plant('scanCliff', stone, x - side * 7.9, y - .7, z - 4, 7.3, 9.2, 5.8, 0, yaw + 2, 0);
+                    this.crystal(x + side * 4.35, y + .05, z, .72, n);
+                }
+                plant('scanRock', stone, x - side * 4.6, y - .10, z - 2, 2.1, 1.9, 1.8, 0, yaw, 0);
+                plant('shadow', C.shadow, x - side * 4.6, y + .01, z - 2, 1.2, 1, 1.1);
+                if (n % 3 === 0 && !cave)
+                    plant('scanLog', white, x - side * 6.0, y + .05, z + 3, 4.2, 5.4, 4.0, 0, yaw * .3, 0);
+                if (ruins && n % 2 === 0) {
+                    for (let row = 0; row < 4; row++)
+                        for (let col = 0; col < 2; col++)
+                            plant('box', C.stone, x + side * (5.1 + col * .8), y + .36 + row * .73, z, .77, .71, 1.14, 0, .1 * side, 0);
+                    plant('scanCliff', stone, x + side * 9, y - .3, z - 5, 5.3, 4.2, 4.7, 0, yaw, 0);
+                }
+                // Moving air is subtle. No particle curtain over collision silhouettes.
+                if (!calm && ahead < 35 && n % 2 === 0)
+                    plant('leaf', C.leaf, x + side * (4.0 + Math.sin(time * .5 + n)), y + 1.5 + Math.sin(time * .7 + n) * .5, z + Math.cos(time * .4 + n), .16, .22, .26, time * .4, n, time * .6);
             }
-            else {
-                this.shape('scanCliff', stone, x + side * 7.9, y - .7, z, 7.3, 9.2, 5.8, 0, yaw, 0);
-                this.shape('scanCliff', stone, x - side * 7.9, y - .7, z - 4, 7.3, 9.2, 5.8, 0, yaw + 2, 0);
-                this.crystal(x + side * 4.35, y + .05, z, .72, n);
-            }
-            this.shape('scanRock', stone, x - side * 4.6, y - .10, z - 2, 2.1, 1.9, 1.8, 0, yaw, 0);
-            this.shape('shadow', C.shadow, x - side * 4.6, y + .01, z - 2, 1.2, 1, 1.1);
-            if (n % 3 === 0 && !cave)
-                this.shape('scanLog', white, x - side * 6.0, y + .05, z + 3, 4.2, 5.4, 4.0, 0, yaw * .3, 0);
-            if (ruins && n % 2 === 0) {
-                for (let row = 0; row < 4; row++)
-                    for (let col = 0; col < 2; col++)
-                        this.shape('box', C.stone, x + side * (5.1 + col * .8), y + .36 + row * .73, z, .77, .71, 1.14, 0, .1 * side, 0);
-                this.shape('scanCliff', stone, x + side * 9, y - .3, z - 5, 5.3, 4.2, 4.7, 0, yaw, 0);
-            }
-            // Moving air is subtle. No particle curtain over collision silhouettes.
-            if (!calm && ahead < 35 && n % 2 === 0)
-                this.shape('leaf', C.leaf, x + side * (4.0 + Math.sin(time * .5 + n)), y + 1.5 + Math.sin(time * .7 + n) * .5, z + Math.cos(time * .4 + n), .16, .22, .26, time * .4, n, time * .6);
         }
     }
     overgrownScenery(s, time, calm) {
@@ -2078,16 +2115,17 @@ class ExpeditionScene {
             { start: 900, end: 1080, options: [approach] },
         ];
         for (const phase of phases) {
-            if (d > phase.end + 8 || d + 94 < phase.start)
+            if (d > phase.end + 24 || d + 94 < phase.start)
                 continue;
-            const allRoutes = (s.mode === 'fork' || d < phase.start) && d < phase.start + 25;
-            const options = allRoutes ? phase.options : phase.options.filter(o => o.id === s.route);
+            // A route is geography, not a menu state. Keep its geometry until it is
+            // behind the camera; committing to another branch must not erase it.
+            const options = phase.options;
             for (const option of options) {
                 const theme = mainTheme(option.id), highlight = option.accent;
                 const mud = theme === 'cavern' ? (0, gl_1.color)('#6c7b85', -8) : theme === 'ruins' ? (0, gl_1.color)('#716458', -1) : (0, gl_1.color)('#625848', -1);
                 const edge = theme === 'cavern' ? (0, gl_1.color)('#3A3446', -8) : theme === 'ruins' ? (0, gl_1.color)('#4F504D', -8) : (0, gl_1.color)('#4B4638', -8);
                 const vegetation = theme === 'cavern' ? (0, gl_1.color)('#4B6D69') : theme === 'ruins' ? C.leaf : C.leafLight;
-                const step = 6, first = this.renderer.worldReady ? Math.max(phase.start, Math.floor((d - 12) / step) * step) : Math.max(phase.start + 3, Math.floor((d - 9) / step) * step);
+                const step = 6, first = this.renderer.worldReady ? phase.start + Math.max(0, Math.floor((d - 24 - phase.start) / step)) * step : Math.max(phase.start + 3, Math.floor((d - 9) / step) * step);
                 for (let wd = first; wd < Math.min(phase.end + (this.renderer.worldReady ? 3 : -2), d + 90); wd += step) {
                     const z = d - wd, off = (0, core_1.overgrownPathOffset)(option.id, wd), x = off + curve(wd) - base, y = floorY(wd, option.id), n = Math.floor(wd / 6);
                     const delta = ((0, core_1.overgrownPathOffset)(option.id, wd + 1) + curve(wd + 1) - (0, core_1.overgrownPathOffset)(option.id, wd - 1) - curve(wd - 1)) * .5;
@@ -2200,9 +2238,10 @@ class ExpeditionScene {
                 const startBand = Math.floor((d - 24) / 24), endBand = Math.ceil((d + backdropFar) / 24);
                 for (let band = startBand; band <= endBand; band++) {
                     const distance = band * 24, ahead = distance - d;
-                    if (distance < phase.start + 4 || distance > phase.end - 4 || ahead <= 2 || ahead >= backdropFar)
+                    if (distance < phase.start + 4 || distance > phase.end - 4 || ahead < -24 || ahead >= backdropFar)
                         continue;
-                    const fade = (0, core_1.smooth)((ahead - 2) / 16) * (0, core_1.smooth)((backdropFar - ahead) / 20);
+                    // Never shrink landforms as the player approaches. Retire behind camera.
+                    const fade = (0, core_1.smooth)((backdropFar - ahead) / 20);
                     if (fade < .035)
                         continue;
                     const roadCentre = (0, core_1.overgrownPathOffset)(option.id, distance) + curve(distance) - base;
@@ -2216,8 +2255,8 @@ class ExpeditionScene {
                 // three approach lanes at 140m, then a low descent, raised jump ledge and
                 // root-clad burrow tunnel at 455m. Only artwork; the fixed-step engine
                 // decides which path was genuinely reached, without scripted teleports.
-                if (allRoutes && phase.start === 455) {
-                    const junction = 455, jz = d - junction, ix = curve(junction) - base + option.side * core_1.LANE_WIDTH, iy = floorY(junction);
+                if ((phase.start === 140 || phase.start === 455) && d < phase.start + 20) {
+                    const junction = phase.start, jz = d - junction, ix = curve(junction) - base + option.side * core_1.LANE_WIDTH, iy = floorY(junction);
                     if (jz > -60 && jz < 11) {
                         const metal = theme === 'ruins' ? C.copper : C.stone;
                         if (option.side === -1) {
@@ -2245,7 +2284,7 @@ class ExpeditionScene {
                     }
                 }
                 // At an imminent fork every doorway remains visible, even before choosing.
-                if (allRoutes) {
+                if (phase.start === 140 || phase.start === 455) {
                     const portal = phase.start + 13, z = d - portal;
                     if (z > -95 && z < 14) {
                         const x = curve(portal) - base + (0, core_1.overgrownPathOffset)(option.id, portal), y = floorY(portal, option.id);
@@ -2802,7 +2841,7 @@ const VERTEX = `
 precision highp float;
 attribute vec3 aPosition;
 attribute vec3 aNormal; attribute vec2 aUV;
-uniform float uTime;uniform float uWind;
+uniform float uTime;uniform float uWind;uniform float uTravel;
 varying vec2 vUV;
 attribute vec4 aM0; attribute vec4 aM1; attribute vec4 aM2; attribute vec4 aM3;
 attribute vec4 aColor;
@@ -2811,7 +2850,7 @@ varying vec3 vWorld; varying vec3 vNormal; varying vec3 vLocal; varying vec4 vCo
 void main(){
  mat4 model=mat4(aM0,aM1,aM2,aM3);
  vec3 local=aPosition;
- local.x+=sin(uTime*.72+aM3.x*.37+aM3.z*.13+local.y*3.0)*.009*local.y*uWind;
+ local.x+=sin(uTime*.72+(aM3.x+sin(uTravel/76.)*.8+sin(uTravel/185.)*1.1)*.37+(uTravel-aM3.z)*.13+local.y*3.0)*.009*local.y*uWind;
  vec4 p=model*vec4(local,1.0);vWorld=p.xyz;vLocal=aPosition;vUV=aUV;
  vNormal=normalize(aM0.xyz*aNormal.x/max(dot(aM0.xyz,aM0.xyz),0.00001)+aM1.xyz*aNormal.y/max(dot(aM1.xyz,aM1.xyz),0.00001)+aM2.xyz*aNormal.z/max(dot(aM2.xyz,aM2.xyz),0.00001));
  vColor=aColor;gl_Position=uVP*p;
@@ -2847,13 +2886,17 @@ vec3 surfaceColor(vec3 base,vec3 n){
  if(vColor.a < -7.5 && vColor.a > -8.5){tile=2.0;scale=.32;}
  if(tile<0.0)return base;
  // World anchoring prevents the earth texture swimming as the course moves.
- vec3 p=vec3(vWorld.x,vWorld.y,uTravel-vWorld.z)*scale;
+ vec3 p=vec3(vWorld.x+sin(uTravel/76.)*.8+sin(uTravel/185.)*1.1,vWorld.y,uTravel-vWorld.z)*scale;
  vec3 a=abs(n);vec2 uv=a.y>a.x&&a.y>a.z?p.xz:(a.x>a.z?p.zy:p.xy);
  vec3 tex=tile<.5?texture2D(uGround,uv).rgb:tile<1.5?texture2D(uBark,uv).rgb:texture2D(uStone,uv).rgb;
  if(tile>1.5){float grey=dot(tex,vec3(.299,.587,.114));tex=mix(tex,vec3(grey)*vec3(.87,.94,1.03),.78);}
  return tex*tex*mix(vec3(1.12),base*2.0,.20);
 }
 void main(){
+ if(vColor.a < -11.5 && vColor.a > -12.5){
+  float rim=pow(1.0-abs(dot(normalize(vNormal),normalize(uEye-vWorld))),2.5);
+  gl_FragColor=vec4(vColor.rgb,.025+rim*.28);return;
+ }
  if(vColor.a < -9.5 && vColor.a > -10.5){
   vec2 uv=vec2(vLocal.x/1.18+.5,vLocal.y/1.07+.5);
   float radius=length((uv-vec2(.5))/vec2(.52,.53));
@@ -2908,7 +2951,7 @@ void main(){
  }
  vec3 n=normalize(vNormal),view=normalize(uEye-vWorld);
  vec3 base=surfaceColor(vColor.rgb,n);float em=max(0.0,vColor.a);
- if(vColor.a < -.5 && vColor.a > -1.5){vec2 surface=vec2(vWorld.x,uTravel-vWorld.z);
+ if(vColor.a < -.5 && vColor.a > -1.5){vec2 surface=vec2(vWorld.x+sin(uTravel/76.)*.8+sin(uTravel/185.)*1.1,uTravel-vWorld.z);
  float grain=hash(floor(mod(surface,vec2(32.0))*24.0));
  float mottling=sin(surface.x*2.13+sin(surface.y*.75))*sin(surface.y*1.84);
  float edge=max(smoothstep(.455,.499,abs(vLocal.x)),smoothstep(.468,.499,abs(vLocal.z)));
@@ -3071,8 +3114,8 @@ function geometry(shape) {
     else if (shape === 'tail') {
         return tailGeometry(0, 0);
     }
-    else if (shape === 'sphere' || shape === 'rock') {
-        const slices = shape === 'rock' ? 9 : 16, stacks = shape === 'rock' ? 5 : 10;
+    else if (shape === 'sphere' || shape === 'rock' || shape === 'shield') {
+        const slices = shape === 'rock' ? 9 : shape === 'shield' ? 32 : 16, stacks = shape === 'rock' ? 5 : shape === 'shield' ? 20 : 10;
         const point = (i, j) => { const a = i / slices * Math.PI * 2, b = j / stacks * Math.PI, r = shape === 'rock' ? (1 + .09 * Math.sin(a * 3 + b * 5) + .05 * Math.cos(a * 7 - b * 2)) : 1; return [Math.sin(b) * Math.cos(a) * r, Math.cos(b) * r, Math.sin(b) * Math.sin(a) * r]; };
         const push = (p) => { const l = Math.hypot(...p); v.push(...p, p[0] / l, p[1] / l, p[2] / l); };
         for (let j = 0; j < stacks; j++)
@@ -3321,7 +3364,7 @@ class ExpeditionRenderer {
                     this.drawIndexedInstanced = ext.drawElementsInstancedANGLE.bind(ext);
             }
         }
-        for (const shape of ['terrace', 'terraceMirror', 'geologyRock', 'box', 'sphere', 'rock', 'ridge', 'terrain', 'trail', 'ceiling', 'cylinder', 'cone', 'ring', 'leaf', 'headStripe', 'tail', 'shadow', 'halo', 'face']) {
+        for (const shape of ['terrace', 'terraceMirror', 'geologyRock', 'box', 'sphere', 'rock', 'ridge', 'terrain', 'trail', 'ceiling', 'cylinder', 'cone', 'ring', 'leaf', 'headStripe', 'tail', 'shadow', 'halo', 'face', 'shield']) {
             const data = shape === 'tail' ? tailGeometry(0, 0, this.tailVertices, this.tailGrid) : geometry(shape), vertex = gl.createBuffer(), instances = gl.createBuffer();
             if (!vertex || !instances)
                 throw Error('GPU buffer allocation failed');
@@ -3374,6 +3417,12 @@ class ExpeditionRenderer {
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+        // The scanned foliage atlas needs the same grazing-angle filtering as dirt.
+        if (anisotropic && anisotropy > 1)
+            try {
+                gl.texParameterf(gl.TEXTURE_2D, anisotropic.TEXTURE_MAX_ANISOTROPY_EXT, anisotropy);
+            }
+            catch { /* Trilinear remains valid. */ }
         gl.generateMipmap(gl.TEXTURE_2D);
         gl.activeTexture(gl.TEXTURE0);
         for (let i = 0; i < surfaces.length; i++) {
@@ -3495,79 +3544,81 @@ class ExpeditionRenderer {
         gl.uniform1f(this.uniforms.travel, travel);
         this.stats.materialDetail = typeof this.gl.flushEXP === 'function' && this.sceneryBudget === 0 ? 0 : 1;
         gl.uniform1f(this.uniforms.detail, this.stats.materialDetail);
-        for (const [shape, b] of this.batches) {
-            if (!b.count)
-                continue;
-            const count = cullBatch(b, this.clipPlanes);
-            this.stats.culledInstances += b.count - count;
-            if (!count)
-                continue;
-            if (shape === 'shadow' || shape === 'halo' || shape === 'face') {
-                gl.enable(gl.BLEND);
-                gl.blendFunc(gl.SRC_ALPHA, shape === 'halo' ? gl.ONE : gl.ONE_MINUS_SRC_ALPHA);
-                gl.depthMask(shape === 'face');
-            }
-            else {
-                gl.disable(gl.BLEND);
-                gl.depthMask(true);
-            }
-            gl.uniform1f(this.uniforms.surface, b.stride === 8 ? 1 : 0);
-            gl.uniform1f(this.uniforms.tile, b.tile ?? 0);
-            gl.uniform1f(this.uniforms.wind, b.wind ?? 0);
-            const stride = (b.stride ?? 6) * 4;
-            gl.bindBuffer(gl.ARRAY_BUFFER, b.vertex);
-            gl.enableVertexAttribArray(0);
-            gl.enableVertexAttribArray(1);
-            gl.vertexAttribPointer(0, 3, gl.FLOAT, false, stride, 0);
-            gl.vertexAttribPointer(1, 3, gl.FLOAT, false, stride, 12);
-            if (b.stride === 8) {
-                gl.enableVertexAttribArray(7);
-                gl.vertexAttribPointer(7, 2, gl.FLOAT, false, stride, 24);
-            }
-            else {
-                gl.disableVertexAttribArray(7);
-                gl.vertexAttrib2f(7, 0, 0);
-            }
-            this.divisor?.(7, 0);
-            if (this.divisor && this.drawInstanced && (b.stride !== 8 || this.drawIndexedInstanced)) {
-                this.divisor(0, 0);
-                this.divisor(1, 0);
-                gl.bindBuffer(gl.ARRAY_BUFFER, b.instances);
-                gl.bufferData(gl.ARRAY_BUFFER, b.visible.subarray(0, count * 20), gl.DYNAMIC_DRAW);
-                for (let i = 2; i <= 6; i++) {
-                    gl.enableVertexAttribArray(i);
-                    gl.vertexAttribPointer(i, 4, gl.FLOAT, false, 80, (i - 2) * 16);
-                    this.divisor(i, 1);
+        // Transparent effects follow every opaque batch, including late-loaded scans.
+        for (const transparent of [false, true])
+            for (const [shape, b] of this.batches) {
+                if ((shape === 'shadow' || shape === 'halo' || shape === 'face' || shape === 'shield') !== transparent || !b.count)
+                    continue;
+                const count = cullBatch(b, this.clipPlanes);
+                this.stats.culledInstances += b.count - count;
+                if (!count)
+                    continue;
+                if (shape === 'shadow' || shape === 'halo' || shape === 'face' || shape === 'shield') {
+                    gl.enable(gl.BLEND);
+                    gl.blendFunc(gl.SRC_ALPHA, shape === 'halo' ? gl.ONE : gl.ONE_MINUS_SRC_ALPHA);
+                    gl.depthMask(shape === 'face');
                 }
-                if (b.elements && this.drawIndexedInstanced) {
-                    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, b.elements);
-                    this.drawIndexedInstanced(gl.TRIANGLES, b.vertices, gl.UNSIGNED_SHORT, 0, count);
-                    this.stats.indexedDrawCalls++;
+                else {
+                    gl.disable(gl.BLEND);
+                    gl.depthMask(true);
                 }
-                else
-                    this.drawInstanced(gl.TRIANGLES, 0, b.vertices, count);
-                this.stats.drawCalls++;
-                for (let i = 2; i <= 6; i++)
-                    this.divisor(i, 0);
-            }
-            else {
-                for (let i = 2; i <= 6; i++)
-                    gl.disableVertexAttribArray(i);
-                for (let j = 0; j < count; j++) {
-                    for (let i = 2; i <= 6; i++)
-                        gl.vertexAttrib4fv(i, b.visible.subarray(j * 20 + (i - 2) * 4, j * 20 + (i - 1) * 4));
-                    if (b.stride === 8 && b.elements) {
+                gl.uniform1f(this.uniforms.surface, b.stride === 8 ? 1 : 0);
+                gl.uniform1f(this.uniforms.tile, b.tile ?? 0);
+                gl.uniform1f(this.uniforms.wind, b.wind ?? 0);
+                const stride = (b.stride ?? 6) * 4;
+                gl.bindBuffer(gl.ARRAY_BUFFER, b.vertex);
+                gl.enableVertexAttribArray(0);
+                gl.enableVertexAttribArray(1);
+                gl.vertexAttribPointer(0, 3, gl.FLOAT, false, stride, 0);
+                gl.vertexAttribPointer(1, 3, gl.FLOAT, false, stride, 12);
+                if (b.stride === 8) {
+                    gl.enableVertexAttribArray(7);
+                    gl.vertexAttribPointer(7, 2, gl.FLOAT, false, stride, 24);
+                }
+                else {
+                    gl.disableVertexAttribArray(7);
+                    gl.vertexAttrib2f(7, 0, 0);
+                }
+                this.divisor?.(7, 0);
+                if (this.divisor && this.drawInstanced && (b.stride !== 8 || this.drawIndexedInstanced)) {
+                    this.divisor(0, 0);
+                    this.divisor(1, 0);
+                    gl.bindBuffer(gl.ARRAY_BUFFER, b.instances);
+                    gl.bufferData(gl.ARRAY_BUFFER, b.visible.subarray(0, count * 20), gl.DYNAMIC_DRAW);
+                    for (let i = 2; i <= 6; i++) {
+                        gl.enableVertexAttribArray(i);
+                        gl.vertexAttribPointer(i, 4, gl.FLOAT, false, 80, (i - 2) * 16);
+                        this.divisor(i, 1);
+                    }
+                    if (b.elements && this.drawIndexedInstanced) {
                         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, b.elements);
-                        gl.drawElements(gl.TRIANGLES, b.vertices, gl.UNSIGNED_SHORT, 0);
+                        this.drawIndexedInstanced(gl.TRIANGLES, b.vertices, gl.UNSIGNED_SHORT, 0, count);
+                        this.stats.indexedDrawCalls++;
                     }
                     else
-                        gl.drawArrays(gl.TRIANGLES, 0, b.vertices);
+                        this.drawInstanced(gl.TRIANGLES, 0, b.vertices, count);
                     this.stats.drawCalls++;
+                    for (let i = 2; i <= 6; i++)
+                        this.divisor(i, 0);
                 }
+                else {
+                    for (let i = 2; i <= 6; i++)
+                        gl.disableVertexAttribArray(i);
+                    for (let j = 0; j < count; j++) {
+                        for (let i = 2; i <= 6; i++)
+                            gl.vertexAttrib4fv(i, b.visible.subarray(j * 20 + (i - 2) * 4, j * 20 + (i - 1) * 4));
+                        if (b.stride === 8 && b.elements) {
+                            gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, b.elements);
+                            gl.drawElements(gl.TRIANGLES, b.vertices, gl.UNSIGNED_SHORT, 0);
+                        }
+                        else
+                            gl.drawArrays(gl.TRIANGLES, 0, b.vertices);
+                        this.stats.drawCalls++;
+                    }
+                }
+                this.stats.instances += count;
+                this.stats.triangles += count * b.vertices / 3;
             }
-            this.stats.instances += count;
-            this.stats.triangles += count * b.vertices / 3;
-        }
         gl.depthMask(true);
         gl.disable(gl.BLEND);
         if (this.sceneTarget) {

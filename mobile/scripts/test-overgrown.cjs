@@ -19,7 +19,7 @@ test('the new board is deterministic and every branch has its own viable danger/
 });
 test('live three-way major fork never freezes physics, and the subfork lands on a lower trail if the ledge is missed',()=>{
  const s=run(),c=G.buildOvergrownCourse(s.seed),events=[];
- s.distance=139.97;s.lane=1;s.x=G.LANE_WIDTH;step(s,c,events);
+ s.distance=139.97;s.lane=1;s.x=G.LANE_WIDTH;G.burrow(s,events);step(s,c,events);
  assert.equal(s.mode,'running');assert.equal(s.forkStage,1);assert.equal(s.majorPath,'deep');
  const before=s.distance;for(let i=0;i<20;i++)step(s,c,events);
  assert(s.distance>before,'physics must continue during route selection');
@@ -28,13 +28,13 @@ test('live three-way major fork never freezes physics, and the subfork lands on 
  assert.equal(s.mode,'running');assert.equal(s.forkStage,2);
  assert.equal(s.subPath,'mudslide','missing the middle ledge drops to the lower branch, not a damage screen');
  assert(s.secrets.includes('deep')&&s.secrets.includes('mudslide'));
- assert(events.some(e=>e.kind==='hint'&&e.text.includes('LOWER PATH')));
+ assert(events.some(e=>e.kind==='hint'&&e.text.includes('LOWER TRAIL')));
 });
 test('route commitment uses actual lateral position rather than an unrealized last-frame steer',()=>{
  const s=run(),course=G.buildOvergrownCourse(s.seed);
  Object.assign(s,{distance:139.97,lane:1,x:0,vx:0});
  step(s,course,[]);
- assert.equal(s.majorPath,'ridge','unreached right lane must not teleport into Deep Burrow');
+ assert.equal(s.majorPath,'rootway','unreached right lane and no deliberate jump must take the lower trail');
  const miss=run();
  Object.assign(miss,{forkStage:1,majorPath:'rootway',route:'rootway',routeStart:140,routeEnd:450,routeSide:-1,
    distance:454.97,lane:0,x:G.LANE_WIDTH,vx:0,y:1,vy:0,slide:0});
@@ -47,7 +47,7 @@ test('all families select lower / elevated / hidden paths from actual lane and a
   for(const side of [-1,0,1]){
    const s=run(23),events=[],options=G.SUB_FORKS[major.id];
    Object.assign(s,{forkStage:1,majorPath:major.id,route:major.id,routeStart:140,routeEnd:450,routeSide:major.side,distance:454.97,lane:side,x:side*G.LANE_WIDTH});
-   if(side===0){s.y=1;s.vy=0;}
+   if(side===0){G.jump(s,events);s.y=1;s.vy=0;}
    if(side===1){s.slide=.65;s.slideCooldown=.8;s.y=0;if(options[2].id==='ancient-vault')s.keys=1;}
    const previousTime=s.time;step(s,c,events);
    assert.equal(s.subPath,options[side+1].id,major.id+' requires physical route selection');
@@ -150,9 +150,10 @@ test('all nine route combinations remain winnable with steering and timed jump/b
    if(choosingMajor||choosingSub){
     const want=choosingMajor?major.side:sub.side;
     if(s.lane!==want)G.steer(s,want<s.lane?-1:1);
-    if(choosingSub&&s.distance>=452&&s.distance<455){
-     if(sub.side===0&&s.y<=.025)G.jump(s,events);
-     if(sub.side===1&&s.slide<=.01)G.burrow(s,events);
+    const entrance=choosingMajor?140:455;
+    if(s.distance>=entrance-3&&s.distance<entrance){
+     if(want===0&&s.y<=.025)G.jump(s,events);
+     if(want===1&&s.slide<=.01)G.burrow(s,events);
     }
    }else{
     const ahead=course.filter(i=>i.route===s.route&&!s.used.includes(i.id)&&i.d>=s.distance-2&&i.d<s.distance+12);
@@ -238,7 +239,7 @@ test('upper and lower trails have distinct physical elevations and continuous sa
   const [lower,upper,tunnel]=family;
   assert(G.overgrownPathHeight(upper.id,500)>1.8);assert(G.overgrownPathHeight(lower.id,500)<-.8);assert(G.overgrownPathHeight(tunnel.id,500)<-.4);
   for(const option of family){assert.equal(G.overgrownPathHeight(option.id,900),0);assert(Math.abs(G.overgrownPathHeight(option.id,899.99))<.00001);}
-  const s=run();Object.assign(s,{distance:454.97,forkStage:1,majorPath:family===G.SUB_FORKS.ridge?'ridge':family===G.SUB_FORKS.deep?'deep':'rootway',lane:0,x:0,y:1,vy:0});
+  const s=run();Object.assign(s,{distance:454.97,forkStage:1,majorPath:family===G.SUB_FORKS.ridge?'ridge':family===G.SUB_FORKS.deep?'deep':'rootway',lane:0,x:0,y:1,vy:0,lastJumpAt:0});
   step(s,[],[]);assert.equal(s.subPath,upper.id);
   assert(Math.abs(s.y+G.overgrownPathHeight(s.route,s.distance)-(.9983333333333333))<.001,'jump does not teleport vertically on commitment');
  }
@@ -315,4 +316,43 @@ test('terrace support reaches the measured solid mesh edge before the safe drop'
  const {s,c,deck}=terraceRun();Object.assign(s,{distance:deck.d+13.5,y:.9,vy:0,groundHeight:.9});
  step(s,c);assert.equal(s.y,.9,'do not fall through the final solid rock section');
  for(let i=0;i<35;i++)step(s,c);assert(s.distance>deck.d+13.7);assert(s.y<.9,'fall starts beyond the visible edge');
+});
+
+
+test('both junctions require deliberate actions rather than steering, a hurt bounce or stale jump',()=>{
+ for(const start of [140,455])for(const side of [0,1])for(const action of ['none','jump','burrow','bounce','stale']){
+  const s=run(23),events=[];
+  Object.assign(s,{distance:start-.03,time:5,lane:side,x:side*G.LANE_WIDTH});
+  if(start===455)Object.assign(s,{forkStage:1,majorPath:'rootway'});
+  if(action==='jump'){G.jump(s,events);s.y=1;s.vy=0;}
+  if(action==='burrow')G.burrow(s,events);
+  if(action==='bounce')Object.assign(s,{y:1,vy:0,lastHurt:5,lastJumpAt:4.9});
+  if(action==='stale')Object.assign(s,{y:1,vy:0,lastJumpAt:3});
+  step(s,[],events);
+  const expected=side===0&&action==='jump'?(start===140?'ridge':'root-arch'):
+   side===1&&action==='burrow'?(start===140?'deep':'log-crossing'):(start===140?'rootway':'mosswalk');
+  assert.equal(s.route,expected,`${start} lane ${side} action ${action}`);
+  assert.equal(s.hp,3);assert.equal(s.mode,'running');
+ }
+});
+
+test('first entrance has a jumpable lip, low tunnel and broad lower catch road with stable recovery',()=>{
+ assert.equal(G.overgrownPathHeight('ridge',139.9),0);
+ assert.equal(G.overgrownPathHeight('ridge',140),.65);
+ assert(G.overgrownPathHeight('deep',155)<0);
+ for(const route of ['rootway','ridge','deep'])assert(Math.abs(G.overgrownPathHeight(route,449.99))<.001);
+ for(const lane of [-1,0,1]){
+  const s=run();Object.assign(s,{distance:139.97,lane,x:lane*G.LANE_WIDTH});
+  const x=s.x;step(s,[],[]);assert.equal(s.route,'rootway');assert.equal(s.hp,3);
+  assert(Math.abs(s.x+G.routeOffset(s)-x)<1e-10,'missed entrance preserves world position');
+  assert(Math.abs(s.x)<3.225*G.overgrownPathWidth(s.route,s.distance),'catch road supports landing');
+  const restored=P.sanitizeExpedition(JSON.parse(JSON.stringify(s)));assert(restored);assert.equal(restored.x,s.x);
+ }
+});
+
+test('new running UI gives environmental clues without named route cards or steering-only instructions',()=>{
+ const ui=fs.readFileSync(path.join(__dirname,'../src/app/expedition.tsx'),'utf8');
+ assert(!ui.includes('LIVE PATH'));assert(!ui.includes('STEER BEFORE THE JUNCTION'));assert(!ui.includes('liveSplitOptions'));
+ const s=run();s.distance=125;
+ assert.match(G.nearbyHint(s,[]),/STONE|CLAW/);assert.doesNotMatch(G.nearbyHint(s,[]),/STEER|LEFT|MIDDLE|RIGHT/);
 });

@@ -29,8 +29,8 @@ const server = http.createServer((req,res) => {
 });
 const cases = [
   {route:'rootway',biome:'forest',input:'ArrowLeft'},
-  {route:'ridge',biome:'ruins',input:null},
-  {route:'deep',biome:'cavern',input:'ArrowRight'}
+  {route:'ridge',biome:'ruins',input:null,action:'ArrowUp',pose:'jumping'},
+  {route:'deep',biome:'cavern',input:'ArrowRight',action:'ArrowDown',pose:'burrowing'}
 ];
 const selectedCases = process.env.MADGER_BIOME_ONLY
   ? cases.filter(item=>item.route===process.env.MADGER_BIOME_ONLY) : cases;
@@ -56,9 +56,17 @@ assert(selectedCases.length,'No matching biome selected');
         assert.equal(await page.evaluate(()=>window.madgerActiveRenderer),'pbr',
           'PBR renderer not active for '+item.route);
         await page.getByRole('button',{name:'Start expedition',exact:true}).click();
-        await page.getByText(/LIVE PATH · \d+ m · STEER BEFORE THE JUNCTION/).waitFor({timeout:60000});
         await page.waitForFunction(()=>{const label=document.querySelector('[aria-label^="Expedition distance"]')?.getAttribute('aria-label')||'';const metres=Number(label.match(/distance (\d+)/)?.[1]||0);return metres>=119&&metres<140;},{},{timeout:60000});
+        assert.equal(await page.getByText(/LIVE PATH|STEER BEFORE THE JUNCTION/).count(),0,
+          'Hidden routes must not be named in a choice overlay');
         if(item.input)await page.keyboard.press(item.input);
+        if(item.action){
+          // Read the actual live HUD and use ordinary input at the visible lip.
+          // No timers tied to a seed, saved checkpoints or physics mutation.
+          await page.waitForFunction(()=>{const label=document.querySelector('[aria-label^="Expedition distance"]')?.getAttribute('aria-label')||'';const metres=Number(label.match(/distance (\d+)/)?.[1]||0);return metres>=136&&metres<139;},{},{timeout:8000});
+          await page.keyboard.press(item.action);
+          await page.getByLabel(new RegExp('Expedition distance 13[6-9] meters; lane .*; '+item.pose+'; route main')).waitFor({timeout:1000});
+        }
         await page.waitForFunction(route=>window.madgerForestDiagnostics?.route===route,
           item.route,{timeout:12000});        await page.waitForTimeout(450);
         const diagnostics=await page.evaluate(()=>window.madgerForestDiagnostics);
@@ -135,8 +143,17 @@ assert(selectedCases.length,'No matching biome selected');
         assert.equal(stallWarnings.length,0,'Protective frame stall detected in visual fixture: '+item.route);
         assert.deepEqual(errors,[],'JS errors: '+item.route);
         assert.deepEqual(requests,[],'Asset errors: '+item.route);
-        results.push({route:item.route,biome:item.biome,diagnostics,errors,requests});
+        results.push({route:item.route,biome:item.biome,entranceAction:item.action||'lower trail',diagnostics,errors,requests});
         console.log('BIOME_RENDER_PASS',item.route,JSON.stringify(diagnostics));
+      } catch(error) {
+        // Capture failures too, without recovering or changing the failed run.
+        const diagnostics=await page.evaluate(()=>window.madgerForestDiagnostics||null).catch(()=>null);
+        const hud=await page.locator('[aria-label^="Expedition distance"]').first().getAttribute('aria-label').catch(()=>null);
+        fs.writeFileSync(path.join(evidence,item.route+'-failure.json'),JSON.stringify({
+          route:item.route,error:String(error.stack||error),hud,diagnostics,errors,requests,stallWarnings
+        },null,2));
+        await page.screenshot({path:path.join(evidence,item.route+'-failure.png')}).catch(()=>{});
+        throw error;
       } finally {await context.close();}
     }
     const report={date:new Date().toISOString(),scope:'Physical route choice in desktop Chrome; not an Android benchmark',

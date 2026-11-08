@@ -270,5 +270,62 @@ class ExpeditionResumeObservationTests(unittest.TestCase):
         self.assertEqual(smoke.clicks, [])
 
 
+class ExpeditionActionEntranceTests(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        spec = importlib.util.spec_from_file_location(
+            "expedition_action_harness", Path(__file__).with_name("android-expedition-smoke.py"))
+        cls.harness = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(cls.harness)
+
+    def smoke(self, frames):
+        smoke = self.harness.Smoke()
+        smoke.clicks = []
+        smoke.tap = smoke.clicks.append
+        observations = iter(frames)
+        def wait(predicate, description, timeout=8):
+            state, mode, run_id = next(observations)
+            smoke.last_observation = {"hud": state, "phase": mode, "run_id": run_id}
+            if not predicate(state):
+                raise AssertionError("Missing observed " + description)
+            return state
+        smoke.wait_hud = wait
+        return smoke
+
+    def frame(self, d, lane=1, action="running", route="main", mode="running", run_id="one"):
+        return ({"distance_m": d, "lane": lane, "action": action, "route": route, "score": 350}, mode, run_id)
+
+    def test_low_route_needs_observed_burrow_before_route_change(self):
+        smoke = self.smoke([self.frame(120, 0), self.frame(135),
+                            self.frame(136, action="burrowing"), self.frame(141, route="deep")])
+        selected = smoke.enter_deep_route()
+        self.assertEqual(selected["route"], "deep")
+        self.assertEqual(smoke.clicks, ["RIGHT", "BURROW"])
+
+    def test_steering_without_burrowing_cannot_pass(self):
+        smoke = self.smoke([self.frame(120), self.frame(135), self.frame(136)])
+        with self.assertRaisesRegex(AssertionError, "deliberate burrow"):
+            smoke.enter_deep_route()
+
+    def test_missed_input_window_is_not_retried_or_accepted(self):
+        smoke = self.smoke([self.frame(120), self.frame(140)])
+        with self.assertRaisesRegex(AssertionError, "entrance within reach"):
+            smoke.enter_deep_route()
+        self.assertEqual(smoke.clicks, ["RIGHT"])
+
+    def test_pause_or_changed_run_does_not_get_resumed(self):
+        for mode, run_id in [("paused", "one"), ("running", "other")]:
+            smoke = self.smoke([self.frame(120), self.frame(135, mode=mode, run_id=run_id)])
+            with self.assertRaises(AssertionError):
+                smoke.enter_deep_route()
+            self.assertEqual(smoke.clicks, ["RIGHT"])
+
+    def test_wrong_route_cannot_be_called_success(self):
+        smoke = self.smoke([self.frame(120), self.frame(135),
+                            self.frame(136, action="burrowing"), self.frame(141, route="rootway")])
+        with self.assertRaisesRegex(AssertionError, "Deep reached"):
+            smoke.enter_deep_route()
+
+
 if __name__ == "__main__":
     unittest.main()
