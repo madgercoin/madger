@@ -131,7 +131,9 @@ jobs:
       - name: Play the normal opening, earned-only workshop, first fork and BURROW controls
         run: node scripts/overgrown-browser-smoke.cjs
       - name: Reach forest, ridge and Deep through real steering, jump and burrow inputs
-        run: node scripts/overgrown-biome-browser-smoke.cjs
+        run: |
+          node --test scripts/test-biome-input-timing.cjs
+          node scripts/overgrown-biome-browser-smoke.cjs
       - name: Exercise each hidden chamber through real input and checkpoint reloads
         run: node scripts/test-chambers-browser.cjs
       - name: Retain all screenshots and route performance diagnostics

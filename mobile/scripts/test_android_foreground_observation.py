@@ -308,10 +308,11 @@ class ExpeditionActionEntranceTests(unittest.TestCase):
             smoke.enter_deep_route()
 
     def test_missed_input_window_is_not_retried_or_accepted(self):
-        smoke = self.smoke([self.frame(120), self.frame(140)])
-        with self.assertRaisesRegex(AssertionError, "entrance within reach"):
-            smoke.enter_deep_route()
-        self.assertEqual(smoke.clicks, ["RIGHT"])
+        for late_distance in (137, 138, 140):
+            smoke = self.smoke([self.frame(120), self.frame(late_distance)])
+            with self.assertRaisesRegex(AssertionError, "entrance within reach"):
+                smoke.enter_deep_route()
+            self.assertEqual(smoke.clicks, ["RIGHT"])
 
     def test_pause_or_changed_run_does_not_get_resumed(self):
         for mode, run_id in [("paused", "one"), ("running", "other")]:

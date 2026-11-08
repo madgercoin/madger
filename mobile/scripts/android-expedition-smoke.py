@@ -866,7 +866,7 @@ class Smoke:
         run_id = self.last_observation["run_id"]
         self.tap("RIGHT")
         self.wait_hud(lambda state: state["route"] == "main" and state["lane"] == 1
-                      and 134 <= state["distance_m"] < 138,
+                      and 134 <= state["distance_m"] < 137,
                       "right-lane burrow entrance within reach", timeout=15)
         self.require_running_observation(self.last_observation, "Tunnel entry")
         if self.last_observation["run_id"] != run_id:

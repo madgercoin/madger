@@ -64,8 +64,9 @@ assert(selectedCases.length,'No matching biome selected');
         if(item.action){
           // Read the actual live HUD and use ordinary input at the visible lip.
           // No timers tied to a seed, saved checkpoints or physics mutation.
-          await page.waitForFunction(()=>{const label=document.querySelector('[aria-label^="Expedition distance"]')?.getAttribute('aria-label')||'';const metres=Number(label.match(/distance (\d+)/)?.[1]||0);return metres>=136&&metres<139;},{},{timeout:8000});
-          // Arm observation before input: the 80ms HUD pose can finish before
+          // Arm early, before waiting for the lip. Setup at 136m consumed an
+          // extra software-rendered frame and delayed the command past entry.
+          // The 80ms HUD pose can finish before
           // Playwright's visibility polling sees it. Retain genuine DOM changes,
           // not engine state, and never alter or replay the running simulation.
           actionObserver=await page.evaluateHandle(()=>{
@@ -84,6 +85,14 @@ assert(selectedCases.length,'No matching biome selected');
             proof.observer.observe(hud,{attributes:true,attributeFilter:['aria-label'],attributeOldValue:true});
             return proof;
           });
+          // A jump at 132–133m lands too early; 134m leaves enough arc and
+          // command-latency margin. Do not issue an already-late 138m input.
+          await page.waitForFunction(()=>{
+            const label=document.querySelector('[aria-label^="Expedition distance"]')?.getAttribute('aria-label')||'';
+            const metres=Number(label.match(/distance (\d+)/)?.[1]||0);
+            if(metres>=137)throw Error('Missed the observed 134–136m entrance input window: '+label);
+            return metres>=134;
+          },{},{timeout:8000});
           await page.keyboard.press(item.action);
         }
         await page.waitForFunction(route=>window.madgerForestDiagnostics?.route===route,
