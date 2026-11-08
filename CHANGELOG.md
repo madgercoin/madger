@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-11-08 - Reduce Android smoke-test interference
+
+- Observe the prior run's completion through fresh, app-scoped rendered telemetry instead of repeatedly dumping the full accessibility tree during 3D gameplay. Inspect visible XML controls only for actual choices/results.
+- Preserve unexpected-pause, freshness, run-identity and 400ms safety failures. Add focused harness regressions; native retesting is still required and no physical-device acceptance is claimed.
+- Record the verified build-34 candidate and its failed runtime result in the release ledger. No game rules, visuals, save data, production signing or store publication changed.
+
 ## 2026-10-30 - Exhausted bodyguard releases companion slot
 
 - Gorilla White now finishes his final defensive brace and departure after spending his third save, instead of blocking another earned companion summon for the remainder of his support timer.

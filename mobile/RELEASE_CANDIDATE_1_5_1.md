@@ -48,6 +48,36 @@ source-build requirement. These changes remain **unverified** until a
 new CI APK compile, source/ABI inspection and Android emulator smoke pass.
 Do not reuse the previously failing artifact or lower any smoke threshold.
 
+## November 8 verified candidate and runtime investigation
+
+Mobile CI run https://github.com/madgercoin/madger/actions/runs/42434145492
+finished on head `ec8d46ce29ae3f6009b0acf273d330b76b35432d` (tested PR merge
+`35dc554f07cf38909e32fa2432666629056e970f`). The mobile source trees match.
+Source validation, Expo Doctor, Android/iOS exports, all browser route/game
+checks, APK compilation, native-library ABI checks, permissions and signature
+checks passed. The APK is development-signed, package `com.madgercoin.preview`,
+version 1.5.1 / code 34, 140843516 bytes, SHA-256
+`3022b4d2e237453b81c095c9e59468df4347aeafca6375542cf1c37e363c583a`.
+This supersedes the earlier unverified native-library status, not the release
+gate. No production signing or store submission has occurred.
+
+Native runtime acceptance **failed**: an active Rootway frame at 273m took
+417ms (last draw 12ms) and correctly triggered the existing protective pause.
+The subsequent Classic test lost its emulator/ADB connection. Evidence:
+https://github.com/madgercoin/madger/actions/runs/42434145492/artifacts/13599770748.
+The 353m Deep render and full lifecycle acceptance are not established by this
+run. Physical-phone performance and audible sound remain untested.
+
+The prior-run completion loop in the smoke harness repeatedly dumped the full
+Android accessibility tree during live gameplay, unlike the main controls loop
+which uses validated, app-PID-scoped post-draw telemetry. The harness correction
+uses that same fresh observation while running and requests XML only when an
+actual modal/result requires visible controls. Unexpected pauses, missing or
+stale observations, run-identity changes and the 400ms gameplay guard remain
+failures. This removes avoidable test contention; it is **not** evidence that
+the native performance problem is fixed. A new exact-source CI run and physical
+device trial are required before acceptance.
+
 ## Before Play Closed testing
 
 1. **Integrate source:** approve the new release preparation PR against
@@ -103,8 +133,9 @@ Do not reuse the previously failing artifact or lower any smoke threshold.
 - The reported Windows workstation was offline during this audit; current
   physical-phone test artifacts, USB devices and locally uncommitted visuals
   could not be inspected.
-- No source-matched current native APK/AAB verification or 20-minute physical
-  Android performance and sound acceptance is recorded.
+- The candidate APK's source, signature, permissions and native ABIs are
+  verified above, but native runtime acceptance failed. No production AAB or
+  20-minute physical Android performance and sound acceptance is recorded.
 - No live Expo signing authorization, cost allowance or Google Play Console
   submission was exercised by this work. The strict QA guard is intentionally
   unset until test evidence exists.

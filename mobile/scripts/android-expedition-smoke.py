@@ -818,6 +818,42 @@ class Smoke:
             raise AssertionError("Prior run unexpectedly paused while waiting for its normal result")
         self.report.setdefault("stale_pause_labels", []).append(current)
 
+    def wait_prior_run_result(self, prior_run_id):
+        """Poll draw proof while moving; inspect XML only for stopped UI choices."""
+        finish_deadline = time.monotonic() + 150
+        while time.monotonic() < finish_deadline:
+            state = self.hud()  # Retains PID, freshness and current/rendered checks.
+            current = self.last_observation
+            if not state or current.get("run_id") != prior_run_id:
+                raise AssertionError("Cannot verify prior run while waiting for its normal result")
+            phase = current["phase"]
+            if phase == "paused":
+                raise AssertionError("Prior run unexpectedly paused while waiting for its normal result")
+            if phase in ("running", "countdown"):
+                # Repeated accessibility dumps contend with Android rendering.
+                # Do not make the test itself stall an otherwise moving scene.
+                time.sleep(.12)
+                continue
+            if phase not in ("fork", "chamber", "upgrade", "won", "lost"):
+                raise AssertionError("Unexpected prior-run phase: " + phase)
+            _, nodes, labels = self.tree()
+            if phase in ("won", "lost") and self.label_node(nodes, "Run another expedition", clickable=True):
+                return
+            choices = ["Take survival supplies",
+                       "Reinforced shield. Two blocked hits and longer protection. Gaps still require a jump."]
+            choices += [label for label in labels if label.startswith("Choose ") and " risk, " in label]
+            if phase in ("fork", "chamber", "upgrade"):
+                for label in choices:
+                    if self.label_node(nodes, label, clickable=True):
+                        self.tap(label)
+                        self.mark("Finish prior run through visible choice", choice=label)
+                        break
+            # Never silently resume an unexpected lifecycle pause.
+            if "Your run is safe." in labels:
+                self.confirm_no_unexpected_pause(prior_run_id)
+            time.sleep(.12)
+        raise AssertionError("Prior Rootway run did not reach a replayable result within 150 seconds")
+
     def deep_reference_run(self):
         """Reach the user's Deep scene with real controls and observed rendered state.
 
@@ -826,25 +862,7 @@ class Smoke:
         seed access, secret lookup, storage edit or gameplay-state injection.
         """
         prior_run_id, _ = self.resume_observed_run()
-        finish_deadline = time.monotonic() + 150
-        while time.monotonic() < finish_deadline:
-            _, nodes, labels = self.tree()
-            if self.label_node(nodes, "Run another expedition", clickable=True):
-                break
-            choices = ["Take survival supplies",
-                       "Reinforced shield. Two blocked hits and longer protection. Gaps still require a jump."]
-            choices += [label for label in labels if label.startswith("Choose ") and " risk, " in label]
-            for label in choices:
-                if self.label_node(nodes, label, clickable=True):
-                    self.tap(label)
-                    self.mark("Finish prior run through visible choice", choice=label)
-                    break
-            # Never silently resume an unexpected lifecycle pause.
-            if "Your run is safe." in labels:
-                self.confirm_no_unexpected_pause(prior_run_id)
-            time.sleep(.12)
-        else:
-            raise AssertionError("Prior Rootway run did not reach a replayable result within 150 seconds")
+        self.wait_prior_run_result(prior_run_id)
         self.capture("10-rootway-result")
         self.tap("Run another expedition")
         self.wait_hud(lambda state: self.last_observation["phase"] == "running" and state["distance_m"] >= 2, "replayed game starts", timeout=12)
