@@ -525,8 +525,9 @@ class ForestRenderer {
     // Align streaming to the actual mesh row spacing. Existing world vertices
     // retain exactly the same coordinates instead of being resculpted every 1.8m.
     const terrainAnchor=Math.floor(travel/(205/96))*(205/96);
-    if(this.terrainRoute!==s.majorPath||this.terrainD!==terrainAnchor){
-    this.terrainRoute=s.majorPath;this.terrainD=terrainAnchor;
+    const terrainFamily=s.route==='hollow'||s.route==='grotto'?s.route:s.majorPath;
+    if(this.terrainRoute!==terrainFamily||this.terrainD!==terrainAnchor){
+    this.terrainRoute=terrainFamily;this.terrainD=terrainAnchor;
     const gapRows=new Map();
     const vertices=this.terrain.geometry.attributes.position,uv=this.terrain.geometry.attributes.uv,tint=this.terrain.geometry.attributes.color;
 

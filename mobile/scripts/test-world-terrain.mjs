@@ -173,3 +173,28 @@ test('narrow fork shoulders use the identical height for terrain and grounded sc
    if(Math.abs(x-road.centre)<=road.halfWidth)assert(Math.abs(y-(-.33+road.height))<1e-10);
  }
 });
+
+test('legacy tunnels retain their own floor without changing modern branch geography',async()=>{
+ const {visibleRoads,nearestRoad,roadSurfaceHeight}=await import('../public/blackroot/terrain.mjs');
+ const {legacyCharacters}=await import('../public/blackroot/characters.mjs');
+ const bridge=legacyCharacters(class {});
+ const at=(run,d)=>visibleRoads(run,d,bridge.pathOffset,bridge.pathHeight,bridge.pathWidth);
+ for(const route of ['hollow','grotto'])for(const d of [230,680,825]){
+  const roads=at({route,majorPath:'deep'},d);
+  assert.deepEqual(roads.map(r=>r.route),[route]);
+  for(const lane of [-2.15,0,2.15]){
+   const road=nearestRoad(roads,lane);
+   assert.equal(road.height,0);
+   assert.equal(roadSurfaceHeight(terrainProfile(presets,road.route),road,lane,d),-.33,
+    route+' lane '+lane+' must match the playable hero floor');
+  }
+ }
+ const before=at({route:'deep',majorPath:'deep'},680);
+ assert.deepEqual(before.map(r=>r.route),['mudslide','crystal-vein','ancient-vault']);
+ assert.equal(before[1].height,1.9,'modern elevated path remains intact');
+ for(const route of ['mudslide','crystal-vein','ancient-vault'])
+  assert.deepEqual(at({route,majorPath:'deep'},680),before,'modern branch selection preserves geography');
+ const source=readFileSync(new URL('../public/blackroot/renderer.mjs',import.meta.url),'utf8');
+ assert(source.includes("const terrainFamily=s.route==='hollow'||s.route==='grotto'?s.route:s.majorPath"));
+ assert(source.includes('this.terrainRoute!==terrainFamily'),'same-distance legacy checkpoint invalidates modern mesh cache');
+});

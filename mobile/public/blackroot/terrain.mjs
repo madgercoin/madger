@@ -118,8 +118,12 @@ const MINOR_ROADS={rootway:['mosswalk','root-arch','log-crossing'],ridge:['cause
  * is part of the world ahead of the player, not created after choosing it. */
 export function visibleRoads(run,distance,pathOffset=()=>0,pathHeight=()=>0,pathWidth=null){
  let routes=['main'];
- if(distance>=140&&distance<450)routes=MAJOR_ROADS;
- else if(distance>=455&&distance<900){
+ // Historical shortcuts are their own flat tunnel, not the elevated center
+ // branch of the modern majorPath family carried by recovered save data.
+ const legacy=run?.route==='hollow'||run?.route==='grotto';
+ if(legacy)routes=[run.route];
+ else if(distance>=140&&distance<450)routes=MAJOR_ROADS;
+ else if(!legacy&&distance>=455&&distance<900){
    const family=run?.majorPath||Object.keys(MINOR_ROADS).find(key=>key===run?.route||MINOR_ROADS[key].includes(run?.route))||'rootway';
    routes=MINOR_ROADS[family]||MINOR_ROADS.rootway;
  }
