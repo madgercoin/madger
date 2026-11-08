@@ -63,7 +63,7 @@ function clusterScan(source,cell) {
 let bridge;
 class ForestRenderer {
   constructor(gl) {
-    this.gl=gl; this.scene=new T.Scene(); this.scene.background=new T.Color('#7b9387');
+    this.gl=gl;this.authoredWorld=true; this.scene=new T.Scene(); this.scene.background=new T.Color('#7b9387');
     this.scene.fog=new T.FogExp2('#7b9387',.017);
     // Keep distant landmark crests in the camera frustum; atmospheric fog
     // still separates depth layers without a hard 145m landscape cut-off.
@@ -395,7 +395,8 @@ class ForestRenderer {
     // Absolute-world-distance bank placement avoids cyclic tiling and scenery
     // snaps when the runner approaches a fork or moves into the next area.
     this.backdrop.update({biome,travel,time:breezeTime,quality:this.sceneryQuality,
-      chamber:s.mode==='chamber',centre:d=>{const roads=roadsAt(d);return roads[Math.floor(roads.length/2)].centre;}});
+      chamber:s.mode==='chamber',centre:d=>{const roads=roadsAt(d);return roads[Math.floor(roads.length/2)].centre;},
+      banks:d=>{const roads=roadsAt(d);return [Math.min(...roads.map(r=>r.centre-r.halfWidth)),Math.max(...roads.map(r=>r.centre+r.halfWidth))];}});
     if(s.mode==='chamber'){
       for(const {mesh} of this.scanBatches)mesh.count=0;this.trees.count=0;this.shafts.count=0;
       const x=s.x+road(s,travel),accent=s.chamber==='guardian-nest'?'#ffd8a0':s.chamber==='moonwell'?'#b8a7ff':'#79d9e6';
@@ -495,10 +496,8 @@ class ForestRenderer {
         const height=id==='fern_02'?1.1+r*.9:id==='dead_tree_trunk'?7+r*3:id==='rock_face_02'?(underground?7:4)+r*3:1.4+r*1.4;
         mesh.setMatrixAt(count++,matrix(x,surface(x,d)-.04,z,height,height,height,0,r*6.28,
           id==='fern_02'&&!ruins?foliageSway(breezeTime,d,side):0));
-        if(id==='rock_face_02'&&underground&&side===1&&n%2===0){
-          const centre=bankCentre;
-          mesh.setMatrixAt(count++,matrix(centre+5,8,z,1.8,10,6,0,0,Math.PI/2));
-        }
+        // CavernVault owns the connected cave roof. Never rotate detached
+        // scan cliffs into a floating slab above an alternate outdoor route.
         if(id==='fern_02'&&!underground){
           // Layer scanned fronds on the ground, not suspended above the player.
           const cx=bankCentre+side*(4.0+r),scale=(.7+r*.85)*scenery.understory;

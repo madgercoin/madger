@@ -291,7 +291,7 @@ export class ExpeditionScene {
   for(let wd=segment.start+Math.max(0,Math.floor((d-24-segment.start)/12))*12;wd<Math.min(segment.end,d+112);wd+=12){
    const z=d-wd,x=centre(wd),y=floorY(wd,route);
 
-   if(cave&&wd>segment.start+26){
+   if(cave&&route===s.route&&wd>segment.start+26){
     this.shape('ceiling',color('#607582',-8),x,y+10.0,z,4.2,4.2,6.0,0,0,0);
     for(const side of [-1,1])this.shape('cone',color('#70838a',-8),x+side*4.7,y+6.8,z,.45,2.1,.52,Math.PI,0,0);
    }
@@ -380,7 +380,9 @@ export class ExpeditionScene {
     const edge=theme==='cavern'?color('#3A3446',-8):theme==='ruins'?color('#4F504D',-8):color('#4B4638',-8);
     const vegetation=theme==='cavern'?color('#4B6D69'):theme==='ruins'?C.leaf:C.leafLight;
     const step=6,first=this.renderer.worldReady?phase.start+Math.max(0,Math.floor((d-24-phase.start)/step))*step:Math.max(phase.start+3,Math.floor((d-9)/step)*step);
-    for(let wd=first;wd<Math.min(phase.end+(this.renderer.worldReady?3:-2),d+90);wd+=step){
+    // The authored PBR renderer supplies one continuous terrain/scan layer.
+    // Never overlay the native road tiles and off-route rock dressing on it.
+    if(!this.renderer.authoredWorld)for(let wd=first;wd<Math.min(phase.end+(this.renderer.worldReady?3:-2),d+90);wd+=step){
      const z=d-wd,off=overgrownPathOffset(option.id,wd),x=off+curve(wd)-base,y=floorY(wd,option.id),n=Math.floor(wd/6);
      const delta=(overgrownPathOffset(option.id,wd+1)+curve(wd+1)-overgrownPathOffset(option.id,wd-1)-curve(wd-1))*.5;
      const roadYaw=-Math.atan(delta);
@@ -464,7 +466,7 @@ export class ExpeditionScene {
     const backdropFar=sceneryBudget===0?88:sceneryBudget===1?100:112;
     const backdropTint=color(theme==='cavern'?'#4A5661':theme==='ruins'?'#898C83':'#607F72',-8);
     const startBand=Math.floor((d-24)/24),endBand=Math.ceil((d+backdropFar)/24);
-    for(let band=startBand;band<=endBand;band++){
+    if(!this.renderer.authoredWorld)for(let band=startBand;band<=endBand;band++){
      const distance=band*24,ahead=distance-d;
      if(distance<phase.start+4||distance>phase.end-4||ahead < -24||ahead>=backdropFar)continue;
      // Never shrink landforms as the player approaches. Retire behind camera.
@@ -472,6 +474,9 @@ export class ExpeditionScene {
      if(fade<.035)continue;
      const roadCentre=overgrownPathOffset(option.id,distance)+curve(distance)-base;
      for(const side of [-1,1]){
+      // Only the outward bank of each outer branch belongs here; inward
+      // banks would intersect the neighboring playable roads.
+      if(phase.options.length>1&&option.side!==side)continue;
       const noise=hash(band*71+side*17+(theme==='ruins'?89:13));
       const bankX=roadCentre+side*(21+noise*3.1);
       this.shape('ridge',backdropTint,bankX,floorY(distance,option.id)-.43,d-distance,

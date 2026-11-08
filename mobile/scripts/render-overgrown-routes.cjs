@@ -57,10 +57,27 @@ const server=http.createServer((req,res)=>{
     const display={width:viewport.width,height:viewport.height,bufferWidth:gl.drawingBufferWidth,bufferHeight:gl.drawingBufferHeight};
     const material=window.fixtureScene.renderer.terrain.material;
     const terrainPbr=Boolean(material.isMeshStandardMaterial&&material.map&&material.normalMap&&material.roughnessMap);
-    return {route:run.chamber||run.route,stats:window.fixtureScene.stats,hero:window.madgerHeroDiagnostics,terrainPbr,display,glError:gl.getError()};
+    let corridor=null;
+    if(run.mode!=='chamber'){
+      const T=await import('/blackroot/vendor/build/three.module.js');
+      const renderer=window.fixtureScene.renderer,hero=window.madgerHeroDiagnostics.position;
+      const terrain=[renderer.terrain,renderer.backdrop.hills,renderer.cavernVault.mesh,
+        ...renderer.scanBatches.map(b=>b.mesh)].filter(m=>m?.visible&&(!m.isInstancedMesh||m.count>0));
+      const hits=[];
+      for(const [dx,dy]of [[0,.65],[-.3,1.5],[.3,1.5]]){
+        const target=new T.Vector3(hero[0]+dx,hero[1]+dy,hero[2]);
+        const direction=target.clone().sub(renderer.camera.position),distance=direction.length();
+        const ray=new T.Raycaster(renderer.camera.position,direction.normalize(),.05,distance-.1);
+        const hit=ray.intersectObjects(terrain,false)[0];
+        hits.push(hit?{name:hit.object.name||hit.object.type,distance:hit.distance}:null);
+      }
+      corridor={clear:hits.filter(x=>x===null).length,hits};
+    }
+    return {corridor,route:run.chamber||run.route,stats:window.fixtureScene.stats,hero:window.madgerHeroDiagnostics,terrainPbr,display,glError:gl.getError()};
    },{run,course:G.buildOvergrownCourse(run.seed)});
    console.log('MADGER_HERO_FIXTURE',JSON.stringify({route:data.route,instances:data.stats.instances,meshCount:data.stats.madgerMeshCount,heroTriangles:data.stats.madgerTriangles,renderedTriangles:data.stats.triangles,drawCalls:data.stats.drawCalls,rig:data.stats.madgerRig,glError:data.glError}));
    assert.equal(data.glError,0,run.route);assert(data.stats.assetsReady);
+   if(data.corridor)assert.equal(data.corridor.clear,3,'Terrain/scenery occludes the hero on '+run.route+': '+JSON.stringify(data.corridor));
    assert.equal(data.display.width,430,'Route screenshot must occupy full 430px mobile width');
    assert.equal(data.display.height,920,'Route screenshot must occupy full 920px mobile height');
    assert(data.display.bufferWidth>=200&&data.display.bufferHeight>=420,

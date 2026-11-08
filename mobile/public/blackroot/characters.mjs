@@ -2020,7 +2020,7 @@ class ExpeditionScene {
             // The playable surface itself remains open at every authored gap.
             for (let wd = segment.start + Math.max(0, Math.floor((d - 24 - segment.start) / 12)) * 12; wd < Math.min(segment.end, d + 112); wd += 12) {
                 const z = d - wd, x = centre(wd), y = floorY(wd, route);
-                if (cave && wd > segment.start + 26) {
+                if (cave && route === s.route && wd > segment.start + 26) {
                     this.shape('ceiling', (0, gl_1.color)('#607582', -8), x, y + 10.0, z, 4.2, 4.2, 6.0, 0, 0, 0);
                     for (const side of [-1, 1])
                         this.shape('cone', (0, gl_1.color)('#70838a', -8), x + side * 4.7, y + 6.8, z, .45, 2.1, .52, Math.PI, 0, 0);
@@ -2126,131 +2126,139 @@ class ExpeditionScene {
                 const edge = theme === 'cavern' ? (0, gl_1.color)('#3A3446', -8) : theme === 'ruins' ? (0, gl_1.color)('#4F504D', -8) : (0, gl_1.color)('#4B4638', -8);
                 const vegetation = theme === 'cavern' ? (0, gl_1.color)('#4B6D69') : theme === 'ruins' ? C.leaf : C.leafLight;
                 const step = 6, first = this.renderer.worldReady ? phase.start + Math.max(0, Math.floor((d - 24 - phase.start) / step)) * step : Math.max(phase.start + 3, Math.floor((d - 9) / step) * step);
-                for (let wd = first; wd < Math.min(phase.end + (this.renderer.worldReady ? 3 : -2), d + 90); wd += step) {
-                    const z = d - wd, off = (0, core_1.overgrownPathOffset)(option.id, wd), x = off + curve(wd) - base, y = floorY(wd, option.id), n = Math.floor(wd / 6);
-                    const delta = ((0, core_1.overgrownPathOffset)(option.id, wd + 1) + curve(wd + 1) - (0, core_1.overgrownPathOffset)(option.id, wd - 1) - curve(wd - 1)) * .5;
-                    const roadYaw = -Math.atan(delta);
-                    // Three walkable physical lanes. Their dirt and stone retain the same
-                    // independently interpolated fork offset as Madger and collectibles.
-                    for (const lane of [-1, 0, 1]) {
-                        const width = (0, core_1.overgrownPathWidth)(option.id, wd), lx = x + lane * core_1.LANE_WIDTH * width;
-                        if (this.renderer.worldReady) {
-                            for (let j = 0; j < 4; j++) {
-                                const td = wd - 2.25 + j * 1.5;
-                                const gap = this.course.some(o => o.kind === 'gap' && o.route === option.id && o.lane === lane && Math.abs(o.d - td) < 2.0);
-                                if (!gap)
-                                    this.shape('trail', mud, (0, core_1.overgrownPathOffset)(option.id, td) + curve(td) - base + lane * core_1.LANE_WIDTH * (0, core_1.overgrownPathWidth)(option.id, td), floorY(td, option.id), d - td, 2.19 * (0, core_1.overgrownPathWidth)(option.id, td), 1, 1.67, Math.atan((floorY(td + .75, option.id) - floorY(td - .75, option.id)) / 1.5), roadYaw, 0);
+                // The authored PBR renderer supplies one continuous terrain/scan layer.
+                // Never overlay the native road tiles and off-route rock dressing on it.
+                if (!this.renderer.authoredWorld)
+                    for (let wd = first; wd < Math.min(phase.end + (this.renderer.worldReady ? 3 : -2), d + 90); wd += step) {
+                        const z = d - wd, off = (0, core_1.overgrownPathOffset)(option.id, wd), x = off + curve(wd) - base, y = floorY(wd, option.id), n = Math.floor(wd / 6);
+                        const delta = ((0, core_1.overgrownPathOffset)(option.id, wd + 1) + curve(wd + 1) - (0, core_1.overgrownPathOffset)(option.id, wd - 1) - curve(wd - 1)) * .5;
+                        const roadYaw = -Math.atan(delta);
+                        // Three walkable physical lanes. Their dirt and stone retain the same
+                        // independently interpolated fork offset as Madger and collectibles.
+                        for (const lane of [-1, 0, 1]) {
+                            const width = (0, core_1.overgrownPathWidth)(option.id, wd), lx = x + lane * core_1.LANE_WIDTH * width;
+                            if (this.renderer.worldReady) {
+                                for (let j = 0; j < 4; j++) {
+                                    const td = wd - 2.25 + j * 1.5;
+                                    const gap = this.course.some(o => o.kind === 'gap' && o.route === option.id && o.lane === lane && Math.abs(o.d - td) < 2.0);
+                                    if (!gap)
+                                        this.shape('trail', mud, (0, core_1.overgrownPathOffset)(option.id, td) + curve(td) - base + lane * core_1.LANE_WIDTH * (0, core_1.overgrownPathWidth)(option.id, td), floorY(td, option.id), d - td, 2.19 * (0, core_1.overgrownPathWidth)(option.id, td), 1, 1.67, Math.atan((floorY(td + .75, option.id) - floorY(td - .75, option.id)) / 1.5), roadYaw, 0);
+                                }
+                            }
+                            else
+                                this.shape('box', mud, lx, y - .24, z, 2.12 * width, .40, 6.7, 0, roadYaw, 0);
+                            if (!this.renderer.worldReady && (n + lane) % 3 === 0) {
+                                this.shape('rock', vegetation, lx + .60, y + .025, z + .5, .42, .026, 1.55, 0, n * .48, 0);
+                                this.shape('rock', edge, lx - .67, y + .023, z - .6, .37, .042, .39, 0, n, 0);
+                            }
+                            if (!this.renderer.worldReady && (n + lane) % 4 === 0)
+                                this.shape('rock', (0, gl_1.color)('#454A37', -8), lx - .13, y + .023, z + 1.1, .61, .035, .77, 0, n * .51, 0);
+                        }
+                        // Opaque trees, foliage and rock faces behind the camera can block
+                        // the entire screen as a fork curves. Keep the track under the runner,
+                        // but render tall scenery only ahead of the playing/camera corridor.
+                        if (this.renderer.worldReady || z > -7 || -z > sceneryFar)
+                            continue;
+                        // Keep detailed close-up vegetation and masonry. Thin only off-track
+                        // props beyond 30 metres; forks, pickups, road and hero are untouched.
+                        if (sceneryBudget < 2 && -z > 30 && n % (sceneryBudget === 0 ? 4 : 2) !== 0)
+                            continue;
+                        // Wet border rock, ancient edging and root networks never occupy lanes.
+                        for (const side of [-1, 1]) {
+                            const bx = x + side * 4.33, t = (hash(n * 43 + side * 9) * 2 - 1), bark = theme === 'ruins' ? (0, gl_1.color)('#807B73', -8) : theme === 'cavern' ? edge : (0, gl_1.color)('#735438', -7);
+                            this.shape('rock', edge, bx, y + .16, z, 1.08, .42, 2.8, 0, n * .21, 0);
+                            if (n % 3 === 0) {
+                                if (theme === 'forest') {
+                                    // Living canopy sways above its fixed rooted base; only foliage and
+                                    // branch endpoints animate, never the path or hazard positions.
+                                    const wind = calm ? 0 : Math.sin(time * .73 + n * .43 + side) * .095;
+                                    this.link([bx, y + .15, z], [bx + side * .14 + wind * .42, y + 3.65, z - .18 + wind * .3], .30, bark);
+                                    this.link([bx + side * .14 + wind * .31, y + 2.65, z - .18], [bx - side * .92 + wind, y + 4.26, z - .72 + wind * .4], .15, bark);
+                                    this.link([bx + side * .14 + wind * .36, y + 3.05, z - .18], [bx + side * .86 + wind, y + 4.72, z + .32 + wind * .4], .13, bark);
+                                    for (let j = 0; j < 5; j++)
+                                        this.shape('rock', j % 2 ? C.leaf : C.leafLight, bx + Math.sin(j * 2.32) * .67 + wind, y + 4.6 + Math.cos(j * 3.1) * .37, z - .3 + Math.cos(j * 2.1) * .57, 1.05, .53, .90, 0, j, 0);
+                                    if (!calm)
+                                        this.link([bx - side * .5, y + 4.1, z - .5], [bx - side * .48 + Math.sin(time + n) * .05, y + 2.65, z - .45], .020, C.leaf);
+                                }
+                                else if (theme === 'ruins') {
+                                    const broken = .65 + hash(n * 17 + side) * 1.75;
+                                    this.shape('cylinder', C.stone, bx, y + broken / 2, z, .40, broken, .39);
+                                    this.shape('rock', C.stoneDark, bx + t * .35, y + broken + .05, z, .60, .16, .61, 0, n * .3, .11);
+                                    this.shape('box', C.copper, bx + side * .30, y + .35, z + .28, .11, .56, .10, 0, n * .22, 0);
+                                    if (n % 6 === 0)
+                                        this.gear(bx - side * .7, y + 1.1, z, .48, time * .2);
+                                }
+                                else {
+                                    // A low ceiling of layered shale, mineral veins and damp formations.
+                                    this.shape('rock', edge, bx - side * .2, y + 2.0, z, 1.44, 2.9, 2.15, 0, n * .22, .12);
+                                    this.shape('cone', C.stoneDark, bx - side * .7, y + 3.82, z, .30, 1.28, .28, Math.PI, 0, 0);
+                                    if (n % 6 === 0)
+                                        this.crystal(bx - side * .7, y + .18, z, .62, n);
+                                    this.shape('sphere', (0, gl_1.color)('#48626A', -2), bx - side * .75, y + .012, z, .72, .02, 1.03);
+                                }
+                            }
+                            else if (n % 2 === 0) {
+                                for (let j = 0; j < 3; j++)
+                                    this.shape('rock', j % 2 ? edge : vegetation, bx + Math.sin(j * 4 + n) * .35, y + .15 + j * .11, z + (j - 1) * .69, .55, .25, .50, 0, n + j, 0);
                             }
                         }
-                        else
-                            this.shape('box', mud, lx, y - .24, z, 2.12 * width, .40, 6.7, 0, roadYaw, 0);
-                        if (!this.renderer.worldReady && (n + lane) % 3 === 0) {
-                            this.shape('rock', vegetation, lx + .60, y + .025, z + .5, .42, .026, 1.55, 0, n * .48, 0);
-                            this.shape('rock', edge, lx - .67, y + .023, z - .6, .37, .042, .39, 0, n, 0);
-                        }
-                        if (!this.renderer.worldReady && (n + lane) % 4 === 0)
-                            this.shape('rock', (0, gl_1.color)('#454A37', -8), lx - .13, y + .023, z + 1.1, .61, .035, .77, 0, n * .51, 0);
-                    }
-                    // Opaque trees, foliage and rock faces behind the camera can block
-                    // the entire screen as a fork curves. Keep the track under the runner,
-                    // but render tall scenery only ahead of the playing/camera corridor.
-                    if (this.renderer.worldReady || z > -7 || -z > sceneryFar)
-                        continue;
-                    // Keep detailed close-up vegetation and masonry. Thin only off-track
-                    // props beyond 30 metres; forks, pickups, road and hero are untouched.
-                    if (sceneryBudget < 2 && -z > 30 && n % (sceneryBudget === 0 ? 4 : 2) !== 0)
-                        continue;
-                    // Wet border rock, ancient edging and root networks never occupy lanes.
-                    for (const side of [-1, 1]) {
-                        const bx = x + side * 4.33, t = (hash(n * 43 + side * 9) * 2 - 1), bark = theme === 'ruins' ? (0, gl_1.color)('#807B73', -8) : theme === 'cavern' ? edge : (0, gl_1.color)('#735438', -7);
-                        this.shape('rock', edge, bx, y + .16, z, 1.08, .42, 2.8, 0, n * .21, 0);
-                        if (n % 3 === 0) {
-                            if (theme === 'forest') {
-                                // Living canopy sways above its fixed rooted base; only foliage and
-                                // branch endpoints animate, never the path or hazard positions.
-                                const wind = calm ? 0 : Math.sin(time * .73 + n * .43 + side) * .095;
-                                this.link([bx, y + .15, z], [bx + side * .14 + wind * .42, y + 3.65, z - .18 + wind * .3], .30, bark);
-                                this.link([bx + side * .14 + wind * .31, y + 2.65, z - .18], [bx - side * .92 + wind, y + 4.26, z - .72 + wind * .4], .15, bark);
-                                this.link([bx + side * .14 + wind * .36, y + 3.05, z - .18], [bx + side * .86 + wind, y + 4.72, z + .32 + wind * .4], .13, bark);
-                                for (let j = 0; j < 5; j++)
-                                    this.shape('rock', j % 2 ? C.leaf : C.leafLight, bx + Math.sin(j * 2.32) * .67 + wind, y + 4.6 + Math.cos(j * 3.1) * .37, z - .3 + Math.cos(j * 2.1) * .57, 1.05, .53, .90, 0, j, 0);
-                                if (!calm)
-                                    this.link([bx - side * .5, y + 4.1, z - .5], [bx - side * .48 + Math.sin(time + n) * .05, y + 2.65, z - .45], .020, C.leaf);
-                            }
-                            else if (theme === 'ruins') {
-                                const broken = .65 + hash(n * 17 + side) * 1.75;
-                                this.shape('cylinder', C.stone, bx, y + broken / 2, z, .40, broken, .39);
-                                this.shape('rock', C.stoneDark, bx + t * .35, y + broken + .05, z, .60, .16, .61, 0, n * .3, .11);
-                                this.shape('box', C.copper, bx + side * .30, y + .35, z + .28, .11, .56, .10, 0, n * .22, 0);
-                                if (n % 6 === 0)
-                                    this.gear(bx - side * .7, y + 1.1, z, .48, time * .2);
-                            }
-                            else {
-                                // A low ceiling of layered shale, mineral veins and damp formations.
-                                this.shape('rock', edge, bx - side * .2, y + 2.0, z, 1.44, 2.9, 2.15, 0, n * .22, .12);
-                                this.shape('cone', C.stoneDark, bx - side * .7, y + 3.82, z, .30, 1.28, .28, Math.PI, 0, 0);
-                                if (n % 6 === 0)
-                                    this.crystal(bx - side * .7, y + .18, z, .62, n);
-                                this.shape('sphere', (0, gl_1.color)('#48626A', -2), bx - side * .75, y + .012, z, .72, .02, 1.03);
-                            }
-                        }
-                        else if (n % 2 === 0) {
-                            for (let j = 0; j < 3; j++)
-                                this.shape('rock', j % 2 ? edge : vegetation, bx + Math.sin(j * 4 + n) * .35, y + .15 + j * .11, z + (j - 1) * .69, .55, .25, .50, 0, n + j, 0);
-                        }
-                    }
-                    // Distant cliff silhouettes and softer outer banks fill the sky without
-                    // covering the runner or inventing hazards beyond the selected path.
-                    // Normal-shaded ridgeline strips now replace these old giant
-                    // faceted placeholder rocks. The terrain banks are streamed below from
-                    // stable absolute world distances and never block the three lanes.
-                    // Path-specific recognizable landmarks, not interchangeable filler props.
-                    if (option.id === 'main' && n % 7 === 0) {
-                        for (const side of [-1, 1])
-                            this.shape('rock', C.leaf, x + side * 3.6, y + .25, z + .6, .58, .35, .75, 0, n * .31, 0);
-                        if (n % 14 === 0)
+                        // Distant cliff silhouettes and softer outer banks fill the sky without
+                        // covering the runner or inventing hazards beyond the selected path.
+                        // Normal-shaded ridgeline strips now replace these old giant
+                        // faceted placeholder rocks. The terrain banks are streamed below from
+                        // stable absolute world distances and never block the three lanes.
+                        // Path-specific recognizable landmarks, not interchangeable filler props.
+                        if (option.id === 'main' && n % 7 === 0) {
                             for (const side of [-1, 1])
-                                this.shape('sphere', (0, gl_1.color)('#D6B494', .15), x + side * 3.48, y + .57, z, .12, .12, .12);
-                    }
-                    if (n % 9 === 0) {
-                        if (option.id === 'root-arch')
-                            this.arch(x, y + .98, z, 3.1, C.wood, .28);
-                        if (option.id === 'log-crossing')
-                            this.link([x - 2.6, y + .15, z], [x + 2.6, y + .17, z], .20, C.wood);
-                        if (option.id === 'watchtower')
-                            this.arch(x + 3.9, y + 3.1, z, 2.5, C.stone, .36);
-                        if (option.id === 'gearworks')
-                            this.gear(x - 3.4, y + .95, z, .71, time * .5);
-                        if (option.id === 'crystal-vein')
-                            for (const side of [-1, 1])
-                                this.crystal(x + side * 3.9, y + .1, z, .9, n + side);
-                        if (option.id === 'ancient-vault') {
-                            this.shape('box', C.wood, x + 3.8, y + .65, z, 1.1, 1.2, .9);
-                            this.shape('ring', C.goldGlow, x + 3.8, y + 1.12, z + .49, .29, 1, .29);
+                                this.shape('rock', C.leaf, x + side * 3.6, y + .25, z + .6, .58, .35, .75, 0, n * .31, 0);
+                            if (n % 14 === 0)
+                                for (const side of [-1, 1])
+                                    this.shape('sphere', (0, gl_1.color)('#D6B494', .15), x + side * 3.48, y + .57, z, .12, .12, .12);
+                        }
+                        if (n % 9 === 0) {
+                            if (option.id === 'root-arch')
+                                this.arch(x, y + .98, z, 3.1, C.wood, .28);
+                            if (option.id === 'log-crossing')
+                                this.link([x - 2.6, y + .15, z], [x + 2.6, y + .17, z], .20, C.wood);
+                            if (option.id === 'watchtower')
+                                this.arch(x + 3.9, y + 3.1, z, 2.5, C.stone, .36);
+                            if (option.id === 'gearworks')
+                                this.gear(x - 3.4, y + .95, z, .71, time * .5);
+                            if (option.id === 'crystal-vein')
+                                for (const side of [-1, 1])
+                                    this.crystal(x + side * 3.9, y + .1, z, .9, n + side);
+                            if (option.id === 'ancient-vault') {
+                                this.shape('box', C.wood, x + 3.8, y + .65, z, 1.1, 1.2, .9);
+                                this.shape('ring', C.goldGlow, x + 3.8, y + 1.12, z + .49, .29, 1, .29);
+                            }
                         }
                     }
-                }
                 // Native WebGL counterpart of the richer browser PBR far banks.
                 // One reused indexed/instanced ridge batch; no new per-frame draw calls
                 // per hill, no collisions, no changes to the saved route or checkpoints.
                 const backdropFar = sceneryBudget === 0 ? 88 : sceneryBudget === 1 ? 100 : 112;
                 const backdropTint = (0, gl_1.color)(theme === 'cavern' ? '#4A5661' : theme === 'ruins' ? '#898C83' : '#607F72', -8);
                 const startBand = Math.floor((d - 24) / 24), endBand = Math.ceil((d + backdropFar) / 24);
-                for (let band = startBand; band <= endBand; band++) {
-                    const distance = band * 24, ahead = distance - d;
-                    if (distance < phase.start + 4 || distance > phase.end - 4 || ahead < -24 || ahead >= backdropFar)
-                        continue;
-                    // Never shrink landforms as the player approaches. Retire behind camera.
-                    const fade = (0, core_1.smooth)((backdropFar - ahead) / 20);
-                    if (fade < .035)
-                        continue;
-                    const roadCentre = (0, core_1.overgrownPathOffset)(option.id, distance) + curve(distance) - base;
-                    for (const side of [-1, 1]) {
-                        const noise = hash(band * 71 + side * 17 + (theme === 'ruins' ? 89 : 13));
-                        const bankX = roadCentre + side * (21 + noise * 3.1);
-                        this.shape('ridge', backdropTint, bankX, floorY(distance, option.id) - .43, d - distance, (8.2 + noise * 3) * fade, (7.4 + noise * 3) * fade, (13 + noise * 3.5) * fade, 0, (noise - .5) * .13, 0);
+                if (!this.renderer.authoredWorld)
+                    for (let band = startBand; band <= endBand; band++) {
+                        const distance = band * 24, ahead = distance - d;
+                        if (distance < phase.start + 4 || distance > phase.end - 4 || ahead < -24 || ahead >= backdropFar)
+                            continue;
+                        // Never shrink landforms as the player approaches. Retire behind camera.
+                        const fade = (0, core_1.smooth)((backdropFar - ahead) / 20);
+                        if (fade < .035)
+                            continue;
+                        const roadCentre = (0, core_1.overgrownPathOffset)(option.id, distance) + curve(distance) - base;
+                        for (const side of [-1, 1]) {
+                            // Only the outward bank of each outer branch belongs here; inward
+                            // banks would intersect the neighboring playable roads.
+                            if (phase.options.length > 1 && option.side !== side)
+                                continue;
+                            const noise = hash(band * 71 + side * 17 + (theme === 'ruins' ? 89 : 13));
+                            const bankX = roadCentre + side * (21 + noise * 3.1);
+                            this.shape('ridge', backdropTint, bankX, floorY(distance, option.id) - .43, d - distance, (8.2 + noise * 3) * fade, (7.4 + noise * 3) * fade, (13 + noise * 3.5) * fade, 0, (noise - .5) * .13, 0);
+                        }
                     }
-                }
                 // A visible route junction accompanies the actual fixed-step choice:
                 // three approach lanes at 140m, then a low descent, raised jump ledge and
                 // root-clad burrow tunnel at 455m. Only artwork; the fixed-step engine
@@ -3317,6 +3325,8 @@ class ExpeditionRenderer {
     sceneryState = { level: 2, fastFrames: 0, slowFrames: 0 };
     sceneTarget = null;
     sceneryBudget = 2;
+    /** PBR owns continuous terrain and dressing; native draws its own world. */
+    authoredWorld = false;
     stats = { instances: 0, culledInstances: 0, drawCalls: 0, indexedDrawCalls: 0, triangles: 0, nativeDrainMs: 0, sceneWidth: 0, sceneHeight: 0, materialDetail: 1 };
     constructor(gl) {
         this.gl = gl;

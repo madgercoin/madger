@@ -448,6 +448,8 @@ export class ExpeditionRenderer {
  private dead=false;private nativeFrames=0;private sceneryState:SceneryBudgetState={level:2,fastFrames:0,slowFrames:0};
  private sceneTarget:NativeSceneTarget|null=null;
  public sceneryBudget:SceneryBudget=2;
+ /** PBR owns continuous terrain and dressing; native draws its own world. */
+ public authoredWorld=false;
  public stats={instances:0,culledInstances:0,drawCalls:0,indexedDrawCalls:0,triangles:0,nativeDrainMs:0,sceneWidth:0,sceneHeight:0,materialDetail:1};
  constructor(gl:GL){
   this.gl=gl as NativeGL;

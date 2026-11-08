@@ -114,8 +114,9 @@ test('native trees survive passing the runner at fixed world positions and scale
  }
 });
 test('native route commitment cannot move, remove or restyle visible landscape',()=>{
- const before=landscapeAt(140,'main');
- for(const route of ['rootway','ridge','deep'])assert.deepEqual(landscapeAt(140,route,route),before,route+' changed existing geography');
+ const exterior=items=>items.filter(o=>!['ceiling','cone'].includes(o.shape));
+ const before=exterior(landscapeAt(140,'main'));
+ for(const route of ['rootway','ridge','deep'])assert.deepEqual(exterior(landscapeAt(140,route,route)),before,route+' changed existing geography');
 });
 test('shield is one transparent body-following shell, never opaque intersecting rings',()=>{
  const drawn=[],scene=Object.create(ExpeditionScene.prototype);
@@ -124,4 +125,17 @@ test('shield is one transparent body-following shell, never opaque intersecting 
  scene.shield(s,2,true);assert.equal(drawn.length,1);assert.equal(drawn[0][0],'shield');assert.equal(drawn[0][1][3],-12);
  const y=drawn[0][3];drawn.length=0;s.y=1.4;scene.shield(s,2,true);assert(Math.abs(drawn[0][3]-y-1.4)<1e-9);
  const mesh=require(path.join(temp,'gl.js')).geometryForTest('shield');assert(mesh.every(Number.isFinite));assert(mesh.length>10000);
+});
+
+test('cave interior ceilings do not hover above unoccupied outdoor branches',()=>{
+ for(const route of ['main','rootway','ridge'])assert(!landscapeAt(140,route,route==='main'?null:route).some(o=>o.shape==='ceiling'));
+ assert(landscapeAt(200,'deep','deep').some(o=>o.shape==='ceiling'));
+});
+test('authored PBR world never receives duplicate native terrain or dressing',()=>{
+ const drawn=[],scene=Object.create(ExpeditionScene.prototype);
+ scene.renderer={authoredWorld:true,worldReady:false,sceneryBudget:2,shape:(shape,...rest)=>drawn.push({shape,rest}),add:()=>{}};scene.setCourse([]);
+ for(const route of ['rootway','ridge','deep','gearworks','log-crossing']){
+  drawn.length=0;const s=C.freshOvergrownExpedition(42,'pbr-layer');Object.assign(s,{route,distance:route==='gearworks'||route==='log-crossing'?680:230,majorPath:route==='gearworks'?'ridge':route,mode:'running'});
+  scene.overgrownScenery(s,1,true);assert.equal(drawn.length,0,route+' received duplicate native world meshes');
+ }
 });

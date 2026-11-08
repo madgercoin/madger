@@ -99,7 +99,7 @@ export class LivingBackdrop {
     }
     c.needsUpdate=true;this.stats.skyColorUpdates++;
   }
-  update({biome='forest',travel=0,time=0,centre=()=>0,quality=1,chamber=false}={}) {
+  update({biome='forest',travel=0,time=0,centre=()=>0,banks=null,quality=1,chamber=false}={}) {
     const outdoor=!chamber&&(biome==='forest'||biome==='ruins');
     this.sky.visible=outdoor;this.hills.visible=outdoor;
     this.stats.skyVisible=outdoor;
@@ -120,7 +120,8 @@ export class LivingBackdrop {
       const r=hash(seed),r2=hash(seed+11);
       const width=8.5+r*3.4,height=7.1+r2*4.4,depth=14+r2*4;
       // At least nine metres from the playable centerline even after yaw.
-      const x=centre(position)+side*(22+r*3.1);
+      const boundary=banks?.(position);
+      const x=boundary?boundary[side<0?0:1]+side*(19+r*3.1):centre(position)+side*(22+r*3.1);
       this.position.set(x,-.45,d-position);
       this.euler.set(0,(r-.5)*.15,0);
       this.rotation.setFromEuler(this.euler);
