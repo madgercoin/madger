@@ -5,7 +5,7 @@ import { GLView, type ExpoWebGLRenderingContext } from 'expo-gl';
 import { LinearGradient } from 'expo-linear-gradient';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { expeditionStorage, installNativeGameStorage, nativeGameHost } from '@/game/expedition/native-host';
-import { renderSnapshot, type RenderedSnapshot } from '@/game/expedition/render-observation';
+import { renderObservationInterval, renderSnapshot, type RenderedSnapshot } from '@/game/expedition/render-observation';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import * as Haptics from 'expo-haptics';
 import { Asset } from 'expo-asset';
@@ -147,7 +147,7 @@ export default function ExpeditionScreen(){
    // scenes; live acceptance still requires fresh actual draw and pixel evidence.
    // Paused geometry is intentionally reused, with a fresh read-only heartbeat.
    if(nativeGameHost()&&renderedSnapshot.current){const current=renderSnapshot(s,nearbyHint(s,courseRef.current)),key=current.runId+':'+current.mode+':'+current.lane+':'+current.action;
-    if(timestamp-lastObservation.current>=500||key!==lastObservedAction.current){lastObservation.current=timestamp;lastObservedAction.current=key;console.info('MADGER_OFFLINE_FRAME',JSON.stringify({observedAt:Date.now(),rendered:renderedSnapshot.current,current}));}
+    if(timestamp-lastObservation.current>=renderObservationInterval(s)||key!==lastObservedAction.current){lastObservation.current=timestamp;lastObservedAction.current=key;console.info('MADGER_OFFLINE_FRAME',JSON.stringify({observedAt:Date.now(),rendered:renderedSnapshot.current,current}));}
    }
   }
   raf.current=requestAnimationFrame(tick);

@@ -147,3 +147,28 @@ device trial are required before acceptance.
 This document is a release gate, not a release approval. Record every later
 signed artifact URL, package, source SHA, versionCode, signature fingerprint,
 device QA log, store review status and final approval here before promoting.
+
+
+## November 11 Deep entrance observation correction (build 36 candidate)
+
+Exact-source native retest of head `ab0e0a6`, Mobile CI run 42480391461,
+attempt 3, cold-launched and displayed moving PBR geometry, selected Rootway,
+responded to LEFT/RIGHT/JUMP/BURROW, and froze correctly on manual pause.
+The replay then published right-lane observations at 131m and 137m, 607ms
+apart. The harness requires 134 <= distance < 137 before pressing BURROW,
+so it never sent that input. This is a missed observation window, not evidence
+that the game rejected a burrow. The real action lasts .83 seconds and is
+required to remain active at the 140m entrance. Classic testing subsequently
+lost its emulator connection; full runtime and physical-device acceptance
+remain unverified. Evidence:
+https://github.com/madgercoin/madger/actions/runs/42480391461/artifacts/13867668933.
+
+Build 36 schedules read-only, post-draw observations every 80ms only during
+the two short entrance approaches; normal and stopped gameplay retains the
+500ms heartbeat. It changes no actions, physics, routes, saves, visuals, or
+stall protection. Regression tests cover the recorded sample gap, timing-phase
+alignment at ordinary frame rates, bounded scope and immutable input state.
+The existing exact input window, observed pre-entrance burrow requirement,
+source/PID/freshness/current-rendered checks and route result remain mandatory.
+This correction is not native acceptance: a new source-matched APK and native
+retest are required before promoting it, followed by physical-phone QA.

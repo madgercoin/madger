@@ -123,3 +123,51 @@ test('Android pending callbacks cannot navigate or update an unmounted screen',a
  assert.deepEqual(app.exits,[]);assert.equal(app.afterUnmountUpdates(),0);
  assert.equal(app.callbacks.appState,undefined);assert.equal(app.callbacks.back,undefined);
 });
+
+
+test('entrance evidence uses a bounded denser cadence without mutating play',()=>{
+ const {renderObservationInterval}=load('src/game/expedition/render-observation.ts',{});
+ const state=Object.freeze({board:'overgrown',mode:'running',distance:134});
+ const before=JSON.stringify(state);
+ assert.equal(renderObservationInterval(state),80);
+ assert.equal(JSON.stringify(state),before);
+ for(const distance of [120,130,134,136.9,140.9,435,450,455.9])assert.equal(renderObservationInterval({...state,distance}),80);
+ for(const distance of [0,119.9,141,434.9,456,700,1080])assert.equal(renderObservationInterval({...state,distance}),500);
+ for(const mode of ['ready','countdown','paused','fork','chamber','upgrade','won','lost'])assert.equal(renderObservationInterval({...state,mode}),500);
+ assert.equal(renderObservationInterval({...state,board:'classic'}),500);
+});
+
+test('entrance evidence no longer skips the recorded 131m to 137m sample gap',()=>{
+ const {renderObservationInterval}=load('src/game/expedition/render-observation.ts',{});
+ // The Nov 11 native run published 131m and then 137m 607ms later.
+ // Reproduce that healthy-render/sparse-heartbeat case without claiming phone QA.
+ const frames=[{at:0,distance:131},{at:100,distance:132},{at:200,distance:133},
+   {at:300,distance:134},{at:400,distance:135},{at:490,distance:136},{at:607,distance:137}];
+ const publish=interval=>{let last=0;return frames.filter((frame,index)=>{
+  if(index===0||frame.at-last>=interval({board:'overgrown',mode:'running',distance:frame.distance})){
+   last=frame.at;return true;
+  }return false;
+ }).map(frame=>frame.distance);};
+ // 500ms can miss the trigger for different frame/phase alignment.
+ assert.deepEqual(publish(()=>500),[131,137]);
+ assert.equal(publish(()=>500).some(d=>d>=134&&d<137),false);
+ assert.ok(publish(renderObservationInterval).some(d=>d>=134&&d<137));
+});
+
+test('ordinary rendered frame rates retain entrance samples across heartbeat phase offsets',()=>{
+ const {renderObservationInterval}=load('src/game/expedition/render-observation.ts',{});
+ for(const hz of [10,15,20,30,60])for(let phase=0;phase<500;phase+=10){
+  let last=-phase,seen=false;
+  for(let at=0;at<2500;at+=1000/hz){
+   const distance=120+at/1000*10.3;
+   if(at-last>=renderObservationInterval({board:'overgrown',mode:'running',distance})){
+    last=at;if(Math.floor(distance)>=134&&Math.floor(distance)<137)seen=true;
+   }
+  }
+  assert.ok(seen,`No entrance sample at ${hz}Hz / ${phase}ms phase`);
+ }
+ const source=fs.readFileSync(path.join(root,'src/app/expedition.tsx'),'utf8');
+ assert.match(source,/timestamp-lastObservation\.current>=renderObservationInterval\(s\)/);
+ assert.ok(source.indexOf('sceneRef.current.draw(s,visualTime.current,calm)')<source.indexOf('>=renderObservationInterval(s)'));
+ assert.match(source,/if\(nativeGameHost\(\)&&renderedSnapshot\.current\)/);
+});
