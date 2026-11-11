@@ -155,9 +155,11 @@ export class RuinLandmarks {
       for(const direction of [-1,1]) {
         const bx=archX+direction*2.73;
         const columnBase=direction===-1?footLeft:footRight;
+        // Both piers meet the common arch spring even on uneven banks.
+        const courseHeight=(base+2.44-columnBase)/5;
         for(let level=0;level<5;level++) {
           this.put(this.blocks,counts,bx+(level%2?.075:-.065),
-            columnBase+.295+level*.48,z,.98,.78,.98,
+            columnBase+(level+.5)*courseHeight,z,.98,courseHeight*1.08,.98,
             (hash(k*31+direction*13+level+seed)-.5)*.055,patina);
         }
       }

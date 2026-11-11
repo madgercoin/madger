@@ -130,6 +130,10 @@ jobs:
           MADGER_RENDER_OUT: expedition-evidence/native-realism
       - name: Play the normal opening, earned-only workshop, first fork and BURROW controls
         run: node scripts/overgrown-browser-smoke.cjs
+      - name: Reach forest, ridge and Deep through real steering, jump and burrow inputs
+        run: |
+          node --test scripts/test-biome-input-timing.cjs
+          node scripts/overgrown-biome-browser-smoke.cjs
       - name: Exercise each hidden chamber through real input and checkpoint reloads
         run: node scripts/test-chambers-browser.cjs
       - name: Retain all screenshots and route performance diagnostics
@@ -141,6 +145,7 @@ jobs:
             mobile/expedition-evidence/native-realism/
             mobile/expedition-evidence/overgrown-routes/
             mobile/expedition-evidence/overgrown-board/
+            mobile/expedition-evidence/biome-browser/
             mobile/expedition-evidence/secret-chambers/
           retention-days: 14
           if-no-files-found: warn
@@ -203,6 +208,16 @@ jobs:
         env:
           MADGER_ANDROID_PREVIEW: '1'
           MADGER_BUILD_REVISION: ${{ github.sha }}
+      - name: Prepare checksum-pinned official Gradle download
+        run: |
+          python3 scripts/prepare-gradle-download.py --self-test
+          python3 scripts/prepare-gradle-download.py
+          # Bootstrap only the fixed distribution, with bounded network retries.
+          for attempt in 1 2 3; do
+            if ./android/gradlew --version --no-daemon; then break; fi
+            if [ "$attempt" = 3 ]; then exit 1; fi
+            sleep $((attempt * 5))
+          done
       - name: Build a standalone preview using the generated development key
         env:
           NODE_ENV: production
@@ -212,6 +227,8 @@ jobs:
           # Fail quickly on the local host API before compiling both C++ ABIs.
           ./android/gradlew -p android :madger-offline-game:compileReleaseKotlin --max-workers=2 --no-daemon
           ./android/gradlew -p android assembleRelease -PreactNativeArchitectures=arm64-v8a,x86_64 --max-workers=2 --no-daemon
+      - name: Verify source-built native GL and both packaged Android ABIs
+        run: python3 scripts/verify-native-gl-abis.py android/app/build/outputs/apk/release/app-release.apk
       - name: Inspect permissions on the actual APK
         run: |
           apk=android/app/build/outputs/apk/release/app-release.apk

@@ -29,8 +29,8 @@ const server = http.createServer((req,res) => {
 });
 const cases = [
   {route:'rootway',biome:'forest',input:'ArrowLeft'},
-  {route:'ridge',biome:'ruins',input:null},
-  {route:'deep',biome:'cavern',input:'ArrowRight'}
+  {route:'ridge',biome:'ruins',input:null,action:'ArrowUp',pose:'jumping'},
+  {route:'deep',biome:'cavern',input:'ArrowRight',action:'ArrowDown',pose:'burrowing'}
 ];
 const selectedCases = process.env.MADGER_BIOME_ONLY
   ? cases.filter(item=>item.route===process.env.MADGER_BIOME_ONLY) : cases;
@@ -45,6 +45,7 @@ assert(selectedCases.length,'No matching biome selected');
       const context=await browser.newContext({viewport:{width:430,height:920},deviceScaleFactor:1,
         isMobile:true,hasTouch:true});
       const page=await context.newPage(),errors=[],requests=[],stallWarnings=[];
+      let actionObserver=null,actionProof=null;
       page.on('console',message=>{if(message.text().includes('MADGER_EXPEDITION_FRAME_STALL'))stallWarnings.push(message.text());});
       page.on('pageerror',e=>errors.push(String(e)));
       page.on('response',r=>{if(r.status()>=400&&!r.url().endsWith('favicon.ico'))
@@ -56,11 +57,69 @@ assert(selectedCases.length,'No matching biome selected');
         assert.equal(await page.evaluate(()=>window.madgerActiveRenderer),'pbr',
           'PBR renderer not active for '+item.route);
         await page.getByRole('button',{name:'Start expedition',exact:true}).click();
-        await page.getByText(/LIVE PATH · \d+ m · STEER BEFORE THE JUNCTION/).waitFor({timeout:60000});
         await page.waitForFunction(()=>{const label=document.querySelector('[aria-label^="Expedition distance"]')?.getAttribute('aria-label')||'';const metres=Number(label.match(/distance (\d+)/)?.[1]||0);return metres>=119&&metres<140;},{},{timeout:60000});
+        assert.equal(await page.getByText(/LIVE PATH|STEER BEFORE THE JUNCTION/).count(),0,
+          'Hidden routes must not be named in a choice overlay');
         if(item.input)await page.keyboard.press(item.input);
+        if(item.action){
+          // Read the actual live HUD and use ordinary input at the visible lip.
+          // No timers tied to a seed, saved checkpoints or physics mutation.
+          // Arm early, before waiting for the lip. Setup at 136m consumed an
+          // extra software-rendered frame and delayed the command past entry.
+          // The 80ms HUD pose can finish before
+          // Playwright's visibility polling sees it. Retain genuine DOM changes,
+          // not engine state, and never alter or replay the running simulation.
+          actionObserver=await page.evaluateHandle(()=>{
+            const hud=document.querySelector('[aria-label^="Expedition distance"]');
+            if(!hud)throw Error('Live HUD missing before entrance action');
+            const runId=()=>JSON.parse(localStorage.getItem('madger-expedition-3d-v1')||'null')?.checkpoint?.id;
+            const proof={labels:[],runId:runId(),hud,observer:null,runIdNow:runId};
+            const record=label=>{if(label&&proof.labels.at(-1)?.label!==label)proof.labels.push({label,at:performance.now()});};
+            record(hud.getAttribute('aria-label'));
+            proof.observer=new MutationObserver(mutations=>{
+              // oldValue preserves every intermediate label even if React makes
+              // more than one change before this observer's microtask runs.
+              for(const mutation of mutations)record(mutation.oldValue);
+              record(hud.getAttribute('aria-label'));
+            });
+            proof.observer.observe(hud,{attributes:true,attributeFilter:['aria-label'],attributeOldValue:true});
+            return proof;
+          });
+          // A jump at 132–133m lands too early; 134m leaves enough arc and
+          // command-latency margin. Do not issue an already-late 138m input.
+          await page.waitForFunction(()=>{
+            const label=document.querySelector('[aria-label^="Expedition distance"]')?.getAttribute('aria-label')||'';
+            const metres=Number(label.match(/distance (\d+)/)?.[1]||0);
+            if(metres>=137)throw Error('Missed the observed 134–136m entrance input window: '+label);
+            return metres>=134;
+          },{},{timeout:8000});
+          await page.keyboard.press(item.action);
+        }
         await page.waitForFunction(route=>window.madgerForestDiagnostics?.route===route,
           item.route,{timeout:12000});        await page.waitForTimeout(450);
+        if(actionObserver){
+          actionProof=await actionObserver.evaluate(proof=>({labels:proof.labels,
+            runId:proof.runId,finalRunId:proof.runIdNow(),sameHud:proof.hud.isConnected&&
+              document.querySelector('[aria-label^="Expedition distance"]')===proof.hud}));
+          assert(actionProof.runId&&actionProof.runId===actionProof.finalRunId,
+            'Entrance action and destination must belong to the same saved run identity');
+          assert.equal(actionProof.sameHud,true,'HUD was replaced during entrance observation');
+          const frames=actionProof.labels.map(({label,at})=>{
+            const match=label.match(/^Expedition distance (\d+) meters; lane (-?\d); (jumping|burrowing|running); route ([a-z-]+)$/);
+            assert(match,'Malformed observed live HUD: '+label);
+            return {distance:Number(match[1]),lane:Number(match[2]),pose:match[3],route:match[4],at};
+          });
+          assert(frames.length>1&&frames[0].route==='main'&&frames[0].pose==='running'&&frames[0].distance<140,
+            'Observation must begin on the approach, before action');
+          assert(frames.every((frame,index)=>index===0||frame.distance>=frames[index-1].distance),
+            'Observed progress reset instead of remaining in one ongoing run');
+          const acted=frames.findIndex((frame,index)=>index>0&&frame.route==='main'&&
+            frame.distance<140&&frame.pose===item.pose&&frame.lane===(item.route==='deep'?1:0));
+          assert(acted>0,'No observed '+item.pose+' transition before the entrance: '+JSON.stringify(actionProof.labels));
+          assert(frames.slice(acted+1).some(frame=>frame.route===item.route&&frame.distance>=140),
+            'Observed action was not followed by the required destination in this run');
+          await actionObserver.evaluate(proof=>proof.observer.disconnect());
+        }
         const diagnostics=await page.evaluate(()=>window.madgerForestDiagnostics);
         assert.equal(diagnostics.route,item.route);
         assert.equal(diagnostics.biome,item.biome);
@@ -135,9 +194,22 @@ assert(selectedCases.length,'No matching biome selected');
         assert.equal(stallWarnings.length,0,'Protective frame stall detected in visual fixture: '+item.route);
         assert.deepEqual(errors,[],'JS errors: '+item.route);
         assert.deepEqual(requests,[],'Asset errors: '+item.route);
-        results.push({route:item.route,biome:item.biome,diagnostics,errors,requests});
+        results.push({route:item.route,biome:item.biome,entranceAction:item.action||'lower trail',actionProof,diagnostics,errors,requests});
         console.log('BIOME_RENDER_PASS',item.route,JSON.stringify(diagnostics));
-      } finally {await context.close();}
+      } catch(error) {
+        if(actionObserver&&!actionProof)actionProof=await actionObserver.evaluate(proof=>({labels:proof.labels,runId:proof.runId,finalRunId:proof.runIdNow(),sameHud:proof.hud.isConnected})).catch(()=>null);
+        // Capture failures too, without recovering or changing the failed run.
+        const diagnostics=await page.evaluate(()=>window.madgerForestDiagnostics||null).catch(()=>null);
+        const hud=await page.locator('[aria-label^="Expedition distance"]').first().getAttribute('aria-label').catch(()=>null);
+        fs.writeFileSync(path.join(evidence,item.route+'-failure.json'),JSON.stringify({
+          route:item.route,error:String(error.stack||error),hud,actionProof,diagnostics,errors,requests,stallWarnings
+        },null,2));
+        await page.screenshot({path:path.join(evidence,item.route+'-failure.png')}).catch(()=>{});
+        throw error;
+      } finally {
+        if(actionObserver){await actionObserver.evaluate(proof=>proof.observer.disconnect()).catch(()=>{});await actionObserver.dispose();}
+        await context.close();
+      }
     }
     const report={date:new Date().toISOString(),scope:'Physical route choice in desktop Chrome; not an Android benchmark',
       cases:results,status:'PASS'};

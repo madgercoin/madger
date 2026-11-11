@@ -4,7 +4,7 @@ import importlib.util
 import sys
 import time
 import unittest
-from unittest.mock import patch
+from unittest.mock import Mock, patch
 
 sys.path.insert(0, str(Path(__file__).parent))
 from android_foreground_observation import sample_live_pair, sample_live_pair_with_retry, sample_live_snapshot
@@ -188,6 +188,144 @@ class ExpeditionResumeObservationTests(unittest.TestCase):
             with self.assertRaisesRegex(AssertionError, message):
                 smoke.confirm_no_unexpected_pause("one")
             self.assertEqual(smoke.clicks, [])
+
+    def prior_smoke(self, frames, labels=("Run another expedition",)):
+        smoke = self.smoke(frames)
+        smoke.tree = Mock(return_value=(None, list(labels), list(labels)))
+        smoke.label_node = lambda nodes, label, clickable=False: label in nodes
+        smoke.mark = Mock()
+        return smoke
+
+    def test_prior_running_and_countdown_never_scan_accessibility(self):
+        smoke = self.prior_smoke([("running", 237, "one"),
+                                  ("countdown", 237, "one"),
+                                  ("running", 260, "one"), ("lost", 290, "one")])
+        phases = []
+        smoke.tree.side_effect = lambda: (phases.append(smoke.last_observation["phase"]),
+                                           ["Run another expedition"], ["Run another expedition"])
+        with patch.object(self.harness.time, "sleep"):
+            smoke.wait_prior_run_result("one")
+        self.assertEqual(phases, ["lost"])
+        self.assertEqual(smoke.clicks, [])
+
+    def test_prior_result_requires_terminal_proof_and_visible_replay(self):
+        smoke = self.prior_smoke([("running", 237, "one"), ("won", 1000, "one"),
+                                  ("won", 1000, "one")])
+        smoke.tree.side_effect = [(None, [], []),
+                                  (None, ["Run another expedition"], ["Run another expedition"])]
+        with patch.object(self.harness.time, "sleep"):
+            smoke.wait_prior_run_result("one")
+        self.assertEqual(smoke.tree.call_count, 2)
+        self.assertEqual(smoke.clicks, [])
+
+    def test_prior_modal_retains_real_visible_choice_input(self):
+        for phase, label in [("chamber", "Take survival supplies"),
+                ("upgrade", "Reinforced shield. Two blocked hits and longer protection. Gaps still require a jump."),
+                ("fork", "Choose Rootway, low risk, supplies")]:
+            with self.subTest(phase=phase):
+                smoke = self.prior_smoke([(phase, 300, "one"), ("running", 301, "one"),
+                                          ("lost", 330, "one")])
+                smoke.tree.side_effect = [(None, [label], [label]),
+                                          (None, ["Run another expedition"], ["Run another expedition"])]
+                with patch.object(self.harness.time, "sleep"):
+                    smoke.wait_prior_run_result("one")
+                self.assertEqual(smoke.clicks, [label])
+                self.assertEqual(smoke.tree.call_count, 2)
+
+    def test_prior_loop_rejects_pause_changed_identity_and_unknown_phase_before_xml(self):
+        for frame, message in [(("paused", 273, "one"), "unexpectedly paused"),
+                (("running", 273, "two"), "Cannot verify prior run"),
+                (("won", 1000, "two"), "Cannot verify prior run"),
+                (("ready", 0, "one"), "Unexpected prior-run phase")]:
+            with self.subTest(frame=frame):
+                smoke = self.prior_smoke([frame])
+                with self.assertRaisesRegex(AssertionError, message):
+                    smoke.wait_prior_run_result("one")
+                smoke.tree.assert_not_called()
+                self.assertEqual(smoke.clicks, [])
+
+    def test_prior_loop_propagates_invalid_or_stale_frame_without_xml(self):
+        for message in ["Foreground frame heartbeat is stale (>2 seconds)",
+                        "Current state differs from the actually rendered frame"]:
+            smoke = self.prior_smoke([AssertionError(message)])
+            with self.assertRaises(AssertionError) as caught:
+                smoke.wait_prior_run_result("one")
+            self.assertEqual(str(caught.exception), message)
+            smoke.tree.assert_not_called()
+            self.assertEqual(smoke.clicks, [])
+        smoke = self.prior_smoke([])
+        smoke.hud = lambda: None
+        smoke.last_observation = {"phase": "unobserved", "hud": None}
+        with self.assertRaisesRegex(AssertionError, "Cannot verify prior run"):
+            smoke.wait_prior_run_result("one")
+        smoke.tree.assert_not_called()
+
+    def test_prior_loop_keeps_150_second_deadline(self):
+        smoke = self.prior_smoke([("running", 237, "one")])
+        with patch.object(self.harness.time, "monotonic", side_effect=[10, 10, 160]), \
+                patch.object(self.harness.time, "sleep"):
+            with self.assertRaisesRegex(AssertionError, "within 150 seconds"):
+                smoke.wait_prior_run_result("one")
+        smoke.tree.assert_not_called()
+        self.assertEqual(smoke.clicks, [])
+
+
+class ExpeditionActionEntranceTests(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        spec = importlib.util.spec_from_file_location(
+            "expedition_action_harness", Path(__file__).with_name("android-expedition-smoke.py"))
+        cls.harness = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(cls.harness)
+
+    def smoke(self, frames):
+        smoke = self.harness.Smoke()
+        smoke.clicks = []
+        smoke.tap = smoke.clicks.append
+        observations = iter(frames)
+        def wait(predicate, description, timeout=8):
+            state, mode, run_id = next(observations)
+            smoke.last_observation = {"hud": state, "phase": mode, "run_id": run_id}
+            if not predicate(state):
+                raise AssertionError("Missing observed " + description)
+            return state
+        smoke.wait_hud = wait
+        return smoke
+
+    def frame(self, d, lane=1, action="running", route="main", mode="running", run_id="one"):
+        return ({"distance_m": d, "lane": lane, "action": action, "route": route, "score": 350}, mode, run_id)
+
+    def test_low_route_needs_observed_burrow_before_route_change(self):
+        smoke = self.smoke([self.frame(120, 0), self.frame(135),
+                            self.frame(136, action="burrowing"), self.frame(141, route="deep")])
+        selected = smoke.enter_deep_route()
+        self.assertEqual(selected["route"], "deep")
+        self.assertEqual(smoke.clicks, ["RIGHT", "BURROW"])
+
+    def test_steering_without_burrowing_cannot_pass(self):
+        smoke = self.smoke([self.frame(120), self.frame(135), self.frame(136)])
+        with self.assertRaisesRegex(AssertionError, "deliberate burrow"):
+            smoke.enter_deep_route()
+
+    def test_missed_input_window_is_not_retried_or_accepted(self):
+        for late_distance in (137, 138, 140):
+            smoke = self.smoke([self.frame(120), self.frame(late_distance)])
+            with self.assertRaisesRegex(AssertionError, "entrance within reach"):
+                smoke.enter_deep_route()
+            self.assertEqual(smoke.clicks, ["RIGHT"])
+
+    def test_pause_or_changed_run_does_not_get_resumed(self):
+        for mode, run_id in [("paused", "one"), ("running", "other")]:
+            smoke = self.smoke([self.frame(120), self.frame(135, mode=mode, run_id=run_id)])
+            with self.assertRaises(AssertionError):
+                smoke.enter_deep_route()
+            self.assertEqual(smoke.clicks, ["RIGHT"])
+
+    def test_wrong_route_cannot_be_called_success(self):
+        smoke = self.smoke([self.frame(120), self.frame(135),
+                            self.frame(136, action="burrowing"), self.frame(141, route="rootway")])
+        with self.assertRaisesRegex(AssertionError, "Deep reached"):
+            smoke.enter_deep_route()
 
 
 if __name__ == "__main__":

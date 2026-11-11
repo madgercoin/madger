@@ -75,11 +75,13 @@ test('streamed geometry moves continuously at cell seams without randomized jump
       assert(Math.abs(next[2]-at[2]-.12)<.01,'bank moved discontinuously');
     }
     assert(common>=5,'world-distance identities failed to survive a cell seam');
-    assert.equal(bankVisibility(1),0);
+    assert.equal(bankVisibility(-24),0);
+    assert.equal(bankVisibility(1),1,'near hills retain their full silhouette');
     assert.equal(bankVisibility(150),0);
     assert(bankVisibility(75)>.97);
     assert(bankVisibility(146)<.1,'new distant terrain must ease in at horizon');
-    assert.equal(canopyFade(9),0,'near scanned trees must disappear smoothly');
+    assert.equal(canopyFade(9),1,'near trees remain rooted and full-sized');
+    assert.equal(canopyFade(-24),0,'retire trees behind the camera');
     assert.equal(canopyFade(96),0,'new canopy instance must appear at zero scale');
     assert(canopyFade(55)>.99,'detailed scanned trees must remain visible midground');
   }finally{b.dispose();}

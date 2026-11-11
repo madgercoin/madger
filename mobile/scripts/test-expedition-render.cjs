@@ -217,7 +217,7 @@ test('native scanned-texture anisotropy is optional and capped by the device', (
       name,tile:0,wind:0,vertices:triangle,indices:[0,1,2]}))},
     {},[{},{},{}]);
     assert.equal(renderer.worldReady,true);
-    assert.deepEqual(applied,[[34046,2],[34046,2],[34046,2]]);
+    assert.deepEqual(applied,[[34046,2],[34046,2],[34046,2],[34046,2]]);
   }finally{renderer.dispose();}
 });
 

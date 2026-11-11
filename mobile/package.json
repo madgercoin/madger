@@ -7,21 +7,21 @@
     "@expo/ui": "~57.0.26",
     "@expo/vector-icons": "^15.0.2",
     "@react-native-async-storage/async-storage": "2.2.0",
-    "expo": "~57.0.31",
-    "expo-asset": "~57.0.20",
+    "expo": "57.0.32",
+    "expo-asset": "57.0.21",
     "expo-audio": "~57.0.5",
     "expo-clipboard": "~57.0.2",
-    "expo-constants": "~57.0.22",
+    "expo-constants": "57.0.23",
     "expo-device": "~57.0.2",
     "expo-font": "~57.0.1",
-    "expo-gl": "~57.0.2",
-    "expo-glass-effect": "~57.0.4",
+    "expo-gl": "57.0.3",
+    "expo-glass-effect": "57.0.5",
     "expo-haptics": "~57.0.3",
     "expo-image": "~57.0.5",
     "expo-linear-gradient": "~57.0.2",
     "expo-linking": "~57.0.13",
-    "expo-router": "~57.0.29",
-    "expo-splash-screen": "~57.0.10",
+    "expo-router": "57.0.30",
+    "expo-splash-screen": "57.0.11",
     "expo-status-bar": "~57.0.1",
     "expo-symbols": "~57.0.3",
     "expo-system-ui": "~57.0.4",
@@ -41,12 +41,12 @@
     "@types/react": "~19.2.2",
     "eslint": "^9.0.0",
     "eslint-config-expo": "~57.0.2",
-    "typescript": "~6.0.3",
-    "playwright": "1.64.1"
+    "playwright": "1.64.1",
+    "typescript": "~6.0.3"
   },
   "overrides": {
     "uuid": "11.1.1",
-    "@expo/cli@57.0.32": {
+    "@expo/cli@57.0.33": {
       "zod": "4.6.7"
     },
     "eslint-plugin-react-hooks@7.1.1": {
@@ -68,14 +68,23 @@
     "test:daily-dig": "node --test scripts/test-daily-dig.mjs",
     "release:metadata": "node scripts/release-readiness.mjs",
     "release:check": "npm run validate && npx expo install --check && npx expo export --platform web && npm run release:metadata",
-    "test:release-gates": "node --test scripts/test-release-readiness.mjs scripts/test-store-safe-routes.cjs scripts/test-native-game-host.cjs scripts/test-expedition-flush.cjs",
+    "test:release-gates": "node --test scripts/test-release-readiness.mjs scripts/test-store-safe-routes.cjs scripts/test-native-game-host.cjs scripts/test-expedition-flush.cjs scripts/test-native-gl-abi-config.cjs",
     "release:distribution:android": "npm run release:check && node scripts/release-readiness.mjs --distribution --platform android",
     "release:distribution": "npm run release:check && node scripts/release-readiness.mjs --distribution",
     "test:profile": "node --test scripts/test-game-profile.mjs scripts/test-run-mode.mjs",
-    "test:expedition": "node --test scripts/test-expedition-balance.cjs scripts/test-expedition.cjs scripts/test-expedition-render.cjs scripts/test-expedition-render-memory.cjs scripts/test-expedition-culling.cjs scripts/test-expedition-indices.cjs scripts/test-overgrown.cjs scripts/test-overgrown-asset-pack.cjs scripts/test-forest-quality.cjs scripts/test-forest-environment.cjs scripts/test-world-terrain.mjs scripts/test-madger-hero.mjs scripts/test-cavern-vault.mjs scripts/test-cavern-formations.mjs scripts/test-ruin-landmarks.mjs scripts/test-living-backdrop.mjs scripts/test-native-world.cjs",
+    "test:expedition": "node --test scripts/test-terrain-row-cache.cjs scripts/test-expedition-balance.cjs scripts/test-expedition.cjs scripts/test-expedition-render.cjs scripts/test-expedition-render-memory.cjs scripts/test-expedition-culling.cjs scripts/test-expedition-indices.cjs scripts/test-overgrown.cjs scripts/test-overgrown-asset-pack.cjs scripts/test-forest-quality.cjs scripts/test-forest-environment.cjs scripts/test-world-terrain.mjs scripts/test-madger-hero.mjs scripts/test-cavern-vault.mjs scripts/test-cavern-formations.mjs scripts/test-ruin-landmarks.mjs scripts/test-living-backdrop.mjs scripts/test-native-world.cjs && node --test --test-name-pattern=\"minimum scenery budget retains scanned roots\" scripts/test-forest-scan-reuse.cjs",
     "test:companions": "node --test scripts/test-companions.cjs",
     "test:expedition-audio": "node --test scripts/test-expedition-audio.cjs",
     "export:offline": "node scripts/prepare-offline-game.mjs"
   },
-  "private": true
+  "private": true,
+  "expo": {
+    "autolinking": {
+      "android": {
+        "buildFromSource": [
+          "expo-gl"
+        ]
+      }
+    }
+  }
 }

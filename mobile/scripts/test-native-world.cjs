@@ -90,8 +90,86 @@ test('the actual rolling stone mesh fits below successful jump clearance through
  for(let distance=219.5;distance<=220.5;distance+=.1){
   drawn.length=0;s.distance=distance;scene.item(rock,s,20);
   const stone=drawn.find(d=>d.shape==='geologyRock');assert(stone);
-  const floor=Math.sin(C.hazardPose(rock,s.time,distance).d/34)*.12;
+  const floor=Math.sin(C.hazardPose(rock,s.time,distance).d/34)*.12+C.overgrownPathHeight(s.route,C.hazardPose(rock,s.time,distance).d);
   assert(stone.y+radius*stone.sy-floor<1.08,'an engine-cleared jump must visibly clear every rotated mesh vertex');
   assert(radius*stone.sx+.32<=.821,'visual radius plus player body matches physical contact radius');
  }
+});
+
+function landscapeAt(distance,route='main',majorPath=null){
+ const drawn=[],scene=Object.create(ExpeditionScene.prototype);
+ scene.renderer={worldReady:true,sceneryBudget:1,shape:(shape,c,x,y,z,sx,sy,sz)=>drawn.push({shape,c,x,y,z,sx,sy,sz}),add:()=>{}};
+ const s=C.freshOvergrownExpedition(42,'stable-world');Object.assign(s,{distance,route,majorPath,mode:'running'});
+ scene.setCourse([]);scene.nativeLandscape(s,5,true);return drawn;
+}
+const curve=d=>Math.sin(d/76)*.8+Math.sin(d/185)*1.1;
+test('native trees survive passing the runner at fixed world positions and scale',()=>{
+ const before=landscapeAt(20),after=landscapeAt(25);
+ const trees=before.filter(x=>x.shape==='scanTreeTrunk'&&Math.abs(20-x.z-21)<.001);
+ assert(trees.length,'near tree fixture exists');
+ for(const tree of trees){
+  const next=after.find(x=>x.shape===tree.shape&&Math.abs((25-x.z)-(20-tree.z))<.001&&Math.abs(x.x+curve(25)-tree.x-curve(20))<.001);
+  assert(next,'a passed tree cannot vanish while still visible beside the runner');
+  assert.equal(next.sy,tree.sy);assert.equal(next.y,tree.y);
+ }
+});
+test('native route commitment cannot move, remove or restyle visible landscape',()=>{
+ const exterior=items=>items.filter(o=>!['ceiling','cone'].includes(o.shape));
+ const before=exterior(landscapeAt(140,'main'));
+ for(const route of ['rootway','ridge','deep'])assert.deepEqual(exterior(landscapeAt(140,route,route)),before,route+' changed existing geography');
+});
+test('shield is one transparent body-following shell, never opaque intersecting rings',()=>{
+ const drawn=[],scene=Object.create(ExpeditionScene.prototype);
+ scene.renderer={shape:(...args)=>drawn.push(args)};
+ const s=C.freshOvergrownExpedition(42,'shield');s.shields=1;
+ scene.shield(s,2,true);assert.equal(drawn.length,1);assert.equal(drawn[0][0],'shield');assert.equal(drawn[0][1][3],-12);
+ const y=drawn[0][3];drawn.length=0;s.y=1.4;scene.shield(s,2,true);assert(Math.abs(drawn[0][3]-y-1.4)<1e-9);
+ const mesh=require(path.join(temp,'gl.js')).geometryForTest('shield');assert(mesh.every(Number.isFinite));assert(mesh.length>10000);
+});
+
+test('cave interior ceilings do not hover above unoccupied outdoor branches',()=>{
+ for(const route of ['main','rootway','ridge'])assert(!landscapeAt(140,route,route==='main'?null:route).some(o=>o.shape==='ceiling'));
+ assert(landscapeAt(200,'deep','deep').some(o=>o.shape==='ceiling'));
+});
+test('authored PBR world never receives duplicate native terrain or dressing',()=>{
+ const drawn=[],scene=Object.create(ExpeditionScene.prototype);
+ scene.renderer={authoredWorld:true,worldReady:false,sceneryBudget:2,shape:(shape,...rest)=>drawn.push({shape,rest}),add:()=>{}};scene.setCourse([]);
+ for(const route of ['rootway','ridge','deep','gearworks','log-crossing']){
+  drawn.length=0;const s=C.freshOvergrownExpedition(42,'pbr-layer');Object.assign(s,{route,distance:route==='gearworks'||route==='log-crossing'?680:230,majorPath:route==='gearworks'?'ridge':route,mode:'running'});
+  scene.overgrownScenery(s,1,true);assert.equal(drawn.length,0,route+' received duplicate native world meshes');
+ }
+});
+
+test('distant route fixture resets entrance offsets rather than placing hero in a bank',async()=>{
+ const T=await import('../public/blackroot/vendor/build/three.module.js');
+ const {visibleRoads,nearestRoad,roadSurfaceHeight,terrainProfile}=await import('../public/blackroot/terrain.mjs');
+ const presets=JSON.parse(fs.readFileSync(path.join(root,'public/blackroot/world-presets.json')));
+ const curve=d=>Math.sin(d/76)*.8+Math.sin(d/185)*1.1;
+ const s=C.freshOvergrownExpedition(19,'render-rootway');
+ Object.assign(s,{mode:'fork',distance:140,forkStage:1});C.chooseFork(s,'rootway',[]);
+ Object.assign(s,{route:'main',mode:'fork',distance:455,forkStage:2,keys:1});C.chooseFork(s,'mosswalk',[]);
+ Object.assign(s,{distance:680,mode:'paused'});
+ assert.equal(s.x,4.3,'fork preserves world position until ordinary simulation recenters');
+ const travel=s.distance,anchor=Math.floor(travel/(205/96))*(205/96);
+ const geo=new T.PlaneGeometry(100,205,56,96);geo.rotateX(-Math.PI/2);
+ const positions=geo.attributes.position;
+ for(let i=0;i<positions.count;i++){
+  const x=positions.getX(i),d=anchor-(positions.getZ(i)-84);
+  const roads=visibleRoads(s,d,C.overgrownPathOffset,C.overgrownPathHeight,C.overgrownPathWidth).map(r=>({...r,centre:r.centre+curve(d)}));
+  const road=nearestRoad(roads,x);
+  positions.setY(i,roadSurfaceHeight(terrainProfile(presets,road.route),road,x,d));
+ }
+ const mesh=new T.Mesh(geo,new T.MeshBasicMaterial());
+ mesh.position.set(-curve(travel),0,travel-anchor-84);mesh.updateMatrixWorld(true);
+ const obstruction=()=>{
+  const x=C.overgrownPathOffset(s.route,travel),height=C.overgrownPathHeight(s.route,travel);
+  const eye=new T.Vector3(x+s.x*.72,4.4+Math.sin(travel/34)*.12+height+s.y*.18,9.6);
+  const target=new T.Vector3(x+s.x,height-.33+s.y+.65,0),direction=target.clone().sub(eye);
+  return new T.Raycaster(eye,direction.clone().normalize(),.05,direction.length()-.1).intersectObject(mesh)[0];
+ };
+ try{
+  assert(Math.abs(obstruction().distance-9.91404057)<.0001,'reproduces actual CI obstruction');
+  Object.assign(s,{x:0,y:0,vx:0,vy:0,lane:0,groundHeight:0,slide:0,slideAge:0});
+  for(const lane of [-1,0,1]){s.x=lane*C.LANE_WIDTH;s.lane=lane;assert.equal(obstruction(),undefined,'grounded lane '+lane+' has clear lower body');}
+ }finally{geo.dispose();mesh.material.dispose();}
 });

@@ -1,5 +1,5 @@
 import { multiply, perspective, lookAt, transform, type Mat4, type Vec3 } from './math';
-export type Shape='terrace'|'terraceMirror'|'geologyRock'|'box'|'sphere'|'rock'|'cylinder'|'cone'|'ring'|'leaf'|'shadow'|'headStripe'|'tail'|'halo'|'ridge'|'face'|'terrain'|'trail'|'ceiling'|ScanShape;
+export type Shape='terrace'|'terraceMirror'|'geologyRock'|'box'|'sphere'|'rock'|'cylinder'|'cone'|'ring'|'leaf'|'shadow'|'headStripe'|'tail'|'halo'|'shield'|'ridge'|'face'|'terrain'|'trail'|'ceiling'|ScanShape;
 export type ScanShape='scanTreeTrunk'|'scanTreeCrown'|'scanTreeTwigs'|'scanRock'|'scanFern'|'scanLog'|'scanRoots'|'scanCliff';
 export type NativeWorldPack={version:number;meshes:{name:string;tile:number;wind:number;vertices:number[];indices:number[]}[]};
 export type Color=[number,number,number,number];
@@ -88,7 +88,7 @@ const VERTEX=`
 precision highp float;
 attribute vec3 aPosition;
 attribute vec3 aNormal; attribute vec2 aUV;
-uniform float uTime;uniform float uWind;
+uniform float uTime;uniform float uWind;uniform float uTravel;
 varying vec2 vUV;
 attribute vec4 aM0; attribute vec4 aM1; attribute vec4 aM2; attribute vec4 aM3;
 attribute vec4 aColor;
@@ -97,7 +97,7 @@ varying vec3 vWorld; varying vec3 vNormal; varying vec3 vLocal; varying vec4 vCo
 void main(){
  mat4 model=mat4(aM0,aM1,aM2,aM3);
  vec3 local=aPosition;
- local.x+=sin(uTime*.72+aM3.x*.37+aM3.z*.13+local.y*3.0)*.009*local.y*uWind;
+ local.x+=sin(uTime*.72+(aM3.x+sin(uTravel/76.)*.8+sin(uTravel/185.)*1.1)*.37+(uTravel-aM3.z)*.13+local.y*3.0)*.009*local.y*uWind;
  vec4 p=model*vec4(local,1.0);vWorld=p.xyz;vLocal=aPosition;vUV=aUV;
  vNormal=normalize(aM0.xyz*aNormal.x/max(dot(aM0.xyz,aM0.xyz),0.00001)+aM1.xyz*aNormal.y/max(dot(aM1.xyz,aM1.xyz),0.00001)+aM2.xyz*aNormal.z/max(dot(aM2.xyz,aM2.xyz),0.00001));
  vColor=aColor;gl_Position=uVP*p;
@@ -133,13 +133,17 @@ vec3 surfaceColor(vec3 base,vec3 n){
  if(vColor.a < -7.5 && vColor.a > -8.5){tile=2.0;scale=.32;}
  if(tile<0.0)return base;
  // World anchoring prevents the earth texture swimming as the course moves.
- vec3 p=vec3(vWorld.x,vWorld.y,uTravel-vWorld.z)*scale;
+ vec3 p=vec3(vWorld.x+sin(uTravel/76.)*.8+sin(uTravel/185.)*1.1,vWorld.y,uTravel-vWorld.z)*scale;
  vec3 a=abs(n);vec2 uv=a.y>a.x&&a.y>a.z?p.xz:(a.x>a.z?p.zy:p.xy);
  vec3 tex=tile<.5?texture2D(uGround,uv).rgb:tile<1.5?texture2D(uBark,uv).rgb:texture2D(uStone,uv).rgb;
  if(tile>1.5){float grey=dot(tex,vec3(.299,.587,.114));tex=mix(tex,vec3(grey)*vec3(.87,.94,1.03),.78);}
  return tex*tex*mix(vec3(1.12),base*2.0,.20);
 }
 void main(){
+ if(vColor.a < -11.5 && vColor.a > -12.5){
+  float rim=pow(1.0-abs(dot(normalize(vNormal),normalize(uEye-vWorld))),2.5);
+  gl_FragColor=vec4(vColor.rgb,.025+rim*.28);return;
+ }
  if(vColor.a < -9.5 && vColor.a > -10.5){
   vec2 uv=vec2(vLocal.x/1.18+.5,vLocal.y/1.07+.5);
   float radius=length((uv-vec2(.5))/vec2(.52,.53));
@@ -194,7 +198,7 @@ void main(){
  }
  vec3 n=normalize(vNormal),view=normalize(uEye-vWorld);
  vec3 base=surfaceColor(vColor.rgb,n);float em=max(0.0,vColor.a);
- if(vColor.a < -.5 && vColor.a > -1.5){vec2 surface=vec2(vWorld.x,uTravel-vWorld.z);
+ if(vColor.a < -.5 && vColor.a > -1.5){vec2 surface=vec2(vWorld.x+sin(uTravel/76.)*.8+sin(uTravel/185.)*1.1,uTravel-vWorld.z);
  float grain=hash(floor(mod(surface,vec2(32.0))*24.0));
  float mottling=sin(surface.x*2.13+sin(surface.y*.75))*sin(surface.y*1.84);
  float edge=max(smoothstep(.455,.499,abs(vLocal.x)),smoothstep(.468,.499,abs(vLocal.z)));
@@ -322,8 +326,8 @@ function geometry(shape:Shape) {
   const point=(i:number,side:number):Vec3=>{const a=-1.29+i/64*3.65;const zig=[.00,.04,-.018,.05,-.023][i%5];const x=side*(.12+((i%4===0)?.03:0))+zig;const f=Math.sqrt(1-(x/.676)**2);return [x,.616*Math.cos(a)*f,-.03+.546*Math.sin(a)*f];};
   for(let i=0;i<64;i++){triangle(v,point(i,-1),point(i,1),point(i+1,-1));triangle(v,point(i,1),point(i+1,1),point(i+1,-1));}
  }else if(shape==='tail'){return tailGeometry(0,0);
- }else if(shape==='sphere'||shape==='rock'){
-  const slices=shape==='rock'?9:16,stacks=shape==='rock'?5:10;
+ }else if(shape==='sphere'||shape==='rock'||shape==='shield'){
+  const slices=shape==='rock'?9:shape==='shield'?32:16,stacks=shape==='rock'?5:shape==='shield'?20:10;
   const point=(i:number,j:number):Vec3=>{const a=i/slices*Math.PI*2,b=j/stacks*Math.PI,r=shape==='rock'?(1+.09*Math.sin(a*3+b*5)+.05*Math.cos(a*7-b*2)):1;return [Math.sin(b)*Math.cos(a)*r,Math.cos(b)*r,Math.sin(b)*Math.sin(a)*r];};
   const push=(p:Vec3)=>{const l=Math.hypot(...p);v.push(...p,p[0]/l,p[1]/l,p[2]/l);};
   for(let j=0;j<stacks;j++)for(let i=0;i<slices;i++){
@@ -444,6 +448,8 @@ export class ExpeditionRenderer {
  private dead=false;private nativeFrames=0;private sceneryState:SceneryBudgetState={level:2,fastFrames:0,slowFrames:0};
  private sceneTarget:NativeSceneTarget|null=null;
  public sceneryBudget:SceneryBudget=2;
+ /** PBR owns continuous terrain and dressing; native draws its own world. */
+ public authoredWorld=false;
  public stats={instances:0,culledInstances:0,drawCalls:0,indexedDrawCalls:0,triangles:0,nativeDrainMs:0,sceneWidth:0,sceneHeight:0,materialDetail:1};
  constructor(gl:GL){
   this.gl=gl as NativeGL;
@@ -461,7 +467,7 @@ export class ExpeditionRenderer {
   }else{
    const ext=gl.getExtension('ANGLE_instanced_arrays');if(ext){this.drawInstanced=ext.drawArraysInstancedANGLE.bind(ext);this.divisor=ext.vertexAttribDivisorANGLE.bind(ext);if('drawElementsInstancedANGLE' in ext&&typeof ext.drawElementsInstancedANGLE==='function')this.drawIndexedInstanced=ext.drawElementsInstancedANGLE.bind(ext);}
   }
-  for(const shape of ['terrace','terraceMirror','geologyRock','box','sphere','rock','ridge','terrain','trail','ceiling','cylinder','cone','ring','leaf','headStripe','tail','shadow','halo','face'] as Shape[]){
+  for(const shape of ['terrace','terraceMirror','geologyRock','box','sphere','rock','ridge','terrain','trail','ceiling','cylinder','cone','ring','leaf','headStripe','tail','shadow','halo','face','shield'] as Shape[]){
    const data=shape==='tail'?tailGeometry(0,0,this.tailVertices,this.tailGrid):geometry(shape),vertex=gl.createBuffer(),instances=gl.createBuffer();if(!vertex||!instances)throw Error('GPU buffer allocation failed');
    gl.bindBuffer(gl.ARRAY_BUFFER,vertex);gl.bufferData(gl.ARRAY_BUFFER,data,gl.STATIC_DRAW);
    let elements:WebGLBuffer|null=null;
@@ -490,7 +496,10 @@ export class ExpeditionRenderer {
   gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL,false);
   gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA,gl.RGBA,gl.UNSIGNED_BYTE,source as TexImageSource);
   gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.LINEAR_MIPMAP_LINEAR);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MAG_FILTER,gl.LINEAR);
-  gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_S,gl.CLAMP_TO_EDGE);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_T,gl.CLAMP_TO_EDGE);gl.generateMipmap(gl.TEXTURE_2D);gl.activeTexture(gl.TEXTURE0);
+  gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_S,gl.CLAMP_TO_EDGE);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_T,gl.CLAMP_TO_EDGE);
+  // The scanned foliage atlas needs the same grazing-angle filtering as dirt.
+  if(anisotropic&&anisotropy>1)try{gl.texParameterf(gl.TEXTURE_2D,anisotropic.TEXTURE_MAX_ANISOTROPY_EXT,anisotropy);}catch{/* Trilinear remains valid. */}
+  gl.generateMipmap(gl.TEXTURE_2D);gl.activeTexture(gl.TEXTURE0);
   for(let i=0;i<surfaces.length;i++){
    const t=gl.createTexture();if(!t)throw Error('Native ground texture allocation failed');this.surfaces.push(t);
    gl.activeTexture(gl.TEXTURE0+3+i);gl.bindTexture(gl.TEXTURE_2D,t);
@@ -545,9 +554,11 @@ export class ExpeditionRenderer {
   gl.uniformMatrix4fv(this.uniforms.vp,false,vp);gl.uniform3f(this.uniforms.eye,eye[0],eye[1],eye[2]);gl.uniform3f(this.uniforms.fog,fog[0],fog[1],fog[2]);gl.uniform3f(this.uniforms.sun,...(zone===2&&this.worldReady?[.32,.50,.70]:[.95,.83,.62]) as [number,number,number]);gl.uniform2f(this.uniforms.range,this.worldReady?48:30,115);gl.uniform1f(this.uniforms.time,time);gl.uniform1f(this.uniforms.travel,travel);
   this.stats.materialDetail=typeof this.gl.flushEXP==='function'&&this.sceneryBudget===0?0:1;
   gl.uniform1f(this.uniforms.detail,this.stats.materialDetail);
-  for(const [shape,b] of this.batches){if(!b.count)continue;
+  // Transparent effects follow every opaque batch, including late-loaded scans.
+  for(const transparent of [false,true])for(const [shape,b] of this.batches){
+   if((shape==='shadow'||shape==='halo'||shape==='face'||shape==='shield')!==transparent||!b.count)continue;
    const count=cullBatch(b,this.clipPlanes);this.stats.culledInstances+=b.count-count;if(!count)continue;
-   if(shape==='shadow'||shape==='halo'||shape==='face'){gl.enable(gl.BLEND);gl.blendFunc(gl.SRC_ALPHA,shape==='halo'?gl.ONE:gl.ONE_MINUS_SRC_ALPHA);gl.depthMask(shape==='face');}else{gl.disable(gl.BLEND);gl.depthMask(true);}
+   if(shape==='shadow'||shape==='halo'||shape==='face'||shape==='shield'){gl.enable(gl.BLEND);gl.blendFunc(gl.SRC_ALPHA,shape==='halo'?gl.ONE:gl.ONE_MINUS_SRC_ALPHA);gl.depthMask(shape==='face');}else{gl.disable(gl.BLEND);gl.depthMask(true);}
    gl.uniform1f(this.uniforms.surface,b.stride===8?1:0);gl.uniform1f(this.uniforms.tile,b.tile??0);gl.uniform1f(this.uniforms.wind,b.wind??0);
    const stride=(b.stride??6)*4;
    gl.bindBuffer(gl.ARRAY_BUFFER,b.vertex);gl.enableVertexAttribArray(0);gl.enableVertexAttribArray(1);gl.vertexAttribPointer(0,3,gl.FLOAT,false,stride,0);gl.vertexAttribPointer(1,3,gl.FLOAT,false,stride,12);

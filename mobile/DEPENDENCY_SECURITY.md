@@ -1,52 +1,57 @@
-# SDK 57 development-tool validation hardening
+# SDK 57 development-tool validation hardening (November 7, 2026)
 
-This branch preserves Expo SDK 57, React Native, all gameplay code, and the
-previously delivered build 30 artifact. It is not a new store release.
+MADGER 1.5.1 retains Expo SDK 57 and the existing 3D gameplay. This change
+fixes stale Expo patch-level dependencies and updates development-tool security
+without claiming an approved Android release.
 
-## Reason
+## Upstream compatibility and threat model
 
 GitHub advisory [GHSA-mrhx-c7xc-m3w5 / CVE-2023-54404](https://github.com/advisories/GHSA-mrhx-c7xc-m3w5)
-lists Zod below 4.6.6 as affected by excessive allocation during collection
-validation. Upstream [fix 6652](https://github.com/colinhacks/zod/pull/6652)
-rejects oversized **bounded** collections before visiting their elements;
-unbounded schemas are not automatically protected.
+describes excess allocation during Zod collection validation in older
+versions; Zod 4.6.7 retains the reviewed fix for bounded collections.
 
-The lockfile's Zod consumers are Expo CLI 57.0.32 and ESLint React Hooks 7.1.1.
-No game source imports Zod. This is dependency/source evidence, not a guarantee
-that every production bundle is unaffected. The repository alert 32-to-advisory
-mapping could not be confirmed through the available alert API.
+Expo CLI **57.0.33** has replaced its developer plugin Zod descriptor/output
+validation with JSON Schema through @expo/schema-utils. It still accepts
+a Zod instance injected by the MCP consumer for typed tool arguments. The
+previous patch written against CLI 57.0.32 Zod schema no longer applies;
+blindly reusing it would break npm installs and development tooling.
+ESLint React Hooks 7.1.1 remains pinned to Zod 4.6.7 as a narrowly scoped
+security override; the old CLI 57.0.32 scoped override was retargeted to
+CLI 57.0.33 as defense-in-depth for any residual CLI Zod dependencies.
+The new developer plugin JSON-schema validation itself does not depend on Zod.
 
-## Narrow remediation
+## Exact-source security controls
 
-- Pin Zod 4.6.7 only for those two exact consumer versions, without upgrading Expo.
-- Test real installed CLI plugin/output/MCP schema behavior across valid and
-  invalid inputs, including typed parameters, strict keys, and URL validation.
-- Apply a hash-guarded, fail-closed patch to the exact CLI source during
-  `postinstall`. Limit each plugin to 128 commands, 64 parameters per command,
-  two environment entries, and 1024 output records per validated output batch.
-- Reject plugin text above 1MiB UTF-8 before `JSON.parse`. Cap accumulated CLI
-  output at 1MiB code units as an additional guard. These are intentional
-  development-plugin limits; oversized plugin output now produces an error.
-- Keep ordinary text/audio/image results, valid plugin descriptors, and CLI
-  error reporting covered by regression tests. Zod error wording may differ.
+- The clean install uses pinned Expo 57.0.32, Expo CLI 57.0.33 and the
+  matching seven Expo SDK patch dependencies, with the npm 10 lockfile.
+- Two pristine upstream CLI 57.0.33 files are recorded in
+  scripts/devtools-validation-57_0_33-original with exact SHA-256 hashes.
+  The postinstall guard verifies that installed sources match those hashes
+  before modifying anything. Unknown future versions, corrupt fixtures or
+  altered installed source fail closed.
+- Bound developer plugin configurations to 128 commands, 64 parameters
+  per command and two environment entries; bound output lists to 1024
+  entries via the real JSON schema validator.
+- Limit one developer plugin message to 1 MiB of UTF-8 bytes **before**
+  JSON.parse and total buffered plugin output to 1 MiB code units. The
+  existing typed text/audio/image parsing and failure reporting remain.
+- Verify actual JSON Schema plugin validation, the injected-Zod MCP
+  bridge, positive and negative output paths, source/version drift,
+  idempotent installation and overflow handling in regression tests.
+- Keep the development CLI private. These controls do not certify every
+  supply-chain dependency and must not be used to claim no vulnerabilities.
 
-The SDK 58 proposal PR 140 changes many native assumptions and currently fails
-Expo compatibility checks. This fix does not adopt or merge it. The scoped
-major-version substitution is deliberately qualified by consumer-specific
-regressions and full release checks, rather than assumed semver compatible.
+## Verification and Android caveat
 
-## Verification and limits
-
-`npm ci` applies both the existing URI-decoder backport and this hardening.
-`npm run test:dependencies` checks both fixes. `npm run release:check` covers
-application tests, TypeScript, lint, Expo compatibility, web export and metadata.
-CI additionally exports Android/iOS, builds a preview APK and runs emulator QA.
-
-Do not infer that all security advisories are cleared, that an old APK was
-modified, that production signing is complete, or that emulator tests replace
-physical-device/audio acceptance. Keep development servers/MCP private and do
-not load untrusted plugins. A future upstream CLI update should replace this
-local compatibility patch only after reviewing its schemas and regressions.
+The source-only GitHub Actions run
+https://github.com/madgercoin/madger/actions/runs/42407371015 passed
+npm ci, all release source checks, companion/audio/graphics/security
+tests, TypeScript/lint, Expo compatibility, web export, Expo Doctor,
+and safeguarded Android AAB workflow tests. The earlier SDK 58 proposal
+is deliberately not merged. Native source-matched Android APK/emulator and
+physical-device QA, battery/thermal endurance, original art review, sound,
+production signing, Play review and privacy deployment are still separate
+release requirements. See RELEASE_CANDIDATE_1_5_1.md.
 
 ## Follow-up: single-pass URI decoding
 

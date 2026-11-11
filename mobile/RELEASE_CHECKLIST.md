@@ -1,4 +1,22 @@
-# MADGER mobile 1.4.0 release checklist
+# MADGER mobile release checklist
+
+## Current release-candidate status — November 7, 2026
+
+The current game is **MADGER 1.5.1**, including the 3D Expedition and Burrow
+Run. Source validation passed in [run 42407371015](https://github.com/madgercoin/madger/actions/runs/42407371015).
+That success does **not** establish release readiness. For actual source-matched
+Android device tests, signed store bundles, privacy-policy deployment, release
+asset requirements, account-specific Play Closed testing and handoff evidence,
+use [RELEASE_CANDIDATE_1_5_1.md](./RELEASE_CANDIDATE_1_5_1.md).
+
+The historical October 15 1.3/1.4 checklist below is retained only as a
+baseline. Do not copy its outdated version/listing details into Play Console.
+The canonical 1.5.1 listing is [PLAY_STORE_LISTING.md](./PLAY_STORE_LISTING.md),
+and the safeguarded no-auto-submit AAB workflow is documented at
+[ANDROID_BUILD_ONLY.md](./ANDROID_BUILD_ONLY.md).
+
+---
+
 
 ## Current public distribution status — 2026-10-15
 

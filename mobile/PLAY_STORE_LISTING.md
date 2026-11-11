@@ -1,80 +1,100 @@
-# Google Play listing — MADGER 1.3.0
+# MADGER 1.5.1 — Google Play listing (release candidate)
 
-Use this as the reviewed source when completing the Play Console listing for package `com.madgercoin.app`.
+This is the canonical current Play Store text for the existing MADGER Android game.
+It supersedes the outdated Burrow Run-only 1.3/1.4 listing drafts. It is not
+evidence of a submitted or approved Play Store release.
 
-## Listing copy
-
-**App name (30 characters maximum)**  
+## App name
 MADGER
 
-**Short description (80 characters maximum)**  
-A one-minute three-lane arcade run with local scores and no account required.
+## Short description (maximum 80 characters)
+A 3D badger adventure with hidden routes, companions and quick arcade runs.
 
-**Full description**
+## Full description
 
-MADGER brings Burrow Run to Android: a fast, one-minute arcade challenge built around signal, noise, and grit.
+MADGER brings two arcade adventures together: an evolving 3D Expedition and the
+fast, sixty-second Burrow Run.
 
-Move through three tunnel lanes, collect signals, dodge noise, and build your multiplier. Pick up shields and magnets, charge Dig Burst, and push for a new personal best as the tunnel grows faster.
+EXPLORE THE 3D EXPEDITION
 
-Features:
+Run, jump, and burrow through forest, ruined structures, and caverns. Choose
+branching routes, spot environmental hazards, collect in-game coins and relics,
+find hidden chambers, unlock discoveries, and return to saved checkpoints.
+Improve your run through earned workshop upgrades.
 
-- 60-second Classic runs and a seeded Daily route
-- Three tunnel zones with increasing speed
-- Shields, signal magnets, Dig Burst, streaks, and close-dodge bonuses
-- Separate Classic and Daily high scores
-- XP, achievements, earned cosmetic trails, and a 20-run history
-- Swipe and button controls
-- Optional sound and haptics, plus calm effects and reduced-motion support
-- Local progress with a reset control in Settings
-- No account, wallet connection, ads, or purchase required to play
+Three companions have distinct gameplay roles:
+- Snow White helps Madger confront threats.
+- Gorilla White steps in to defend Madger.
+- Madger Bot provides special electronic boosts.
 
-Scores, progression, and preferences remain on the device. The app does not request a seed phrase or private key, execute cryptocurrency transactions, or custody assets. External links open only when selected.
+TAKE ON BURROW RUN
 
-No hype. No panic. Just dig.
+Switch lanes to grab signals, avoid hazards, build score multipliers, collect
+shields and magnets, and charge Dig Burst. Play a fresh Classic run or a seeded
+Daily challenge. Work toward personal bests, XP, achievements, and earned
+cosmetic trails.
 
-## Store classification
+PLAY YOUR WAY
 
-| Field | Prepared answer |
+Use touch controls, pause when needed, and manage optional sound, haptics,
+and calmer visual effects. Records, unlocks, progress, and preferences are
+stored on your device. No account, advertising, in-app purchase, or
+cryptocurrency wallet is required to play.
+
+All game coins, relics, and rewards are fictional and have no monetary value.
+There are no cash prizes, token payouts, trading features, or remote
+leaderboards. Optional official MADGER website and community links open
+only when selected.
+
+## What's new in version 1.5.1
+
+- Expand your adventure with 3D Expedition routes across multiple environments.
+- Discover chambers, relics, workshop upgrades, and saved checkpoints.
+- Meet Snow White, Gorilla White, and Madger Bot, each with a unique support role.
+- Keep playing Burrow Run Classic and Daily with locally saved results.
+- Improvements to graphics handling, companion behavior, and gameplay recovery.
+
+## Play Console fields to verify before submission
+
+| Field | Draft / verification |
 | --- | --- |
-| App or game | Game |
-| Category | Arcade |
-| Price | Free |
-| Ads | No |
-| App access | All gameplay is available without an account or special access |
-| Privacy policy | https://madgercoin.com/privacy.html |
-| Developer contact | madgercoin@gmail.com |
-| Package | com.madgercoin.app |
-| Version | 1.3.0 |
-| Version code | 6 |
+| Category | Game / Arcade |
+| App name | MADGER |
+| Package | com.madgercoin.app (official production identity) |
+| Public app version | 1.5.1; confirm final signed bundle versionCode |
+| Pricing | Free |
+| Ads | No in-app ads in reviewed source; confirm exact signed bundle |
+| In-app purchases | None in reviewed source; confirm exact signed bundle |
+| Account / access | No login or restricted access required |
+| Support | madgercoin@gmail.com |
+| Website | https://madgercoin.com |
+| Privacy policy | https://madgercoin.com/privacy.html (must match shipping app) |
+| Target audience | Owner must select and validate in Play Console |
+| Content rating | Owner must complete official questionnaire |
+| Financial features declaration | Review token-related branding/external website destinations against current Play rules |
+| Countries and regions | Owner selection required |
+| Data safety | Verify final AAB permissions, SDK inventory and live policy before declaration |
 
-## Data-safety evidence
+## Reviewer's access instructions
 
-The shipped app stores game scores, recent-run statistics, daily marks, play dates, XP, achievements, trails, and sound/haptic/calm preferences locally on the device. It contains no advertising SDK, analytics SDK, account system, wallet connection, or remote score service. Sharing a best score invokes the operating-system share sheet and sends content only to a destination the player chooses.
+No account or password is required. Launch MADGER and choose Expedition
+for the 3D game or Burrow Run for 60-second Classic and Daily play.
+A player can explore without a wallet, purchase, or paid unlock.
+Scores, collectibles, and progression are local to the device.
+Optional website and community links are user-initiated and open externally.
 
-Code and policy evidence:
+## Listing artwork required
 
-- `mobile/PRIVACY.md`
-- `docs/game-v1.md`
-- `mobile/app.json`
-- https://madgercoin.com/privacy.html
+Do not substitute composited web-only 3D scenes for screenshots of the shipped
+Android application. Before submission, capture actual supported Android
+screens from the exact release-candidate AAB/APK: Expedition gameplay showing
+the hero and environment; clear in-game controls and companion interactions;
+Burrow Run; and relevant score/reward or workshop UI. Verify readability,
+original assets, aspect ratio, screenshot accuracy, ownership and license.
+Prepare the 512x512 Play icon, 1024x500 feature graphic and at least two real
+phone screenshots per current Play requirements. Review branding before upload.
 
-Confirm the generated production bundle’s final SDK and permission inventory before submitting the Data safety form.
+## Release status
 
-## Policy items requiring owner review
-
-Do not infer these answers from the code alone:
-
-- Target age groups
-- Whether external token-related destinations require a Financial features declaration
-- Content-rating questionnaire interpretations
-- Countries/regions selected for release
-
-The app does not connect a wallet, request wallet credentials, execute trades, sell tokens, process payments, or custody assets. Historical purchase deep links redirect to Home. No trading guides or exchange links are included. Optional support, website and community links follow the privacy policy.
-
-## Internal-test release
-
-**Release name**  
-MADGER 1.3.0 (6)
-
-**Release notes**  
-Burrow Run arrives on Android with Classic and Daily play, three tunnel zones, shields, magnets, Dig Burst, achievements, cosmetic trails, local score history, improved accessibility, and persistent sound, haptic, and calm settings. No account or wallet is required.
+Prepared copy only. Not an Android physical-device acceptance, a signing
+attestation, a Data Safety declaration, a Play Console upload or Google approval.

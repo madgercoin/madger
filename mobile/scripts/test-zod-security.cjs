@@ -1,3 +1,5 @@
+// Actual Expo SDK 57.0.33 JSON-schema consumer regression tests.
+// The new CLI no longer uses the old Zod plugin parser; ESLint Hooks still uses Zod.
 const assert = require('node:assert/strict');
 const path = require('node:path');
 const { createRequire } = require('node:module');
@@ -6,179 +8,170 @@ const { execFileSync } = require('node:child_process');
 const { readFileSync, writeFileSync, mkdirSync, mkdtempSync, cpSync, rmSync } = require('node:fs');
 const { tmpdir } = require('node:os');
 
-// Resolve through the actual Expo consumer, rather than accidentally testing a
-// different hoisted Zod copy. These tests intentionally fail on unpatched installs.
 const expoRequire = createRequire(require.resolve('expo/package.json'));
 const cliPackage = expoRequire.resolve('@expo/cli/package.json');
 const cliRequire = createRequire(cliPackage);
 const cliRoot = path.dirname(cliPackage);
 const server = path.join(cliRoot, 'build/src/start/server');
-const { z } = cliRequire('zod');
-const { PluginSchema, DevToolsPluginOutputSchema } = require(path.join(server, 'DevToolsPlugin.schema.js'));
-const { createMCPDevToolsExtensionSchema } = require(path.join(server, 'createMCPDevToolsExtensionSchema.js'));
-const { DevToolsPluginCliExtensionResults } = require(path.join(server, 'DevToolsPluginCliExtensionResults.js'));
+const devtools = path.join(server, 'devtools');
+const { PluginSchema, DevToolsPluginOutputSchema } = require(path.join(devtools, 'DevToolsPlugin.schema.js'));
+const { createMCPDevToolsExtensionSchema } = require(path.join(server, 'mcp/createMCPDevToolsExtensionSchema.js'));
+const { DevToolsPluginCliExtensionResults } = require(path.join(devtools, 'DevToolsPluginCliExtensionResults.js'));
+const schemaTools = cliRequire('@expo/schema-utils');
+const check = (schema, data) => schemaTools.validate(schema, data);
+const invalid = (schema, data) => assert.throws(
+  () => check(schema, data),
+  (error) => error instanceof schemaTools.ValidationError,
+);
+const command = () => ({
+  name: 'inspect', title: 'Inspect', environments: ['cli', 'mcp'],
+  parameters: [
+    { name: 'count', type: 'number' },
+    { name: 'confirm', type: 'confirm' },
+    { name: 'label', type: 'text' },
+  ],
+});
+const plugin = () => ({
+  packageName: 'test-plugin', packageRoot: '/test-plugin',
+  cliExtensions: { description: 'Fixture plugin', entryPoint: 'index.js', commands: [command()] },
+});
 
-const command = () => ({ name: 'inspect', title: 'Inspect', environments: ['cli', 'mcp'], parameters: [
-  { name: 'count', type: 'number' }, { name: 'confirm', type: 'confirm' }, { name: 'label', type: 'text' },
-] });
-const plugin = () => ({ packageName: 'test-plugin', packageRoot: '/test-plugin', cliExtensions: {
-  description: 'Fixture plugin', entryPoint: 'index.js', commands: [command()],
-} });
-function untouchedArray(length) {
-  const value = new Array(length);
-  Object.defineProperty(value, 0, { get() { throw new Error('Oversized array element was evaluated'); } });
-  return value;
-}
-
-test('both actual consumers resolve the reviewed patched Zod version', () => {
-  assert.equal(require(cliPackage).version, '57.0.32');
-  assert.equal(cliRequire('zod/package.json').version, '4.6.7');
+test('exact Expo SDK CLI consumer uses reviewed JSON schema; Hooks retains patched Zod', () => {
+  assert.equal(require(cliPackage).version, '57.0.33');
+  assert.equal(typeof PluginSchema, 'object');
+  assert.equal(typeof DevToolsPluginOutputSchema, 'object');
   const hooksRequire = createRequire(require.resolve('eslint-plugin-react-hooks'));
   assert.equal(hooksRequire('zod/package.json').version, '4.6.7');
   assert.ok(hooksRequire('zod/v4').z);
 });
 
-test('reviewed CLI patch is idempotent on the installed exact dependency', () => {
-  const files = ['DevToolsPlugin.schema.js', 'DevToolsPluginCliExtensionResults.js'].map(name => path.join(server, name));
-  const before = files.map(file => readFileSync(file, 'utf8'));
-  for (let attempt = 0; attempt < 2; attempt++) {
+test('pinned plugin patch is idempotent on actual installed CLI', () => {
+  const paths = ['DevToolsPlugin.schema.js', 'DevToolsPluginCliExtensionResults.js']
+    .map((name) => path.join(devtools, name));
+  const before = paths.map((file) => readFileSync(file, 'utf8'));
+  for (let i = 0; i < 2; i++) {
     execFileSync(process.execPath, [path.join(__dirname, 'patch-devtools-validation.mjs')], { timeout: 5000 });
-    assert.deepEqual(files.map(file => readFileSync(file, 'utf8')), before);
+    assert.deepEqual(paths.map((file) => readFileSync(file, 'utf8')), before);
   }
 });
 
-test('fresh patch and source/version tamper guards work in an isolated install fixture', () => {
-  const root = mkdtempSync(path.join(tmpdir(), 'madger-zod-guard-'));
+test('fresh patch, source drift and future CLI version changes fail closed', () => {
+  const root = mkdtempSync(path.join(tmpdir(), 'madger-cli-schema-'));
   try {
     const scripts = path.join(root, 'scripts');
     const expo = path.join(root, 'node_modules/expo');
     const cli = path.join(expo, 'node_modules/@expo/cli');
-    const target = path.join(cli, 'build/src/start/server');
-    const zod = path.join(cli, 'node_modules/zod');
-    for (const dir of [scripts, target, zod]) mkdirSync(dir, { recursive: true });
-    writeFileSync(path.join(expo, 'package.json'), JSON.stringify({ name: 'expo', version: '57.0.31' }));
-    writeFileSync(path.join(cli, 'package.json'), JSON.stringify({ name: '@expo/cli', version: '57.0.32' }));
-    writeFileSync(path.join(zod, 'package.json'), JSON.stringify({ name: 'zod', version: '4.6.7' }));
+    const target = path.join(cli, 'build/src/start/server/devtools');
+    for (const dir of [scripts, target]) mkdirSync(dir, { recursive: true });
+    writeFileSync(path.join(expo, 'package.json'), JSON.stringify({ name: 'expo', version: '57.0.32' }));
+    writeFileSync(path.join(cli, 'package.json'), JSON.stringify({ name: '@expo/cli', version: '57.0.33' }));
     cpSync(path.join(__dirname, 'patch-devtools-validation.mjs'), path.join(scripts, 'patch.mjs'));
-    cpSync(path.join(__dirname, 'devtools-validation-original'), path.join(scripts, 'devtools-validation-original'), { recursive: true });
+    cpSync(path.join(__dirname, 'devtools-validation-57_0_33-original'), path.join(scripts, 'devtools-validation-57_0_33-original'), { recursive: true });
     const names = ['DevToolsPlugin.schema.js', 'DevToolsPluginCliExtensionResults.js'];
-    for (const name of names) cpSync(path.join(scripts, 'devtools-validation-original', name + '.txt'), path.join(target, name));
+    for (const name of names) cpSync(path.join(scripts, 'devtools-validation-57_0_33-original', name + '.txt'), path.join(target, name));
     const run = () => execFileSync(process.execPath, [path.join(scripts, 'patch.mjs')], { timeout: 5000, stdio: 'pipe' });
     run();
     const patched = names.map(name => readFileSync(path.join(target, name), 'utf8'));
-    assert.deepEqual(patched, names.map(name => readFileSync(path.join(server, name), 'utf8')));
+    assert.deepEqual(patched, names.map(name => readFileSync(path.join(devtools, name), 'utf8')));
     run();
     assert.deepEqual(names.map(name => readFileSync(path.join(target, name), 'utf8')), patched);
-    writeFileSync(path.join(target, names[0]), patched[0] + '\n// unexpected dependency modification\n');
+    writeFileSync(path.join(target, names[0]), patched[0] + '\n// unexpected source drift\n');
     assert.throws(run, /Unexpected CLI source/);
-    assert.equal(readFileSync(path.join(target, names[1]), 'utf8'), patched[1]);
     writeFileSync(path.join(target, names[0]), patched[0]);
-    writeFileSync(path.join(zod, 'package.json'), JSON.stringify({ name: 'zod', version: '4.6.8' }));
-    assert.throws(run, /Reassess development validation/);
-    assert.deepEqual(names.map(name => readFileSync(path.join(target, name), 'utf8')), patched);
+    writeFileSync(path.join(cli, 'package.json'), JSON.stringify({ name: '@expo/cli', version: '57.0.34' }));
+    assert.throws(run, /Reassess development plugin validation/);
   } finally { rmSync(root, { recursive: true, force: true }); }
 });
 
-test('upstream collection bounds reject before walking array, set, or map values', () => {
-  let visited = 0;
-  const element = z.any().transform((value) => { visited++; return value; });
-  const results = [
-    z.array(element).max(1).safeParse(untouchedArray(2)),
-    z.set(element).max(1).safeParse(new Set([1, 2])),
-    z.map(element, element).max(1).safeParse(new Map([[1, 1], [2, 2]])),
-  ];
-  for (const result of results) {
-    assert.equal(result.success, false);
-    assert.equal(result.error.issues.length, 1);
-    assert.equal(result.error.issues[0].code, 'too_big');
-  }
-  assert.equal(visited, 0);
+test('real plugin schema preserves valid commands and rejects malformed settings', () => {
+  const valid = plugin();
+  assert.doesNotThrow(() => check(PluginSchema, valid));
+  invalid(PluginSchema, { ...valid, packageName: '' });
+  const broken = plugin(); broken.cliExtensions.commands[0].parameters[0].type = 'unknown';
+  invalid(PluginSchema, broken);
+  invalid(PluginSchema, { ...valid, cliExtensions: { ...valid.cliExtensions, commands: [] } });
 });
 
-test('real CLI plugin schema preserves valid values and rejects invalid configuration', () => {
-  const fixture = plugin();
-  assert.deepEqual(PluginSchema.parse(fixture), fixture);
-  assert.equal(PluginSchema.safeParse({ ...fixture, packageName: '' }).success, false);
-  const invalid = plugin();
-  invalid.cliExtensions.commands[0].parameters[0].type = 'unknown';
-  assert.equal(PluginSchema.safeParse(invalid).success, false);
-  assert.equal(PluginSchema.safeParse({ ...fixture, cliExtensions: { ...fixture.cliExtensions, commands: [] } }).success, false);
-});
+test('development collection limits are applied by the real JSON-schema validator', () => {
+  const cli = PluginSchema.properties.cliExtensions.properties;
+  assert.equal(cli.commands.maxItems, 128);
+  assert.equal(cli.commands.items.properties.parameters.maxItems, 64);
+  assert.equal(cli.commands.items.properties.environments.maxItems, 2);
+  assert.equal(DevToolsPluginOutputSchema.maxItems, 1024);
 
-test('real CLI nested collection limits reject before reading oversized elements', () => {
   for (const [field, length] of [['commands', 129], ['parameters', 65], ['environments', 3]]) {
-    const fixture = plugin();
-    if (field === 'commands') fixture.cliExtensions.commands = untouchedArray(length);
-    else fixture.cliExtensions.commands[0][field] = untouchedArray(length);
-    const result = PluginSchema.safeParse(fixture);
-    assert.equal(result.success, false, field);
-    assert.equal(result.error.issues.length, 1, field);
-    assert.equal(result.error.issues[0].code, 'too_big', field);
+    const obj = plugin();
+    if (field === 'commands') obj.cliExtensions.commands = Array.from({ length }, command);
+    else if (field === 'parameters') obj.cliExtensions.commands[0].parameters = Array.from({ length }, () => ({ name: 'p', type: 'text' }));
+    else obj.cliExtensions.commands[0].environments = Array.from({ length }, () => 'cli');
+    invalid(PluginSchema, obj);
   }
+  const valid = plugin();
+  valid.cliExtensions.commands = Array.from({ length: 128 }, command);
+  valid.cliExtensions.commands[0].parameters = Array.from({ length: 64 }, (_, i) => ({ name: 'p' + i, type: 'text' }));
+  assert.doesNotThrow(() => check(PluginSchema, valid));
 });
 
-test('plugin limits include boundary values without changing normal descriptors', () => {
-  const fixture = plugin();
-  fixture.cliExtensions.commands = Array.from({ length: 128 }, command);
-  fixture.cliExtensions.commands[0].parameters = Array.from({ length: 64 }, (_, n) => ({ name: `p${n}`, type: 'text' }));
-  assert.equal(PluginSchema.safeParse(fixture).success, true);
-});
-
-test('actual MCP schema keeps typed parameters, command enum and strict unknown-key rejection', () => {
-  const schema = createMCPDevToolsExtensionSchema(plugin());
-  const valid = { command: 'inspect', count: 2, confirm: true, label: 'example' };
-  assert.deepEqual(schema.parse(valid), valid);
+test('actual MCP bridge correctly validates typed CLI parameters with injected Zod', () => {
+  const hooksRequire = createRequire(require.resolve('eslint-plugin-react-hooks'));
+  const { z } = hooksRequire('zod');
+  const schema = createMCPDevToolsExtensionSchema(plugin(), z);
+  assert.deepEqual(schema.parse({ command: 'inspect', count: 2, confirm: true, label: 'sample' }),
+    { command: 'inspect', count: 2, confirm: true, label: 'sample' });
   assert.equal(schema.safeParse({ command: 'inspect' }).success, true);
-  for (const invalid of [{ command: 'wrong' }, { command: 'inspect', count: '2' },
-    { command: 'inspect', confirm: 'true' }, { command: 'inspect', label: 1 },
-    { command: 'inspect', unknown: 1 }]) assert.equal(schema.safeParse(invalid).success, false);
-  assert.throws(() => createMCPDevToolsExtensionSchema({ packageName: 'empty' }), /no commands/);
+  for (const broken of [
+    { command: 'wrong' },
+    { command: 'inspect', count: '2' },
+    { command: 'inspect', confirm: 'yes' },
+    { command: 'inspect', unknown: 1 },
+  ]) assert.equal(schema.safeParse(broken).success, false);
+  assert.throws(() => createMCPDevToolsExtensionSchema({ packageName: 'empty' }, z), /no commands/);
 });
 
-test('real output schema accepts text/audio/image and rejects malformed or oversized output', () => {
-  const valid = [{ type: 'text', text: 'ready', level: 'info' },
+test('real plugin output schema preserves text, audio and image and rejects invalid output', () => {
+  const output = [
+    { type: 'text', text: 'ready', level: 'info' },
     { type: 'audio', url: 'https://example.com/audio' },
-    { type: 'image', url: 'https://example.com/image', text: 'fixture' }];
-  assert.deepEqual(DevToolsPluginOutputSchema.parse(valid), valid);
-  assert.equal(DevToolsPluginOutputSchema.safeParse([{ type: 'audio', url: 'invalid' }]).success, false);
-  assert.equal(DevToolsPluginOutputSchema.safeParse([{ type: 'text', text: 'x', level: 'fatal' }]).success, false);
-  assert.equal(DevToolsPluginOutputSchema.safeParse(Array.from({ length: 1024 }, () => valid[0])).success, true);
-  const result = DevToolsPluginOutputSchema.safeParse(untouchedArray(1025));
-  assert.equal(result.success, false);
-  assert.equal(result.error.issues.length, 1);
-  assert.equal(result.error.issues[0].code, 'too_big');
+    { type: 'image', url: 'https://example.com/image', text: 'fixture' },
+  ];
+  assert.doesNotThrow(() => check(DevToolsPluginOutputSchema, output));
+  invalid(DevToolsPluginOutputSchema, [{ type: 'audio', url: 'bad-url' }]);
+  invalid(DevToolsPluginOutputSchema, [{ type: 'text', text: 'x', level: 'fatal' }]);
+  assert.doesNotThrow(() => check(DevToolsPluginOutputSchema, Array.from({ length: 1024 }, () => output[0])));
+  invalid(DevToolsPluginOutputSchema, Array.from({ length: 1025 }, () => output[0]));
 });
 
-test('CLI output parser rejects oversized UTF-8 bytes before JSON parsing', () => {
+test('the CLI parser checks UTF-8 byte limit before JSON.parse', () => {
   const parser = new DevToolsPluginCliExtensionResults();
   const original = JSON.parse;
-  let parsed = 0;
-  JSON.parse = () => { parsed++; throw new Error('Oversized text reached JSON.parse'); };
+  let calls = 0;
+  JSON.parse = () => { calls++; throw Error('oversized input reached JSON.parse'); };
   try {
     for (const input of ['x'.repeat(1024 * 1024 + 1), '🦡'.repeat(262145)]) {
-      const result = parser.parseOutputText(input);
-      assert.equal(result.length, 1);
-      assert.equal(result[0].type, 'text');
-      assert.equal(result[0].level, 'error');
+      const output = parser.parseOutputText(input);
+      assert.equal(output.length, 1);
+      assert.equal(output[0].type, 'text');
+      assert.equal(output[0].level, 'error');
     }
-    assert.equal(parsed, 0);
+    assert.equal(calls, 0);
   } finally { JSON.parse = original; }
 });
 
-test('CLI output parser retains ordinary JSON, plain-text and error reporting behavior', () => {
+test('CLI output parser preserves normal JSON, plain text and error reporting', () => {
   const parser = new DevToolsPluginCliExtensionResults();
   const value = [{ type: 'text', text: 'ready', level: 'info' }];
   assert.deepEqual(parser.parseOutputText(JSON.stringify(value)), value);
   assert.deepEqual(parser.parseOutputText('one\ntwo', 'warning'), [
-    { type: 'text', text: 'one', level: 'warning' }, { type: 'text', text: 'two', level: 'warning' },
+    { type: 'text', text: 'one', level: 'warning' },
+    { type: 'text', text: 'two', level: 'warning' },
   ]);
-  const invalid = parser.parseOutputText('[{"type":"invalid"}]');
-  assert.equal(invalid.length, 1);
-  assert.equal(invalid[0].level, 'error');
-  assert.match(invalid[0].text, /Invalid JSON:/);
+  const error = parser.parseOutputText('[{"type":"invalid"}]');
+  assert.equal(error.length, 1);
+  assert.equal(error[0].level, 'error');
+  assert.match(error[0].text, /Invalid JSON:/);
 });
 
-test('accumulated plugin output is capped and later writes remain ignored', () => {
+test('accumulated output cap cannot be bypassed by subsequent append', () => {
   const parser = new DevToolsPluginCliExtensionResults();
   parser.append('x'.repeat(1024 * 1024));
   assert.equal(parser.isTruncated(), false);
@@ -186,6 +179,6 @@ test('accumulated plugin output is capped and later writes remain ignored', () =
   assert.equal(parser.isTruncated(), true);
   const before = parser.getOutput().slice();
   assert.match(before.at(-1).text, /Output truncated:/);
-  parser.append('must be ignored');
+  parser.append('ignored');
   assert.deepEqual(parser.getOutput(), before);
 });

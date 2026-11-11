@@ -8,7 +8,7 @@ const begin=source.indexOf('    const start=Math.floor(travel/12)*12;');
 const end=source.indexOf('    this.stats.groundedSceneryInstances=anchored;',begin);
 assert(begin>=0&&end>begin);
 const body=source.slice(begin,end)+'\nreturn anchored;';
-const args=['travel','s','scenery','ruins','underground','breezeTime','hash','road','curve','bankX','surface','matrix','foliageSway','canopyFade','canopyWind'];
+const args=['travel','s','scenery','ruins','underground','breezeTime','hash','road','curve','bankX','surface','matrix','foliageSway','canopyFade','canopyWind','roadsAt','sceneryProfile','terrainBiome'];
 const optimized=new Function(...args,'let anchored=0;'+body.replace(/surface\(/g,'(anchored++,surface)('));
 // Force the exact same placement code to recompute each material's matrices.
 const reference=new Function(...args,'let anchored=0;'+body.replace('placements.get(id)','undefined').replace(/surface\(/g,'(anchored++,surface)('));
@@ -29,8 +29,25 @@ function run(fn,target,travel,ruins,underground,time){
   (_s,d)=>Math.sin(d/76),d=>Math.sin(d/185),(x,d,m)=>x+Math.sin(d)*m,
   (x,d)=>Math.sin(x)*Math.cos(d),(...v)=>Float32Array.from([...v,...Array(16-v.length).fill(0)]),
   (t,d,side)=>Math.sin(t+d+side)*.03,ahead=>Math.max(0,Math.min(1,(110-ahead)/20)),
-  (t,d,r)=>Math.sin(t+d+r)*.02);
+  (t,d,r)=>Math.sin(t+d+r)*.02,
+  d=>[{route:underground?'cavern':ruins?'ruins':'forest',centre:Math.sin(d/76)+Math.sin(d/185)-Math.sin(travel/185)}],
+  ()=>({seed:7,understory:1,rootScale:1,treeScale:1}),(_presets,route)=>route);
 }
+test('minimum scenery budget retains scanned roots at every forest travel offset',()=>{
+  // Exercise the production placement loop under the strictest GPU fallback.
+  // Root candidates are 36m apart. The first candidate can be clipped by
+  // the near-plane guard, so the next one must still be drawable at budget 0.
+  for(let travel=0;travel<144;travel+=.5){
+    const target=scene(.44,0);
+    run(optimized,target,travel,false,false,10);
+    const roots=target.scanBatches.filter(entry=>entry.id==='root_cluster_01');
+    assert(roots.some(entry=>entry.mesh.count>0),
+      'Missing visible scanned root at travel='+travel+'m');
+    assert(roots.every(entry=>entry.mesh.count<=6),
+      'Fallback exceeded near-plus-far root budget at '+travel+'m');
+  }
+});
+
 test('all biome/quality placements remain byte-identical while duplicate material work drops',()=>{
  let before=0,after=0,capacity=0,uploads=0,cases=0;
  for(const [ruins,underground] of [[false,false],[true,false],[false,true]])

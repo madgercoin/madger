@@ -14,14 +14,14 @@ const smooth=v=>{const x=clamp(v);return x*x*(3-2*x);};
 const hash=n=>{const v=Math.sin(n*127.13+37.7)*43758.5453;return v-Math.floor(v);};
 export const BACKDROP_INSTANCE_LIMIT=20;
 export function bankVisibility(distance,far=149) {
-  if(!Number.isFinite(distance)||distance<=2||distance>=far)return 0;
-  return smooth((distance-2)/17)*smooth((far-distance)/24);
+  if(!Number.isFinite(distance)||distance<=-24||distance>=far)return 0;
+  return smooth((far-distance)/24);
 }
 export function canopyFade(ahead) {
   if(!Number.isFinite(ahead))return 0;
-  // Exactly zero at the visible stream's far/near boundaries, preventing a
-  // photographically detailed tree from materializing at the cell boundary.
-  return smooth((ahead-9)/14)*smooth((96-ahead)/16);
+  // Fade new trees only at the far horizon. Close trees keep their full
+  // physical size until they are safely behind the camera, never shrink away.
+  return ahead<=-24?0:smooth((96-ahead)/16);
 }
 export function canopyWind(time,distance,phase=0) {
   if(![time,distance,phase].every(Number.isFinite))return 0;
@@ -99,7 +99,7 @@ export class LivingBackdrop {
     }
     c.needsUpdate=true;this.stats.skyColorUpdates++;
   }
-  update({biome='forest',travel=0,time=0,centre=()=>0,quality=1,chamber=false}={}) {
+  update({biome='forest',travel=0,time=0,centre=()=>0,banks=null,quality=1,chamber=false}={}) {
     const outdoor=!chamber&&(biome==='forest'||biome==='ruins');
     this.sky.visible=outdoor;this.hills.visible=outdoor;
     this.stats.skyVisible=outdoor;
@@ -120,7 +120,8 @@ export class LivingBackdrop {
       const r=hash(seed),r2=hash(seed+11);
       const width=8.5+r*3.4,height=7.1+r2*4.4,depth=14+r2*4;
       // At least nine metres from the playable centerline even after yaw.
-      const x=centre(position)+side*(22+r*3.1);
+      const boundary=banks?.(position);
+      const x=boundary?boundary[side<0?0:1]+side*(19+r*3.1):centre(position)+side*(22+r*3.1);
       this.position.set(x,-.45,d-position);
       this.euler.set(0,(r-.5)*.15,0);
       this.rotation.setFromEuler(this.euler);

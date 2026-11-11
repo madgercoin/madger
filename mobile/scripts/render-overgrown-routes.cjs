@@ -47,8 +47,13 @@ const server=http.createServer((req,res)=>{
    'Every authored and legacy saved route must have its own rendered fixture');
   assert.equal(fixtures.length,covered.size+G.CHAMBERS.length,
    'No route may silently replace a secret chamber or duplicate another test');
-  const results=[];
+  const results=[],fixtureFailures=[];
   for(const run of fixtures){
+   // Fork commitment preserves entrance world position. A distant checkpoint
+   // must start on its lane, not carry an unsimulated entrance offset into a bank.
+   if(run.mode!=='chamber')Object.assign(run,{x:0,y:0,vx:0,vy:0,lane:0,groundHeight:0,slide:0,slideAge:0});
+   const fixtureName=run.chamber||run.route;
+   try{
    const data=await page.evaluate(async({run,course})=>{
     window.fixtureScene.setCourse(course);window.fixtureScene.draw(run,12,false);
     await new Promise(requestAnimationFrame);window.fixtureScene.draw(run,12.016,false);
@@ -57,10 +62,37 @@ const server=http.createServer((req,res)=>{
     const display={width:viewport.width,height:viewport.height,bufferWidth:gl.drawingBufferWidth,bufferHeight:gl.drawingBufferHeight};
     const material=window.fixtureScene.renderer.terrain.material;
     const terrainPbr=Boolean(material.isMeshStandardMaterial&&material.map&&material.normalMap&&material.roughnessMap);
-    return {route:run.chamber||run.route,stats:window.fixtureScene.stats,hero:window.madgerHeroDiagnostics,terrainPbr,display,glError:gl.getError()};
+    let corridor=null;
+    if(run.mode!=='chamber'){
+      const T=await import('/blackroot/vendor/build/three.module.js');
+      const renderer=window.fixtureScene.renderer,hero=window.madgerHeroDiagnostics.position;
+      const candidates=[['ground-terrain',renderer.terrain],['distant-banks',renderer.backdrop.hills],
+        ['cavern-vault',renderer.cavernVault.mesh],...renderer.scanBatches.map(b=>['scan:'+b.id,b.mesh])];
+      const labels=new Map(candidates.map(([label,mesh])=>[mesh,label]));
+      const terrain=candidates.map(([,mesh])=>mesh).filter(m=>m?.visible&&(!m.isInstancedMesh||m.count>0));
+      const hits=[],rays=[];
+      for(const [dx,dy]of [[0,.65],[-.3,1.5],[.3,1.5]]){
+        const target=new T.Vector3(hero[0]+dx,hero[1]+dy,hero[2]);
+        const direction=target.clone().sub(renderer.camera.position),distance=direction.length();
+        const ray=new T.Raycaster(renderer.camera.position,direction.normalize(),.05,distance-.1);
+        const hit=ray.intersectObjects(terrain,false)[0];
+        const obstruction=hit?{name:labels.get(hit.object),objectName:hit.object.name,uuid:hit.object.uuid,
+          type:hit.object.type,instanceId:hit.instanceId??null,faceIndex:hit.faceIndex,
+          distance:hit.distance,point:hit.point.toArray()}:null;
+        hits.push(obstruction);rays.push({target:target.toArray(),distance,hit:obstruction});
+      }
+      corridor={clear:hits.filter(x=>x===null).length,camera:renderer.camera.position.toArray(),hero,rays,hits};
+    }
+    return {corridor,route:run.chamber||run.route,stats:window.fixtureScene.stats,hero:window.madgerHeroDiagnostics,terrainPbr,display,glError:gl.getError()};
    },{run,course:G.buildOvergrownCourse(run.seed)});
    console.log('MADGER_HERO_FIXTURE',JSON.stringify({route:data.route,instances:data.stats.instances,meshCount:data.stats.madgerMeshCount,heroTriangles:data.stats.madgerTriangles,renderedTriangles:data.stats.triangles,drawCalls:data.stats.drawCalls,rig:data.stats.madgerRig,glError:data.glError}));
+   // Preserve evidence before ANY route assertion, including failed corridors.
+   await page.screenshot({path:path.join(out,fixtureName+'.png')});
+   results.push(data);
+   fs.writeFileSync(path.join(out,'renderer-routes-partial.json'),JSON.stringify({results,fixtureFailures},null,2));
+   try{
    assert.equal(data.glError,0,run.route);assert(data.stats.assetsReady);
+   if(data.corridor)assert.equal(data.corridor.clear,3,'Terrain/scenery occludes the hero on '+run.route+': '+JSON.stringify(data.corridor));
    assert.equal(data.display.width,430,'Route screenshot must occupy full 430px mobile width');
    assert.equal(data.display.height,920,'Route screenshot must occupy full 920px mobile height');
    assert(data.display.bufferWidth>=200&&data.display.bufferHeight>=420,
@@ -102,10 +134,32 @@ const server=http.createServer((req,res)=>{
     if(outdoor)assert(data.stats.backgroundLandforms>=4&&data.stats.backgroundLandforms<=20,
       'Seamless PBR far banks absent or over budget: '+run.route);
     else assert.equal(data.stats.backgroundLandforms,0,'Distant hills leaked into underground: '+run.route);
-   await page.screenshot({path:path.join(out,(run.chamber||run.route)+'.png')});results.push(data);
+   }catch(error){fixtureFailures.push({route:fixtureName,error:error.message,corridor:data.corridor});}
+   }catch(error){
+     fixtureFailures.push({route:fixtureName,error:error.stack||String(error)});
+     await page.screenshot({path:path.join(out,fixtureName+'-failed.png')}).catch(()=>{});
+   }
+   fs.writeFileSync(path.join(out,'renderer-routes-partial.json'),JSON.stringify({results,fixtureFailures},null,2));
   }
   // Prove that the existing mobile fallback actually reduces rendered geometry,
   // not merely canvas resolution. This is a browser LOD comparison, not phone FPS.
+  // Compile and draw the actual active shield in both upright and burrowing
+  // poses. A no-shield fixture cannot catch effect-specific GLSL failures.
+  const shieldChecks=[];
+  for(const burrowing of [false,true]){
+   const run=G.freshOvergrownExpedition(19,'shield-visual');
+   Object.assign(run,{mode:'paused',distance:98,time:9,shields:1,slide:burrowing?.4:0,slideAge:burrowing?.4:0});
+   const check=await page.evaluate(({run,course})=>{
+    const scene=window.fixtureScene;scene.setCourse(course);scene.draw(run,20,true);
+    const batch=scene.renderer.batches.get('shield:shield');
+    const gl=document.querySelector('canvas').getContext('webgl2');
+    return {glError:gl.getError(),count:batch?.count,transparent:batch?.mesh.material.transparent,depthWrite:batch?.mesh.material.depthWrite};
+   },{run,course:G.buildOvergrownCourse(run.seed)});
+   assert.equal(check.glError,0);assert.equal(check.count,1);assert.equal(check.transparent,true);assert.equal(check.depthWrite,false);
+   assert.deepEqual(errors,[],'Active shield shader must compile without errors');
+   const name=burrowing?'shield-burrowing':'shield-upright';
+   await page.screenshot({path:path.join(out,name+'.png')});shieldChecks.push({name,...check});
+  }
   const lod=await page.evaluate(({run,course})=>{
     const scene=window.fixtureScene,renderer=scene.renderer;
     scene.setCourse(course);
@@ -148,7 +202,7 @@ const server=http.createServer((req,res)=>{
     'PBR instanced understory must animate subtly without new geometry');
   const timing=await page.evaluate(async()=>{const s=window.fixtureScene,r=s.renderer.run,gaps=[];r.mode='paused';r.chamber=undefined;r.route='ancient-vault';r.routeSide=1;r.distance=680;let previous=performance.now();for(let i=0;i<55;i++){await new Promise(requestAnimationFrame);const now=performance.now();if(i>4)gaps.push(now-previous);previous=now;r.distance+=.16;s.draw(r,15+i/60,false);}const sorted=gaps.sort((a,b)=>a-b);return {mean:gaps.reduce((a,b)=>a+b,0)/gaps.length,p95:sorted[Math.floor(sorted.length*.95)],triangles:s.stats.triangles,drawCalls:s.stats.drawCalls};});
   assert.deepEqual(errors,[]);assert.deepEqual(failed,[]);
-  const report={date:new Date().toISOString(),scope:'Actual exported renderer with deterministic route fixtures, separate from real-control gameplay tests',results,timing,lod,foliageMotion,errors,failed};
-  fs.writeFileSync(path.join(out,'renderer-routes.json'),JSON.stringify(report,null,2));console.log('ALL_ROUTES_RENDER_PASS',JSON.stringify({routes:results.length,timing,lod,foliageMotion}));
+  const report={date:new Date().toISOString(),scope:'Actual exported renderer with deterministic route fixtures, separate from real-control gameplay tests',results,timing,lod,foliageMotion,shieldChecks,errors,failed,fixtureFailures};
+  fs.writeFileSync(path.join(out,'renderer-routes.json'),JSON.stringify(report,null,2));assert.deepEqual(fixtureFailures,[],'Route visual checks failed; all screenshots and renderer-routes.json preserved');console.log('ALL_ROUTES_RENDER_PASS',JSON.stringify({routes:results.length,timing,lod,foliageMotion}));
  }finally{await browser.close();server.closeAllConnections();await new Promise(r=>server.close(r));fs.rmSync(temporary,{recursive:true,force:true});}
 })().catch(e=>{console.error(e.stack||e);process.exitCode=1;});
