@@ -1,16 +1,16 @@
 # MADGER social performance
 
-Generated: 2026-11-10T16:31:27.455Z
-Previous snapshot: 2026-11-09T19:00:07.849Z
+Generated: 2026-11-11T16:27:11.925Z
+Previous snapshot: 2026-11-10T16:31:27.455Z
 
 ## 30-day channel rollup
 
 | Channel | Health | Posts | Impressions | Reach | Views | Eng. rate | Clicks | Follows | Review |
 |---|---|---:|---:|---:|---:|---:|---:|---:|---|
 | twitter: MadgerDaBadger | Locked | — | — | — | — | — | — | — | None flagged |
-| facebook: Madger Coin | Connected | 11 | 230 | — | — | 0.43% | 0 | — | None flagged |
-| instagram: madgercoin | Connected | 12 | — | 220 | 301 | 13.18% | — | 0 | Check Buffer Community |
-| tiktok: themadgercoin | Connected | 11 | — | 1117 | 1192 | 0.34% | — | — | None flagged |
+| facebook: Madger Coin | Connected | 11 | 230 | 220 | — | 0.43% | 0 | — | None flagged |
+| instagram: madgercoin | Connected | 11 | — | 219 | 299 | 13.70% | — | 0 | Check Buffer Community |
+| tiktok: themadgercoin | Connected | 11 | — | 968 | 1155 | 0.26% | — | — | None flagged |
 
 ## Scheduled campaign
 
@@ -34,21 +34,21 @@ Sent: 17/17 · Scheduled: 0 · Errors: 0 · Attention: 2 · At risk: 0
 
 | Post | Network | Connection | Due (UTC) | Status | Views | Impressions | Reach | Reactions | Comments | Shares | Clicks | Follows | Link |
 |---|---|---|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---|
-| MADGER 002 — Keep Digging | facebook | connected | 2026-07-29T14:00:00.000Z | sent | — | 11 | — | 1 | 0 | 0 | 0 | — | [Open](https://www.facebook.com/reel/2497262497453092/) |
+| MADGER 002 — Keep Digging | facebook | connected | 2026-07-29T14:00:00.000Z | sent | — | 11 | 0 | 1 | 0 | 0 | 0 | — | [Open](https://www.facebook.com/reel/2497262497453092/) |
 | MADGER 002 — Keep Digging | instagram | connected | 2026-07-29T22:00:00.000Z | sent | 141 | — | 96 | 3 | 0 | 0 | — | — | [Open](https://www.instagram.com/reel/DbZI9zEAUs3/) |
 | MADGER 002 — Keep Digging | tiktok | connected | 2026-07-30T02:00:00.000Z | sent | 86 | — | 80 | 2 | 0 | 0 | — | — | [Open](https://www.tiktok.com/@themadgercoin/video/7668135131676216589?utm_campaign=tt4d_open_api&utm_source=7103819247981182978) |
-| MADGER 003 — No Slowing Down | facebook | connected | 2026-07-30T13:00:00.000Z | sent | — | 10 | — | 1 | 0 | 0 | 0 | — | [Open](https://www.facebook.com/reel/1047690247843003/) |
+| MADGER 003 — No Slowing Down | facebook | connected | 2026-07-30T13:00:00.000Z | sent | — | 10 | 0 | 1 | 0 | 0 | 0 | — | [Open](https://www.facebook.com/reel/1047690247843003/) |
 | MADGER 003 — No Slowing Down | instagram | connected | 2026-07-30T13:00:00.000Z | sent | 125 | — | 103 | 2 | 0 | 0 | — | — | [Open](https://www.instagram.com/reel/DbawDMtmlki/) |
 | MADGER 003 — No Slowing Down | tiktok | connected | 2026-07-31T22:00:00.000Z | sent | 33 | — | 25 | 3 | 0 | 0 | — | — | [Open](https://www.tiktok.com/@themadgercoin/video/7668815697367076109?utm_campaign=tt4d_open_api&utm_source=7103819247981182978) |
 | MADGER 004 — Join the Burrow | tiktok | connected | 2026-08-02T13:00:00.000Z | sent | 129 | — | 111 | 7 | 0 | 0 | — | — | [Open](https://www.tiktok.com/@themadgercoin/video/7669418973116632333?utm_campaign=tt4d_open_api&utm_source=7103819247981182978) |
-| MADGER 004 — Join the Burrow | facebook | connected | 2026-08-03T13:00:00.000Z | sent | — | 1 | — | 1 | 0 | 0 | 0 | — | [Open](https://www.facebook.com/reel/1732520327655007/) |
+| MADGER 004 — Join the Burrow | facebook | connected | 2026-08-03T13:00:00.000Z | sent | — | 1 | 0 | 1 | 0 | 0 | 0 | — | [Open](https://www.facebook.com/reel/1732520327655007/) |
 | MADGER 004 — Join the Burrow | instagram | connected | 2026-08-03T22:00:00.000Z | sent | 136 | — | 111 | 1 | 0 | 0 | — | — | [Open](https://www.instagram.com/reel/DbmBD6Gk3yf/) |
-| The Burrow hits 200 Telegram members | facebook | unknown | 2026-08-16T02:46:27.988Z | ⚠ sent (channel missing) | — | 7 | — | 3 | 0 | 0 | 1 | — | [Open](https://facebook.com/1279493098576451_122108036793423166) |
+| The Burrow hits 200 Telegram members | facebook | unknown | 2026-08-16T02:46:27.988Z | ⚠ sent (channel missing) | — | 7 | 0 | 3 | 0 | 0 | 1 | — | [Open](https://facebook.com/1279493098576451_122108036793423166) |
 | The Burrow hits 200 Telegram members | instagram | unknown | 2026-08-16T02:46:33.258Z | ⚠ sent (channel missing) | 6 | — | 4 | 0 | 0 | 0 | — | 0 | [Open](https://www.instagram.com/p/DcFbFJPlFqB/) |
-| The Great Burrow Meme Contest | facebook | connected | 2026-08-16T10:10:22.882Z | sent | — | 7 | — | 2 | 0 | 0 | 1 | — | [Open](https://facebook.com/1279493098576451_122108134587423166) |
+| The Great Burrow Meme Contest | facebook | connected | 2026-08-16T10:10:22.882Z | sent | — | 7 | 0 | 2 | 0 | 0 | 1 | — | [Open](https://facebook.com/1279493098576451_122108134587423166) |
 | The Great Burrow Meme Contest | instagram | connected | 2026-08-16T10:11:18.541Z | sent | 4 | — | 4 | 0 | 0 | 0 | — | 0 | [Open](https://www.instagram.com/p/DcGOkg5ltva/) |
 | The Great Burrow Meme Contest | tiktok | connected | 2026-08-16T10:11:37.451Z | sent | 215 | — | 208 | 0 | 0 | 0 | — | — | [Open](https://www.tiktok.com/@themadgercoin/video/7674570062266666254?utm_campaign=tt4d_open_api&utm_source=7103819247981182978) |
-| Aura: Unmeasurable | facebook | connected | 2026-08-21T20:47:00.000Z | sent | — | 11 | — | 1 | 0 | 0 | 1 | — | [Open](https://facebook.com/1279493098576451_122109624249423166) |
+| Aura: Unmeasurable | facebook | connected | 2026-08-21T20:47:00.000Z | sent | — | 11 | 0 | 1 | 0 | 0 | 1 | — | [Open](https://facebook.com/1279493098576451_122109624249423166) |
 | Aura: Unmeasurable | instagram | connected | 2026-08-21T20:49:00.000Z | sent | 7 | — | 4 | 1 | 0 | 0 | — | 0 | [Open](https://www.instagram.com/p/DcUO7rak_qB/) |
 | Aura: Unmeasurable | tiktok | connected | 2026-08-21T20:51:00.000Z | sent | 69 | — | 64 | 0 | 0 | 0 | — | — | [Open](https://www.tiktok.com/@themadgercoin/video/7676590217716845838?utm_campaign=tt4d_open_api&utm_source=7103819247981182978) |
 
