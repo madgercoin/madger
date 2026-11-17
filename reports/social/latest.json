@@ -1,9 +1,9 @@
 {
-  "generatedAt": "2026-11-16T18:46:11.100Z",
-  "previousGeneratedAt": "2026-11-15T15:46:32.164Z",
+  "generatedAt": "2026-11-17T17:45:12.891Z",
+  "previousGeneratedAt": "2026-11-16T18:46:11.100Z",
   "window": {
-    "start": "2026-10-17T18:46:11.100Z",
-    "end": "2026-11-16T18:46:11.100Z"
+    "start": "2026-10-18T17:45:12.891Z",
+    "end": "2026-11-17T17:45:12.891Z"
   },
   "organization": {
     "id": "6a67aceacff325d8d2d231e9",
@@ -34,9 +34,9 @@
       "state": "connected",
       "healthy": true,
       "queuePaused": false,
-      "metricsUpdatedAt": "2026-11-16T11:09:16.339Z",
+      "metricsUpdatedAt": "2026-11-17T10:09:26.164Z",
       "metrics": {
-        "postCount": 8,
+        "postCount": 9,
         "reactions": 1,
         "comments": 0,
         "engagementRate": 0.44,
@@ -57,17 +57,17 @@
       "state": "connected",
       "healthy": true,
       "queuePaused": false,
-      "metricsUpdatedAt": "2026-11-16T18:26:06.178Z",
+      "metricsUpdatedAt": "2026-11-17T01:16:13.172Z",
       "metrics": {
-        "postCount": 8,
-        "reactions": 22,
+        "postCount": 9,
+        "reactions": 23,
         "comments": 4,
-        "engagementRate": 12.8,
-        "views": 276,
+        "engagementRate": 13.15,
+        "views": 280,
         "shares": 1,
         "saves": 0,
         "follows": 0,
-        "reach": 211,
+        "reach": 213,
         "totalTimeWatched": 35.92,
         "averageTimeWatched": 11.29
       },
@@ -83,17 +83,17 @@
       "state": "connected",
       "healthy": true,
       "queuePaused": false,
-      "metricsUpdatedAt": "2026-11-16T14:30:37.874Z",
+      "metricsUpdatedAt": "2026-11-17T13:31:19.988Z",
       "metrics": {
-        "postCount": 8,
+        "postCount": 9,
         "reactions": 3,
         "comments": 0,
-        "engagementRate": 0.43,
-        "views": 937,
+        "engagementRate": 0.39,
+        "views": 1025,
         "shares": 1,
         "reach": 868,
-        "totalTimeWatched": 21.7,
-        "averageTimeWatched": 1.9
+        "totalTimeWatched": 23.7,
+        "averageTimeWatched": 1.84
       },
       "requiresCommunityReview": false
     }
