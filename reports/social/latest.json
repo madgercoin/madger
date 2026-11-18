@@ -1,9 +1,9 @@
 {
-  "generatedAt": "2026-11-17T17:45:12.891Z",
-  "previousGeneratedAt": "2026-11-16T18:46:11.100Z",
+  "generatedAt": "2026-11-18T17:26:16.746Z",
+  "previousGeneratedAt": "2026-11-17T17:45:12.891Z",
   "window": {
-    "start": "2026-10-18T17:45:12.891Z",
-    "end": "2026-11-17T17:45:12.891Z"
+    "start": "2026-10-19T17:26:16.746Z",
+    "end": "2026-11-18T17:26:16.746Z"
   },
   "organization": {
     "id": "6a67aceacff325d8d2d231e9",
@@ -34,7 +34,7 @@
       "state": "connected",
       "healthy": true,
       "queuePaused": false,
-      "metricsUpdatedAt": "2026-11-17T10:09:26.164Z",
+      "metricsUpdatedAt": "2026-11-18T09:09:37.850Z",
       "metrics": {
         "postCount": 9,
         "reactions": 1,
@@ -57,17 +57,17 @@
       "state": "connected",
       "healthy": true,
       "queuePaused": false,
-      "metricsUpdatedAt": "2026-11-17T01:16:13.172Z",
+      "metricsUpdatedAt": "2026-11-18T00:16:31.043Z",
       "metrics": {
         "postCount": 9,
         "reactions": 23,
         "comments": 4,
-        "engagementRate": 13.15,
-        "views": 280,
+        "engagementRate": 13.08,
+        "views": 281,
         "shares": 1,
         "saves": 0,
         "follows": 0,
-        "reach": 213,
+        "reach": 214,
         "totalTimeWatched": 35.92,
         "averageTimeWatched": 11.29
       },
@@ -83,16 +83,16 @@
       "state": "connected",
       "healthy": true,
       "queuePaused": false,
-      "metricsUpdatedAt": "2026-11-17T13:31:19.988Z",
+      "metricsUpdatedAt": "2026-11-18T12:32:27.427Z",
       "metrics": {
         "postCount": 9,
         "reactions": 3,
         "comments": 0,
-        "engagementRate": 0.39,
-        "views": 1025,
+        "engagementRate": 0.38,
+        "views": 1055,
         "shares": 1,
-        "reach": 868,
-        "totalTimeWatched": 23.7,
+        "reach": 899,
+        "totalTimeWatched": 24.47,
         "averageTimeWatched": 1.84
       },
       "requiresCommunityReview": false
