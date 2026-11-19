@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-16T07:17:49.425Z",
+  "generatedAt": "2026-11-19T23:14:20.271Z",
   "snapshotLabel": "pre-liquidity-pre-proficy-2026-09-09",
   "network": "solana",
   "mint": "BHauMX8akk2umqkQqnJwpYkCRkZmefGnEBFByeFXRKqv",
@@ -19,16 +19,16 @@
       "name": "Wrapped SOL",
       "symbol": "SOL"
     },
-    "priceUsd": 0.0007159,
-    "priceNative": 0.000009852,
-    "liquidityUsd": 6151.58,
-    "liquidityBase": 4296310,
-    "liquidityQuote": 42.3313,
-    "fdv": 715915,
-    "marketCap": 161081,
-    "volume24h": 226.59,
+    "priceUsd": 0.0007241,
+    "priceNative": 0.00000982,
+    "liquidityUsd": 6232.87,
+    "liquidityBase": 4303317,
+    "liquidityQuote": 42.2625,
+    "fdv": 724195,
+    "marketCap": 162944,
+    "volume24h": 5.07,
     "buys24h": 0,
-    "sells24h": 2,
+    "sells24h": 1,
     "pairCreatedAt": 1788193708000,
     "websites": [
       {
@@ -42,6 +42,10 @@
       {
         "url": "https://madgercoin.com/transparency.html",
         "label": "Supply & LP Transparency"
+      },
+      {
+        "url": "https://www.reddit.com/user/Madgercoin/",
+        "label": ""
       }
     ],
     "socials": [
@@ -64,10 +68,6 @@
       {
         "url": "https://www.instagram.com/madgercoin/",
         "type": "instagram"
-      },
-      {
-        "url": "https://www.reddit.com/user/Madgercoin/",
-        "type": "reddit"
       }
     ]
   },
