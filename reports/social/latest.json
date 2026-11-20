@@ -1,9 +1,9 @@
 {
-  "generatedAt": "2026-11-19T17:31:40.576Z",
-  "previousGeneratedAt": "2026-11-18T17:26:16.746Z",
+  "generatedAt": "2026-11-20T17:06:35.593Z",
+  "previousGeneratedAt": "2026-11-19T17:31:40.576Z",
   "window": {
-    "start": "2026-10-20T17:31:40.576Z",
-    "end": "2026-11-19T17:31:40.576Z"
+    "start": "2026-10-21T17:06:35.593Z",
+    "end": "2026-11-20T17:06:35.593Z"
   },
   "organization": {
     "id": "6a67aceacff325d8d2d231e9",
@@ -34,7 +34,7 @@
       "state": "connected",
       "healthy": true,
       "queuePaused": false,
-      "metricsUpdatedAt": "2026-11-19T08:09:46.474Z",
+      "metricsUpdatedAt": "2026-11-20T07:09:57.868Z",
       "metrics": {
         "postCount": 9,
         "reactions": 1,
@@ -57,17 +57,17 @@
       "state": "connected",
       "healthy": true,
       "queuePaused": false,
-      "metricsUpdatedAt": "2026-11-18T23:17:02.847Z",
+      "metricsUpdatedAt": "2026-11-19T22:18:11.741Z",
       "metrics": {
-        "postCount": 8,
-        "reactions": 20,
+        "postCount": 9,
+        "reactions": 21,
         "comments": 4,
-        "engagementRate": 14.72,
-        "views": 212,
+        "engagementRate": 15.06,
+        "views": 220,
         "shares": 0,
         "saves": 0,
         "follows": 0,
-        "reach": 163,
+        "reach": 166,
         "totalTimeWatched": 26.14,
         "averageTimeWatched": 11.71
       },
@@ -83,17 +83,17 @@
       "state": "connected",
       "healthy": true,
       "queuePaused": false,
-      "metricsUpdatedAt": "2026-11-19T11:33:23.118Z",
+      "metricsUpdatedAt": "2026-11-20T10:34:15.403Z",
       "metrics": {
         "postCount": 9,
         "reactions": 1,
         "comments": 0,
         "engagementRate": 0.18,
-        "views": 1082,
+        "views": 1121,
         "shares": 1,
-        "reach": 935,
-        "totalTimeWatched": 23.08,
-        "averageTimeWatched": 1.52
+        "reach": 955,
+        "totalTimeWatched": 26.87,
+        "averageTimeWatched": 1.73
       },
       "requiresCommunityReview": false
     }
