@@ -1,9 +1,9 @@
 {
-  "generatedAt": "2026-11-20T17:06:35.593Z",
-  "previousGeneratedAt": "2026-11-19T17:31:40.576Z",
+  "generatedAt": "2026-11-21T16:18:13.684Z",
+  "previousGeneratedAt": "2026-11-20T17:06:35.593Z",
   "window": {
-    "start": "2026-10-21T17:06:35.593Z",
-    "end": "2026-11-20T17:06:35.593Z"
+    "start": "2026-10-22T16:18:13.684Z",
+    "end": "2026-11-21T16:18:13.684Z"
   },
   "organization": {
     "id": "6a67aceacff325d8d2d231e9",
@@ -34,9 +34,9 @@
       "state": "connected",
       "healthy": true,
       "queuePaused": false,
-      "metricsUpdatedAt": "2026-11-20T07:09:57.868Z",
+      "metricsUpdatedAt": "2026-11-21T06:10:07.581Z",
       "metrics": {
-        "postCount": 9,
+        "postCount": 10,
         "reactions": 1,
         "comments": 0,
         "engagementRate": 5.88,
@@ -57,17 +57,17 @@
       "state": "connected",
       "healthy": true,
       "queuePaused": false,
-      "metricsUpdatedAt": "2026-11-19T22:18:11.741Z",
+      "metricsUpdatedAt": "2026-11-20T21:18:23.924Z",
       "metrics": {
         "postCount": 9,
         "reactions": 21,
         "comments": 4,
-        "engagementRate": 15.06,
-        "views": 220,
+        "engagementRate": 14.88,
+        "views": 222,
         "shares": 0,
         "saves": 0,
         "follows": 0,
-        "reach": 166,
+        "reach": 168,
         "totalTimeWatched": 26.14,
         "averageTimeWatched": 11.71
       },
@@ -83,17 +83,17 @@
       "state": "connected",
       "healthy": true,
       "queuePaused": false,
-      "metricsUpdatedAt": "2026-11-20T10:34:15.403Z",
+      "metricsUpdatedAt": "2026-11-21T09:35:21.054Z",
       "metrics": {
-        "postCount": 9,
+        "postCount": 10,
         "reactions": 1,
         "comments": 0,
-        "engagementRate": 0.18,
-        "views": 1121,
+        "engagementRate": 0.16,
+        "views": 1238,
         "shares": 1,
-        "reach": 955,
-        "totalTimeWatched": 26.87,
-        "averageTimeWatched": 1.73
+        "reach": 1043,
+        "totalTimeWatched": 28.95,
+        "averageTimeWatched": 1.66
       },
       "requiresCommunityReview": false
     }
