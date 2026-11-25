@@ -1,9 +1,9 @@
 {
-  "generatedAt": "2026-11-24T19:38:04.113Z",
-  "previousGeneratedAt": "2026-11-23T20:26:52.849Z",
+  "generatedAt": "2026-11-25T18:45:07.999Z",
+  "previousGeneratedAt": "2026-11-24T19:38:04.113Z",
   "window": {
-    "start": "2026-10-25T19:38:04.113Z",
-    "end": "2026-11-24T19:38:04.113Z"
+    "start": "2026-10-26T18:45:07.999Z",
+    "end": "2026-11-25T18:45:07.999Z"
   },
   "organization": {
     "id": "6a67aceacff325d8d2d231e9",
@@ -34,7 +34,7 @@
       "state": "connected",
       "healthy": true,
       "queuePaused": false,
-      "metricsUpdatedAt": "2026-11-24T03:10:38.848Z",
+      "metricsUpdatedAt": "2026-11-25T02:10:46.904Z",
       "metrics": {
         "postCount": 11,
         "reactions": 1,
@@ -57,19 +57,19 @@
       "state": "connected",
       "healthy": true,
       "queuePaused": false,
-      "metricsUpdatedAt": "2026-11-24T18:32:35.208Z",
+      "metricsUpdatedAt": "2026-11-25T18:32:45.146Z",
       "metrics": {
         "postCount": 11,
         "reactions": 24,
         "comments": 4,
-        "engagementRate": 16.18,
-        "views": 235,
+        "engagementRate": 15.05,
+        "views": 253,
         "shares": 0,
         "saves": 0,
         "follows": 0,
-        "reach": 173,
-        "totalTimeWatched": 26.14,
-        "averageTimeWatched": 11.71
+        "reach": 186,
+        "totalTimeWatched": 26.31,
+        "averageTimeWatched": 11.7
       },
       "requiresCommunityReview": true
     },
@@ -83,16 +83,16 @@
       "state": "connected",
       "healthy": true,
       "queuePaused": false,
-      "metricsUpdatedAt": "2026-11-24T06:38:18.683Z",
+      "metricsUpdatedAt": "2026-11-25T05:39:14.486Z",
       "metrics": {
         "postCount": 11,
         "reactions": 1,
         "comments": 0,
         "engagementRate": 0.14,
-        "views": 1400,
+        "views": 1449,
         "shares": 1,
-        "reach": 1224,
-        "totalTimeWatched": 31.8,
+        "reach": 1250,
+        "totalTimeWatched": 32.47,
         "averageTimeWatched": 1.58
       },
       "requiresCommunityReview": false
