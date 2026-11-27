@@ -1,9 +1,9 @@
 {
-  "generatedAt": "2026-11-26T18:32:54.661Z",
-  "previousGeneratedAt": "2026-11-25T18:45:07.999Z",
+  "generatedAt": "2026-11-27T18:21:18.510Z",
+  "previousGeneratedAt": "2026-11-26T18:32:54.661Z",
   "window": {
-    "start": "2026-10-27T18:32:54.661Z",
-    "end": "2026-11-26T18:32:54.661Z"
+    "start": "2026-10-28T18:21:18.510Z",
+    "end": "2026-11-27T18:21:18.510Z"
   },
   "organization": {
     "id": "6a67aceacff325d8d2d231e9",
@@ -34,7 +34,7 @@
       "state": "connected",
       "healthy": true,
       "queuePaused": false,
-      "metricsUpdatedAt": "2026-11-26T01:10:57.029Z",
+      "metricsUpdatedAt": "2026-11-27T00:11:06.393Z",
       "metrics": {
         "postCount": 11,
         "reactions": 1,
@@ -57,17 +57,17 @@
       "state": "connected",
       "healthy": true,
       "queuePaused": false,
-      "metricsUpdatedAt": "2026-11-26T15:21:15.707Z",
+      "metricsUpdatedAt": "2026-11-27T14:22:04.500Z",
       "metrics": {
         "postCount": 11,
-        "reactions": 21,
-        "comments": 4,
-        "engagementRate": 46.3,
-        "views": 112,
+        "reactions": 22,
+        "comments": 5,
+        "engagementRate": 49.09,
+        "views": 115,
         "shares": 0,
         "saves": 0,
         "follows": 0,
-        "reach": 54,
+        "reach": 55,
         "totalTimeWatched": 0,
         "averageTimeWatched": 0
       },
@@ -83,17 +83,17 @@
       "state": "connected",
       "healthy": true,
       "queuePaused": false,
-      "metricsUpdatedAt": "2026-11-26T04:40:21.206Z",
+      "metricsUpdatedAt": "2026-11-27T03:41:18.874Z",
       "metrics": {
         "postCount": 11,
         "reactions": 1,
         "comments": 0,
         "engagementRate": 0.13,
-        "views": 1499,
+        "views": 1544,
         "shares": 1,
-        "reach": 1328,
-        "totalTimeWatched": 30.72,
-        "averageTimeWatched": 1.18
+        "reach": 1343,
+        "totalTimeWatched": 32.37,
+        "averageTimeWatched": 1.19
       },
       "requiresCommunityReview": false
     }
